@@ -69,6 +69,12 @@ const R_LG := 12
 const R_PILL := 999
 
 # ---------------------------------------------------------------- nine-slice
+## The files in assets/ui/ are old-scheme navy art, not ember art, so consuming them is opt-in:
+## with this off the UI renders the warm code-drawn surfaces (UIStyle.surface_box's flat
+## fallback). Flip it to true once the owner's ember art lands and every
+## assets/ui/<kind>_9slice.png is sliced into the surfaces below. A var, not a const, so a test
+## can flip it (same pattern as Motion.force_reduced).
+static var NINE_SLICE_ART_ENABLED: bool = false
 ## Per-kind content/expand inset when 9-slice art exists (see UIStyle.surface_box).
 ## Missing kinds fall back to 12; missing art falls back to StyleBoxFlat.
 const NINE_SLICE_MARGINS := {"panel": 12, "button": 8, "chip": 6}

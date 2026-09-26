@@ -67,6 +67,7 @@ func run_all(host: Node) -> void:
 	_test_content_validation()
 	test_identity_theme_builds()
 	test_surface_box_falls_back()
+	test_surface_box_uses_flat_by_default()
 	test_motion_reduced_disables()
 	test_floater_pool_bounded()
 	# Awaited: both new motion pins are coroutines (they need frames for the tween to run and for
@@ -1296,9 +1297,30 @@ func test_surface_box_falls_back() -> void:
 	_heading("Identity surfaces")
 	var sb: StyleBox = UIStyle.surface_box("nonexistent_kind_xyz")
 	_ok(sb is StyleBoxFlat, "missing art must fall back to StyleBoxFlat")
-	if ResourceLoader.exists("res://assets/ui/panel_9slice.png"):
-		var art: StyleBox = UIStyle.surface_box("panel")
-		_ok(art is StyleBoxTexture, "existing art must build a StyleBoxTexture")
+
+## Task 6a pin: the files in assets/ui/ are old-scheme navy art, not ember art, so the art branch
+## is opt-in. Off by default the warm code-drawn surfaces render even though the art is on disk;
+## on, the box has to be a real 9-slice — the four texture margins carry the token value, because
+## a box with zero texture margins stretches the image instead of slicing it.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_surface_box_uses_flat_by_default() -> void:
+	_heading("Identity surfaces")
+	UITokens.NINE_SLICE_ART_ENABLED = false
+	_ok(UIStyle.surface_box("panel") is StyleBoxFlat,
+		"with the art flag off the warm flat box is used even though panel_9slice.png exists")
+	if not ResourceLoader.exists("res://assets/ui/panel_9slice.png"):
+		UITokens.NINE_SLICE_ART_ENABLED = false
+		return
+	UITokens.NINE_SLICE_ART_ENABLED = true
+	var art = UIStyle.surface_box("panel")
+	_ok(art is StyleBoxTexture, "enabling the flag consumes assets/ui/<kind>_9slice.png")
+	if art is StyleBoxTexture:
+		var m: float = float(UITokens.NINE_SLICE_MARGINS.get("panel", 12))
+		_eq(art.texture_margin_left, m, "left texture margin slices the art")
+		_eq(art.texture_margin_right, m, "right texture margin slices the art")
+		_eq(art.texture_margin_top, m, "top texture margin slices the art")
+		_eq(art.texture_margin_bottom, m, "bottom texture margin slices the art")
+	UITokens.NINE_SLICE_ART_ENABLED = false
 
 ## Task 4 pin: Motion helpers are no-ops when reduced motion is on, and the floater
 ## pool reuses hidden Labels instead of growing without bound (never queue_free).

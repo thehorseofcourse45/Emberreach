@@ -24,12 +24,18 @@ const DANGER := UITokens.RED
 # =========================================================================
 
 static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBox:
+	# Opt-in: the art is only sliced in when UITokens.NINE_SLICE_ART_ENABLED is flipped on, so an
+	# old-scheme illustration in assets/ui/ can never be stretched behind the whole workspace.
 	var path: String = "res://assets/ui/%s_9slice.png" % kind
-	if ResourceLoader.exists(path):
+	if UITokens.NINE_SLICE_ART_ENABLED and ResourceLoader.exists(path):
 		var tex: Texture2D = load(path)
 		var sb := StyleBoxTexture.new()
 		sb.texture = tex
 		var m: int = UITokens.NINE_SLICE_MARGINS.get(kind, 12)
+		# The texture margins are what make this a 9-slice: at 0 Godot stretches the whole image,
+		# so the corners and the borders distort with the widget.
+		sb.texture_margin_left = float(m); sb.texture_margin_right = float(m)
+		sb.texture_margin_top = float(m); sb.texture_margin_bottom = float(m)
 		sb.content_margin_left = m; sb.content_margin_right = m
 		sb.content_margin_top = m; sb.content_margin_bottom = m
 		sb.expand_margin_left = m; sb.expand_margin_right = m
