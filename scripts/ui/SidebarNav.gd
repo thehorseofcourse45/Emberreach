@@ -100,7 +100,7 @@ static func slide_accent(overlay: Control, bar: ColorRect, target: Button) -> vo
 		return
 	bar.visible = true
 	var y: float = target.get_global_rect().position.y - overlay.get_global_rect().position.y
-	if Motion._is_reduced():
+	if Motion.reduced():
 		bar.position.y = y
 		return
 	var tween := bar.create_tween()

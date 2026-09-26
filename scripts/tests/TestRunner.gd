@@ -69,6 +69,10 @@ func run_all(host: Node) -> void:
 	test_surface_box_falls_back()
 	test_motion_reduced_disables()
 	test_floater_pool_bounded()
+	# Awaited: both new motion pins are coroutines (they need frames for the tween to run and for
+	# the pivot to be re-read), and an un-awaited coroutine would report after _report() has printed.
+	await test_tween_bar_defers_until_in_tree(host)
+	await test_pulse_sets_center_pivot(host)
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
@@ -1314,6 +1318,67 @@ func test_floater_pool_bounded() -> void:
 		Motion.spawn_floater(parent, "1", Color.WHITE)
 	_ok(parent.get_child_count() <= 12, "floater pool must stay bounded")
 	parent.free()
+
+## Task 5 review pin: a bar is built by a factory and parented by the caller, so tween_bar almost
+## always sees it before it is in the tree, where no tween can be created. The value must be right
+## immediately (this func is a no-op under reduced motion, so the tween must never be what sets it)
+## and the glide must be armed rather than dropped.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_tween_bar_defers_until_in_tree(host: Node) -> void:
+	_heading("Identity motion")
+	var holder := Control.new()
+	host.add_child(holder)
+	var bar := ProgressBar.new()
+	bar.max_value = 100.0
+	bar.value = 0.0
+	Motion.tween_bar(bar, 60.0)
+	_ok(is_equal_approx(bar.value, 60.0),
+		"an off-tree bar is already at its value (%.1f)" % bar.value)
+	_ok(bar.get_signal_connection_list("tree_entered").size() == 1,
+		"the glide is armed on tree_entered instead of being dropped")
+	# The armed one-shot has to actually run, so the value is knocked back to 0 the way a live
+	# caller would. Only a running tween can move it off 0 again; a snap would leave it there.
+	# The leading frame is what makes this deterministic: SceneTree runs process_timers before
+	# process_tweens, so a timer alone can expire before the tween's first step. A frame boundary
+	# guarantees at least one step, and the timer after it gives the glide room to travel.
+	bar.value = 0.0
+	holder.add_child(bar)
+	await host.get_tree().process_frame
+	await host.get_tree().create_timer(0.12).timeout
+	await host.get_tree().process_frame
+	_ok(bar.value > 0.0 and bar.value <= 60.0,
+		"the deferred glide runs once the bar is in the tree (bar has moved to %.2f of 60)" % bar.value)
+	_ok(bar.get_signal_connection_list("tree_entered").is_empty(),
+		"the one-shot is spent, so re-parenting cannot stack a second glide")
+	holder.queue_free()
+
+## Task 5 review pin: the pulse has to pivot on the control's centre. The HP bar pulses on the
+## frame it is added, when `size` is still (0,0), so a pivot read only at call time lands in the
+## corner and the bar breathes lopsided. The pivot is re-read on every lap of the loop, which also
+## covers a window resize moving the centre mid-pulse.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_pulse_sets_center_pivot(host: Node) -> void:
+	_heading("Identity motion")
+	var holder := Control.new()
+	host.add_child(holder)
+	var laid_out := Control.new()
+	laid_out.custom_minimum_size = Vector2(120, 24)
+	holder.add_child(laid_out)
+	laid_out.size = Vector2(120, 24)
+	Motion.pulse(laid_out)
+	_ok(laid_out.pivot_offset == laid_out.size * 0.5,
+		"a pulsing control pivots on its centre (%s)" % laid_out.pivot_offset)
+	# The case that was broken: pulsed at size zero, measured a frame later.
+	var late := Control.new()
+	holder.add_child(late)
+	late.size = Vector2.ZERO
+	Motion.pulse(late)
+	late.size = Vector2(200, 40)
+	await host.get_tree().process_frame
+	await host.get_tree().process_frame
+	_ok(late.pivot_offset == late.size * 0.5,
+		"the pulse re-reads the size once the control is laid out (%s of %s)" % [late.pivot_offset, late.size])
+	holder.queue_free()
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")

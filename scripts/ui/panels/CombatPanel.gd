@@ -409,7 +409,7 @@ func _floater(overlay: Control, text: String, color: Color, crit := false) -> vo
 ## 80ms of over-bright so a hit lands even when the log line is missed. Over 1.0 rather than plain
 ## white: modulate multiplies, so a sprite is only white if its texture is white.
 func _flash(sprite: TextureRect) -> void:
-	if sprite == null or not is_instance_valid(sprite) or Motion._is_reduced():
+	if sprite == null or not is_instance_valid(sprite) or Motion.reduced():
 		return
 	sprite.modulate = Color(2.4, 2.4, 2.4)
 	var tween := sprite.create_tween()

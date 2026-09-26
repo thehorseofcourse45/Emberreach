@@ -17,7 +17,18 @@ static func _is_reduced() -> bool:
 		return true
 	return bool(PlayerData.settings.get("reduced_motion", false))
 
-## Tween a ProgressBar to its new value over 0.25s. Outside the tree, snap.
+## The reduced-motion gate, for the bespoke tweens that are not Motion helpers (a hit flash, a
+## sliding nav accent). `_is_reduced` stays private; this is the name other files call.
+static func reduced() -> bool:
+	return _is_reduced()
+
+## Tween a ProgressBar to its new value over 0.25s.
+##
+## Bars are built by a factory and parented by the caller afterwards, so the usual case arrives
+## before the bar is in the tree — and a tween cannot be created off-tree at all. The value is set
+## straight away (it is the authoritative one, since this func is a no-op under reduced motion) and
+## the glide is armed on `tree_entered` instead of being dropped. One-shot, so re-parenting a bar
+## cannot stack a second glide on top of the first.
 static func tween_bar(bar: ProgressBar, to_value: float) -> void:
 	if _is_reduced():
 		return
@@ -25,7 +36,20 @@ static func tween_bar(bar: ProgressBar, to_value: float) -> void:
 		return
 	if not bar.is_inside_tree():
 		bar.value = to_value
+		bar.tree_entered.connect(func() -> void: _tween_bar_when_shown(bar, to_value), Object.CONNECT_ONE_SHOT)
 		return
+	_tween_bar_now(bar, to_value)
+
+## The deferred half of tween_bar. Reduced motion is re-checked rather than assumed: the setting
+## can be flipped between arming the glide and the bar reaching the screen.
+static func _tween_bar_when_shown(bar: ProgressBar, to_value: float) -> void:
+	if _is_reduced():
+		return
+	if bar == null or not is_instance_valid(bar) or not bar.is_inside_tree():
+		return
+	_tween_bar_now(bar, to_value)
+
+static func _tween_bar_now(bar: ProgressBar, to_value: float) -> void:
 	var tween: Tween = bar.create_tween()
 	tween.tween_property(bar, "value", to_value, 0.25)
 
@@ -76,11 +100,19 @@ static func pulse(control: Control) -> void:
 		control.remove_meta(_PULSE_META)
 	if not control.is_inside_tree():
 		return
-	control.pivot_offset = control.size * 0.5
+	_center_pivot(control)
 	var tween: Tween = control.create_tween().set_loops()
 	control.set_meta(_PULSE_META, tween)
+	# Re-read on every lap, not only here. A caller pulses a control on the frame it is added,
+	# when `size` is still zero and the pivot would sit in the corner, so the bar would breathe
+	# lopsided; a window resize moves the centre again while the loop is still running.
+	tween.tween_callback(_center_pivot.bind(control))
 	tween.tween_property(control, "scale", Vector2(1.04, 1.04), 0.45).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(control, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_SINE)
+
+## The pulse pivots on the control's centre, which is only knowable once it has been laid out.
+static func _center_pivot(control: Control) -> void:
+	control.pivot_offset = control.size * 0.5
 
 ## Fade in while settling up 6px over 0.18s. Outside the tree, snap to visible.
 static func fade_rise(control: Control) -> void:
