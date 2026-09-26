@@ -1,6 +1,15 @@
 class_name CombatSimulatorTests
 extends RefCounted
 const CombatSimulator = preload("res://scripts/combat/CombatSimulator.gd")
+
+## Backstop for the production run's completion signal, in real time rather than frames. The
+## in-test run measures ~1.3s, and a deliberately slow one (a 500-HP dummy taking ~10 hits per
+## fight) measures ~8s, so 120s leaves over 15x headroom even for the slow case. The budget it
+## replaces was worth 26s of wall clock here and an unpredictable amount on other hardware, because
+## its size was set by the machine's frame rate rather than by the work. A genuine hang still fails
+## the suite rather than blocking forever.
+const RUN_TIMEOUT_MS: int = 120000
+
 ## Dedicated tests for the built-in combat simulator.
 ##
 ## The model is pure, so most checks run it directly on a hand-built snapshot: that is the only way
@@ -186,13 +195,20 @@ static func run(host: Node) -> Dictionary:
 	for _i in range(control_wait):
 		await host.get_tree().process_frame
 	var _settled: String = _save_fingerprint()
-	# Wait for the worker. A generous cap: if the model ever regressed into a hang, this fails the
-	# test rather than the run.
-	var frames: int = 0
-	while CombatSimulatorManager.is_running() and frames < 3000:
-		frames += 1
+	# Wait for the worker's real completion signal, not a frame count. The manager publishes from
+	# _process on the main thread, so the signal lands on a frame boundary and the loop below only
+	# has to keep the tree ticking and enforce the timeout.
+	var waiter: RunWaiter = RunWaiter.new()
+	CombatSimulatorManager.run_finished.connect(waiter.on_finished)
+	CombatSimulatorManager.run_failed.connect(waiter.on_failed)
+	var started_ms: int = Time.get_ticks_msec()
+	while not waiter.done and Time.get_ticks_msec() - started_ms < RUN_TIMEOUT_MS:
 		await host.get_tree().process_frame
-	_assert(not CombatSimulatorManager.is_running(), "the background run finishes", state)
+	var run_ms: int = Time.get_ticks_msec() - started_ms
+	CombatSimulatorManager.run_finished.disconnect(waiter.on_finished)
+	CombatSimulatorManager.run_failed.disconnect(waiter.on_failed)
+	_assert(waiter.done and waiter.outcome == "finished",
+		"the background run finishes (%s)" % _outcome_note(waiter, run_ms), state)
 	var report: Dictionary = CombatSimulatorManager.last_report
 	_assert(bool(report.get("valid", false)), "the finished run published a valid report", state)
 	_assert(int(report.get("trials", 0)) == CombatSimulatorManager.PRODUCTION_TRIALS,
@@ -214,11 +230,11 @@ static func run(host: Node) -> Dictionary:
 	ProgressTracker.evaluate_now()
 	await host.get_tree().process_frame
 	var after: String = _save_fingerprint()
-	# Ambient drift is the live game doing its own thing (playtime, township) over the same frames
-	# a control run would take. Only a section the control also changed is genuinely the clock.
+	# Ambient drift is the live game doing its own thing over the same span of time the run took, so
+	# the control window is sized in real milliseconds rather than in frames.
 	var control_before: String = _save_fingerprint()
-	var control_frames: int = maxi(2, frames)
-	for _i in range(control_frames):
+	var control_deadline: int = Time.get_ticks_msec() + maxi(200, run_ms)
+	while Time.get_ticks_msec() < control_deadline:
 		await host.get_tree().process_frame
 	var ambient: Array = _diff_keys(control_before, _save_fingerprint())
 	var drift: Array = []
@@ -257,6 +273,32 @@ static func _diff_keys(before: String, after: String) -> Array:
 		if JSON.stringify(b.get(key, null)) != JSON.stringify(a[key]):
 			out.append(str(key))
 	return out
+
+## Carries the run's completion signal back to the test. It has to be an object with mutated
+## fields: a GDScript lambda captures its enclosing locals by value, so a lambda handler can signal
+## that it fired but can never record it in the caller's scope.
+class RunWaiter extends RefCounted:
+	var done: bool = false
+	var outcome: String = ""
+	var detail: String = ""
+
+	func on_finished(_report: Dictionary) -> void:
+		done = true
+		outcome = "finished"
+
+	func on_failed(reason: String) -> void:
+		done = true
+		outcome = "failed"
+		detail = reason
+
+## Says how the run ended, so a failure names the cause (a refused or discarded run, or a real hang
+## that blew the timeout) instead of just reporting that something did not finish.
+static func _outcome_note(waiter: RunWaiter, run_ms: int) -> String:
+	if waiter.done and waiter.outcome == "finished":
+		return "finished in %d ms" % run_ms
+	if waiter.done:
+		return "%s: %s" % [waiter.outcome, waiter.detail]
+	return "no completion signal after %d ms (timeout %d ms)" % [run_ms, RUN_TIMEOUT_MS]
 
 static func _mentions(lines: Array, needle: String) -> bool:
 	for line in lines:
