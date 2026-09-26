@@ -1,5 +1,6 @@
 class_name TestRunner
 extends RefCounted
+const TestSupport = preload("res://scripts/tests/TestSupport.gd")
 const ActionQueueTests = preload("res://scripts/tests/ActionQueueTests.gd")
 const LootFilterTests = preload("res://scripts/tests/LootFilterTests.gd")
 const CombatSimulatorTests = preload("res://scripts/tests/CombatSimulatorTests.gd")
@@ -29,7 +30,7 @@ var _section: String = ""
 # =========================================================================
 
 func run_all(host: Node) -> void:
-	var files: Dictionary = _backup_save_files()
+	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach test suite")
 	_deterministic(true)
@@ -67,7 +68,7 @@ func run_all(host: Node) -> void:
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
-	_restore(snapshot, files, host)
+	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 
 ## The mastery stall is the only acquisition path for the 58 skillcapes and the 2 completion
@@ -584,7 +585,7 @@ func _test_responsive_layouts(host: Node) -> void:
 			# Name the offending row here too: the isolated measurement below does, and a bare
 			# "needs 430px" points at a whole screen instead of the row to fix.
 			_ok(loaded_min <= 420.0, "%s fits the 420px window when loaded (needs %dpx; widest row is %s)" %
-				[str(screen), int(loaded_min), _widest_descendant(layout_root)])
+				[str(screen), int(loaded_min), TestSupport.widest_descendant(layout_root)])
 	# Every screen must fit the narrowest supported window without horizontal overflow.
 	for screen in Screens.ORDER:
 		var path: String = "res://scripts/ui/panels/%s.gd" % PANEL_SCRIPTS.get(screen, "")
@@ -603,7 +604,7 @@ func _test_responsive_layouts(host: Node) -> void:
 		var minimum: float = panel.get_combined_minimum_size().x
 		_ok(minimum > 0.0, "%s lays out content to measure" % screen)
 		_ok(minimum <= 420.0, "%s fits a 420px window (needs %dpx; widest row is %s)" % [
-			screen, int(minimum), _widest_descendant(panel)])
+			screen, int(minimum), TestSupport.widest_descendant(panel)])
 		holder.queue_free()
 	if shell.has_method("apply_layout_for_width"):
 		shell.call("apply_layout_for_width", int((host as Control).size.x))
@@ -698,33 +699,6 @@ func _test_combat_screen_split(host: Node) -> void:
 	host.call("navigate", {"screen": Screens.COMBAT, "area_id": "air_god_dungeon"})
 	_ok(host.get("_screen") == Screens.EXPEDITIONS, "high-tier dungeon routes open Expeditions")
 
-## Name the widest piece of a panel that will not fit, so a failure points at the row to fix
-## rather than at the whole screen.
-func _widest_descendant(root: Control) -> String:
-	var worst: float = 0.0
-	var worst_label: String = "none"
-	var stack: Array[Node] = [root]
-	while not stack.is_empty():
-		var node: Node = stack.pop_back()
-		# Anything inside a scroll container is reachable by scrolling, so it cannot overflow.
-		if node is ScrollContainer:
-			continue
-		for child in node.get_children():
-			stack.append(child)
-		if not (node is Control):
-			continue
-		# Name the row that sets the width: a vertical stack only inherits its widest child, so
-		# reporting one would hide the actual offender.
-		if node is VBoxContainer or node is MarginContainer or node is PanelContainer:
-			continue
-		var need: float = (node as Control).get_combined_minimum_size().x
-		if need <= worst:
-			continue
-		worst = need
-		worst_label = "%s '%s' in a %s at %dpx" % [node.get_class(), (node as Control).name,
-			node.get_parent().get_class(), int(need)]
-	return worst_label
-
 const PANEL_SCRIPTS: Dictionary = {
 	Screens.OVERVIEW: "OverviewPanel",
 	Screens.SKILLS: "SkillsPanel",
@@ -745,7 +719,7 @@ const PANEL_SCRIPTS: Dictionary = {
 }
 
 func run_end_to_end(host: Node) -> void:
-	var files: Dictionary = _backup_save_files()
+	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach end-to-end progression check")
 	_deterministic(true)
@@ -906,7 +880,7 @@ func run_end_to_end(host: Node) -> void:
 		(PlayerData.completion_log.get("items", {}) as Dictionary).size()])
 
 	ok = _failed == 0
-	_restore(snapshot, files, host)
+	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 	print("\n--- progression trace ---")
 	for line in steps:
@@ -1576,39 +1550,6 @@ func _deterministic(on: bool) -> void:
 	SlayerManager._rng.seed = SEED + 3
 	SummoningManager._rng.seed = SEED + 4
 	RaidManager._rng.seed = SEED + 5
-
-func _backup_save_files() -> Dictionary:
-	var out: Dictionary = {}
-	for path in [SaveManager.SAVE_PATH, SaveManager.BACKUP_PATH]:
-		if FileAccess.file_exists(path):
-			var f := FileAccess.open(path, FileAccess.READ)
-			if f != null:
-				out[path] = f.get_as_text()
-				f.close()
-			else:
-				out[path] = null
-		else:
-			out[path] = null
-	return out
-
-func _restore(snapshot: Dictionary, files: Dictionary, _host: Node) -> void:
-	# 1) Put the in-memory state back exactly as it was found.
-	SaveManager._apply(snapshot)
-	# 2) Put the save files back byte-for-byte, including "there was no save at all".
-	for path in files.keys():
-		var content: Variant = files[path]
-		var abs_path: String = ProjectSettings.globalize_path(str(path))
-		if content == null:
-			if FileAccess.file_exists(str(path)):
-				DirAccess.remove_absolute(abs_path)
-			continue
-		var f := FileAccess.open(str(path), FileAccess.WRITE)
-		if f != null:
-			f.store_string(str(content))
-			f.close()
-	SaveManager.last_outcome = SaveManager.LoadOutcome.NONE
-	EventBus.state_refreshed.emit()
-	print("test state restored: the player's save and progress are exactly as they were")
 
 # =========================================================================
 #  Assertions
