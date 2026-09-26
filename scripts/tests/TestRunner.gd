@@ -64,6 +64,7 @@ func run_all(host: Node) -> void:
 	_test_scroll_position_preserved(host)
 	_test_favorites()
 	_test_overview_skill_tabs(host)
+	test_abilities_load()
 	_test_content_validation()
 	test_identity_theme_builds()
 	test_surface_box_falls_back()
@@ -74,7 +75,6 @@ func run_all(host: Node) -> void:
 	# the pivot to be re-read), and an un-awaited coroutine would report after _report() has printed.
 	await test_tween_bar_defers_until_in_tree(host)
 	await test_pulse_sets_center_pivot(host)
-	test_abilities_load()
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
