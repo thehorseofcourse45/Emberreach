@@ -1939,17 +1939,45 @@ func test_strategy_area_and_prayer() -> void:
 	CombatManager.assign_strategy_to_area(area_id, "Region boss")
 	_eq(str(CombatManager.strategy_for("unbound_region").get("name", "")), "Region boss",
 		"an unbound region uses the live strategy")
-	# strategy_for hands out a COPY. A caller that edits the record in place would otherwise reach
-	# past set_strategy — and past the content validator behind it — straight into the live record.
+	# strategy_for hands out a COPY, and each of its THREE returns is pinned separately, because a
+	# pin that passes with or without the copy is worse than no pin: it hides the exact revert it
+	# looks like it is guarding. A caller editing a returned record in place would reach past
+	# set_strategy — and past the content validator behind it — straight into the live record.
 	var borrowed: Dictionary = CombatManager.strategy_for(area_id)
 	borrowed["food_threshold"] = 0.99
 	borrowed["special_bias"] = "hold"
 	_eq(float(CombatManager.strategy_for(area_id).get("food_threshold", -1.0)), 0.0,
-		"editing a borrowed record does not reach the stored preset")
-	_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.0,
-		"editing a borrowed record does not reach the live record")
+		"bound path: editing a borrowed record does not reach the stored preset")
+
+	# Unbound area: what is handed out is the LIVE record, so the assertion is against
+	# active_strategy itself. The nested list is appended IN PLACE, because assigning a whole new
+	# list to the copy's key would rebind that key alone and pass even under a shallow duplicate —
+	# this is what separates a deep copy from a shallow one.
+	var unbound: Dictionary = CombatManager.strategy_for("unbound_region")
+	unbound["name"] = "Renamed by a caller"
+	unbound["special_bias"] = "hold"
+	(unbound["ability_loadout"] as Array).append("power_strike")
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss",
+		"unbound path: editing the borrowed record does not reach the live record's name")
 	_eq(str(CombatManager.active_strategy.get("special_bias", "")), "eager",
-		"the live bias is unchanged by a caller's in-place edit")
+		"unbound path: editing the borrowed record does not reach the live record's bias")
+	_eq(CombatManager.active_strategy.get("ability_loadout", []), [] as Array,
+		"unbound path: the copy is deep, so a nested list cannot be appended to through it")
+
+	# Unresolvable binding — a preset an older build dropped, or a hand-edited save. The name loop
+	# finds nothing and the fallback hands out the live record, so this path had no biting coverage
+	# of its own and could be reverted to returning the live Dictionary unnoticed.
+	PlayerData.combat_strategies_by_area["stale_region"] = "Preset from an older build"
+	_eq(str(CombatManager.strategy_for("stale_region").get("name", "")), "Region boss",
+		"a binding that no longer resolves falls back to the live strategy")
+	var stale: Dictionary = CombatManager.strategy_for("stale_region")
+	stale["name"] = "Renamed by a caller"
+	stale["food_threshold"] = 0.99
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss",
+		"unresolvable path: editing the borrowed record does not reach the live record's name")
+	_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.0,
+		"unresolvable path: editing the borrowed record does not reach the live record's threshold")
+	PlayerData.combat_strategies_by_area.erase("stale_region")
 
 	# The auto-prayer is a SILENT no-op when it is ineligible. PrayerManager.toggle refuses an
 	# ineligible prayer by notifying the player, and a prayer the player never asked for by hand
