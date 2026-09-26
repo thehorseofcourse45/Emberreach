@@ -1939,28 +1939,64 @@ func test_strategy_area_and_prayer() -> void:
 	CombatManager.assign_strategy_to_area(area_id, "Region boss")
 	_eq(str(CombatManager.strategy_for("unbound_region").get("name", "")), "Region boss",
 		"an unbound region uses the live strategy")
+	# strategy_for hands out a COPY. A caller that edits the record in place would otherwise reach
+	# past set_strategy — and past the content validator behind it — straight into the live record.
+	var borrowed: Dictionary = CombatManager.strategy_for(area_id)
+	borrowed["food_threshold"] = 0.99
+	borrowed["special_bias"] = "hold"
+	_eq(float(CombatManager.strategy_for(area_id).get("food_threshold", -1.0)), 0.0,
+		"editing a borrowed record does not reach the stored preset")
+	_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.0,
+		"editing a borrowed record does not reach the live record")
+	_eq(str(CombatManager.active_strategy.get("special_bias", "")), "eager",
+		"the live bias is unchanged by a caller's in-place edit")
 
+	# The auto-prayer is a SILENT no-op when it is ineligible. PrayerManager.toggle refuses an
+	# ineligible prayer by notifying the player, and a prayer the player never asked for by hand
+	# must not pop that message on every fight — so the notification stream itself is asserted, not
+	# just the absence of the activation.
+	var notified: Array[String] = []
+	var watch := func(text: String, _kind: String) -> void: notified.append(text)
+	EventBus.notification.connect(watch)
 	PrayerManager.deactivate_all()
 	PlayerData.set_level("prayer", 1)
+	notified.clear()
 	_ok(_start_test_fight(), "started a fight in the bound region")
 	_ok(not PlayerData.active_prayers.has("protect_from_melee"),
 		"a prayer the player has not unlocked is left alone")
+	_eq(notified.size(), 0,
+		"an ineligible auto-prayer says nothing (got %s)" % str(notified))
 	CombatManager.stop_combat("retreat")
 
 	PlayerData.set_level("prayer", 100)
+	notified.clear()
 	_ok(_start_test_fight(), "restarted the fight at the prayer's unlock level")
 	_ok(PlayerData.active_prayers.has("protect_from_melee"),
 		"combat start activated the strategy's protection prayer")
 	_ok(CombatManager._has_protection_prayer("melee"), "the strategy's prayer is live in the combat path")
+	_ok(notified.is_empty(), "an eligible auto-prayer activates silently, like a hand-set prayer")
 	CombatManager.stop_combat("retreat")
 
 	PrayerManager.deactivate_all()
 	_ok(PrayerManager.toggle("thick_skin"), "activated a first prayer")
 	_ok(PrayerManager.toggle("protect_from_ranged"), "activated a second prayer")
+	notified.clear()
 	_ok(_start_test_fight(), "started a fight with both prayer slots taken")
 	_eq(PlayerData.active_prayers.size(), PrayerManager.MAX_ACTIVE, "the two-prayer cap still holds")
 	_ok(not PlayerData.active_prayers.has("protect_from_melee"),
 		"the strategy's prayer is refused once both slots are full")
+	_eq(notified.size(), 0, "a full slot pair is also a silent no-op for the auto-prayer")
+	# The same refusals still TELL the player when a human asked for them, so asking first has not
+	# cost toggle its feedback: this is the path the strategy would have walked into.
+	notified.clear()
+	_ok(not PrayerManager.toggle("protect_from_magic"), "a third prayer is refused")
+	_eq(notified.size(), 1, "a hand-set third prayer still warns about the two-prayer cap")
+	notified.clear()
+	PlayerData.set_level("prayer", 1)
+	_ok(not PrayerManager.toggle("redemption"), "a prayer above the player's level is refused")
+	_eq(notified.size(), 1, "a locked prayer still warns about the level")
+	PlayerData.set_level("prayer", 100)
+	EventBus.notification.disconnect(watch)
 	CombatManager.stop_combat("retreat")
 	PrayerManager.deactivate_all()
 

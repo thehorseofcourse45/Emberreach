@@ -1066,17 +1066,20 @@ func set_strategy(s: Dictionary) -> void:
 	set_loadout(active_strategy.get("ability_loadout", []) as Array)
 	_sig_strategy_changed(str(active_strategy.get("name", "")))
 
-## The preset bound to `area_id`, or the live strategy when the area has none. A binding whose name
-## no longer resolves falls back to the live strategy as well, so a stale save degrades to what the
-## player last chose rather than to nothing.
+## The preset bound to `area_id`, or the live strategy when the area has none, as a COPY. A
+## binding whose name no longer resolves falls back to the live strategy as well, so a stale save
+## degrades to what the player last chose rather than to nothing. The copy is the point: without it
+## a caller editing the record in place would reach past set_strategy — and past the content
+## validator behind it — and mutate the live combat record. Reading is unaffected; adoption still
+## goes through set_strategy.
 func strategy_for(area_id: String) -> Dictionary:
 	var bound: String = str(PlayerData.combat_strategies_by_area.get(area_id, ""))
 	if bound == "":
-		return active_strategy
+		return active_strategy.duplicate(true)
 	for rec in PlayerData.combat_strategies:
 		if str((rec as Dictionary).get("name", "")) == bound:
-			return rec
-	return active_strategy
+			return (rec as Dictionary).duplicate(true)
+	return active_strategy.duplicate(true)
 
 ## Bind a preset to a combat area, so entering it adopts that preset without the player re-picking
 ## it every fight. An empty name unbinds. A name no stored preset answers to is refused rather than
@@ -1149,9 +1152,15 @@ func _apply_area_strategy(area_id: String) -> void:
 ## protection_prayer_auto turns the strategy's protection prayer on through the ordinary
 ## PrayerManager door, so the prayer's level requirement and the two-active-prayer limit both
 ## still decide: a preset can ask for the prayer and never force it past a rule the player is held
-## to. Left active afterwards, the same as a prayer the player switched on by hand.
+## to. Eligibility is asked BEFORE the toggle, because toggle refuses an ineligible prayer by
+## notifying the player, and a prayer the player never asked for by hand must not pop "Prayer level
+## too low" on every single fight — the brief's "if its requirements are met" is a silent no-op when
+## they are not. The rules themselves are PrayerManager's, asked once there. Left active afterwards,
+## the same as a prayer the player switched on by hand.
 func _activate_strategy_prayer() -> void:
 	var prayer_id: String = str(active_strategy.get("protection_prayer_auto", ""))
 	if prayer_id == "" or PrayerManager.is_active(prayer_id):
+		return
+	if PrayerManager.blocked_reason(prayer_id) != "":
 		return
 	PrayerManager.toggle(prayer_id)
