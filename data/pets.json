@@ -1,0 +1,255 @@
+{
+  "_comment": "Pets grant permanent passive bonuses once unlocked (no equip needed).",
+  "pyro": {
+    "id": "pyro",
+    "name": "Pyro",
+    "source_skill": "firemaking",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "beavis": {
+    "id": "beavis",
+    "name": "Beavis",
+    "source_skill": "woodcutting",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "leonardo": {
+    "id": "leonardo",
+    "name": "Leonardo",
+    "source_skill": "defence",
+    "effect": {
+      "damage_reduction_percent": 1
+    }
+  },
+  "mark": {
+    "id": "mark",
+    "name": "Mark",
+    "source_skill": "summoning",
+    "effect": {
+      "summoning_preservation_percent": 10
+    }
+  },
+  "sam": {
+    "id": "sam",
+    "name": "Sam",
+    "source_skill": "agility",
+    "effect": {
+      "global_gp_percent": 15
+    }
+  },
+  "golden_golbin": {
+    "id": "golden_golbin",
+    "name": "Golden Cinderkin",
+    "source": "combat",
+    "effect": {
+      "global_double_loot_percent": 1
+    }
+  },
+  "erran": {
+    "id": "erran",
+    "name": "Erran",
+    "source": "dungeon_earth_god",
+    "effect": {
+      "damage_reduction_percent": 1
+    }
+  },
+  "harold": {
+    "id": "harold",
+    "name": "Harold",
+    "source": "throne_of_the_herald",
+    "effect": {
+      "global_skill_xp_percent": 3,
+      "global_mastery_xp_percent": 3,
+      "global_double_loot_percent": 3,
+      "global_gp_percent": 3,
+      "global_slayer_coins_percent": 3
+    }
+  },
+  "saki": {
+    "id": "saki",
+    "name": "Saki",
+    "source_skill": "thieving",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "rocky": {
+    "id": "rocky",
+    "name": "Rocky",
+    "source_skill": "mining",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "bubbles": {
+    "id": "bubbles",
+    "name": "Bubbles",
+    "source_skill": "fishing",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "cook": {
+    "id": "cook",
+    "name": "Cook",
+    "source_skill": "cooking",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "tomato": {
+    "id": "tomato",
+    "name": "Tomato",
+    "source_skill": "farming",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "sprinkles": {
+    "id": "sprinkles",
+    "name": "Sprinkles",
+    "source_skill": "herblore",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "bob": {
+    "id": "bob",
+    "name": "Bob",
+    "source_skill": "crafting",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "smith": {
+    "id": "smith",
+    "name": "Smith",
+    "source_skill": "smithing",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "fletch": {
+    "id": "fletch",
+    "name": "Fletch",
+    "source_skill": "fletching",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "rune": {
+    "id": "rune",
+    "name": "Rune",
+    "source_skill": "runecrafting",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "astro": {
+    "id": "astro",
+    "name": "Astro",
+    "source_skill": "astrology",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "cart": {
+    "id": "cart",
+    "name": "Cart",
+    "source_skill": "cartography",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "dig": {
+    "id": "dig",
+    "name": "Dig",
+    "source_skill": "archaeology",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "harvest": {
+    "id": "harvest",
+    "name": "Harvest",
+    "source_skill": "harvesting",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "alt": {
+    "id": "alt",
+    "name": "Alt",
+    "source_skill": "alt_magic",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "town": {
+    "id": "town",
+    "name": "Town",
+    "source_skill": "township",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "atk": {
+    "id": "atk",
+    "name": "Atk",
+    "source_skill": "attack",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "str": {
+    "id": "str",
+    "name": "Str",
+    "source_skill": "strength",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "hp": {
+    "id": "hp",
+    "name": "Hp",
+    "source_skill": "hitpoints",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "rng": {
+    "id": "rng",
+    "name": "Rng",
+    "source_skill": "ranged",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "mag": {
+    "id": "mag",
+    "name": "Mag",
+    "source_skill": "magic",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "pray": {
+    "id": "pray",
+    "name": "Pray",
+    "source_skill": "prayer",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  },
+  "slay": {
+    "id": "slay",
+    "name": "Slay",
+    "source_skill": "slayer",
+    "effect": {
+      "global_skill_xp_percent": 1
+    }
+  }
+}

@@ -1,0 +1,1785 @@
+{
+  "_comment": "Emberreach progression tasks. Objectives are evaluated against authoritative state only (PlayerData.stats lifetime counters or live inventory), never against session-local variables. Objective kinds: have_item (currently held), gain_item (lifetime), skill_level, mastery_level, kill_monster, defeat_boss, complete_dungeon, craft_item (lifetime, player-produced), do_actions (lifetime), reach_region, buy_upgrade, build_structure, gp_total (lifetime earned), unlock_pet, discover_items. Rewards are granted exactly once, on explicit claim.",
+  "first_firewood": {
+    "id": "first_firewood",
+    "name": "First Firewood",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "The survey stakes are in and the hearth is cold. Emberreach needs timber before it needs anything else.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "normal_log",
+        "required": 25,
+        "label": "Fell 25 Emberpine Logs",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "normal_tree"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "normal_tree",
+        "required": 10,
+        "label": "Complete 10 felling actions",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "normal_tree"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 150,
+      "xp": {
+        "woodcutting": 120
+      },
+      "notes": [
+        "Unlocks the settlement ledger"
+      ]
+    }
+  },
+  "hands_that_build": {
+    "id": "hands_that_build",
+    "name": "Hands That Build",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "The first structure in a ruined settlement decides whether anyone stays.",
+    "prerequisites": [
+      "first_firewood"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "woodcutting",
+        "required": 5,
+        "label": "Timbercraft 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "normal_tree"
+        }
+      },
+      {
+        "kind": "build_structure",
+        "building_id": "township_building_homes",
+        "required": 1,
+        "label": "Construct Homes",
+        "route": {
+          "screen": "settlement"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 300,
+      "xp": {
+        "woodcutting": 150
+      },
+      "items": {
+        "shrimp": 5
+      },
+      "notes": [
+        "Settlement structures produce while you are away"
+      ]
+    }
+  },
+  "cut_and_burn": {
+    "id": "cut_and_burn",
+    "name": "Cut and Burn",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "Ash tells you what burned and where. Kilncraft is how the frontier reads its own history.",
+    "prerequisites": [
+      "first_firewood"
+    ],
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "ash",
+        "required": 10,
+        "label": "Produce 10 Ash",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_normal_log"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "firemaking",
+        "required": 5,
+        "label": "Kilncraft 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_normal_log"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 250,
+      "xp": {
+        "firemaking": 180
+      },
+      "items": {
+        "ash": 10
+      }
+    }
+  },
+  "struck_iron": {
+    "id": "struck_iron",
+    "name": "Struck Iron",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "Copper and tin sit close together under the ox pasture. Somebody has to go down and get them.",
+    "prerequisites": [
+      "hands_that_build"
+    ],
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "copper_ore",
+        "required": 20,
+        "label": "Mine 20 Copper Ore",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "copper_ore"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "item_id": "tin_ore",
+        "required": 20,
+        "label": "Mine 20 Tin Ore",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "tin_ore"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "mining",
+        "required": 5,
+        "label": "Delving 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "copper_ore"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 300,
+      "xp": {
+        "mining": 200
+      },
+      "items": {
+        "copper_ore": 10
+      }
+    }
+  },
+  "the_first_ingot": {
+    "id": "the_first_ingot",
+    "name": "The First Ingot",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "The forge survived the ashfall. It has been cold since the last smith walked out.",
+    "prerequisites": [
+      "struck_iron"
+    ],
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "bronze_bar",
+        "required": 10,
+        "label": "Smelt 10 Verdigris Bars",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_bronze_bar"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "smithing",
+        "required": 5,
+        "label": "Forgecraft 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_bronze_bar"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 400,
+      "xp": {
+        "smithing": 250
+      }
+    }
+  },
+  "an_edge_for_the_frontier": {
+    "id": "an_edge_for_the_frontier",
+    "name": "An Edge for the Frontier",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "Holding a blade you made yourself is the difference between a settler and a resident.",
+    "prerequisites": [
+      "the_first_ingot"
+    ],
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "bronze_scimitar",
+        "required": 1,
+        "label": "Forge a Verdigris Scimitar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_bronze_scimitar"
+        }
+      },
+      {
+        "kind": "have_item",
+        "item_id": "bronze_scimitar",
+        "required": 1,
+        "label": "Keep the scimitar in your stores",
+        "consumes": false,
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_bronze_scimitar"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 500,
+      "xp": {
+        "smithing": 200,
+        "attack": 150
+      },
+      "notes": [
+        "Two bars per blade — stock Forgecraft inputs before you start a batch"
+      ]
+    }
+  },
+  "the_longhorn_cull": {
+    "id": "the_longhorn_cull",
+    "name": "The Longhorn Cull",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "The herd has gone feral and is trampling the survey line. Thin it out.",
+    "prerequisites": [
+      "an_edge_for_the_frontier"
+    ],
+    "objectives": [
+      {
+        "kind": "reach_region",
+        "area_id": "farmlands",
+        "required": 1,
+        "label": "Fight in Hearthfall Fields",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "cow",
+        "required": 10,
+        "label": "Defeat 10 Longhorn Steers",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 450,
+      "xp": {
+        "hitpoints": 300,
+        "strength": 200
+      },
+      "items": {
+        "big_bones": 5
+      }
+    }
+  },
+  "a_full_larder": {
+    "id": "a_full_larder",
+    "name": "A Full Larder",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "Nobody holds a line on an empty stomach. Cook what you catch.",
+    "prerequisites": [
+      "the_longhorn_cull"
+    ],
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "raw_shrimp",
+        "required": 15,
+        "label": "Catch 15 Marsh Shrimp",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fishing",
+          "action_id": "shrimp"
+        }
+      },
+      {
+        "kind": "craft_item",
+        "item_id": "shrimp",
+        "required": 10,
+        "label": "Cook 10 Marsh Shrimp",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_shrimp"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 400,
+      "xp": {
+        "fishing": 250,
+        "cooking": 250
+      },
+      "items": {
+        "shrimp": 10
+      }
+    }
+  },
+  "timber_for_the_walls": {
+    "id": "timber_for_the_walls",
+    "name": "Timber for the Walls",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "The palisade is the settlement's first honest promise: you are staying.",
+    "prerequisites": [
+      "hands_that_build"
+    ],
+    "objectives": [
+      {
+        "kind": "build_structure",
+        "building_id": "township_building_lumber",
+        "required": 1,
+        "label": "Construct the Lumber Yard",
+        "route": {
+          "screen": "settlement"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "woodcutting",
+        "required": 10,
+        "label": "Timbercraft 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "oak_tree"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 600,
+      "xp": {
+        "woodcutting": 400
+      },
+      "notes": [
+        "The Lumber Yard produces settlement Wood every hour"
+      ]
+    }
+  },
+  "clear_the_road": {
+    "id": "clear_the_road",
+    "name": "Clear the Road",
+    "chapter": 2,
+    "region": "golbin_village",
+    "description": "The inland road is the settlement's only lifeline. The Cinderkin and the Sable Rooks both know it.",
+    "prerequisites": [
+      "timber_for_the_walls"
+    ],
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "golbin",
+        "required": 15,
+        "label": "Defeat 15 Cinderkin Raiders",
+        "route": {
+          "screen": "combat",
+          "area_id": "golbin_village"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "bandit",
+        "required": 5,
+        "label": "Defeat 5 Sable Rooks",
+        "route": {
+          "screen": "combat",
+          "area_id": "bandit_hideout"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 900,
+      "xp": {
+        "attack": 500,
+        "defence": 400
+      },
+      "items": {
+        "iron_bar": 10
+      }
+    }
+  },
+  "the_warrens": {
+    "id": "the_warrens",
+    "name": "Into the Warrens",
+    "chapter": 2,
+    "region": "golbin_village",
+    "description": "The Cinderkin dug under the settlement's old well. Find the Warchief and close the tunnel.",
+    "prerequisites": [
+      "clear_the_road"
+    ],
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "chicken_coop",
+        "required": 1,
+        "label": "Clear The Plucked Roost",
+        "route": {
+          "screen": "combat",
+          "area_id": "chicken_coop"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "golbin_chief",
+        "required": 1,
+        "label": "Defeat the Cinderkin Warchief",
+        "route": {
+          "screen": "combat",
+          "area_id": "chicken_coop"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1200,
+      "unlock_items": {
+        "bronze_platebody": 1
+      },
+      "xp": {
+        "hitpoints": 600
+      }
+    }
+  },
+  "iron_blood": {
+    "id": "iron_blood",
+    "name": "Iron Blood",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "Verdigris is a beginning, not a standard. The seam under the pasture runs deeper than tin.",
+    "prerequisites": [
+      "the_warrens"
+    ],
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "iron_ore",
+        "required": 30,
+        "label": "Mine 30 Iron Ore",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "iron_ore"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "mining",
+        "required": 15,
+        "label": "Delving 15",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "iron_ore"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "smithing",
+        "required": 15,
+        "label": "Forgecraft 15",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1500,
+      "xp": {
+        "smithing": 700,
+        "mining": 500
+      }
+    }
+  },
+  "proper_armour": {
+    "id": "proper_armour",
+    "name": "Proper Armour",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "The Warchief's tunnel was only the first. Wear something that expects a second.",
+    "prerequisites": [
+      "iron_blood"
+    ],
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "iron_platebody",
+        "required": 1,
+        "label": "Forge a Wrought Platebody",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_iron_platebody"
+        }
+      },
+      {
+        "kind": "craft_item",
+        "item_id": "iron_platelegs",
+        "required": 1,
+        "label": "Forge Wrought Platelegs",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_iron_platelegs"
+        }
+      },
+      {
+        "kind": "have_item",
+        "item_id": "iron_platebody",
+        "required": 1,
+        "label": "Keep the platebody",
+        "consumes": false,
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_iron_platebody"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1800,
+      "xp": {
+        "defence": 800,
+        "hitpoints": 500
+      },
+      "items": {
+        "potion_dr_1": 3
+      }
+    }
+  },
+  "the_provisioners_ledger": {
+    "id": "the_provisioners_ledger",
+    "name": "The Provisioner's Ledger",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "A frontier runs on coin as much as on ore. The provisioner wants to see the ledger balance.",
+    "prerequisites": [
+      "the_warrens"
+    ],
+    "objectives": [
+      {
+        "kind": "gp_total",
+        "required": 100000,
+        "label": "Earn 100,000 GP in total",
+        "route": {
+          "screen": "bank"
+        }
+      },
+      {
+        "kind": "discover_items",
+        "required": 40,
+        "label": "Discover 40 distinct items",
+        "route": {
+          "screen": "collection"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "notes": [
+        "Storage is the cheapest upgrade you will ever buy"
+      ]
+    }
+  },
+  "expand_the_storehouse": {
+    "id": "expand_the_storehouse",
+    "name": "Expand the Storehouse",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "You cannot bring a frontier back to life while the shelves are full of the last attempt's leavings.",
+    "prerequisites": [
+      "the_provisioners_ledger"
+    ],
+    "objectives": [
+      {
+        "kind": "buy_upgrade",
+        "upgrade_id": "extra_bank_tab",
+        "required": 1,
+        "label": "Buy Storage Expansion",
+        "route": {
+          "screen": "provisioner"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 8000,
+      "notes": [
+        "Storage capacity is the first real bottleneck you meet"
+      ]
+    }
+  },
+  "reedwrack": {
+    "id": "reedwrack",
+    "name": "Reedwrack",
+    "chapter": 3,
+    "region": "wet_forest",
+    "description": "The marsh took the old road and everything that used it. Something in the reeds has been restocking.",
+    "prerequisites": [
+      "proper_armour"
+    ],
+    "objectives": [
+      {
+        "kind": "reach_region",
+        "area_id": "wet_forest",
+        "required": 1,
+        "label": "Fight in Reedwrack Marsh",
+        "route": {
+          "screen": "combat",
+          "area_id": "wet_forest"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "spider",
+        "required": 20,
+        "label": "Defeat 20 Fen Spinners",
+        "route": {
+          "screen": "combat",
+          "area_id": "wet_forest"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "moss_giant",
+        "required": 5,
+        "label": "Defeat 5 Mossbound Colossi",
+        "route": {
+          "screen": "combat",
+          "area_id": "wet_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2500,
+      "xp": {
+        "ranged": 800,
+        "attack": 600
+      },
+      "items": {
+        "bowstring": 20
+      }
+    }
+  },
+  "barrows_open": {
+    "id": "barrows_open",
+    "name": "The Barrows Open",
+    "chapter": 3,
+    "region": "graveyard",
+    "description": "Hearthfall's dead were buried with their names on the stones. The stones are blank now.",
+    "prerequisites": [
+      "proper_armour"
+    ],
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "skeleton",
+        "required": 15,
+        "label": "Defeat 15 Barrowbones",
+        "route": {
+          "screen": "combat",
+          "area_id": "graveyard"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "zombie_hand",
+        "required": 10,
+        "label": "Defeat 10 Graveclaws",
+        "route": {
+          "screen": "combat",
+          "area_id": "graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2200,
+      "xp": {
+        "magic": 700,
+        "defence": 600
+      }
+    }
+  },
+  "bone_and_ash": {
+    "id": "bone_and_ash",
+    "name": "Bone and Ash",
+    "chapter": 3,
+    "region": "graveyard",
+    "description": "The old rite is not superstition. It is bookkeeping: every name accounted for, every debt settled.",
+    "prerequisites": [
+      "barrows_open"
+    ],
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "bones",
+        "required": 25,
+        "label": "Collect 25 Bones",
+        "route": {
+          "screen": "combat",
+          "area_id": "graveyard"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "prayer",
+        "required": 10,
+        "label": "Devotion 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "prayer",
+          "action_id": ""
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2400,
+      "xp": {
+        "prayer": 900
+      },
+      "items": {
+        "big_bones": 10
+      },
+      "notes": [
+        "Devotion prayers drain points per attack — watch the bar in the status strip"
+      ]
+    }
+  },
+  "rest_the_dead": {
+    "id": "rest_the_dead",
+    "name": "Rest Them Properly",
+    "chapter": 3,
+    "region": "graveyard",
+    "description": "Whatever is using the barrows as a door needs to be told, firmly, that it is not one.",
+    "prerequisites": [
+      "bone_and_ash"
+    ],
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "undead_graveyard",
+        "required": 1,
+        "label": "Clear the Barrow of Names",
+        "route": {
+          "screen": "combat",
+          "area_id": "undead_graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000,
+      "unlock_items": {
+        "rune_essence": 50
+      },
+      "xp": {
+        "hitpoints": 1500,
+        "prayer": 800
+      }
+    }
+  },
+  "field_medicine": {
+    "id": "field_medicine",
+    "name": "Field Medicine",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "The apothecary's back room still has shelves, and the marsh has everything that used to be on them.",
+    "prerequisites": [
+      "reedwrack"
+    ],
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "potion_dr_1",
+        "required": 5,
+        "label": "Brew 5 Warded Hide I",
+        "route": {
+          "screen": "skill",
+          "skill_id": "herblore",
+          "action_id": "potion_dr_1"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "herblore",
+        "required": 10,
+        "label": "Apothecary 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "herblore",
+          "action_id": "potion_dr_1"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000,
+      "xp": {
+        "herblore": 900
+      },
+      "items": {
+        "potion_dr_1": 5
+      }
+    }
+  },
+  "mastery_of_the_axe": {
+    "id": "mastery_of_the_axe",
+    "name": "Mastery of the Axe",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "Familiar work stops being repetition once you can see the numbers change.",
+    "prerequisites": [
+      "timber_for_the_walls"
+    ],
+    "objectives": [
+      {
+        "kind": "mastery_level",
+        "skill_id": "woodcutting",
+        "action_id": "normal_tree",
+        "required": 20,
+        "label": "Emberpine felling mastery 20",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "normal_tree"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3500,
+      "xp": {
+        "woodcutting": 1500
+      },
+      "notes": [
+        "Mastery shortens the action and raises yield — and it is per activity, not per skill"
+      ]
+    }
+  },
+  "automation_multi_tree": {
+    "id": "automation_multi_tree",
+    "name": "Automation: Forestry Contract",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "Two axes, one felling stand, and a contract to keep the yard fed without you watching.",
+    "prerequisites": [
+      "expand_the_storehouse",
+      "mastery_of_the_axe"
+    ],
+    "objectives": [
+      {
+        "kind": "buy_upgrade",
+        "upgrade_id": "multi_tree",
+        "required": 1,
+        "label": "Buy Multi-Tree",
+        "route": {
+          "screen": "provisioner"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 15000,
+      "notes": [
+        "Automation is earned after the system is understood, never before"
+      ]
+    }
+  },
+  "frostbound_reach": {
+    "id": "frostbound_reach",
+    "name": "The Frostbound Reach",
+    "chapter": 4,
+    "region": "icy_hills",
+    "description": "Above the treeline the ash gives way to wind. Something up there has been turning for a hundred years.",
+    "prerequisites": [
+      "automation_multi_tree"
+    ],
+    "objectives": [
+      {
+        "kind": "reach_region",
+        "area_id": "icy_hills",
+        "required": 1,
+        "label": "Fight in the Frostbound Reach",
+        "route": {
+          "screen": "combat",
+          "area_id": "icy_hills"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "rune_knight",
+        "required": 10,
+        "label": "Defeat 10 Glyphbound Knights",
+        "route": {
+          "screen": "combat",
+          "area_id": "icy_hills"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "green_dragon",
+        "required": 5,
+        "label": "Defeat 5 Verdant Wyrms",
+        "route": {
+          "screen": "combat",
+          "area_id": "icy_hills"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 20000,
+      "xp": {
+        "attack": 3000,
+        "defence": 3000,
+        "ranged": 2000
+      }
+    }
+  },
+  "observatory": {
+    "id": "observatory",
+    "name": "The Observatory of Gales",
+    "chapter": 4,
+    "region": "icy_hills",
+    "description": "The instruments still turn. Their keeper has been waiting for a student and has very little patience left.",
+    "prerequisites": [
+      "frostbound_reach"
+    ],
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "air_god_dungeon",
+        "required": 1,
+        "label": "Clear the Observatory of Gales",
+        "route": {
+          "screen": "combat",
+          "area_id": "air_god_dungeon"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 35000,
+      "unlock_items": {
+        "shard_air": 1,
+        "stardust": 100
+      },
+      "xp": {
+        "prayer": 4000
+      }
+    }
+  },
+  "the_drowned_city": {
+    "id": "the_drowned_city",
+    "name": "Nhalassar",
+    "chapter": 4,
+    "region": "sandy_shores",
+    "description": "A city that chose the water over the fire is still lit below the tide. Its ledger lists every name on the frontier.",
+    "prerequisites": [
+      "observatory"
+    ],
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "water_god_dungeon",
+        "required": 1,
+        "label": "Clear the Tidal Reliquary",
+        "route": {
+          "screen": "combat",
+          "area_id": "water_god_dungeon"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "earth_god_dungeon",
+        "required": 1,
+        "label": "Clear the Deepstone Sanctum",
+        "route": {
+          "screen": "combat",
+          "area_id": "earth_god_dungeon"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 60000,
+      "unlock_items": {
+        "shard_water": 1,
+        "shard_earth": 1
+      },
+      "xp": {
+        "hitpoints": 8000
+      }
+    }
+  },
+  "catalogue_the_frontier": {
+    "id": "catalogue_the_frontier",
+    "name": "Catalogue the Frontier",
+    "chapter": 4,
+    "region": "farmlands",
+    "description": "A settlement that knows what it has can decide what it needs.",
+    "prerequisites": [
+      "the_drowned_city"
+    ],
+    "objectives": [
+      {
+        "kind": "discover_items",
+        "required": 200,
+        "label": "Discover 200 distinct items",
+        "route": {
+          "screen": "collection"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 50000,
+      "items": {
+        "stardust": 250
+      },
+      "notes": [
+        "The collection log records every item, enemy and expedition"
+      ]
+    }
+  },
+  "seat_of_the_herald": {
+    "id": "seat_of_the_herald",
+    "name": "The Seat of the Herald",
+    "chapter": 5,
+    "region": "castle_of_kings",
+    "description": "Where the ashfall was decided. Everything you have built is the price of stopping it.",
+    "prerequisites": [
+      "catalogue_the_frontier"
+    ],
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "the_herald",
+        "required": 1,
+        "label": "Defeat the Herald Ascendant",
+        "route": {
+          "screen": "combat",
+          "area_id": "throne_of_the_herald"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "throne_of_the_herald",
+        "required": 1,
+        "label": "Clear the Seat of the Herald",
+        "route": {
+          "screen": "combat",
+          "area_id": "throne_of_the_herald"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 250000,
+      "notes": [
+        "Emberreach is rebuilt. The frontier keeps going — specialisations open up from here."
+      ]
+    }
+  },
+  "river_to_table": {
+    "id": "river_to_table",
+    "name": "River to Table",
+    "chapter": 1,
+    "region": "farmlands",
+    "description": "The frontier needs a meal that does not come from a supply crate.",
+    "prerequisites": [
+      "first_firewood"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "fishing",
+        "action_id": "shrimp",
+        "required": 20,
+        "label": "Catch 20 shrimp",
+        "route": {
+          "screen": "skills",
+          "skill_id": "fishing",
+          "action_id": "shrimp"
+        }
+      },
+      {
+        "kind": "craft_item",
+        "item_id": "shrimp",
+        "required": 10,
+        "label": "Cook 10 shrimp",
+        "route": {
+          "screen": "skills",
+          "skill_id": "cooking",
+          "action_id": "cook_shrimp"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200,
+      "xp": {
+        "fishing": 150,
+        "cooking": 150
+      }
+    }
+  },
+  "living_fields": {
+    "id": "living_fields",
+    "name": "Living Fields",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "Plant the first dependable crop and give the settlement a place to grow it.",
+    "prerequisites": [
+      "hands_that_build"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "farming",
+        "required": 5,
+        "label": "Husbandry level 5",
+        "route": {
+          "screen": "skills",
+          "skill_id": "farming",
+          "action_id": "plant_garum_herb"
+        }
+      },
+      {
+        "kind": "build_structure",
+        "building_id": "township_building_farm",
+        "required": 1,
+        "label": "Build a Terrace Farm",
+        "route": {
+          "screen": "settlement"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 400,
+      "xp": {
+        "farming": 250,
+        "township": 150
+      }
+    }
+  },
+  "bows_for_the_watch": {
+    "id": "bows_for_the_watch",
+    "name": "Bows for the Watch",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "Turn spare timber into a supply of arrows for the settlement watch.",
+    "prerequisites": [
+      "the_first_ingot"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "fletching",
+        "action_id": "arrow_shaft",
+        "required": 20,
+        "label": "Make 20 batches of arrow shafts",
+        "route": {
+          "screen": "skills",
+          "skill_id": "fletching",
+          "action_id": "arrow_shaft"
+        }
+      },
+      {
+        "kind": "craft_item",
+        "item_id": "bronze_arrow",
+        "required": 50,
+        "label": "Fletch 50 bronze arrows",
+        "route": {
+          "screen": "skills",
+          "skill_id": "fletching",
+          "action_id": "fletch_bronze_arrow"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 450,
+      "xp": {
+        "fletching": 300
+      }
+    }
+  },
+  "leather_for_the_road": {
+    "id": "leather_for_the_road",
+    "name": "Leather for the Road",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "Good clothing lasts longer than a traveler expects on the frontier.",
+    "prerequisites": [
+      "a_full_larder"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "crafting",
+        "required": 5,
+        "label": "Artifice level 5",
+        "route": {
+          "screen": "skills",
+          "skill_id": "crafting",
+          "action_id": "craft_leather_body"
+        }
+      },
+      {
+        "kind": "craft_item",
+        "item_id": "leather_body",
+        "required": 1,
+        "label": "Craft a leather body",
+        "route": {
+          "screen": "skills",
+          "skill_id": "crafting",
+          "action_id": "craft_leather_body"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 500,
+      "xp": {
+        "crafting": 350
+      }
+    }
+  },
+  "runes_for_the_forge": {
+    "id": "runes_for_the_forge",
+    "name": "Runes for the Forge",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "The forge can use more than coal when a scribe knows how to shape heat.",
+    "prerequisites": [
+      "iron_blood"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "runecrafting",
+        "action_id": "air_rune",
+        "required": 20,
+        "label": "Shape 20 batches of air runes",
+        "route": {
+          "screen": "skills",
+          "skill_id": "runecrafting",
+          "action_id": "air_rune"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "alt_magic",
+        "action_id": "superheat_item",
+        "required": 5,
+        "label": "Superheat 5 batches of ore",
+        "route": {
+          "screen": "skills",
+          "skill_id": "alt_magic",
+          "action_id": "superheat_item"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 650,
+      "xp": {
+        "runecrafting": 350,
+        "alt_magic": 350
+      }
+    }
+  },
+  "quiet_road": {
+    "id": "quiet_road",
+    "name": "The Quiet Road",
+    "chapter": 2,
+    "region": "farmlands",
+    "description": "A courier survives by moving quickly and knowing when to leave unseen.",
+    "prerequisites": [
+      "clear_the_road"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "thieving",
+        "action_id": "man",
+        "required": 20,
+        "label": "Complete 20 larceny actions",
+        "route": {
+          "screen": "skills",
+          "skill_id": "thieving",
+          "action_id": "man"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "agility",
+        "action_id": "run_course",
+        "required": 10,
+        "label": "Run 10 courses",
+        "route": {
+          "screen": "skills",
+          "skill_id": "agility",
+          "action_id": "run_course"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 600,
+      "xp": {
+        "thieving": 300,
+        "agility": 300
+      }
+    }
+  },
+  "stars_and_marks": {
+    "id": "stars_and_marks",
+    "name": "Stars and Marks",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "Read the night sky and call on a familiar before the frontier grows darker.",
+    "prerequisites": [
+      "proper_armour"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "astrology",
+        "action_id": "study_deedree",
+        "required": 20,
+        "label": "Study Deedree 20 times",
+        "route": {
+          "screen": "skills",
+          "skill_id": "astrology",
+          "action_id": "study_deedree"
+        }
+      },
+      {
+        "kind": "craft_item",
+        "item_id": "ent_tablet",
+        "required": 10,
+        "label": "Bind 10 Ent tablets",
+        "route": {
+          "screen": "skills",
+          "skill_id": "summoning",
+          "action_id": "ent_tablet"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 900,
+      "xp": {
+        "astrology": 450,
+        "summoning": 450
+      }
+    }
+  },
+  "survey_the_ashes": {
+    "id": "survey_the_ashes",
+    "name": "Survey the Ashes",
+    "chapter": 3,
+    "region": "wet_forest",
+    "description": "Map the road ahead and recover what the old settlements left behind.",
+    "prerequisites": [
+      "reedwrack"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "cartography",
+        "required": 5,
+        "label": "Surveying level 5",
+        "route": {
+          "screen": "skills",
+          "skill_id": "cartography",
+          "action_id": "survey"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "archaeology",
+        "required": 5,
+        "label": "Excavation level 5",
+        "route": {
+          "screen": "skills",
+          "skill_id": "archaeology",
+          "action_id": "small"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "cartography": 500,
+        "archaeology": 500
+      }
+    }
+  },
+  "deep_veins": {
+    "id": "deep_veins",
+    "name": "Deep Veins",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "The first easy seams are gone. Prospect deeper for what the frontier still holds.",
+    "prerequisites": [
+      "iron_blood"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "harvesting",
+        "required": 10,
+        "label": "Prospecting level 10",
+        "route": {
+          "screen": "skills",
+          "skill_id": "harvesting",
+          "action_id": "basic"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "item_id": "harvested_essence",
+        "required": 25,
+        "label": "Gather 25 harvested essence",
+        "route": {
+          "screen": "skills",
+          "skill_id": "harvesting",
+          "action_id": "basic"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 850,
+      "xp": {
+        "harvesting": 600
+      }
+    }
+  },
+  "flood_rations": {
+    "id": "flood_rations",
+    "name": "Flood Rations",
+    "chapter": 3,
+    "region": "wet_forest",
+    "description": "Long journeys need more than a first catch. Pack food fit for the marsh.",
+    "prerequisites": [
+      "river_to_table"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "fishing",
+        "required": 20,
+        "label": "Angling level 20",
+        "route": {
+          "screen": "skills",
+          "skill_id": "fishing",
+          "action_id": "trout"
+        }
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "cooking",
+        "required": 20,
+        "label": "Cookery level 20",
+        "route": {
+          "screen": "skills",
+          "skill_id": "cooking",
+          "action_id": "cook_trout"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "fishing": 600,
+        "cooking": 600
+      }
+    }
+  },
+  "expedition_charter": {
+    "id": "expedition_charter",
+    "name": "The Expedition Charter",
+    "chapter": 3,
+    "region": "wet_forest",
+    "description": "The high-tier ruins demand proven strength and a completed dungeon run.",
+    "prerequisites": [
+      "proper_armour"
+    ],
+    "objectives": [
+      {
+        "kind": "combat_level",
+        "required": 60,
+        "label": "Reach combat level 60",
+        "route": {
+          "screen": "combat"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "spider_forest",
+        "required": 1,
+        "label": "Clear Broodweb Warren",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {},
+      "notes": [
+        "Unlocks high-tier Expeditions after claiming"
+      ]
+    }
+  },
+  "an_impression_remains": {
+    "id": "an_impression_remains",
+    "name": "An Impression Remains",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "The old kiln is cold, but the beat of it is still in the brick. Listen long enough and you will have something to replay.",
+    "prerequisites": [
+      "mastery_of_the_axe"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "echo_keeping",
+        "required": 5,
+        "label": "Echo Keeping level 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "echo_keeping",
+          "action_id": "listen_kiln"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "item_id": "resonance_trace",
+        "required": 10,
+        "label": "Capture 10 Resonance Traces",
+        "route": {
+          "screen": "skill",
+          "skill_id": "echo_keeping",
+          "action_id": "listen_kiln"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1200,
+      "xp": {
+        "echo_keeping": 400
+      },
+      "notes": [
+        "Unlocks the way traces are threaded into racks"
+      ]
+    }
+  },
+  "a_shorter_road_home": {
+    "id": "a_shorter_road_home",
+    "name": "A Shorter Road Home",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "Two anchored places and a line between them. Nobody has to walk it again.",
+    "prerequisites": [
+      "clear_the_road"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "wayfolding",
+        "required": 5,
+        "label": "Wayfolding level 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "wayfolding",
+          "action_id": "survey_route"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "item_id": "wayfold_link",
+        "required": 2,
+        "label": "Stitch 2 Wayfold Links",
+        "route": {
+          "screen": "skill",
+          "skill_id": "wayfolding",
+          "action_id": "join_anchors"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1500,
+      "xp": {
+        "wayfolding": 500
+      },
+      "notes": [
+        "Supplies other skills with contracted delivery"
+      ]
+    }
+  },
+  "a_weather_you_can_bottle": {
+    "id": "a_weather_you_can_bottle",
+    "name": "A Weather You Can Bottle",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "The mist is only cold because nobody has decided what to do with it yet.",
+    "prerequisites": [
+      "living_fields"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "fermentation",
+        "required": 5,
+        "label": "Fermentation level 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fermentation",
+          "action_id": "catch_mist"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "item_id": "weather_charge",
+        "required": 4,
+        "label": "Release 4 Weather Charges",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fermentation",
+          "action_id": "harvest_charge"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1800,
+      "xp": {
+        "fermentation": 600
+      },
+      "items": {
+        "charged_vessel": 2
+      },
+      "notes": [
+        "Vessels persist — a lineage is worth more than a single charge"
+      ]
+    }
+  },
+  "somebody_has_to_do_it": {
+    "id": "somebody_has_to_do_it",
+    "name": "Somebody Has To Do It",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "Repair evenings, seed exchanges, a communal oven. The frontier has plenty of work and very few habits.",
+    "prerequisites": [
+      "river_to_table"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "customcraft",
+        "required": 5,
+        "label": "Customcraft level 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "customcraft",
+          "action_id": "propose_custom"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "item_id": "tradition_progress",
+        "required": 5,
+        "label": "Earn 5 Tradition Progress",
+        "route": {
+          "screen": "skill",
+          "skill_id": "customcraft",
+          "action_id": "run_practice"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1600,
+      "xp": {
+        "customcraft": 550
+      },
+      "items": {
+        "custom_provisions": 3
+      },
+      "notes": [
+        "Established customs keep running without you"
+      ]
+    }
+  },
+  "it_was_in_the_wagon": {
+    "id": "it_was_in_the_wagon",
+    "name": "It Was In The Wagon",
+    "chapter": 3,
+    "region": "farmlands",
+    "description": "A gardener's seed chest, somewhere between the market and the estate. Start with what is certain and eliminate the rest.",
+    "prerequisites": [
+      "quiet_road"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "lostfinding",
+        "required": 5,
+        "label": "Lostfinding level 5",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "accept_case"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "item_id": "trace_evidence",
+        "required": 6,
+        "label": "Gather 6 pieces of trace evidence",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "broad_search"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1400,
+      "xp": {
+        "lostfinding": 480
+      },
+      "items": {
+        "restored_label": 1
+      },
+      "notes": [
+        "Tools unlock new methods, not just better odds"
+      ]
+    }
+  }
+}

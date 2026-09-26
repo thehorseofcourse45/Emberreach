@@ -1,0 +1,184 @@
+{
+  "_comment": "Combat areas (open fighting) and slayer areas. 'monsters' lists the spawn pool.",
+  "farmlands": {
+    "id": "farmlands",
+    "name": "Hearthfall Fields",
+    "type": "area",
+    "level_range": [
+      1,
+      47
+    ],
+    "monsters": [
+      "chicken",
+      "cow",
+      "golbin"
+    ],
+    "flavour": "Reclaimed farmland on Emberreach's doorstep. Windfalls and long grass hide the settlement's first real threats."
+  },
+  "golbin_village": {
+    "id": "golbin_village",
+    "name": "Cinderkin Warrens",
+    "type": "area",
+    "level_range": [
+      2,
+      7
+    ],
+    "monsters": [
+      "golbin"
+    ],
+    "flavour": "Tunnels of packed ash and scrap iron, dug by the Cinderkin who took this valley while it burned."
+  },
+  "graveyard": {
+    "id": "graveyard",
+    "name": "Ashen Barrows",
+    "type": "area",
+    "level_range": [
+      7,
+      46
+    ],
+    "monsters": [
+      "zombie_hand",
+      "skeleton"
+    ],
+    "flavour": "Stone cairns sink into grey soil. The names cut into them have been worn smooth by the ashfall."
+  },
+  "sandy_shores": {
+    "id": "sandy_shores",
+    "name": "Sunken Strand",
+    "type": "area",
+    "level_range": [
+      2,
+      34
+    ],
+    "monsters": [
+      "cow",
+      "golbin"
+    ],
+    "flavour": "The tide comes in over a drowned road. Whatever walked it still does."
+  },
+  "wet_forest": {
+    "id": "wet_forest",
+    "name": "Reedwrack Marsh",
+    "type": "area",
+    "level_range": [
+      20,
+      35
+    ],
+    "monsters": [
+      "spider",
+      "bandit"
+    ],
+    "flavour": "Flooded woodland, thigh-deep and loud at night. Lost shrines keep their foundations here."
+  },
+  "bandit_hideout": {
+    "id": "bandit_hideout",
+    "name": "Rook's Hollow",
+    "type": "area",
+    "level_range": [
+      23,
+      44
+    ],
+    "monsters": [
+      "bandit"
+    ],
+    "flavour": "A terraced camp under a broken viaduct, held by the Sable Rooks who tax the only road inland."
+  },
+  "icy_hills": {
+    "id": "icy_hills",
+    "name": "Frostbound Reach",
+    "type": "area",
+    "level_range": [
+      27,
+      75
+    ],
+    "monsters": [
+      "moss_giant",
+      "guard"
+    ],
+    "flavour": "Wind-scoured ridges above the treeline. An observatory of black glass sits at the summit."
+  },
+  "castle_of_kings": {
+    "id": "castle_of_kings",
+    "name": "Sunderhold Keep",
+    "type": "area",
+    "level_range": [
+      12,
+      101
+    ],
+    "monsters": [
+      "guard",
+      "rune_knight"
+    ],
+    "requires": {
+      "slayer": 1
+    },
+    "flavour": "The frontier's old seat of power, split down the middle by something that came out of the ground."
+  },
+  "dragon_valley": {
+    "id": "dragon_valley",
+    "name": "Ashwyrm Hollow",
+    "type": "area",
+    "level_range": [
+      79,
+      120
+    ],
+    "monsters": [
+      "green_dragon"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "flavour": "A caldera of warm grey slopes where the old wyrms nest in the cooling rock."
+  },
+  "spider_slayer_area": {
+    "id": "spider_slayer_area",
+    "name": "Broodweb Fen",
+    "type": "slayer_area",
+    "level_range": [
+      20,
+      40
+    ],
+    "monsters": [
+      "spider"
+    ],
+    "requires": {
+      "slayer": 20
+    },
+    "area_effect": "reduced_evasion",
+    "flavour": "Immigration order territory. Every reed is strung. Something is farming the fen."
+  },
+  "abyssal_depths": {
+    "id": "abyssal_depths",
+    "name": "The Umbral Deep",
+    "type": "area",
+    "level_range": [
+      230,
+      280
+    ],
+    "monsters": [
+      "abyssal_imp",
+      "abyssal_fiend"
+    ],
+    "requires": {
+      "slayer": 110
+    },
+    "flavour": "The dark under the frontier. It is not empty, and it is not patient."
+  },
+  "abyssal_rift": {
+    "id": "abyssal_rift",
+    "name": "Riftmouth",
+    "type": "area",
+    "level_range": [
+      250,
+      320
+    ],
+    "monsters": [
+      "abyssal_fiend",
+      "abyssal_lord"
+    ],
+    "requires": {
+      "slayer": 120
+    },
+    "flavour": "A wound in the rock that breathes. The most dangerous place anyone has mapped."
+  }
+}

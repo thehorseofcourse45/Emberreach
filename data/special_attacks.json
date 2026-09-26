@@ -1,0 +1,145 @@
+{
+  "_comment": "Special attack definitions. trigger_chance/status_chance are percentages. Effects: life_leach, double_hit, guaranteed_hit, stun, burn, slow, magic_ray.",
+  "life_leach": {
+    "id": "life_leach",
+    "name": "Life Leach",
+    "trigger_chance": 15.0,
+    "effect": "life_leach",
+    "damage_multiplier": 1.0,
+    "heal_fraction": 0.5,
+    "description": "Heal for half the damage dealt."
+  },
+  "quick_strike": {
+    "id": "quick_strike",
+    "name": "Quick Strike",
+    "trigger_chance": 15.0,
+    "effect": "double_hit",
+    "damage_multiplier": 0.6,
+    "description": "A fast follow-up strike."
+  },
+  "stun_bash": {
+    "id": "stun_bash",
+    "name": "Stun Bash",
+    "trigger_chance": 15.0,
+    "effect": "stun",
+    "damage_multiplier": 1.0,
+    "applies_status": "stun",
+    "status_chance": 100.0,
+    "status_duration": 3.0,
+    "description": "Stuns the target for 3s (+30% damage taken)."
+  },
+  "dragonfire": {
+    "id": "dragonfire",
+    "name": "Dragonfire",
+    "trigger_chance": 20.0,
+    "effect": "burn",
+    "damage_multiplier": 1.5,
+    "applies_status": "burn",
+    "status_chance": 100.0,
+    "status_duration": 6.0,
+    "status_damage_per_tick": 5.0,
+    "description": "A blast of fire that burns the target."
+  },
+  "venom_bite": {
+    "id": "venom_bite",
+    "name": "Venom Bite",
+    "trigger_chance": 20.0,
+    "effect": "poison",
+    "damage_multiplier": 1.0,
+    "applies_status": "poison",
+    "status_chance": 100.0,
+    "status_duration": 8.0,
+    "status_damage_per_tick": 3.0,
+    "description": "Poisons the target."
+  },
+  "guaranteed_hit": {
+    "id": "guaranteed_hit",
+    "name": "Guaranteed Strike",
+    "trigger_chance": 10.0,
+    "effect": "guaranteed_hit",
+    "damage_multiplier": 1.25,
+    "ignores_accuracy": true,
+    "description": "Always hits, for increased damage."
+  },
+  "ocean_song": {
+    "id": "ocean_song",
+    "name": "Ocean Song",
+    "trigger_chance": 20.0,
+    "effect": "slow",
+    "damage_multiplier": 1.4,
+    "ignores_accuracy": true,
+    "applies_status": "slow",
+    "status_chance": 100.0,
+    "status_duration": 6.0,
+    "description": "Guaranteed hit that slows the enemy."
+  },
+  "cloudburst_magic_ray": {
+    "id": "cloudburst_magic_ray",
+    "name": "Sorcery Ray",
+    "trigger_chance": 20.0,
+    "effect": "magic_ray",
+    "damage_multiplier": 1.6,
+    "ignores_accuracy": true,
+    "description": "A concentrated ray of magic."
+  },
+  "air_gods_fury": {
+    "id": "air_gods_fury",
+    "name": "Air God's Fury",
+    "trigger_chance": 25.0,
+    "effect": "double_hit",
+    "damage_multiplier": 1.6
+  },
+  "tidal_wave": {
+    "id": "tidal_wave",
+    "name": "Tidal Wave",
+    "trigger_chance": 25.0,
+    "effect": "slow",
+    "damage_multiplier": 1.7,
+    "ignores_accuracy": true,
+    "applies_status": "slow",
+    "status_chance": 100.0,
+    "status_duration": 5.0
+  },
+  "earths_wrath": {
+    "id": "earths_wrath",
+    "name": "Earth's Wrath",
+    "trigger_chance": 25.0,
+    "effect": "stun",
+    "damage_multiplier": 1.7,
+    "applies_status": "stun",
+    "status_chance": 100.0,
+    "status_duration": 3.0
+  },
+  "ragnar_inferno": {
+    "id": "ragnar_inferno",
+    "name": "Inferno",
+    "trigger_chance": 25.0,
+    "effect": "burn",
+    "damage_multiplier": 1.8,
+    "applies_status": "burn",
+    "status_chance": 100.0,
+    "status_duration": 8.0,
+    "status_damage_per_tick": 25.0
+  },
+  "mist_touch": {
+    "id": "mist_touch",
+    "name": "Mist Touch",
+    "trigger_chance": 30.0,
+    "effect": "guaranteed_hit",
+    "damage_multiplier": 1.6,
+    "ignores_accuracy": true,
+    "applies_status": "silence",
+    "status_chance": 100.0,
+    "status_duration": 4.0
+  },
+  "abyssal_corruption": {
+    "id": "abyssal_corruption",
+    "name": "Abyssal Blight",
+    "trigger_chance": 30.0,
+    "effect": "guaranteed_hit",
+    "damage_multiplier": 1.5,
+    "applies_status": "corruption",
+    "status_chance": 100.0,
+    "status_duration": 10.0
+  }
+}

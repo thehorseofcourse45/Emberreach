@@ -1,0 +1,94 @@
+{
+  "township_building_homes": {
+    "id": "township_building_homes",
+    "name": "Homes",
+    "cost": {
+      "wood": 50
+    },
+    "production": {
+      "population": 4
+    },
+    "type": "township_building"
+  },
+  "township_building_farm": {
+    "id": "township_building_farm",
+    "name": "Farm",
+    "cost": {
+      "wood": 30
+    },
+    "production": {
+      "food": 6
+    },
+    "type": "township_building"
+  },
+  "township_building_lumber": {
+    "id": "township_building_lumber",
+    "name": "Lumber",
+    "cost": {
+      "wood": 20
+    },
+    "production": {
+      "wood": 8
+    },
+    "type": "township_building"
+  },
+  "township_building_mine": {
+    "id": "township_building_mine",
+    "name": "Mine",
+    "cost": {
+      "wood": 40,
+      "stone": 20
+    },
+    "production": {
+      "stone": 6,
+      "metal": 3
+    },
+    "type": "township_building"
+  },
+  "township_building_smelter": {
+    "id": "township_building_smelter",
+    "name": "Smelter",
+    "cost": {
+      "stone": 60
+    },
+    "production": {
+      "metal": 6
+    },
+    "type": "township_building"
+  },
+  "township_building_market": {
+    "id": "township_building_market",
+    "name": "Market",
+    "cost": {
+      "wood": 100
+    },
+    "production": {
+      "food": 4,
+      "metal": 2
+    },
+    "type": "township_building"
+  },
+  "township_building_temple": {
+    "id": "township_building_temple",
+    "name": "Temple",
+    "cost": {
+      "stone": 120
+    },
+    "production": {
+      "faith": 2
+    },
+    "type": "township_building"
+  },
+  "township_building_school": {
+    "id": "township_building_school",
+    "name": "School",
+    "cost": {
+      "wood": 80,
+      "stone": 40
+    },
+    "production": {
+      "education": 2
+    },
+    "type": "township_building"
+  }
+}

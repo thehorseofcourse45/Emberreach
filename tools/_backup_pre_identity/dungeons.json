@@ -1,0 +1,279 @@
+{
+  "_comment": "3 reference dungeons. 'monsters' is the fixed fight sequence ending in a boss. Equipment/food are locked during a run unless the shop upgrade is owned.",
+  "chicken_coop": {
+    "id": "chicken_coop",
+    "name": "Chicken Coop",
+    "level_range": [
+      1,
+      10
+    ],
+    "monsters": [
+      "chicken",
+      "chicken",
+      "chicken",
+      "chicken",
+      "golbin_chief"
+    ],
+    "requires": {},
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 500,
+      "items": {
+        "bronze_platebody": 1
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "gold_ring": 1
+      }
+    }
+  },
+  "undead_graveyard": {
+    "id": "undead_graveyard",
+    "name": "Undead Graveyard",
+    "level_range": [
+      10,
+      45
+    ],
+    "monsters": [
+      "zombie_hand",
+      "skeleton",
+      "skeleton",
+      "skeleton",
+      "moss_giant"
+    ],
+    "requires": {
+      "slayer": 1
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 5000,
+      "items": {
+        "iron_scimitar": 1
+      }
+    }
+  },
+  "spider_forest": {
+    "id": "spider_forest",
+    "name": "Spider Forest",
+    "level_range": [
+      25,
+      65
+    ],
+    "monsters": [
+      "spider",
+      "spider",
+      "spider",
+      "bandit",
+      "bandit",
+      "green_dragon"
+    ],
+    "requires": {
+      "slayer": 20
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 25000,
+      "items": {
+        "ring_of_power": 1
+      }
+    }
+  },
+  "air_god_dungeon": {
+    "id": "air_god_dungeon",
+    "name": "Air God Dungeon",
+    "level_range": [
+      110,
+      160
+    ],
+    "monsters": [
+      "air_elemental",
+      "air_elemental",
+      "air_elemental",
+      "air_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 1000000
+    },
+    "rewards_first_clear": {
+      "items": {
+        "air_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_air"
+  },
+  "water_god_dungeon": {
+    "id": "water_god_dungeon",
+    "name": "Water God Dungeon",
+    "level_range": [
+      120,
+      170
+    ],
+    "monsters": [
+      "water_elemental",
+      "water_elemental",
+      "water_elemental",
+      "water_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 1500000
+    },
+    "rewards_first_clear": {
+      "items": {
+        "water_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_water"
+  },
+  "earth_god_dungeon": {
+    "id": "earth_god_dungeon",
+    "name": "Earth God Dungeon",
+    "level_range": [
+      130,
+      180
+    ],
+    "monsters": [
+      "earth_elemental",
+      "earth_elemental",
+      "earth_elemental",
+      "earth_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 2000000
+    },
+    "rewards_first_clear": {
+      "items": {
+        "earth_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_earth"
+  },
+  "fire_god_dungeon": {
+    "id": "fire_god_dungeon",
+    "name": "Fire God Dungeon",
+    "level_range": [
+      140,
+      190
+    ],
+    "monsters": [
+      "fire_elemental",
+      "fire_elemental",
+      "fire_elemental",
+      "fire_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 3000000
+    },
+    "rewards_first_clear": {
+      "items": {
+        "fire_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_fire"
+  },
+  "into_the_mist": {
+    "id": "into_the_mist",
+    "name": "Into the Mist",
+    "level_range": [
+      150,
+      200
+    ],
+    "monsters": [
+      "mist_wraith",
+      "mist_wraith",
+      "mist_wraith",
+      "the_mist"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 5000000
+    },
+    "rewards_first_clear": {}
+  },
+  "impending_darkness": {
+    "id": "impending_darkness",
+    "name": "Impending Darkness",
+    "level_range": [
+      180,
+      220
+    ],
+    "monsters": [
+      "mist_wraith",
+      "drowned_sailor",
+      "dark_herald"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 8000000
+    },
+    "rewards_first_clear": {}
+  },
+  "underwater_city": {
+    "id": "underwater_city",
+    "name": "Underwater City",
+    "level_range": [
+      180,
+      230
+    ],
+    "monsters": [
+      "drowned_sailor",
+      "drowned_sailor",
+      "underwater_king"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 10000000
+    },
+    "rewards_first_clear": {}
+  },
+  "throne_of_the_herald": {
+    "id": "throne_of_the_herald",
+    "name": "Throne of the Herald",
+    "level_range": [
+      250,
+      310
+    ],
+    "monsters": [
+      "abyssal_imp",
+      "abyssal_fiend",
+      "the_herald"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 50000000
+    },
+    "rewards_first_clear": {
+      "items": {
+        "abyssal_whip": 1
+      }
+    }
+  }
+}

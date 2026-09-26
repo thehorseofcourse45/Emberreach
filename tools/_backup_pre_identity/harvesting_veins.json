@@ -1,0 +1,26 @@
+{
+  "basic": {
+    "id": "basic",
+    "name": "Basic Vein",
+    "level_required": 1,
+    "excavate_xp": 25,
+    "node_hp": 6,
+    "respawn_seconds": 4
+  },
+  "rich": {
+    "id": "rich",
+    "name": "Rich Vein",
+    "level_required": 40,
+    "excavate_xp": 60,
+    "node_hp": 10,
+    "respawn_seconds": 6
+  },
+  "prismatic": {
+    "id": "prismatic",
+    "name": "Prismatic Vein",
+    "level_required": 80,
+    "excavate_xp": 120,
+    "node_hp": 15,
+    "respawn_seconds": 8
+  }
+}

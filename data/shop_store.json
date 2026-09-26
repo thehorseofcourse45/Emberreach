@@ -1,0 +1,391 @@
+{
+  "_comment": "Emberreach general store. 'cost' is gold, not settlement stores: this is the convenience counter for a player who needs a material now and does not want to wait for it. Every line is priced at 2.5x the item's sell value per bundle, so buying is never a shortcut past the skill that makes the item - only a way to unblock yourself. A test asserts that margin holds, so a future edit cannot quietly turn the store into a currency printer. Nothing here is a raw trace or a capstone: the raw gathering actions stay the only source of those, and skillcapes stay at the mastery stall.",
+  "store_bronze_bar": {
+    "id": "store_bronze_bar",
+    "item_id": "bronze_bar",
+    "name": "Bronze Bar",
+    "subtitle": "Smelted in a hurry",
+    "description": "The smelter still beats waiting on a furnace.",
+    "cost": 750,
+    "quantity": 50,
+    "unit_price": 15
+  },
+  "store_iron_bar": {
+    "id": "store_iron_bar",
+    "item_id": "iron_bar",
+    "name": "Iron Bar",
+    "subtitle": "Bought to keep a queue moving",
+    "description": "Smithing stays the cheaper route if you have the ore to spare.",
+    "cost": 1900,
+    "quantity": 50,
+    "unit_price": 38
+  },
+  "store_steel_bar": {
+    "id": "store_steel_bar",
+    "item_id": "steel_bar",
+    "name": "Steel Bar",
+    "subtitle": "Pre-worked stock",
+    "description": "Cheap per bar only once you can smelt your own.",
+    "cost": 3000,
+    "quantity": 40,
+    "requires_skill": {
+      "smithing": 20
+    },
+    "unit_price": 75
+  },
+  "store_mithril_bar": {
+    "id": "store_mithril_bar",
+    "item_id": "mithril_bar",
+    "name": "Ghoststeel Bar",
+    "subtitle": "Ghoststeel, ready to draw",
+    "description": "A shortcut through the smelter, priced accordingly.",
+    "cost": 3125,
+    "quantity": 25,
+    "requires_skill": {
+      "smithing": 45
+    },
+    "unit_price": 125
+  },
+  "store_gold_bar": {
+    "id": "store_gold_bar",
+    "item_id": "gold_bar",
+    "name": "Gold Bar",
+    "subtitle": "Refined bullion",
+    "description": "For tools you will not want to re-make.",
+    "cost": 3750,
+    "quantity": 25,
+    "requires_skill": {
+      "smithing": 55
+    },
+    "unit_price": 150
+  },
+  "store_bowstring": {
+    "id": "store_bowstring",
+    "item_id": "bowstring",
+    "name": "Bowstring",
+    "subtitle": "Twisted and waxed",
+    "description": "Plentiful everywhere, so priced to match.",
+    "cost": 2500,
+    "quantity": 100,
+    "unit_price": 25
+  },
+  "store_arrow_shaft": {
+    "id": "store_arrow_shaft",
+    "item_id": "arrow_shaft",
+    "name": "Arrow Shaft",
+    "subtitle": "Straight, feathered blanks",
+    "description": "Bought by the bundle.",
+    "cost": 400,
+    "quantity": 200,
+    "unit_price": 2
+  },
+  "store_leather": {
+    "id": "store_leather",
+    "item_id": "leather",
+    "name": "Leather",
+    "subtitle": "Tanned and supple",
+    "description": "Cured hides, ready for the cut.",
+    "cost": 960,
+    "quantity": 80,
+    "unit_price": 12
+  },
+  "store_summoning_shard_green": {
+    "id": "store_summoning_shard_green",
+    "item_id": "summoning_shard_green",
+    "name": "Verdant Binding Shard",
+    "subtitle": "Verdant binding",
+    "description": "Bought in place of an afternoon of summoning.",
+    "cost": 1250,
+    "quantity": 50,
+    "requires_skill": {
+      "summoning": 20
+    },
+    "unit_price": 25
+  },
+  "store_summoning_shard_crimson": {
+    "id": "store_summoning_shard_crimson",
+    "item_id": "summoning_shard_crimson",
+    "name": "Crimson Binding Shard",
+    "subtitle": "Crimson binding",
+    "description": "Bought in place of an afternoon of summoning.",
+    "cost": 1250,
+    "quantity": 50,
+    "requires_skill": {
+      "summoning": 20
+    },
+    "unit_price": 25
+  },
+  "store_summoning_shard_blue": {
+    "id": "store_summoning_shard_blue",
+    "item_id": "summoning_shard_blue",
+    "name": "Azure Binding Shard",
+    "subtitle": "Azure binding",
+    "description": "Bought in place of an afternoon of summoning.",
+    "cost": 1250,
+    "quantity": 50,
+    "requires_skill": {
+      "summoning": 20
+    },
+    "unit_price": 25
+  },
+  "store_summoning_shard_silver": {
+    "id": "store_summoning_shard_silver",
+    "item_id": "summoning_shard_silver",
+    "name": "Silver Binding Shard",
+    "subtitle": "Silver binding",
+    "description": "Bought in place of an afternoon of summoning.",
+    "cost": 1250,
+    "quantity": 50,
+    "requires_skill": {
+      "summoning": 20
+    },
+    "unit_price": 25
+  },
+  "store_summoning_shard_black": {
+    "id": "store_summoning_shard_black",
+    "item_id": "summoning_shard_black",
+    "name": "Umbral Binding Shard",
+    "subtitle": "Umbral binding",
+    "description": "Darker work, priced to match.",
+    "cost": 1250,
+    "quantity": 50,
+    "requires_skill": {
+      "summoning": 30
+    },
+    "unit_price": 25
+  },
+  "store_summoning_shard_gold": {
+    "id": "store_summoning_shard_gold",
+    "item_id": "summoning_shard_gold",
+    "name": "Gilded Binding Shard",
+    "subtitle": "Gilded binding",
+    "description": "The last binding anyone buys by the crate.",
+    "cost": 1250,
+    "quantity": 50,
+    "requires_skill": {
+      "summoning": 40
+    },
+    "unit_price": 25
+  },
+  "store_garum_herb": {
+    "id": "store_garum_herb",
+    "item_id": "garum_herb",
+    "name": "Emberleaf",
+    "subtitle": "Dried Emberleaf",
+    "description": "Cut for you, dried and bundled.",
+    "cost": 800,
+    "quantity": 40,
+    "requires_skill": {
+      "herblore": 15
+    },
+    "unit_price": 20
+  },
+  "store_sourweed": {
+    "id": "store_sourweed",
+    "item_id": "sourweed",
+    "name": "Sourthistle",
+    "subtitle": "Fresh Sourthistle",
+    "description": "Worth more cut by hand, but the crate is here.",
+    "cost": 1800,
+    "quantity": 40,
+    "requires_skill": {
+      "herblore": 20
+    },
+    "unit_price": 45
+  },
+  "store_mantalyme": {
+    "id": "store_mantalyme",
+    "item_id": "mantalyme",
+    "name": "Mirebloom",
+    "subtitle": "Mirebloom, cut",
+    "description": "Cut for you, dried and bundled.",
+    "cost": 2460,
+    "quantity": 30,
+    "requires_skill": {
+      "herblore": 30
+    },
+    "unit_price": 82
+  },
+  "store_lemontyle": {
+    "id": "store_lemontyle",
+    "item_id": "lemontyle",
+    "name": "Goldpetal",
+    "subtitle": "Goldpetal, cut",
+    "description": "Cut for you, dried and bundled.",
+    "cost": 3000,
+    "quantity": 25,
+    "requires_skill": {
+      "herblore": 40
+    },
+    "unit_price": 120
+  },
+  "store_echo_arrangement": {
+    "id": "store_echo_arrangement",
+    "item_id": "echo_arrangement",
+    "name": "Played Arrangement",
+    "subtitle": "A rack already threaded",
+    "description": "Skip the threading bench when you only need another cycle.",
+    "cost": 1500,
+    "quantity": 10,
+    "requires_skill": {
+      "echo_keeping": 10
+    },
+    "unit_price": 150
+  },
+  "store_echo_charge": {
+    "id": "store_echo_charge",
+    "item_id": "echo_charge",
+    "name": "Resonance Charge",
+    "subtitle": "Charged and ready",
+    "description": "Buy the charge; keep arranging your own.",
+    "cost": 6500,
+    "quantity": 10,
+    "requires_skill": {
+      "echo_keeping": 20
+    },
+    "unit_price": 650
+  },
+  "store_echo_inscription": {
+    "id": "store_echo_inscription",
+    "item_id": "echo_inscription",
+    "name": "Echoed Inscription",
+    "subtitle": "Worked inscription",
+    "description": "Expensive against inscribing it yourself, but instant.",
+    "cost": 6500,
+    "quantity": 5,
+    "requires_skill": {
+      "echo_keeping": 50
+    },
+    "unit_price": 1300
+  },
+  "store_fold_anchor": {
+    "id": "store_fold_anchor",
+    "item_id": "fold_anchor",
+    "name": "Fold Anchor",
+    "subtitle": "Set and surveyed",
+    "description": "Placed, so only the join is left to you.",
+    "cost": 1750,
+    "quantity": 10,
+    "requires_skill": {
+      "wayfolding": 10
+    },
+    "unit_price": 175
+  },
+  "store_wayfold_link": {
+    "id": "store_wayfold_link",
+    "item_id": "wayfold_link",
+    "name": "Wayfold Link",
+    "subtitle": "A joined passage",
+    "description": "The join itself, done for you.",
+    "cost": 4250,
+    "quantity": 5,
+    "requires_skill": {
+      "wayfolding": 20
+    },
+    "unit_price": 850
+  },
+  "store_freight_manifest": {
+    "id": "store_freight_manifest",
+    "item_id": "freight_manifest",
+    "name": "Freight Manifest",
+    "subtitle": "Filed and ready to run",
+    "description": "A working manifest, minus the network design.",
+    "cost": 1350,
+    "quantity": 3,
+    "requires_skill": {
+      "wayfolding": 30
+    },
+    "unit_price": 450
+  },
+  "store_charged_vessel": {
+    "id": "store_charged_vessel",
+    "item_id": "charged_vessel",
+    "name": "Charged Vessel",
+    "subtitle": "Insulated and sealed",
+    "description": "Charged around a starter you caught yourself.",
+    "cost": 2000,
+    "quantity": 10,
+    "requires_skill": {
+      "fermentation": 10
+    },
+    "unit_price": 200
+  },
+  "store_matured_culture": {
+    "id": "store_matured_culture",
+    "item_id": "matured_culture",
+    "name": "Matured Culture",
+    "subtitle": "Held at stable maturity",
+    "description": "Matured to a known range, not pushed to a peak.",
+    "cost": 4750,
+    "quantity": 5,
+    "requires_skill": {
+      "fermentation": 20
+    },
+    "unit_price": 950
+  },
+  "store_weather_charge": {
+    "id": "store_weather_charge",
+    "item_id": "weather_charge",
+    "name": "Weather Charge",
+    "subtitle": "Released weather",
+    "description": "One charge, ready to spend on a crop or a cure.",
+    "cost": 7500,
+    "quantity": 10,
+    "requires_skill": {
+      "fermentation": 20
+    },
+    "unit_price": 750
+  },
+  "store_custom_provisions": {
+    "id": "store_custom_provisions",
+    "item_id": "custom_provisions",
+    "name": "Custom Provisions",
+    "subtitle": "Tools, materials, the first night",
+    "description": "A practice funded so you can turn up and take part.",
+    "cost": 1880,
+    "quantity": 10,
+    "requires_skill": {
+      "customcraft": 10
+    },
+    "unit_price": 188
+  },
+  "store_trace_evidence": {
+    "id": "store_trace_evidence",
+    "item_id": "trace_evidence",
+    "name": "Trace Evidence",
+    "subtitle": "A lead, already followed",
+    "description": "One investigation step, done on your behalf.",
+    "cost": 2380,
+    "quantity": 10,
+    "requires_skill": {
+      "lostfinding": 10
+    },
+    "unit_price": 238
+  },
+  "store_witness_timeline": {
+    "id": "store_witness_timeline",
+    "item_id": "witness_timeline",
+    "name": "Witness Timeline",
+    "subtitle": "Times and places, confirmed",
+    "description": "A narrowed window without the interviews.",
+    "cost": 8500,
+    "quantity": 10,
+    "requires_skill": {
+      "lostfinding": 20
+    },
+    "unit_price": 850
+  },
+  "store_restored_label": {
+    "id": "store_restored_label",
+    "item_id": "restored_label",
+    "name": "Restored Label",
+    "subtitle": "A shipping mark, legible again",
+    "description": "The document press, applied for you.",
+    "cost": 1875,
+    "quantity": 5,
+    "requires_skill": {
+      "lostfinding": 50
+    },
+    "unit_price": 375
+  }
+}

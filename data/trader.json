@@ -1,0 +1,67 @@
+{
+  "_comment": "Emberreach trader. Settlement stores are exchanged here for things the frontier cannot produce itself, which is what stops those stores from being a number with no purpose. 'cost' is paid from the settlement store (see TownshipManager.ALL_RESOURCES); 'grant_items' goes to your storage through the guaranteed path so a crate can never be lost to a full store; 'grant_currency' is added to a player currency. 'requires_building' gates an offer behind a structure level.",
+  "trader_timber": {
+    "id": "trader_timber",
+    "name": "Timber Crate",
+    "description": "Sawn, dried and banded. A crate of settlement timber, packed for your own benches.",
+    "cost": { "wood": 80, "goods": 10 },
+    "grant_items": { "wood_box": 1 },
+    "requires_building": "township_building_lumber"
+  },
+  "trader_provisions": {
+    "id": "trader_provisions",
+    "name": "Provisions Crate",
+    "description": "Salted, smoked and sealed. Rations that keep a party on its feet.",
+    "cost": { "food": 80, "goods": 10 },
+    "grant_items": { "food_box": 1 },
+    "requires_building": "township_building_farm"
+  },
+  "trader_bars": {
+    "id": "trader_bars",
+    "name": "Smelted Crate",
+    "description": "Pig bars, still warm from the mould.",
+    "cost": { "metal": 80, "goods": 10 },
+    "grant_items": { "bar_box": 1 },
+    "requires_building": "township_building_smelter"
+  },
+  "trader_reagents": {
+    "id": "trader_reagents",
+    "name": "Reagent Crate",
+    "description": "Dried herbs, tinctures and a sealed jar the apothecary will not explain.",
+    "cost": { "reagents": 60, "goods": 10 },
+    "grant_items": { "herb_box": 1 },
+    "requires_building": "township_building_apothecary"
+  },
+  "trader_compost": {
+    "id": "trader_compost",
+    "name": "Compost Heap",
+    "description": "Turned, rotted and ready. Improves crop survival in your own plots.",
+    "cost": { "food": 30, "wood": 30 },
+    "grant_items": { "compost": 5 },
+    "requires_building": "township_building_farm"
+  },
+  "trader_star_dust": {
+    "id": "trader_star_dust",
+    "name": "Sift the Terrace Dust",
+    "description": "The terrace sweeps its instruments clean into a barrel. Sift it for Starreading dust.",
+    "cost": { "astral_dust": 30, "goods": 10 },
+    "grant_items": { "stardust": 3 },
+    "requires_building": "township_building_observatory"
+  },
+  "trader_prayer": {
+    "id": "trader_prayer",
+    "name": "Observance",
+    "description": "The shrine keeps the old rite on your behalf and its store of faith becomes yours.",
+    "cost": { "faith": 40 },
+    "grant_currency": { "prayer_points": 500 },
+    "requires_building": "township_building_temple"
+  },
+  "trader_levy": {
+    "id": "trader_levy",
+    "name": "Sell the Surplus",
+    "description": "Trade goods, drill hours and expedition supplies sold to passing caravans for coin.",
+    "cost": { "goods": 30, "drills": 20, "supplies": 20 },
+    "grant_currency": { "gp": 75000 },
+    "requires_building": "township_building_storehouse"
+  }
+}

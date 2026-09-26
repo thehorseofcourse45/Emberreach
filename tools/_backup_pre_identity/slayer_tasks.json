@@ -1,0 +1,87 @@
+{
+  "_comment": "Slayer task tiers. A task requires killing N of a monster for Slayer XP + Slayer Coins.",
+  "easy": {
+    "id": "easy",
+    "name": "Easy",
+    "min_kills": 10,
+    "max_kills": 25,
+    "slayer_coin_multiplier": 1.0,
+    "level_required": 1
+  },
+  "normal": {
+    "id": "normal",
+    "name": "Normal",
+    "min_kills": 20,
+    "max_kills": 50,
+    "slayer_coin_multiplier": 1.5,
+    "level_required": 20
+  },
+  "hard": {
+    "id": "hard",
+    "name": "Hard",
+    "min_kills": 30,
+    "max_kills": 75,
+    "slayer_coin_multiplier": 2.0,
+    "level_required": 40
+  },
+  "elite": {
+    "id": "elite",
+    "name": "Elite",
+    "min_kills": 40,
+    "max_kills": 100,
+    "slayer_coin_multiplier": 2.5,
+    "level_required": 60
+  },
+  "master": {
+    "id": "master",
+    "name": "Master",
+    "min_kills": 50,
+    "max_kills": 125,
+    "slayer_coin_multiplier": 3.0,
+    "level_required": 80
+  },
+  "legendary": {
+    "id": "legendary",
+    "name": "Legendary",
+    "min_kills": 60,
+    "max_kills": 150,
+    "slayer_coin_multiplier": 4.0,
+    "level_required": 95
+  },
+  "mythical": {
+    "id": "mythical",
+    "name": "Mythical",
+    "min_kills": 75,
+    "max_kills": 200,
+    "slayer_coin_multiplier": 5.0,
+    "level_required": 110
+  },
+  "_monsters": {
+    "easy": [
+      "chicken",
+      "cow",
+      "golbin"
+    ],
+    "normal": [
+      "zombie_hand",
+      "skeleton",
+      "spider"
+    ],
+    "hard": [
+      "bandit",
+      "moss_giant"
+    ],
+    "elite": [
+      "guard"
+    ],
+    "master": [
+      "rune_knight"
+    ],
+    "legendary": [
+      "green_dragon"
+    ],
+    "mythical": [
+      "green_dragon"
+    ]
+  }
+}

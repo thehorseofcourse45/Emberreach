@@ -1,0 +1,98 @@
+{
+  "small": {
+    "id": "small",
+    "name": "Small Dig Site",
+    "level_required": 1,
+    "excavate_xp": 20,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.02
+      }
+    ]
+  },
+  "medium": {
+    "id": "medium",
+    "name": "Medium Dig Site",
+    "level_required": 30,
+    "excavate_xp": 45,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.02
+      }
+    ]
+  },
+  "large": {
+    "id": "large",
+    "name": "Large Dig Site",
+    "level_required": 60,
+    "excavate_xp": 80,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.02
+      }
+    ]
+  },
+  "ancient": {
+    "id": "ancient",
+    "name": "Ancient Dig Site",
+    "level_required": 85,
+    "excavate_xp": 130,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.02
+      }
+    ]
+  }
+}

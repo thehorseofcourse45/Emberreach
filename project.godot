@@ -1,0 +1,83 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="Emberreach"
+config/description="Emberreach — a data-driven, offline-capable idle RPG about rebuilding a forgotten frontier settlement."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7")
+config/icon="res://assets/icons/icon.svg"
+
+[autoload]
+
+EventBus="*res://scripts/autoload/EventBus.gd"
+AssetRegistry="*res://scripts/autoload/AssetRegistry.gd"
+XPTable="*res://scripts/autoload/XPTable.gd"
+DataLoader="*res://scripts/autoload/DataLoader.gd"
+SaveManager="*res://scripts/autoload/SaveManager.gd"
+PlayerData="*res://scripts/autoload/PlayerData.gd"
+ModifierManager="*res://scripts/autoload/ModifierManager.gd"
+Goals="*res://scripts/autoload/Goals.gd"
+Quests="*res://scripts/autoload/Quests.gd"
+Achievements="*res://scripts/autoload/Achievements.gd"
+MasteryManager="*res://scripts/autoload/MasteryManager.gd"
+BankManager="*res://scripts/autoload/BankManager.gd"
+EquipmentManager="*res://scripts/autoload/EquipmentManager.gd"
+ShopManager="*res://scripts/autoload/ShopManager.gd"
+PrayerManager="*res://scripts/autoload/PrayerManager.gd"
+PotionManager="*res://scripts/autoload/PotionManager.gd"
+SlayerManager="*res://scripts/autoload/SlayerManager.gd"
+AgilityManager="*res://scripts/autoload/AgilityManager.gd"
+SummoningManager="*res://scripts/autoload/SummoningManager.gd"
+AstrologyManager="*res://scripts/autoload/AstrologyManager.gd"
+PetManager="*res://scripts/autoload/PetManager.gd"
+CartographyManager="*res://scripts/autoload/CartographyManager.gd"
+ArchaeologyManager="*res://scripts/autoload/ArchaeologyManager.gd"
+RaidManager="*res://scripts/autoload/RaidManager.gd"
+FarmingManager="*res://scripts/autoload/FarmingManager.gd"
+TownshipManager="*res://scripts/autoload/TownshipManager.gd"
+CombatManager="*res://scripts/autoload/CombatManager.gd"
+SkillManager="*res://scripts/autoload/SkillManager.gd"
+ProgressTracker="*res://scripts/autoload/ProgressTracker.gd"
+GameManager="*res://scripts/autoload/GameManager.gd"
+OfflineProgression="*res://scripts/autoload/OfflineProgression.gd"
+ActionQueueManager="*res://scripts/autoload/ActionQueueManager.gd"
+LootFilterManager="*res://scripts/autoload/LootFilterManager.gd"
+CombatSimulatorManager="*res://scripts/autoload/CombatSimulatorManager.gd"
+_mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
+
+[debug]
+
+gdscript/warnings/unused_signal="0"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1440
+window/size/window_height_override=880
+window/stretch/aspect="expand"
+window/size/min_width=420
+window/size/min_height=520
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

@@ -1,0 +1,66 @@
+{
+  "basic": {
+    "id": "basic",
+    "name": "Basic Vein",
+    "level_required": 1,
+    "excavate_xp": 25,
+    "node_hp": 6,
+    "respawn_seconds": 4
+  },
+  "sturdy": {
+    "id": "sturdy",
+    "name": "Sturdy Vein",
+    "level_required": 15,
+    "excavate_xp": 35,
+    "node_hp": 7,
+    "respawn_seconds": 4
+  },
+  "dense": {
+    "id": "dense",
+    "name": "Dense Vein",
+    "level_required": 25,
+    "excavate_xp": 45,
+    "node_hp": 8,
+    "respawn_seconds": 5
+  },
+  "rich": {
+    "id": "rich",
+    "name": "Rich Vein",
+    "level_required": 40,
+    "excavate_xp": 60,
+    "node_hp": 10,
+    "respawn_seconds": 6
+  },
+  "deep": {
+    "id": "deep",
+    "name": "Deep Vein",
+    "level_required": 55,
+    "excavate_xp": 80,
+    "node_hp": 12,
+    "respawn_seconds": 7
+  },
+  "radiant": {
+    "id": "radiant",
+    "name": "Radiant Vein",
+    "level_required": 65,
+    "excavate_xp": 100,
+    "node_hp": 13,
+    "respawn_seconds": 7
+  },
+  "prismatic": {
+    "id": "prismatic",
+    "name": "Prismatic Vein",
+    "level_required": 80,
+    "excavate_xp": 120,
+    "node_hp": 15,
+    "respawn_seconds": 8
+  },
+  "voidtouched": {
+    "id": "voidtouched",
+    "name": "Voidtouched Vein",
+    "level_required": 95,
+    "excavate_xp": 150,
+    "node_hp": 18,
+    "respawn_seconds": 9
+  }
+}

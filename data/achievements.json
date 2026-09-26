@@ -1,0 +1,267 @@
+{
+  "_comment": "Emberreach milestones. Rewards are deliberately modest (small GP or XP) so achievements never become mandatory grinding. Condition kinds: skill_level, total_level, item_count, lifetime_item, monsters_killed, dungeons_cleared, items_discovered, gp_earned, actions_completed, quests_completed, pets_unlocked, settlement_buildings. Evaluation is a pure function of persisted state, so a milestone earned offline or before it was added still counts.",
+  "first_shavings": {
+    "id": "first_shavings",
+    "name": "First Shavings",
+    "description": "Fell your first Emberpine tree.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "normal_log", "value": 1 },
+    "reward": { "gp": 25 }
+  },
+  "sawdust_and_sweat": {
+    "id": "sawdust_and_sweat",
+    "name": "Sawdust and Sweat",
+    "description": "Fell a thousand logs in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "normal_log", "value": 1000 },
+    "reward": { "gp": 2500, "xp": { "woodcutting": 500 } }
+  },
+  "deep_vein": {
+    "id": "deep_vein",
+    "name": "Deep Vein",
+    "description": "Bring 500 ore of any kind to the surface.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "coal", "value": 500 },
+    "reward": { "gp": 2500, "xp": { "mining": 500 } }
+  },
+  "full_creel": {
+    "id": "full_creel",
+    "name": "Full Creel",
+    "description": "Land 250 marsh shrimp.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_shrimp", "value": 250 },
+    "reward": { "gp": 1200, "xp": { "fishing": 300 } }
+  },
+  "ash_and_ember": {
+    "id": "ash_and_ember",
+    "name": "Ash and Ember",
+    "description": "Produce 1,000 ash at the kiln.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "ash", "value": 1000 },
+    "reward": { "gp": 2000, "xp": { "firemaking": 800 } }
+  },
+  "apprentice_smith": {
+    "id": "apprentice_smith",
+    "name": "Apprentice Smith",
+    "description": "Reach Forgecraft 30.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 30 },
+    "reward": { "gp": 3000 }
+  },
+  "journeyman_smith": {
+    "id": "journeyman_smith",
+    "name": "Journeyman Smith",
+    "description": "Reach Forgecraft 70.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 70 },
+    "reward": { "gp": 25000 }
+  },
+  "frontier_master": {
+    "id": "frontier_master",
+    "name": "Frontier Master",
+    "description": "Bring one trade to level 99.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 99 },
+    "reward": { "gp": 100000 }
+  },
+  "well_rounded": {
+    "id": "well_rounded",
+    "name": "Well Rounded",
+    "description": "Accumulate 500 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 500 },
+    "reward": { "gp": 15000 }
+  },
+  "jack_of_all_trades": {
+    "id": "jack_of_all_trades",
+    "name": "Jack of All Trades",
+    "description": "Accumulate 1,000 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 1000 },
+    "reward": { "gp": 75000 }
+  },
+  "first_blood": {
+    "id": "first_blood",
+    "name": "First Blood",
+    "description": "Defeat your first enemy.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "value": 1 },
+    "reward": { "gp": 50 }
+  },
+  "hundred_felled": {
+    "id": "hundred_felled",
+    "name": "A Hundred Felled",
+    "description": "Defeat 100 enemies.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "value": 100 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 1000 } }
+  },
+  "thousand_felled": {
+    "id": "thousand_felled",
+    "name": "A Thousand Felled",
+    "description": "Defeat 1,000 enemies.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "value": 1000 },
+    "reward": { "gp": 40000 }
+  },
+  "warren_breaker": {
+    "id": "warren_breaker",
+    "name": "Warren Breaker",
+    "description": "Defeat the Cinderkin Warchief.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "golbin_chief", "value": 1 },
+    "reward": { "gp": 1500 }
+  },
+  "barrow_warden": {
+    "id": "barrow_warden",
+    "name": "Barrow Warden",
+    "description": "Clear the Barrow of Names.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "undead_graveyard", "value": 1 },
+    "reward": { "gp": 4000 }
+  },
+  "gale_student": {
+    "id": "gale_student",
+    "name": "Gale Student",
+    "description": "Clear the Observatory of Gales.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "air_god_dungeon", "value": 1 },
+    "reward": { "gp": 20000 }
+  },
+  "expedition_veteran": {
+    "id": "expedition_veteran",
+    "name": "Expedition Veteran",
+    "description": "Clear 25 expeditions in total.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "value": 25 },
+    "reward": { "gp": 30000 }
+  },
+  "first_forge": {
+    "id": "first_forge",
+    "name": "First Forge",
+    "description": "Craft 100 items with your own hands.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 100 },
+    "reward": { "gp": 500 }
+  },
+  "industrious": {
+    "id": "industrious",
+    "name": "Industrious",
+    "description": "Complete 10,000 actions.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 10000 },
+    "reward": { "gp": 30000 }
+  },
+  "the_long_haul": {
+    "id": "the_long_haul",
+    "name": "The Long Haul",
+    "description": "Complete 100,000 actions.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 100000 },
+    "reward": { "gp": 250000 }
+  },
+  "first_coin": {
+    "id": "first_coin",
+    "name": "First Coin",
+    "description": "Earn your first 1,000 GP.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 1000 },
+    "reward": { "gp": 100 }
+  },
+  "merchant_of_the_marches": {
+    "id": "merchant_of_the_marches",
+    "name": "Merchant of the Marches",
+    "description": "Earn 10,000,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 10000000 },
+    "reward": { "gp": 500000 }
+  },
+  "cataloguer": {
+    "id": "cataloguer",
+    "name": "Cataloguer",
+    "description": "Discover 100 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 100 },
+    "reward": { "gp": 5000 }
+  },
+  "archivist": {
+    "id": "archivist",
+    "name": "Archivist",
+    "description": "Discover 250 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 250 },
+    "reward": { "gp": 60000 }
+  },
+  "the_complete_ledger": {
+    "id": "the_complete_ledger",
+    "name": "The Complete Ledger",
+    "description": "Discover 350 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 350 },
+    "reward": { "gp": 250000 }
+  },
+  "new_roofs": {
+    "id": "new_roofs",
+    "name": "New Roofs",
+    "description": "Reach 10 total structure levels in Emberreach.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 10 },
+    "reward": { "gp": 3000 }
+  },
+  "a_settlement_again": {
+    "id": "a_settlement_again",
+    "name": "A Settlement Again",
+    "description": "Reach 40 total structure levels in Emberreach.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 40 },
+    "reward": { "gp": 50000 }
+  },
+  "good_neighbours": {
+    "id": "good_neighbours",
+    "name": "Good Neighbours",
+    "description": "Bond with 10 companions.",
+    "category": "discovery",
+    "condition": { "kind": "pets_unlocked", "value": 10 },
+    "reward": { "gp": 20000 }
+  },
+  "completionist": {
+    "id": "completionist",
+    "name": "Completionist",
+    "description": "Complete 10 frontier tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 10 },
+    "reward": { "gp": 10000 }
+  },
+  "the_whole_story": {
+    "id": "the_whole_story",
+    "name": "The Whole Story",
+    "description": "Complete 20 frontier tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 20 },
+    "reward": { "gp": 75000 }
+  },
+  "hoarder": {
+    "id": "hoarder",
+    "name": "Hoarder",
+    "description": "Hold 1,000 of a single resource at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "normal_log", "value": 1000 },
+    "reward": { "gp": 2000 }
+  },
+  "well_fed": {
+    "id": "well_fed",
+    "name": "Well Fed",
+    "description": "Keep 250 cooked marsh shrimp in storage.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "shrimp", "value": 250 },
+    "reward": { "gp": 1500 }
+  },
+  "optional_speedrun": {
+    "id": "optional_speedrun",
+    "name": "Lean Frontier",
+    "description": "Optional challenge: reach 25 total skill levels while the collection log holds fewer than 40 items.",
+    "category": "optional",
+    "condition": { "kind": "items_discovered", "value": 15 },
+    "reward": { "gp": 2000, "notes": ["Cosmetic milestone — deliberately modest"] }
+  }
+}

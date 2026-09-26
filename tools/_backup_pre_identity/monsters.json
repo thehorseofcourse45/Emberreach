@@ -1,0 +1,1094 @@
+{
+  "_comment": "12 reference monsters establishing the monster schema. loot_table chance is 0..1; currency drops use is_currency+currency_id.",
+  "chicken": {
+    "id": "chicken",
+    "name": "Chicken",
+    "combat_level": 1,
+    "hitpoints": 3,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 1,
+    "accuracy_rating": 4,
+    "melee_evasion": 2,
+    "ranged_evasion": 2,
+    "magic_evasion": 2,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "feather",
+        "quantity": 5,
+        "min_quantity": 1,
+        "chance": 0.8
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 3,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 0,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "cow": {
+    "id": "cow",
+    "name": "Cow",
+    "combat_level": 2,
+    "hitpoints": 8,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 1,
+    "accuracy_rating": 6,
+    "melee_evasion": 3,
+    "ranged_evasion": 3,
+    "magic_evasion": 3,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "leather",
+        "quantity": 1,
+        "chance": 0.7
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 5,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 0,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "golbin": {
+    "id": "golbin",
+    "name": "Golbin",
+    "combat_level": 4,
+    "hitpoints": 12,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 3,
+    "accuracy_rating": 10,
+    "melee_evasion": 5,
+    "ranged_evasion": 5,
+    "magic_evasion": 5,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "bronze_sword",
+        "quantity": 1,
+        "chance": 0.05
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 12,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 5,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "zombie_hand": {
+    "id": "zombie_hand",
+    "name": "Zombie Hand",
+    "combat_level": 5,
+    "hitpoints": 18,
+    "attack_type": "melee",
+    "attack_speed": 2.6,
+    "max_hit": 3,
+    "accuracy_rating": 14,
+    "melee_evasion": 6,
+    "ranged_evasion": 6,
+    "magic_evasion": 6,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 20,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 8,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "skeleton": {
+    "id": "skeleton",
+    "name": "Skeleton",
+    "combat_level": 12,
+    "hitpoints": 30,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 5,
+    "accuracy_rating": 30,
+    "melee_evasion": 12,
+    "ranged_evasion": 12,
+    "magic_evasion": 12,
+    "damage_reduction": 5,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_scimitar",
+        "quantity": 1,
+        "chance": 0.02
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 45,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 20,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "spider": {
+    "id": "spider",
+    "name": "Spider",
+    "combat_level": 15,
+    "hitpoints": 26,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 6,
+    "accuracy_rating": 38,
+    "melee_evasion": 14,
+    "ranged_evasion": 18,
+    "magic_evasion": 10,
+    "damage_reduction": 3,
+    "special_attacks": [],
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 60,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 25,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "bandit": {
+    "id": "bandit",
+    "name": "Bandit",
+    "combat_level": 23,
+    "hitpoints": 55,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 9,
+    "accuracy_rating": 70,
+    "melee_evasion": 24,
+    "ranged_evasion": 20,
+    "magic_evasion": 20,
+    "damage_reduction": 8,
+    "special_attacks": [
+      "quick_strike"
+    ],
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "leather_body",
+        "quantity": 1,
+        "chance": 0.04
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 140,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 40,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "moss_giant": {
+    "id": "moss_giant",
+    "name": "Moss Giant",
+    "combat_level": 42,
+    "hitpoints": 120,
+    "attack_type": "melee",
+    "attack_speed": 3.0,
+    "max_hit": 16,
+    "accuracy_rating": 160,
+    "melee_evasion": 60,
+    "ranged_evasion": 50,
+    "magic_evasion": 45,
+    "damage_reduction": 15,
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 400,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 90,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "guard": {
+    "id": "guard",
+    "name": "Guard",
+    "combat_level": 60,
+    "hitpoints": 220,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 24,
+    "accuracy_rating": 320,
+    "melee_evasion": 110,
+    "ranged_evasion": 95,
+    "magic_evasion": 85,
+    "damage_reduction": 25,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1200,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 180,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "rune_knight": {
+    "id": "rune_knight",
+    "name": "Rune Knight",
+    "combat_level": 85,
+    "hitpoints": 480,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 40,
+    "accuracy_rating": 620,
+    "melee_evasion": 210,
+    "ranged_evasion": 180,
+    "magic_evasion": 160,
+    "damage_reduction": 35,
+    "special_attacks": [
+      "stun_bash"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 0.1
+      },
+      {
+        "item_id": "iron_bar",
+        "quantity": 3,
+        "chance": 0.2
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 3500,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 400,
+    "is_boss": false,
+    "respawn_time": 6.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "green_dragon": {
+    "id": "green_dragon",
+    "name": "Green Dragon",
+    "combat_level": 105,
+    "hitpoints": 900,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 60,
+    "accuracy_rating": 980,
+    "melee_evasion": 320,
+    "ranged_evasion": 300,
+    "magic_evasion": 280,
+    "damage_reduction": 40,
+    "special_attacks": [
+      "dragonfire"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 9000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 800,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false
+  },
+  "golbin_chief": {
+    "id": "golbin_chief",
+    "name": "Golbin Chief",
+    "combat_level": 18,
+    "hitpoints": 45,
+    "attack_type": "melee",
+    "attack_speed": 2.6,
+    "max_hit": 7,
+    "accuracy_rating": 55,
+    "melee_evasion": 22,
+    "ranged_evasion": 18,
+    "magic_evasion": 18,
+    "damage_reduction": 5,
+    "is_boss": true,
+    "loot_table": [
+      {
+        "item_id": "bronze_scimitar",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 250,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 30,
+    "respawn_time": 6.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false
+  },
+  "air_elemental": {
+    "id": "air_elemental",
+    "name": "Air Elemental",
+    "combat_level": 110,
+    "hitpoints": 700,
+    "attack_type": "ranged",
+    "attack_speed": 3.0,
+    "max_hit": 70,
+    "accuracy_rating": 1100,
+    "melee_evasion": 340,
+    "ranged_evasion": 340,
+    "magic_evasion": 340,
+    "damage_reduction": 45,
+    "special_attacks": [
+      "air_gods_fury"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 28000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 900,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "air_god": {
+    "id": "air_god",
+    "name": "Air God, Aeris",
+    "combat_level": 160,
+    "hitpoints": 1800,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 110,
+    "accuracy_rating": 1600,
+    "melee_evasion": 480,
+    "ranged_evasion": 480,
+    "magic_evasion": 480,
+    "damage_reduction": 60,
+    "special_attacks": [
+      "air_gods_fury"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 44000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2000,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false
+  },
+  "water_elemental": {
+    "id": "water_elemental",
+    "name": "Water Elemental",
+    "combat_level": 120,
+    "hitpoints": 850,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 80,
+    "accuracy_rating": 1250,
+    "melee_evasion": 380,
+    "ranged_evasion": 380,
+    "magic_evasion": 380,
+    "damage_reduction": 48,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 32000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1000,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "water_god": {
+    "id": "water_god",
+    "name": "Water God, Glacia",
+    "combat_level": 170,
+    "hitpoints": 2100,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 120,
+    "accuracy_rating": 1750,
+    "melee_evasion": 520,
+    "ranged_evasion": 520,
+    "magic_evasion": 520,
+    "damage_reduction": 62,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 48000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2200,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false
+  },
+  "earth_elemental": {
+    "id": "earth_elemental",
+    "name": "Earth Elemental",
+    "combat_level": 130,
+    "hitpoints": 1000,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 95,
+    "accuracy_rating": 1400,
+    "melee_evasion": 420,
+    "ranged_evasion": 420,
+    "magic_evasion": 420,
+    "damage_reduction": 52,
+    "special_attacks": [
+      "earths_wrath"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 38000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1100,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "earth_god": {
+    "id": "earth_god",
+    "name": "Earth God, Terran",
+    "combat_level": 180,
+    "hitpoints": 2400,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 135,
+    "accuracy_rating": 1900,
+    "melee_evasion": 560,
+    "ranged_evasion": 560,
+    "magic_evasion": 560,
+    "damage_reduction": 65,
+    "special_attacks": [
+      "earths_wrath"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 54000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2400,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false
+  },
+  "fire_elemental": {
+    "id": "fire_elemental",
+    "name": "Fire Elemental",
+    "combat_level": 140,
+    "hitpoints": 1150,
+    "attack_type": "melee",
+    "attack_speed": 3.0,
+    "max_hit": 105,
+    "accuracy_rating": 1550,
+    "melee_evasion": 460,
+    "ranged_evasion": 460,
+    "magic_evasion": 460,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "ragnar_inferno"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 42000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1200,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "fire_god": {
+    "id": "fire_god",
+    "name": "Fire God, Ragnar",
+    "combat_level": 190,
+    "hitpoints": 2700,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 150,
+    "accuracy_rating": 2100,
+    "melee_evasion": 600,
+    "ranged_evasion": 600,
+    "magic_evasion": 600,
+    "damage_reduction": 68,
+    "special_attacks": [
+      "ragnar_inferno"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 60000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2600,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false
+  },
+  "mist_wraith": {
+    "id": "mist_wraith",
+    "name": "Mist Wraith",
+    "combat_level": 85,
+    "hitpoints": 520,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 55,
+    "accuracy_rating": 800,
+    "melee_evasion": 260,
+    "ranged_evasion": 260,
+    "magic_evasion": 260,
+    "damage_reduction": 40,
+    "special_attacks": [
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 22000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 500,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "the_mist": {
+    "id": "the_mist",
+    "name": "The Mist",
+    "combat_level": 200,
+    "hitpoints": 3200,
+    "attack_type": "magic",
+    "attack_speed": 3.4,
+    "max_hit": 170,
+    "accuracy_rating": 2400,
+    "melee_evasion": 650,
+    "ranged_evasion": 650,
+    "magic_evasion": 650,
+    "damage_reduction": 70,
+    "special_attacks": [
+      "mist_touch"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 68000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 3000,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true
+  },
+  "dark_herald": {
+    "id": "dark_herald",
+    "name": "Herald of Darkness",
+    "combat_level": 210,
+    "hitpoints": 3600,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 190,
+    "accuracy_rating": 2700,
+    "melee_evasion": 700,
+    "ranged_evasion": 700,
+    "magic_evasion": 700,
+    "damage_reduction": 72,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 76000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 3400,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true
+  },
+  "drowned_sailor": {
+    "id": "drowned_sailor",
+    "name": "Drowned Sailor",
+    "combat_level": 150,
+    "hitpoints": 1300,
+    "attack_type": "melee",
+    "attack_speed": 3.0,
+    "max_hit": 110,
+    "accuracy_rating": 1700,
+    "melee_evasion": 480,
+    "ranged_evasion": 480,
+    "magic_evasion": 480,
+    "damage_reduction": 55,
+    "special_attacks": [],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 44000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1400,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "underwater_king": {
+    "id": "underwater_king",
+    "name": "Underwater King",
+    "combat_level": 220,
+    "hitpoints": 4200,
+    "attack_type": "ranged",
+    "attack_speed": 3.2,
+    "max_hit": 210,
+    "accuracy_rating": 3000,
+    "melee_evasion": 760,
+    "ranged_evasion": 760,
+    "magic_evasion": 760,
+    "damage_reduction": 74,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 84000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 4000,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true
+  },
+  "abyssal_imp": {
+    "id": "abyssal_imp",
+    "name": "Abyssal Imp",
+    "combat_level": 230,
+    "hitpoints": 2600,
+    "attack_type": "melee",
+    "attack_speed": 3.0,
+    "max_hit": 180,
+    "accuracy_rating": 3200,
+    "melee_evasion": 800,
+    "ranged_evasion": 800,
+    "magic_evasion": 800,
+    "damage_reduction": 70,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 72000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1800,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "abyssal_fiend": {
+    "id": "abyssal_fiend",
+    "name": "Abyssal Fiend",
+    "combat_level": 250,
+    "hitpoints": 3600,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 220,
+    "accuracy_rating": 3800,
+    "melee_evasion": 900,
+    "ranged_evasion": 900,
+    "magic_evasion": 900,
+    "damage_reduction": 74,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 88000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2400,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false
+  },
+  "abyssal_lord": {
+    "id": "abyssal_lord",
+    "name": "Abyssal Lord",
+    "combat_level": 280,
+    "hitpoints": 6000,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 300,
+    "accuracy_rating": 4600,
+    "melee_evasion": 1100,
+    "ranged_evasion": 1100,
+    "magic_evasion": 1100,
+    "damage_reduction": 80,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 120000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5000,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true
+  },
+  "the_herald": {
+    "id": "the_herald",
+    "name": "Throne of the Herald",
+    "combat_level": 300,
+    "hitpoints": 9000,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 380,
+    "accuracy_rating": 5600,
+    "melee_evasion": 1300,
+    "ranged_evasion": 1300,
+    "magic_evasion": 1300,
+    "damage_reduction": 82,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 152000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 6000,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true
+  }
+}

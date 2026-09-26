@@ -1,0 +1,218 @@
+{
+  "_comment": "Prayers: up to 2 active at once; cost prayer points per attack. 'effect' registers as a ModifierSource in the 'prayer' category.",
+  "thick_skin": {
+    "id": "thick_skin",
+    "name": "Hearthide",
+    "level": 1,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "melee_evasion_percent": 5
+    }
+  },
+  "burst_of_strength": {
+    "id": "burst_of_strength",
+    "name": "Surge of Might",
+    "level": 4,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "melee_max_hit_percent": 5
+    }
+  },
+  "clarity_of_thought": {
+    "id": "clarity_of_thought",
+    "name": "Clear Thought",
+    "level": 7,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "melee_accuracy_percent": 5
+    }
+  },
+  "sharp_eye": {
+    "id": "sharp_eye",
+    "name": "Keen Sight",
+    "level": 9,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "ranged_accuracy_percent": 5
+    }
+  },
+  "mystic_will": {
+    "id": "mystic_will",
+    "name": "Arcane Will",
+    "level": 11,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "magic_accuracy_percent": 5
+    }
+  },
+  "ultimate_strength": {
+    "id": "ultimate_strength",
+    "name": "Unbound Might",
+    "level": 19,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "melee_max_hit_percent": 10
+    }
+  },
+  "stone_skin": {
+    "id": "stone_skin",
+    "name": "Quarryhide",
+    "level": 28,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "damage_reduction_percent": 3
+    }
+  },
+  "protect_from_magic": {
+    "id": "protect_from_magic",
+    "name": "Ward Against Sorcery",
+    "level": 31,
+    "prayer_point_cost": 1.0,
+    "type": "protect",
+    "style": "magic"
+  },
+  "protect_from_ranged": {
+    "id": "protect_from_ranged",
+    "name": "Ward Against Arrows",
+    "level": 34,
+    "prayer_point_cost": 1.0,
+    "type": "protect",
+    "style": "ranged"
+  },
+  "protect_from_melee": {
+    "id": "protect_from_melee",
+    "name": "Ward Against Steel",
+    "level": 37,
+    "prayer_point_cost": 1.0,
+    "type": "protect",
+    "style": "melee"
+  },
+  "protect_item": {
+    "id": "protect_item",
+    "name": "Ward the Satchel",
+    "level": 40,
+    "prayer_point_cost": 0.5,
+    "type": "protect_item"
+  },
+  "battleheart": {
+    "id": "battleheart",
+    "name": "Battleheart",
+    "level": 50,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "min_hit_percent_of_max": 15,
+      "melee_evasion_percent": 35
+    }
+  },
+  "holy_aegis": {
+    "id": "holy_aegis",
+    "name": "Sanctified Aegis",
+    "level": 55,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "damage_reduction_percent": 5
+    }
+  },
+  "annihilation": {
+    "id": "annihilation",
+    "name": "Annihilation",
+    "level": 70,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "min_hit_percent_of_max": 35,
+      "crit_chance_percent": 30
+    }
+  },
+  "rock_skin": {
+    "id": "rock_skin",
+    "name": "Bedrock Ward",
+    "level": 13,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "melee_evasion_percent": 10
+    }
+  },
+  "steel_skin": {
+    "id": "steel_skin",
+    "name": "Ironsheen",
+    "level": 16,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "melee_evasion_percent": 15
+    }
+  },
+  "eagle_eye": {
+    "id": "eagle_eye",
+    "name": "Farwatcher",
+    "level": 22,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "ranged_accuracy_percent": 10
+    }
+  },
+  "mystic_lore": {
+    "id": "mystic_lore",
+    "name": "Arcane Lore",
+    "level": 25,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "magic_accuracy_percent": 10
+    }
+  },
+  "mystic_might": {
+    "id": "mystic_might",
+    "name": "Arcane Might",
+    "level": 45,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "magic_accuracy_percent": 15,
+      "magic_max_hit_percent": 10
+    }
+  },
+  "rigour": {
+    "id": "rigour",
+    "name": "Rigour",
+    "level": 74,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "ranged_accuracy_percent": 20,
+      "ranged_max_hit_percent": 20
+    }
+  },
+  "piety": {
+    "id": "piety",
+    "name": "Devout Focus",
+    "level": 70,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "melee_accuracy_percent": 20,
+      "melee_max_hit_percent": 23
+    }
+  },
+  "augury": {
+    "id": "augury",
+    "name": "Augury",
+    "level": 77,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "magic_accuracy_percent": 25,
+      "magic_max_hit_percent": 25
+    }
+  },
+  "redemption": {
+    "id": "redemption",
+    "name": "Redemption",
+    "level": 49,
+    "prayer_point_cost": 1.0,
+    "type": "protect_item"
+  },
+  "smite": {
+    "id": "smite",
+    "name": "Smite",
+    "level": 52,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "melee_max_hit_percent": 5
+    }
+  }
+}
