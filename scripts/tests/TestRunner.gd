@@ -67,6 +67,8 @@ func run_all(host: Node) -> void:
 	_test_content_validation()
 	test_identity_theme_builds()
 	test_surface_box_falls_back()
+	test_motion_reduced_disables()
+	test_floater_pool_bounded()
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
@@ -1293,6 +1295,25 @@ func test_surface_box_falls_back() -> void:
 	if ResourceLoader.exists("res://assets/ui/panel_9slice.png"):
 		var art: StyleBox = UIStyle.surface_box("panel")
 		_ok(art is StyleBoxTexture, "existing art must build a StyleBoxTexture")
+
+## Task 4 pin: Motion helpers are no-ops when reduced motion is on, and the floater
+## pool reuses hidden Labels instead of growing without bound (never queue_free).
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_motion_reduced_disables() -> void:
+	_heading("Identity motion")
+	Motion.force_reduced = true
+	var c := Control.new()
+	Motion.fade_rise(c)
+	_ok(c.modulate.a == 1.0, "reduced motion must leave alpha untouched")
+	Motion.force_reduced = false
+	c.free()
+
+func test_floater_pool_bounded() -> void:
+	var parent := Control.new()
+	for i in 40:
+		Motion.spawn_floater(parent, "1", Color.WHITE)
+	_ok(parent.get_child_count() <= 12, "floater pool must stay bounded")
+	parent.free()
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")
