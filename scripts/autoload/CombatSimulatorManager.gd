@@ -154,9 +154,15 @@ func _monster_sequence(place_type: String, place_id: String) -> Array:
 	return out
 
 ## The monster is copied into a plain record, so a later data edit cannot change a running job.
-## `passives` belongs here: the model honours regeneration, rage, veil and leech off this list, and
-## a missing key reads as "no passives" — a silent no-op rather than an error, which is exactly how
-## this key went missing once already.
+## Three groups of key here are load-bearing rather than descriptive, and each is a rule the model
+## applies rather than a number it reports:
+##   * `passives` — regeneration, rage, veil and leech. A missing key reads as "no passives", a
+##     silent no-op rather than an error, which is exactly how this key went missing once already.
+##   * `is_immune_to_effects` / `can_be_stunned` — the two gates apply_status applies before a
+##     status lands. Without them in the record those gates were permanently permissive.
+##   * `min_hit_percent` / `min_hit_flat` — the live engine reads its equivalent from
+##     ModifierManager at attack time; the model reads it from here, which is one of its published
+##     assumptions.
 func _monster_record(monster_id: String) -> Dictionary:
 	var m: Dictionary = DataLoader.get_monster(monster_id)
 	if m.is_empty():
@@ -177,6 +183,8 @@ func _monster_record(monster_id: String) -> Dictionary:
 		"ranged_evasion": int(m.get("ranged_evasion", 10)),
 		"magic_evasion": int(m.get("magic_evasion", 10)),
 		"passives": (m.get("passives", []) as Array).duplicate(),
+		"is_immune_to_effects": bool(m.get("is_immune_to_effects", false)),
+		"can_be_stunned": bool(m.get("can_be_stunned", true)),
 	}
 
 func _player_stats(attack_style: String, melee_style: String) -> Dictionary:

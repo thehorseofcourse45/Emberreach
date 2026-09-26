@@ -31,10 +31,11 @@ const MAX_STEPS_PER_FIGHT: int = 6000
 ## fraction of max HP per own attack. Kept literal so the pure model stays
 ## dependency-free; the simulator suite pins parity with the live loop.
 const ENEMY_REGEN_FRACTION: float = 0.02
-## Mirrors CombatManager.ENEMY_RAGE_BONUS_FRACTION / _ENEMY_VEIL_BONUS / _ENEMY_LEECH_FRACTION:
+## Mirrors CombatManager.ENEMY_RAGE_BONUS_FRACTION / ENEMY_VEIL_BONUS / ENEMY_LEECH_FRACTION:
 ## a wounded monster hits harder, a veiled one is harder to hit, and a leeching one knits back a
-## fraction of what it dealt. Literals, same reasons, same reasons they are duplicated rather than
-## read from the autoload — this file must stay safe to call from a worker thread.
+## fraction of what it dealt. Literals for the same reason as the regen fraction above, and they
+## are the numbers the passive rules are asserted against, so a change to one side has to be
+## mirrored deliberately rather than by accident.
 const ENEMY_RAGE_BONUS_FRACTION: float = 0.5
 const ENEMY_VEIL_BONUS: int = 15
 const ENEMY_LEECH_FRACTION: float = 0.25
@@ -235,9 +236,17 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 		if steps > MAX_STEPS_PER_FIGHT or seconds >= FIGHT_SECONDS_CEILING:
 			return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage,
 				"kills": kills, "player_died": false, "timed_out": true, "ability_fires": ability_fires}
-		# Statuses tick BEFORE the swings, as CombatManager.tick() orders them, so a burn that
-		# finishes the monster this step kills it before it ever swings back.
+		# Statuses tick BEFORE the swings, as CombatManager.tick() orders them (line 278-282:
+		# _tick_player_effects, then _tick_monster_effects, then _tick_fighting). A DOT that
+		# finishes the monster there takes the fight out of State.FIGHTING, so the tick's swing
+		# loop condition fails and NEITHER side swings. Checked here for the same reason: without
+		# it the player lands a free attack on a dead monster and its damage, its XP, its life
+		# steal and its heal all count.
 		monster_hp -= _tick_effects(monster_effects, STEP_SECONDS)
+		if monster_hp <= 0.0:
+			kills = 1
+			_award_slayer_xp(xp, monster_hp_max, player, snapshot)
+			break
 		player_interval = maxf(0.1, base_player_interval * (1.0 - ability_interval_percent / 100.0))
 		ability_interval_percent = 0.0
 		player_timer += STEP_SECONDS
@@ -246,6 +255,12 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 		# tick, so a monster that would have died this step never gets its swing.
 		if player_timer >= player_interval:
 			player_timer -= player_interval
+			# Ability cooldowns count PLAYER ATTACKS and drain on every one of them, before any
+			# roll and whether or not the swing connects — live does this at the top of
+			# _player_attack (CombatManager.gd:435), which is the only place a per-swing function
+			# has to put it. No draw: an entry this blocks is skipped without a roll anyway, so
+			# spending the counter here is invisible in the stream and everything about it.
+			_decrement_cooldowns(cooldowns)
 			# Step 1. A whiff fires nothing, so no ability is rolled and no damage is drawn. The
 			# comparison is the live one: a roll at or under the chance lands.
 			if clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + player_hit_bonus,
@@ -256,17 +271,15 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				if not ab.is_empty():
 					ability_fires += 1
 					ability_interval_percent += float(ab_effect.get("interval_percent", 0.0))
-					var applied: StatusEffect = _apply_ability_status(rng, ab)
+					var applied: StatusEffect = _apply_ability_status(rng, ab, monster)
 					if applied != null:
 						monster_effects.append(applied)
 				# Step 4. max_hit_percent folds into THIS swing's max hit and the triangle folds in
 				# after it, both the way the live loop folds them; an ability never registers a
 				# ModifierManager source, because a permanent buff would need unregistering across
 				# fights and was ruled out for that reason.
-				var swing_max_hit: int = maxi(1, int(floor(float(base_max_hit)
-					* (1.0 + float(ab_effect.get("max_hit_percent", 0.0)) / 100.0))))
-				swing_max_hit = maxi(1, int(floor(float(swing_max_hit)
-					* (1.0 + float(triangle["damage_percent"]) / 100.0))))
+				var swing_max_hit: int = _swing_max_hit(base_max_hit,
+					float(ab_effect.get("max_hit_percent", 0.0)), float(triangle["damage_percent"]))
 				var roll: Dictionary = CombatFormulas.roll_damage(rng,
 					CombatFormulas.min_hit(swing_max_hit, min_hit_percent, min_hit_flat),
 					swing_max_hit, monster_dr,
@@ -296,8 +309,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					hp = minf(max_hp, hp + dealt * life_steal / 100.0)
 		if monster_hp <= 0.0:
 			kills = 1
-			_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max,
-				bool(player.get("on_slayer_task", false)), bool(snapshot.get("in_slayer_area", false))))
+			_award_slayer_xp(xp, monster_hp_max, player, snapshot)
 			break
 		if monster_timer >= monster_interval:
 			monster_timer -= monster_interval
@@ -353,7 +365,8 @@ static func _roll_abilities(loadout: Array, cooldowns: Dictionary,
 ## top-level status_duration / status_damage_per_tick siblings, bridged into the special-attack
 ## shape the status path takes. The chance is fixed at 100% for an ability — the trigger roll above
 ## is the chance — so the draw is still spent and always passes.
-static func _apply_ability_status(rng: RandomNumberGenerator, ab: Dictionary) -> StatusEffect:
+static func _apply_ability_status(rng: RandomNumberGenerator, ab: Dictionary,
+		monster: Dictionary) -> StatusEffect:
 	var status_id: String = str((ab.get("effect", {}) as Dictionary).get("apply_status", ""))
 	if status_id == "":
 		return null
@@ -362,11 +375,13 @@ static func _apply_ability_status(rng: RandomNumberGenerator, ab: Dictionary) ->
 		"status_chance": 100.0,
 		"status_duration": float(ab.get("status_duration", 0.0)),
 		"status_damage_per_tick": float(ab.get("status_damage_per_tick", 0.0)),
-	}, {})
+	}, monster)
 
 ## Mirrors CombatManager._apply_special_status and then apply_status: the status-chance draw is
 ## spent whenever the record names a status, because a draw that was skipped on a miss would shift
-## every roll after it, and only then do the target's own gates get a say.
+## every roll after it, and only then do the target's own gates get a say. The gates read the
+## MONSTER RECORD, which is why _monster_record has to carry is_immune_to_effects and
+## can_be_stunned: a gate whose input the snapshot never carried is not a gate, it is a comment.
 static func _apply_status(rng: RandomNumberGenerator, record: Dictionary,
 		monster: Dictionary) -> StatusEffect:
 	var status_id: String = str(record.get("applies_status", ""))
@@ -397,15 +412,50 @@ static func _tick_effects(effects: Array, delta: float) -> float:
 	effects.assign(live)
 	return damage
 
-## Mirrors CombatManager._roll_special_attack: ONE draw, compared against the biased chance. The
-## strategy scales the number that draw is compared against rather than adding a second draw, so
-## "hold" suppresses the special without shifting the stream an offline replay walks.
+## The max hit of ONE swing, and the min hit is derived from it: the player's own max hit with an
+## ability's max_hit_percent folded in, then the combat triangle's damage_percent folded in after
+## it. The order is not interchangeable — the second fold reads the first one's result — and it is
+## the order CombatManager._player_attack folds them in. A function because inlined it was
+## arithmetic no test could reach: a mixed-style matchup (where the triangle is anything but 0.0)
+## was exercised by no fixture at all, which is how a fold of rolled damage could sit here
+## disagreeing with a fold of max hit without a single check going red.
+static func _swing_max_hit(base_max_hit: int, max_hit_percent: float,
+		triangle_damage_percent: float) -> int:
+	var mh: int = maxi(1, int(floor(float(base_max_hit) * (1.0 + max_hit_percent / 100.0))))
+	return maxi(1, int(floor(float(mh) * (1.0 + triangle_damage_percent / 100.0))))
+
+## Mirrors CombatManager._decrement_ability_cooldowns: every counter drains by one on every player
+## attack — blocked or not, landed or whiffed — and stops at zero. THIS is what makes an ability
+## fire once every cooldown_attacks attacks rather than once and then never again, and its absence
+## is invisible in the stream, which is why it has to be pinned by a count and not by a roll.
+## The period is cooldown_attacks and NOT cooldown + 1: the counter is SET when the ability fires
+## and DRAINED at the top of each later attack, so a cooldown of 4 is released by the fourth attack
+## after it fired. TestRunner.gd words the same rule as "blocks the next N-1 attacks and releases on
+## the Nth", and the simulator suite counts 10 fires in a 40-attack fight at a cooldown of 4.
+static func _decrement_cooldowns(cooldowns: Dictionary) -> void:
+	for ability_id in cooldowns.keys():
+		cooldowns[ability_id] = maxi(0, int(cooldowns[ability_id]) - 1)
+
+## The slayer XP a kill is worth, split out because a fight can end in two places — a
+## damage-over-time tick that finished the monster before the swings, or the player's own swing —
+## and the award has to be identical either way.
+static func _award_slayer_xp(xp: Dictionary, monster_hp_max: float, player: Dictionary,
+		snapshot: Dictionary) -> void:
+	_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max,
+		bool(player.get("on_slayer_task", false)), bool(snapshot.get("in_slayer_area", false))))
+
+## Mirrors CombatManager._roll_special_attack: ONE draw, always spent, compared against the biased
+## chance. The strategy scales the number that draw is compared against rather than adding a second
+## draw, so "hold" suppresses the special without shifting the stream an offline replay walks. The
+## draw is taken BEFORE the comparison and the `chance <= 0.0` test comes second, exactly as live
+## orders them: a hold that skipped its draw would spend one fewer value than live on every swing.
 static func _roll_special_attack(rng: RandomNumberGenerator, sa_def: Dictionary,
 		bias: String) -> Dictionary:
 	if sa_def.is_empty():
 		return {}
 	var chance: float = _biased_special_chance(float(sa_def.get("trigger_chance", 10.0)), bias)
-	if chance <= 0.0 or rng.randf() * 100.0 > chance:
+	var roll: float = rng.randf() * 100.0
+	if chance <= 0.0 or roll > chance:
 		return {}
 	return sa_def
 
@@ -516,5 +566,6 @@ static func _assumptions() -> Array[String]:
 		"Every fight starts at full HP, so repeated dungeon trials stay comparable.",
 		"A fight that reaches %d seconds is counted as a loss." % int(FIGHT_SECONDS_CEILING),
 		"Prayer points are unlimited within a fight; prayer XP still uses the live formula.",
+		"Min hit comes from the snapshot's min_hit_percent and min_hit_flat, which the live engine reads from ModifierManager at attack time. A modifier that changes mid-run is not seen by this model.",
 		"Level-ups, potion charges and loot drops are not simulated.",
 	]

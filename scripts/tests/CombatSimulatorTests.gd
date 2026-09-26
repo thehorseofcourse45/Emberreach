@@ -53,6 +53,9 @@ static func _strong_snapshot(monster_hp: int = 10, monster_max_hit: int = 1) -> 
 ## still satisfy.
 static func _passive_world(passives: Array, loadout: Array = [], player_patch: Dictionary = {},
 		monster_patch: Dictionary = {}) -> Dictionary:
+	var ids: Array = []
+	for entry in loadout:
+		ids.append(str((entry as Dictionary).get("id", "")))
 	var world: Dictionary = {
 		"player": {
 			"mode": "standard", "style": "melee", "melee_style": "stab",
@@ -76,7 +79,9 @@ static func _passive_world(passives: Array, loadout: Array = [], player_patch: D
 		"in_slayer_area": false,
 		"on_slayer_task": false,
 		"loadout": loadout,
-		"strategy": {"name": "Fixture", "ability_loadout": loadout, "food_threshold": 0.0,
+		# Ids, not records: a real strategy record holds ids, and a fixture that quietly shaped
+		# itself like a production record would stop proving anything about one.
+		"strategy": {"name": "Fixture", "ability_loadout": ids, "food_threshold": 0.0,
 			"special_bias": "normal", "protection_prayer_auto": ""},
 		"weapon_special": {},
 	}
@@ -88,10 +93,21 @@ static func _passive_world(passives: Array, loadout: Array = [], player_patch: D
 
 ## An ability that fires on every landed hit: a 100% trigger chance cannot lose a roll, because
 ## randf() is always below 1.0. Built here rather than taken from data/abilities.json so the
-## "always-firing" claim cannot quietly become a data-dependent one.
-static func _always_firing_ability() -> Array:
+## "always-firing" claim cannot quietly become a data-dependent one. `cooldown` is 0 by default
+## because that is the one value a MISSING cooldown drain is invisible against — see the cooldown
+## pin, which asks for a real one on purpose.
+static func _firing_ability(cooldown: int = 0) -> Array:
 	return [{"id": "test_always", "name": "Always", "style": "melee", "req_levels": {},
-		"effect": {"max_hit_percent": 10.0}, "trigger_chance": 100.0, "cooldown_attacks": 0}]
+		"effect": {"max_hit_percent": 10.0}, "trigger_chance": 100.0, "cooldown_attacks": cooldown}]
+
+## An ability that fires on every landed hit and bleeds for `per_tick` a second, so a DOT can be
+## made to finish the monster on a step the player also swings on. The cooldown is longer than
+## either fight in the checks that use this, so it applies exactly once: one bleed, not a stack of
+## them, and a number of fires the arithmetic can predict.
+static func _bleeding_ability(per_tick: float, cooldown: int) -> Array:
+	return [{"id": "test_bleed", "name": "Bleeder", "style": "melee", "req_levels": {},
+		"effect": {"apply_status": "bleed"}, "status_duration": 30.0,
+		"status_damage_per_tick": per_tick, "trigger_chance": 100.0, "cooldown_attacks": cooldown}]
 
 static func run(host: Node) -> Dictionary:
 	var state: Dictionary = {"passed": 0, "failed": 0, "failures": []}
@@ -169,7 +185,7 @@ static func run(host: Node) -> Dictionary:
 	# REPRODUCIBLE — that it walks its own draw order the same way every time, which is what makes
 	# a mirroring mistake visible as a wrong number rather than a random one. Cross-engine parity
 	# rests on the draw order and constants being transcribed faithfully, and is not proven here.
-	var armed: Dictionary = _passive_world([], _always_firing_ability())
+	var armed: Dictionary = _passive_world([], _firing_ability())
 	var armed_once: Dictionary = CombatSimulator.simulate(armed, 20, 4242)
 	var armed_again: Dictionary = CombatSimulator.simulate(armed, 20, 4242)
 	_assert(JSON.stringify(armed_once) == JSON.stringify(armed_again),
@@ -185,6 +201,83 @@ static func run(host: Node) -> Dictionary:
 	var disarmed: Dictionary = CombatSimulator.simulate(_passive_world([]), 20, 4242)
 	_assert(int(disarmed["ability_fires"]) == 0,
 		"an empty loadout fires nothing, so the counter is counting something real", state)
+
+	# THE COOLDOWN PIN. A cooldown that is never drained is invisible in the stream — a blocked
+	# entry is skipped without a draw either way — so it can only be caught by counting fires. The
+	# world is built so the arithmetic is exact: the monster has 2000 HP, every player hit is a fixed
+	# number (min_hit_percent 100) and every hit lands, so each trial is a known number of attacks.
+	# The period is cooldown_attacks and NOT cooldown + 1: the counter is SET when the ability fires
+	# and DRAINED at the top of each later attack, so a cooldown of 4 is released by the fourth
+	# attack after it fired (TestRunner.gd:1535 words the same rule as "blocks the next N-1 attacks
+	# and releases on the Nth"). 40 attacks therefore give 10 fires, and 20 trials give 200. The
+	# broken model gives one per trial — 20 — because the counter is set on the first fire and never
+	# comes back down. The zero-cooldown fixture above cannot tell those apart, which is why this
+	# one asks for a real cooldown on purpose.
+	var cooldown: int = 4
+	var throttled: Dictionary = CombatSimulator.simulate(
+		_passive_world([], _firing_ability(cooldown)), 20, 4242)
+	var throttled_fires: int = int(throttled["ability_fires"])
+	_eq_int(throttled_fires, 200,
+		"a cooldown of 4 fires every 4th attack, 10 times a 40-attack fight, 20 trials (not 20, once per trial)", state)
+	_assert(throttled_fires > int(throttled["trials"]) * 2,
+		"...which is far more often than a model that fires once per trial would (%d against %d)"
+		% [throttled_fires, int(throttled["trials"])], state)
+
+	# A DOT kill must end the fight before the swings of that step, exactly as live orders it:
+	# CombatManager.tick() runs _tick_monster_effects BEFORE _tick_fighting, a DOT kill there takes
+	# the fight out of State.FIGHTING, and the swing loop's `state == State.FIGHTING` condition then
+	# fails — so neither side swings. The player's interval is one STEP here, so a swing is ready on
+	# every step and the coincidence the bug needs is guaranteed rather than hoped for. A bleed of
+	# 1000 applied on the first swing ticks for the first time at the top of step 12 (ten additions
+	# of 0.1 do not quite reach 1.0, which is a fact about floats and not about this rule) and kills
+	# the 1000 HP monster there. The player has landed 11 swings; a free twelfth would make it 12.
+	var bleed_world: Dictionary = _passive_world([], _bleeding_ability(1000.0, 999),
+		{"max_hit": 10, "attack_interval": 0.1}, {"hitpoints": 1000})
+	var bleed_report: Dictionary = CombatSimulator.simulate(bleed_world, 20, 606)
+	_eq_float(float(bleed_report["damage_dealt"]), 2200.0,
+		"a damage-over-time kill ends the fight before that step's swing, not after it "
+		+ "(110 a trial across 20, not 120)", state)
+	_eq_int(int(bleed_report["kills"]), 20, "...and it still counts as the kill", state)
+
+	# The same fight against a monster that ignores effects: the bleed is refused at the gate, so the
+	# player has to do all 1000 HP of the work itself — 100 swings, 1000 a trial. This is the pin for
+	# is_immune_to_effects being IN THE SNAPSHOT: before the key was copied that gate could never
+	# refuse anything and the two worlds were the same world. The cooldown is longer than either
+	# fight, so both worlds apply the ability exactly once and the pair says precisely one thing:
+	# the gate refuses the EFFECT without changing how often the ability fires. It does not, and
+	# cannot, prove the stream is unshifted — that would take a lockstep run of the live loop.
+	var immune: Dictionary = _passive_world([], _bleeding_ability(1000.0, 999),
+		{"max_hit": 10, "attack_interval": 0.1}, {"hitpoints": 1000, "is_immune_to_effects": true})
+	var immune_report: Dictionary = CombatSimulator.simulate(immune, 20, 606)
+	_eq_float(float(immune_report["damage_dealt"]), 20000.0,
+		"a monster that ignores effects is beaten by the player's own damage alone "
+		+ "(1000 a trial across 20)", state)
+	_eq_int(int(immune_report["ability_fires"]), int(bleed_report["ability_fires"]),
+		"...while the ability still fires exactly once, so the gate refused the effect and nothing else", state)
+
+	# The combat triangle, on a matchup where it is not zero. Every other fixture here is
+	# melee-against-melee, which returns 0.0 for both percentages and therefore never exercises the
+	# fold at all. A mage against a ranged monster is a 10% disadvantage, so the swing rolls out of
+	# [min_hit(90), 90] rather than out of [min_hit(100), 100] — which is the difference between
+	# folding the triangle into max hit and multiplying the rolled damage afterwards.
+	_eq_int(CombatSimulator._swing_max_hit(100, 0.0, 10.0), 110,
+		"a 10% advantage folds a 100 max hit to 110", state)
+	_eq_int(CombatSimulator._swing_max_hit(100, 0.0, -10.0), 90,
+		"a 10% disadvantage folds it to 90, and min hit is derived from THAT", state)
+	_eq_int(CombatSimulator._swing_max_hit(100, 20.0, -10.0), 108,
+		"an ability's max_hit_percent folds in first, so the triangle reads its result", state)
+	_eq_int(CombatFormulas.min_hit(CombatSimulator._swing_max_hit(100, 0.0, -10.0), 1.0, 0.0), 90,
+		"the roll range of a disadvantaged swing is [90, 90], not [1, 100] scaled afterwards", state)
+	var neutral_world: Dictionary = _passive_world([], [], {"style": "magic", "max_hit": 100, "min_hit_percent": 0.5})
+	var mixed_world: Dictionary = _passive_world([], [], {"style": "magic", "max_hit": 100, "min_hit_percent": 0.5},
+		{"attack_type": "ranged", "hitpoints": 2000})
+	_eq_str(str(CombatFormulas.triangle("magic", "ranged", mixed_world["mode_config"])["damage_percent"]), "-10.0",
+		"the mixed fixture really is a 10% disadvantage, not a neutral pair in disguise", state)
+	var neutral_report: Dictionary = CombatSimulator.simulate(neutral_world, 20, 4711)
+	var mixed_report: Dictionary = CombatSimulator.simulate(mixed_world, 20, 4711)
+	_assert(float(mixed_report["average_fight_seconds"]) > float(neutral_report["average_fight_seconds"]),
+		"a disadvantaged matchup measurably rolls lower and takes longer (%.1fs against %.1fs)"
+		% [float(mixed_report["average_fight_seconds"]), float(neutral_report["average_fight_seconds"])], state)
 
 	# rage: the monster's own damage climbs as its health falls, so the arithmetic is pinned on its
 	# own (a fight can only show that rage bites) and the behaviour against a control that differs
@@ -239,12 +332,18 @@ static func run(host: Node) -> Dictionary:
 		"...which takes longer, since the healed damage is dealt again", state)
 
 	# regeneration keeps its old behaviour with the new code around it: the ability roll now draws
-	# between the player's swings, so the monster's rolls land elsewhere. Structural, not exact —
-	# its per-swing heal is pinned exactly in the live suite.
+	# between the player's swings, so the monster's rolls land elsewhere. Its own control, not a
+	# world borrowed from the leech block — two unrelated fixtures whose numbers happen to land the
+	# right way round are not a control, they are a coincidence that survives until someone tunes
+	# either one.
 	var regen_world: Dictionary = _passive_world(["regeneration"])
+	var regen_control: Dictionary = _passive_world([])
 	var regen_world_report: Dictionary = CombatSimulator.simulate(regen_world, 20, 31337)
-	_assert(float(regen_world_report["average_fight_seconds"]) > float(leechless["average_fight_seconds"]),
-		"a regenerating monster still takes longer to kill than the control", state)
+	var regen_control_report: Dictionary = CombatSimulator.simulate(regen_control, 20, 31337)
+	_assert(float(regen_world_report["average_fight_seconds"]) > float(regen_control_report["average_fight_seconds"]),
+		"a regenerating monster still takes longer to kill than its own control "
+		+ "(%.1fs against %.1fs)" % [float(regen_world_report["average_fight_seconds"]),
+			float(regen_control_report["average_fight_seconds"])], state)
 
 	# The strategy knobs are threshold changes, and a threshold the model ignored would show up
 	# only as a different number, so each is asserted as a DIRECTION against its own control.
@@ -318,6 +417,63 @@ static func run(host: Node) -> Dictionary:
 		"...carrying the data's own trigger chance rather than a default", state)
 	_assert(CombatSimulatorManager.build_snapshot_for_test("no_such_monster", [], "normal").is_empty(),
 		"an unknown monster yields no snapshot rather than a fight against nothing", state)
+	# can_be_stunned is the other half of the apply_status gate, and the sim does not model a stun
+	# stopping a monster's timer-driven attacks, so there is no behaviour to observe here — but the
+	# key still has to travel, or the gate is a comment rather than a gate.
+	_eq_bool(bool(snapshot_record.get("is_immune_to_effects", true)), bool(
+		DataLoader.get_monster("moss_giant").get("is_immune_to_effects", false)),
+		"the record carries the monster's own is_immune_to_effects", state)
+	_eq_bool(bool(snapshot_record.get("can_be_stunned", false)), bool(
+		DataLoader.get_monster("moss_giant").get("can_be_stunned", true)),
+		"...and its own can_be_stunned, which the stun gate reads", state)
+	# Those two are read off a monster whose data happens to hold the DEFAULTS, so comparing a
+	# record against that data proves nothing: a snapshot hardcoding the defaults would pass. Read
+	# them off a monster that is immune AND cannot be stunned, where the default is the wrong
+	# answer in both directions.
+	var immune_monster: Dictionary = CombatSimulatorManager.build_snapshot_for_test(
+		"the_mist", [], "normal")
+	var immune_record: Dictionary = (immune_monster.get("monsters", []) as Array)[0] as Dictionary
+	_eq_bool(bool(immune_record.get("is_immune_to_effects", false)), true,
+		"a monster that ignores effects says so in the snapshot the model reads", state)
+	_eq_bool(bool(immune_record.get("can_be_stunned", true)), false,
+		"...and a monster that cannot be stunned says so too, which is what stops the stun gate "
+		+ "being a rule nothing can ever reach", state)
+	_eq_bool((snapshot["strategy"] as Dictionary)["ability_loadout"] is Array, true,
+		"a built strategy carries its ability_loadout as a plain list", state)
+
+	# ---------------------------------------------------------------------------
+	# The production snapshot, which is the one the worker thread actually runs
+	# ---------------------------------------------------------------------------
+	# build_snapshot_for_test is a SIBLING of build_snapshot, not the thing itself, so every check
+	# above would still be green with the production function missing its three new keys. This
+	# drives the real one. The loadout is slotted first through the ordinary set_loadout door — a
+	# production snapshot built with an empty loadout would satisfy "the key is present" while
+	# proving nothing about what the key carries.
+	var live_area_id: String = str(_first_area().get("id", ""))
+	_assert(live_area_id != "", "found a region to build a production snapshot for", state)
+	if live_area_id != "":
+		PlayerData.set_level("attack", 100)
+		PlayerData.set_level("defence", 100)
+		CombatManager.set_loadout(["power_strike"])
+		_eq_int(CombatManager.active_loadout.size(), 1,
+			"an ability is slotted for the production-snapshot check to mean anything", state)
+		var production: Dictionary = CombatSimulatorManager.build_snapshot("area", live_area_id, "melee", "stab")
+		var carried: Array = production.get("loadout", [])
+		_eq_int(carried.size(), 1, "the production snapshot carries the slotted ability", state)
+		if carried.size() == 1:
+			_eq_str(str((carried[0] as Dictionary).get("id", "")), "power_strike",
+				"...as a whole record, in roll order", state)
+			_eq_float(float((carried[0] as Dictionary).get("trigger_chance", -1.0)),
+				float(DataLoader.get_ability("power_strike").get("trigger_chance", 0.0)),
+				"...carrying the data's own trigger chance, because a worker thread cannot ask DataLoader", state)
+		_assert(production.has("strategy") and str((production["strategy"] as Dictionary).get("name", ""))
+			== str(CombatManager.active_strategy.get("name", "")),
+			"the production snapshot carries the live strategy", state)
+		_assert(production.has("weapon_special") and typeof(production["weapon_special"]) == TYPE_DICTIONARY,
+			"the production snapshot carries the weapon special the strategy's bias scales", state)
+		_eq_bool((production.get("monsters", []) as Array)[0] is Dictionary, true,
+			"the production snapshot still carries its monster records", state)
+	CombatManager.set_loadout([])
 
 	# ---------------------------------------------------------------------------
 	# Food projection
@@ -544,3 +700,6 @@ static func _eq_float(actual: float, expected: float, label: String, state: Dict
 
 static func _eq_str(actual: String, expected: String, label: String, state: Dictionary) -> void:
 	_assert(actual == expected, "%s (expected '%s', got '%s')" % [label, expected, actual], state)
+
+static func _eq_bool(actual: bool, expected: bool, label: String, state: Dictionary) -> void:
+	_assert(actual == expected, "%s (expected %s, got %s)" % [label, str(expected), str(actual)], state)
