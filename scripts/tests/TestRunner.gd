@@ -1415,40 +1415,117 @@ func test_abilities_load() -> void:
 	_ok(DataLoader.abilities.size() == 8, "the ability table loaded (%d abilities)" % DataLoader.abilities.size())
 
 ## Task 2 pin: ContentValidator is the ONLY thing standing between abilities.json and a silent
-## no-op ability in the live engine, so the rejections are pinned here — including the conditional
-## status_duration, which Task 1's review flagged as documented but unenforced.
+## no-op ability in the live engine. Each enumerated rejection gets its OWN fixture that differs
+## from an otherwise-valid record by exactly one defect, and asserts the validator reported exactly
+## ONE failure — a catch-all assertion stays green when a single check is deleted.
 func test_ability_validation_rejects() -> void:
 	_heading("Ability + strategy validation")
 	var errs: Array = ContentValidator.check_ability_record(
 		{"id": "bad", "effect": {"nope": 1.0}, "trigger_chance": 150.0, "cooldown_attacks": -1})
 	_ok(not errs.is_empty(), "unknown effect + bad ranges must error")
-	_ok(not ContentValidator.check_ability_record({}).is_empty(), "a record with no id/effect must error")
-	_ok(ContentValidator.check_ability_record(
-		{"id": "s", "name": "S", "style": "melee", "req_levels": {"nope_skill": 5},
-		 "effect": {"max_hit_percent": 5.0}, "trigger_chance": 5.0, "cooldown_attacks": 0}) != [],
-		"an unknown req_levels skill must error")
+
+	# The fixture bases must exist. An empty base errors on every check at once, which would make
+	# every "exactly one failure" assertion below pass for the wrong reason.
 	var gore: Dictionary = DataLoader.get_ability("gore")
-	var no_duration: Dictionary = gore.duplicate(true)
-	no_duration.erase("status_duration")
-	_ok(ContentValidator.check_ability_record(no_duration) != [], "apply_status without status_duration must error")
-	var stray_duration: Dictionary = DataLoader.get_ability("power_strike").duplicate(true)
-	stray_duration["status_duration"] = 3.0
-	_ok(ContentValidator.check_ability_record(stray_duration) != [], "status_duration without apply_status must error")
-	var bad_status: Dictionary = gore.duplicate(true)
-	bad_status["effect"] = {"apply_status": "not_a_status"}
-	_ok(ContentValidator.check_ability_record(bad_status) != [], "an unknown apply_status must error")
-	var shipped: Array[String] = []
+	_ok(not gore.is_empty(), "gore must exist (the status_duration fixtures are built from it)")
+	var power_strike: Dictionary = DataLoader.get_ability("power_strike")
+	_ok(not power_strike.is_empty(), "power_strike must exist (the stray status_duration fixture is built from it)")
+
+	var base: Dictionary = {
+		"id": "fixture", "name": "Fixture", "description": "d", "style": "melee",
+		"req_levels": {"attack": 10}, "unlock": "", "effect": {"max_hit_percent": 5.0},
+		"trigger_chance": 10.0, "cooldown_attacks": 2,
+	}
+	_ok(ContentValidator.check_ability_record(base).is_empty(),
+		"a well-formed ability validates (%s)" % _failure_text(ContentValidator.check_ability_record(base)))
+	_one_error(ContentValidator.check_ability_record, base, {"id": ""}, "a record with no id")
+	_one_error(ContentValidator.check_ability_record, base, {"style": "psychic"},
+		"a style outside melee/ranged/magic/any")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": 5.0},
+		"a non-object effect")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": {"max_hit_percent": "lots"}},
+		"a non-numeric effect value")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": 5.0},
+		"a non-object req_levels")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": {"attack": 0}},
+		"a req_levels value below 1")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": {"attack": 1.5}},
+		"a non-integer req_levels value")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": {"nope_skill": 5}},
+		"an unknown req_levels skill", "missing_reference")
+	_one_error(ContentValidator.check_ability_record, base, {"trigger_chance": null},
+		"a missing trigger_chance")
+	_one_error(ContentValidator.check_ability_record, base, {"trigger_chance": 0.0},
+		"a trigger_chance of 0")
+	_one_error(ContentValidator.check_ability_record, base, {"cooldown_attacks": null},
+		"a missing cooldown_attacks")
+	_one_error(ContentValidator.check_ability_record, base, {"cooldown_attacks": -1},
+		"a negative cooldown_attacks")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": {"unknown_effect": 1.0}},
+		"an unknown effect key")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": {}},
+		"an empty effect")
+	# status_duration is conditional in both directions, and a duration of 0 expires instantly.
+	_one_error(ContentValidator.check_ability_record, gore, {"status_duration": null},
+		"apply_status without status_duration")
+	_one_error(ContentValidator.check_ability_record, gore, {"status_duration": 0.0},
+		"a status_duration of 0")
+	_one_error(ContentValidator.check_ability_record, power_strike, {"status_duration": 3.0},
+		"status_duration without apply_status")
+	_one_error(ContentValidator.check_ability_record, gore, {"effect": {"apply_status": "not_a_status"}},
+		"an unknown apply_status", "missing_reference")
+
+	var shipped: Array = []
 	for ability_id in DataLoader.abilities.keys():
-		for e in ContentValidator.check_ability_record(DataLoader.abilities[ability_id]):
-			shipped.append(e)
-	_ok(shipped.is_empty(), "every shipped ability validates (%s)" % ("ok" if shipped.is_empty() else "; ".join(shipped)))
-	var strategy: Dictionary = {"name": "Boss", "ability_loadout": ["power_strike"],
-		"food_threshold": 0.5, "special_bias": "eager"}
-	var strategy_errs: Array = ContentValidator.check_strategy_record(strategy)
-	_ok(strategy_errs.is_empty(), "a well-formed strategy validates (%s)" % ("ok" if strategy_errs.is_empty() else "; ".join(strategy_errs)))
-	_ok(ContentValidator.check_strategy_record(
-		{"name": "", "ability_loadout": "power_strike", "food_threshold": 1.5, "special_bias": "reckless"}).size() >= 4,
-		"bad name, loadout, threshold and bias must all error")
+		shipped.append_array(ContentValidator.check_ability_record(DataLoader.abilities[ability_id]))
+	_ok(shipped.is_empty(), "every shipped ability validates (%s)" % _failure_text(shipped))
+
+	var sbase: Dictionary = {"name": "Boss", "ability_loadout": ["power_strike"],
+		"food_threshold": 0.5, "special_bias": "eager", "protection_prayer_auto": ""}
+	_ok(ContentValidator.check_strategy_record(sbase).is_empty(),
+		"a well-formed strategy validates (%s)" % _failure_text(ContentValidator.check_strategy_record(sbase)))
+	_one_error(ContentValidator.check_strategy_record, sbase, {"name": ""}, "a strategy with no name")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"ability_loadout": "power_strike"},
+		"a non-array ability_loadout")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"ability_loadout": ["nope_ability"]},
+		"an unknown ability in the loadout", "missing_reference")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"food_threshold": 1.5},
+		"a food_threshold above 1")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"food_threshold": -0.1},
+		"a food_threshold below 0")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"food_threshold": null},
+		"a missing food_threshold")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"special_bias": "reckless"},
+		"a special_bias outside eager/normal/hold")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"protection_prayer_auto": "not_a_prayer"},
+		"an unknown protection_prayer_auto", "missing_reference")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"protection_prayer_auto": 3},
+		"a non-string protection_prayer_auto")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"protection_prayer_auto": null},
+		"a missing protection_prayer_auto")
+
+## Copies `base`, applies `patch` (a null value erases the key) and asserts the validator reported
+## exactly one failure with the expected code. EXACTLY one, so neither a deleted check (silently
+## zero errors) nor a doubled one passes.
+func _one_error(check: Callable, base: Dictionary, patch: Dictionary, label: String,
+		code: String = "invalid_record") -> void:
+	var ab: Dictionary = base.duplicate(true)
+	for key in patch.keys():
+		if patch[key] == null:
+			ab.erase(key)
+		else:
+			ab[key] = patch[key]
+	var errs: Array = check.call(ab)
+	_ok(errs.size() == 1 and str(errs[0]["code"]) == code,
+		"%s must be the only failure and coded '%s' (got %s)" % [label, code, _failure_text(errs)])
+
+func _failure_text(errs: Array) -> String:
+	if errs.is_empty():
+		return "none"
+	var parts: Array[String] = []
+	for e in errs:
+		parts.append("%s: %s" % [str(e["code"]), str(e["message"])])
+	return "; ".join(parts)
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")
