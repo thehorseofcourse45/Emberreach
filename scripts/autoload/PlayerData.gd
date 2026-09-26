@@ -27,6 +27,26 @@ var potion_charges: int = 0
 ## through the same section as every other player choice.
 var ability_loadout: Array[String] = []
 
+## Combat strategy presets. The live engine holds one of these as CombatManager.active_strategy;
+## the saved copies live here so a preset survives a reload. Presets are name-keyed, which is what
+## combat_strategies_by_area points at.
+var combat_strategies: Array = []
+## area_id -> strategy name. A combat area with no entry uses the live strategy.
+var combat_strategies_by_area: Dictionary = {}
+## Name of the strategy in use, so a reload restores the player's choice instead of the default.
+var combat_strategy_active: String = ""
+
+## The preset a new game starts on, and the shape every other preset follows. food_threshold 0.0
+## means "defer to the auto-eat tier" and special_bias "normal" is the identity, so a player who
+## never touches a strategy fights exactly as they did before strategies existed.
+const DEFAULT_COMBAT_STRATEGY: Dictionary = {
+    "name": "Default",
+    "ability_loadout": [],
+    "food_threshold": 0.0,
+    "special_bias": "normal",
+    "protection_prayer_auto": "",
+}
+
 var shop_upgrades: Dictionary = {}      # upgrade_id -> count
 var unlocked_pets: Array[String] = []
 var completion_log: Dictionary = {
@@ -122,6 +142,9 @@ func initialize_new_game() -> void:
     active_potion = ""
     potion_charges = 0
     ability_loadout.clear()
+    combat_strategies = [DEFAULT_COMBAT_STRATEGY.duplicate(true)]
+    combat_strategies_by_area.clear()
+    combat_strategy_active = DEFAULT_COMBAT_STRATEGY["name"]
     shop_upgrades.clear()
     unlocked_pets.clear()
     completion_log = {"items": {}, "monsters": {}, "dungeons": {}, "pets": {}}
@@ -272,6 +295,9 @@ func serialize() -> Dictionary:
         "active_prayers": active_prayers, "active_potion": active_potion,
         "potion_charges": potion_charges, "shop_upgrades": shop_upgrades,
         "ability_loadout": ability_loadout,
+        "combat_strategies": combat_strategies,
+        "combat_strategies_by_area": combat_strategies_by_area,
+        "combat_strategy_active": combat_strategy_active,
         "unlocked_pets": unlocked_pets, "completion_log": completion_log,
         "slayer_task": slayer_task, "settings": settings, "playtime_seconds": playtime_seconds,
         "last_offline_unix": last_offline_unix, "stats": stats,
@@ -296,6 +322,15 @@ func deserialize(d: Dictionary) -> void:
     potion_charges = maxi(0, int(d.get("potion_charges", 0)))
     # Absent (an older save) means no abilities slotted, not a broken loadout.
     ability_loadout = _to_string_array(d.get("ability_loadout", []))
+    combat_strategies = _sanitize_strategies(d.get("combat_strategies", []))
+    # The default preset is the floor, so a save written before strategies existed still has one
+    # for the strategy UI to show. The live combat record falls back to it either way, so this is
+    # about the list being answerable, not about combat behaviour.
+    if combat_strategies.is_empty():
+        combat_strategies = [DEFAULT_COMBAT_STRATEGY.duplicate(true)]
+    var area_bindings: Variant = d.get("combat_strategies_by_area", {})
+    combat_strategies_by_area = area_bindings if typeof(area_bindings) == TYPE_DICTIONARY else {}
+    combat_strategy_active = str(d.get("combat_strategy_active", ""))
     shop_upgrades = d.get("shop_upgrades", {})
     unlocked_pets = _to_string_array(d.get("unlocked_pets", []))
     completion_log = _merge_completion_log(d.get("completion_log", {}))
@@ -367,4 +402,15 @@ func _to_string_array(value: Variant) -> Array[String]:
     if typeof(value) == TYPE_ARRAY:
         for v in value:
             out.append(str(v))
+    return out
+
+## Keep only entries that are records at all. Whether a record is a VALID strategy is not decided
+## here — CombatManager.set_strategy runs the content validator, so a hand-edited or stale preset
+## is refused at the door rather than trusted, and never reaches the combat path.
+func _sanitize_strategies(source: Variant) -> Array:
+    var out: Array = []
+    if typeof(source) == TYPE_ARRAY:
+        for entry in (source as Array):
+            if typeof(entry) == TYPE_DICTIONARY:
+                out.append(entry)
     return out

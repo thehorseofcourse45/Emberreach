@@ -55,6 +55,11 @@ var last_defeat_reason: String = ""
 var _rng := RandomNumberGenerator.new()
 var combat_enabled: bool = true
 
+## The strategy preset in force right now: {name, ability_loadout, food_threshold, special_bias,
+## protection_prayer_auto}. Always a complete record — a missing or rejected preset falls back to
+## PlayerData.DEFAULT_COMBAT_STRATEGY rather than leaving the combat path reading absent fields.
+var active_strategy: Dictionary = {}
+
 # Auto Eat thresholds: [threshold%, heal-to%, efficiency%]
 const AUTO_EAT = {
 	1: {"threshold": 20.0, "heal_to": 40.0, "efficiency": 60.0},
@@ -66,11 +71,14 @@ func _ready() -> void:
 	_rng.randomize()
 	player_max_hp = _compute_max_hp()
 	player_hp = player_max_hp
+	active_strategy = _strategy_record(PlayerData.combat_strategy_active)
 	# active_loadout is deliberately NOT seeded from PlayerData here. At boot `skills` is still
 	# empty, so every get_level() answers 1, the slot cap would compute to 1 and set_loadout would
 	# write that clamped loadout back — silently deleting slots from the player's save. The loadout
 	# is re-derived in deserialize(), which SaveManager._apply always reaches after
-	# PlayerData.deserialize, and a new game has nothing to restore.
+	# PlayerData.deserialize, and a new game has nothing to restore. The strategy's own
+	# ability_loadout is left alone for the same reason: the live record is restored here, but
+	# nothing is slotted from it until the player picks a preset through set_strategy.
 
 func seed_rng(seed_value: int) -> void:
 	_rng.seed = seed_value
@@ -131,6 +139,10 @@ func _sig_ability_triggered(ability_id: String) -> void:
 	if not SimulationMode.is_silent():
 		EventBus.ability_triggered.emit(ability_id)
 
+func _sig_strategy_changed(strategy_name: String) -> void:
+	if not SimulationMode.is_silent():
+		EventBus.strategy_changed.emit(strategy_name)
+
 # =========================================================================
 #  Control
 # =========================================================================
@@ -172,6 +184,10 @@ func start_combat(ctx: Dictionary) -> bool:
 	player_attack_timer = 0.0
 	monster_attack_timer = 0.0
 	state = State.FIGHTING
+	# The region's preset (which may re-slot the loadout) is adopted before the protection prayer
+	# is asked for, so the prayer comes from the preset the fight is actually running.
+	_apply_area_strategy(str(ctx.get("id", "")))
+	_activate_strategy_prayer()
 	ProgressTracker.record_region_visit(str(ctx.get("id", "")))
 	_sig_combat_started(ctx)
 	EventBus.activity_changed.emit()
@@ -528,10 +544,17 @@ func _grant_combat_xp(damage: int) -> void:
 #  Special attacks
 # =========================================================================
 
+## ONE roll, exactly where it always was and against the same kind of number: a strategy's
+## special_bias only scales the value this draw is compared against, so the stream the offline path
+## replays is unchanged. The `chance <= 0.0` arm is what makes "hold" a guarantee rather than a
+## 1-in-2^53 promise — randf() can return 0.0, and `0.0 > 0.0` is false.
 func _roll_special_attack(sa_def: Dictionary) -> Dictionary:
 	if sa_def.is_empty():
 		return {}
-	if _rng.randf() * 100.0 > float(sa_def.get("trigger_chance", 10.0)):
+	var bias: String = str(active_strategy.get("special_bias", "normal"))
+	var chance: float = _biased_special_chance(float(sa_def.get("trigger_chance", 10.0)), bias)
+	var roll: float = _rng.randf() * 100.0
+	if chance <= 0.0 or roll > chance:
 		return {}
 	return sa_def
 
@@ -752,7 +775,8 @@ func _auto_eat() -> void:
 	var cfg: Dictionary = AUTO_EAT[tier]
 	var maxhp: float = _compute_max_hp()
 	var pct: float = player_hp / maxf(maxhp, 1.0) * 100.0
-	var threshold: float = float(cfg["threshold"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT)
+	var threshold: float = _food_threshold_percent(float(cfg["threshold"]))
+	threshold += ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT)
 	if pct > threshold:
 		return
 	var food_id: String = _find_food()
@@ -850,10 +874,15 @@ func deserialize(d: Dictionary) -> void:
 	# Cooldowns and the last fired id are attack counters, not saved state: the live attack timer
 	# is dropped the same way, and a reload must not hand out a free trigger. The loadout is
 	# re-derived through set_loadout, so a loadout a hand-edited or older save no longer qualifies
-	# for is dropped rather than trusted.
+	# for is dropped rather than trusted. The strategy PRESET is restored for the same reason, but
+	# without re-slotting: the loadout the player actually chose is PlayerData.ability_loadout, and
+	# a preset only slots abilities when the player adopts it. This is also what a new game runs
+	# through (GameManager.start_new_game -> deserialize({})), so starting over returns the live
+	# record to the default instead of leaving last fight's preset in force.
 	_ability_cooldowns.clear()
 	_last_ability_fired = ""
 	_ability_interval_percent = 0.0
+	active_strategy = _strategy_record(PlayerData.combat_strategy_active)
 	set_loadout(PlayerData.ability_loadout)
 	state = int(d.get("state", State.IDLE))
 	context = d.get("context", {})
@@ -1003,3 +1032,126 @@ func _apply_ability_heal(amount: float) -> void:
 	if amount <= 0.0:
 		return
 	player_hp = minf(player_hp + amount, _compute_max_hp())
+
+# =========================================================================
+#  Strategies
+# =========================================================================
+## A strategy preset is a preparation choice, not a new mechanic: {name, ability_loadout,
+## food_threshold, special_bias, protection_prayer_auto}. TWO RULES make it safe to replay offline
+## and are load-bearing rather than stylistic:
+##   * every field is a THRESHOLD or a pointer at existing machinery — food_threshold replaces the
+##     auto-eat HP threshold, special_bias scales the weapon special's proc chance, and the rest
+##     name things that already exist. Nothing here adds a roll, so the seven-step draw order
+##     _roll_abilities() documents is unchanged and Task 5's simulator mirror can reproduce it;
+##   * set_strategy() validates before it adopts, so an invalid record can never reach the combat
+##     path — the previous preset stays live and the rejection is reported.
+##
+## Two thresholds are deliberately left exactly as they were, and both are pinned by the suite:
+##   * food_threshold 0.0 means "use the auto-eat tier default", so a player who never touches a
+##     preset eats at precisely the tier's threshold, modifier included;
+##   * special_bias "normal" is the identity, so the weapon special's own trigger chance is
+##     compared against the same number it always was.
+
+## Adopt a strategy preset. Validated first, so a bad record is refused rather than stored, and
+## the ability ids go through the same set_loadout door the ability UI uses — a preset can never
+## slot an ability the player has not unlocked or that exceeds the slot cap.
+func set_strategy(s: Dictionary) -> void:
+	var errs: Array = ContentValidator.check_strategy_record(s)
+	if not errs.is_empty():
+		push_warning("CombatManager: strategy refused (%s)" % str((errs[0] as Dictionary)["message"]))
+		return
+	active_strategy = s.duplicate(true)
+	PlayerData.combat_strategy_active = str(active_strategy.get("name", ""))
+	_remember_strategy(active_strategy)
+	set_loadout(active_strategy.get("ability_loadout", []) as Array)
+	_sig_strategy_changed(str(active_strategy.get("name", "")))
+
+## The preset bound to `area_id`, or the live strategy when the area has none. A binding whose name
+## no longer resolves falls back to the live strategy as well, so a stale save degrades to what the
+## player last chose rather than to nothing.
+func strategy_for(area_id: String) -> Dictionary:
+	var bound: String = str(PlayerData.combat_strategies_by_area.get(area_id, ""))
+	if bound == "":
+		return active_strategy
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == bound:
+			return rec
+	return active_strategy
+
+## Bind a preset to a combat area, so entering it adopts that preset without the player re-picking
+## it every fight. An empty name unbinds. A name no stored preset answers to is refused rather than
+## stored, because this map resolves to a record and a dangling name would look bound and do
+## nothing.
+func assign_strategy_to_area(area_id: String, strategy_name: String) -> void:
+	if area_id == "":
+		return
+	if strategy_name == "":
+		PlayerData.combat_strategies_by_area.erase(area_id)
+		return
+	if _strategy_record_or_empty(strategy_name).is_empty():
+		push_warning("CombatManager: no strategy named '%s' to assign to '%s'" % [strategy_name, area_id])
+		return
+	PlayerData.combat_strategies_by_area[area_id] = strategy_name
+
+## Presets are name-keyed — that is what combat_strategies_by_area points at — so re-adopting a
+## name replaces that record instead of growing a second one.
+func _remember_strategy(record: Dictionary) -> void:
+	var strategy_name: String = str(record.get("name", ""))
+	for i in range(PlayerData.combat_strategies.size()):
+		if str((PlayerData.combat_strategies[i] as Dictionary).get("name", "")) == strategy_name:
+			PlayerData.combat_strategies[i] = record.duplicate(true)
+			return
+	PlayerData.combat_strategies.append(record.duplicate(true))
+
+## Resolves a preset name to a stored record, or the default when nothing matches. Used for the
+## live record (a new game, a reload, an empty choice), never for a name the player just named.
+func _strategy_record(strategy_name: String) -> Dictionary:
+	var found: Dictionary = _strategy_record_or_empty(strategy_name)
+	return found if not found.is_empty() else PlayerData.DEFAULT_COMBAT_STRATEGY.duplicate(true)
+
+func _strategy_record_or_empty(strategy_name: String) -> Dictionary:
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == strategy_name:
+			return rec
+	return {}
+
+## The strategy's lever on the WEAPON special attack: a multiplier on the record's own trigger
+## chance, never a second roll. eager doubles up to the 100% ceiling, hold is a hard zero, normal is
+## the identity. Monster specials are the monster's own choice and are not touched. Task 5's
+## simulator mirror computes this same number from the same two arguments.
+func _biased_special_chance(base: float, bias: String) -> float:
+	match bias:
+		"eager":
+			return minf(base * 2.0, 100.0)
+		"hold":
+			return 0.0
+		_:
+			return clampf(base, 0.0, 100.0)
+
+## The strategy's food threshold as a percent of max HP, or `tier_threshold` untouched when the
+## preset does not set one. A fraction of 0.0 means "defer to the auto-eat tier", which is what
+## keeps an unedited preset identical to a build with no strategies. No RNG: this only moves the
+## number the existing HP comparison is made against.
+func _food_threshold_percent(tier_threshold: float) -> float:
+	var override: float = float(active_strategy.get("food_threshold", 0.0))
+	if override > 0.0:
+		return override * 100.0
+	return tier_threshold
+
+## Entering a combat area adopts the preset bound to it, so a player picks a strategy once per
+## region rather than once per fight. The live record is only replaced when the region names a
+## different preset, so an unbound region never re-slots the loadout the player is using.
+func _apply_area_strategy(area_id: String) -> void:
+	var preset: Dictionary = strategy_for(area_id)
+	if str(preset.get("name", "")) != str(active_strategy.get("name", "")):
+		set_strategy(preset)
+
+## protection_prayer_auto turns the strategy's protection prayer on through the ordinary
+## PrayerManager door, so the prayer's level requirement and the two-active-prayer limit both
+## still decide: a preset can ask for the prayer and never force it past a rule the player is held
+## to. Left active afterwards, the same as a prayer the player switched on by hand.
+func _activate_strategy_prayer() -> void:
+	var prayer_id: String = str(active_strategy.get("protection_prayer_auto", ""))
+	if prayer_id == "" or PrayerManager.is_active(prayer_id):
+		return
+	PrayerManager.toggle(prayer_id)

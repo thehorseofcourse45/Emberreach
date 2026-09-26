@@ -71,6 +71,11 @@ func run_all(host: Node) -> void:
 	test_ability_heal_caps()
 	test_ability_slot_cap()
 	test_ability_effects_in_fight()
+	test_special_bias_hold()
+	test_special_bias_arithmetic()
+	test_strategy_food_threshold()
+	test_set_strategy_rejects_invalid()
+	test_strategy_area_and_prayer()
 	_test_content_validation()
 	test_identity_theme_builds()
 	test_surface_box_falls_back()
@@ -1779,6 +1784,232 @@ func test_ability_effects_in_fight() -> void:
 	# The remaining suites assume a fresh character.
 	GameManager.start_new_game("standard")
 	_deterministic(true)
+
+# =========================================================================
+#  Task 4 — strategy presets in the live engine
+# =========================================================================
+
+## special_bias is a THRESHOLD change, never a draw change, and that is the load-bearing part: Task
+## 5's simulator has to reproduce the live stream draw for draw, so a suppression that skipped the
+## roll would be a silent desync. Asserted as BOTH halves — no special fired, and the stream still
+## advanced by exactly one value — so a future "fix" that short-circuits the draw fails here.
+func test_special_bias_hold() -> void:
+	_heading("Strategy special bias: hold")
+	var guaranteed: Dictionary = {"id": "guaranteed", "trigger_chance": 100.0}
+	CombatManager.set_strategy(_strategy({"name": "Hold", "special_bias": "hold"}))
+	var fired: int = 0
+	for seed_value in range(1, 51):
+		CombatManager.seed_rng(seed_value)
+		if not CombatManager._roll_special_attack(guaranteed).is_empty():
+			fired += 1
+	_eq(fired, 0, "hold suppresses a guaranteed-chance weapon special on all 50 seeds")
+
+	CombatManager.seed_rng(7)
+	CombatManager._roll_special_attack(guaranteed)
+	_eq(CombatManager._rng.randi(), _stream_after_draws(7, 1),
+		"a held special still spends exactly one draw, so the offline stream is unchanged")
+
+	# The other side of the same coin: normal must be the identity, or every existing fight
+	# changes because a strategy exists.
+	CombatManager.set_strategy(_strategy({"name": "Normal", "special_bias": "normal"}))
+	CombatManager.seed_rng(7)
+	_ok(not CombatManager._roll_special_attack(guaranteed).is_empty(),
+		"normal fires a 100% special on the very seed hold suppressed")
+
+## The arithmetic on its own, assertable without a fight, and the exact shape Task 5 mirrors.
+func test_special_bias_arithmetic() -> void:
+	_heading("Strategy special bias: arithmetic")
+	_eq(CombatManager._biased_special_chance(80.0, "eager"), 100.0, "eager doubles 80% and caps at 100")
+	_eq(CombatManager._biased_special_chance(30.0, "eager"), 60.0, "eager doubles a chance below the cap")
+	_eq(CombatManager._biased_special_chance(30.0, "normal"), 30.0, "normal is the identity")
+	_eq(CombatManager._biased_special_chance(30.0, "hold"), 0.0, "hold is a hard zero")
+	_eq(CombatManager._biased_special_chance(30.0, "reckless"), 30.0,
+		"an unrecognised bias falls back to the identity, not to zero")
+	_eq(CombatManager._biased_special_chance(30.0, ""), 30.0, "an empty bias is the identity too")
+
+## food_threshold only ever replaces the NUMBER the existing HP comparison is made against, so 0.0
+## has to be indistinguishable from having no strategies at all. Driven through the real _auto_eat()
+## and the real bank, and the fractions are derived from AUTO_EAT so a data edit fails here with a
+## readable reason instead of silently testing a threshold the tier table no longer has.
+func test_strategy_food_threshold() -> void:
+	_heading("Strategy food threshold")
+	_combat_levels_for_abilities(100)
+	PlayerData.settings["auto_eat_tier"] = 1
+	_ok(not bool(CombatManager.context.get("raid", false)), "no raid context, so the tier is the tier setting")
+	BankManager.add_item_guaranteed("shrimp", 20)
+
+	var tier_threshold: float = float(CombatManager.AUTO_EAT[1]["threshold"]) / 100.0
+	CombatManager.set_strategy(_strategy({"name": "Tier default", "food_threshold": 0.0}))
+	_ok(_auto_eat_at(tier_threshold - 0.05), "food_threshold 0.0 eats below the tier-1 threshold")
+	_ok(not _auto_eat_at(tier_threshold + 0.05), "food_threshold 0.0 leaves the player alone above the tier default")
+
+	CombatManager.set_strategy(_strategy({"name": "Finicky", "food_threshold": 0.5}))
+	_ok(_auto_eat_at(0.45), "a 0.5 food_threshold eats at 45% of max HP, where tier 1 would not")
+	_ok(not _auto_eat_at(0.6), "a 0.5 food_threshold leaves the player alone above half HP")
+
+	# The strategy replaces the tier threshold; AUTO_EAT_THRESHOLD_PERCENT still lands on top of
+	# whatever the threshold ended up being, exactly as it does with no strategy at all. 0.6 sits
+	# between the two answers (50% alone refuses it, 50%+20 accepts it), so this fails if the
+	# modifier is dropped or applied before the override.
+	ModifierManager.register("test:auto_eat_threshold",
+		{ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT: 20.0}, "generic", "test")
+	_ok(_auto_eat_at(0.6), "the threshold modifier lands on top of the strategy threshold (50% + 20)")
+	CombatManager.set_strategy(_strategy({"name": "Tier default", "food_threshold": 0.0}))
+	_ok(_auto_eat_at(tier_threshold + 0.1), "the modifier widens the tier default too (20% + 20%)")
+	_ok(not _auto_eat_at(tier_threshold + 0.25), "the tier default plus the modifier is 40%, not 20%")
+	ModifierManager.unregister("test:auto_eat_threshold")
+	_ok(not _auto_eat_at(tier_threshold + 0.1), "removing the modifier puts the tier default back at 20%")
+
+	# Leave the shared state as the suite expects to find it.
+	PlayerData.settings["auto_eat_tier"] = 0
+	BankManager.remove_item("shrimp", BankManager.get_count("shrimp"))
+
+## set_strategy is the only door, so it is the only place a bad record can be refused. Each patch
+## is a DIFFERENT validator failure, and every one of them has to leave the live record, the saved
+## choice and the preset list exactly as they were.
+func test_set_strategy_rejects_invalid() -> void:
+	_heading("Strategy validation at the door")
+	_combat_levels_for_abilities(100)
+	var announced: Array[String] = []
+	var capture := func(strategy_name: String) -> void: announced.append(strategy_name)
+	EventBus.strategy_changed.connect(capture)
+	var good: Dictionary = _strategy({"name": "Boss", "ability_loadout": ["power_strike"],
+		"food_threshold": 0.4, "special_bias": "eager"})
+	CombatManager.set_strategy(good)
+	_eq(announced, ["Boss"] as Array[String], "an accepted strategy announces itself once")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String],
+		"the preset's ability_loadout went through the same set_loadout door as the ability UI")
+	_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.4,
+		"the live record is the preset, not a copy of its name")
+
+	for patch in [{"special_bias": "reckless"}, {"food_threshold": 1.5}, {"name": ""},
+			{"ability_loadout": ["nope_ability"]}, {"protection_prayer_auto": "not_a_prayer"}]:
+		var bad: Dictionary = good.duplicate(true)
+		for key in patch.keys():
+			bad[key] = patch[key]
+		CombatManager.set_strategy(bad)
+		_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.4,
+			"an invalid %s is refused and the previous strategy stays live" % str(patch.keys()[0]))
+		_eq(CombatManager.active_loadout, ["power_strike"] as Array[String],
+			"an invalid %s did not re-slot the loadout" % str(patch.keys()[0]))
+	_eq(announced.size(), 1, "a rejected strategy announces nothing")
+	_eq(str(PlayerData.combat_strategy_active), "Boss", "the saved choice still names the accepted preset")
+	var boss_entries: int = 0
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == "Boss":
+			boss_entries += 1
+	_eq(boss_entries, 1, "rejected presets are never stored, so the list holds one 'Boss'")
+	EventBus.strategy_changed.disconnect(capture)
+
+	# A corrupt save must not be able to reach the fight either. start_combat adopts a bound preset
+	# through the same door, so a record that fails validation is refused there too and the live
+	# strategy is the one the player had.
+	var corrupt: Dictionary = good.duplicate(true)
+	corrupt["name"] = "Corrupt"
+	corrupt["food_threshold"] = 5.0
+	PlayerData.combat_strategies.append(corrupt)
+	CombatManager.assign_strategy_to_area(str(_find_area()["id"]), "Corrupt")
+	_ok(_start_test_fight(), "entered a region whose stored preset no longer validates")
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Boss",
+		"a stored preset that fails validation never reaches the combat path")
+	CombatManager.stop_combat("retreat")
+	PlayerData.combat_strategies.erase(corrupt)
+	PlayerData.combat_strategies_by_area.clear()
+
+## The last two fields: an area binding resolved at combat start, and the protection prayer asked
+## for through PrayerManager — so its level gate and its two-prayer cap still decide, because a
+## preset may request the prayer and never force it past a rule the player is held to.
+func test_strategy_area_and_prayer() -> void:
+	_heading("Strategy area assignment and auto prayer")
+	var area: Dictionary = _find_area()
+	_ok(not area.is_empty(), "found an open region to bind a preset to")
+	if area.is_empty():
+		return
+	var area_id: String = str(area["id"])
+	PlayerData.set_level("prayer", 100)
+	CombatManager.set_strategy(_strategy({"name": "Region boss", "special_bias": "eager",
+		"protection_prayer_auto": "protect_from_melee"}))
+	CombatManager.assign_strategy_to_area(area_id, "Region boss")
+	_eq(str(PlayerData.combat_strategies_by_area.get(area_id, "")), "Region boss", "the preset is bound to the region")
+	_eq(str(CombatManager.strategy_for(area_id).get("special_bias", "")), "eager", "strategy_for resolves the region's preset")
+	CombatManager.assign_strategy_to_area("no_such_area", "no_such_preset")
+	_ok(not PlayerData.combat_strategies_by_area.has("no_such_area"), "an unknown preset name is not bound to a region")
+	CombatManager.assign_strategy_to_area(area_id, "")
+	_ok(not PlayerData.combat_strategies_by_area.has(area_id), "an empty name unbinds the region")
+	CombatManager.assign_strategy_to_area(area_id, "Region boss")
+	_eq(str(CombatManager.strategy_for("unbound_region").get("name", "")), "Region boss",
+		"an unbound region uses the live strategy")
+
+	PrayerManager.deactivate_all()
+	PlayerData.set_level("prayer", 1)
+	_ok(_start_test_fight(), "started a fight in the bound region")
+	_ok(not PlayerData.active_prayers.has("protect_from_melee"),
+		"a prayer the player has not unlocked is left alone")
+	CombatManager.stop_combat("retreat")
+
+	PlayerData.set_level("prayer", 100)
+	_ok(_start_test_fight(), "restarted the fight at the prayer's unlock level")
+	_ok(PlayerData.active_prayers.has("protect_from_melee"),
+		"combat start activated the strategy's protection prayer")
+	_ok(CombatManager._has_protection_prayer("melee"), "the strategy's prayer is live in the combat path")
+	CombatManager.stop_combat("retreat")
+
+	PrayerManager.deactivate_all()
+	_ok(PrayerManager.toggle("thick_skin"), "activated a first prayer")
+	_ok(PrayerManager.toggle("protect_from_ranged"), "activated a second prayer")
+	_ok(_start_test_fight(), "started a fight with both prayer slots taken")
+	_eq(PlayerData.active_prayers.size(), PrayerManager.MAX_ACTIVE, "the two-prayer cap still holds")
+	_ok(not PlayerData.active_prayers.has("protect_from_melee"),
+		"the strategy's prayer is refused once both slots are full")
+	CombatManager.stop_combat("retreat")
+	PrayerManager.deactivate_all()
+
+	# Entering the region adopts its preset; the record the combat path then reads is the adopted
+	# one, which is the only way "the region's preset applied" means anything.
+	CombatManager.set_strategy(_strategy({"name": "Plain", "special_bias": "normal"}))
+	_ok(_start_test_fight(), "entered the bound region with another strategy live")
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss", "combat start adopted the region's preset")
+	_eq(CombatManager._biased_special_chance(10.0, str(CombatManager.active_strategy.get("special_bias", ""))), 20.0,
+		"the adopted preset's bias is what the special roll now reads")
+	CombatManager.stop_combat("retreat")
+
+	# Persistence: the active record and the bindings survive the same round trip the loadout does.
+	var json_text: String = JSON.stringify(SaveManager.build_save_data(), "\t")
+	CombatManager.set_strategy(_strategy({"name": "Plain", "special_bias": "hold"}))
+	SaveManager._apply(JSON.parse_string(json_text))
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss", "deserialize restores the saved strategy")
+	_eq(str(CombatManager.strategy_for(area_id).get("name", "")), "Region boss", "deserialize restores the area binding")
+
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Default", "a new game returns to the default preset")
+	_eq(PlayerData.combat_strategies_by_area.size(), 0, "a new game clears the area bindings")
+
+## A complete strategy record with every field spelled out, patched by `overrides`. Written out
+## rather than layered on the engine's own default so a test can never pass because the field it
+## is checking happened to be missing.
+func _strategy(overrides: Dictionary = {}) -> Dictionary:
+	var record: Dictionary = {"name": "Test", "ability_loadout": [], "food_threshold": 0.0,
+		"special_bias": "normal", "protection_prayer_auto": ""}
+	for key in overrides.keys():
+		record[key] = overrides[key]
+	return record
+
+## Drives the real _auto_eat() with the player at `hp_fraction` of max HP and reports whether it
+## spent a food. Counted across every food rather than one item id, because _find_food()
+## deliberately picks whichever food covers the missing health.
+func _auto_eat_at(hp_fraction: float) -> bool:
+	var before: int = _food_in_bank()
+	CombatManager.player_hp = CombatManager._compute_max_hp() * hp_fraction
+	CombatManager._auto_eat()
+	return _food_in_bank() < before
+
+func _food_in_bank() -> int:
+	var total: int = 0
+	for item_id in BankManager.items.keys():
+		if str(DataLoader.get_item(str(item_id)).get("item_type", "")) == "food":
+			total += int(BankManager.items[item_id])
+	return total
 
 ## Replays one pinned seed through the real attack path and returns the ability the engine named,
 ## so a caller can assert WHICH ability the effect was credited to.
