@@ -65,6 +65,7 @@ func run_all(host: Node) -> void:
 	_test_favorites()
 	_test_overview_skill_tabs(host)
 	_test_content_validation()
+	test_identity_theme_builds()
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
@@ -1270,6 +1271,16 @@ func _report_suite(name: String, state: Dictionary) -> void:
 	for label in state.get("failures", []):
 		_ok(false, "%s: %s" % [name, str(label)])
 	_ok(true, "%s policy, safety and persistence checks" % name)
+
+## Task 2 pin: build_theme() must return a Theme with the ember display/text fonts
+## registered (missing files fall back to the default font, never crash).
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_identity_theme_builds() -> void:
+	_heading("Identity theme")
+	var theme: Theme = UIStyle.build_theme()
+	_ok(theme != null, "build_theme must return a Theme")
+	_ok(theme != null and theme.has_font("display", ""), "display font registered")
+	_ok(theme != null and theme.has_font("text", ""), "text font registered")
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")

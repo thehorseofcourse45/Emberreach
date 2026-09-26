@@ -6,35 +6,35 @@ extends RefCounted
 ## changes it everywhere, which is what makes a large game feel like one product instead of a
 ## collection of unrelated panels.
 ##
-## Direction: restrained dark fantasy. Deep blue-black ground, slightly raised surfaces,
-## parchment text, muted gold reserved for milestones and primary actions, teal for gathering
-## and recovery, blue for crafting and the arcane, amber/red for danger.
+## Direction: ember-and-charcoal dark fantasy. Warm charcoal ground, umber surfaces,
+## parchment text, ember-orange primary actions, muted gold kept for rarity-tier highlights,
+## teal for gathering and recovery, blue for crafting and the arcane, amber/red for danger.
 
 # ---------------------------------------------------------------- colour: ground & surface
-const BG_DEEP := Color("#081321")        ## app background, behind everything
-const BG := Color("#0d1a2a")             ## workspace background
-const SURFACE := Color("#122236")        ## raised panel
-const SURFACE_2 := Color("#1a2d43")      ## raised row / input
-const SURFACE_3 := Color("#253c56")      ## hover / selected row
-const SURFACE_SUNKEN := Color("#0a1726") ## wells, logs, code-like blocks
-const BORDER := Color("#2d4965")
-const BORDER_STRONG := Color("#476783")
+const BG_DEEP := Color("#141010")        ## app background, behind everything
+const BG := Color("#1e1611")             ## workspace background
+const SURFACE := Color("#2a1e15")        ## raised panel
+const SURFACE_2 := Color("#38291c")      ## raised row / input
+const SURFACE_3 := Color("#4a3826")      ## hover / selected row
+const SURFACE_SUNKEN := Color("#100c09") ## wells, logs, code-like blocks
+const BORDER := Color("#5a4433")
+const BORDER_STRONG := Color("#7d6248")
 const BORDER_GOLD := Color("#9d7833")
 
 # ---------------------------------------------------------------- colour: text
-const TEXT := Color("#e1eaf3")
-const TEXT_STRONG := Color("#f7f9fc")
-const TEXT_MUTED := Color("#a7b8c9")
-const TEXT_DIM := Color("#74899e")
+const TEXT := Color("#e8dcc3")
+const TEXT_STRONG := Color("#faf3e0")
+const TEXT_MUTED := Color("#9a8c72")
+const TEXT_DIM := Color("#6f6350")
 const TEXT_ON_GOLD := Color("#1a1508")
 
 # ---------------------------------------------------------------- colour: semantics
-const GOLD := Color("#d5a640")           ## milestones, primary actions, tracked goals
-const GOLD_BRIGHT := Color("#f1cb70")
-const TEAL := Color("#4fb3a1")           ## gathering, recovery, positive passive
+const GOLD := Color("#e2622b")           ## ember-orange: milestones, primary actions, tracked goals
+const GOLD_BRIGHT := Color("#ee7d3d")    ## lighter ember for focus rings and highlights
+const TEAL := Color("#5fa396")           ## gathering, recovery, positive passive
 const BLUE := Color("#5f93d8")           ## crafting, arcane
-const AMBER := Color("#dc9a3a")          ## caution / blocked
-const RED := Color("#c9553f")            ## danger, combat, destructive
+const AMBER := Color("#bd8f4d")          ## caution / blocked
+const RED := Color("#b0604b")            ## danger, combat, destructive
 const GREEN := Color("#6fbf73")          ## success, satisfied requirement
 const PURPLE := Color("#9a77c9")         ## rare / mastery
 const DISABLED := Color("#5a5c60")
@@ -42,13 +42,14 @@ const DISABLED := Color("#5a5c60")
 # ---------------------------------------------------------------- rarity (presentation only)
 ## Rarity is a presentation layer derived from data we already have (explicit tier, then sell
 ## value band). It is documented here so nobody mistakes it for a gameplay stat.
+## Legendary/relic keep literal golds: GOLD/GOLD_BRIGHT are the ember accent now.
 const RARITY: Dictionary = {
 	"common": {"label": "Common", "color": BORDER_STRONG},
 	"uncommon": {"label": "Uncommon", "color": TEAL},
 	"rare": {"label": "Rare", "color": BLUE},
 	"epic": {"label": "Epic", "color": PURPLE},
-	"legendary": {"label": "Legendary", "color": GOLD},
-	"relic": {"label": "Relic", "color": GOLD_BRIGHT},
+	"legendary": {"label": "Legendary", "color": Color("#d5a640")},
+	"relic": {"label": "Relic", "color": Color("#f1cb70")},
 }
 
 # ---------------------------------------------------------------- spacing

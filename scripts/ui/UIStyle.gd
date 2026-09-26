@@ -73,6 +73,13 @@ static func chip_box(fill: Color) -> StyleBoxFlat:
 static func build_theme() -> Theme:
 	var th := Theme.new()
 
+	# --- fonts ------------------------------------------------------------
+	# Missing files keep the default font, never crash (pinned by test_identity_theme_builds).
+	if ResourceLoader.exists("res://assets/fonts/ember_display.ttf"):
+		th.set_font("display", "", load("res://assets/fonts/ember_display.ttf"))
+	if ResourceLoader.exists("res://assets/fonts/ember_text.ttf"):
+		th.set_font("text", "", load("res://assets/fonts/ember_text.ttf"))
+
 	# --- containers -------------------------------------------------------
 	th.set_stylebox("panel", "PanelContainer", surface_box("panel"))
 	th.set_stylebox("panel", "Panel", surface_box("panel"))
