@@ -48,11 +48,11 @@ func _on_pause() -> void:
     _pause_btn.text = "Resume" if GameManager.is_paused else "Pause"
 
 func _currency_icon(id: String) -> TextureRect:
-    var tr := TextureRect.new()
-    tr.texture = AssetRegistry.icon("currencies", id)
-    tr.custom_minimum_size = Vector2(20, 20)
-    tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-    return tr
+    var tex_rect := TextureRect.new()
+    tex_rect.texture = AssetRegistry.icon("currencies", id)
+    tex_rect.custom_minimum_size = Vector2(20, 20)
+    tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    return tex_rect
 
 static func _fmt(v: float) -> String:
     if v >= 1_000_000_000.0:

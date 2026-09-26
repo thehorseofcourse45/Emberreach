@@ -71,8 +71,8 @@ const ICONS: Dictionary = {
 
 static var _shell: Node = null
 
-static func register(shell: Node) -> void:
-	_shell = shell
+static func register(shell_node: Node) -> void:
+	_shell = shell_node
 
 static func shell() -> Node:
 	return _shell

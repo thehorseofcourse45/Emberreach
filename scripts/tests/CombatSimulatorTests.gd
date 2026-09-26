@@ -161,7 +161,7 @@ static func run(host: Node) -> Dictionary:
 	var control_wait: int = 40
 	for _i in range(control_wait):
 		await host.get_tree().process_frame
-	var settled: String = _save_fingerprint()
+	var _settled: String = _save_fingerprint()
 	# Wait for the worker. A generous cap: if the model ever regressed into a hang, this fails the
 	# test rather than the run.
 	var frames: int = 0

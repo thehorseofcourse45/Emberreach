@@ -26,17 +26,17 @@ func plant(plot_index: int, seed_id: String) -> bool:
     var plot: Dictionary = plots[plot_index]
     if plot["seed_id"] != "":
         return false
-    var seed: Dictionary = DataLoader.get_item(seed_id)
-    if seed.is_empty() or seed.get("item_type", "") != "seed":
+    var seed_data: Dictionary = DataLoader.get_item(seed_id)
+    if seed_data.is_empty() or seed_data.get("item_type", "") != "seed":
         return false
     if not BankManager.remove_item(seed_id, 1):
         return false
     plot["seed_id"] = seed_id
     plot["planted_unix"] = Time.get_unix_time_from_system()
-    plot["grow_seconds"] = float(seed.get("grow_seconds", 3600))
+    plot["grow_seconds"] = float(seed_data.get("grow_seconds", 3600))
     plot["harvested"] = false
     # Survival chance: base + 10% per compost, capped 100%.
-    var survival: float = clampf(float(seed.get("base_survival", 0.5)) + 0.1 * float(plot["compost"]), 0.0, 1.0)
+    var survival: float = clampf(float(seed_data.get("base_survival", 0.5)) + 0.1 * float(plot["compost"]), 0.0, 1.0)
     plot["alive"] = _rng.randf() <= survival
     return true
 
@@ -61,12 +61,12 @@ func harvest(plot_index: int) -> Dictionary:
     if not is_ready(plot_index):
         return {}
     var p: Dictionary = plots[plot_index]
-    var seed: Dictionary = DataLoader.get_item(p["seed_id"])
-    var yield_qty: int = _rng.randi_range(int(seed.get("min_yield", 1)), int(seed.get("max_yield", 3)))
-    var out_item: String = seed.get("product_item", "")
+    var seed_data: Dictionary = DataLoader.get_item(p["seed_id"])
+    var yield_qty: int = _rng.randi_range(int(seed_data.get("min_yield", 1)), int(seed_data.get("max_yield", 3)))
+    var out_item: String = seed_data.get("product_item", "")
     if out_item != "":
         BankManager.add_item(out_item, yield_qty)
-    var xp: float = float(seed.get("harvest_xp", 0.0)) * ModifierManager.get_skill_xp_multiplier("farming")
+    var xp: float = float(seed_data.get("harvest_xp", 0.0)) * ModifierManager.get_skill_xp_multiplier("farming")
     PlayerData.add_xp("farming", xp)
     MasteryManager.add_mastery_xp("farming", p["seed_id"], float(p["grow_seconds"]) / 3600.0, 0.0)
     p["seed_id"] = ""
@@ -75,11 +75,11 @@ func harvest(plot_index: int) -> Dictionary:
 
 ## Growth is time-based, so offline advancement only needs to detect newly-ready plots.
 func advance_offline(_elapsed: float) -> int:
-    var ready: int = 0
+    var ready_count: int = 0
     for i in range(plots.size()):
         if is_ready(i):
-            ready += 1
-    return ready
+            ready_count += 1
+    return ready_count
 
 func serialize() -> Dictionary:
     return {"plots": plots}

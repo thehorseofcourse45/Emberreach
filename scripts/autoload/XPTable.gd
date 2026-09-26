@@ -69,7 +69,7 @@ func level_for_xp_binary(xp: float) -> int:
     var lo: int = 1
     var hi: int = MAX_LEVEL
     while lo < hi:
-        var mid: int = int((lo + hi + 1) / 2)
+        var mid: int = (lo + hi + 1) >> 1
         if xp >= float(_total_xp[mid]):
             lo = mid
         else:

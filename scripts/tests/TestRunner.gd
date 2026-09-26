@@ -1287,7 +1287,7 @@ func _test_duplicate_submissions() -> void:
 func _test_progression_qol(host: Node) -> void:
 	_heading("Progression QoL")
 	_report_suite("action queue", await ActionQueueTests.run(host))
-	_report_suite("loot filters", await LootFilterTests.run(host))
+	_report_suite("loot filters", LootFilterTests.run(host))
 	_report_suite("combat simulator", await CombatSimulatorTests.run(host))
 
 ## Fold a dedicated suite's private counters into the main report, so a QoL failure is as visible
@@ -1582,14 +1582,16 @@ func _backup_save_files() -> Dictionary:
 	for path in [SaveManager.SAVE_PATH, SaveManager.BACKUP_PATH]:
 		if FileAccess.file_exists(path):
 			var f := FileAccess.open(path, FileAccess.READ)
-			out[path] = f.get_as_text() if f != null else null
 			if f != null:
+				out[path] = f.get_as_text()
 				f.close()
+			else:
+				out[path] = null
 		else:
 			out[path] = null
 	return out
 
-func _restore(snapshot: Dictionary, files: Dictionary, host: Node) -> void:
+func _restore(snapshot: Dictionary, files: Dictionary, _host: Node) -> void:
 	# 1) Put the in-memory state back exactly as it was found.
 	SaveManager._apply(snapshot)
 	# 2) Put the save files back byte-for-byte, including "there was no save at all".

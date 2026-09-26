@@ -572,7 +572,7 @@ func _requirement_hint(u: Dictionary) -> String:
 		parts.append("clear %s" % str(DataLoader.get_dungeon(dungeon).get("name", dungeon)))
 	return "Needs " + ", ".join(parts) if not parts.is_empty() else "Locked"
 
-static func _fmt(v: float) -> String:
+func _fmt(v: float) -> String:
 	if absf(v) >= 1_000_000_000.0:
 		return "%.2fB" % (v / 1_000_000_000.0)
 	if absf(v) >= 1_000_000.0:

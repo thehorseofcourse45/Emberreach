@@ -114,7 +114,7 @@ func build_save_data() -> Dictionary:
 	}
 
 ## Returns true when the save reached disk and re-read cleanly.
-func save_game(reason_is_major: bool = false) -> bool:
+func save_game(_reason_is_major: bool = false) -> bool:
 	if _write_in_progress:
 		# Duplicate submission guard: a save already owns the write slot.
 		return false
@@ -193,8 +193,8 @@ func _adopt_legacy_save() -> void:
 	if has_save():
 		return
 	var parent: String = OS.get_user_data_dir().get_base_dir()
-	for name in LEGACY_APP_NAMES:
-		var folder: String = parent.path_join(name)
+	for legacy_name in LEGACY_APP_NAMES:
+		var folder: String = parent.path_join(legacy_name)
 		var candidate: String = folder.path_join("save_game.json")
 		if not FileAccess.file_exists(candidate):
 			continue

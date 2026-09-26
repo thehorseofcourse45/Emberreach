@@ -79,10 +79,10 @@ func _reregister() -> void:
     if elite_pillar != "":
         ModifierManager.register("%s:elite_pillar" % CATEGORY, get_obstacle(elite_pillar).get("effect", {}), CATEGORY, "Elite Pillar")
 
-func save_blueprint(name: String) -> void:
+func save_blueprint(blueprint_name: String) -> void:
     if blueprints.size() >= 5:
         blueprints.pop_front()
-    blueprints.append({"name": name, "layout": built.duplicate()})
+    blueprints.append({"name": blueprint_name, "layout": built.duplicate()})
 
 func load_blueprint(index: int) -> bool:
     if index < 0 or index >= blueprints.size():

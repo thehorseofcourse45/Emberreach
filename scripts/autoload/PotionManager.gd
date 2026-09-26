@@ -39,9 +39,9 @@ func consume_charge() -> void:
         return
     PlayerData.potion_charges -= 1
     if PlayerData.potion_charges <= 0:
-        var name: String = get_potion(PlayerData.active_potion).get("name", PlayerData.active_potion)
+        var potion_name: String = get_potion(PlayerData.active_potion).get("name", PlayerData.active_potion)
         clear()
-        EventBus.notification.emit("%s expired" % name, "info")
+        EventBus.notification.emit("%s expired" % potion_name, "info")
 
 func clear() -> void:
     ModifierManager.unregister(SOURCE_ID)

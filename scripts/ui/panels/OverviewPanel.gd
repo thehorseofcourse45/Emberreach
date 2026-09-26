@@ -157,16 +157,16 @@ func _clear(box: VBoxContainer) -> void:
 func _rebuild_skill_card(skill_id: String) -> void:
 	_clear(_skill_box)
 	var skill: Dictionary = DataLoader.get_skill(skill_id)
-	var name: String = str(skill.get("name", skill_id))
+	var skill_name: String = str(skill.get("name", skill_id))
 	var level: int = PlayerData.get_level(skill_id)
 	var xp: float = PlayerData.get_xp(skill_id)
 	var next_level: int = mini(level + 1, XPTable.MAX_LEVEL)
 	var at_cap: bool = level >= PlayerData.get_level_cap(skill_id)
 
-	_skill_box.add_child(UIStyle.section(name, "%s — level %d of %d" % [
+	_skill_box.add_child(UIStyle.section(skill_name, "%s — level %d of %d" % [
 		str(skill.get("category", "skill")).capitalize(), level,
 		PlayerData.get_level_cap(skill_id)]))
-	_skill_box.add_child(UIStyle.title("%s — level %d" % [name, level], UITokens.FONT_HEAD))
+	_skill_box.add_child(UIStyle.title("%s — level %d" % [skill_name, level], UITokens.FONT_HEAD))
 	_skill_box.add_child(Widgets.progress_bar(XPTable.level_progress(xp, level), 1.0, UITokens.GOLD,
 		"%s / %s" % [UIStyle.fmt_exact(xp), UIStyle.fmt_exact(float(XPTable.xp_for_level(next_level)))], 16,
 		"Level %d progress" % level))
@@ -212,14 +212,14 @@ func _rebuild_skill_card(skill_id: String) -> void:
 	actions.add_theme_constant_override("h_separation", UITokens.SP_3)
 	actions.add_theme_constant_override("v_separation", UITokens.SP_2)
 	var open := UIStyle.primary_button("Open full skill",
-		"Open the Skills screen on %s for every recipe, material and modifier" % name)
+		"Open the Skills screen on %s for every recipe, material and modifier" % skill_name)
 	var target: String = skill_id
 	open.pressed.connect(func(): navigated.emit({"screen": Screens.SKILLS, "skill_id": target}))
 	actions.add_child(open)
-	var pin := UIStyle.mini_button("Track level goal", "Pin 'reach level X in %s' as a goal" % name)
+	var pin := UIStyle.mini_button("Track level goal", "Pin 'reach level X in %s' as a goal" % skill_name)
 	pin.pressed.connect(func():
 		Goals.pin("skill", target, next_level)
-		EventBus.notify("Tracking level %d in %s." % [next_level, name], "success"))
+		EventBus.notify("Tracking level %d in %s." % [next_level, skill_name], "success"))
 	actions.add_child(pin)
 	_skill_box.add_child(actions)
 

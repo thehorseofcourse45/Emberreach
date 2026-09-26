@@ -10,8 +10,6 @@ extends Node
 ## because a bank the player did not ask to be emptied is a bank they still wanted.
 
 const LootFilterEvaluator = preload("res://scripts/core/LootFilterEvaluator.gd")
-## An explicit preload rather than the bare class name: the global class-name cache is only
-## rebuilt by an editor import, so a headless run can see a brand-new class_name as undeclared.
 
 signal rules_changed()
 signal auto_sold(result: Dictionary)

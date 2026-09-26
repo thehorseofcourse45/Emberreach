@@ -7,7 +7,7 @@ const LootFilterEvaluator = preload("res://scripts/core/LootFilterEvaluator.gd")
 ## running game. The handful that do touch the bank prove the wiring: that a real sale happens,
 ## that the safety overrides actually hold, and that rules survive a save round-trip.
 
-static func run(host: Node) -> Dictionary:
+static func run(_host: Node) -> Dictionary:
 	var state: Dictionary = {"passed": 0, "failed": 0, "failures": []}
 	var mgr: Node = LootFilterManager
 

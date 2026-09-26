@@ -191,7 +191,7 @@ func evaluate_all() -> Array[String]:
 		EventBus.notify("Achievement: %s" % str(rec.get("name", id)), "success")
 	return newly
 
-func _grant(id: String, reward: Dictionary) -> void:
+func _grant(_id: String, reward: Dictionary) -> void:
 	if reward.is_empty():
 		return
 	if reward.has("gp"):

@@ -83,7 +83,7 @@ func refresh() -> void:
 	if BankManager.has_overflow():
 		_playtime.text += "  ·  overflow %d" % BankManager.overflow_count()
 
-func _set_chip(key: String, value: float, kind: String, icon_id: String) -> void:
+func _set_chip(key: String, value: float, _kind: String, _icon_id: String) -> void:
 	if not _chips.has(key):
 		return
 	var label: Label = _chips[key]

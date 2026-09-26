@@ -28,11 +28,11 @@ func _rebuild() -> void:
         var item_id: String = EquipmentManager.get_equipped(i)
         var row := HBoxContainer.new()
         row.add_theme_constant_override("separation", 6)
-        var tr := TextureRect.new()
-        tr.texture = AssetRegistry.icon("slots", SLOT_NAMES[i].to_lower().replace(" ", "_"))
-        tr.custom_minimum_size = Vector2(22, 22)
-        tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-        row.add_child(tr)
+        var tex_rect := TextureRect.new()
+        tex_rect.texture = AssetRegistry.icon("slots", SLOT_NAMES[i].to_lower().replace(" ", "_"))
+        tex_rect.custom_minimum_size = Vector2(22, 22)
+        tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        row.add_child(tex_rect)
         var item_name: String = DataLoader.get_item(item_id).get("name", "—") if item_id != "" else "—"
         row.add_child(UIStyle.label("%s: %s" % [SLOT_NAMES[i], item_name], item_id == ""))
         _equip_box.add_child(row)

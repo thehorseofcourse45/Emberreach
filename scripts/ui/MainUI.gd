@@ -573,7 +573,7 @@ func _handle_cli() -> bool:
 		get_tree().quit()
 		return true
 	if "--selftest" in args:
-		await TestRunner.new().run_end_to_end(self)
+		TestRunner.new().run_end_to_end(self)
 		get_tree().quit()
 		return true
 	if "--assetreport" in args:

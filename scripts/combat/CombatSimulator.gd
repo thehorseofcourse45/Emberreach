@@ -19,8 +19,6 @@ extends RefCounted
 ##   - A fight that reaches FIGHT_SECONDS_CEILING is a loss for rate purposes (a stalemate).
 ##   - Prayer points are unlimited within a trial; the live prayer XP formulas still apply.
 
-const CombatFormulas = preload("res://scripts/combat/CombatFormulas.gd")
-
 ## Hard ceiling on one fight. Prevents a two-sided stalemate (a monster that cannot be hit and a
 ## player who cannot be hit) from running forever. Reaching it counts as a loss.
 const FIGHT_SECONDS_CEILING: float = 300.0

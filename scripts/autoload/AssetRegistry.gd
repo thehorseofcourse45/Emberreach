@@ -34,8 +34,8 @@ func monster_sprite(monster_id: String) -> Texture2D:
 func icon(kind: String, id: String) -> Texture2D:
     return _load("icons/%s/%s.png" % [kind, id], kind, id)
 
-func ui(name: String) -> Texture2D:
-    return _load("ui/%s.png" % name, "ui", name)
+func ui(icon_name: String) -> Texture2D:
+    return _load("ui/%s.png" % icon_name, "ui", icon_name)
 
 ## True if an authored file exists (used by the asset report).
 func has_asset(rel: String) -> bool:
@@ -84,9 +84,9 @@ func _placeholder(kind: String, id: String) -> Texture2D:
         img.set_pixel(x, 0, edge); img.set_pixel(x, size - 1, edge)
     for y in range(size):
         img.set_pixel(0, y, edge); img.set_pixel(size - 1, y, edge)
-    var c: int = size / 2
+    var c: int = floori(size / 2.0)
     var mark: Color = Color(1, 1, 1, 0.85)
-    var arm: int = size / 5
+    var arm: int = floori(size / 5.0)
     for i in range(arm + 1):
         if c + i < size - 1:
             img.set_pixel(c + i, c, mark)

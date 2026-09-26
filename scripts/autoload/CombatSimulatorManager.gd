@@ -16,8 +16,6 @@ signal run_started(target_name: String)
 signal run_finished(report: Dictionary)
 signal run_failed(reason: String)
 
-const CombatSimulator = preload("res://scripts/combat/CombatSimulator.gd")
-
 ## The production figure the feature is specified around.
 const PRODUCTION_TRIALS: int = 10000
 const MIN_TRIALS: int = 1

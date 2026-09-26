@@ -17,19 +17,19 @@ const MIN_CONTROL_W: int = 148
 
 static func resource_chip(icon_kind: String, icon_id: String, text: String,
 		tooltip := "", color: Color = UITokens.TEXT) -> Control:
-	var wrap := HBoxContainer.new()
-	wrap.add_theme_constant_override("separation", UITokens.SP_3)
-	wrap.tooltip_text = tooltip if tooltip != "" else text
+	var chip := HBoxContainer.new()
+	chip.add_theme_constant_override("separation", UITokens.SP_3)
+	chip.tooltip_text = tooltip if tooltip != "" else text
 	var icon := TextureRect.new()
 	icon.texture = AssetRegistry.icon(icon_kind, icon_id)
 	icon.custom_minimum_size = Vector2(UITokens.ICON_SM, UITokens.ICON_SM)
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	wrap.add_child(icon)
+	chip.add_child(icon)
 	var l := UIStyle.label(text, false, UITokens.FONT_BODY)
 	l.add_theme_color_override("font_color", color)
 	l.name = "value"
-	wrap.add_child(l)
-	return wrap
+	chip.add_child(l)
+	return chip
 
 ## Key=value row used in tables and detail panes.
 static func key_value(key: String, value: String, value_color: Color = UITokens.TEXT,
@@ -139,11 +139,11 @@ static func item_icon(item_id: String, size := UITokens.ICON_MD) -> Control:
 	sb.content_margin_bottom = 1
 	frame.add_theme_stylebox_override("panel", sb)
 	frame.custom_minimum_size = Vector2(size, size)
-	var tr := TextureRect.new()
-	tr.texture = AssetRegistry.item_icon(item_id)
-	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	frame.add_child(tr)
+	var tex_rect := TextureRect.new()
+	tex_rect.texture = AssetRegistry.item_icon(item_id)
+	tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	frame.add_child(tex_rect)
 	frame.tooltip_text = item_tooltip(item_id)
 	return frame
 
@@ -260,8 +260,8 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var req: int = int(action.get("level_required", 1))
 	var unlocked: bool = level >= req
 	var mastery: int = MasteryManager.get_level(skill_id, action_id)
-	var wrap := VBoxContainer.new()
-	wrap.add_theme_constant_override("separation", UITokens.SP_1)
+	var card := VBoxContainer.new()
+	card.add_theme_constant_override("separation", UITokens.SP_1)
 	var row := Button.new()
 	row.custom_minimum_size = Vector2(0, UITokens.H_ROW)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -320,8 +320,8 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	if not unlocked:
 		tips.append("LOCKED — requires %s %d" % [DataLoader.get_skill(skill_id).get("name", skill_id), req])
 	row.tooltip_text = "\n".join(tips)
-	wrap.add_child(row)
-	return wrap
+	card.add_child(row)
+	return card
 
 static func _item_list(items: Dictionary) -> String:
 	var parts: Array[String] = []

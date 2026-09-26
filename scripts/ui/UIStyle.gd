@@ -328,11 +328,11 @@ static func spacer() -> Control:
 	return c
 
 static func icon_texture(kind: String, id: String) -> TextureRect:
-	var tr := TextureRect.new()
-	tr.texture = AssetRegistry.icon(kind, id)
-	tr.custom_minimum_size = Vector2(UITokens.ICON_MD, UITokens.ICON_MD)
-	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	return tr
+	var tex_rect := TextureRect.new()
+	tex_rect.texture = AssetRegistry.icon(kind, id)
+	tex_rect.custom_minimum_size = Vector2(UITokens.ICON_MD, UITokens.ICON_MD)
+	tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	return tex_rect
 
 # =========================================================================
 #  Formatting — one value, one rendering
@@ -379,20 +379,20 @@ static func fmt_duration(seconds: float) -> String:
 	var s: int = int(round(seconds))
 	if s < 60:
 		return "%ds" % s
-	var m: int = s / 60
+	var m: int = floori(s / 60.0)
 	if m < 60:
 		return "%dm %02ds" % [m, s % 60]
-	var h: int = m / 60
+	var h: int = floori(m / 60.0)
 	if h < 24:
 		return "%dh %02dm" % [h, m % 60]
-	return "%dd %02dh" % [h / 24, h % 24]
+	return "%dd %02dh" % [floori(h / 24.0), h % 24]
 
 static func fmt_percent(fraction: float) -> String:
 	return "%.1f%%" % (fraction * 100.0)
 
 static func fmt_signed(v: float, suffix := "") -> String:
-	var sign: String = "+" if v >= 0.0 else ""
-	return "%s%s%s" % [sign, fmt(v), suffix]
+	var sign_str: String = "+" if v >= 0.0 else ""
+	return "%s%s%s" % [sign_str, fmt(v), suffix]
 
 ## "3 / 12" with a satisfied marker — never rely on colour alone to say "requirement met".
 static func fmt_requirement(current: float, required: float, satisfied: bool) -> String:
@@ -445,10 +445,10 @@ const MODIFIER_LABELS: Dictionary = {
 }
 
 static func describe_modifier(key: String, value: float) -> String:
-	var label: String = str(MODIFIER_LABELS.get(key, key.replace("_", " ")))
+	var desc: String = str(MODIFIER_LABELS.get(key, key.replace("_", " ")))
 	if key.ends_with("_percent"):
-		return "%s %s" % [fmt_signed(value, "%"), label]
-	return "%s %s" % [fmt_signed(value), label]
+		return "%s %s" % [fmt_signed(value, "%"), desc]
+	return "%s %s" % [fmt_signed(value), desc]
 
 static func describe_modifier_table(mods: Dictionary) -> String:
 	if mods.is_empty():

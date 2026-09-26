@@ -107,7 +107,7 @@ func show_summary(summary: Dictionary) -> void:
 	popup_centered()
 	get_ok_button().grab_focus()
 
-func _add_item_table(heading: String, table: Dictionary, color: Color) -> void:
+func _add_item_table(heading: String, table: Dictionary, _color: Color) -> void:
 	if table.is_empty():
 		return
 	_content.add_child(UIStyle.section(heading))

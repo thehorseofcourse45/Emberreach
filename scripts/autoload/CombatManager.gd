@@ -590,8 +590,8 @@ func _lose_one_item() -> String:
 			continue
 		if slot_index == ItemData.EquipmentSlot.SUMMON_1 or slot_index == ItemData.EquipmentSlot.SUMMON_2:
 			continue
-		var item_id: String = str(EquipmentManager.slots[slot])
-		if item_id == "" or BankManager.is_protected(item_id):
+		var candidate_id: String = str(EquipmentManager.slots[slot])
+		if candidate_id == "" or BankManager.is_protected(candidate_id):
 			continue
 		candidates.append(slot_index)
 	if candidates.is_empty():

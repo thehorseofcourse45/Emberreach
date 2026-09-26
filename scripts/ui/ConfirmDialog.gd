@@ -7,10 +7,10 @@ class_name ConfirmDialog
 ## a toast. This is the brief's "avoid disruptive modals for ordinary actions" made concrete.
 
 ## Show a confirmation. `on_confirm` receives nothing; close behaviour is handled here.
-static func ask(parent: Node, title: String, body: String, confirm_text: String,
+static func ask(parent: Node, dialog_title: String, body: String, confirm_text: String,
 		on_confirm: Callable, destructive := false, extra_note := "") -> ConfirmDialog:
 	var dlg := ConfirmDialog.new()
-	dlg.title = title
+	dlg.title = dialog_title
 	dlg.dialog_text = body if extra_note == "" else "%s\n\n%s" % [body, extra_note]
 	dlg.ok_button_text = confirm_text
 	dlg.cancel_button_text = "Cancel"
