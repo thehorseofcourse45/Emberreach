@@ -66,7 +66,11 @@ func _ready() -> void:
 	_rng.randomize()
 	player_max_hp = _compute_max_hp()
 	player_hp = player_max_hp
-	set_loadout(PlayerData.ability_loadout)
+	# active_loadout is deliberately NOT seeded from PlayerData here. At boot `skills` is still
+	# empty, so every get_level() answers 1, the slot cap would compute to 1 and set_loadout would
+	# write that clamped loadout back — silently deleting slots from the player's save. The loadout
+	# is re-derived in deserialize(), which SaveManager._apply always reaches after
+	# PlayerData.deserialize, and a new game has nothing to restore.
 
 func seed_rng(seed_value: int) -> void:
 	_rng.seed = seed_value
@@ -259,10 +263,13 @@ func _tick_fighting(delta: float) -> void:
 	if _is_player_stunned():
 		return
 	player_attack_interval = maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed()))
-	# A Flurry-class ability is a one-swing speedup. The interval is recomputed from
-	# ModifierManager on every tick, so a speedup held anywhere else would be overwritten before it
-	# ever reached a swing; it is spent here instead. Positive percent = faster, as in
-	# ModifierManager.get_attack_interval.
+	# A Flurry-class ability is a PER-TICK speedup, not a per-swing one: the interval is recomputed
+	# from ModifierManager at the top of every tick, so a speedup held in the field would be
+	# overwritten before it ever reached a swing. It is spent here instead and cleared, which means
+	# it covers every swing this tick's while-loop fires — one swing live at ~16ms frames, as many
+	# as the accumulated timer allows during a 1s offline step. Positive percent = faster.
+	# ModifierManager.get_attack_interval (ModifierManager.gd:155) is the canonical formula this
+	# mirrors; there is no helper that takes an extra percent, so if that one changes, change this.
 	player_attack_interval = maxf(0.25, player_attack_interval * (1.0 - _ability_interval_percent / 100.0))
 	_ability_interval_percent = 0.0
 	if bool(context.get("raid", false)):
@@ -402,15 +409,19 @@ func _player_attack() -> void:
 	# Open-region hazard: hostile ground costs accuracy.
 	hit_chance = clampf(hit_chance + float(_active_hazard().get("player_accuracy_percent", 0.0)), 0.0, 100.0)
 	if _rng.randf() * 100.0 > hit_chance:
+		# A whiff fires nothing, so the hook must not keep pointing at the last ability that did.
+		_last_ability_fired = ""
 		return
 	# Abilities roll only on a landed hit, and at most one of them takes the swing.
-	_roll_abilities_for_test()
-	var ab: Dictionary = DataLoader.get_ability(_last_ability_fired)
-	var ab_effect: Dictionary = ab.get("effect", {})
-	# apply_status and interval_percent need no damage number, so they land right here; the three
-	# damage-shaped effects are applied below, where the number they scale exists.
-	_apply_ability_status(ab)
-	_ability_interval_percent += float(ab_effect.get("interval_percent", 0.0))
+	_roll_abilities()
+	# Everything below reads the fired record, and this runs on EVERY landed hit, so the lookup and
+	# the two effects that need no damage number are hoisted behind the fired check.
+	var ab_effect: Dictionary = {}
+	if _last_ability_fired != "":
+		var ab: Dictionary = DataLoader.get_ability(_last_ability_fired)
+		ab_effect = ab.get("effect", {})
+		_apply_ability_status(ab)
+		_ability_interval_percent += float(ab_effect.get("interval_percent", 0.0))
 	var mh: int = maxi(1, _player_max_hit(attack_style))
 	# max_hit_percent is a percentage of this swing's max hit, the same convention (and the same
 	# place) as the combat triangle below.
@@ -888,7 +899,7 @@ const ABILITY_SLOT_MAX: int = 4
 
 var active_loadout: Array[String] = []      ## ability ids, in roll order
 var _ability_cooldowns: Dictionary = {}    ## ability_id -> player attacks still to wait
-var _ability_interval_percent: float = 0.0 ## a one-swing speedup, spent by the next interval
+var _ability_interval_percent: float = 0.0 ## a per-tick speedup, spent by the next tick
 var _last_ability_fired: String = ""       ## "" when no ability fired on the last attack
 
 func ability_slot_cap() -> int:
@@ -935,7 +946,10 @@ func _decrement_ability_cooldowns() -> void:
 		_ability_cooldowns[ability_id] = maxi(0, int(_ability_cooldowns[ability_id]) - 1)
 
 ## The ability step of one player attack: which ability, if any, has this swing. It only selects —
-## every effect is applied by _player_attack() at the point the number it scales exists.
+## every effect is applied by _player_attack() at the point the number it scales exists. Named
+## `_roll_abilities`, not `_roll_abilities_for_test`: this IS the production path that
+## _player_attack() calls, and the test suite drives it directly only because doing so needs no
+## fight.
 ##
 ## RNG CONSUMPTION ORDER inside one player attack. Task 5's simulator mirror must draw in exactly
 ## this sequence; a stream that differs between the live and offline paths desynchronises offline
@@ -949,7 +963,7 @@ func _decrement_ability_cooldowns() -> void:
 ##   4. the damage roll and the crit roll              (both inside CombatFormulas.roll_damage)
 ##   5. the weapon special-attack roll, then that special's own status-chance roll
 ## Steps 1, 4 and 5 are exactly where they were before abilities existed.
-func _roll_abilities_for_test() -> void:
+func _roll_abilities() -> void:
 	_last_ability_fired = ""
 	for ability_id in active_loadout:
 		if int(_ability_cooldowns.get(ability_id, 0)) > 0:
@@ -967,9 +981,10 @@ func _roll_abilities_for_test() -> void:
 ## apply_status names an id in StatusEffect.TABLE, and the record's sibling status_duration is how
 ## long it lasts (ContentValidator enforces that pairing, so neither can be missing here). It reuses
 ## the existing special-attack status path, whose extra status_chance roll is fixed at 100% for an
-## ability: the trigger roll above is the chance. status_damage_per_tick is read the same way
-## special_attacks.json supplies it, so the data file alone decides how hard a status bites; no
-## shipped ability sets it yet, so those statuses mark the target and expire without ticking.
+## ability: the trigger roll above is the chance. The sibling status_damage_per_tick is passed
+## through the same key special_attacks.json uses and is a NUMBER, not a percent; without it
+## StatusEffect.tick returns 0.0 and the status marks the target and expires having done nothing, so
+## every apply_status ability ships one. The defaults are only a guard against a malformed record.
 func _apply_ability_status(ab: Dictionary) -> void:
 	var status_id: String = str((ab.get("effect", {}) as Dictionary).get("apply_status", ""))
 	if status_id == "":

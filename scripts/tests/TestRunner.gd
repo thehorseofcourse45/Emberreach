@@ -1535,7 +1535,7 @@ func test_ability_cooldown_respected() -> void:
 	var blocked: int = 0
 	for _i in range(2):
 		CombatManager.seed_rng(hit_seed)
-		CombatManager._roll_abilities_for_test()
+		CombatManager._roll_abilities()
 		if CombatManager._last_ability_fired == "":
 			blocked += 1
 		CombatManager._decrement_ability_cooldowns()
@@ -1543,7 +1543,7 @@ func test_ability_cooldown_respected() -> void:
 	_eq(int(CombatManager._ability_cooldowns["power_strike"]), 0, "the counter reached zero")
 
 	CombatManager.seed_rng(hit_seed)
-	CombatManager._roll_abilities_for_test()
+	CombatManager._roll_abilities()
 	_eq(CombatManager._last_ability_fired, "power_strike", "the same pinned roll fires at cooldown zero")
 	_eq(int(CombatManager._ability_cooldowns["power_strike"]), cooldown, "firing set cooldown_attacks")
 
@@ -1576,12 +1576,12 @@ func test_ability_roll_count() -> void:
 
 	CombatManager.set_loadout([])
 	CombatManager.seed_rng(hit_seed)
-	CombatManager._roll_abilities_for_test()
+	CombatManager._roll_abilities()
 	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 0), "an empty loadout draws nothing")
 
 	CombatManager.set_loadout(["power_strike", "envenom"])
 	CombatManager.seed_rng(hit_seed)
-	CombatManager._roll_abilities_for_test()
+	CombatManager._roll_abilities()
 	_eq(CombatManager._last_ability_fired, "power_strike", "the first loadout entry that rolls high takes the attack")
 	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 1),
 		"a firing ability drew exactly once, so a second ability cannot fire on the same attack")
@@ -1589,14 +1589,14 @@ func test_ability_roll_count() -> void:
 	# A blocked entry is skipped WITHOUT a draw, so the survivor still sees the first draw.
 	CombatManager._ability_cooldowns["power_strike"] = 2
 	CombatManager.seed_rng(hit_seed)
-	CombatManager._roll_abilities_for_test()
+	CombatManager._roll_abilities()
 	_eq(CombatManager._last_ability_fired, "envenom", "the next off-cooldown entry takes a blocked attack")
 	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 1), "a blocked entry consumed no randomness")
 
 	# A missed entry does spend its draw, so the pair costs exactly two.
 	CombatManager._ability_cooldowns.clear()
 	CombatManager.seed_rng(miss_then_hit)
-	CombatManager._roll_abilities_for_test()
+	CombatManager._roll_abilities()
 	_eq(CombatManager._last_ability_fired, "envenom", "a miss falls through to the next entry")
 	_eq(CombatManager._rng.randi(), _stream_after_draws(miss_then_hit, 2), "two rolled entries drew exactly twice")
 
@@ -1645,9 +1645,25 @@ func test_ability_slot_cap() -> void:
 	# Through JSON, because serialize() hands back the live array by reference — a save never sees
 	# that, and neither may this check.
 	var json_text: String = JSON.stringify(SaveManager.build_save_data(), "\t")
+	# A boot must not re-clamp a stored loadout against levels that have not loaded yet: get_level()
+	# answers 1 for every skill until PlayerData holds a save, so a clamp at that point computes a
+	# cap of 1 and silently deletes the player's other three slots. Nothing should touch the stored
+	# loadout here; only deserialize(), after PlayerData has real levels, is allowed to.
+	var loaded_skills: Dictionary = PlayerData.skills.duplicate(true)
+	PlayerData.skills.clear()
+	CombatManager._ready()
+	_eq(PlayerData.ability_loadout.size(), 4,
+		"a boot does not re-clamp a stored loadout against pre-load skill levels")
+	PlayerData.skills = loaded_skills
+	# Perturb BOTH halves before reloading: asserting PlayerData against an untouched
+	# CombatManager.active_loadout would pass even if deserialize re-derived nothing, which is the
+	# half that can actually break.
 	PlayerData.ability_loadout.clear()
+	CombatManager.set_loadout([])
 	SaveManager._apply(JSON.parse_string(json_text))
-	_eq(PlayerData.ability_loadout, CombatManager.active_loadout, "the loadout survives a save round trip")
+	_eq(CombatManager.active_loadout, four as Array[String],
+		"deserialize re-derives the exact stored loadout, in order")
+	_eq(PlayerData.ability_loadout, CombatManager.active_loadout, "the saved and live loadouts agree")
 
 	_combat_levels_for_abilities(1)
 	PlayerData.set_level("magic", 1)
@@ -1668,9 +1684,21 @@ func test_ability_slot_cap() -> void:
 
 ## The three effects that need a live number, exercised through the real attack path. The seed is
 ## SEARCHED, not assumed: every assertion is a fact about the engine, so a change in the stream
-## shows up as "no seed found" instead of turning into a flake.
+## shows up as "no seed found" instead of turning into a flake. The search only says an effect
+## happens SOMEWHERE in 400 seeds, so each finding is then replayed and the ability the engine
+## names is asserted — that credits every effect to its own id instead of to "something fired".
 func test_ability_effects_in_fight() -> void:
 	_heading("Abilities on a landed hit")
+	# A status that carries no per-tick damage marks the target and expires having done nothing,
+	# which is the one way an apply_status ability can look alive and be inert. Data-driven, so a
+	# future edit that drops the value anywhere in the table fails here.
+	var inert: Array[String] = []
+	for ability_id in DataLoader.abilities.keys():
+		var rec: Dictionary = DataLoader.abilities[ability_id]
+		if (rec.get("effect", {}) as Dictionary).has("apply_status") \
+				and float(rec.get("status_damage_per_tick", 0.0)) <= 0.0:
+			inert.append(str(ability_id))
+	_ok(inert.is_empty(), "every apply_status ability ships a per-tick damage value (inert: %s)" % str(inert))
 	_combat_levels_for_abilities(100)
 	if not _start_test_fight():
 		_ok(false, "started a fight on the easiest open region")
@@ -1681,7 +1709,9 @@ func test_ability_effects_in_fight() -> void:
 	var capture := func(d: int, _is_crit: bool) -> void: dealt.append(d)
 	EventBus.player_attacked.connect(capture)
 	var flurry_seed: int = -1
+	var gore_seed: int = -1
 	var gore_duration: float = -1.0
+	var pact_seed: int = -1
 	var pact_gain: float = -1.0
 	var pact_damage: float = 0.0
 	for candidate in range(1, 400):
@@ -1691,23 +1721,35 @@ func test_ability_effects_in_fight() -> void:
 		CombatManager._player_attack()
 		if flurry_seed < 0 and CombatManager._ability_interval_percent > 0.0:
 			flurry_seed = candidate
-		if gore_duration < 0.0 and CombatManager.monster_effects.size() == 1 \
+		if gore_seed < 0 and CombatManager.monster_effects.size() == 1 \
 				and str(CombatManager.monster_effects[0].id) == "bleed":
+			gore_seed = candidate
 			gore_duration = CombatManager.monster_effects[0].duration
-		if pact_gain < 0.0 and dealt.size() == 1 and CombatManager.player_hp > 1.0:
+		if pact_seed < 0 and dealt.size() == 1 and CombatManager.player_hp > 1.0:
+			pact_seed = candidate
 			pact_gain = CombatManager.player_hp - 1.0
 			pact_damage = float(dealt[0])
-		if flurry_seed > 0 and gore_duration > 0.0 and pact_gain > 0.0:
+		if flurry_seed > 0 and gore_seed > 0 and pact_seed > 0:
 			break
 	EventBus.player_attacked.disconnect(capture)
 
 	_ok(flurry_seed > 0, "Flurry holds its speedup for the next swing")
-	_ok(gore_duration > 0.0, "Gore applied bleed to the monster on a landed hit")
-	if gore_duration > 0.0:
+	_ok(gore_seed > 0, "Gore applied bleed to the monster on a landed hit")
+	if gore_seed > 0:
+		_eq(_replay_attack(monster, gore_seed), "gore", "the pinned bleed seed is attributed to Gore")
 		_approx(gore_duration, float(DataLoader.get_ability("gore").get("status_duration", 0.0)), 0.001,
 			"the status lasts the record's status_duration")
-	_ok(pact_gain > 0.0, "Blood Pact healed a wounded player on a landed hit")
-	if pact_gain > 0.0:
+		# Stepped directly, and deliberately: _tick_monster_effects is the production effect tick, so
+		# this measures the DOT itself instead of a whole fight's worth of player and monster hits.
+		var per_tick: float = float(DataLoader.get_ability("gore").get("status_damage_per_tick", 0.0))
+		var hp_before: int = CombatManager.monster_hp
+		CombatManager._tick_monster_effects(2.0)
+		_eq(CombatManager.monster_hp, hp_before - 2 * int(per_tick),
+			"the bleed deals its per-tick damage once per tick_interval")
+	_ok(pact_seed > 0, "Blood Pact healed a wounded player on a landed hit")
+	if pact_seed > 0:
+		_eq(_replay_attack(monster, pact_seed), "blood_pact",
+			"the pinned heal seed is attributed to Blood Pact")
 		var frac: float = float(DataLoader.get_ability("blood_pact").get("effect", {})
 			.get("heal_on_hit_fraction", 0.0))
 		_approx(pact_gain, pact_damage * (frac + ModifierManager.get_life_steal() / 100.0), 0.001,
@@ -1723,14 +1765,23 @@ func test_ability_effects_in_fight() -> void:
 		var baseline: float = CombatManager.player_attack_interval
 		CombatManager.seed_rng(flurry_seed)
 		CombatManager._player_attack()
+		_eq(CombatManager._last_ability_fired, "flurry", "the pinned speedup seed is attributed to Flurry")
 		CombatManager.tick(0.01)
 		_ok(CombatManager.player_attack_interval < baseline,
-			"the next swing is faster than the ModifierManager baseline")
+			"the next tick's swing is faster than the ModifierManager baseline")
 	CombatManager.stop_combat("retreat")
 
 	# The remaining suites assume a fresh character.
 	GameManager.start_new_game("standard")
 	_deterministic(true)
+
+## Replays one pinned seed through the real attack path and returns the ability the engine named,
+## so a caller can assert WHICH ability the effect was credited to.
+func _replay_attack(monster_id: String, seed_value: int) -> String:
+	_restore_test_fight(monster_id)
+	CombatManager.seed_rng(seed_value)
+	CombatManager._player_attack()
+	return CombatManager._last_ability_fired
 
 ## A fight on the easiest open region, so an ability check measures the ability and not the monster.
 func _start_test_fight() -> bool:

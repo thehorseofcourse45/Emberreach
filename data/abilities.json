@@ -1,5 +1,5 @@
 {
-  "_comment": "Slottable combat abilities. style is melee/ranged/magic/any. trigger_chance is a percent; cooldown_attacks counts player attacks, not seconds. Effect keys are exactly max_hit_percent, interval_percent, crit_chance_percent, apply_status, heal_on_hit_fraction. MAPPINGS (Tasks 3/5 apply these, so a wrong sign or unit is a silent balance bug): max_hit_percent -> the style-selected ModifierKeys key melee/ranged/magic_max_hit_percent (ModifierKeys.gd:37-39), read through ModifierManager.get_max_hit_percent(style); for style 'any' add the value to ALL THREE keys - a styleless ability then needs no weapon-style knowledge and can never silently no-op, and the live engine and the simulator cannot disagree (no shipped ability needs this yet, the rule is fixed here). heal_on_hit_fraction is a FRACTION 0..1 of the damage dealt (heal = damage_dealt * fraction), NOT a percent - never feed it to a percent getter such as ModifierKeys.LIFE_STEAL_PERCENT; special_attacks.json's heal_fraction is the same fraction precedent. interval_percent is the GLOBAL attack-speed percent -> ModifierKeys.ATTACK_INTERVAL_PERCENT ('attack_interval_percent'), positive = FASTER, because ModifierManager.get_attack_interval computes base*(1-pct/100); do not confuse it with ModifierKeys.SUFFIX_INTERVAL_PERCENT, which is the same string but a per-skill suffix key. crit_chance_percent -> ModifierKeys.CRIT_CHANCE_PERCENT, read through ModifierManager.get_crit_chance(). apply_status (this spelling is canonical for abilities and is deliberately distinct from special_attacks.json's applies_status - do not 'fix' it) names an id in StatusEffect.TABLE, and its sibling status_duration is how many seconds that status lasts. crit_chance_percent and cooldown_attacks are the canonical shipped names; the design spec's crit_chance/cooldown are stale - do not correct the data back to them.",
+  "_comment": "Slottable combat abilities. style is melee/ranged/magic/any. trigger_chance is a percent; cooldown_attacks counts player attacks, not seconds. Effect keys are exactly max_hit_percent, interval_percent, crit_chance_percent, apply_status, heal_on_hit_fraction. status_duration (seconds) and status_damage_per_tick (damage per status tick, a NUMBER not a percent) are top-level siblings required by an apply_status effect: without a per-tick value a DOT status such as burn, poison or bleed marks the target and expires having dealt nothing, because StatusEffect.TABLE gives those rows only a kind and a tick_interval. Both sibling fields are named and supplied the same way special_attacks.json names them for its own DOT effects, and the per-tick values here are taken from those same-status, same-duration records. MAPPINGS (Tasks 3/5 apply these, so a wrong sign or unit is a silent balance bug): max_hit_percent -> the style-selected ModifierKeys key melee/ranged/magic_max_hit_percent (ModifierKeys.gd:37-39), read through ModifierManager.get_max_hit_percent(style); for style 'any' add the value to ALL THREE keys - a styleless ability then needs no weapon-style knowledge and can never silently no-op, and the live engine and the simulator cannot disagree (no shipped ability needs this yet, the rule is fixed here). heal_on_hit_fraction is a FRACTION 0..1 of the damage dealt (heal = damage_dealt * fraction), NOT a percent - never feed it to a percent getter such as ModifierKeys.LIFE_STEAL_PERCENT; special_attacks.json's heal_fraction is the same fraction precedent. interval_percent is the GLOBAL attack-speed percent -> ModifierKeys.ATTACK_INTERVAL_PERCENT ('attack_interval_percent'), positive = FASTER, because ModifierManager.get_attack_interval computes base*(1-pct/100); do not confuse it with ModifierKeys.SUFFIX_INTERVAL_PERCENT, which is the same string but a per-skill suffix key. The engine applies max_hit_percent and interval_percent to the swing/tick that fires them rather than registering a modifier source, so both last exactly one attack or one tick. crit_chance_percent -> ModifierKeys.CRIT_CHANCE_PERCENT, read through ModifierManager.get_crit_chance(). apply_status (this spelling is canonical for abilities and is deliberately distinct from special_attacks.json's applies_status - do not 'fix' it) names an id in StatusEffect.TABLE, and its sibling status_duration is how many seconds that status lasts. crit_chance_percent and cooldown_attacks are the canonical shipped names; the design spec's crit_chance/cooldown are stale - do not correct the data back to them.",
   "power_strike": {
     "id": "power_strike",
     "name": "Power Strike",
@@ -30,6 +30,7 @@
     "unlock": "",
     "effect": {"apply_status": "bleed"},
     "status_duration": 6.0,
+    "status_damage_per_tick": 5.0,
     "trigger_chance": 30.0,
     "cooldown_attacks": 5,
     "description": "Tears the target open, bleeding it for 6s."
@@ -53,6 +54,7 @@
     "unlock": "",
     "effect": {"apply_status": "poison"},
     "status_duration": 8.0,
+    "status_damage_per_tick": 3.0,
     "trigger_chance": 25.0,
     "cooldown_attacks": 5,
     "description": "Coats the arrow, poisoning the target for 8s."
@@ -65,6 +67,7 @@
     "unlock": "",
     "effect": {"apply_status": "burn"},
     "status_duration": 6.0,
+    "status_damage_per_tick": 5.0,
     "trigger_chance": 20.0,
     "cooldown_attacks": 5,
     "description": "Sets the target alight for 6s."
