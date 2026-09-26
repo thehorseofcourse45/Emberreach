@@ -66,6 +66,9 @@ static func progress_bar(value: float, maximum: float, color: Color, text := "",
 	var bar := ProgressBar.new()
 	bar.max_value = maxf(1.0, maximum)
 	bar.value = clampf(value, 0.0, maxf(1.0, maximum))
+	# Set-then-tween: the value above is authoritative (the tween is a full no-op
+	# when reduced motion is on), Motion only adds the visual glide.
+	Motion.tween_bar(bar, bar.value)
 	bar.show_percentage = false
 	bar.custom_minimum_size = Vector2(0, height)
 	bar.add_theme_stylebox_override("fill", UIStyle._solid(color, UITokens.R_SM))

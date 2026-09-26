@@ -21,6 +21,10 @@ var _log: Dictionary = Widgets.event_log(40)
 var _selected_area: String = ""
 var _built: bool = false
 var expeditions_only: bool = false
+# Rebuilt with the fight readout; the motion hooks target these and no-ops while they are null.
+var _monster_sprite: TextureRect
+var _monster_fx: Control
+var _player_fx: Control
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
@@ -29,8 +33,8 @@ func _ready() -> void:
 	EventBus.combat_started.connect(func(_c): _log["push"].call("Fight begun."); refresh())
 	EventBus.combat_ended.connect(func(c): _log["push"].call("Fight ended (%s)." % str(c.get("reason", ""))); refresh())
 	EventBus.monster_killed.connect(func(m): _log["push"].call("Defeated %s." % str(DataLoader.get_monster(m).get("name", m))))
-	EventBus.monster_attacked.connect(func(d): if d > 0: _log["push"].call("You take %d damage." % d))
-	EventBus.player_attacked.connect(func(d, crit): _log["push"].call("You hit for %d%s." % [d, " (critical)" if crit else ""]))
+	EventBus.monster_attacked.connect(_on_monster_attacked)
+	EventBus.player_attacked.connect(_on_player_attacked)
 	EventBus.player_died.connect(func(c): _log["push"].call("Defeated by %s." % str(c.get("killer", "an enemy"))))
 	EventBus.dungeon_completed.connect(func(d): _log["push"].call("%s cleared." % str(DataLoader.get_dungeon(d).get("name", d))))
 	EventBus.state_refreshed.connect(refresh)
@@ -142,6 +146,11 @@ func _style_index() -> int:
 func _refresh_fight() -> void:
 	# The log is cached across rebuilds, so lift it out before the clear frees the box's children.
 	Widgets.detach(_log["root"])
+	# The readout is torn down and rebuilt wholesale, so the motion targets are dropped with it: a
+	# floater or a flash aimed at the previous cell would otherwise be pointing at a freed node.
+	_monster_sprite = null
+	_monster_fx = null
+	_player_fx = null
 	_clear(_fight_box)
 	_fight_box.add_child(UIStyle.section("Current expedition" if expeditions_only else "Current fight"))
 	var fighting: bool = CombatManager.state != CombatManager.State.IDLE
@@ -155,9 +164,11 @@ func _refresh_fight() -> void:
 	head.add_theme_constant_override("separation", UITokens.SP_5)
 	var sprite := TextureRect.new()
 	sprite.texture = AssetRegistry.monster_sprite(CombatManager.current_monster_id)
-	sprite.custom_minimum_size = Vector2(UITokens.ICON_XL, UITokens.ICON_XL)
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	head.add_child(sprite)
+	var monster_cell := _fx_cell(sprite, Vector2(UITokens.ICON_XL, UITokens.ICON_XL))
+	head.add_child(monster_cell["cell"])
+	_monster_sprite = sprite
+	_monster_fx = monster_cell["overlay"]
 	var col := UIStyle.vbox(UITokens.SP_2)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not cmp.is_empty():
@@ -175,8 +186,15 @@ func _refresh_fight() -> void:
 	head.add_child(col)
 	_fight_box.add_child(head)
 	var maxhp: float = CombatManager._compute_max_hp()
-	_fight_box.add_child(Widgets.progress_bar(CombatManager.player_hp, maxhp, UITokens.GREEN,
-		"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)], 16))
+	var hp_bar := Widgets.progress_bar(CombatManager.player_hp, maxhp, UITokens.GREEN,
+		"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)], 16)
+	var hp_cell := _fx_cell(hp_bar, Vector2(0, 16))
+	_fight_box.add_child(hp_cell["cell"])
+	_player_fx = hp_cell["overlay"]
+	# Nearly dead: a looping call for attention. Motion drops it under reduced motion, and the bar is
+	# rebuilt (and so re-evaluated) on every refresh, so healing above the line stops it.
+	if maxhp > 0.0 and CombatManager.player_hp / maxhp < 0.25:
+		Motion.pulse(hp_bar)
 	if not CombatManager.player_effects.is_empty():
 		var effects: Array[String] = []
 		for e in CombatManager.player_effects:
@@ -342,3 +360,57 @@ func _clear(box: Node) -> void:
 	for c in box.get_children():
 		box.remove_child(c)
 		c.queue_free()
+
+# =========================================================================
+#  Combat motion
+# =========================================================================
+
+## A cell with a dedicated overlay for damage floaters. Motion.spawn_floater reuses whichever
+## hidden Label it finds under the Control it is handed, so the cell that holds the avatar or the
+## HP bar also has to hold an overlay of its own — pointing the floater at a shared parent would
+## let it hijack that parent's Labels. The cell is a plain Control, not a container, so the overlay
+## keeps its own position and the content is anchored to fill the cell.
+func _fx_cell(content: Control, min_size: Vector2) -> Dictionary:
+	var cell := Control.new()
+	cell.custom_minimum_size = min_size
+	cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	cell.add_child(content)
+	var overlay := Control.new()
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cell.add_child(overlay)
+	return {"cell": cell, "overlay": overlay}
+
+func _on_player_attacked(damage: int, is_crit: bool) -> void:
+	_log["push"].call("You hit for %d%s." % [damage, " (critical)" if is_crit else ""])
+	_floater(_monster_fx, "-%d" % damage, UITokens.GOLD_BRIGHT if is_crit else UITokens.TEXT_STRONG, is_crit)
+	_flash(_monster_sprite)
+
+func _on_monster_attacked(damage: int) -> void:
+	if damage <= 0:
+		return
+	_log["push"].call("You take %d damage." % damage)
+	_floater(_player_fx, "-%d" % damage, UITokens.RED)
+
+## The size goes on the Label Motion just woke rather than on the overlay: a theme override does
+## not reach a child, and the pool is shared between ordinary hits and crits, so a size left on a
+## pooled Label would stick to the next number that reuses it.
+func _floater(overlay: Control, text: String, color: Color, crit := false) -> void:
+	if overlay == null or not is_instance_valid(overlay):
+		return
+	Motion.spawn_floater(overlay, text, color)
+	for child in overlay.get_children():
+		var label := child as Label
+		if label != null and label.visible:
+			label.add_theme_font_size_override("font_size",
+				UITokens.FONT_SUBHEAD if crit else UITokens.FONT_BODY)
+
+## 80ms of over-bright so a hit lands even when the log line is missed. Over 1.0 rather than plain
+## white: modulate multiplies, so a sprite is only white if its texture is white.
+func _flash(sprite: TextureRect) -> void:
+	if sprite == null or not is_instance_valid(sprite) or Motion._is_reduced():
+		return
+	sprite.modulate = Color(2.4, 2.4, 2.4)
+	var tween := sprite.create_tween()
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.08)

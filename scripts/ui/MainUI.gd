@@ -31,6 +31,8 @@ var _toasts: ToastStack
 var _nav_button: Button
 var _drawer: PanelContainer
 var _recovery_panel: Control
+var _accent_fx: Control
+var _accent_bar: ColorRect
 
 var _screen: String = Screens.OVERVIEW
 var _context: Dictionary = {}
@@ -105,6 +107,8 @@ func _build() -> void:
 	_nav_button = nav["nav_button"]
 	_nav_buttons = nav["nav_buttons"]
 	_skill_nav_buttons = nav["skill_buttons"]
+	_accent_fx = nav["accent_fx"]
+	_accent_bar = nav["accent_bar"]
 
 	_workspace = PanelContainer.new()
 	_workspace.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -159,6 +163,7 @@ func _show_screen(screen: String, route: Dictionary) -> void:
 			"This screen has not been built. Everything else in the game still works.")
 	var work := _work_area(panel)
 	_workspace.add_child(work)
+	Motion.fade_rise(work)
 	# A focused route (a specific skill / region / quest) refines the pane it opens.
 	if panel.has_method("focus_route"):
 		panel.call("focus_route", route)
@@ -267,6 +272,7 @@ func _clear_workspace() -> void:
 		c.queue_free()
 
 func _refresh_nav() -> void:
+	var selected_row: Button = null
 	for screen in _nav_buttons.keys():
 		var b: Button = _nav_buttons[screen]
 		var badge: int = int(_unlock_badges.get(screen, 0))
@@ -275,6 +281,7 @@ func _refresh_nav() -> void:
 		b.tooltip_text = label if badge == 0 else "%s — %d new" % [label, badge]
 		var selected: bool = screen == _screen
 		if selected:
+			selected_row = b
 			b.add_theme_stylebox_override("normal", UIStyle.surface_box("raised", true))
 			b.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
 		else:
@@ -286,8 +293,11 @@ func _refresh_nav() -> void:
 	for skill_id in _skill_nav_buttons.keys():
 		var button: Button = _skill_nav_buttons[skill_id]
 		var selected: bool = _screen == Screens.SKILLS and skill_id == selected_skill
+		if selected:
+			selected_row = button
 		button.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "row", selected))
 		button.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT if selected else UITokens.TEXT)
+	SidebarNav.slide_accent(_accent_fx, _accent_bar, selected_row)
 
 func _bump_badge(screen: String) -> void:
 	if _screen == screen:
