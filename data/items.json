@@ -2526,6 +2526,17 @@
       "damage_reduction_percent": 14
     }
   },
+  "potion_dr_6": {
+    "id": "potion_dr_6",
+    "name": "Stoneskin Draught VI",
+    "item_type": "potion",
+    "sell_price": 180,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "damage_reduction_percent": 18
+    }
+  },
   "potion_mining_5": {
     "id": "potion_mining_5",
     "name": "Delver's Draught V",

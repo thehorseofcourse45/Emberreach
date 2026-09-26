@@ -144,6 +144,28 @@
           "abyssal_essence": 4
         },
         "mastery_action_time": 5.0
+      },
+      {
+        "id": "unmake_light",
+        "name": "Unmake the Light",
+        "level_required": 110,
+        "base_interval": 5.0,
+        "base_xp": 390,
+        "output_items": {
+          "abyssal_essence": 5
+        },
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "the_quiet_throne",
+        "name": "The Quiet Throne",
+        "level_required": 120,
+        "base_interval": 5.0,
+        "base_xp": 500,
+        "output_items": {
+          "abyssal_essence": 6
+        },
+        "mastery_action_time": 5.0
       }
     ],
     "mastery_unlocks": {
@@ -880,6 +902,30 @@
         "id": "plant_barrentoe",
         "name": "Barrentoe",
         "level_required": 85,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "mastery_action_time": 1.0
+      },
+      {
+        "id": "plant_duskroot",
+        "name": "Duskroot",
+        "level_required": 95,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "mastery_action_time": 1.0
+      },
+      {
+        "id": "plant_herald_bloom",
+        "name": "Herald Bloom",
+        "level_required": 105,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "mastery_action_time": 1.0
+      },
+      {
+        "id": "plant_emberbloom",
+        "name": "Emberbloom",
+        "level_required": 115,
         "base_interval": 1.0,
         "base_xp": 0,
         "mastery_action_time": 1.0
@@ -3377,6 +3423,21 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_umbral_dhide_vambraces",
+        "name": "Umbral D'hide Vambraces",
+        "level_required": 115,
+        "base_interval": 1.65,
+        "base_xp": 400,
+        "input_items": {
+          "black_dragonhide": 4,
+          "umbral_essence": 2
+        },
+        "output_items": {
+          "black_dhide_vambraces": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_reinforced_dhide_coif",
         "name": "Reinforced D'hide Coif",
         "level_required": 105,
@@ -3961,6 +4022,20 @@
           "potion_firemaking_5": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_dr_6",
+        "name": "Stoneskin Draught VI",
+        "level_required": 110,
+        "base_interval": 1.7,
+        "base_xp": 200,
+        "input_items": {
+          "barrentoe": 8
+        },
+        "output_items": {
+          "potion_dr_6": 1
+        },
+        "mastery_action_time": 1.7
       }
     ],
     "mastery_unlocks": {
@@ -4399,6 +4474,33 @@
         "level_required": 75,
         "base_interval": 3.0,
         "base_xp": 120,
+        "output_items": {},
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "stormline_run",
+        "name": "Stormline Run",
+        "level_required": 85,
+        "base_interval": 3.0,
+        "base_xp": 160,
+        "output_items": {},
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "high_wind_run",
+        "name": "High Wind Run",
+        "level_required": 100,
+        "base_interval": 3.0,
+        "base_xp": 220,
+        "output_items": {},
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "herald_ascent",
+        "name": "Herald Ascent",
+        "level_required": 115,
+        "base_interval": 3.0,
+        "base_xp": 300,
         "output_items": {},
         "mastery_action_time": 3.0
       }
@@ -5301,6 +5403,20 @@
           "herald_bar": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "transmute_herald",
+        "name": "Transmute Herald",
+        "level_required": 110,
+        "base_interval": 1.7,
+        "base_xp": 180,
+        "input_items": {
+          "umbral_bar": 1,
+          "soul_rune": 5
+        },
+        "output_items": {},
+        "gp_reward": 5000,
+        "mastery_action_time": 1.7
       }
     ],
     "order": 25
@@ -5365,6 +5481,33 @@
         "level_required": 60,
         "base_interval": 5.0,
         "base_xp": 60,
+        "output_items": {},
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "chart_abyss",
+        "name": "Chart the Abyss",
+        "level_required": 75,
+        "base_interval": 5.0,
+        "base_xp": 100,
+        "output_items": {},
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "chart_herald",
+        "name": "Chart the Herald",
+        "level_required": 92,
+        "base_interval": 5.0,
+        "base_xp": 140,
+        "output_items": {},
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "chart_silence",
+        "name": "Chart the Silence",
+        "level_required": 110,
+        "base_interval": 5.0,
+        "base_xp": 190,
         "output_items": {},
         "mastery_action_time": 5.0
       }
@@ -5560,6 +5703,31 @@
             "chance": 0.25,
             "min_qty": 2,
             "max_qty": 4
+          }
+        ],
+        "mastery_action_time": 6.0
+      },
+      {
+        "id": "throne",
+        "name": "Throne Dig Site",
+        "level_required": 115,
+        "base_interval": 6.0,
+        "base_xp": 250,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_unique",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.3,
+            "min_qty": 3,
+            "max_qty": 5
           }
         ],
         "mastery_action_time": 6.0
@@ -5959,6 +6127,24 @@
           "herald_echo": 1
         },
         "success_chance": 0.6
+      },
+      {
+        "id": "first_echo",
+        "name": "First Echo",
+        "level_required": 112,
+        "base_interval": 18.0,
+        "base_xp": 600,
+        "description": "Play back the very first thing the rack ever heard. Everything since was a copy.",
+        "mastery_action_time": 18.0,
+        "input_items": {
+          "herald_echo": 1,
+          "echo_charge": 5,
+          "resonance_trace": 10
+        },
+        "output_items": {
+          "master_echo_loop": 2
+        },
+        "success_chance": 0.55
       }
     ],
     "order": 30
@@ -6466,6 +6652,24 @@
           "herald_cask": 1
         },
         "success_chance": 0.4
+      },
+      {
+        "id": "halcyon_vintage",
+        "name": "Halcyon Vintage",
+        "level_required": 116,
+        "base_interval": 30.0,
+        "base_xp": 900,
+        "description": "Open the cask on the calmest day of the year. There is exactly one.",
+        "mastery_action_time": 30.0,
+        "input_items": {
+          "herald_cask": 1,
+          "charged_vessel": 3,
+          "weather_charge": 5
+        },
+        "output_items": {
+          "blended_weather": 4
+        },
+        "success_chance": 0.38
       }
     ],
     "order": 32
@@ -6668,6 +6872,24 @@
           "herald_craft": 1
         },
         "success_chance": 0.5
+      },
+      {
+        "id": "myth_knit",
+        "name": "Myth Knit",
+        "level_required": 115,
+        "base_interval": 24.0,
+        "base_xp": 750,
+        "description": "Weave every telling together until the seams stop showing. Then wear it.",
+        "mastery_action_time": 24.0,
+        "input_items": {
+          "living_legend": 1,
+          "tradition_progress": 6,
+          "paired_tradition": 2
+        },
+        "output_items": {
+          "herald_craft": 2
+        },
+        "success_chance": 0.45
       }
     ],
     "order": 33
@@ -6904,6 +7126,42 @@
           "herald_case": 1
         },
         "success_chance": 0.6
+      },
+      {
+        "id": "paper_ghost",
+        "name": "Paper Ghost",
+        "level_required": 105,
+        "base_interval": 20.0,
+        "base_xp": 600,
+        "description": "Find the file investigating you back. It was filed under your own name.",
+        "mastery_action_time": 20.0,
+        "input_items": {
+          "witness_timeline": 3,
+          "trace_evidence": 5,
+          "restored_label": 2
+        },
+        "output_items": {
+          "cold_trail": 1
+        },
+        "success_chance": 0.55
+      },
+      {
+        "id": "archive_ash",
+        "name": "Archive Ash",
+        "level_required": 115,
+        "base_interval": 24.0,
+        "base_xp": 780,
+        "description": "File everything, burn the archive, and keep the one page that matters.",
+        "mastery_action_time": 24.0,
+        "input_items": {
+          "cold_trail": 2,
+          "witness_timeline": 4,
+          "restored_label": 3
+        },
+        "output_items": {
+          "herald_case": 2
+        },
+        "success_chance": 0.5
       }
     ],
     "order": 34

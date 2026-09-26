@@ -138,5 +138,21 @@
         "chance": 0.05
       }
     ]
+  },
+  "throne": {
+    "id": "throne",
+    "name": "Throne Dig Site",
+    "level_required": 115,
+    "excavate_xp": 250,
+    "artefacts": [
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.08
+      }
+    ]
   }
 }
