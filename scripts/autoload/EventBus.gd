@@ -47,6 +47,7 @@ signal status_effect_applied(target: String, effect_id: String)
 signal status_effect_expired(target: String, effect_id: String)
 signal player_special_attack(sa_id: String)
 signal monster_special_attack(sa_id: String)
+signal ability_triggered(ability_id: String)
 
 # --- Unlocks & completion ---
 signal pet_unlocked(pet_id: String)

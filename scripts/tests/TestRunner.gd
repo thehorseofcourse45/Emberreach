@@ -66,6 +66,11 @@ func run_all(host: Node) -> void:
 	_test_overview_skill_tabs(host)
 	test_abilities_load()
 	test_ability_validation_rejects()
+	test_ability_cooldown_respected()
+	test_ability_roll_count()
+	test_ability_heal_caps()
+	test_ability_slot_cap()
+	test_ability_effects_in_fight()
 	_test_content_validation()
 	test_identity_theme_builds()
 	test_surface_box_falls_back()
@@ -1503,6 +1508,285 @@ func test_ability_validation_rejects() -> void:
 		"a non-string protection_prayer_auto")
 	_one_error(ContentValidator.check_strategy_record, sbase, {"protection_prayer_auto": null},
 		"a missing protection_prayer_auto")
+
+# =========================================================================
+#  Task 3 — abilities in the live engine
+# =========================================================================
+
+## Task 3 pin. The plan's sketch ("cooldown 4 over 8 attacks fires at most twice") is seed
+## dependent and goes flaky across engine versions, so the cooldown GATE is what gets asserted: a
+## non-zero counter blocks the roll on every attack, the counter drains by one each attack, and the
+## very same pinned roll fires again the moment it reaches zero.
+func test_ability_cooldown_respected() -> void:
+	_heading("Ability cooldown gate")
+	_combat_levels_for_abilities(100)
+	var strike: Dictionary = DataLoader.get_ability("power_strike")
+	CombatManager.set_loadout(["power_strike"])
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "an unlocked ability is slotted")
+	var cooldown: int = int(strike.get("cooldown_attacks", 0))
+	var hit_seed: int = _seed_with_rolls(float(strike.get("trigger_chance", 0.0)), 0)
+	_ok(hit_seed > 0, "found a pinned seed whose first roll triggers Power Strike")
+
+	# A cooldown of N blocks the next N-1 attacks and releases on the Nth, because
+	# _player_attack spends the counter before it rolls.
+	CombatManager._ability_cooldowns["power_strike"] = 3
+	CombatManager._decrement_ability_cooldowns()
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), 2, "the counter drains by one on every player attack")
+	var blocked: int = 0
+	for _i in range(2):
+		CombatManager.seed_rng(hit_seed)
+		CombatManager._roll_abilities_for_test()
+		if CombatManager._last_ability_fired == "":
+			blocked += 1
+		CombatManager._decrement_ability_cooldowns()
+	_eq(blocked, 2, "a non-zero cooldown blocks the roll on every attack")
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), 0, "the counter reached zero")
+
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities_for_test()
+	_eq(CombatManager._last_ability_fired, "power_strike", "the same pinned roll fires at cooldown zero")
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), cooldown, "firing set cooldown_attacks")
+
+	# A fight must actually spend the counter, or the gate is only real in the test helper.
+	_ok(_start_test_fight(), "started a fight on the easiest open region")
+	CombatManager.set_loadout(["power_strike"])
+	_restore_test_fight(CombatManager.current_monster_id)
+	CombatManager._ability_cooldowns["power_strike"] = 3
+	CombatManager._player_attack()
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), 2,
+		"_player_attack spends a cooldown, blocked or not")
+	CombatManager.stop_combat("retreat")
+
+## The load-bearing offline-parity pin. Offline gains replay these same ticks from a seeded
+## stream, so the NUMBER of draws an attack takes is part of the balance contract, not a detail.
+## Each assertion compares CombatManager's stream against a second generator advanced the same
+## number of times: two generators from one seed cannot disagree, so the count is exact and cannot
+## go stale when the stream's values change.
+func test_ability_roll_count() -> void:
+	_heading("Ability roll count (offline parity)")
+	_combat_levels_for_abilities(100)
+	var strike_chance: float = float(DataLoader.get_ability("power_strike").get("trigger_chance", 0.0))
+	var venom_chance: float = float(DataLoader.get_ability("envenom").get("trigger_chance", 0.0))
+	# One chance has to cover the pair for a single miss-then-hit seed to exist; asserted rather
+	# than assumed, so a data edit fails here with a readable reason.
+	_approx(venom_chance, strike_chance, 0.0001, "the two fixture abilities share a trigger chance")
+	var hit_seed: int = _seed_with_rolls(strike_chance, 0)
+	var miss_then_hit: int = _seed_with_rolls(strike_chance, 1)
+	_ok(hit_seed > 0 and miss_then_hit > 0, "found pinned seeds for a hit and a miss-then-hit")
+
+	CombatManager.set_loadout([])
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities_for_test()
+	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 0), "an empty loadout draws nothing")
+
+	CombatManager.set_loadout(["power_strike", "envenom"])
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities_for_test()
+	_eq(CombatManager._last_ability_fired, "power_strike", "the first loadout entry that rolls high takes the attack")
+	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 1),
+		"a firing ability drew exactly once, so a second ability cannot fire on the same attack")
+
+	# A blocked entry is skipped WITHOUT a draw, so the survivor still sees the first draw.
+	CombatManager._ability_cooldowns["power_strike"] = 2
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities_for_test()
+	_eq(CombatManager._last_ability_fired, "envenom", "the next off-cooldown entry takes a blocked attack")
+	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 1), "a blocked entry consumed no randomness")
+
+	# A missed entry does spend its draw, so the pair costs exactly two.
+	CombatManager._ability_cooldowns.clear()
+	CombatManager.seed_rng(miss_then_hit)
+	CombatManager._roll_abilities_for_test()
+	_eq(CombatManager._last_ability_fired, "envenom", "a miss falls through to the next entry")
+	_eq(CombatManager._rng.randi(), _stream_after_draws(miss_then_hit, 2), "two rolled entries drew exactly twice")
+
+## An ability heal must never take the player past max HP: a fraction of a big hit on a wounded
+## character would otherwise print a nonsense HP total, and a negative one would be a heal that
+## drains.
+func test_ability_heal_caps() -> void:
+	_heading("Ability heal")
+	_combat_levels_for_abilities(100)
+	var max_hp: float = CombatManager._compute_max_hp()
+	CombatManager.player_hp = 1.0
+	CombatManager._apply_ability_heal(99999.0)
+	_eq(CombatManager.player_hp, max_hp, "an oversized ability heal clamps at max HP")
+	CombatManager.player_hp = max_hp * 0.5
+	CombatManager._apply_ability_heal(10.0)
+	_approx(CombatManager.player_hp, max_hp * 0.5 + 10.0, 0.001, "an ordinary heal adds exactly its amount")
+	CombatManager._apply_ability_heal(0.0)
+	_approx(CombatManager.player_hp, max_hp * 0.5 + 10.0, 0.001, "a zero heal changes nothing")
+	CombatManager._apply_ability_heal(-25.0)
+	_approx(CombatManager.player_hp, max_hp * 0.5 + 10.0, 0.001, "a negative heal never drains the player")
+	CombatManager.stop_combat("retreat")
+
+## The slot cap is the Defence gate, and set_loadout is the only door: an over-long request, a
+## locked ability and a stale id must all be dropped rather than trusted.
+func test_ability_slot_cap() -> void:
+	_heading("Ability slot cap and unlock gate")
+	var four: Array = ["power_strike", "flurry", "precision_shot", "immolate"]
+	_combat_levels_for_abilities(1)
+	_eq(CombatManager.ability_slot_cap(), 1, "Defence 1 allows a single slot")
+	CombatManager.set_loadout(four)
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "a four-ability request is clamped to the cap")
+
+	_combat_levels_for_abilities(26)
+	_eq(CombatManager.ability_slot_cap(), 2, "Defence 26 opens a second slot")
+	CombatManager.set_loadout(four)
+	_eq(CombatManager.active_loadout, ["power_strike", "flurry"] as Array[String],
+		"the clamp keeps the order the abilities were offered in")
+
+	_combat_levels_for_abilities(100)
+	_eq(CombatManager.ability_slot_cap(), 4, "the cap never exceeds four")
+	CombatManager.set_loadout(four)
+	_eq(CombatManager.active_loadout.size(), 4, "all four fit at Defence 100")
+	_eq(PlayerData.ability_loadout, CombatManager.active_loadout, "set_loadout persisted the loadout")
+
+	# The loadout is saved state, so it has to survive the same round trip every other field does.
+	# Through JSON, because serialize() hands back the live array by reference — a save never sees
+	# that, and neither may this check.
+	var json_text: String = JSON.stringify(SaveManager.build_save_data(), "\t")
+	PlayerData.ability_loadout.clear()
+	SaveManager._apply(JSON.parse_string(json_text))
+	_eq(PlayerData.ability_loadout, CombatManager.active_loadout, "the loadout survives a save round trip")
+
+	_combat_levels_for_abilities(1)
+	PlayerData.set_level("magic", 1)
+	CombatManager.set_loadout(["immolate", "gore"])
+	_eq(CombatManager.active_loadout, ["gore"] as Array[String], "an ability below its req_level is not slotted")
+	CombatManager.set_loadout(["power_strike", "power_strike"])
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "a duplicated id occupies one slot")
+	CombatManager.set_loadout(["no_such_ability"])
+	_eq(CombatManager.active_loadout.size(), 0, "a stale id is dropped, not stored")
+	# A cooldown belongs to the ability, not to the slot, so removing an ability must not leave a
+	# counter that a later re-slot would silently inherit.
+	CombatManager.set_loadout(["flurry"])
+	CombatManager._ability_cooldowns["flurry"] = 3
+	CombatManager._ability_cooldowns["gore"] = 2
+	CombatManager.set_loadout(["flurry"])
+	_eq(CombatManager._ability_cooldowns.size(), 1, "re-slopping drops the cooldown of a removed ability")
+	_eq(int(CombatManager._ability_cooldowns["flurry"]), 3, "a still-slotted ability keeps its cooldown")
+
+## The three effects that need a live number, exercised through the real attack path. The seed is
+## SEARCHED, not assumed: every assertion is a fact about the engine, so a change in the stream
+## shows up as "no seed found" instead of turning into a flake.
+func test_ability_effects_in_fight() -> void:
+	_heading("Abilities on a landed hit")
+	_combat_levels_for_abilities(100)
+	if not _start_test_fight():
+		_ok(false, "started a fight on the easiest open region")
+		return
+	CombatManager.set_loadout(["flurry", "gore", "blood_pact"])
+	var monster: String = CombatManager.current_monster_id
+	var dealt: Array = []
+	var capture := func(d: int, _is_crit: bool) -> void: dealt.append(d)
+	EventBus.player_attacked.connect(capture)
+	var flurry_seed: int = -1
+	var gore_duration: float = -1.0
+	var pact_gain: float = -1.0
+	var pact_damage: float = 0.0
+	for candidate in range(1, 400):
+		_restore_test_fight(monster)
+		dealt.clear()
+		CombatManager.seed_rng(candidate)
+		CombatManager._player_attack()
+		if flurry_seed < 0 and CombatManager._ability_interval_percent > 0.0:
+			flurry_seed = candidate
+		if gore_duration < 0.0 and CombatManager.monster_effects.size() == 1 \
+				and str(CombatManager.monster_effects[0].id) == "bleed":
+			gore_duration = CombatManager.monster_effects[0].duration
+		if pact_gain < 0.0 and dealt.size() == 1 and CombatManager.player_hp > 1.0:
+			pact_gain = CombatManager.player_hp - 1.0
+			pact_damage = float(dealt[0])
+		if flurry_seed > 0 and gore_duration > 0.0 and pact_gain > 0.0:
+			break
+	EventBus.player_attacked.disconnect(capture)
+
+	_ok(flurry_seed > 0, "Flurry holds its speedup for the next swing")
+	_ok(gore_duration > 0.0, "Gore applied bleed to the monster on a landed hit")
+	if gore_duration > 0.0:
+		_approx(gore_duration, float(DataLoader.get_ability("gore").get("status_duration", 0.0)), 0.001,
+			"the status lasts the record's status_duration")
+	_ok(pact_gain > 0.0, "Blood Pact healed a wounded player on a landed hit")
+	if pact_gain > 0.0:
+		var frac: float = float(DataLoader.get_ability("blood_pact").get("effect", {})
+			.get("heal_on_hit_fraction", 0.0))
+		_approx(pact_gain, pact_damage * (frac + ModifierManager.get_life_steal() / 100.0), 0.001,
+			"the heal is heal_on_hit_fraction of the damage dealt, not a percent of it")
+
+	# The held speedup has to reach the interval, not just a variable: _tick_fighting recomputes
+	# the interval from ModifierManager every tick, so a buff left in place would be overwritten.
+	if flurry_seed > 0:
+		CombatManager.set_loadout(["flurry"])
+		_restore_test_fight(monster)
+		CombatManager.player_hp = CombatManager._compute_max_hp()
+		CombatManager.tick(0.01)
+		var baseline: float = CombatManager.player_attack_interval
+		CombatManager.seed_rng(flurry_seed)
+		CombatManager._player_attack()
+		CombatManager.tick(0.01)
+		_ok(CombatManager.player_attack_interval < baseline,
+			"the next swing is faster than the ModifierManager baseline")
+	CombatManager.stop_combat("retreat")
+
+	# The remaining suites assume a fresh character.
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+
+## A fight on the easiest open region, so an ability check measures the ability and not the monster.
+func _start_test_fight() -> bool:
+	var area: Dictionary = _find_area()
+	if area.is_empty():
+		return false
+	return CombatManager.start_combat({"type": "area", "id": str(area["id"]),
+		"monsters": area["monsters"], "endless": true, "attack_style": "melee", "melee_style": "stab"})
+
+## Puts the fight back exactly as the setup left it. Every search trial has to start from
+## identical state or "found a seed that did X" proves nothing — including the monster's max HP,
+## which an endless kill in a previous trial would otherwise have replaced.
+func _restore_test_fight(monster_id: String) -> void:
+	CombatManager.state = CombatManager.State.FIGHTING
+	CombatManager.current_monster_id = monster_id
+	CombatManager.monster_max_hp = maxi(1, int(DataLoader.get_monster(monster_id).get("hitpoints", 10)))
+	CombatManager.monster_hp = CombatManager.monster_max_hp
+	CombatManager.player_hp = 1.0
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
+	CombatManager._ability_cooldowns.clear()
+	CombatManager._last_ability_fired = ""
+	CombatManager._ability_interval_percent = 0.0
+
+## The shipped req_levels, satisfied at one level, so a loadout check measures the slot cap and not
+## the unlock gate it is not testing.
+func _combat_levels_for_abilities(defence_level: int) -> void:
+	for skill_id in ["attack", "strength", "ranged", "magic", "hitpoints"]:
+		PlayerData.set_level(skill_id, 100)
+	PlayerData.set_level("defence", defence_level)
+
+## The first seed whose draws are `leading_misses` misses then a hit against a `chance_percent`
+## trigger. Pinning the seed AND searching for the outcome is what makes a roll deterministic.
+func _seed_with_rolls(chance_percent: float, leading_misses: int) -> int:
+	var probe := RandomNumberGenerator.new()
+	for candidate in range(1, 8192):
+		probe.seed = candidate
+		var missed: int = 0
+		var hit: bool = false
+		for _i in range(leading_misses + 1):
+			if probe.randf() * 100.0 <= chance_percent:
+				hit = true
+				break
+			missed += 1
+		if hit and missed == leading_misses:
+			return candidate
+	return -1
+
+## The value CombatManager's own stream hands out after exactly `draws` randf() calls from
+## `seed_value`.
+func _stream_after_draws(seed_value: int, draws: int) -> int:
+	var probe := RandomNumberGenerator.new()
+	probe.seed = seed_value
+	for _i in range(draws):
+		probe.randf()
+	return probe.randi()
 
 ## Copies `base`, applies `patch` (a null value erases the key) and asserts the validator reported
 ## exactly one failure with the expected code. EXACTLY one, so neither a deleted check (silently

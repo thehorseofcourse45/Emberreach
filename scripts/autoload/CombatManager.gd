@@ -66,6 +66,7 @@ func _ready() -> void:
 	_rng.randomize()
 	player_max_hp = _compute_max_hp()
 	player_hp = player_max_hp
+	set_loadout(PlayerData.ability_loadout)
 
 func seed_rng(seed_value: int) -> void:
 	_rng.seed = seed_value
@@ -122,6 +123,10 @@ func _sig_status(target: String, effect_id: String, applied: bool) -> void:
 	else:
 		EventBus.status_effect_expired.emit(target, effect_id)
 
+func _sig_ability_triggered(ability_id: String) -> void:
+	if not SimulationMode.is_silent():
+		EventBus.ability_triggered.emit(ability_id)
+
 # =========================================================================
 #  Control
 # =========================================================================
@@ -177,6 +182,8 @@ func stop_combat(reason: String = "") -> void:
 	context = {}
 	player_effects.clear()
 	monster_effects.clear()
+	# A speedup still waiting to be spent belongs to the fight that earned it.
+	_ability_interval_percent = 0.0
 	respawn_timer = 0.0
 	if was_active:
 		_sig_combat_ended("retreat" if reason == "" else reason)
@@ -252,6 +259,12 @@ func _tick_fighting(delta: float) -> void:
 	if _is_player_stunned():
 		return
 	player_attack_interval = maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed()))
+	# A Flurry-class ability is a one-swing speedup. The interval is recomputed from
+	# ModifierManager on every tick, so a speedup held anywhere else would be overwritten before it
+	# ever reached a swing; it is spent here instead. Positive percent = faster, as in
+	# ModifierManager.get_attack_interval.
+	player_attack_interval = maxf(0.25, player_attack_interval * (1.0 - _ability_interval_percent / 100.0))
+	_ability_interval_percent = 0.0
 	if bool(context.get("raid", false)):
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
 	monster_attack_interval = maxf(0.25, float(DataLoader.get_monster(current_monster_id).get("attack_speed", 3.0)))
@@ -372,6 +385,9 @@ func target_comparison() -> Dictionary:
 func _player_attack() -> void:
 	if state != State.FIGHTING:
 		return
+	# Abilities: the cooldown is spent on every player attack, before any roll, so the cost of an
+	# ability is the same whether or not the swing connects.
+	_decrement_ability_cooldowns()
 	PrayerManager.spend_for_attack()   # active prayers cost points per attack
 	PotionManager.consume_charge()
 	var m: Dictionary = DataLoader.get_monster(current_monster_id)
@@ -387,13 +403,25 @@ func _player_attack() -> void:
 	hit_chance = clampf(hit_chance + float(_active_hazard().get("player_accuracy_percent", 0.0)), 0.0, 100.0)
 	if _rng.randf() * 100.0 > hit_chance:
 		return
+	# Abilities roll only on a landed hit, and at most one of them takes the swing.
+	_roll_abilities_for_test()
+	var ab: Dictionary = DataLoader.get_ability(_last_ability_fired)
+	var ab_effect: Dictionary = ab.get("effect", {})
+	# apply_status and interval_percent need no damage number, so they land right here; the three
+	# damage-shaped effects are applied below, where the number they scale exists.
+	_apply_ability_status(ab)
+	_ability_interval_percent += float(ab_effect.get("interval_percent", 0.0))
 	var mh: int = maxi(1, _player_max_hit(attack_style))
+	# max_hit_percent is a percentage of this swing's max hit, the same convention (and the same
+	# place) as the combat triangle below.
+	mh = maxi(1, int(floor(float(mh) * (1.0 + float(ab_effect.get("max_hit_percent", 0.0)) / 100.0))))
 	mh = maxi(1, int(floor(float(mh) * (1.0 + float(tri["damage_percent"]) / 100.0))))
 	var mn: int = CombatFormulas.min_hit(mh,
 		ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0,
 		ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT))
 	var res: Dictionary = CombatFormulas.roll_damage(_rng, mn, mh, float(m.get("damage_reduction", 0.0)),
-		ModifierManager.get_crit_chance(), ModifierManager.get_crit_multiplier())
+		ModifierManager.get_crit_chance() + float(ab_effect.get("crit_chance_percent", 0.0)),
+		ModifierManager.get_crit_multiplier())
 	var dmg: int = int(res["damage"])
 	var is_crit: bool = bool(res["is_crit"])
 	# Weapon special attack: replaces the normal attack and may apply a status.
@@ -405,6 +433,11 @@ func _player_attack() -> void:
 		var heal_frac: float = float(sa.get("heal_fraction", 0.0))
 		if heal_frac > 0.0:
 			player_hp = minf(player_hp + float(dmg) * heal_frac, _compute_max_hp())
+	# heal_on_hit_fraction is a FRACTION (0..1) of the damage this swing dealt, the same precedent
+	# as special_attacks.json's heal_fraction — never a percent.
+	var ab_heal: float = float(ab_effect.get("heal_on_hit_fraction", 0.0))
+	if ab_heal > 0.0:
+		_apply_ability_heal(float(dmg) * ab_heal)
 	apply_damage_to_monster(dmg)
 	_sig_player_attacked(dmg, is_crit)
 	_grant_combat_xp(dmg)
@@ -803,6 +836,14 @@ func serialize() -> Dictionary:
 	}
 
 func deserialize(d: Dictionary) -> void:
+	# Cooldowns and the last fired id are attack counters, not saved state: the live attack timer
+	# is dropped the same way, and a reload must not hand out a free trigger. The loadout is
+	# re-derived through set_loadout, so a loadout a hand-edited or older save no longer qualifies
+	# for is dropped rather than trusted.
+	_ability_cooldowns.clear()
+	_last_ability_fired = ""
+	_ability_interval_percent = 0.0
+	set_loadout(PlayerData.ability_loadout)
 	state = int(d.get("state", State.IDLE))
 	context = d.get("context", {})
 	current_monster_id = str(d.get("monster_id", ""))
@@ -827,3 +868,123 @@ func deserialize(d: Dictionary) -> void:
 	if player_hp <= 0.0:
 		player_hp = _compute_max_hp()
 	EventBus.activity_changed.emit()
+
+# =========================================================================
+#  Abilities
+# =========================================================================
+## Slottable combat abilities, from data/abilities.json. Two rules make the feature safe to replay
+## offline, and both are load-bearing rather than stylistic:
+##   * the loadout order IS the roll order, and AT MOST ONE ability fires per player attack — the
+##     first entry that is off cooldown and wins its trigger roll takes the swing, and no entry
+##     after it is ever rolled;
+##   * a rolled-but-missed entry and a blocked entry cost different amounts of randomness (1 and 0
+##     draws), which is why both cases are pinned by the suite.
+## The costs are fixed and the order is fixed, so simulate_elapsed() replaying these same ticks
+## from the same seeded _rng lands on the same numbers the live fight did.
+
+## Slot cap: one slot, plus one per 25 Defence, never more than four. data/skills.json's Defence
+## skill id is "defence".
+const ABILITY_SLOT_MAX: int = 4
+
+var active_loadout: Array[String] = []      ## ability ids, in roll order
+var _ability_cooldowns: Dictionary = {}    ## ability_id -> player attacks still to wait
+var _ability_interval_percent: float = 0.0 ## a one-swing speedup, spent by the next interval
+var _last_ability_fired: String = ""       ## "" when no ability fired on the last attack
+
+func ability_slot_cap() -> int:
+	return mini(ABILITY_SLOT_MAX, 1 + int(PlayerData.get_level("defence") / 25))
+
+## Slots `ids`, dropping unknown ids, duplicates, abilities whose req_levels the player has not
+## reached, and anything past the slot cap — in that order, so the survivors are the first entries
+## the player offered. That order is the roll order, which is why it is preserved rather than
+## sorted. Persists through PlayerData, the same path as every other player choice.
+func set_loadout(ids: Array) -> void:
+	var kept: Array[String] = []
+	for entry in ids:
+		if kept.size() >= ability_slot_cap():
+			break
+		var ability_id: String = str(entry)
+		if kept.has(ability_id):
+			continue
+		var ab: Dictionary = DataLoader.get_ability(ability_id)
+		if ab.is_empty() or not _ability_unlocked(ab):
+			continue
+		kept.append(ability_id)
+	active_loadout = kept
+	var stale: Array[String] = []
+	for ability_id in _ability_cooldowns.keys():
+		if not active_loadout.has(str(ability_id)):
+			stale.append(str(ability_id))
+	for ability_id in stale:
+		_ability_cooldowns.erase(ability_id)
+	_last_ability_fired = ""
+	PlayerData.ability_loadout.clear()
+	PlayerData.ability_loadout.append_array(active_loadout)
+
+func _ability_unlocked(ab: Dictionary) -> bool:
+	var reqs: Dictionary = ab.get("req_levels", {})
+	for skill_id in reqs.keys():
+		if PlayerData.get_level(str(skill_id)) < int(reqs[skill_id]):
+			return false
+	return true
+
+## Cooldowns count PLAYER ATTACKS and are spent at the top of _player_attack(), before any roll:
+## a fixed cost in a fixed place is what keeps the stream reproducible.
+func _decrement_ability_cooldowns() -> void:
+	for ability_id in _ability_cooldowns.keys():
+		_ability_cooldowns[ability_id] = maxi(0, int(_ability_cooldowns[ability_id]) - 1)
+
+## The ability step of one player attack: which ability, if any, has this swing. It only selects —
+## every effect is applied by _player_attack() at the point the number it scales exists.
+##
+## RNG CONSUMPTION ORDER inside one player attack. Task 5's simulator mirror must draw in exactly
+## this sequence; a stream that differs between the live and offline paths desynchronises offline
+## gains without any error being raised.
+##   1. to-hit roll                                    (_player_attack, before this is called)
+##   2. one trigger roll per loadout entry IN LOADOUT ORDER, stopping at the first entry that is
+##      off cooldown and whose roll lands. A blocked entry is skipped WITHOUT a draw; an entry
+##      after the winner is never rolled at all.
+##   3. when the winner carried apply_status, ONE status-chance roll from _apply_special_status,
+##      fixed at 100% for an ability and so never blocking (the trigger roll is the chance)
+##   4. the damage roll and the crit roll              (both inside CombatFormulas.roll_damage)
+##   5. the weapon special-attack roll, then that special's own status-chance roll
+## Steps 1, 4 and 5 are exactly where they were before abilities existed.
+func _roll_abilities_for_test() -> void:
+	_last_ability_fired = ""
+	for ability_id in active_loadout:
+		if int(_ability_cooldowns.get(ability_id, 0)) > 0:
+			continue
+		var ab: Dictionary = DataLoader.get_ability(ability_id)
+		if ab.is_empty():
+			continue
+		if _rng.randf() * 100.0 > float(ab.get("trigger_chance", 0.0)):
+			continue
+		_ability_cooldowns[ability_id] = int(ab.get("cooldown_attacks", 0))
+		_last_ability_fired = ability_id
+		_sig_ability_triggered(ability_id)
+		return
+
+## apply_status names an id in StatusEffect.TABLE, and the record's sibling status_duration is how
+## long it lasts (ContentValidator enforces that pairing, so neither can be missing here). It reuses
+## the existing special-attack status path, whose extra status_chance roll is fixed at 100% for an
+## ability: the trigger roll above is the chance. status_damage_per_tick is read the same way
+## special_attacks.json supplies it, so the data file alone decides how hard a status bites; no
+## shipped ability sets it yet, so those statuses mark the target and expire without ticking.
+func _apply_ability_status(ab: Dictionary) -> void:
+	var status_id: String = str((ab.get("effect", {}) as Dictionary).get("apply_status", ""))
+	if status_id == "":
+		return
+	_apply_special_status({
+		"applies_status": status_id,
+		"status_chance": 100.0,
+		"status_duration": float(ab.get("status_duration", 0.0)),
+		"status_damage_per_tick": float(ab.get("status_damage_per_tick", 0.0)),
+	}, "monster")
+
+## Heals without ever overhealing: a fraction of a big hit on a wounded character would otherwise
+## print a nonsense HP total, so the clamp is the same _compute_max_hp() the auto-eat and
+## life-steal paths use.
+func _apply_ability_heal(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	player_hp = minf(player_hp + amount, _compute_max_hp())

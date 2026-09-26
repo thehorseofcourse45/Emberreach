@@ -22,6 +22,11 @@ var active_prayers: Array[String] = []
 var active_potion: String = ""          # item_id of the equipped potion
 var potion_charges: int = 0
 
+## Slotted combat abilities (data/abilities.json), in roll order. The live engine reads this as
+## CombatManager.active_loadout; keeping the saved copy here means the loadout survives a reload
+## through the same section as every other player choice.
+var ability_loadout: Array[String] = []
+
 var shop_upgrades: Dictionary = {}      # upgrade_id -> count
 var unlocked_pets: Array[String] = []
 var completion_log: Dictionary = {
@@ -116,6 +121,7 @@ func initialize_new_game() -> void:
     active_prayers.clear()
     active_potion = ""
     potion_charges = 0
+    ability_loadout.clear()
     shop_upgrades.clear()
     unlocked_pets.clear()
     completion_log = {"items": {}, "monsters": {}, "dungeons": {}, "pets": {}}
@@ -265,6 +271,7 @@ func serialize() -> Dictionary:
         "equipment": equipment, "equipment_sets": equipment_sets, "active_set": active_set,
         "active_prayers": active_prayers, "active_potion": active_potion,
         "potion_charges": potion_charges, "shop_upgrades": shop_upgrades,
+        "ability_loadout": ability_loadout,
         "unlocked_pets": unlocked_pets, "completion_log": completion_log,
         "slayer_task": slayer_task, "settings": settings, "playtime_seconds": playtime_seconds,
         "last_offline_unix": last_offline_unix, "stats": stats,
@@ -287,6 +294,8 @@ func deserialize(d: Dictionary) -> void:
     active_prayers = _to_string_array(d.get("active_prayers", []))
     active_potion = d.get("active_potion", "")
     potion_charges = maxi(0, int(d.get("potion_charges", 0)))
+    # Absent (an older save) means no abilities slotted, not a broken loadout.
+    ability_loadout = _to_string_array(d.get("ability_loadout", []))
     shop_upgrades = d.get("shop_upgrades", {})
     unlocked_pets = _to_string_array(d.get("unlocked_pets", []))
     completion_log = _merge_completion_log(d.get("completion_log", {}))
