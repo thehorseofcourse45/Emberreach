@@ -22,6 +22,12 @@ const VALID_SKILL_TYPES: Array[String] = ["gathering", "artisan", "processing", 
 const VALID_SKILL_CATEGORIES: Array[String] = ["combat", "non_combat"]
 const VALID_MONSTER_ATTACK_TYPES: Array[String] = ["melee", "ranged", "magic"]
 const VALID_ACTION_CATEGORIES: Array[String] = ["gather", "artisan", "support", "combat"]
+## The closed ability vocabulary from data/abilities.json. Tasks 3/5 map each key to a
+## ModifierKeys constant, so a key outside this set has nowhere to go and would be a silent no-op.
+const KNOWN_ABILITY_EFFECTS: Array[String] = ["max_hit_percent", "interval_percent",
+	"crit_chance_percent", "apply_status", "heal_on_hit_fraction"]
+const VALID_ABILITY_STYLES: Array[String] = ["melee", "ranged", "magic", "any"]
+const VALID_SPECIAL_BIAS: Array[String] = ["eager", "normal", "hold"]
 const EQUIPMENT_SLOT_NAMES: Dictionary = {
 	0: "helmet", 1: "platebody", 2: "platelegs", 3: "boots", 4: "gloves", 5: "cape",
 	6: "amulet", 7: "ring", 8: "weapon", 9: "shield", 10: "quiver", 11: "summon_1",
@@ -37,6 +43,7 @@ func validate_all() -> Array:
 	_check_skills_and_recipes()
 	_check_recipe_graph()
 	_check_monsters()
+	_check_abilities()
 	_check_regions()
 	_check_shop()
 	_check_side_systems()
@@ -51,7 +58,8 @@ func _add(severity: String, code: String, message: String) -> void:
 func _has_item(id: String) -> bool:
 	return DataLoader.items.has(id)
 
-func _has_skill(id: String) -> bool:
+# Static so the record validators below (which callers use as free functions) can reuse them.
+static func _has_skill(id: String) -> bool:
 	return DataLoader.skills.has(id)
 
 func _err(code: String, msg: String) -> void:
@@ -60,7 +68,7 @@ func _err(code: String, msg: String) -> void:
 func _warn(code: String, msg: String) -> void:
 	_add("warning", code, msg)
 
-func _is_finite_number(v: Variant) -> bool:
+static func _is_finite_number(v: Variant) -> bool:
 	var kind: int = typeof(v)
 	if kind != TYPE_INT and kind != TYPE_FLOAT:
 		return false
@@ -76,7 +84,8 @@ func _check_ids() -> void:
 		["constellation", DataLoader.constellations], ["familiar", DataLoader.familiars],
 		["pet", DataLoader.pets], ["obstacle", DataLoader.obstacles],
 		["dungeon_shop", DataLoader.shop], ["township_building", DataLoader.township_buildings],
-		["special_attack", DataLoader.special_attacks], ["cartography_hex", DataLoader.cartography_hexes],
+		["special_attack", DataLoader.special_attacks], ["ability", DataLoader.abilities],
+		["cartography_hex", DataLoader.cartography_hexes],
 	]:
 		var kind: String = collection[0]
 		var table: Dictionary = collection[1]
@@ -357,6 +366,97 @@ func _check_monsters() -> void:
 				_err("invalid_quantity", "%s loot '%s' quantity must be > 0" % [label, item_id])
 			if int(drop.get("min_quantity", 0)) < 0:
 				_err("negative_value", "%s loot '%s' min_quantity must be >= 0" % [label, item_id])
+
+# ---------------- abilities + strategies ----------------
+
+## Validates one abilities.json record. Returns error strings (empty == valid) so the engine tasks
+## can call it on a player-authored loadout without instantiating the whole validator.
+static func check_ability_record(ab: Dictionary) -> Array:
+	var errs: Array[String] = []
+	var id: String = str(ab.get("id", "")).strip_edges()
+	var label: String = "ability '%s'" % id
+	if id == "":
+		errs.append("an ability has no id")
+	var style: String = str(ab.get("style", ""))
+	if not VALID_ABILITY_STYLES.has(style):
+		errs.append("%s has style '%s'" % [label, style])
+	var effect: Variant = ab.get("effect", {})
+	if typeof(effect) != TYPE_DICTIONARY:
+		errs.append("%s effect is not an object" % label)
+		effect = {}
+	elif (effect as Dictionary).is_empty():
+		errs.append("%s has an empty effect" % label)
+	for key in (effect as Dictionary).keys():
+		var k: String = str(key)
+		var value: Variant = (effect as Dictionary)[key]
+		if not KNOWN_ABILITY_EFFECTS.has(k):
+			errs.append("%s effect has unknown key '%s'" % [label, k])
+		elif k == "apply_status":
+			# A status id, not a number: StatusEffect.create would silently no-op on a typo.
+			if typeof(value) != TYPE_STRING or not StatusEffect.TABLE.has(value):
+				errs.append("%s apply_status '%s' is not a known status" % [label, str(value)])
+		elif not _is_finite_number(value):
+			errs.append("%s effect '%s' is not a number" % [label, k])
+	# status_duration is CONDITIONAL: the only reader is the apply_status branch, so a record with
+	# one and no apply_status carries a value nothing consumes, and one with apply_status and no
+	# duration would apply an instant- expiry status. Both directions are bugs.
+	var has_status: bool = (effect as Dictionary).has("apply_status")
+	var duration: Variant = ab.get("status_duration", null)
+	if has_status and not _is_finite_number(duration):
+		errs.append("%s applies a status but has no numeric status_duration" % label)
+	elif has_status and float(duration) <= 0.0:
+		errs.append("%s status_duration %f must be > 0" % [label, float(duration)])
+	elif not has_status and duration != null:
+		errs.append("%s has status_duration but no apply_status effect" % label)
+	var chance: Variant = ab.get("trigger_chance", 0.0)
+	if not _is_finite_number(chance) or float(chance) <= 0.0 or float(chance) > 100.0:
+		errs.append("%s trigger_chance %s must be in (0,100]" % [label, str(chance)])
+	var cooldown: Variant = ab.get("cooldown_attacks", 0)
+	if not _is_finite_number(cooldown) or float(cooldown) != float(int(cooldown)) or float(cooldown) < 0.0:
+		errs.append("%s cooldown_attacks %s must be a non-negative integer" % [label, str(cooldown)])
+	var reqs: Variant = ab.get("req_levels", {})
+	if typeof(reqs) != TYPE_DICTIONARY:
+		errs.append("%s req_levels is not an object" % label)
+	else:
+		for skill_id in (reqs as Dictionary).keys():
+			var level: Variant = (reqs as Dictionary)[skill_id]
+			if not _has_skill(str(skill_id)):
+				errs.append("%s requires unknown skill '%s'" % [label, skill_id])
+			elif not _is_finite_number(level) or float(level) != float(int(level)) or int(level) < 1:
+				errs.append("%s requires %s %s, which is not an integer >= 1" % [label, skill_id, str(level)])
+	return errs
+
+## Validates one combat strategy. Every key is required: a strategy the engine fills in a default
+## for is a decision the player never made, and a loadout id that no longer exists is a dead slot.
+static func check_strategy_record(strategy: Dictionary) -> Array:
+	var errs: Array[String] = []
+	var name_v: Variant = strategy.get("name", "")
+	var label: String = "strategy '%s'" % (str(name_v) if str(name_v).strip_edges() != "" else "?")
+	if typeof(name_v) != TYPE_STRING or str(name_v).strip_edges() == "":
+		errs.append("%s has no name" % label)
+	var loadout: Variant = strategy.get("ability_loadout", null)
+	if typeof(loadout) != TYPE_ARRAY:
+		errs.append("%s ability_loadout is not an array" % label)
+	else:
+		for entry in (loadout as Array):
+			if typeof(entry) != TYPE_STRING or not DataLoader.abilities.has(entry):
+				errs.append("%s ability_loadout references unknown ability '%s'" % [label, str(entry)])
+	var bias: String = str(strategy.get("special_bias", ""))
+	if not VALID_SPECIAL_BIAS.has(bias):
+		errs.append("%s has special_bias '%s'" % [label, bias])
+	var threshold: Variant = strategy.get("food_threshold", null)
+	if not _is_finite_number(threshold) or float(threshold) < 0.0 or float(threshold) > 1.0:
+		errs.append("%s food_threshold %s must be in 0..1" % [label, str(threshold)])
+	return errs
+
+func _check_abilities() -> void:
+	for id in DataLoader.abilities.keys():
+		var ab: Variant = DataLoader.abilities[id]
+		if typeof(ab) != TYPE_DICTIONARY:
+			_err("invalid_record", "ability '%s' is not an object" % id)
+			continue
+		for message in check_ability_record(ab):
+			_err("invalid_record", message)
 
 # ---------------- regions ----------------
 

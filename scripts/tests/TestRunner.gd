@@ -65,6 +65,7 @@ func run_all(host: Node) -> void:
 	_test_favorites()
 	_test_overview_skill_tabs(host)
 	test_abilities_load()
+	test_ability_validation_rejects()
 	_test_content_validation()
 	test_identity_theme_builds()
 	test_surface_box_falls_back()
@@ -1412,6 +1413,42 @@ func test_abilities_load() -> void:
 	_ok(not ab.is_empty(), "power_strike must exist")
 	_ok(DataLoader.get_ability("no_such_ability") == {}, "unknown id returns {}")
 	_ok(DataLoader.abilities.size() == 8, "the ability table loaded (%d abilities)" % DataLoader.abilities.size())
+
+## Task 2 pin: ContentValidator is the ONLY thing standing between abilities.json and a silent
+## no-op ability in the live engine, so the rejections are pinned here — including the conditional
+## status_duration, which Task 1's review flagged as documented but unenforced.
+func test_ability_validation_rejects() -> void:
+	_heading("Ability + strategy validation")
+	var errs: Array = ContentValidator.check_ability_record(
+		{"id": "bad", "effect": {"nope": 1.0}, "trigger_chance": 150.0, "cooldown_attacks": -1})
+	_ok(not errs.is_empty(), "unknown effect + bad ranges must error")
+	_ok(not ContentValidator.check_ability_record({}).is_empty(), "a record with no id/effect must error")
+	_ok(ContentValidator.check_ability_record(
+		{"id": "s", "name": "S", "style": "melee", "req_levels": {"nope_skill": 5},
+		 "effect": {"max_hit_percent": 5.0}, "trigger_chance": 5.0, "cooldown_attacks": 0}) != [],
+		"an unknown req_levels skill must error")
+	var gore: Dictionary = DataLoader.get_ability("gore")
+	var no_duration: Dictionary = gore.duplicate(true)
+	no_duration.erase("status_duration")
+	_ok(ContentValidator.check_ability_record(no_duration) != [], "apply_status without status_duration must error")
+	var stray_duration: Dictionary = DataLoader.get_ability("power_strike").duplicate(true)
+	stray_duration["status_duration"] = 3.0
+	_ok(ContentValidator.check_ability_record(stray_duration) != [], "status_duration without apply_status must error")
+	var bad_status: Dictionary = gore.duplicate(true)
+	bad_status["effect"] = {"apply_status": "not_a_status"}
+	_ok(ContentValidator.check_ability_record(bad_status) != [], "an unknown apply_status must error")
+	var shipped: Array[String] = []
+	for ability_id in DataLoader.abilities.keys():
+		for e in ContentValidator.check_ability_record(DataLoader.abilities[ability_id]):
+			shipped.append(e)
+	_ok(shipped.is_empty(), "every shipped ability validates (%s)" % ("ok" if shipped.is_empty() else "; ".join(shipped)))
+	var strategy: Dictionary = {"name": "Boss", "ability_loadout": ["power_strike"],
+		"food_threshold": 0.5, "special_bias": "eager"}
+	var strategy_errs: Array = ContentValidator.check_strategy_record(strategy)
+	_ok(strategy_errs.is_empty(), "a well-formed strategy validates (%s)" % ("ok" if strategy_errs.is_empty() else "; ".join(strategy_errs)))
+	_ok(ContentValidator.check_strategy_record(
+		{"name": "", "ability_loadout": "power_strike", "food_threshold": 1.5, "special_bias": "reckless"}).size() >= 4,
+		"bad name, loadout, threshold and bias must all error")
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")
