@@ -15,9 +15,7 @@ extends Control
 ## This file also owns the headless verification entry points (`--validate`, `--tests`,
 ## `--smoke`, `--selftest`, `--offline N`), so one command surface covers the whole project.
 
-const SIDE_NAV: String = "SideNav"
-## Pinned to the top of the sidebar (and drawer), in order: shop, provisioner, combat.
-const PINNED_SCREENS: Array[String] = [Screens.STORE, Screens.PROVISIONER, Screens.COMBAT, Screens.EQUIPMENT]
+const SidebarNav = preload("res://scripts/ui/SidebarNav.gd")
 
 var _root: VBoxContainer
 var _status_bar: Control
@@ -100,7 +98,13 @@ func _build() -> void:
 	_sidebar_wrap.custom_minimum_size = Vector2(UITokens.W_SIDEBAR, 0)
 	_sidebar_wrap.add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
 	_body.add_child(_sidebar_wrap)
-	_build_sidebar()
+	var nav := SidebarNav.build(self, _sidebar_wrap)
+	_sidebar_list = nav["list"]
+	_sidebar_scroll = nav["scroll"]
+	_drawer = nav["drawer"]
+	_nav_button = nav["nav_button"]
+	_nav_buttons = nav["nav_buttons"]
+	_skill_nav_buttons = nav["skill_buttons"]
 
 	_workspace = PanelContainer.new()
 	_workspace.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -124,154 +128,7 @@ func _build() -> void:
 	# Loading / blocked states get their own screen instead of a silent failure.
 	_recovery_panel = load("res://scripts/ui/panels/RecoveryPanel.gd").new()
 
-func _build_sidebar() -> void:
-	var col := UIStyle.vbox(UITokens.SP_4)
-	_sidebar_wrap.add_child(col)
-	var brand := UIStyle.vbox(UITokens.SP_1)
-	brand.add_child(UIStyle.title("EMBERREACH", UITokens.FONT_SUBHEAD))
-	brand.add_child(UIStyle.label("The Riven Frontier", true, UITokens.FONT_MICRO))
-	col.add_child(brand)
-	col.add_child(HSeparator.new())
 
-	_sidebar_scroll = UIStyle.scroll()
-	col.add_child(_sidebar_scroll)
-	_sidebar_list = UIStyle.vbox(UITokens.SP_2)
-	_sidebar_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_sidebar_scroll.add_child(_sidebar_list)
-	_add_pinned_nav(_sidebar_list)
-	_sidebar_list.add_child(HSeparator.new())
-	_add_skill_links(_sidebar_list)
-	_sidebar_list.add_child(HSeparator.new())
-	_add_settlement_nav(_sidebar_list)
-	_sidebar_list.add_child(HSeparator.new())
-	_sidebar_list.add_child(UIStyle.label("GAME", true, UITokens.FONT_MICRO))
-
-	for screen in Screens.ORDER:
-		if screen == Screens.SKILLS or screen in PINNED_SCREENS or screen == Screens.SETTLEMENT:
-			continue
-		var b := Button.new()
-		b.text = Screens.label_for(screen)
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.custom_minimum_size = Vector2(0, UITokens.H_HEADER)
-		b.add_theme_font_size_override("font_size", UITokens.FONT_BODY)
-		b.icon = AssetRegistry.icon(_icon_kind_for(screen), _icon_id_for(screen))
-		b.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
-		b.tooltip_text = Screens.label_for(screen)
-		var target: String = screen
-		b.pressed.connect(func(): _show_screen(target, {}))
-		_sidebar_list.add_child(b)
-		_nav_buttons[screen] = b
-
-	col.add_child(HSeparator.new())
-	_nav_button = UIStyle.button("Navigation", "Open navigation")
-	_nav_button.pressed.connect(_toggle_drawer)
-	_nav_button.visible = false
-	col.add_child(_nav_button)
-
-	_drawer = PanelContainer.new()
-	_drawer.visible = false
-	_drawer.add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
-	_drawer.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_drawer.offset_left = UITokens.SP_5
-	_drawer.offset_top = 96
-	_drawer.anchor_bottom = 1.0
-	_drawer.offset_bottom = -UITokens.H_HEADER - UITokens.SP_7
-	_drawer.custom_minimum_size = Vector2(220, 0)
-	add_child(_drawer)
-
-func _add_pinned_nav(container: VBoxContainer, drawer: bool = false) -> void:
-	for screen in PINNED_SCREENS:
-		var b := Button.new()
-		b.text = Screens.label_for(screen)
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.custom_minimum_size = Vector2(0, UITokens.H_HEADER)
-		b.add_theme_font_size_override("font_size", UITokens.FONT_BODY)
-		b.icon = AssetRegistry.icon(_icon_kind_for(screen), _icon_id_for(screen))
-		b.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
-		b.tooltip_text = Screens.label_for(screen)
-		var target: String = screen
-		b.pressed.connect(func():
-			if drawer:
-				_drawer.visible = false
-			_show_screen(target, {}))
-		container.add_child(b)
-		if not drawer:
-			_nav_buttons[screen] = b
-
-func _add_settlement_nav(container: VBoxContainer, drawer: bool = false) -> void:
-	container.add_child(UIStyle.label("SETTLEMENT", true, UITokens.FONT_MICRO))
-	var b := Button.new()
-	b.text = Screens.label_for(Screens.SETTLEMENT)
-	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	b.custom_minimum_size = Vector2(0, UITokens.H_HEADER)
-	b.add_theme_font_size_override("font_size", UITokens.FONT_BODY)
-	b.icon = AssetRegistry.icon(_icon_kind_for(Screens.SETTLEMENT), _icon_id_for(Screens.SETTLEMENT))
-	b.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
-	b.tooltip_text = Screens.label_for(Screens.SETTLEMENT)
-	b.pressed.connect(func():
-		if drawer:
-			_drawer.visible = false
-		_show_screen(Screens.SETTLEMENT, {}))
-	container.add_child(b)
-	if not drawer:
-		_nav_buttons[Screens.SETTLEMENT] = b
-
-func _add_skill_links(container: VBoxContainer, drawer: bool = false) -> void:
-	for category in ["combat", "non_combat"]:
-		container.add_child(UIStyle.label("COMBAT SKILLS" if category == "combat" else "NON-COMBAT SKILLS",
-			true, UITokens.FONT_MICRO))
-		for skill_id in DataLoader.get_skill_ids():
-			var skill: Dictionary = DataLoader.get_skill(skill_id)
-			if str(skill.get("category", "")) != category:
-				continue
-			var button := Button.new()
-			button.text = str(skill.get("name", skill_id))
-			button.icon = AssetRegistry.skill_icon(skill_id)
-			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			button.clip_text = true
-			button.custom_minimum_size = Vector2(0, 30)
-			button.add_theme_font_size_override("font_size", UITokens.FONT_SMALL)
-			button.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
-			button.tooltip_text = "%s · Level %d" % [button.text, PlayerData.get_level(skill_id)]
-			var target_skill: String = skill_id
-			button.pressed.connect(func():
-				if drawer:
-					_drawer.visible = false
-				navigate({"screen": Screens.SKILLS, "skill_id": target_skill}))
-			container.add_child(button)
-			if not drawer:
-				_skill_nav_buttons[skill_id] = button
-
-func _icon_kind_for(screen: String) -> String:
-	match screen:
-		Screens.COMBAT: return "areas"
-		Screens.EXPEDITIONS: return "dungeons"
-		Screens.BANK, Screens.COLLECTION: return "items"
-		Screens.QUESTS, Screens.PROVISIONER: return "currencies"
-		# Gold for materials is the whole point of the store, but Tasks already owns the coin
-		# icon: a second identical glyph in the sidebar would read as a duplicate, not a counter.
-		Screens.STORE: return "items"
-		Screens.EQUIPMENT: return "items"
-		Screens.ACHIEVEMENTS: return "pets"
-		Screens.SETTLEMENT: return "obstacles"
-		Screens.SKILLS, Screens.OVERVIEW: return "skills"
-	return "status"
-
-func _icon_id_for(screen: String) -> String:
-	match screen:
-		Screens.COMBAT: return "farmlands"
-		Screens.EXPEDITIONS: return "air_god_dungeon"
-		Screens.SKILLS: return "woodcutting"
-		Screens.OVERVIEW: return "mining"
-		Screens.QUESTS: return "gp"
-		Screens.BANK: return "normal_log"
-		Screens.COLLECTION: return "bones"
-		Screens.SETTLEMENT: return "obstacle_1_0"
-		Screens.ACHIEVEMENTS: return "pyro"
-		Screens.PROVISIONER: return "slayer_coins"
-		Screens.STORE: return "iron_bar"
-		Screens.EQUIPMENT: return "iron_platebody"
-	return "idle"
 
 # =========================================================================
 #  Navigation
@@ -483,42 +340,7 @@ func apply_layout_for_width(width: int) -> void:
 		_detail_wrap.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_body.add_theme_constant_override("separation", UITokens.SP_2 if _compact else UITokens.SP_5)
 	if _compact:
-		_populate_drawer()
-
-func _toggle_drawer() -> void:
-	_drawer.visible = not _drawer.visible
-	if _drawer.visible:
-		_populate_drawer()
-
-func _populate_drawer() -> void:
-	for c in _drawer.get_children():
-		_drawer.remove_child(c)
-		c.queue_free()
-	var scroll := UIStyle.scroll()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_drawer.add_child(scroll)
-	var col := UIStyle.vbox(UITokens.SP_2)
-	col.custom_minimum_size = Vector2(190, 0)
-	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(col)
-	col.add_child(UIStyle.title("Navigate", UITokens.FONT_SUBHEAD))
-	_add_pinned_nav(col, true)
-	col.add_child(HSeparator.new())
-	_add_skill_links(col, true)
-	col.add_child(HSeparator.new())
-	_add_settlement_nav(col, true)
-	col.add_child(HSeparator.new())
-	col.add_child(UIStyle.label("GAME", true, UITokens.FONT_MICRO))
-	for screen in Screens.ORDER:
-		if screen == Screens.SKILLS or screen in PINNED_SCREENS or screen == Screens.SETTLEMENT:
-			continue
-		var b := UIStyle.button(Screens.label_for(screen))
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		var target: String = screen
-		b.pressed.connect(func():
-			_drawer.visible = false
-			_show_screen(target, {}))
-		col.add_child(b)
+		SidebarNav.populate_drawer(self, _drawer)
 
 # =========================================================================
 #  Status
