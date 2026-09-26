@@ -1739,12 +1739,17 @@ func test_ability_effects_in_fight() -> void:
 		_eq(_replay_attack(monster, gore_seed), "gore", "the pinned bleed seed is attributed to Gore")
 		_approx(gore_duration, float(DataLoader.get_ability("gore").get("status_duration", 0.0)), 0.001,
 			"the status lasts the record's status_duration")
-		# Stepped directly, and deliberately: _tick_monster_effects is the production effect tick, so
-		# this measures the DOT itself instead of a whole fight's worth of player and monster hits.
+		# The damage is read off the status tick, not off monster_hp. An endless fight replaces a
+		# bleed-killed monster at full HP (CombatManager._tick_effects -> _on_monster_death), so an HP
+		# comparison only holds on the runs where the monster happens to survive — this check used to
+		# go red exactly when the DOT worked. Stepped with two whole intervals plus half of one, so
+		# the remainder must deal nothing and this pins "once per tick_interval" rather than a flat
+		# rate. The expected figure comes from the ability record, so a status that never received
+		# status_damage_per_tick returns 0 and fails here. The replay above is the same pinned seed as
+		# the search iteration, so monster_effects is that one bleed.
+		var bleed: StatusEffect = CombatManager.monster_effects[0]
 		var per_tick: float = float(DataLoader.get_ability("gore").get("status_damage_per_tick", 0.0))
-		var hp_before: int = CombatManager.monster_hp
-		CombatManager._tick_monster_effects(2.0)
-		_eq(CombatManager.monster_hp, hp_before - 2 * int(per_tick),
+		_approx(bleed.tick(bleed.tick_interval * 2.5), per_tick * 2.0, 0.001,
 			"the bleed deals its per-tick damage once per tick_interval")
 	_ok(pact_seed > 0, "Blood Pact healed a wounded player on a landed hit")
 	if pact_seed > 0:
