@@ -63,6 +63,20 @@
     "sell_price": 120,
     "is_stackable": true
   },
+  "cinderbark_log": {
+    "id": "cinderbark_log",
+    "name": "Cinderbark Log",
+    "item_type": "resource",
+    "sell_price": 200,
+    "is_stackable": true
+  },
+  "voidwood_log": {
+    "id": "voidwood_log",
+    "name": "Voidwood Log",
+    "item_type": "resource",
+    "sell_price": 320,
+    "is_stackable": true
+  },
   "bird_nest": {
     "id": "bird_nest",
     "name": "Bird Nest",
@@ -153,6 +167,20 @@
     "name": "Raw Leviathan",
     "item_type": "resource",
     "sell_price": 80,
+    "is_stackable": true
+  },
+  "raw_dreadfin": {
+    "id": "raw_dreadfin",
+    "name": "Raw Dreadfin",
+    "item_type": "resource",
+    "sell_price": 140,
+    "is_stackable": true
+  },
+  "raw_abyssal_eel": {
+    "id": "raw_abyssal_eel",
+    "name": "Raw Abyssal Eel",
+    "item_type": "resource",
+    "sell_price": 220,
     "is_stackable": true
   },
   "shrimp": {
@@ -677,6 +705,20 @@
     "name": "Wyrmsteel Ore",
     "item_type": "resource",
     "sell_price": 90,
+    "is_stackable": true
+  },
+  "umbral_ore": {
+    "id": "umbral_ore",
+    "name": "Umbral Ore",
+    "item_type": "resource",
+    "sell_price": 130,
+    "is_stackable": true
+  },
+  "herald_ore": {
+    "id": "herald_ore",
+    "name": "Herald Ore",
+    "item_type": "resource",
+    "sell_price": 200,
     "is_stackable": true
   },
   "mithril_bar": {
@@ -2698,6 +2740,20 @@
     "name": "Prismatic Essence",
     "item_type": "resource",
     "sell_price": 150,
+    "is_stackable": true
+  },
+  "umbral_essence": {
+    "id": "umbral_essence",
+    "name": "Umbral Essence",
+    "item_type": "resource",
+    "sell_price": 220,
+    "is_stackable": true
+  },
+  "herald_essence": {
+    "id": "herald_essence",
+    "name": "Herald Essence",
+    "item_type": "resource",
+    "sell_price": 320,
     "is_stackable": true
   },
   "slayer_armour_basic": {

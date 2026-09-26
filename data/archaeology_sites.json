@@ -94,5 +94,49 @@
         "chance": 0.02
       }
     ]
+  },
+  "primeval": {
+    "id": "primeval",
+    "name": "Primeval Dig Site",
+    "level_required": 95,
+    "excavate_xp": 160,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.5
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.35
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.12
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.03
+      }
+    ]
+  },
+  "heraldic": {
+    "id": "heraldic",
+    "name": "Heraldic Dig Site",
+    "level_required": 105,
+    "excavate_xp": 200,
+    "artefacts": [
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.4
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.2
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.05
+      }
+    ]
   }
 }

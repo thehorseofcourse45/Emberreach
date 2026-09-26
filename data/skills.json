@@ -289,6 +289,28 @@
           "redwood_log": 1
         },
         "mastery_action_time": 15.0
+      },
+      {
+        "id": "cinderbark_tree",
+        "name": "Cinderbark Tree",
+        "level_required": 100,
+        "base_interval": 17.0,
+        "base_xp": 320,
+        "output_items": {
+          "cinderbark_log": 1
+        },
+        "mastery_action_time": 17.0
+      },
+      {
+        "id": "voidwood_tree",
+        "name": "Voidwood Tree",
+        "level_required": 110,
+        "base_interval": 19.0,
+        "base_xp": 400,
+        "output_items": {
+          "voidwood_log": 1
+        },
+        "mastery_action_time": 19.0
       }
     ],
     "order": 10
@@ -448,6 +470,28 @@
           "raw_whale": 1
         },
         "mastery_action_time": 15.0
+      },
+      {
+        "id": "dreadfin",
+        "name": "Dreadfin",
+        "level_required": 105,
+        "base_interval": 17.0,
+        "base_xp": 420,
+        "output_items": {
+          "raw_dreadfin": 1
+        },
+        "mastery_action_time": 17.0
+      },
+      {
+        "id": "abyssal_eel",
+        "name": "Abyssal Eel",
+        "level_required": 115,
+        "base_interval": 19.0,
+        "base_xp": 520,
+        "output_items": {
+          "raw_abyssal_eel": 1
+        },
+        "mastery_action_time": 19.0
       }
     ],
     "order": 11
@@ -683,6 +727,48 @@
             "chance": 0.06,
             "min_qty": 1,
             "max_qty": 2
+          }
+        ]
+      },
+      {
+        "id": "umbral_ore",
+        "name": "Umbral Ore",
+        "level_required": 105,
+        "base_interval": 7.8,
+        "base_xp": 220,
+        "output_items": {
+          "umbral_ore": 1
+        },
+        "node_hp": 32,
+        "respawn_seconds": 17,
+        "mastery_action_time": 7.8,
+        "secondary_outputs": [
+          {
+            "item_id": "diamond",
+            "chance": 0.07,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ]
+      },
+      {
+        "id": "herald_ore",
+        "name": "Herald Ore",
+        "level_required": 115,
+        "base_interval": 8.4,
+        "base_xp": 260,
+        "output_items": {
+          "herald_ore": 1
+        },
+        "node_hp": 36,
+        "respawn_seconds": 19,
+        "mastery_action_time": 8.4,
+        "secondary_outputs": [
+          {
+            "item_id": "diamond",
+            "chance": 0.08,
+            "min_qty": 2,
+            "max_qty": 3
           }
         ]
       },
@@ -3766,6 +3852,50 @@
             "max_qty": 1
           }
         ]
+      },
+      {
+        "id": "high_priest",
+        "name": "High Priest",
+        "level_required": 105,
+        "base_interval": 4.4,
+        "base_xp": 660,
+        "success_chance": 0.3,
+        "perception": 88,
+        "stun_seconds": 12,
+        "fail_damage": 34,
+        "gp_reward": 2400,
+        "output_items": {},
+        "mastery_action_time": 4.4,
+        "secondary_outputs": [
+          {
+            "item_id": "chapeau_noir",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
+      },
+      {
+        "id": "herald_mark",
+        "name": "Herald",
+        "level_required": 115,
+        "base_interval": 4.6,
+        "base_xp": 800,
+        "success_chance": 0.28,
+        "perception": 95,
+        "stun_seconds": 14,
+        "fail_damage": 40,
+        "gp_reward": 3200,
+        "output_items": {},
+        "mastery_action_time": 4.6,
+        "secondary_outputs": [
+          {
+            "item_id": "chapeau_noir",
+            "chance": 0.07,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       }
     ],
     "mastery_unlocks": {
@@ -4522,6 +4652,63 @@
             "max_qty": 2
           }
         ]
+      },
+      {
+        "id": "study_orison",
+        "name": "Study Orison",
+        "level_required": 95,
+        "base_interval": 3.0,
+        "base_xp": 115,
+        "output_items": {
+          "stardust": 2
+        },
+        "mastery_action_time": 3.0,
+        "secondary_outputs": [
+          {
+            "item_id": "golden_stardust",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ]
+      },
+      {
+        "id": "study_vex",
+        "name": "Study Vex",
+        "level_required": 102,
+        "base_interval": 3.0,
+        "base_xp": 130,
+        "output_items": {
+          "stardust": 2
+        },
+        "mastery_action_time": 3.0,
+        "secondary_outputs": [
+          {
+            "item_id": "golden_stardust",
+            "chance": 0.12,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ]
+      },
+      {
+        "id": "study_halcyon",
+        "name": "Study Halcyon",
+        "level_required": 110,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "output_items": {
+          "stardust": 2
+        },
+        "mastery_action_time": 3.0,
+        "secondary_outputs": [
+          {
+            "item_id": "golden_stardust",
+            "chance": 0.15,
+            "min_qty": 2,
+            "max_qty": 3
+          }
+        ]
       }
     ],
     "order": 24
@@ -4824,6 +5011,68 @@
           }
         ],
         "mastery_action_time": 6.0
+      },
+      {
+        "id": "primeval",
+        "name": "Primeval Dig Site",
+        "level_required": 95,
+        "base_interval": 6.0,
+        "base_xp": 160,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.5
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.35
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.12
+          },
+          {
+            "item_id": "artefact_unique",
+            "chance": 0.03
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.22,
+            "min_qty": 2,
+            "max_qty": 3
+          }
+        ],
+        "mastery_action_time": 6.0
+      },
+      {
+        "id": "heraldic",
+        "name": "Heraldic Dig Site",
+        "level_required": 105,
+        "base_interval": 6.0,
+        "base_xp": 200,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.4
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.2
+          },
+          {
+            "item_id": "artefact_unique",
+            "chance": 0.05
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.25,
+            "min_qty": 2,
+            "max_qty": 4
+          }
+        ],
+        "mastery_action_time": 6.0
       }
     ],
     "order": 28
@@ -4957,6 +5206,32 @@
         },
         "node_hp": 18,
         "respawn_seconds": 9,
+        "mastery_action_time": 4.0
+      },
+      {
+        "id": "umbral_vein",
+        "name": "Umbral Vein",
+        "level_required": 105,
+        "base_interval": 4.0,
+        "base_xp": 175,
+        "output_items": {
+          "umbral_essence": 1
+        },
+        "node_hp": 20,
+        "respawn_seconds": 10,
+        "mastery_action_time": 4.0
+      },
+      {
+        "id": "herald_vein",
+        "name": "Herald Vein",
+        "level_required": 115,
+        "base_interval": 4.0,
+        "base_xp": 210,
+        "output_items": {
+          "herald_essence": 1
+        },
+        "node_hp": 22,
+        "respawn_seconds": 11,
         "mastery_action_time": 4.0
       }
     ],

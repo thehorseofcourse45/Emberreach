@@ -62,5 +62,21 @@
     "excavate_xp": 150,
     "node_hp": 18,
     "respawn_seconds": 9
+  },
+  "umbral_vein": {
+    "id": "umbral_vein",
+    "name": "Umbral Vein",
+    "level_required": 105,
+    "excavate_xp": 175,
+    "node_hp": 20,
+    "respawn_seconds": 10
+  },
+  "herald_vein": {
+    "id": "herald_vein",
+    "name": "Herald Vein",
+    "level_required": 115,
+    "excavate_xp": 210,
+    "node_hp": 22,
+    "respawn_seconds": 11
   }
 }

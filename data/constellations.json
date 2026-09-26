@@ -433,5 +433,92 @@
         }
       }
     ]
+  },
+  "orison": {
+    "id": "orison",
+    "name": "Orison",
+    "level_required": 95,
+    "skill_focus": "prayer",
+    "stars": [
+      {
+        "id": "orison_1",
+        "cost": 15,
+        "effect": {
+          "global_skill_xp_percent": 3
+        }
+      },
+      {
+        "id": "orison_2",
+        "cost": 75,
+        "effect": {
+          "prayer_skill_xp_percent": 4
+        }
+      },
+      {
+        "id": "orison_3",
+        "cost": 300,
+        "effect": {
+          "global_skill_xp_percent": 6
+        }
+      }
+    ]
+  },
+  "vex": {
+    "id": "vex",
+    "name": "Vex",
+    "level_required": 102,
+    "skill_focus": "thieving",
+    "stars": [
+      {
+        "id": "vex_1",
+        "cost": 20,
+        "effect": {
+          "thieving_skill_xp_percent": 3
+        }
+      },
+      {
+        "id": "vex_2",
+        "cost": 100,
+        "effect": {
+          "thieving_interval_percent": 3
+        }
+      },
+      {
+        "id": "vex_3",
+        "cost": 400,
+        "effect": {
+          "global_skill_xp_percent": 7
+        }
+      }
+    ]
+  },
+  "halcyon": {
+    "id": "halcyon",
+    "name": "Halcyon",
+    "level_required": 110,
+    "skill_focus": "astrology",
+    "stars": [
+      {
+        "id": "halcyon_1",
+        "cost": 25,
+        "effect": {
+          "astrology_skill_xp_percent": 4
+        }
+      },
+      {
+        "id": "halcyon_2",
+        "cost": 125,
+        "effect": {
+          "astrology_interval_percent": 4
+        }
+      },
+      {
+        "id": "halcyon_3",
+        "cost": 500,
+        "effect": {
+          "global_skill_xp_percent": 8
+        }
+      }
+    ]
   }
 }
