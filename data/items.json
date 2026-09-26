@@ -248,6 +248,38 @@
     "is_stackable": true,
     "heal_amount": 200
   },
+  "manta_ray": {
+    "id": "manta_ray",
+    "name": "Glidefin Manta",
+    "item_type": "food",
+    "sell_price": 60,
+    "is_stackable": true,
+    "heal_amount": 240
+  },
+  "whale": {
+    "id": "whale",
+    "name": "Leviathan Steak",
+    "item_type": "food",
+    "sell_price": 95,
+    "is_stackable": true,
+    "heal_amount": 300
+  },
+  "dreadfin": {
+    "id": "dreadfin",
+    "name": "Dreadfin Fillet",
+    "item_type": "food",
+    "sell_price": 160,
+    "is_stackable": true,
+    "heal_amount": 380
+  },
+  "abyssal_eel": {
+    "id": "abyssal_eel",
+    "name": "Abyssal Eel Roll",
+    "item_type": "food",
+    "sell_price": 250,
+    "is_stackable": true,
+    "heal_amount": 450
+  },
   "copper_ore": {
     "id": "copper_ore",
     "name": "Copper Ore",
@@ -748,6 +780,52 @@
     "item_type": "resource",
     "sell_price": 125,
     "is_stackable": true
+  },
+  "umbral_bar": {
+    "id": "umbral_bar",
+    "name": "Umbral Bar",
+    "item_type": "resource",
+    "sell_price": 180,
+    "is_stackable": true
+  },
+  "herald_bar": {
+    "id": "herald_bar",
+    "name": "Herald Bar",
+    "item_type": "resource",
+    "sell_price": 280,
+    "is_stackable": true
+  },
+  "herald_platebody": {
+    "id": "herald_platebody",
+    "name": "Herald Platebody",
+    "item_type": "equipment",
+    "sell_price": 75000,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 40,
+      "ranged_defence": 40,
+      "magic_defence": 40,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "defence": 105
+    }
+  },
+  "herald_godsword": {
+    "id": "herald_godsword",
+    "name": "Herald Godsword",
+    "item_type": "equipment",
+    "sell_price": 350000,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 70,
+      "melee_strength": 95,
+      "melee_defence": 12
+    },
+    "level_requirements": {
+      "attack": 105
+    }
   },
   "pure_essence": {
     "id": "pure_essence",
@@ -1462,6 +1540,156 @@
       "ranged": 35
     }
   },
+  "yew_shortbow": {
+    "id": "yew_shortbow",
+    "name": "Yew Shortbow",
+    "item_type": "equipment",
+    "sell_price": 110,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 30,
+      "ranged_strength": 20
+    },
+    "level_requirements": {
+      "ranged": 55
+    }
+  },
+  "yew_longbow": {
+    "id": "yew_longbow",
+    "name": "Yew Longbow",
+    "item_type": "equipment",
+    "sell_price": 150,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 38,
+      "ranged_strength": 25
+    },
+    "level_requirements": {
+      "ranged": 55
+    }
+  },
+  "magic_shortbow": {
+    "id": "magic_shortbow",
+    "name": "Magic Shortbow",
+    "item_type": "equipment",
+    "sell_price": 220,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 45,
+      "ranged_strength": 30
+    },
+    "level_requirements": {
+      "ranged": 75
+    }
+  },
+  "magic_longbow": {
+    "id": "magic_longbow",
+    "name": "Magic Longbow",
+    "item_type": "equipment",
+    "sell_price": 300,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 55,
+      "ranged_strength": 36
+    },
+    "level_requirements": {
+      "ranged": 75
+    }
+  },
+  "redwood_shortbow": {
+    "id": "redwood_shortbow",
+    "name": "Redwood Shortbow",
+    "item_type": "equipment",
+    "sell_price": 420,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 60,
+      "ranged_strength": 40
+    },
+    "level_requirements": {
+      "ranged": 90
+    }
+  },
+  "redwood_longbow": {
+    "id": "redwood_longbow",
+    "name": "Redwood Longbow",
+    "item_type": "equipment",
+    "sell_price": 560,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 72,
+      "ranged_strength": 48
+    },
+    "level_requirements": {
+      "ranged": 90
+    }
+  },
+  "cinderbark_shortbow": {
+    "id": "cinderbark_shortbow",
+    "name": "Cinderbark Shortbow",
+    "item_type": "equipment",
+    "sell_price": 750,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 78,
+      "ranged_strength": 52
+    },
+    "level_requirements": {
+      "ranged": 100
+    }
+  },
+  "cinderbark_longbow": {
+    "id": "cinderbark_longbow",
+    "name": "Cinderbark Longbow",
+    "item_type": "equipment",
+    "sell_price": 1000,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 90,
+      "ranged_strength": 60
+    },
+    "level_requirements": {
+      "ranged": 100
+    }
+  },
+  "voidwood_shortbow": {
+    "id": "voidwood_shortbow",
+    "name": "Voidwood Shortbow",
+    "item_type": "equipment",
+    "sell_price": 1400,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 98,
+      "ranged_strength": 66
+    },
+    "level_requirements": {
+      "ranged": 110
+    }
+  },
+  "voidwood_longbow": {
+    "id": "voidwood_longbow",
+    "name": "Voidwood Longbow",
+    "item_type": "equipment",
+    "sell_price": 1800,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 112,
+      "ranged_strength": 75
+    },
+    "level_requirements": {
+      "ranged": 110
+    }
+  },
   "topaz": {
     "id": "topaz",
     "name": "Topaz",
@@ -1894,6 +2122,20 @@
     "sell_price": 27,
     "is_stackable": true
   },
+  "soul_rune": {
+    "id": "soul_rune",
+    "name": "Soul Rune",
+    "item_type": "rune",
+    "sell_price": 40,
+    "is_stackable": true
+  },
+  "umbral_rune": {
+    "id": "umbral_rune",
+    "name": "Umbral Rune",
+    "item_type": "rune",
+    "sell_price": 60,
+    "is_stackable": true
+  },
   "nature_rune": {
     "id": "nature_rune",
     "name": "Verdant Rune",
@@ -2271,6 +2513,50 @@
     "charges": 25,
     "potion_effect": {
       "firemaking_doubling_percent": 20
+    }
+  },
+  "potion_dr_5": {
+    "id": "potion_dr_5",
+    "name": "Stoneskin Draught V",
+    "item_type": "potion",
+    "sell_price": 120,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "damage_reduction_percent": 14
+    }
+  },
+  "potion_mining_5": {
+    "id": "potion_mining_5",
+    "name": "Delver's Draught V",
+    "item_type": "potion",
+    "sell_price": 120,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "mining_node_preservation_percent": 25
+    }
+  },
+  "potion_skilling_5": {
+    "id": "potion_skilling_5",
+    "name": "Polymath Tonic V",
+    "item_type": "potion",
+    "sell_price": 120,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "global_skill_xp_percent": 14
+    }
+  },
+  "potion_firemaking_5": {
+    "id": "potion_firemaking_5",
+    "name": "Banked Coals V",
+    "item_type": "potion",
+    "sell_price": 120,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "firemaking_doubling_percent": 25
     }
   },
   "chapeau_noir": {
@@ -4593,5 +4879,85 @@
       "skill": "lostfinding",
       "level": 99
     }
+  },
+  "grand_vintage": {
+    "id": "grand_vintage",
+    "name": "Grand Vintage",
+    "item_type": "resource",
+    "sell_price": 5200,
+    "is_stackable": true,
+    "description": "A weather kept a decade too long. It pours like a decision."
+  },
+  "herald_cask": {
+    "id": "herald_cask",
+    "name": "Herald Cask",
+    "item_type": "resource",
+    "sell_price": 9400,
+    "is_stackable": true,
+    "description": "Sealed against the ashfall. Whatever is inside has finished becoming."
+  },
+  "flawless_echo": {
+    "id": "flawless_echo",
+    "name": "Flawless Echo",
+    "item_type": "resource",
+    "sell_price": 5600,
+    "is_stackable": true,
+    "description": "A loop with no seam. Play it once and the room remembers."
+  },
+  "herald_echo": {
+    "id": "herald_echo",
+    "name": "Herald Echo",
+    "item_type": "resource",
+    "sell_price": 9800,
+    "is_stackable": true,
+    "description": "The sound the ashfall made, kept. Nobody plays it twice."
+  },
+  "grand_confluence": {
+    "id": "grand_confluence",
+    "name": "Grand Confluence",
+    "item_type": "resource",
+    "sell_price": 4800,
+    "is_stackable": true,
+    "description": "Every road in the survey arriving at once, politely."
+  },
+  "herald_gate": {
+    "id": "herald_gate",
+    "name": "Herald Gate",
+    "item_type": "resource",
+    "sell_price": 8600,
+    "is_stackable": true,
+    "description": "A passage drawn to exactly one place. Knock first."
+  },
+  "living_legend": {
+    "id": "living_legend",
+    "name": "Living Legend",
+    "item_type": "resource",
+    "sell_price": 5400,
+    "is_stackable": true,
+    "description": "A tradition still being told by the person it happened to."
+  },
+  "herald_craft": {
+    "id": "herald_craft",
+    "name": "Herald Craft",
+    "item_type": "resource",
+    "sell_price": 9200,
+    "is_stackable": true,
+    "description": "Made the way it will be remembered, which is to say perfectly."
+  },
+  "cold_trail": {
+    "id": "cold_trail",
+    "name": "Cold Trail",
+    "item_type": "resource",
+    "sell_price": 4600,
+    "is_stackable": true,
+    "description": "Years old and still warm at the edges. Follow it quietly."
+  },
+  "herald_case": {
+    "id": "herald_case",
+    "name": "Herald Case",
+    "item_type": "resource",
+    "sell_price": 8400,
+    "is_stackable": true,
+    "description": "Closed. The label is in your handwriting and you have never seen it before."
   }
 }

@@ -1108,6 +1108,50 @@
           }
         ],
         "mastery_action_time": 1.2
+      },
+      {
+        "id": "burn_cinderbark_log",
+        "name": "Cinderbark Log",
+        "level_required": 100,
+        "base_interval": 2.0,
+        "base_xp": 330,
+        "input_items": {
+          "cinderbark_log": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "ash",
+            "chance": 0.5
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.45
+          }
+        ],
+        "mastery_action_time": 1.2
+      },
+      {
+        "id": "burn_voidwood_log",
+        "name": "Voidwood Log",
+        "level_required": 110,
+        "base_interval": 2.0,
+        "base_xp": 410,
+        "input_items": {
+          "voidwood_log": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "ash",
+            "chance": 0.5
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.5
+          }
+        ],
+        "mastery_action_time": 1.2
       }
     ],
     "order": 14
@@ -1255,6 +1299,66 @@
           "shark": 1
         },
         "mastery_action_time": 7.65
+      },
+      {
+        "id": "cook_manta_ray",
+        "name": "Glidefin Manta",
+        "level_required": 85,
+        "base_interval": 10.0,
+        "base_xp": 250,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_manta_ray": 1
+        },
+        "output_items": {
+          "manta_ray": 1
+        },
+        "mastery_action_time": 8.5
+      },
+      {
+        "id": "cook_whale",
+        "name": "Leviathan Steak",
+        "level_required": 95,
+        "base_interval": 11.0,
+        "base_xp": 330,
+        "success_chance": 0.8,
+        "input_items": {
+          "raw_whale": 1
+        },
+        "output_items": {
+          "whale": 1
+        },
+        "mastery_action_time": 9.35
+      },
+      {
+        "id": "cook_dreadfin",
+        "name": "Dreadfin Fillet",
+        "level_required": 105,
+        "base_interval": 12.0,
+        "base_xp": 420,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_dreadfin": 1
+        },
+        "output_items": {
+          "dreadfin": 1
+        },
+        "mastery_action_time": 10.2
+      },
+      {
+        "id": "cook_abyssal_eel",
+        "name": "Abyssal Eel Roll",
+        "level_required": 115,
+        "base_interval": 13.0,
+        "base_xp": 520,
+        "success_chance": 0.75,
+        "input_items": {
+          "raw_abyssal_eel": 1
+        },
+        "output_items": {
+          "abyssal_eel": 1
+        },
+        "mastery_action_time": 11.05
       }
     ],
     "order": 15
@@ -1436,6 +1540,36 @@
         },
         "output_items": {
           "dragonite_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "smelt_umbral_bar",
+        "name": "Umbral Bar",
+        "level_required": 105,
+        "base_interval": 1.7,
+        "base_xp": 160,
+        "input_items": {
+          "umbral_ore": 1,
+          "coal": 12
+        },
+        "output_items": {
+          "umbral_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "smelt_herald_bar",
+        "name": "Herald Bar",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 210,
+        "input_items": {
+          "herald_ore": 1,
+          "coal": 15
+        },
+        "output_items": {
+          "herald_bar": 1
         },
         "mastery_action_time": 1.7
       },
@@ -2462,6 +2596,38 @@
           "fire_godsword": 1
         },
         "mastery_action_time": 30.0
+      },
+      {
+        "id": "forge_herald_platebody",
+        "name": "Herald Platebody",
+        "level_required": 110,
+        "base_interval": 28.0,
+        "base_xp": 1800,
+        "input_items": {
+          "umbral_bar": 6,
+          "summoning_shard_gold": 2,
+          "prismatic_essence": 4
+        },
+        "output_items": {
+          "herald_platebody": 1
+        },
+        "mastery_action_time": 28.0
+      },
+      {
+        "id": "forge_herald_godsword",
+        "name": "Herald Godsword",
+        "level_required": 115,
+        "base_interval": 34.0,
+        "base_xp": 3200,
+        "input_items": {
+          "herald_bar": 8,
+          "summoning_shard_gold": 3,
+          "umbral_essence": 6
+        },
+        "output_items": {
+          "herald_godsword": 1
+        },
+        "mastery_action_time": 34.0
       }
     ],
     "order": 16
@@ -2622,6 +2788,156 @@
         },
         "output_items": {
           "willow_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_yew_shortbow",
+        "name": "Yew Shortbow",
+        "level_required": 55,
+        "base_interval": 1.3,
+        "base_xp": 150,
+        "input_items": {
+          "yew_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "yew_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_yew_longbow",
+        "name": "Yew Longbow",
+        "level_required": 60,
+        "base_interval": 1.3,
+        "base_xp": 200,
+        "input_items": {
+          "yew_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "yew_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_magic_shortbow",
+        "name": "Magic Shortbow",
+        "level_required": 75,
+        "base_interval": 1.3,
+        "base_xp": 260,
+        "input_items": {
+          "magic_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "magic_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_magic_longbow",
+        "name": "Magic Longbow",
+        "level_required": 80,
+        "base_interval": 1.3,
+        "base_xp": 330,
+        "input_items": {
+          "magic_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "magic_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_redwood_shortbow",
+        "name": "Redwood Shortbow",
+        "level_required": 90,
+        "base_interval": 1.3,
+        "base_xp": 410,
+        "input_items": {
+          "redwood_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "redwood_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_redwood_longbow",
+        "name": "Redwood Longbow",
+        "level_required": 95,
+        "base_interval": 1.3,
+        "base_xp": 500,
+        "input_items": {
+          "redwood_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "redwood_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_cinderbark_shortbow",
+        "name": "Cinderbark Shortbow",
+        "level_required": 100,
+        "base_interval": 1.3,
+        "base_xp": 600,
+        "input_items": {
+          "cinderbark_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "cinderbark_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_cinderbark_longbow",
+        "name": "Cinderbark Longbow",
+        "level_required": 105,
+        "base_interval": 1.3,
+        "base_xp": 710,
+        "input_items": {
+          "cinderbark_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "cinderbark_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_voidwood_shortbow",
+        "name": "Voidwood Shortbow",
+        "level_required": 110,
+        "base_interval": 1.3,
+        "base_xp": 830,
+        "input_items": {
+          "voidwood_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "voidwood_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_voidwood_longbow",
+        "name": "Voidwood Longbow",
+        "level_required": 115,
+        "base_interval": 1.3,
+        "base_xp": 960,
+        "input_items": {
+          "voidwood_log": 1,
+          "bowstring": 1
+        },
+        "output_items": {
+          "voidwood_longbow": 1
         },
         "mastery_action_time": 1.3
       }
@@ -3030,6 +3346,50 @@
           "black_dhide_coif": 1
         },
         "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_reinforced_dhide_body",
+        "name": "Reinforced D'hide Body",
+        "level_required": 85,
+        "base_interval": 1.65,
+        "base_xp": 190,
+        "input_items": {
+          "black_dragonhide": 3
+        },
+        "output_items": {
+          "black_dhide_body": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_reinforced_dhide_chaps",
+        "name": "Reinforced D'hide Chaps",
+        "level_required": 95,
+        "base_interval": 1.65,
+        "base_xp": 250,
+        "input_items": {
+          "black_dragonhide": 3,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "black_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_reinforced_dhide_coif",
+        "name": "Reinforced D'hide Coif",
+        "level_required": 105,
+        "base_interval": 1.65,
+        "base_xp": 320,
+        "input_items": {
+          "black_dragonhide": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "black_dhide_coif": 1
+        },
+        "mastery_action_time": 1.65
       }
     ],
     "mastery_unlocks": {
@@ -3266,6 +3626,35 @@
         },
         "output_items": {
           "fire_staff": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "soul_rune",
+        "name": "Soul Rune",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 80,
+        "input_items": {
+          "pure_essence": 1
+        },
+        "output_items": {
+          "soul_rune": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "umbral_rune",
+        "name": "Umbral Rune",
+        "level_required": 110,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "pure_essence": 1,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "umbral_rune": 2
         },
         "mastery_action_time": 1.7
       }
@@ -3514,6 +3903,62 @@
         },
         "output_items": {
           "potion_firemaking_4": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_dr_5",
+        "name": "Stoneskin Draught V",
+        "level_required": 75,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "oxilyme": 5
+        },
+        "output_items": {
+          "potion_dr_5": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_mining_5",
+        "name": "Delver's Draught V",
+        "level_required": 85,
+        "base_interval": 1.7,
+        "base_xp": 130,
+        "input_items": {
+          "poraxx": 5
+        },
+        "output_items": {
+          "potion_mining_5": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_skilling_5",
+        "name": "Polymath Tonic V",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 150,
+        "input_items": {
+          "barrentoe": 5
+        },
+        "output_items": {
+          "potion_skilling_5": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_firemaking_5",
+        "name": "Banked Coals V",
+        "level_required": 100,
+        "base_interval": 1.7,
+        "base_xp": 165,
+        "input_items": {
+          "barrentoe": 6
+        },
+        "output_items": {
+          "potion_firemaking_5": 1
         },
         "mastery_action_time": 1.7
       }
@@ -4811,6 +5256,51 @@
           "gold_ring": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "superheat_umbral",
+        "name": "Superheat Umbral",
+        "level_required": 75,
+        "base_interval": 1.7,
+        "base_xp": 100,
+        "input_items": {
+          "umbral_ore": 1,
+          "fire_rune": 4
+        },
+        "output_items": {
+          "umbral_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "enchanted_diamond",
+        "name": "Enchant Diamond",
+        "level_required": 85,
+        "base_interval": 1.7,
+        "base_xp": 120,
+        "input_items": {
+          "diamond": 1,
+          "cosmic_rune": 3
+        },
+        "output_items": {
+          "diamond_ring": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "superheat_herald",
+        "name": "Superheat Herald",
+        "level_required": 100,
+        "base_interval": 1.7,
+        "base_xp": 150,
+        "input_items": {
+          "herald_ore": 1,
+          "fire_rune": 5
+        },
+        "output_items": {
+          "herald_bar": 1
+        },
+        "mastery_action_time": 1.7
       }
     ],
     "order": 25
@@ -5433,6 +5923,42 @@
           "master_echo_loop": 1
         },
         "success_chance": 0.7
+      },
+      {
+        "id": "flawless_echo",
+        "name": "Flawless Echo",
+        "level_required": 85,
+        "base_interval": 14.0,
+        "base_xp": 340,
+        "description": "No seam anywhere in the sequence. The rack goes quiet because there is nothing left to fix.",
+        "mastery_action_time": 14.0,
+        "input_items": {
+          "echo_arrangement": 3,
+          "echo_charge": 3,
+          "resonance_trace": 6
+        },
+        "output_items": {
+          "flawless_echo": 1
+        },
+        "success_chance": 0.65
+      },
+      {
+        "id": "herald_echo",
+        "name": "Herald Echo",
+        "level_required": 100,
+        "base_interval": 16.0,
+        "base_xp": 460,
+        "description": "Record the sound the ashfall made and keep it. Play it once, then seal the rack.",
+        "mastery_action_time": 16.0,
+        "input_items": {
+          "echo_arrangement": 4,
+          "echo_charge": 4,
+          "resonance_trace": 8
+        },
+        "output_items": {
+          "herald_echo": 1
+        },
+        "success_chance": 0.6
       }
     ],
     "order": 30
@@ -5652,6 +6178,44 @@
           "condensed_route": 1
         },
         "success_chance": 0.55
+      },
+      {
+        "id": "grand_confluence",
+        "name": "Grand Confluence",
+        "level_required": 95,
+        "base_interval": 24.0,
+        "base_xp": 600,
+        "description": "Every road in the survey arriving at once, politely, in a single afternoon.",
+        "mastery_action_time": 24.0,
+        "input_items": {
+          "wayfold_link": 4,
+          "fold_anchor": 5,
+          "freight_manifest": 4,
+          "route_survey": 5
+        },
+        "output_items": {
+          "grand_confluence": 1
+        },
+        "success_chance": 0.5
+      },
+      {
+        "id": "herald_gate",
+        "name": "Herald Gate",
+        "level_required": 110,
+        "base_interval": 28.0,
+        "base_xp": 820,
+        "description": "Draw a passage to exactly one place and hold it open. Knock first.",
+        "mastery_action_time": 28.0,
+        "input_items": {
+          "condensed_route": 2,
+          "fold_anchor": 6,
+          "freight_manifest": 5,
+          "route_survey": 6
+        },
+        "output_items": {
+          "herald_gate": 1
+        },
+        "success_chance": 0.45
       }
     ],
     "order": 31
@@ -5866,6 +6430,42 @@
           "blended_weather": 2
         },
         "success_chance": 0.5
+      },
+      {
+        "id": "grand_vintage",
+        "name": "Grand Vintage",
+        "level_required": 95,
+        "base_interval": 22.0,
+        "base_xp": 540,
+        "description": "A weather kept a decade too long. It pours like a decision.",
+        "mastery_action_time": 22.0,
+        "input_items": {
+          "matured_culture": 3,
+          "charged_vessel": 2,
+          "weather_charge": 3
+        },
+        "output_items": {
+          "grand_vintage": 1
+        },
+        "success_chance": 0.45
+      },
+      {
+        "id": "herald_cask",
+        "name": "Herald Cask",
+        "level_required": 108,
+        "base_interval": 26.0,
+        "base_xp": 720,
+        "description": "Sealed against the ashfall. Whatever is inside has finished becoming.",
+        "mastery_action_time": 26.0,
+        "input_items": {
+          "grand_vintage": 1,
+          "charged_vessel": 2,
+          "weather_charge": 4
+        },
+        "output_items": {
+          "herald_cask": 1
+        },
+        "success_chance": 0.4
       }
     ],
     "order": 32
@@ -6032,6 +6632,42 @@
           "paired_tradition": 2
         },
         "success_chance": 0.6
+      },
+      {
+        "id": "living_legend",
+        "name": "Living Legend",
+        "level_required": 90,
+        "base_interval": 18.0,
+        "base_xp": 430,
+        "description": "A tradition still being told by the person it happened to. Handle with care.",
+        "mastery_action_time": 18.0,
+        "input_items": {
+          "established_tradition": 1,
+          "tradition_progress": 4,
+          "paired_tradition": 1
+        },
+        "output_items": {
+          "living_legend": 1
+        },
+        "success_chance": 0.55
+      },
+      {
+        "id": "herald_craft",
+        "name": "Herald Craft",
+        "level_required": 105,
+        "base_interval": 20.0,
+        "base_xp": 580,
+        "description": "Made the way it will be remembered, which is to say perfectly.",
+        "mastery_action_time": 20.0,
+        "input_items": {
+          "living_legend": 1,
+          "tradition_progress": 5,
+          "paired_tradition": 2
+        },
+        "output_items": {
+          "herald_craft": 1
+        },
+        "success_chance": 0.5
       }
     ],
     "order": 33
@@ -6232,6 +6868,42 @@
           "finders_fee": 2
         },
         "success_chance": 0.8
+      },
+      {
+        "id": "cold_trail",
+        "name": "Cold Trail",
+        "level_required": 80,
+        "base_interval": 16.0,
+        "base_xp": 340,
+        "description": "A trail years old and still warm at the edges. Follow it quietly and do not hurry the end.",
+        "mastery_action_time": 16.0,
+        "input_items": {
+          "witness_timeline": 2,
+          "trace_evidence": 3,
+          "restored_label": 1
+        },
+        "output_items": {
+          "cold_trail": 1
+        },
+        "success_chance": 0.65
+      },
+      {
+        "id": "herald_case",
+        "name": "Herald Case",
+        "level_required": 95,
+        "base_interval": 18.0,
+        "base_xp": 460,
+        "description": "Closed. The label is in your handwriting and you have never seen it before.",
+        "mastery_action_time": 18.0,
+        "input_items": {
+          "cold_trail": 1,
+          "witness_timeline": 2,
+          "trace_evidence": 4
+        },
+        "output_items": {
+          "herald_case": 1
+        },
+        "success_chance": 0.6
       }
     ],
     "order": 34
