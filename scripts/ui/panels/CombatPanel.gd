@@ -18,6 +18,7 @@ var _fight_box: VBoxContainer
 var _prep_box: VBoxContainer
 var _places_box: VBoxContainer
 var _log: Dictionary = Widgets.event_log(40)
+var _triggers: Dictionary = Widgets.event_log(30)
 var _selected_area: String = ""
 var _built: bool = false
 var expeditions_only: bool = false
@@ -37,6 +38,11 @@ func _ready() -> void:
 	EventBus.player_attacked.connect(_on_player_attacked)
 	EventBus.player_died.connect(func(c): _log["push"].call("Defeated by %s." % str(c.get("killer", "an enemy"))))
 	EventBus.dungeon_completed.connect(func(d): _log["push"].call("%s cleared." % str(DataLoader.get_dungeon(d).get("name", d))))
+	EventBus.ability_triggered.connect(_on_ability_triggered)
+	EventBus.player_special_attack.connect(_on_special_attack)
+	# An adopted preset rewrites the active strategy and the effective loadout, so both are read
+	# back here rather than assumed: this panel displays what CombatManager actually adopted.
+	EventBus.strategy_changed.connect(func(_name): refresh())
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.activity_changed.connect(_refresh_fight)
 	refresh()
@@ -100,6 +106,7 @@ func _rebuild_prep() -> void:
 	_melee_menu.tooltip_text = "Which melee skill trains while you fight"
 	row.add_child(_melee_menu)
 	_prep_box.add_child(row)
+	_prep_box.add_child(_build_strategy())
 
 	# Supplies and rules, stated explicitly.
 	var summary: Dictionary = CombatManager.player_combat_summary()
@@ -143,9 +150,184 @@ func _style_index() -> int:
 		"magic": return 2
 	return 0
 
+# =========================================================================
+#  Strategy bar, ability slots, trigger feed
+# =========================================================================
+
+## The decision half of the panel: which preset is running, its levers, and the ability slots the
+## player owns. Every write goes through set_strategy / set_loadout and every read of the live
+## loadout goes through active_loadout, because those two are silent — set_strategy keeps the old
+## record when the validator refuses one, and set_loadout drops a locked ability and trims past the
+## cap without a word. A dropdown or a slot showing what was ASKED for would be a lie about what
+## the engine will actually roll.
+func _build_strategy() -> Control:
+	var box := UIStyle.section("Strategy", "Presets are validated on adoption; the slots are the ones your Defence has unlocked.")
+	var names: Array[String] = []
+	for rec in PlayerData.combat_strategies:
+		names.append(str((rec as Dictionary).get("name", "")))
+	var active: String = str(PlayerData.combat_strategy_active)
+	var row := HFlowContainer.new()
+	row.add_theme_constant_override("h_separation", UITokens.SP_4)
+	row.add_theme_constant_override("v_separation", UITokens.SP_3)
+	row.add_child(UIStyle.label("Preset", true, UITokens.FONT_SMALL))
+	if names.is_empty():
+		row.add_child(UIStyle.label("none stored", true, UITokens.FONT_SMALL))
+	else:
+		var preset_menu := Widgets.option_menu(names, func(i): _adopt_strategy(names[i]), maxi(0, names.find(active)))
+		preset_menu.tooltip_text = "Adopted through CombatManager.set_strategy, which refuses a record the validator rejects"
+		row.add_child(preset_menu)
+	box.add_child(row)
+
+	var current: Dictionary = CombatManager.strategy_for("")
+	var bias: String = str(current.get("special_bias", "normal"))
+	var prayer: String = str(current.get("protection_prayer_auto", ""))
+	box.add_child(Widgets.key_value("Special attack bias", bias.capitalize(),
+		UITokens.GOLD_BRIGHT if bias == "eager" else (UITokens.AMBER if bias == "hold" else UITokens.TEXT_MUTED),
+		"eager doubles the special's trigger chance, hold sets it to zero, normal leaves it alone"))
+	box.add_child(Widgets.key_value("Auto-eat threshold", UIStyle.fmt_percent(float(current.get("food_threshold", 0.0)))))
+	box.add_child(Widgets.key_value("Protection prayer",
+		"off" if prayer == "" else str(DataLoader.prayers.get(prayer, {}).get("name", prayer))))
+
+	var cap: int = CombatManager.ability_slot_cap()
+	var effective: Array[String] = _effective_loadout()
+	var unlocked: Array[String] = _unlocked_ability_ids()
+	var slots := HFlowContainer.new()
+	slots.add_theme_constant_override("h_separation", UITokens.SP_4)
+	slots.add_theme_constant_override("v_separation", UITokens.SP_3)
+	slots.add_child(UIStyle.label("Abilities", true, UITokens.FONT_SMALL))
+	if unlocked.is_empty():
+		slots.add_child(UIStyle.label("none unlocked yet", true, UITokens.FONT_SMALL))
+	for slot in range(cap):
+		var options: Array[String] = ["— empty —"]
+		for ability_id in unlocked:
+			options.append(str(DataLoader.get_ability(ability_id).get("name", ability_id)))
+		var slotted: String = effective[slot] if slot < effective.size() else ""
+		# The index, not the name, is what option_menu takes; -1 (a stale id) falls back to empty.
+		var index: int = 1 + unlocked.find(slotted) if slotted != "" else 0
+		var slot_menu := Widgets.option_menu(options, _on_slot_picked.bind(slot, unlocked), maxi(0, index))
+		slot_menu.tooltip_text = str(DataLoader.get_ability(slotted).get("description", "One slot. Empty slots do nothing."))
+		slots.add_child(slot_menu)
+	box.add_child(slots)
+	var cap_note: String = "%d of %d slots — the cap" % [effective.size(), cap]
+	if cap < CombatManager.ABILITY_SLOT_MAX:
+		cap_note = "%d of %d slots — one more at Defence %d" % [effective.size(), cap, 25 * cap]
+	box.add_child(Widgets.key_value("Active abilities",
+		"none — nothing can fire" if effective.is_empty() else ", ".join(_ability_names(effective)),
+		UITokens.TEAL, cap_note))
+	# The preset's nominal list is only worth showing when the two disagree, which is exactly the
+	# case the engine decides silently: locked abilities and anything past the cap are dropped.
+	var dropped: Array[String] = _dropped_ids(current.get("ability_loadout", []) as Array, cap)
+	for note in dropped:
+		box.add_child(UIStyle.colored_label("Preset asks for %s — not slotted." % note, UITokens.AMBER, UITokens.FONT_MICRO))
+	return box
+
+## Adopt a stored preset, by its full record rather than its name: set_strategy is the only path
+## that runs the content validator. It returns nothing, so the accepted name is read back rather
+## than assumed — a refusal leaves the previous preset running, and a dropdown left showing the
+## refused value would report a decision the game did not make.
+func _adopt_strategy(strategy_name: String) -> void:
+	var record: Dictionary = {}
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == strategy_name:
+			record = (rec as Dictionary).duplicate(true)
+			break
+	if record.is_empty():
+		EventBus.notify("No strategy preset named '%s'." % strategy_name, "warn")
+		refresh()
+		return
+	CombatManager.set_strategy(record)
+	if str(PlayerData.combat_strategy_active) != strategy_name:
+		EventBus.notify("Strategy '%s' was refused — still on '%s'." % [strategy_name, str(PlayerData.combat_strategy_active)], "warn")
+		refresh()
+
+## `slot` and `unlocked` are bound rather than captured, so each menu reports its own slot.
+func _on_slot_picked(index: int, slot: int, unlocked: Array) -> void:
+	_set_slot(slot, "" if index <= 0 else str(unlocked[index - 1]))
+
+## Fill or clear one slot, then report what survived. The trimmed list is read back rather than
+## shown as asked, because set_loadout is silent and a slot the player just filled that comes back
+## empty with no explanation is indistinguishable from a broken picker.
+func _set_slot(slot: int, ability_id: String) -> void:
+	var requested: Array = _loadout_with(slot, ability_id)
+	CombatManager.set_loadout(requested)
+	var dropped: Array[String] = _dropped_ids(requested, CombatManager.ability_slot_cap())
+	if not dropped.is_empty():
+		EventBus.notify("Not slotted: %s." % ", ".join(dropped), "warn")
+	refresh()
+
+## The loadout the player is asking for: the effective one with `slot` replaced. Blanks and repeats
+## are squeezed out here because a repeat would otherwise occupy the slot the player just filled.
+func _loadout_with(slot: int, ability_id: String) -> Array:
+	var current: Array = _effective_loadout()
+	while current.size() <= slot:
+		current.append("")
+	current[slot] = ability_id
+	var packed: Array = []
+	for entry in current:
+		if str(entry) != "" and not packed.has(str(entry)):
+			packed.append(str(entry))
+	return packed
+
+## A copy of the live loadout. active_loadout belongs to CombatManager and is handed out by
+## reference, so it is only ever read, and into a fresh list.
+func _effective_loadout() -> Array[String]:
+	var out: Array[String] = []
+	for entry in CombatManager.active_loadout:
+		out.append(str(entry))
+	return out
+
+## Which of the requested ids the engine did not take, and why. set_loadout trims positionally, so
+## the cap is read off the index and the lock off the record — the two rules it applies in that
+## order.
+func _dropped_ids(requested: Array, cap: int) -> Array[String]:
+	var out: Array[String] = []
+	for index in range(requested.size()):
+		var id: String = str(requested[index])
+		if CombatManager.active_loadout.has(id):
+			continue
+		var name: String = str(DataLoader.get_ability(id).get("name", id))
+		if index >= cap:
+			out.append("%s (past your %d ability slots)" % [name, cap])
+		elif not CombatManager._ability_unlocked(DataLoader.get_ability(id)):
+			out.append("%s (not unlocked yet)" % name)
+	return out
+
+## Abilities the player owns, in id order. The unlock test is CombatManager's own, so this list
+## and the engine's admission rule cannot drift apart — a re-implemented req_levels check here would
+## be a second rule to keep in step.
+func _unlocked_ability_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for entry in DataLoader.abilities.keys():
+		var id: String = str(entry)
+		var ab: Dictionary = DataLoader.get_ability(id)
+		if not ab.is_empty() and CombatManager._ability_unlocked(ab):
+			ids.append(id)
+	ids.sort()
+	return ids
+
+func _ability_names(ids: Array) -> Array[String]:
+	var out: Array[String] = []
+	for entry in ids:
+		out.append(str(DataLoader.get_ability(str(entry)).get("name", str(entry))))
+	return out
+
+func _on_ability_triggered(ability_id: String) -> void:
+	_triggers["push"].call("%s fires." % str(DataLoader.get_ability(ability_id).get("name", ability_id)))
+
+func _on_special_attack(sa_id: String) -> void:
+	_triggers["push"].call("Special: %s." % str(DataLoader.get_special_attack(sa_id).get("name", sa_id)))
+
+## The trigger feed, kept beside the fight log. The label is lifted out with the log BEFORE the
+## clear below frees the box's children, so the feed survives the readout's wholesale rebuild
+## instead of being re-created empty on every refresh.
+func _add_triggers(box: VBoxContainer) -> void:
+	box.add_child(UIStyle.label("Abilities and specials", true, UITokens.FONT_MICRO))
+	box.add_child(_triggers["root"])
+
 func _refresh_fight() -> void:
 	# The log is cached across rebuilds, so lift it out before the clear frees the box's children.
 	Widgets.detach(_log["root"])
+	Widgets.detach(_triggers["root"])
 	# The readout is torn down and rebuilt wholesale, so the motion targets are dropped with it: a
 	# floater or a flash aimed at the previous cell would otherwise be pointing at a freed node.
 	_monster_sprite = null
@@ -158,6 +340,7 @@ func _refresh_fight() -> void:
 		_fight_box.add_child(UIStyle.label("No fight in progress. Choose an encounter below and check your preparation.",
 			true, UITokens.FONT_SMALL))
 		_fight_box.add_child(_log["root"])
+		_add_triggers(_fight_box)
 		return
 	var cmp: Dictionary = CombatManager.target_comparison()
 	var head := HBoxContainer.new()
@@ -223,6 +406,7 @@ func _refresh_fight() -> void:
 		buttons.add_child(resume)
 	_fight_box.add_child(buttons)
 	_fight_box.add_child(_log["root"])
+	_add_triggers(_fight_box)
 
 func _rebuild_places() -> void:
 	_clear(_places_box)

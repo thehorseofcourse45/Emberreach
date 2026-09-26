@@ -71,6 +71,7 @@ func run_all(host: Node) -> void:
 	test_ability_roll_count()
 	test_ability_heal_caps()
 	test_ability_slot_cap()
+	test_combat_strategy_ui(host)
 	test_ability_effects_in_fight()
 	test_special_bias_hold()
 	test_special_bias_arithmetic()
@@ -1845,6 +1846,68 @@ func test_ability_slot_cap() -> void:
 	CombatManager.set_loadout(["flurry"])
 	_eq(CombatManager._ability_cooldowns.size(), 1, "re-slopping drops the cooldown of a removed ability")
 	_eq(int(CombatManager._ability_cooldowns["flurry"]), 3, "a still-slotted ability keeps its cooldown")
+
+## The panel's write path, driven the way a click drives it, and the finding Task 4's review
+## deferred to the UI: set_loadout drops a locked ability and trims past the cap without a word, so
+## a picker that showed what was ASKED for would advertise slots the player does not have. What the
+## panel shows is what CombatManager adopted, and a refused preset never becomes the active one.
+func test_combat_strategy_ui(host: Node) -> void:
+	_heading("Combat strategy UI")
+	var saved_skills: Dictionary = PlayerData.skills.duplicate(true)
+	var saved_strategies: Array = PlayerData.combat_strategies.duplicate(true)
+	var saved_active: String = str(PlayerData.combat_strategy_active)
+	var saved_loadout: Array = CombatManager.active_loadout.duplicate()
+	var panel: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
+	host.add_child(panel)
+	_combat_levels_for_abilities(1)
+	CombatManager.set_loadout([])
+	panel.call("_set_slot", 0, "power_strike")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "a filled slot reaches the live loadout")
+	var shown: Array[String] = []
+	for node in panel.find_children("*", "Label", true, false):
+		shown.append(str((node as Label).text))
+	_ok(shown.has("Power Strike"), "the panel shows the effective ability by name, not the requested id")
+
+	# active_loadout is handed out by reference and belongs to CombatManager, so the panel copies it.
+	var borrowed: Array = panel.call("_effective_loadout")
+	borrowed.append("flurry")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String],
+		"the panel's copy of the loadout cannot write back into CombatManager")
+
+	# A locked ability is refused, and the refusal is named rather than leaving a slot empty.
+	PlayerData.set_level("attack", 1)
+	panel.call("_set_slot", 0, "gore")
+	_eq(CombatManager.active_loadout.size(), 0, "an ability below its req_level never reaches the loadout")
+	_eq(", ".join(panel.call("_dropped_ids", ["gore"], CombatManager.ability_slot_cap())),
+		"Gore (not unlocked yet)", "the locked ability is reported by name")
+
+	# And so is one that is simply past the cap.
+	PlayerData.set_level("attack", 100)
+	panel.call("_set_slot", 0, "power_strike")
+	panel.call("_set_slot", 1, "flurry")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "Defence 1 still keeps a single slot")
+	_eq(", ".join(panel.call("_dropped_ids", ["power_strike", "flurry"], CombatManager.ability_slot_cap())),
+		"Flurry (past your 1 ability slots)", "the over-cap ability is reported as past the cap")
+	_eq(", ".join(panel.call("_loadout_with", 1, "power_strike")), "power_strike",
+		"re-picking an ability already in the loadout does not fill a second slot with it")
+
+	# A preset the validator refuses keeps the previous one running, so the dropdown must not be
+	# left reporting a decision the game did not make.
+	var good_name: String = str((PlayerData.combat_strategies[0] as Dictionary).get("name", ""))
+	var active_before: String = str(PlayerData.combat_strategy_active)
+	PlayerData.combat_strategies.append({"name": "Refused", "ability_loadout": ["no_such_ability"],
+		"food_threshold": 0.0, "special_bias": "normal", "protection_prayer_auto": ""})
+	panel.call("_adopt_strategy", "Refused")
+	_eq(str(PlayerData.combat_strategy_active), active_before,
+		"a preset the validator refuses does not become the active strategy")
+	panel.call("_adopt_strategy", good_name)
+	_eq(str(PlayerData.combat_strategy_active), good_name, "an accepted preset is adopted")
+
+	PlayerData.skills = saved_skills
+	PlayerData.combat_strategies = saved_strategies
+	PlayerData.combat_strategy_active = saved_active
+	CombatManager.set_loadout(saved_loadout)
+	panel.queue_free()
 
 ## The three effects that need a live number, exercised through the real attack path. The seed is
 ## SEARCHED, not assumed: every assertion is a fact about the engine, so a change in the stream
