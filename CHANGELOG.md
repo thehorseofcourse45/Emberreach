@@ -1,5 +1,44 @@
 # CHANGELOG
 
+## 2026-09-26 — overhaul: repo hygiene, warnings, content depth, combat polish, decomposition
+
+### Removed
+- `scripts/ui/BankPanel.gd`, `scripts/ui/CombatPanel.gd` (stale duplicates of the
+  `panels/` versions, zero references), `archive/` (~932 KB unreferenced manifests),
+  5 orphan UI files (`ShopPanel`, `SkillList`, `SkillPanel`, `RightPanel`,
+  `WelcomeBackModal` — self-mentions only). `shots/` (93 PNGs) moved out of tree.
+- `git init` + `.gitignore` (`.godot/`, `.superpowers/`, `shots/`); work committed per phase.
+
+### Fixed
+- All 50 editor script warnings: `name`/`tr`/`wrap`/`label`/`sign`/`seed`/`ready`/`title`/
+  `shell` shadowing renames, explicit `floori()`/`>>` integer division, unused params
+  prefixed, `Goals._fmt` made non-static (7 static-via-instance calls), redundant
+  preload consts dropped where headless-safe (kept where the global class cache
+  cannot see them headless). 6 same-name preload warnings remain by necessity.
+
+### Added (content)
+- Slayer: `abyssal` (125), `godslayer` (160), `herald` (210) tiers; high-tier pools
+  refilled with elementals, gods and abyssals (29-monster roster now fully covered).
+- Corruption: 1 → 6 actions (commune → become_herald), existing `abyssal_essence` only.
+- Mastery backfill (woodcutting pattern): cartography, archaeology, alt_magic,
+  farming, harvesting, astrology.
+
+### Added (combat)
+- `regeneration` passive honored in `CombatManager` (2% max HP per own attack) and
+  mirrored in `CombatSimulator`; unknown passive ids fail validation.
+- Area `hazard` (`enemy_damage_percent`, `player_accuracy_percent`,
+  `player_evasion_percent`, label) in both engines via snapshot; hazards on
+  Frostbound Reach, Ashwyrm Hollow, Broodweb Fen (replaces dead `area_effect`),
+  Umbral Deep, Riftmouth; shown on the Combat panel; validator range-checked.
+
+### Refactored
+- `SidebarNav` extracted from `MainUI` (sidebar/drawer/nav buttons); `TestSupport`
+  (`backup_save_files`, `restore_snapshot`, `widest_descendant`) extracted from
+  `TestRunner`. No behavior changes.
+
+### Verified
+- `--validate`: 0 errors. `--tests`: 310/310 pass (incl. new regen/hazard parity checks).
+
 ## 2026-09-17 — stardust added (currencies complete)
 ### Added
 - `assets/icons/currencies/stardust.png` — sliced from the supplied single-icon sheet:
