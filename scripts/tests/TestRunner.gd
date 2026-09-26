@@ -1891,6 +1891,19 @@ func test_combat_strategy_ui(host: Node) -> void:
 	_eq(", ".join(panel.call("_loadout_with", 1, "power_strike")), "power_strike",
 		"re-picking an ability already in the loadout does not fill a second slot with it")
 
+	# Two refusals in a row: neither consumed a slot, so the third ability still takes the one
+	# slot and the report must not call it a cap refusal. An index-based count gets this wrong.
+	PlayerData.set_level("attack", 1)
+	PlayerData.set_level("magic", 1)
+	PlayerData.set_level("strength", 100)
+	var two_locked_then_one: Array = ["gore", "immolate", "flurry"]
+	CombatManager.set_loadout(two_locked_then_one)
+	_eq(CombatManager.active_loadout, ["flurry"] as Array[String],
+		"a refusal takes no slot, so the next unlocked ability still takes the only one")
+	_eq(", ".join(panel.call("_dropped_ids", two_locked_then_one, CombatManager.ability_slot_cap())),
+		"Gore (not unlocked yet), Immolate (not unlocked yet)",
+		"entries refused after another refusal are not misreported as past the cap")
+
 	# A preset the validator refuses keeps the previous one running, so the dropdown must not be
 	# left reporting a decision the game did not make.
 	var good_name: String = str((PlayerData.combat_strategies[0] as Dictionary).get("name", ""))

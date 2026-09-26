@@ -173,11 +173,20 @@ func _build_strategy() -> Control:
 	if names.is_empty():
 		row.add_child(UIStyle.label("none stored", true, UITokens.FONT_SMALL))
 	else:
-		var preset_menu := Widgets.option_menu(names, func(i): _adopt_strategy(names[i]), maxi(0, names.find(active)))
+		var preset_menu := Widgets.option_menu(names, func(i): _adopt_strategy(names[i]))
 		preset_menu.tooltip_text = "Adopted through CombatManager.set_strategy, which refuses a record the validator rejects"
+		# select(-1) on a miss, because option_menu clamps a bad index to 0: showing the FIRST
+		# preset while the levers below report another one would be the card contradicting itself.
+		var found: int = names.find(active)
+		preset_menu.select(found)
 		row.add_child(preset_menu)
+		if found < 0:
+			row.add_child(UIStyle.colored_label("active '%s' is not in the stored list" % active,
+				UITokens.AMBER, UITokens.FONT_MICRO))
 	box.add_child(row)
 
+	# The GLOBAL active preset, not a per-area binding: nothing in the UI binds areas, so the card
+	# reports the one record every fight starts from and nothing more.
 	var current: Dictionary = CombatManager.strategy_for("")
 	var bias: String = str(current.get("special_bias", "normal"))
 	var prayer: String = str(current.get("protection_prayer_auto", ""))
@@ -276,20 +285,32 @@ func _effective_loadout() -> Array[String]:
 		out.append(str(entry))
 	return out
 
-## Which of the requested ids the engine did not take, and why. set_loadout trims positionally, so
-## the cap is read off the index and the lock off the record — the two rules it applies in that
-## order.
+## Which of the requested ids the engine did not take, and why. This walks set_loadout's own rules
+## in its own order, keeping a SURVIVOR count rather than reading the input position: the cap is
+## tested against what has been kept so far, so an entry refused for its lock consumes no slot and
+## cannot push a later, slot-eligible entry over the cap here. Reading the index instead tells the
+## player to grind Defence for a slot the engine never refused on cap grounds.
 func _dropped_ids(requested: Array, cap: int) -> Array[String]:
 	var out: Array[String] = []
-	for index in range(requested.size()):
-		var id: String = str(requested[index])
-		if CombatManager.active_loadout.has(id):
+	var kept: Array[String] = []
+	for entry in requested:
+		var id: String = str(entry)
+		var ab: Dictionary = DataLoader.get_ability(id)
+		var label: String = str(ab.get("name", id))
+		if kept.size() >= cap:
+			# set_loadout breaks here, so everything past this point goes unslotted on cap grounds
+			# whatever its own req_levels say.
+			out.append("%s (past your %d ability slots)" % [label, cap])
+		elif kept.has(id):
+			# A repeat takes no slot and is no refusal worth a line.
 			continue
-		var name: String = str(DataLoader.get_ability(id).get("name", id))
-		if index >= cap:
-			out.append("%s (past your %d ability slots)" % [name, cap])
-		elif not CombatManager._ability_unlocked(DataLoader.get_ability(id)):
-			out.append("%s (not unlocked yet)" % name)
+		elif ab.is_empty():
+			# Dropped by the engine, and unselectable here too, so there is nothing to explain.
+			continue
+		elif not CombatManager._ability_unlocked(ab):
+			out.append("%s (not unlocked yet)" % label)
+		else:
+			kept.append(id)
 	return out
 
 ## Abilities the player owns, in id order. The unlock test is CombatManager's own, so this list
