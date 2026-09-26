@@ -56,6 +56,30 @@
     "slayer_coin_multiplier": 5.0,
     "level_required": 110
   },
+  "abyssal": {
+    "id": "abyssal",
+    "name": "Abyssal",
+    "min_kills": 40,
+    "max_kills": 80,
+    "slayer_coin_multiplier": 6.0,
+    "level_required": 125
+  },
+  "godslayer": {
+    "id": "godslayer",
+    "name": "Godslayer",
+    "min_kills": 30,
+    "max_kills": 60,
+    "slayer_coin_multiplier": 8.0,
+    "level_required": 160
+  },
+  "herald": {
+    "id": "herald",
+    "name": "Herald",
+    "min_kills": 25,
+    "max_kills": 50,
+    "slayer_coin_multiplier": 10.0,
+    "level_required": 210
+  },
   "_monsters": {
     "easy": [
       "chicken",
@@ -65,14 +89,16 @@
     "normal": [
       "zombie_hand",
       "skeleton",
-      "spider"
+      "spider",
+      "golbin_chief"
     ],
     "hard": [
       "bandit",
       "moss_giant"
     ],
     "elite": [
-      "guard"
+      "guard",
+      "mist_wraith"
     ],
     "master": [
       "rune_knight"
@@ -81,7 +107,29 @@
       "green_dragon"
     ],
     "mythical": [
-      "green_dragon"
+      "green_dragon",
+      "air_elemental",
+      "water_elemental"
+    ],
+    "abyssal": [
+      "earth_elemental",
+      "fire_elemental",
+      "drowned_sailor"
+    ],
+    "godslayer": [
+      "air_god",
+      "water_god",
+      "earth_god",
+      "fire_god"
+    ],
+    "herald": [
+      "the_mist",
+      "dark_herald",
+      "underwater_king",
+      "abyssal_imp",
+      "abyssal_fiend",
+      "abyssal_lord",
+      "the_herald"
     ]
   }
 }

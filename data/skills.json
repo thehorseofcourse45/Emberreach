@@ -89,6 +89,61 @@
           "abyssal_essence": 1
         },
         "mastery_action_time": 5.0
+      },
+      {
+        "id": "feed_darkness",
+        "name": "Feed the Darkness",
+        "level_required": 20,
+        "base_interval": 5.0,
+        "base_xp": 80,
+        "output_items": {
+          "abyssal_essence": 1
+        },
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "drink_deep",
+        "name": "Drink from the Deep",
+        "level_required": 40,
+        "base_interval": 5.0,
+        "base_xp": 120,
+        "output_items": {
+          "abyssal_essence": 2
+        },
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "bind_horror",
+        "name": "Bind a Lesser Horror",
+        "level_required": 60,
+        "base_interval": 5.0,
+        "base_xp": 170,
+        "output_items": {
+          "abyssal_essence": 2
+        },
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "crown_hollow",
+        "name": "Crown the Hollow",
+        "level_required": 85,
+        "base_interval": 5.0,
+        "base_xp": 230,
+        "output_items": {
+          "abyssal_essence": 3
+        },
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "become_herald",
+        "name": "Become the Herald",
+        "level_required": 100,
+        "base_interval": 5.0,
+        "base_xp": 300,
+        "output_items": {
+          "abyssal_essence": 4
+        },
+        "mastery_action_time": 5.0
       }
     ],
     "mastery_unlocks": {
@@ -666,6 +721,26 @@
     "category": "non_combat",
     "type": "passive",
     "max_level": 120,
+    "mastery_unlocks": {
+      "1": {
+        "farming_interval_percent": 1
+      },
+      "10": {
+        "farming_interval_percent": 3
+      },
+      "25": {
+        "farming_doubling_percent": 2
+      },
+      "50": {
+        "farming_doubling_percent": 5
+      },
+      "95": {
+        "farming_resource_flat": 1
+      },
+      "99": {
+        "farming_doubling_percent": 10
+      }
+    },
     "actions": [
       {
         "id": "plant_garum_herb",
@@ -4246,6 +4321,26 @@
     "category": "non_combat",
     "type": "support",
     "max_level": 120,
+    "mastery_unlocks": {
+      "1": {
+        "astrology_interval_percent": 1
+      },
+      "10": {
+        "astrology_interval_percent": 3
+      },
+      "25": {
+        "astrology_doubling_percent": 2
+      },
+      "50": {
+        "astrology_doubling_percent": 5
+      },
+      "95": {
+        "astrology_resource_flat": 1
+      },
+      "99": {
+        "astrology_doubling_percent": 10
+      }
+    },
     "actions": [
       {
         "id": "study_deedree",
@@ -4437,6 +4532,26 @@
     "category": "non_combat",
     "type": "processing",
     "max_level": 120,
+    "mastery_unlocks": {
+      "1": {
+        "alt_magic_interval_percent": 1
+      },
+      "10": {
+        "alt_magic_interval_percent": 3
+      },
+      "25": {
+        "alt_magic_doubling_percent": 2
+      },
+      "50": {
+        "alt_magic_doubling_percent": 5
+      },
+      "95": {
+        "alt_magic_resource_flat": 1
+      },
+      "99": {
+        "alt_magic_doubling_percent": 10
+      }
+    },
     "actions": [
       {
         "id": "superheat_item",
@@ -4528,6 +4643,26 @@
     "category": "non_combat",
     "type": "exploration",
     "max_level": 120,
+    "mastery_unlocks": {
+      "1": {
+        "cartography_interval_percent": 1
+      },
+      "10": {
+        "cartography_interval_percent": 3
+      },
+      "25": {
+        "cartography_doubling_percent": 2
+      },
+      "50": {
+        "cartography_doubling_percent": 5
+      },
+      "95": {
+        "cartography_resource_flat": 1
+      },
+      "99": {
+        "cartography_doubling_percent": 10
+      }
+    },
     "actions": [
       {
         "id": "survey",
@@ -4565,6 +4700,26 @@
     "category": "non_combat",
     "type": "gathering",
     "max_level": 120,
+    "mastery_unlocks": {
+      "1": {
+        "archaeology_interval_percent": 1
+      },
+      "10": {
+        "archaeology_interval_percent": 3
+      },
+      "25": {
+        "archaeology_doubling_percent": 2
+      },
+      "50": {
+        "archaeology_doubling_percent": 5
+      },
+      "95": {
+        "archaeology_resource_flat": 1
+      },
+      "99": {
+        "archaeology_doubling_percent": 10
+      }
+    },
     "actions": [
       {
         "id": "small",
@@ -4679,6 +4834,26 @@
     "category": "non_combat",
     "type": "gathering",
     "max_level": 120,
+    "mastery_unlocks": {
+      "1": {
+        "harvesting_interval_percent": 1
+      },
+      "10": {
+        "harvesting_interval_percent": 3
+      },
+      "25": {
+        "harvesting_doubling_percent": 2
+      },
+      "50": {
+        "harvesting_doubling_percent": 5
+      },
+      "95": {
+        "harvesting_resource_flat": 1
+      },
+      "99": {
+        "harvesting_doubling_percent": 10
+      }
+    },
     "actions": [
       {
         "id": "basic",
