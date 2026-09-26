@@ -95,6 +95,10 @@
       "moss_giant",
       "guard"
     ],
+    "hazard": {
+      "player_accuracy_percent": -5.0,
+      "label": "Driving ice: −5 accuracy"
+    },
     "flavour": "Wind-scoured ridges above the treeline. An observatory of black glass sits at the summit."
   },
   "castle_of_kings": {
@@ -128,6 +132,10 @@
     "requires": {
       "slayer": 60
     },
+    "hazard": {
+      "enemy_damage_percent": 10.0,
+      "label": "Wyrmfire air: enemies hit +10% harder"
+    },
     "flavour": "A caldera of warm grey slopes where the old wyrms nest in the cooling rock."
   },
   "spider_slayer_area": {
@@ -144,7 +152,10 @@
     "requires": {
       "slayer": 20
     },
-    "area_effect": "reduced_evasion",
+    "hazard": {
+      "player_evasion_percent": -25.0,
+      "label": "Strung reeds: −25% evasion"
+    },
     "flavour": "Immigration order territory. Every reed is strung. Something is farming the fen."
   },
   "abyssal_depths": {
@@ -162,6 +173,11 @@
     "requires": {
       "slayer": 110
     },
+    "hazard": {
+      "enemy_damage_percent": 15.0,
+      "player_accuracy_percent": -5.0,
+      "label": "Lightless deep: enemies +15% damage, −5 accuracy"
+    },
     "flavour": "The dark under the frontier. It is not empty, and it is not patient."
   },
   "abyssal_rift": {
@@ -178,6 +194,11 @@
     ],
     "requires": {
       "slayer": 120
+    },
+    "hazard": {
+      "enemy_damage_percent": 25.0,
+      "player_accuracy_percent": -10.0,
+      "label": "Breathing rift: enemies +25% damage, −10 accuracy"
     },
     "flavour": "A wound in the rock that breathes. The most dangerous place anyone has mapped."
   }

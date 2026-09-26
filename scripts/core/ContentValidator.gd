@@ -338,6 +338,9 @@ func _check_monsters() -> void:
 		for sa in m.get("special_attacks", []):
 			if not DataLoader.special_attacks.has(str(sa)):
 				_err("missing_reference", "%s references unknown special_attack '%s'" % [label, sa])
+		for passive in m.get("passives", []):
+			if not CombatManager.KNOWN_MONSTER_PASSIVES.has(str(passive)):
+				_err("missing_reference", "%s references unknown passive '%s'" % [label, passive])
 		for drop in m.get("loot_table", []):
 			if typeof(drop) != TYPE_DICTIONARY:
 				_err("invalid_record", "%s has a malformed loot entry" % label)
@@ -365,6 +368,7 @@ func _check_regions() -> void:
 		for mid in a.get("monsters", []):
 			if not DataLoader.monsters.has(str(mid)):
 				_err("missing_reference", "area '%s' lists unknown monster '%s'" % [id, mid])
+		_check_hazard("area '%s'" % id, a.get("hazard", {}))
 		_check_region_requirements("area", id, a)
 	for id in DataLoader.dungeons.keys():
 		var d: Dictionary = DataLoader.dungeons[id]
@@ -387,6 +391,23 @@ func _check_region_requirements(kind: String, id: String, row: Dictionary) -> vo
 	if typeof(rng) == TYPE_ARRAY and (rng as Array).size() == 2:
 		if int(rng[0]) > int(rng[1]):
 			_err("invalid_range", "%s '%s' level_range is inverted" % [kind, id])
+
+func _check_hazard(label: String, hazard: Variant) -> void:
+	if typeof(hazard) != TYPE_DICTIONARY:
+		_err("invalid_record", "%s hazard is not an object" % label)
+		return
+	for key in (hazard as Dictionary).keys():
+		if not ["enemy_damage_percent", "player_accuracy_percent", "player_evasion_percent", "label"].has(str(key)):
+			_err("invalid_record", "%s hazard has unknown key '%s'" % [label, key])
+	var enemy_damage: float = float((hazard as Dictionary).get("enemy_damage_percent", 0.0))
+	var accuracy: float = float((hazard as Dictionary).get("player_accuracy_percent", 0.0))
+	var evasion: float = float((hazard as Dictionary).get("player_evasion_percent", 0.0))
+	if not _is_finite_number(enemy_damage) or enemy_damage < -50.0 or enemy_damage > 200.0:
+		_err("invalid_number", "%s hazard enemy_damage_percent %f must be in [-50,200]" % [label, enemy_damage])
+	if not _is_finite_number(accuracy) or accuracy < -50.0 or accuracy > 50.0:
+		_err("invalid_number", "%s hazard player_accuracy_percent %f must be in [-50,50]" % [label, accuracy])
+	if not _is_finite_number(evasion) or evasion < -100.0 or evasion > 100.0:
+		_err("invalid_number", "%s hazard player_evasion_percent %f must be in [-100,100]" % [label, evasion])
 
 # ---------------- shop / settlement ----------------
 

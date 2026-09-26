@@ -27,6 +27,10 @@ const FIGHT_SECONDS_CEILING: float = 300.0
 const STEP_SECONDS: float = 0.1
 ## Guards against a pathological loop where a step of 0 advances nothing.
 const MAX_STEPS_PER_FIGHT: int = 6000
+## Mirrors CombatManager.ENEMY_REGEN_FRACTION: a regenerating monster heals this
+## fraction of max HP per own attack. Kept literal so the pure model stays
+## dependency-free; the simulator suite pins parity with the live loop.
+const ENEMY_REGEN_FRACTION: float = 0.02
 
 ## Run the whole simulation. `snapshot` must already be flattened — see CombatSimulatorManager.
 ## `trials` is the count; the production UI always passes 10,000.
@@ -151,7 +155,10 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 	var monster_style: String = str(monster.get("attack_type", "melee"))
 	var mode_config: Dictionary = snapshot.get("mode_config", {})
 	var triangle: Dictionary = CombatFormulas.triangle(style, monster_style, mode_config)
+	var hazard: Dictionary = snapshot.get("hazard", {})
 	var accuracy: float = float(player.get("accuracy", 10)) * (1.0 + float(triangle["accuracy_percent"]) / 100.0)
+	# Flat hit-chance points, exactly like the live loop (not rating points).
+	var player_hit_bonus: float = float(hazard.get("player_accuracy_percent", 0.0))
 	var max_hit: int = maxi(1, int(player.get("max_hit", 1)))
 	var min_hit: int = CombatFormulas.min_hit(max_hit, float(player.get("min_hit_percent", 0.0)),
 		float(player.get("min_hit_flat", 0.0)))
@@ -166,7 +173,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 	var monster_hp: float = monster_hp_max
 	var evasion: int = _evasion_for(monster, style)
 	var player_dr: float = float(player.get("damage_reduction", 0.0))
-	var player_evasion: int = _player_evasion(player, monster_style)
+	var player_evasion: int = maxi(0, int(float(_player_evasion(player, monster_style)) * (1.0 + float(hazard.get("player_evasion_percent", 0.0)) / 100.0)))
 	var crit_chance: float = float(player.get("crit_chance", 0.0))
 	var crit_mult: float = float(player.get("crit_multiplier", 50.0))
 	var life_steal: float = float(player.get("life_steal", 0.0))
@@ -192,7 +199,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			player_timer -= player_interval
 			var roll: Dictionary = CombatFormulas.roll_damage(rng, min_hit, max_hit, monster_dr,
 				crit_chance, crit_mult, str(monster.get("damage_type", "normal")))
-			if CombatFormulas.chance_to_hit(accuracy, float(evasion)) > rng.randf() * 100.0:
+			if clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + player_hit_bonus, 0.0, 100.0) > rng.randf() * 100.0:
 				var dealt: float = float(roll["damage"]) * (1.0 + float(triangle["damage_percent"]) / 100.0)
 				dealt = maxf(0.0, dealt)
 				monster_hp -= dealt
@@ -215,7 +222,10 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				0.0, 0.0, 0.0, "normal")
 			if CombatFormulas.chance_to_hit(monster_accuracy, float(player_evasion)) > rng.randf() * 100.0:
 				var taken: float = float(their_roll["damage"]) * (1.0 - player_dr / 100.0)
+				taken *= (1.0 + float(hazard.get("enemy_damage_percent", 0.0)) / 100.0)
 				hp -= maxf(0.0, taken)
+			if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("regeneration"):
+				monster_hp = minf(monster_hp_max, monster_hp + maxf(1.0, monster_hp_max * ENEMY_REGEN_FRACTION))
 		# Auto Eat is evaluated after attacks, like the live loop.
 		var meal: Dictionary = _auto_eat(snapshot, hp, max_hp)
 		if int(meal["eaten"]) > 0:

@@ -80,6 +80,30 @@ static func run(host: Node) -> Dictionary:
 		"a fight that can never resolve ends as a loss rather than running forever", state)
 
 	# ---------------------------------------------------------------------------
+	# Regeneration and hazards
+	# ---------------------------------------------------------------------------
+	# A regenerating monster must take strictly longer to kill than the same
+	# monster without the passive: same seed, high-HP dummy the player cannot
+	# one-shot, monster accurate enough to land its own attacks (regen triggers
+	# per monster attack).
+	var plain: Dictionary = _strong_snapshot(2000, 1)
+	(plain["monsters"][0] as Dictionary)["accuracy_rating"] = 10000
+	var plain_report: Dictionary = CombatSimulator.simulate(plain, 20, 31337)
+	var regen: Dictionary = _strong_snapshot(2000, 1)
+	(regen["monsters"][0] as Dictionary)["accuracy_rating"] = 10000
+	(regen["monsters"][0] as Dictionary)["passives"] = ["regeneration"]
+	var regen_report: Dictionary = CombatSimulator.simulate(regen, 20, 31337)
+	_assert(float(regen_report["kills_per_hour"]) < float(plain_report["kills_per_hour"]),
+		"a regenerating monster yields strictly fewer kills per hour", state)
+	# A −100 accuracy hazard means the player never lands a hit: every trial
+	# must time out rather than report phantom wins.
+	var dark: Dictionary = _strong_snapshot(100, 1)
+	dark["hazard"] = {"enemy_damage_percent": 0.0, "player_accuracy_percent": -100.0}
+	var dark_report: Dictionary = CombatSimulator.simulate(dark, 5, 77)
+	_assert(int(dark_report["wins"]) == 0 and int(dark_report["timeouts"]) == 5,
+		"a blinding hazard converts every trial into a timeout, never a win", state)
+
+	# ---------------------------------------------------------------------------
 	# Food projection
 	# ---------------------------------------------------------------------------
 	# The monster has to actually connect: a 0.5%-to-hit dummy never pushes the player below the

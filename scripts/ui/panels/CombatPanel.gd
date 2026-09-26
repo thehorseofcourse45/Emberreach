@@ -271,6 +271,9 @@ func _rebuild_places() -> void:
 	if levels.size() == 2:
 		col.add_child(Widgets.key_value("Enemy levels", "%d – %d" % [int(levels[0]), int(levels[1])]))
 	col.add_child(Widgets.key_value("Enemies in this zone", str((place.get("monsters", []) as Array).size())))
+	if not is_dungeon and typeof(place.get("hazard", {})) == TYPE_DICTIONARY and not (place.get("hazard", {}) as Dictionary).is_empty():
+		col.add_child(UIStyle.colored_label("Hazard — %s" % str((place["hazard"] as Dictionary).get("label", "hostile ground")),
+			UITokens.AMBER, UITokens.FONT_SMALL))
 	if is_dungeon:
 		var reqs: Variant = place.get("requires", {})
 		var locked: bool = false

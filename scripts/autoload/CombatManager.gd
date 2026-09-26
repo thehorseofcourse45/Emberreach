@@ -23,6 +23,10 @@ const MAX_OFFLINE_STEPS: int = 120_000
 const DEFAULT_RESPAWN: float = 3.0
 const EXPEDITION_COMBAT_LEVEL: int = 60
 const EXPEDITION_CHARTER: String = "expedition_charter"
+## Fraction of max HP a monster with the "regeneration" passive heals per own attack.
+const ENEMY_REGEN_FRACTION: float = 0.02
+## Monster passive ids the engine understands (data may list more only after engine support).
+const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration"]
 
 var state: int = State.IDLE
 var context: Dictionary = {}          # {type, id, monsters:[...], index, endless, attack_style}
@@ -379,6 +383,8 @@ func _player_attack() -> void:
 	var mode_cfg: Dictionary = DataLoader.game_modes.get(PlayerData.game_mode, {})
 	var tri: Dictionary = CombatFormulas.triangle(attack_style, m_style, mode_cfg)
 	hit_chance = clampf(hit_chance + float(tri["accuracy_percent"]), 0.0, 100.0)
+	# Open-region hazard: hostile ground costs accuracy.
+	hit_chance = clampf(hit_chance + float(_active_hazard().get("player_accuracy_percent", 0.0)), 0.0, 100.0)
 	if _rng.randf() * 100.0 > hit_chance:
 		return
 	var mh: int = maxi(1, _player_max_hit(attack_style))
@@ -413,6 +419,8 @@ func _monster_attack() -> void:
 	var m_style: String = str(m.get("attack_type", "melee"))
 	var acc: float = float(m.get("accuracy_rating", 10))
 	var eva: int = _player_evasion_for(m_style)
+	# Open-region hazard: fouled footing costs evasion rating.
+	eva = maxi(0, int(float(eva) * (1.0 + float(_active_hazard().get("player_evasion_percent", 0.0)) / 100.0)))
 	var hit_chance: float = CombatFormulas.chance_to_hit(acc, float(eva))
 	var mode_cfg: Dictionary = DataLoader.game_modes.get(PlayerData.game_mode, {})
 	var tri: Dictionary = CombatFormulas.triangle(m_style, attack_style, mode_cfg)
@@ -425,6 +433,8 @@ func _monster_attack() -> void:
 			return
 	var raw: float = float(_rng.randi_range(1, maxi(1, int(m.get("max_hit", 1)))))
 	raw *= (1.0 + float(tri["damage_percent"]) / 100.0)
+	# Open-region hazard: hostile ground hits harder.
+	raw *= (1.0 + float(_active_hazard().get("enemy_damage_percent", 0.0)) / 100.0)
 	var dr: float = ModifierManager.get_damage_reduction()
 	var dmg: int = maxi(0, int(floor(raw * (1.0 - dr / 100.0))))
 	var sa: Dictionary = _roll_special_attack_from_ids(m.get("special_attacks", []))
@@ -434,8 +444,17 @@ func _monster_attack() -> void:
 		_apply_special_status(sa, "player")
 	player_hp -= float(dmg)
 	_sig_monster_attacked(dmg)
+	# Regenerating monsters knit wounds on every own attack while still standing.
+	if monster_hp > 0 and (m.get("passives", []) as Array).has("regeneration"):
+		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(monster_max_hp) * ENEMY_REGEN_FRACTION)))
 	if player_hp <= 0.0:
 		_player_death(m.get("name", current_monster_id))
+
+## The current open-region hazard, if any (dungeons and towns are sheltered).
+func _active_hazard() -> Dictionary:
+	if str(context.get("type", "")) != "area":
+		return {}
+	return DataLoader.areas.get(str(context.get("id", "")), {}).get("hazard", {})
 
 func _has_protection_prayer(style: String) -> bool:
 	var want: String = {"melee": "protect_from_melee", "ranged": "protect_from_ranged", "magic": "protect_from_magic"}.get(style, "")
