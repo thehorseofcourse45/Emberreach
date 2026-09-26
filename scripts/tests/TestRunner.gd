@@ -74,6 +74,7 @@ func run_all(host: Node) -> void:
 	# the pivot to be re-read), and an un-awaited coroutine would report after _report() has printed.
 	await test_tween_bar_defers_until_in_tree(host)
 	await test_pulse_sets_center_pivot(host)
+	test_abilities_load()
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
@@ -1401,6 +1402,16 @@ func test_pulse_sets_center_pivot(host: Node) -> void:
 	_ok(late.pivot_offset == late.size * 0.5,
 		"the pulse re-reads the size once the control is laid out (%s of %s)" % [late.pivot_offset, late.size])
 	holder.queue_free()
+
+## Task 1 pin: abilities.json is a registry like every other data file, and an unknown id must
+## come back empty rather than crashing a loadout screen that asks for a stale slot.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_abilities_load() -> void:
+	_heading("Combat abilities")
+	var ab: Dictionary = DataLoader.get_ability("power_strike")
+	_ok(not ab.is_empty(), "power_strike must exist")
+	_ok(DataLoader.get_ability("no_such_ability") == {}, "unknown id returns {}")
+	_ok(DataLoader.abilities.size() == 8, "the ability table loaded (%d abilities)" % DataLoader.abilities.size())
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")

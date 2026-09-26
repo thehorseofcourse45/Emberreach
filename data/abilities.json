@@ -1,0 +1,94 @@
+{
+  "_comment": "Slottable combat abilities. style is melee/ranged/magic/any. trigger_chance is a percent; cooldown_attacks counts player attacks, not seconds. Effect keys are exactly max_hit_percent, interval_percent, crit_chance_percent, apply_status (id from StatusEffect.TABLE), heal_on_hit_fraction. status_duration is a sibling of effect (seconds), only meaningful beside apply_status. Positive interval_percent is faster, matching ModifierKeys.ATTACK_INTERVAL_PERCENT.",
+  "power_strike": {
+    "id": "power_strike",
+    "name": "Power Strike",
+    "style": "melee",
+    "req_levels": {"attack": 10},
+    "unlock": "",
+    "effect": {"max_hit_percent": 15.0},
+    "trigger_chance": 25.0,
+    "cooldown_attacks": 4,
+    "description": "A committed blow that hits 15% harder."
+  },
+  "flurry": {
+    "id": "flurry",
+    "name": "Flurry",
+    "style": "melee",
+    "req_levels": {"strength": 30},
+    "unlock": "",
+    "effect": {"interval_percent": 10.0},
+    "trigger_chance": 20.0,
+    "cooldown_attacks": 5,
+    "description": "Attacks 10% faster for a few swings."
+  },
+  "gore": {
+    "id": "gore",
+    "name": "Gore",
+    "style": "melee",
+    "req_levels": {"attack": 40},
+    "unlock": "",
+    "effect": {"apply_status": "bleed"},
+    "status_duration": 6.0,
+    "trigger_chance": 30.0,
+    "cooldown_attacks": 5,
+    "description": "Tears the target open, bleeding it for 6s."
+  },
+  "precision_shot": {
+    "id": "precision_shot",
+    "name": "Precision Shot",
+    "style": "ranged",
+    "req_levels": {"ranged": 20},
+    "unlock": "",
+    "effect": {"crit_chance_percent": 12.0},
+    "trigger_chance": 18.0,
+    "cooldown_attacks": 4,
+    "description": "A careful shot that lands critical hits far more often."
+  },
+  "envenom": {
+    "id": "envenom",
+    "name": "Envenom",
+    "style": "ranged",
+    "req_levels": {"ranged": 35},
+    "unlock": "",
+    "effect": {"apply_status": "poison"},
+    "status_duration": 8.0,
+    "trigger_chance": 25.0,
+    "cooldown_attacks": 5,
+    "description": "Coats the arrow, poisoning the target for 8s."
+  },
+  "immolate": {
+    "id": "immolate",
+    "name": "Immolate",
+    "style": "magic",
+    "req_levels": {"magic": 20},
+    "unlock": "",
+    "effect": {"apply_status": "burn"},
+    "status_duration": 6.0,
+    "trigger_chance": 20.0,
+    "cooldown_attacks": 5,
+    "description": "Sets the target alight for 6s."
+  },
+  "arcane_surge": {
+    "id": "arcane_surge",
+    "name": "Arcane Surge",
+    "style": "magic",
+    "req_levels": {"magic": 45},
+    "unlock": "",
+    "effect": {"max_hit_percent": 25.0, "crit_chance_percent": 8.0},
+    "trigger_chance": 15.0,
+    "cooldown_attacks": 6,
+    "description": "A raw surge of power: 25% harder and far more critical."
+  },
+  "blood_pact": {
+    "id": "blood_pact",
+    "name": "Blood Pact",
+    "style": "any",
+    "req_levels": {"hitpoints": 25},
+    "unlock": "",
+    "effect": {"heal_on_hit_fraction": 0.15},
+    "trigger_chance": 20.0,
+    "cooldown_attacks": 5,
+    "description": "Draws on vitality: heal for 15% of the damage dealt."
+  }
+}

@@ -21,6 +21,7 @@ var familiars: Dictionary = {}
 var pets: Dictionary = {}
 var slayer_tasks: Dictionary = {}
 var special_attacks: Dictionary = {}
+var abilities: Dictionary = {}          # ability_id -> {id, name, style, req_levels, unlock, effect, trigger_chance, cooldown_attacks}
 var township_buildings: Dictionary = {}
 var cartography_hexes: Dictionary = {}
 var archaeology_sites: Dictionary = {}
@@ -54,6 +55,7 @@ func _load_all() -> void:
     pets = _load_file("pets.json")
     slayer_tasks = _load_file("slayer_tasks.json")
     special_attacks = _load_file("special_attacks.json")
+    abilities = _load_file("abilities.json")
     township_buildings = _load_file("shop_township.json")
     cartography_hexes = _load_file("cartography_hexes.json")
     archaeology_sites = _load_file("archaeology_sites.json")
@@ -121,6 +123,9 @@ func get_shop_upgrade(upgrade_id: String) -> Dictionary:
 
 func get_special_attack(sa_id: String) -> Dictionary:
     return special_attacks.get(sa_id, {})
+
+func get_ability(ability_id: String) -> Dictionary:
+    return abilities.get(ability_id, {})
 
 func get_skill_ids() -> Array[String]:
     return _skill_order.duplicate()
