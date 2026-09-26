@@ -47,6 +47,7 @@ func run_all(host: Node) -> void:
 	_test_achievement_reward_once()
 	_test_save_round_trip()
 	_test_save_migration()
+	test_migrate_2_to_3_defaults()
 	_test_malformed_save_rejected()
 	_test_offline_cap_and_negative_time()
 	_test_online_offline_consistency()
@@ -1123,6 +1124,163 @@ func _test_save_migration() -> void:
 	_eq(PlayerData.get_level("woodcutting"), 12, "migrated skill state loads correctly")
 	_ok(absf(ModifierManager.get_modifier("global_skill_xp_percent")) < 900.0,
 		"the stale modifier from the old save was not restored")
+
+## Task 6 pin: a v2 save must reach the combat code with every key Tasks 3 and 4 added, correctly
+## shaped. Filling only the missing keys is not enough — a v2 save written by an intermediate build
+## of this same branch can already carry some of them with the wrong type, and a String standing in
+## for an Array is exactly what crashes the code downstream.
+func test_migrate_2_to_3_defaults() -> void:
+	_heading("Old-save migration (format 2 -> 3)")
+	var v2: Dictionary = {
+		"save_version": 2,
+		"player": {"skills": {"woodcutting": {"xp": 500.0, "level": 5}}, "gp": 42.0},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	# The shape v3 promises the code: key -> the type PlayerData.deserialize reads it as.
+	var promised: Dictionary = {
+		"ability_loadout": TYPE_ARRAY,
+		"combat_strategies": TYPE_ARRAY,
+		"combat_strategies_by_area": TYPE_DICTIONARY,
+		"combat_strategy_active": TYPE_STRING,
+		"event_policies": TYPE_DICTIONARY,
+		"momentum": TYPE_DICTIONARY,
+	}
+	var out: Dictionary = SaveManager.migrate_save(v2, 2)
+	_eq(int(out.get("save_version", 0)), 3, "the v2 save reports version 3")
+	# The rest of this check reads those keys by name, so a migration that dropped or mistyped one
+	# is reported here instead of crashing the rest of the test on a cast.
+	var wrong: String = _wrongly_shaped(out.get("player", {}), promised)
+	_ok(wrong == "", "a v2 save arrives with every promised key in the promised type (wrong: %s)"
+		% (wrong if wrong != "" else "none"))
+	if wrong != "":
+		return
+	var player: Dictionary = out["player"]
+	_ok((player["ability_loadout"] as Array).is_empty(), "the migrated loadout slots no abilities")
+	var strategies: Array = player["combat_strategies"]
+	_eq(strategies.size(), 1, "the migrated player holds exactly one strategy preset")
+	var default_strategy: Dictionary = strategies[0] \
+		if strategies.size() == 1 and typeof(strategies[0]) == TYPE_DICTIONARY else {}
+	_ok(ContentValidator.check_strategy_record(default_strategy).is_empty(),
+		"the default strategy passes the content validator (%s)" % _failure_text(ContentValidator.check_strategy_record(default_strategy)))
+	_eq(player["combat_strategy_active"], str(default_strategy.get("name", "Default")),
+		"the active strategy names the preset that is actually stored")
+	_eq(player["event_policies"], {"risk": "safe", "bonus": "safe"}, "every event policy defaults to safe")
+	_ok((player["combat_strategies_by_area"] as Dictionary).is_empty(), "no area is bound to a strategy yet")
+	_ok((player["momentum"] as Dictionary).is_empty(), "momentum starts empty")
+	_ok((player["save_format_history"] as Array).has(2), "the format history records the format it came from")
+
+	# Total, not "fill when missing": every one of these keys is present but the wrong type.
+	var dirty: Dictionary = {
+		"save_version": 2,
+		"player": {
+			"skills": {"woodcutting": {"xp": 10.0, "level": 1}},
+			"ability_loadout": "power_strike",
+			"combat_strategies": "not a list",
+			"combat_strategies_by_area": [],
+			"combat_strategy_active": {"name": "Default"},
+			"event_policies": "safe",
+			"momentum": 7,
+		},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	var repaired: Dictionary = SaveManager.migrate_save(dirty, 2)
+	var rp: Dictionary = repaired["player"]
+	var unrepaired: String = _wrongly_shaped(rp, promised)
+	_ok(unrepaired == "", "a wrongly-typed value is repaired, not passed through (still wrong: %s)"
+		% (unrepaired if unrepaired != "" else "none"))
+	if unrepaired != "":
+		return
+	_ok((rp["ability_loadout"] as Array).is_empty(), "a String loadout is repaired to an empty list")
+	_eq((rp["combat_strategies"] as Array).size(), 1, "a non-list strategies value is replaced by the default preset")
+	_ok(ContentValidator.check_strategy_record((rp["combat_strategies"] as Array)[0] as Dictionary).is_empty(),
+		"the replacement preset is itself a valid strategy record")
+	_ok((rp["combat_strategies_by_area"] as Dictionary).is_empty(), "a list area map is repaired to {}")
+	_eq(rp["combat_strategy_active"], "Default", "an object active-strategy is repaired to the stored preset's name")
+	_eq(rp["event_policies"], {"risk": "safe", "bonus": "safe"}, "a String policies value is repaired to the safe defaults")
+	_ok((rp["momentum"] as Dictionary).is_empty(), "a number momentum value is repaired to {}")
+	_eq(SaveManager.migrate_save(repaired, 2), repaired, "migrating an already-migrated save changes nothing")
+
+	# …and none of that may cost the player a choice the v2 save legitimately already held.
+	var custom: Dictionary = {
+		"save_version": 2,
+		"player": {
+			"skills": {"woodcutting": {"xp": 10.0, "level": 1}},
+			"ability_loadout": ["power_strike"],
+			"combat_strategies": [{"name": "Boss", "ability_loadout": [], "food_threshold": 0.5,
+				"special_bias": "eager", "protection_prayer_auto": ""}],
+			"combat_strategies_by_area": {"crypt": "Boss"},
+			"combat_strategy_active": "Boss",
+		},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	var kept: Dictionary = SaveManager.migrate_save(custom, 2)["player"]
+	var clobbered: String = _wrongly_shaped(kept, promised)
+	_ok(clobbered == "", "a save that already has the keys keeps them in shape (wrong: %s)"
+		% (clobbered if clobbered != "" else "none"))
+	if clobbered != "":
+		return
+	_eq(kept["ability_loadout"], ["power_strike"], "a real loadout is carried through, not overwritten")
+	_eq(str((kept["combat_strategies"] as Array)[0].get("name", "")), "Boss", "a real strategy preset is carried through")
+	_eq(kept["combat_strategies_by_area"], {"crypt": "Boss"}, "an area binding is carried through")
+	_eq(kept["combat_strategy_active"], "Boss", "the active strategy the player chose is carried through")
+
+	# The chain must not regress: a v1 save still walks all the way to the current version.
+	var legacy: Dictionary = {
+		"version": "1.4.0",
+		"player": {"skills": {"woodcutting": {"xp": 1000.0, "level": 12}}, "gp": 999.0},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	var chain: Dictionary = SaveManager.migrate_save(legacy, 1)
+	_eq(int(chain.get("save_version", 0)), SaveManager.SAVE_VERSION,
+		"a v1 save migrates all the way to the current version")
+	var lp: Dictionary = chain["player"]
+	var chain_wrong: String = _wrongly_shaped(lp, promised)
+	_ok(chain_wrong == "", "a v1 save gains every promised key on the way through (wrong: %s)"
+		% (chain_wrong if chain_wrong != "" else "none"))
+	if chain_wrong != "":
+		return
+	var history: Array = lp["save_format_history"]
+	_eq(history, [1, 2, 3], "the format history is chronological (1 -> 2 -> 3)")
+
+	# The end the migration exists for: a v2 file on disk loads into the live singletons already
+	# carrying the combat keys, and is written back at the new version.
+	var files: Dictionary = TestSupport.backup_save_files()
+	var snapshot: Dictionary = SaveManager.build_save_data()
+	var on_disk: Dictionary = v2.duplicate(true)
+	var f := FileAccess.open(SaveManager.SAVE_PATH, FileAccess.WRITE)
+	if f == null:
+		_ok(false, "could open the save file for the v2 load test")
+		return
+	f.store_string(JSON.stringify(on_disk, "\t"))
+	f.close()
+	_ok(SaveManager.load_game(), "a v2 save file loads")
+	_eq(int(SaveManager.detect_version(SaveManager._read_json(SaveManager.SAVE_PATH))), 3,
+		"the migrated save is written back to disk at version 3")
+	_eq(PlayerData.combat_strategies.size(), 1, "the loaded player has one strategy preset")
+	_eq(PlayerData.combat_strategy_active, "Default", "the loaded player is on the default preset")
+	_ok(PlayerData.ability_loadout.is_empty(), "the loaded player has no slotted abilities")
+	_ok((PlayerData.combat_strategies[0] as Dictionary).get("name", "") == "Default",
+		"the preset the loaded player has is the default one")
+	TestSupport.restore_snapshot(snapshot, files)
+
+## Names the promised keys a migrated player block is missing or holding at the wrong type, or ""
+## when it is in the promised shape. One shared check for every case in
+## test_migrate_2_to_3_defaults, because a cast on a mistyped value is a hard error that silently
+## skips the rest of a suite — a broken migration would read as fewer checks, not as a failure.
+func _wrongly_shaped(player: Variant, promised: Dictionary) -> String:
+	if typeof(player) != TYPE_DICTIONARY:
+		return "player block is not an object"
+	var wrong: Array = []
+	for key in promised.keys():
+		if not (player as Dictionary).has(key):
+			wrong.append("%s (absent)" % key)
+		elif typeof((player as Dictionary)[key]) != int(promised[key]):
+			wrong.append("%s (%s)" % [key, type_string(typeof((player as Dictionary)[key]))])
+	return ", ".join(wrong)
 
 func _test_malformed_save_rejected() -> void:
 	_heading("Malformed saves are rejected, not loaded")

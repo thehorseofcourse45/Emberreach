@@ -30,7 +30,7 @@ const LOCK_PATH: String = "user://save_session.lock"
 ## are checked once, and any save found there is COPIED in — never moved, never deleted.
 const LEGACY_APP_NAMES: Array[String] = ["Melvor Idle Clone", "melvor-clone-godot"]
 
-const SAVE_VERSION: int = 2
+const SAVE_VERSION: int = 3
 const AUTOSAVE_INTERVAL: float = 60.0
 const MAX_AUTOSAVE_INTERVAL: float = 600.0
 
@@ -302,6 +302,10 @@ func migrate_save(data: Dictionary, from_version: int) -> Dictionary:
 	if v < 2:
 		out = _migrate_1_to_2(out)
 		v = 2
+	if v < 3:
+		out = _migrate_2_to_3(out)
+		v = 3
+	_close_format_history(out)
 	out["save_version"] = SAVE_VERSION
 	out.erase("version")
 	return out
@@ -330,9 +334,80 @@ func _append_format_history(history: Variant, version: int) -> Array:
 	var out: Array = history if typeof(history) == TYPE_ARRAY else []
 	if not out.has(version):
 		out.append(version)
-	if not out.has(SAVE_VERSION):
-		out.append(SAVE_VERSION)
 	return out
+
+## The version the save now carries is stamped once, after the whole chain. Doing it inside
+## _append_format_history meant each step wrote the current version before the later steps ran, so
+## a v1 save recorded the history 1, 3, 2.
+func _close_format_history(data: Dictionary) -> void:
+	if typeof(data.get("player", {})) != TYPE_DICTIONARY:
+		return
+	var player: Dictionary = data["player"]
+	player["save_format_history"] = _append_format_history(player.get("save_format_history", []), SAVE_VERSION)
+	data["player"] = player
+
+## v2 -> v3
+##  - combat choices became persisted state in v3: the slotted ability loadout, the strategy
+##    presets, the per-area bindings and the name of the preset in use
+##  - event_policies and momentum are defaulted here as well, so the activity layers start from a
+##    save that already carries their keys (they are not read by anything yet)
+## Every key is GUARANTEED, not merely filled when missing, and a wrong-typed value is repaired:
+## a v2 save written by an intermediate build of this same branch can already carry some of these
+## keys, and a String where the combat code expects an Array is the crash this step exists to stop.
+func _migrate_2_to_3(data: Dictionary) -> Dictionary:
+	var player: Dictionary = data.get("player", {})
+	player["ability_loadout"] = _migrated_string_list(player.get("ability_loadout", []))
+	player["combat_strategies"] = _migrated_strategies(player.get("combat_strategies", []))
+	player["combat_strategies_by_area"] = _migrated_dict(player.get("combat_strategies_by_area", {}))
+	player["combat_strategy_active"] = _migrated_active_strategy(player.get("combat_strategy_active", ""))
+	player["event_policies"] = _migrated_event_policies(player.get("event_policies", {}))
+	player["momentum"] = _migrated_dict(player.get("momentum", {}))
+	player["save_format_history"] = _append_format_history(player.get("save_format_history", []), 2)
+	data["player"] = player
+	return data
+
+## A loadout is a list of ability ids. Anything that is not a list is no loadout.
+func _migrated_string_list(value: Variant) -> Array:
+	var out: Array = []
+	if typeof(value) == TYPE_ARRAY:
+		for entry in (value as Array):
+			out.append(str(entry))
+	return out
+
+## Presets are records, and there is always at least one so the strategy UI has something to show
+## and the combat path has something to fall back to. The shape is PlayerData's own: keep the
+## records, drop what is not a record, and seed the default when nothing survives — whether the
+## preset is VALID is decided at the door by CombatManager.set_strategy, not here.
+func _migrated_strategies(value: Variant) -> Array:
+	var out: Array = []
+	if typeof(value) == TYPE_ARRAY:
+		for entry in (value as Array):
+			if typeof(entry) == TYPE_DICTIONARY:
+				out.append(entry)
+	if out.is_empty():
+		return [PlayerData.DEFAULT_COMBAT_STRATEGY.duplicate(true)]
+	return out
+
+## The name of the preset in use. Presets are name-keyed, so a name that resolves to nothing is no
+## better than no name: both fall back to the default, so migrate to the stored default's name.
+func _migrated_active_strategy(value: Variant) -> String:
+	if typeof(value) == TYPE_STRING and str(value).strip_edges() != "":
+		return str(value)
+	return str(PlayerData.DEFAULT_COMBAT_STRATEGY.get("name", "Default"))
+
+## Every category the activity layers ask for defaults to the cautious choice; a save that already
+## carries a policy keeps it, and a non-string value is treated as no policy at all.
+func _migrated_event_policies(value: Variant) -> Dictionary:
+	var out: Dictionary = {"risk": "safe", "bonus": "safe"}
+	if typeof(value) == TYPE_DICTIONARY:
+		for category in (value as Dictionary).keys():
+			var policy: Variant = (value as Dictionary)[category]
+			if typeof(policy) == TYPE_STRING and str(policy).strip_edges() != "":
+				out[str(category)] = str(policy)
+	return out
+
+func _migrated_dict(value: Variant) -> Dictionary:
+	return (value as Dictionary) if typeof(value) == TYPE_DICTIONARY else {}
 
 ## A broken live save is quarantined and reported — never silently discarded.
 func _attempt_recovery(problems: Array) -> bool:
