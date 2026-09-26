@@ -44,6 +44,55 @@ static func _strong_snapshot(monster_hp: int = 10, monster_max_hit: int = 1) -> 
 		"on_slayer_task": false,
 	}
 
+## One-monster worlds for the passive and ability checks, patched rather than derived from
+## _strong_snapshot so every number an assertion depends on is visible on the call.
+## `passives` goes on the monster and `loadout` on the player: that pair is the ONLY difference
+## between a world and its control, so any difference in the two reports is the feature under test
+## and nothing else. min_hit_percent 100.0 on both sides makes every hit a fixed number, which
+## turns "deals more damage" into an exact figure instead of a direction a wrong constant could
+## still satisfy.
+static func _passive_world(passives: Array, loadout: Array = [], player_patch: Dictionary = {},
+		monster_patch: Dictionary = {}) -> Dictionary:
+	var world: Dictionary = {
+		"player": {
+			"mode": "standard", "style": "melee", "melee_style": "stab",
+			"max_hp": 1000.0, "accuracy": 1000, "max_hit": 50, "min_hit_percent": 100.0,
+			"min_hit_flat": 0.0, "attack_interval": 1.0, "damage_reduction": 0.0,
+			"evasion": {"melee": 0, "ranged": 0, "magic": 0},
+			"crit_chance": 0.0, "crit_multiplier": 50.0, "life_steal": 0.0, "hybrid": false,
+		},
+		"monsters": [{
+			"id": "fixture", "name": "Fixture", "hitpoints": 2000, "max_hit": 4,
+			"min_hit_percent": 100.0, "min_hit_flat": 0.0, "accuracy_rating": 1000000,
+			"attack_speed": 3.0, "attack_type": "melee", "damage_type": "normal",
+			"damage_reduction": 0.0, "melee_evasion": 0, "ranged_evasion": 0, "magic_evasion": 0,
+			"passives": passives,
+		}],
+		"food": {},
+		"auto_eat_tier": 0,
+		"auto_eat_threshold_percent": 0.0,
+		"prayer_points": 0.0,
+		"mode_config": {},
+		"in_slayer_area": false,
+		"on_slayer_task": false,
+		"loadout": loadout,
+		"strategy": {"name": "Fixture", "ability_loadout": loadout, "food_threshold": 0.0,
+			"special_bias": "normal", "protection_prayer_auto": ""},
+		"weapon_special": {},
+	}
+	for key in player_patch.keys():
+		(world["player"] as Dictionary)[key] = player_patch[key]
+	for key in monster_patch.keys():
+		((world["monsters"][0] as Dictionary))[key] = monster_patch[key]
+	return world
+
+## An ability that fires on every landed hit: a 100% trigger chance cannot lose a roll, because
+## randf() is always below 1.0. Built here rather than taken from data/abilities.json so the
+## "always-firing" claim cannot quietly become a data-dependent one.
+static func _always_firing_ability() -> Array:
+	return [{"id": "test_always", "name": "Always", "style": "melee", "req_levels": {},
+		"effect": {"max_hit_percent": 10.0}, "trigger_chance": 100.0, "cooldown_attacks": 0}]
+
 static func run(host: Node) -> Dictionary:
 	var state: Dictionary = {"passed": 0, "failed": 0, "failures": []}
 	var snap: Dictionary = _strong_snapshot()
@@ -111,6 +160,164 @@ static func run(host: Node) -> Dictionary:
 	var dark_report: Dictionary = CombatSimulator.simulate(dark, 5, 77)
 	_assert(int(dark_report["wins"]) == 0 and int(dark_report["timeouts"]) == 5,
 		"a blinding hazard converts every trial into a timeout, never a win", state)
+
+	# ---------------------------------------------------------------------------
+	# The mirrored draw order, the loadout, and the three new passives
+	# ---------------------------------------------------------------------------
+	# WHAT THESE CHECKS ARE NOT: none of them drives the live engine, so none of them proves the
+	# model and the live loop agree. Running one snapshot twice from one seed proves the model is
+	# REPRODUCIBLE — that it walks its own draw order the same way every time, which is what makes
+	# a mirroring mistake visible as a wrong number rather than a random one. Cross-engine parity
+	# rests on the draw order and constants being transcribed faithfully, and is not proven here.
+	var armed: Dictionary = _passive_world([], _always_firing_ability())
+	var armed_once: Dictionary = CombatSimulator.simulate(armed, 20, 4242)
+	var armed_again: Dictionary = CombatSimulator.simulate(armed, 20, 4242)
+	_assert(JSON.stringify(armed_once) == JSON.stringify(armed_again),
+		"the same snapshot, seed and trial count reproduce the mirrored report byte for byte "
+		+ "(determinism, not cross-engine parity)", state)
+
+	# The loadout reaches the fight: without this the ability code below could be a no-op and every
+	# later assertion would still pass, because an empty loadout behaves exactly like a broken one.
+	_assert(armed_once.has("ability_fires"), "the report names how many abilities fired", state)
+	var armed_fires: int = int(armed_once["ability_fires"])
+	_assert(armed_fires > 0,
+		"an always-firing loadout fires abilities (%d fires over 20 trials)" % armed_fires, state)
+	var disarmed: Dictionary = CombatSimulator.simulate(_passive_world([]), 20, 4242)
+	_assert(int(disarmed["ability_fires"]) == 0,
+		"an empty loadout fires nothing, so the counter is counting something real", state)
+
+	# rage: the monster's own damage climbs as its health falls, so the arithmetic is pinned on its
+	# own (a fight can only show that rage bites) and the behaviour against a control that differs
+	# in nothing else. Exact numbers: the player always lands 10, the monster always hits for 4,
+	# and the fight is long enough that the monster enrages across it.
+	_eq_float(CombatSimulator._rage_multiplier(400.0, 400.0), 1.0, "rage is inert at full health", state)
+	_eq_float(CombatSimulator._rage_multiplier(200.0, 400.0), 1.25, "half health is half the bonus", state)
+	_eq_float(CombatSimulator._rage_multiplier(0.0, 400.0), 1.5, "a monster on its last HP hits hardest", state)
+	var calm: Dictionary = _passive_world([], [], {"max_hit": 10, "max_hp": 220.0}, {"hitpoints": 1500})
+	var raging: Dictionary = _passive_world(["rage"], [], {"max_hit": 10, "max_hp": 220.0}, {"hitpoints": 1500})
+	var calm_report: Dictionary = CombatSimulator.simulate(calm, 20, 8675309)
+	var rage_report: Dictionary = CombatSimulator.simulate(raging, 20, 8675309)
+	_assert(int(calm_report["deaths"]) == 0,
+		"the same monster without rage never kills a player standing at 220 HP", state)
+	_assert(int(rage_report["deaths"]) == 20,
+		"the raging monster kills every one of those players (%d of 20)" % int(rage_report["deaths"]), state)
+
+	# veil: a flat evasion bonus, so the player's hit rate falls and the same fight takes longer.
+	var veiled_world: Dictionary = _passive_world(["veil"])
+	var plain_world: Dictionary = _passive_world([])
+	var veiled_record: Dictionary = veiled_world["monsters"][0]
+	var plain_record: Dictionary = plain_world["monsters"][0]
+	_eq_int(CombatSimulator._evasion_for(veiled_record, "melee"), 15,
+		"veil adds its flat bonus to the evasion the model uses", state)
+	_eq_int(CombatSimulator._evasion_for(plain_record, "melee"), 0,
+		"the control's evasion is untouched", state)
+	var seen: Dictionary = _passive_world([], [], {"accuracy": 30}, {"melee_evasion": 10})
+	var unseen: Dictionary = _passive_world(["veil"], [], {"accuracy": 30}, {"melee_evasion": 10})
+	var seen_report: Dictionary = CombatSimulator.simulate(seen, 20, 555)
+	var unseen_report: Dictionary = CombatSimulator.simulate(unseen, 20, 555)
+	_assert(float(unseen_report["average_fight_seconds"]) > float(seen_report["average_fight_seconds"]),
+		"a veiled monster lowers the player's hit rate, so the same kill takes longer "
+		+ "(%.1fs against %.1fs)" % [float(unseen_report["average_fight_seconds"]),
+			float(seen_report["average_fight_seconds"])], state)
+
+	# leech: a fraction of what the monster dealt, so it has to be beaten twice as often, and never
+	# past its own maximum.
+	_eq_float(CombatSimulator._leech_heal(100.0, 400.0, 1000.0), 350.0, "leech heals a quarter of the damage", state)
+	_eq_float(CombatSimulator._leech_heal(390.0, 400.0, 1000.0), 400.0, "a leech heal is capped at max HP", state)
+	_eq_float(CombatSimulator._leech_heal(200.0, 400.0, 0.0), 201.0,
+		"a swing that dealt nothing still leeches the one HP the live engine's maxi(1, ...) floor gives it", state)
+	# The monster hits for half the player's damage, so the quarter it leeches back is a tenth of
+	# a hit rather than a rounding error: a thin margin here would be a pin that only holds today.
+	var leech_report: Dictionary = CombatSimulator.simulate(
+		_passive_world(["leech"], [], {}, {"max_hit": 50}), 20, 31337)
+	var leechless: Dictionary = CombatSimulator.simulate(
+		_passive_world([], [], {}, {"max_hit": 50}), 20, 31337)
+	_assert(float(leech_report["damage_dealt"]) > float(leechless["damage_dealt"]),
+		"a leeching monster has to be hit harder to kill (%.0f against %.0f)"
+		% [float(leech_report["damage_dealt"]), float(leechless["damage_dealt"])], state)
+	_assert(float(leech_report["average_fight_seconds"]) > float(leechless["average_fight_seconds"]),
+		"...which takes longer, since the healed damage is dealt again", state)
+
+	# regeneration keeps its old behaviour with the new code around it: the ability roll now draws
+	# between the player's swings, so the monster's rolls land elsewhere. Structural, not exact —
+	# its per-swing heal is pinned exactly in the live suite.
+	var regen_world: Dictionary = _passive_world(["regeneration"])
+	var regen_world_report: Dictionary = CombatSimulator.simulate(regen_world, 20, 31337)
+	_assert(float(regen_world_report["average_fight_seconds"]) > float(leechless["average_fight_seconds"]),
+		"a regenerating monster still takes longer to kill than the control", state)
+
+	# The strategy knobs are threshold changes, and a threshold the model ignored would show up
+	# only as a different number, so each is asserted as a DIRECTION against its own control.
+	_eq_float(CombatSimulator._biased_special_chance(80.0, "eager"), 100.0, "eager doubles a chance and caps at 100", state)
+	_eq_float(CombatSimulator._biased_special_chance(30.0, "eager"), 60.0, "eager doubles a chance below the cap", state)
+	_eq_float(CombatSimulator._biased_special_chance(30.0, "normal"), 30.0, "normal is the identity", state)
+	_eq_float(CombatSimulator._biased_special_chance(30.0, "hold"), 0.0, "hold is a hard zero", state)
+	_eq_float(CombatSimulator._biased_special_chance(30.0, "reckless"), 30.0,
+		"an unrecognised bias falls back to the identity", state)
+	_eq_float(CombatSimulator._food_threshold_percent(20.0, {"food_threshold": 0.0}), 20.0,
+		"food_threshold 0.0 defers to the auto-eat tier", state)
+	_eq_float(CombatSimulator._food_threshold_percent(20.0, {"food_threshold": 0.5}), 50.0,
+		"a 0.5 food_threshold replaces the tier's percent", state)
+	var armed_special: Dictionary = _passive_world([])
+	(armed_special["weapon_special"] as Dictionary)["id"] = "test_special"
+	(armed_special["weapon_special"] as Dictionary)["trigger_chance"] = 100.0
+	(armed_special["weapon_special"] as Dictionary)["damage_multiplier"] = 2.0
+	var eager_special: Dictionary = armed_special.duplicate(true)
+	(eager_special["strategy"] as Dictionary)["special_bias"] = "eager"
+	var held_special: Dictionary = armed_special.duplicate(true)
+	(held_special["strategy"] as Dictionary)["special_bias"] = "hold"
+	var eager_report: Dictionary = CombatSimulator.simulate(eager_special, 20, 99)
+	var held_report: Dictionary = CombatSimulator.simulate(held_special, 20, 99)
+	_assert(float(eager_report["average_fight_seconds"]) < float(held_report["average_fight_seconds"]),
+		"an eager bias lands the weapon special and a held one never does, even at a 100%% chance "
+		+ "(%.1fs against %.1fs)" % [float(eager_report["average_fight_seconds"]),
+			float(held_report["average_fight_seconds"])], state)
+
+	# food_threshold, on the model's own auto-eat: the same fight, the same food, one threshold
+	# moved. The monster has to actually connect, or the player never crosses either threshold.
+	var fed_default: Dictionary = _passive_world([], [], {"max_hp": 100.0},
+		{"hitpoints": 1000, "max_hit": 30, "min_hit_percent": 0.0})
+	(fed_default["food"] as Dictionary)["shrimp"] = 20
+	fed_default["auto_eat_tier"] = 1
+	var finicky: Dictionary = fed_default.duplicate(true)
+	(finicky["strategy"] as Dictionary)["food_threshold"] = 0.5
+	var tier_report: Dictionary = CombatSimulator.simulate(fed_default, 50, 8080)
+	var finicky_report: Dictionary = CombatSimulator.simulate(finicky, 50, 8080)
+	_assert(int(tier_report["food_eaten"]) > 0, "the control's auto-eat threshold is reached at all", state)
+	_assert(int(finicky_report["food_eaten"]) > int(tier_report["food_eaten"]),
+		"a 0.5 food_threshold eats where the tier-1 20%% would not (%d against %d portions)"
+		% [int(finicky_report["food_eaten"]), int(tier_report["food_eaten"])], state)
+
+	# ---------------------------------------------------------------------------
+	# The snapshot the model is handed
+	# ---------------------------------------------------------------------------
+	# Nothing carried a monster's passives into the model before this: the record the manager
+	# builds listed thirteen keys and passives was not one of them, so the regeneration the older
+	# check exercised — on a hand-built record — could never fire in a real run. Pinned here
+	# because a snapshot missing the key fails silently: the model reads an absent key as "no
+	# passives", which looks exactly like a monster that has none.
+	var snapshot: Dictionary = CombatSimulatorManager.build_snapshot_for_test(
+		"moss_giant", ["power_strike"], "eager")
+	var snapshot_monsters: Array = snapshot.get("monsters", [])
+	_assert(not snapshot_monsters.is_empty(), "a snapshot can be built for a shipped monster", state)
+	var snapshot_record: Dictionary = snapshot_monsters[0] as Dictionary
+	_assert(snapshot_record.has("passives"), "the snapshot's monster record carries a passives key", state)
+	_assert((snapshot_record["passives"] as Array).has("regeneration"),
+		"a regenerating monster's passive reaches the snapshot the model runs on", state)
+	_assert(snapshot.has("loadout") and snapshot.has("strategy"),
+		"the snapshot carries the loadout and the strategy", state)
+	_eq_str(str((snapshot["strategy"] as Dictionary).get("special_bias", "")), "eager",
+		"the requested special bias reaches the snapshot", state)
+	# The loadout travels as whole ability RECORDS: the worker thread that runs a 10,000-fight job
+	# is given a plain dictionary and no autoload, so an id list would leave it nothing to roll.
+	var loadout: Array = snapshot.get("loadout", [])
+	_assert(loadout.size() == 1 and (loadout[0] as Dictionary).has("trigger_chance"),
+		"the loadout reaches the snapshot as whole ability records", state)
+	_eq_float(float((loadout[0] as Dictionary).get("trigger_chance", -1.0)),
+		float(DataLoader.get_ability("power_strike").get("trigger_chance", 0.0)),
+		"...carrying the data's own trigger chance rather than a default", state)
+	_assert(CombatSimulatorManager.build_snapshot_for_test("no_such_monster", [], "normal").is_empty(),
+		"an unknown monster yields no snapshot rather than a fight against nothing", state)
 
 	# ---------------------------------------------------------------------------
 	# Food projection
@@ -325,3 +532,15 @@ static func _assert(condition: bool, label: String, state: Dictionary) -> void:
 		state["failed"] = int(state["failed"]) + 1
 		var list: Array = state["failures"]
 		list.append(label)
+
+## The equality half of _assert, so a wrong number says WHICH number was wrong instead of only
+## that something was. The house suite spells these out for the same reason.
+static func _eq_int(actual: int, expected: int, label: String, state: Dictionary) -> void:
+	_assert(actual == expected, "%s (expected %d, got %d)" % [label, expected, actual], state)
+
+static func _eq_float(actual: float, expected: float, label: String, state: Dictionary) -> void:
+	_assert(absf(actual - expected) < 0.0001, "%s (expected %.4f, got %.4f)" % [label, expected, actual],
+		state)
+
+static func _eq_str(actual: String, expected: String, label: String, state: Dictionary) -> void:
+	_assert(actual == expected, "%s (expected '%s', got '%s')" % [label, expected, actual], state)

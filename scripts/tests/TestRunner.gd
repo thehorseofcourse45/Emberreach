@@ -76,6 +76,7 @@ func run_all(host: Node) -> void:
 	test_strategy_food_threshold()
 	test_set_strategy_rejects_invalid()
 	test_strategy_area_and_prayer()
+	test_monster_passives()
 	_test_content_validation()
 	test_identity_theme_builds()
 	test_surface_box_falls_back()
@@ -2048,6 +2049,132 @@ func test_strategy_area_and_prayer() -> void:
 	_deterministic(true)
 	_eq(str(CombatManager.active_strategy.get("name", "")), "Default", "a new game returns to the default preset")
 	_eq(PlayerData.combat_strategies_by_area.size(), 0, "a new game clears the area bindings")
+
+# =========================================================================
+#  Task 5 — monster passives in the live engine
+# =========================================================================
+
+## rage, veil and leech, each measured against the SAME fixture monster without it on the same
+## pinned seed, so the only thing that can explain a difference is the passive itself. The fixture
+## is installed in the data table for the length of the check and removed afterwards: no shipped
+## monster carries these yet, and editing game balance to test an engine path is not a test.
+## Every check is an EXACT figure rather than a direction, because the monster's rolls are held
+## still (a pinned seed, a fixed damage roll) and anything less would pass on a passive that did
+## the wrong amount of the right thing.
+func test_monster_passives() -> void:
+	_heading("Monster passives")
+	# KNOWN_MONSTER_PASSIVES is the only gate: ContentValidator rejects any passive id missing
+	# from it, so a passive the engine implements but the whitelist omits cannot ship in data.
+	for passive in ["regeneration", "rage", "veil", "leech"]:
+		_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(str(passive)),
+			"the content validator's whitelist admits '%s'" % str(passive))
+	var plain_id: String = _fixture_monster("plain", [])
+	var rage_id: String = _fixture_monster("rage", ["rage"])
+	var veil_id: String = _fixture_monster("veil", ["veil"])
+	var leech_id: String = _fixture_monster("leech", ["leech"])
+	var regen_id: String = _fixture_monster("regen", ["regeneration"])
+	var all_id: String = _fixture_monster("all", ["regeneration", "rage", "veil", "leech"])
+
+	# rage: the arithmetic on its own, because a fight can only show that rage bites, never that
+	# it bites in proportion to the wound. This is also the exact shape the simulator mirrors.
+	# _enemy_rage_multiplier reads the live monster, so the fight context is established first:
+	# the same two numbers have to give two answers depending on nothing but the record.
+	_restore_test_fight(rage_id)
+	_eq(CombatManager._enemy_rage_multiplier(400, 400), 1.0, "a full-health monster is not raging")
+	_eq(CombatManager._enemy_rage_multiplier(200, 400), 1.25, "half health is half the bonus")
+	_eq(CombatManager._enemy_rage_multiplier(0, 400), 1.5, "a monster on its last HP hits hardest")
+	_restore_test_fight(plain_id)
+	_eq(CombatManager._enemy_rage_multiplier(200, 400), 1.0,
+		"the control's damage does not scale at all with its wounds")
+
+	# ...and the wiring: same seed, same to-hit roll, same damage roll, only the multiplier left.
+	var plain_total: int = 0
+	var rage_total: int = 0
+	var landed: int = 0
+	for seed_value in range(1, 7):
+		var plain: Dictionary = _monster_swing(plain_id, 200, seed_value)
+		var raging: Dictionary = _monster_swing(rage_id, 200, seed_value)
+		if int(plain["damage"]) <= 0:
+			continue
+		landed += 1
+		_eq(int(raging["damage"]), int(floor(float(plain["damage"]) * 1.25)),
+			"seed %d: a monster at half health deals exactly 1.25x the control's hit" % seed_value)
+		plain_total += int(plain["damage"])
+		rage_total += int(raging["damage"])
+	_ok(landed >= 5, "the fixture landed on at least five of six seeds")
+	_ok(rage_total > plain_total, "a raging monster deals strictly more damage over the same hits")
+	# The whole point is the wound, so a monster that has taken nothing must pay the control's
+	# bill exactly. Same seed, full health on both sides.
+	_eq(int((_monster_swing(rage_id, 400, 3) as Dictionary)["damage"]),
+		int((_monster_swing(plain_id, 400, 3) as Dictionary)["damage"]),
+		"a raging monster at FULL health deals exactly what the control deals")
+
+	# veil: a flat bonus on the rating, so the same player accuracy is a lower hit chance.
+	_restore_test_fight(plain_id)
+	var plain_evasion: int = CombatManager._monster_evasion_for("melee")
+	var plain_chance: float = float(CombatManager.target_comparison().get("your_hit_chance_percent", 0.0))
+	_restore_test_fight(veil_id)
+	_eq(CombatManager._monster_evasion_for("melee"), plain_evasion + CombatManager.ENEMY_VEIL_BONUS,
+		"veil adds its flat bonus to the evasion rating")
+	_ok(float(CombatManager.target_comparison().get("your_hit_chance_percent", 100.0)) < plain_chance,
+		"a veiled monster lowers the player's hit chance against it")
+
+	# leech: a fraction of the damage it just dealt, and never past its own maximum.
+	var leech_hit: Dictionary = _monster_swing(leech_id, 200, 3)
+	_eq(int(leech_hit["monster_hp"]), 200 + int(floor(float(leech_hit["damage"]) * 0.25)),
+		"leech knits back a quarter of the damage the monster just dealt")
+	var capped: Dictionary = _monster_swing(leech_id, 397, 3)
+	_eq(int(capped["monster_hp"]), 400, "a leech heal can never take a monster past its maximum")
+	var plain_hit: Dictionary = _monster_swing(plain_id, 200, 3)
+	_eq(int(plain_hit["monster_hp"]), 200, "the control takes its hit and heals nothing")
+
+	# regeneration must behave exactly as it did, and all four have to coexist on one record:
+	# each is an independent branch off the same swing, and one of them gating another would
+	# silently disable it.
+	var regen_hit: Dictionary = _monster_swing(regen_id, 200, 3)
+	_eq(int(regen_hit["monster_hp"]), 208, "regeneration still heals 2% of max HP per own attack")
+	var all_hit: Dictionary = _monster_swing(all_id, 200, 3)
+	_eq(int(all_hit["monster_hp"]), 200 + 8 + int(floor(float(all_hit["damage"]) * 0.25)),
+		"all four passives apply to the same monster's swing")
+
+	# A fixture that outlives this check would reach the validator, the monster-table assertions
+	# and every "list the monsters" screen in the suite, so it is removed rather than left behind.
+	for id in [plain_id, rage_id, veil_id, leech_id, regen_id, all_id]:
+		DataLoader.monsters.erase(str(id))
+	CombatManager.stop_combat("retreat")
+
+## A monster record carrying `passives`, installed in the data table so the real attack path can be
+## driven against it. One id per tag rather than a shared one, because the checks hold several
+## fixtures at once and each has to still be there when its own assertion runs.
+func _fixture_monster(tag: String, passives: Array) -> String:
+	var id: String = "test:passive_%s" % tag
+	DataLoader.monsters[id] = {
+		"id": id, "name": "Passive Fixture", "combat_level": 1, "hitpoints": 400, "max_hit": 40,
+		"min_hit_percent": 0.0, "min_hit_flat": 0.0, "accuracy_rating": 1000000,
+		"attack_speed": 3.0, "attack_type": "melee", "damage_type": "normal",
+		"damage_reduction": 0.0, "melee_evasion": 10, "ranged_evasion": 10, "magic_evasion": 10,
+		"passives": passives, "loot_table": [], "respawn_time": 3.0, "can_be_stunned": true,
+		"is_immune_to_effects": false,
+	}
+	return id
+
+## One real _monster_attack() against a fixture held at a given HP, on a pinned seed, reporting
+## what the swing did. Returns {damage, monster_hp} so two worlds that differ only by a passive
+## can be compared exactly, without either of them having to survive the other's noise. The
+## fixture's accuracy rating is high enough that the swing always connects, and the player's HP is
+## topped up first, so a missed to-hit is the only thing that can make `damage` zero.
+func _monster_swing(monster_id: String, monster_hp: int, seed_value: int) -> Dictionary:
+	_restore_test_fight(monster_id)
+	CombatManager.monster_hp = monster_hp
+	CombatManager.player_hp = CombatManager._compute_max_hp()
+	CombatManager.seed_rng(seed_value)
+	var dealt: Array = []
+	var capture := func(d: int) -> void: dealt.append(d)
+	EventBus.monster_attacked.connect(capture)
+	CombatManager._monster_attack()
+	EventBus.monster_attacked.disconnect(capture)
+	var damage: int = int(dealt[0]) if dealt.size() == 1 else 0
+	return {"damage": damage, "monster_hp": CombatManager.monster_hp}
 
 ## A complete strategy record with every field spelled out, patched by `overrides`. Written out
 ## rather than layered on the engine's own default so a test can never pass because the field it

@@ -25,8 +25,23 @@ const EXPEDITION_COMBAT_LEVEL: int = 60
 const EXPEDITION_CHARTER: String = "expedition_charter"
 ## Fraction of max HP a monster with the "regeneration" passive heals per own attack.
 const ENEMY_REGEN_FRACTION: float = 0.02
+## A monster with the "rage" passive hits harder the further its health has fallen, by this much of
+## its max HP: 1.0 at full health, 1.5x on its last point. The wounded half of a fight is the
+## dangerous half, which is what makes finishing a fight worth the risk of starting one badly.
+const ENEMY_RAGE_BONUS_FRACTION: float = 0.5
+## Flat evasion a monster with the "veil" passive adds to its own rating. Flat, not a percentage,
+## because evasion is a rating the player's accuracy is compared against and every other source in
+## the game (EquipmentManager, ModifierManager) is a flat bonus to it.
+const ENEMY_VEIL_BONUS: int = 15
+## Fraction of the damage a monster with the "leech" passive deals that it heals itself for,
+## capped at its maximum. A FRACTION (0..1) of damage dealt, never a percent of it — the same
+## precedent as special_attacks.json's heal_fraction and an ability's heal_on_hit_fraction.
+const ENEMY_LEECH_FRACTION: float = 0.25
 ## Monster passive ids the engine understands (data may list more only after engine support).
-const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration"]
+## ContentValidator rejects any id missing from here, so this array IS the gate between data and
+## behaviour: a passive listed here that the engine did not implement would validate and then do
+## nothing, which is the one failure mode a validator cannot see.
+const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "rage", "veil", "leech"]
 
 var state: int = State.IDLE
 var context: Dictionary = {}          # {type, id, monsters:[...], index, endless, attack_style}
@@ -347,13 +362,20 @@ func _player_max_hit(style: String) -> int:
 
 func _monster_evasion_for(style: String) -> int:
 	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	var rating: int = 0
 	match style:
 		"melee":
-			return int(m.get("melee_evasion", 10))
+			rating = int(m.get("melee_evasion", 10))
 		"ranged":
-			return int(m.get("ranged_evasion", 10))
+			rating = int(m.get("ranged_evasion", 10))
 		_:
-			return int(m.get("magic_evasion", 10))
+			rating = int(m.get("magic_evasion", 10))
+	# Veil: a flat bonus on the rating, so the player has to bring more accuracy to land the same
+	# hit rate. Read here rather than at the call sites so the stat comparison the UI shows and the
+	# roll _player_attack makes are the same number.
+	if (m.get("passives", []) as Array).has("veil"):
+		rating += ENEMY_VEIL_BONUS
+	return rating
 
 func _player_evasion_for(monster_style: String) -> int:
 	var eff_def: int = _player_effective("defence")
@@ -495,6 +517,10 @@ func _monster_attack() -> void:
 	raw *= (1.0 + float(tri["damage_percent"]) / 100.0)
 	# Open-region hazard: hostile ground hits harder.
 	raw *= (1.0 + float(_active_hazard().get("enemy_damage_percent", 0.0)) / 100.0)
+	# Rage: a wounded monster hits harder, scaled off its CURRENT hp, so a monster that regenerates
+	# or leechs is never free damage. Sits after the triangle and the hazard because both of those
+	# are properties of WHERE the fight happens; this one is a property of the monster.
+	raw *= _enemy_rage_multiplier(monster_hp, monster_max_hp)
 	var dr: float = ModifierManager.get_damage_reduction()
 	var dmg: int = maxi(0, int(floor(raw * (1.0 - dr / 100.0))))
 	var sa: Dictionary = _roll_special_attack_from_ids(m.get("special_attacks", []))
@@ -507,8 +533,22 @@ func _monster_attack() -> void:
 	# Regenerating monsters knit wounds on every own attack while still standing.
 	if monster_hp > 0 and (m.get("passives", []) as Array).has("regeneration"):
 		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(monster_max_hp) * ENEMY_REGEN_FRACTION)))
+	# Leech: a fraction of what this swing dealt, and never past its own maximum. The monster_hp > 0
+	# guard is the same one regeneration needs — a status that killed the monster earlier in this
+	# same tick leaves nothing to heal.
+	if monster_hp > 0 and (m.get("passives", []) as Array).has("leech"):
+		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(dmg) * ENEMY_LEECH_FRACTION)))
 	if player_hp <= 0.0:
 		_player_death(m.get("name", current_monster_id))
+
+## A monster's rage multiplier: 1.0 at full health, rising to 1.0 + ENEMY_RAGE_BONUS_FRACTION as its
+## health falls. A function rather than an inline expression so the simulator can mirror the shape
+## exactly and so the curve is assertable without a fight — a fight can only show that rage bites.
+func _enemy_rage_multiplier(monster_hp: int, monster_max_hp: int) -> float:
+	if (DataLoader.get_monster(current_monster_id).get("passives", []) as Array).has("rage"):
+		var wounded: float = 1.0 - clampf(float(monster_hp) / float(maxi(1, monster_max_hp)), 0.0, 1.0)
+		return 1.0 + ENEMY_RAGE_BONUS_FRACTION * wounded
+	return 1.0
 
 ## The current open-region hazard, if any (dungeons and towns are sheltered).
 func _active_hazard() -> Dictionary:
