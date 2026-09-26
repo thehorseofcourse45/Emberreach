@@ -66,6 +66,7 @@ func run_all(host: Node) -> void:
 	_test_overview_skill_tabs(host)
 	_test_content_validation()
 	test_identity_theme_builds()
+	test_surface_box_falls_back()
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
@@ -1281,6 +1282,17 @@ func test_identity_theme_builds() -> void:
 	_ok(theme != null, "build_theme must return a Theme")
 	_ok(theme != null and theme.has_font("display", ""), "display font registered")
 	_ok(theme != null and theme.has_font("text", ""), "text font registered")
+
+## Task 3 pin: surface_box() uses 9-slice art when present, StyleBoxFlat otherwise.
+## Missing art must never break the theme — it falls back to today's flat box.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_surface_box_falls_back() -> void:
+	_heading("Identity surfaces")
+	var sb: StyleBox = UIStyle.surface_box("nonexistent_kind_xyz")
+	_ok(sb is StyleBoxFlat, "missing art must fall back to StyleBoxFlat")
+	if ResourceLoader.exists("res://assets/ui/panel_9slice.png"):
+		var art: StyleBox = UIStyle.surface_box("panel")
+		_ok(art is StyleBoxTexture, "existing art must build a StyleBoxTexture")
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")

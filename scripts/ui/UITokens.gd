@@ -68,6 +68,11 @@ const R_MD := 8
 const R_LG := 12
 const R_PILL := 999
 
+# ---------------------------------------------------------------- nine-slice
+## Per-kind content/expand inset when 9-slice art exists (see UIStyle.surface_box).
+## Missing kinds fall back to 12; missing art falls back to StyleBoxFlat.
+const NINE_SLICE_MARGINS := {"panel": 12, "button": 8, "chip": 6}
+
 # ---------------------------------------------------------------- type
 const FONT_MICRO := 11
 const FONT_SMALL := 13

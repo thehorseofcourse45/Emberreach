@@ -23,7 +23,21 @@ const DANGER := UITokens.RED
 #  Style boxes
 # =========================================================================
 
-static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBoxFlat:
+static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBox:
+	var path: String = "res://assets/ui/%s_9slice.png" % kind
+	if ResourceLoader.exists(path):
+		var tex: Texture2D = load(path)
+		var sb := StyleBoxTexture.new()
+		sb.texture = tex
+		var m: int = UITokens.NINE_SLICE_MARGINS.get(kind, 12)
+		sb.content_margin_left = m; sb.content_margin_right = m
+		sb.content_margin_top = m; sb.content_margin_bottom = m
+		sb.expand_margin_left = m; sb.expand_margin_right = m
+		sb.expand_margin_top = m; sb.expand_margin_bottom = m
+		return sb
+	return _flat_fallback(kind, accent)  # today's StyleBoxFlat body, moved verbatim
+
+static func _flat_fallback(kind: String, accent: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	match kind:
 		"sunken":
@@ -54,7 +68,7 @@ static func _inset(sb: StyleBoxFlat, left: int, right: int, top: int, bottom: in
 	sb.content_margin_top = top
 	sb.content_margin_bottom = bottom
 
-static func panel_style(accent := false) -> StyleBoxFlat:
+static func panel_style(accent := false) -> StyleBox:
 	return surface_box("panel", accent)
 
 static func chip_box(fill: Color) -> StyleBoxFlat:
@@ -138,9 +152,9 @@ static func build_theme() -> Theme:
 		th.set_stylebox("scroll", cls2, _solid(UITokens.SURFACE_SUNKEN, UITokens.R_SM))
 
 	# --- text inputs ------------------------------------------------------
-	var le_normal := surface_box("sunken")
+	var le_normal: StyleBoxFlat = surface_box("sunken")
 	le_normal.set_corner_radius_all(UITokens.R_MD)
-	var le_focus := surface_box("sunken")
+	var le_focus: StyleBoxFlat = surface_box("sunken")
 	le_focus.set_corner_radius_all(UITokens.R_MD)
 	le_focus.border_color = UITokens.GOLD
 	le_focus.set_border_width_all(2)

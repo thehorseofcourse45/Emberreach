@@ -129,7 +129,7 @@ static func requirement_row(label: String, current: float, required: float, sati
 static func item_icon(item_id: String, size := UITokens.ICON_MD) -> Control:
 	var rarity: Dictionary = UIStyle.item_rarity(item_id)
 	var frame := PanelContainer.new()
-	var sb := UIStyle.surface_box("sunken")
+	var sb: StyleBoxFlat = UIStyle.surface_box("sunken")
 	sb.set_corner_radius_all(UITokens.R_SM)
 	sb.border_color = rarity["color"]
 	sb.set_border_width_all(2 if rarity["key"] != "common" else 1)
