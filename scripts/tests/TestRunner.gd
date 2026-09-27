@@ -68,6 +68,8 @@ func run_all(host: Node) -> void:
 	test_abilities_load()
 	test_events_load()
 	test_event_validation_rejects()
+	test_card_timeout_applies_policy()
+	test_spawn_switch_no_double_consume()
 	test_ability_validation_rejects()
 	test_ability_cooldown_respected()
 	test_ability_roll_count()
@@ -211,6 +213,132 @@ func test_event_validation_rejects() -> void:
 		pool.pop_back()
 	_ok(saw_broken, "validate_all reports a broken event record, not just the free function")
 	_ok(saw_duplicate, "validate_all rejects a duplicate event id inside one pool")
+
+## Task 3 pin, plan Review Focus: a card must NEVER deadlock the loop. Every route — walk-away
+## timeout, stored policy, player button — goes through resolve(), applies a real effect exactly
+## once, and releases the pause. A route that resolved back into "manual" (or failed to unpause)
+## would hang the loop with the watchdog already spent, which no green check above would show.
+func test_card_timeout_applies_policy() -> void:
+	_heading("Activity card timeout")
+	var ev: Dictionary = {
+		"id": "c1", "kind": "card", "category": "risk",
+		"choices": [
+			{"label": "S", "policy": "safe", "effect": {"xp_percent": 10.0}},
+			{"label": "G", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}},
+		],
+	}
+	var saved_policies: Dictionary = PlayerData.event_policies.duplicate()
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+
+	# The plan's headline case: nobody chose and nothing is stored -> the CONSERVATIVE choice.
+	PlayerData.event_policies = {}
+	var res: Dictionary = EventDirector.resolve(ev, "TIMEOUT")
+	_eq(str(res.get("choice_policy", "")), "safe",
+		"timeout with no stored policy falls back to safe")
+	var mods: Dictionary = EventDirector.begin_action("woodcutting", "normal_tree")
+	_eq(float(mods.get("xp_percent", 0.0)), 10.0, "the fallback applied the safe choice's effect")
+	_eq(float(EventDirector.begin_action("woodcutting", "normal_tree").get("xp_percent", 0.0)), 0.0,
+		"the effect pays for exactly one attempt, not every attempt")
+
+	# A stored preference beats the safe fallback; an explicit button passes straight through.
+	PlayerData.event_policies["risk"] = "greedy"
+	_eq(str(EventDirector.resolve(ev, "TIMEOUT").get("choice_policy", "")), "greedy",
+		"timeout falls back to the STORED policy")
+	_eq(str(EventDirector.resolve(ev, "safe").get("choice_policy", "")), "safe",
+		"an explicit player choice is applied as-is")
+
+	# The watchdog itself: a card nobody answers resolves and releases the pause. It rides the
+	# skill loop's GAME clock (SkillManager.tick), not wall time, so a driver without frame
+	# boundaries — this test, an offline slice — can never deadlock on it either.
+	PlayerData.event_policies = {}
+	EventDirector._pending_card_effect = {}
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "the loop is running for the watchdog")
+	# The remainder handed back after the timeout must not be able to complete an action here,
+	# or a fresh 2%-chance card could re-pause the loop under the assertions below.
+	_ok(SkillManager.current_interval > 1.0,
+		"the watchdog's remainder tick cannot complete a whole action")
+	EventDirector.offer_card_for_test(ev)
+	_ok(not EventDirector.pending_card.is_empty() and SkillManager.paused,
+		"an unanswered card pauses the loop")
+	SkillManager.tick(1.0, false)
+	_ok(not EventDirector.pending_card.is_empty(), "one second does not time the card out")
+	var seen: Array = []
+	EventBus.event_resolved.connect(
+		func(_id: String, policy: String) -> void: seen.append(policy), Object.CONNECT_ONE_SHOT)
+	SkillManager.tick(EventDirector.CARD_TIMEOUT_SECONDS, false)
+	_ok(EventDirector.pending_card.is_empty(), "the game clock resolves a walk-away card")
+	_ok(not SkillManager.paused, "the watchdog releases the pause — the loop cannot deadlock")
+	_eq(seen.size(), 1, "the watchdog resolved through event_resolved, exactly once")
+	_eq(str(seen[0]) if seen.size() > 0 else "", "safe", "with the stored policy's fallback")
+	SkillManager.stop_action()
+
+	# The preference is a save key: this plan owns its persistence, so pin the real JSON path.
+	PlayerData.event_policies = {"risk": "greedy"}
+	var snapshot: Variant = JSON.parse_string(JSON.stringify(SaveManager.build_save_data(), "\t"))
+	PlayerData.event_policies = {}
+	SaveManager._apply(snapshot if typeof(snapshot) == TYPE_DICTIONARY else {})
+	_eq(str(PlayerData.event_policies.get("risk", "")), "greedy",
+		"event_policies survives a save / load round trip")
+
+	PlayerData.event_policies = saved_policies
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+
+## Task 3 pin, plan Review Focus: switching to a spawn must not duplicate inputs/outputs or
+## double-consume charges. The switch re-points the ONE slot and consumes nothing itself; the
+## offer's duration survives it; the bonus fires only on the spawn's own target action.
+func test_spawn_switch_no_double_consume() -> void:
+	_heading("Activity spawn switch")
+	SkillManager.stop_action()
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	var xp_before: float = PlayerData.get_xp("woodcutting")
+	var held_before: int = _total_items_held()
+	# Two REAL woodcutting actions from data/skills.json.
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "action A (normal_tree) starts")
+	EventDirector.offer_spawn_for_test("woodcutting", "oak_tree", 5)
+	EventDirector.accept_spawn()
+	_eq(SkillManager.active_action_id, "oak_tree", "accept switches the slot to the spawn's target")
+	_eq(_total_items_held(), held_before, "the switch itself consumes or produces nothing")
+	_eq(PlayerData.get_xp("woodcutting"), xp_before, "the switch itself grants no XP")
+	_eq(int(EventDirector.active_spawn.get("actions_left", 0)), 5,
+		"the offer keeps its full duration across the switch")
+
+	# One completion burns exactly one charge, through the real roll hook. The pool is swapped out
+	# for the probe so the weighted draw cannot fire a card and perturb the assertions below — the
+	# draw itself is pinned by the offline-equivalence test, where firing is the whole point.
+	var pool: Array = DataLoader.events.get("woodcutting", [])
+	DataLoader.events["woodcutting"] = []
+	var probe := RandomNumberGenerator.new()
+	probe.seed = 7
+	EventDirector.roll_post_action("woodcutting", "oak_tree", probe)
+	DataLoader.events["woodcutting"] = pool
+	_eq(int(EventDirector.active_spawn.get("actions_left", 0)), 4,
+		"one completed action burns one charge")
+
+	EventDirector.active_spawn["bonus"] = {"xp_percent": 50.0, "success_penalty": 10.0}
+	var on_target: Dictionary = EventDirector.begin_action("woodcutting", "oak_tree")
+	_eq(float(on_target.get("xp_percent", 0.0)), 50.0, "the bonus applies on its own target action")
+	_approx(float(on_target.get("success_delta", 0.0)), -0.1, 0.0001,
+		"and carries its success penalty")
+	_eq(float(EventDirector.begin_action("woodcutting", "normal_tree").get("xp_percent", 0.0)), 0.0,
+		"but not on a different action of the same skill")
+	_eq(float(EventDirector.begin_action("fishing", "oak_tree").get("xp_percent", 0.0)), 0.0,
+		"and not in a different skill")
+
+	# A stale offer (the slot moved on) is dismissed instead of force-switching the player.
+	SkillManager.stop_action()
+	EventDirector.offer_spawn_for_test("woodcutting", "magic_tree", 5)
+	EventDirector.accept_spawn()
+	_ok(EventDirector.active_spawn.is_empty(), "a stale offer is dismissed, never force-switched")
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
 
 func _test_mastery_stall() -> void:
 	_heading("Mastery stall")

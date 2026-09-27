@@ -36,6 +36,13 @@ var combat_strategies_by_area: Dictionary = {}
 ## Name of the strategy in use, so a reload restores the player's choice instead of the default.
 var combat_strategy_active: String = ""
 
+## Activity-event preference per category ("safe" / "greedy" / "manual"), written by the events
+## row in the skills panel. ABSENCE is a NORMAL case for every save — the combat plan's
+## _migrate_2_to_3 defaulted this key but serialize() had no field for it, so the write-back
+## dropped it and the v3 stamp meant the migration never ran again. Activity plan carry-in rule #1:
+## default it here on absence, unconditionally, instead of trusting the migration to have seeded it.
+var event_policies: Dictionary = {}
+
 ## The preset a new game starts on, and the shape every other preset follows. food_threshold 0.0
 ## means "defer to the auto-eat tier" and special_bias "normal" is the identity, so a player who
 ## never touches a strategy fights exactly as they did before strategies existed.
@@ -298,6 +305,7 @@ func serialize() -> Dictionary:
         "combat_strategies": combat_strategies,
         "combat_strategies_by_area": combat_strategies_by_area,
         "combat_strategy_active": combat_strategy_active,
+        "event_policies": event_policies,
         "unlocked_pets": unlocked_pets, "completion_log": completion_log,
         "slayer_task": slayer_task, "settings": settings, "playtime_seconds": playtime_seconds,
         "last_offline_unix": last_offline_unix, "stats": stats,
@@ -331,6 +339,9 @@ func deserialize(d: Dictionary) -> void:
     var area_bindings: Variant = d.get("combat_strategies_by_area", {})
     combat_strategies_by_area = area_bindings if typeof(area_bindings) == TYPE_DICTIONARY else {}
     combat_strategy_active = str(d.get("combat_strategy_active", ""))
+    # Activity plan carry-in rule #1: default on ABSENCE for every save, including one this build
+    # just wrote — the migration's defaults do not survive serialize(), so absence is expected.
+    event_policies = _sanitize_event_policies(d.get("event_policies", {}))
     shop_upgrades = d.get("shop_upgrades", {})
     unlocked_pets = _to_string_array(d.get("unlocked_pets", []))
     completion_log = _merge_completion_log(d.get("completion_log", {}))
@@ -352,6 +363,19 @@ func _sanitize_item_flags(source: Variant) -> Dictionary:
     for item_id in (source as Dictionary).keys():
         if DataLoader.items.has(str(item_id)):
             out[str(item_id)] = true
+    return out
+
+## Only "safe" / "greedy" / "manual" survive a round trip. Anything else is dropped, which
+## EventDirector.policy_for() reads as "manual" (ask the player) — a hand-edited save must never
+## become an automatic decision the player never made.
+func _sanitize_event_policies(source: Variant) -> Dictionary:
+    var out: Dictionary = {}
+    if typeof(source) != TYPE_DICTIONARY:
+        return out
+    for category in (source as Dictionary).keys():
+        var value: Variant = (source as Dictionary)[category]
+        if typeof(value) == TYPE_STRING and ["safe", "greedy", "manual"].has(str(value)):
+            out[str(category)] = str(value)
     return out
 
 ## A save written by an older build may lack counters added since; start them at zero.

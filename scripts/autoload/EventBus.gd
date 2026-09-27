@@ -34,6 +34,13 @@ signal action_stopped(skill_id: String, action_id: String)
 signal action_tick(skill_id: String, action_id: String, progress: float)
 signal action_completed(skill_id: String, action_id: String, rewards: Dictionary)
 
+# --- Activity events (EventDirector) ---
+## A spawn bonus or a choice card is waiting for the player. Silent runs never emit it.
+signal event_offered(event: Dictionary)
+## An offered card was applied: choice_policy is "safe"/"greedy" — what was ACTUALLY taken,
+## whether by button, stored policy or timeout.
+signal event_resolved(event_id: String, choice_policy: String)
+
 # --- Combat ---
 signal combat_started(context: Dictionary)
 signal combat_ended(context: Dictionary)
