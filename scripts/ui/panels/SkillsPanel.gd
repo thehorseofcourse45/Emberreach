@@ -283,10 +283,42 @@ func _refresh_selected() -> void:
 	var qty_menu := Widgets.option_menu(["Just run", "1", "5", "10", "25", "50", "Maximum now"], func(i): _quantity_index = i, _quantity_index)
 	qty_menu.tooltip_text = "A quantity stops the activity when it is reached. It still uses the one activity slot."
 	qty_row.add_child(qty_menu)
-	var max_now: int = _max_craftable(action)
+	var	max_now: int = _max_craftable(action)
 	qty_row.add_child(UIStyle.colored_label("maximum now: %s" % (UIStyle.fmt_exact(float(max_now)) if max_now > 0 else "none"),
 		UITokens.TEAL if max_now > 0 else UITokens.AMBER, UITokens.FONT_MICRO))
 	_selected_box.add_child(qty_row)
+
+	# Event policy row (activity plan Task 6): one menu per category THIS skill's pool uses,
+	# writing the same PlayerData.event_policies key EventDirector reads at decision time.
+	# Skills with no event pool show nothing — a dead control would imply a feature that isn't
+	# there for them.
+	var event_categories: Array[String] = []
+	for ev in DataLoader.get_skill_events(_skill_id):
+		if typeof(ev) == TYPE_DICTIONARY:
+			var category: String = str((ev as Dictionary).get("category", ""))
+			if category != "" and not event_categories.has(category):
+				event_categories.append(category)
+	if not event_categories.is_empty():
+		const POLICY_VALUES: Array[String] = ["manual", "safe", "greedy"]
+		# A FLOW, not a plain HBox: with a menu per category an HBox's minimum (~450px) breaks the
+		# hard "every screen fits a 420px window" pin. Flowing keeps the plan's one-row shape at
+		# desktop widths and wraps the categories to a second line instead of overflowing.
+		var events_row := HFlowContainer.new()
+		events_row.add_theme_constant_override("h_separation", UITokens.SP_3)
+		events_row.add_theme_constant_override("v_separation", UITokens.SP_2)
+		var events_label := UIStyle.label("Events", true, UITokens.FONT_SMALL)
+		events_label.tooltip_text = "How each event type decides when you are slow or away: ask each time, always play safe, or always push your luck."
+		events_row.add_child(events_label)
+		for category in event_categories:
+			events_row.add_child(UIStyle.label("%s:" % category.capitalize(), true, UITokens.FONT_MICRO))
+			var current_index: int = maxi(0, POLICY_VALUES.find(
+				str(PlayerData.event_policies.get(category, "manual"))))
+			var menu := Widgets.option_menu(["Ask me", "Auto safe", "Auto greedy"],
+				func(i): PlayerData.event_policies[category] = POLICY_VALUES[int(i)], current_index)
+			menu.tooltip_text = "What '%s' events do when you do not answer in time." % category
+			events_row.add_child(menu)
+		_selected_box.add_child(events_row)
+
 
 	var buttons := HBoxContainer.new()
 	buttons.add_theme_constant_override("separation", UITokens.SP_3)

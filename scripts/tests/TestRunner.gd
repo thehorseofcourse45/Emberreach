@@ -72,6 +72,7 @@ func run_all(host: Node) -> void:
 	test_spawn_switch_no_double_consume()
 	test_events_offline_equivalence()
 	test_momentum_caps_and_resets()
+	test_activity_event_ui(host)
 	test_ability_validation_rejects()
 	test_ability_cooldown_respected()
 	test_ability_roll_count()
@@ -449,6 +450,154 @@ func test_momentum_caps_and_resets() -> void:
 	SkillManager.stop_action()
 	PlayerData.momentum = saved_momentum
 	SkillManager.momentum_streak = 0
+
+## Task 6 pin: the three activity-event surfaces must actually BUILD and be wired — a card
+## dialog whose buttons do not resolve, a spawn row that never appears, or a policy menu that
+## writes nothing are all shapes that compile and stay silent. The plan asks for suite +
+## screenshot; these structural pins are the suite half of that.
+## Depth-first, INCLUDING internal children: AcceptDialog's button box is internal, so a flat
+## child scan would report a real button as missing.
+func _collect_controls(node: Node, into: Array) -> void:
+	for child in node.get_children(true):
+		into.append(child)
+		_collect_controls(child, into)
+
+func test_activity_event_ui(host: Node) -> void:
+	_heading("Activity event UI")
+	if host == null or not host.is_inside_tree():
+		_ok(false, "a live shell is available to host the UI")
+		return
+	var saved_policies: Dictionary = PlayerData.event_policies.duplicate()
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+
+	# --- Card dialog: ConfirmDialog.ask_event ---
+	var ev: Dictionary = {
+		"id": "ui_card", "kind": "card", "category": "risk", "title": "The tightrope",
+		"text": "Step wide, or make the dash?",
+		"choices": [
+			{"label": "Step wide", "policy": "safe", "effect": {"xp_percent": 5.0}},
+			{"label": "Make the dash", "policy": "greedy", "effect": {"xp_percent": 15.0}},
+		],
+	}
+	var dlg: ConfirmDialog = ConfirmDialog.ask_event(host, ev)
+	_eq(dlg.get_ok_button().text, "Step wide", "choice 0 rides the OK button")
+	_ok(not dlg.get_cancel_button().is_visible(),
+		"the built-in Cancel is hidden — there is no third option")
+	_eq(dlg.dialog_text, "",
+		"the card composes its own content (AcceptDialog gives custom children the full rect)")
+	var controls: Array = []
+	_collect_controls(dlg, controls)
+	var second_button: Button = null
+	var bar: ProgressBar = null
+	var card_text: Label = null
+	for node in controls:
+		if node is Button and (node as Button).text == "Make the dash":
+			second_button = node
+		elif node is ProgressBar and bar == null:
+			bar = node
+		elif node is Label and str((node as Label).text).contains("Step wide, or make the dash"):
+			card_text = node
+	_ok(second_button != null, "choice 1 is a real button on the dialog")
+	_ok(bar != null, "the timeout bar is built")
+	_ok(card_text != null, "the card's text renders through the composed content")
+
+	# The bar drains with the pending card's own timer (the game clock), not an animation.
+	EventDirector.pending_card = {"id": "ui_card", "kind": "card", "timer": 7.5}
+	if bar != null:
+		dlg.call("_process", 0.0)
+		_approx(bar.value, 50.0, 0.1, "the bar reflects the pending timer (7.5 of 15s)")
+
+	# Pressing choice 0 resolves through EventDirector and releases the pause.
+	EventDirector.pending_card = {"id": "ui_card", "kind": "card", "timer": 15.0}
+	SkillManager.paused = true
+	dlg.get_ok_button().pressed.emit()
+	_ok(EventDirector.pending_card.is_empty(), "the OK press resolves the pending card")
+	_ok(not SkillManager.paused, "and releases the pause")
+	_eq(float(EventDirector._pending_card_effect.get("xp_percent", 0.0)), 5.0,
+		"choice 0's effect is what reached the one-shot slot")
+	_ok(not dlg.visible, "the dialog closes on choice")
+
+	# Dismissing (X / Esc) is not a third choice: it resolves through the TIMEOUT path.
+	var dlg2: ConfirmDialog = ConfirmDialog.ask_event(host, ev)
+	EventDirector.pending_card = {"id": "ui_card", "kind": "card", "timer": 15.0}
+	SkillManager.paused = true
+	dlg2.canceled.emit()
+	_ok(EventDirector.pending_card.is_empty(), "dismiss resolves through the TIMEOUT path")
+	_ok(not SkillManager.paused, "so a closed window can never strand the pause")
+	dlg2.queue_free()
+	EventDirector._pending_card_effect = {}
+
+	# --- Policy row: SkillsPanel ---
+	var skills_panel: Control = load("res://scripts/ui/panels/SkillsPanel.gd").new()
+	host.add_child(skills_panel)
+	skills_panel.call("_select_skill", "woodcutting")
+	var ask_menus: Array = []
+	for node in (skills_panel.get("_selected_box") as VBoxContainer).find_children("", "OptionButton", true, false):
+		if (node as OptionButton).item_count >= 3 and str((node as OptionButton).get_item_text(0)) == "Ask me":
+			ask_menus.append(node)
+	_eq(ask_menus.size(), 2, "woodcutting's two event categories each get a policy menu")
+	var risk_menu: OptionButton = null
+	for menu in ask_menus:
+		if str((menu as OptionButton).tooltip_text).contains("risk"):
+			risk_menu = menu
+	_ok(risk_menu != null, "the risk category's menu is identifiable")
+	if risk_menu != null:
+		PlayerData.event_policies = {}
+		(risk_menu as OptionButton).item_selected.emit(2)
+		_eq(str(PlayerData.event_policies.get("risk", "")), "greedy",
+			"the menu writes PlayerData.event_policies")
+	# A skill with no event pool must show no policy row at all.
+	skills_panel.call("_select_skill", "firemaking")
+	var dead_menus: int = 0
+	for node in (skills_panel.get("_selected_box") as VBoxContainer).find_children("", "OptionButton", true, false):
+		if (node as OptionButton).item_count >= 3 and str((node as OptionButton).get_item_text(0)) == "Ask me":
+			dead_menus += 1
+	_eq(dead_menus, 0, "a skill with no event pool shows no policy row")
+	skills_panel.queue_free()
+	PlayerData.event_policies = saved_policies
+
+	# --- Spawn offer row: ActivityStrip ---
+	var strip: ActivityStrip = ActivityStrip.new()
+	host.add_child(strip)
+	strip.call("refresh")
+	var spawn_row: Control = strip.get("_spawn_row")
+	_ok(spawn_row != null, "the strip builds its spawn row")
+	if spawn_row == null:
+		strip.queue_free()
+		return
+	_ok(not spawn_row.visible, "no offer, no spawn row")
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "a session runs for the offer")
+	# An offer that ARRIVED mid-session (a start_action would have superseded a stale one).
+	EventDirector.active_spawn = {
+		"id": "woodcutting_bonus", "kind": "spawn", "category": "bonus",
+		"skill_id": "woodcutting", "target_action": "oak_tree",
+		"duration_actions": 20, "actions_left": 5,
+		"bonus": {"xp_percent": 50.0, "success_penalty": 10.0},
+	}
+	strip.call("refresh")
+	_ok(spawn_row.visible, "an active offer shows the spawn row")
+	var spawn_label: Label = strip.get("_spawn_label")
+	var oak_name: String = str(DataLoader.get_action("woodcutting", "oak_tree").get("name", "oak_tree"))
+	_ok(spawn_label.text.contains(oak_name), "the row names the bonus target ('%s')" % spawn_label.text)
+	_ok(spawn_label.text.contains("5 left"), "the row counts the remaining charges")
+	# The count drops inside the engine's completion path with no signal — it must be polled.
+	EventDirector.active_spawn["actions_left"] = 3
+	strip.call("_process", 0.0)
+	_ok(spawn_label.text.contains("3 left"), "the count follows the engine, not a cached string")
+	(strip.get("_spawn_switch") as Button).pressed.emit()
+	_eq(SkillManager.active_action_id, "oak_tree", "the strip's switch button hands off to EventDirector")
+	_ok(not EventDirector.active_spawn.is_empty(), "the offer stays live while its bonus runs")
+	SkillManager.stop_action()
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+	strip.call("refresh")
+	_ok(not spawn_row.visible, "the row disappears with the offer")
+	strip.queue_free()
 
 func _test_mastery_stall() -> void:
 	_heading("Mastery stall")
