@@ -43,6 +43,11 @@ var combat_strategy_active: String = ""
 ## default it here on absence, unconditionally, instead of trusting the migration to have seeded it.
 var event_policies: Dictionary = {}
 
+## Per-skill momentum streaks (activity plan Task 5): skill_id -> consecutive successes. Written
+## by SkillManager on every change, reloaded when a session on that skill starts; sanitized on
+## the way in so a hand-edited save cannot smuggle a negative or absurd streak.
+var momentum: Dictionary = {}
+
 ## The preset a new game starts on, and the shape every other preset follows. food_threshold 0.0
 ## means "defer to the auto-eat tier" and special_bias "normal" is the identity, so a player who
 ## never touches a strategy fights exactly as they did before strategies existed.
@@ -161,6 +166,10 @@ func initialize_new_game() -> void:
     last_offline_unix = int(Time.get_unix_time_from_system())
     protected_items.clear()
     favorite_items.clear()
+    # Activity layer: a new journey starts with no auto-decisions the previous character made
+    # (manual everywhere) and no carried-over streaks. Both are plan-owned state, not settings.
+    event_policies.clear()
+    momentum.clear()
 
 # ---------------- Skill state ----------------
 func get_level(skill_id: String) -> int:
@@ -306,6 +315,7 @@ func serialize() -> Dictionary:
         "combat_strategies_by_area": combat_strategies_by_area,
         "combat_strategy_active": combat_strategy_active,
         "event_policies": event_policies,
+        "momentum": momentum,
         "unlocked_pets": unlocked_pets, "completion_log": completion_log,
         "slayer_task": slayer_task, "settings": settings, "playtime_seconds": playtime_seconds,
         "last_offline_unix": last_offline_unix, "stats": stats,
@@ -342,6 +352,7 @@ func deserialize(d: Dictionary) -> void:
     # Activity plan carry-in rule #1: default on ABSENCE for every save, including one this build
     # just wrote — the migration's defaults do not survive serialize(), so absence is expected.
     event_policies = _sanitize_event_policies(d.get("event_policies", {}))
+    momentum = _sanitize_momentum(d.get("momentum", {}))
     shop_upgrades = d.get("shop_upgrades", {})
     unlocked_pets = _to_string_array(d.get("unlocked_pets", []))
     completion_log = _merge_completion_log(d.get("completion_log", {}))
@@ -376,6 +387,21 @@ func _sanitize_event_policies(source: Variant) -> Dictionary:
         var value: Variant = (source as Dictionary)[category]
         if typeof(value) == TYPE_STRING and ["safe", "greedy", "manual"].has(str(value)):
             out[str(category)] = str(value)
+    return out
+
+## Streaks are small non-negative integers keyed by a skill that still exists; anything else is
+## dropped (absent == no streak). The clamp is a sanity bound far above the XP cap of 20, not a
+## balance decision — momentum_xp_multiplier() does its own min() against the cap.
+func _sanitize_momentum(source: Variant) -> Dictionary:
+    var out: Dictionary = {}
+    if typeof(source) != TYPE_DICTIONARY:
+        return out
+    for skill_id in (source as Dictionary).keys():
+        var value: Variant = (source as Dictionary)[skill_id]
+        if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
+            continue
+        if DataLoader.skills.has(str(skill_id)):
+            out[str(skill_id)] = clampi(int(value), 0, 1000)
     return out
 
 ## A save written by an older build may lack counters added since; start them at zero.

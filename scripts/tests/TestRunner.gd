@@ -71,6 +71,7 @@ func run_all(host: Node) -> void:
 	test_card_timeout_applies_policy()
 	test_spawn_switch_no_double_consume()
 	test_events_offline_equivalence()
+	test_momentum_caps_and_resets()
 	test_ability_validation_rejects()
 	test_ability_cooldown_respected()
 	test_ability_roll_count()
@@ -395,6 +396,59 @@ func test_events_offline_equivalence() -> void:
 		"the seeded run actually fired events (%d: %s)" % [fired.size(), ", ".join(fired)])
 	_eq(int(offline.get("actions", 0)), online_actions, "same seed, same action count")
 	_approx(offline_dxp, online_dxp, 0.0001, "same seed, same xp")
+
+## Task 5 pin, plan Review Focus: momentum must reset on failure and never exceed its cap. Pinned
+## at the rule (both branches), at the multiplier it feeds, through BOTH engine funnels, and
+## through the real save path — a streak that dies on reload is the bug this test exists for.
+func test_momentum_caps_and_resets() -> void:
+	_heading("Momentum streak")
+	var saved_momentum: Dictionary = PlayerData.momentum.duplicate()
+	PlayerData.momentum.clear()
+	SkillManager.momentum_streak = 0
+	for i in 30:
+		SkillManager._apply_momentum_for_test(true)
+	_eq(SkillManager.momentum_streak, 20, "streak caps at 20")
+	_eq(SkillManager.momentum_streak, SkillManager.MOMENTUM_CAP_ACTIONS,
+		"the cap is exactly MOMENTUM_CAP_ACTIONS")
+	SkillManager._apply_momentum_for_test(false)
+	_eq(SkillManager.momentum_streak, 0, "failure resets streak")
+
+	# The multiplier the XP grant uses: flat at 0, +0.5% a step, hard-stopped at the cap — even
+	# for a streak set by hand beyond it.
+	SkillManager.momentum_streak = 0
+	_approx(SkillManager.momentum_xp_multiplier(), 1.0, 0.00001, "a cold streak multiplies by 1.0")
+	SkillManager.momentum_streak = 1
+	_approx(SkillManager.momentum_xp_multiplier(), 1.005, 0.00001, "step 1 adds 0.5%")
+	SkillManager.momentum_streak = 999
+	_approx(SkillManager.momentum_xp_multiplier(), 1.1, 0.00001,
+		"beyond the cap adds nothing more")
+
+	# Both engine funnels go through the rule: one REAL success climbs (normal_tree has no
+	# success_chance, so it defaults to 1.0 and the roll cannot fail), one real failure wipes.
+	SkillManager.stop_action()
+	SkillManager.momentum_streak = 0
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "an action starts for the funnels")
+	SkillManager.perform_action()
+	_eq(SkillManager.momentum_streak, 1, "a successful attempt climbs the streak by one")
+	_ok(int(PlayerData.momentum.get("woodcutting", 0)) == 1, "the climb is mirrored to PlayerData")
+	SkillManager._on_action_failure({})
+	_eq(SkillManager.momentum_streak, 0, "a failed attempt wipes the streak")
+	SkillManager.stop_action()
+
+	# Per-skill persistence through the real JSON path, and a session resumes ITS skill's record.
+	PlayerData.momentum = {"woodcutting": 7, "fishing": 3}
+	var snapshot: Variant = JSON.parse_string(JSON.stringify(SaveManager.build_save_data(), "\t"))
+	PlayerData.momentum = {}
+	SaveManager._apply(snapshot if typeof(snapshot) == TYPE_DICTIONARY else {})
+	_eq(int(PlayerData.momentum.get("woodcutting", 0)), 7,
+		"momentum survives a save / load round trip")
+	_eq(int(PlayerData.momentum.get("fishing", 0)), 3,
+		"streaks are tracked per skill, not as one global")
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "the skill restarts after reload")
+	_eq(SkillManager.momentum_streak, 7, "the session resumes its own skill's streak")
+	SkillManager.stop_action()
+	PlayerData.momentum = saved_momentum
+	SkillManager.momentum_streak = 0
 
 func _test_mastery_stall() -> void:
 	_heading("Mastery stall")
