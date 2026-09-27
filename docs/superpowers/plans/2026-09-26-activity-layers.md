@@ -64,7 +64,7 @@
 - Consumes: `DataLoader._load_file()` existing pattern
 - Produces: `DataLoader.events: Dictionary`, `DataLoader.get_skill_events(skill_id: String) -> Array` ([] when absent)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```gdscript
 func test_events_load() -> void:
@@ -73,12 +73,12 @@ func test_events_load() -> void:
 	assert_eq(DataLoader.get_skill_events("thieving"), [], "skills without pools get []")
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `godot --headless --path . -- --tests`
 Expected: FAIL (`get_skill_events` not defined)
 
-- [ ] **Step 3: Write data + loader**
+- [x] **Step 3: Write data + loader**
 
 Spawn shape: `{id, weight, min_level, kind: "spawn", target_action, duration_actions: 20, bonus: {xp_percent: 50.0, success_penalty: 10.0}}`.
 Card shape: `{id, weight, min_level, kind: "card", title, text, choices: [{label: "Play safe", policy: "safe", effect: {xp_percent: 10.0}}, {label: "Push luck", policy: "greedy", effect: {xp_percent: 40.0, fail_chance: 25.0}}]}`.
@@ -91,12 +91,12 @@ func get_skill_events(skill_id: String) -> Array:
 	return pool if typeof(pool) == TYPE_ARRAY else []
 ```
 
-- [ ] **Step 4: Run tests to verify green**
+- [x] **Step 4: Run tests to verify green**
 
 Run: `godot --headless --path . -- --tests` then `--validate`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add data/events.json scripts/autoload/DataLoader.gd scripts/tests/TestRunner.gd
@@ -113,7 +113,7 @@ git commit -m "feat(activities): events.json exemplars + DataLoader getter"
 - Consumes: existing `_err(...)` pattern
 - Produces: `ContentValidator.check_event_record(ev: Dictionary) -> Array`, wired into `--validate` for every pool
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```gdscript
 func test_event_validation_rejects() -> void:
@@ -121,12 +121,12 @@ func test_event_validation_rejects() -> void:
 	assert_false(errs.is_empty(), "unknown kind must error")
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `godot --headless --path . -- --tests`
 Expected: FAIL
 
-- [ ] **Step 3: Implement validator**
+- [x] **Step 3: Implement validator**
 
 `check_event_record` returns error strings: id non-empty; `kind` ∈ spawn/card;
 `weight > 0`; `min_level >= 1` int; referenced `target_action` must exist in that
@@ -134,12 +134,12 @@ skill's `actions`; card needs exactly 2 choices each with `label`, `policy` ∈
 safe/greedy, numeric `effect`; spawn needs `duration_actions >= 1` int and numeric
 `bonus`. Wire per-skill pools into the existing validation loop.
 
-- [ ] **Step 4: Run tests to verify green**
+- [x] **Step 4: Run tests to verify green**
 
 Run: `godot --headless --path . -- --tests` then `--validate`
 Expected: PASS, 0 errors
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/core/ContentValidator.gd scripts/tests/TestRunner.gd
@@ -159,7 +159,7 @@ git commit -m "feat(activities): events.json validation"
 - Consumes: `DataLoader.get_skill_events()`, `SkillManager` active action state, `PlayerData.event_policies`
 - Produces: `EventDirector.roll_post_action(skill_id, action_id, rng: RandomNumberGenerator) -> Dictionary`; `EventDirector.resolve(event_id: String, choice_policy: String) -> Dictionary`; `EventDirector.accept_spawn() -> void`; `EventDirector.active_spawn: Dictionary`; test helper `EventDirector.offer_spawn_for_test(skill_id: String, action_id: String, duration: int) -> void`; `EventBus.event_offered(event: Dictionary)`, `EventBus.event_resolved(event_id: String, choice_policy: String)`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```gdscript
 func test_card_timeout_applies_policy() -> void:
@@ -176,12 +176,12 @@ func test_spawn_switch_no_double_consume() -> void:
 ```
 (ACTION_A/B are two real woodcutting action ids from `data/skills.json` — look them up first.)
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `godot --headless --path . -- --tests`
 Expected: FAIL (`EventDirector` not defined)
 
-- [ ] **Step 3: Implement EventDirector**
+- [x] **Step 3: Implement EventDirector**
 
 `roll_post_action`: pool = `DataLoader.get_skill_events(skill_id)`; empty → return {}.
 Weighted roll on the passed `rng` (one `randf` per completed action — fixed stream cost).
@@ -196,12 +196,12 @@ one-shot modifiers to the next action only (xp_percent bonus or fail_chance), st
 `_pending_card_effect`, consumed by `roll_post_action`'s caller. `SkillManager._post_action`
 gains one trailing line: `EventDirector.roll_post_action(active_skill, active_action_id, _rng)`.
 
-- [ ] **Step 4: Run tests to verify green**
+- [x] **Step 4: Run tests to verify green**
 
 Run: `godot --headless --path . -- --tests` then `--validate`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/autoload/EventDirector.gd project.godot scripts/autoload/SkillManager.gd scripts/autoload/EventBus.gd scripts/tests/TestRunner.gd
@@ -217,7 +217,7 @@ git commit -m "feat(activities): EventDirector with spawns, cards, policies"
 - Consumes: `SkillManager.simulate_elapsed`, `EventDirector.resolve`
 - Produces: proof that seeded offline replay matches online-with-default-policy
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```gdscript
 func test_events_offline_equivalence() -> void:
@@ -243,12 +243,12 @@ func test_events_offline_equivalence() -> void:
 `simulate_elapsed` returns `{"actions": ..., ...}` and `TestSupport.backup_save_files` /
 `restore_snapshot` both exist in `scripts/tests/TestSupport.gd`.)
 
-- [ ] **Step 2: Run test to verify it fails or passes for the wrong reason**
+- [x] **Step 2: Run test to verify it fails or passes for the wrong reason**
 
 Run: `godot --headless --path . -- --tests`
 Expected: FAIL (no events wired yet — counts/XP diverge or the pool is empty)
 
-- [ ] **Step 3: Fix determinism gaps**
+- [x] **Step 3: Fix determinism gaps**
 
 If the counts/XP diverge, the cause is RNG-stream skew (a roll consumed in one path
 but not the other) or wall-clock use. Fix by construction: every event roll consumes
@@ -256,12 +256,12 @@ exactly one `rng.randf()` per completed action in both paths; card timeouts reso
 through `resolve()` with the stored policy, never a separate code path. No new branches
 that touch RNG in only one mode.
 
-- [ ] **Step 4: Run tests to verify green**
+- [x] **Step 4: Run tests to verify green**
 
 Run: `godot --headless --path . -- --tests` then `--validate`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/tests/TestRunner.gd scripts/autoload/EventDirector.gd scripts/autoload/SkillManager.gd
@@ -278,7 +278,7 @@ git commit -m "test(activities): offline event equivalence pinned"
 - Consumes: success/failure outcome already computed in `perform_action`
 - Produces: `SkillManager.momentum_streak: int`, `MOMENTUM_CAP_ACTIONS = 20`, `MOMENTUM_XP_PER_STEP = 0.5` (percent)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```gdscript
 func test_momentum_caps_and_resets() -> void:
@@ -290,12 +290,12 @@ func test_momentum_caps_and_resets() -> void:
 	assert_eq(SkillManager.momentum_streak, 0, "failure resets streak")
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `godot --headless --path . -- --tests`
 Expected: FAIL
 
-- [ ] **Step 3: Implement one global rule**
+- [x] **Step 3: Implement one global rule**
 
 In `perform_action`, on the success path increment `momentum_streak` (cap 20); on the
 `_on_action_failure` path reset to 0. XP grant multiplies by
@@ -304,12 +304,12 @@ In `perform_action`, on the success path increment `momentum_streak` (cap 20); o
 existing pattern — streaks survive reloads. Offline `simulate_elapsed` flows through
 `perform_action`, so parity is automatic (covered by Task 4's test shape).
 
-- [ ] **Step 4: Run tests to verify green**
+- [x] **Step 4: Run tests to verify green**
 
 Run: `godot --headless --path . -- --tests` then `--validate`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/autoload/SkillManager.gd scripts/autoload/PlayerData.gd scripts/tests/TestRunner.gd
@@ -324,7 +324,7 @@ git commit -m "feat(activities): momentum streak XP rule"
 - Modify: `scripts/ui/panels/SkillsPanel.gd` (`_refresh_selected`: policy row)
 - Test: none new (suite + manual screenshot)
 
-- [ ] **Step 1: Build the UI from existing widgets**
+- [x] **Step 1: Build the UI from existing widgets**
 
 `ActivityStrip.refresh`: if `EventDirector.active_spawn` non-empty, show
 "Bonus: <name> (<n> left)" + `UIStyle.mini_button("Switch")` → `EventDirector.accept_spawn()`.
@@ -333,12 +333,12 @@ choices' policies; a 15s timeout calls `EventDirector.resolve(ev, "TIMEOUT")` an
 `SkillsPanel._refresh_selected`: one `HBoxContainer` row — "Events:" + `OptionButton`
 (safe/greedy/manual) per category, writing `PlayerData.event_policies`.
 
-- [ ] **Step 2: Run full verification**
+- [x] **Step 2: Run full verification**
 
 Run: `godot --headless --path . -- --tests`, `--validate`, `--smoke`, `--selftest`
 Expected: all PASS
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add scripts/ui/ActivityStrip.gd scripts/ui/ConfirmDialog.gd scripts/ui/panels/SkillsPanel.gd
