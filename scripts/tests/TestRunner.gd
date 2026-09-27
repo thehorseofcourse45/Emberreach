@@ -67,6 +67,7 @@ func run_all(host: Node) -> void:
 	_test_overview_skill_tabs(host)
 	test_abilities_load()
 	test_events_load()
+	test_event_validation_rejects()
 	test_ability_validation_rejects()
 	test_ability_cooldown_respected()
 	test_ability_roll_count()
@@ -113,6 +114,103 @@ func test_events_load() -> void:
 		_ok(kinds.has("spawn") and kinds.has("card"), "%s includes a spawn and a card" % skill_id)
 	_eq(DataLoader.call("get_skill_events", "thieving"), [], "skills without event pools return an empty array")
 	_eq(DataLoader.call("get_skill_events", "unknown_skill"), [], "unknown skills return an empty array")
+
+## Task 2 pin: an event record the engine cannot act on must be caught by ContentValidator, not
+## discovered as a silent no-op (or a walk-away card) in the live loop. Single-defect fixtures like
+## the ability suite, so neither a deleted check nor a doubled one can pass unnoticed.
+## NOTE: house style is _ok/_one_error — TestRunner has no assert_* helpers (plan snippets translated).
+func test_event_validation_rejects() -> void:
+	_heading("Activity event validation")
+	# The plan's headline case: an unknown kind fails validation instead of reaching the loop.
+	var unknown: Array = ContentValidator.check_event_record({"id": "x", "kind": "mystery"})
+	_ok(not unknown.is_empty(), "an unknown kind must error (%s)" % _failure_text(unknown))
+
+	var spawn_base: Dictionary = {
+		"id": "evt_fixture_spawn", "weight": 1, "min_level": 5, "kind": "spawn",
+		"target_action": "oak_tree", "duration_actions": 20,
+		"bonus": {"xp_percent": 50.0, "success_penalty": 10.0},
+	}
+	var card_base: Dictionary = {
+		"id": "evt_fixture_card", "weight": 1, "min_level": 1, "kind": "card",
+		"title": "A test", "text": "Text",
+		"choices": [
+			{"label": "Play safe", "policy": "safe", "effect": {"xp_percent": 10.0}},
+			{"label": "Push luck", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}},
+		],
+	}
+	# A lambda, not Callable.bind: bound-argument order is a needless thing to depend on here.
+	var check := func(ev: Dictionary) -> Array:
+		return ContentValidator.check_event_record(ev, "woodcutting")
+
+	var spawn_errs: Array = ContentValidator.check_event_record(spawn_base, "woodcutting")
+	_ok(spawn_errs.is_empty(), "a well-formed spawn validates (%s)" % _failure_text(spawn_errs))
+	var card_errs: Array = ContentValidator.check_event_record(card_base, "woodcutting")
+	_ok(card_errs.is_empty(), "a well-formed card validates (%s)" % _failure_text(card_errs))
+	_one_error(check, spawn_base, {"id": ""}, "a spawn with no id")
+	_one_error(check, spawn_base, {"kind": "mystery"}, "a kind outside spawn/card")
+	_one_error(check, spawn_base, {"weight": 0}, "a weight of 0")
+	_one_error(check, spawn_base, {"weight": null}, "a missing weight")
+	_one_error(check, spawn_base, {"min_level": 0}, "a min_level below 1")
+	_one_error(check, spawn_base, {"min_level": 1.5}, "a non-integer min_level")
+	_one_error(check, spawn_base, {"min_level": null}, "a missing min_level")
+	_one_error(check, spawn_base, {"target_action": null}, "a spawn with no target_action")
+	_one_error(check, spawn_base, {"target_action": "no_such_tree"},
+		"a target_action outside the skill's actions", "missing_reference")
+	_one_error(check, spawn_base, {"duration_actions": 0}, "duration_actions below 1")
+	_one_error(check, spawn_base, {"duration_actions": 2.5}, "a non-integer duration_actions")
+	_one_error(check, spawn_base, {"bonus": "lots"}, "a non-object bonus")
+	_one_error(check, spawn_base, {"bonus": {"nope": 1.0}}, "an unknown bonus key")
+	_one_error(check, spawn_base, {"bonus": {"xp_percent": "lots"}}, "a non-numeric bonus value")
+	_one_error(check, card_base, {"choices": "none"}, "a card whose choices are not an array")
+	_one_error(check, card_base, {"choices": [card_base["choices"][0]]},
+		"a card with fewer than two choices")
+	_one_error(check, card_base, {"choices": [
+		card_base["choices"][0], card_base["choices"][1], card_base["choices"][0]]},
+		"a card with more than two choices")
+	_one_error(check, card_base, {"choices": [
+		{"label": "Play safe", "policy": "safe", "effect": {}},
+		{"label": "Push luck", "policy": "bold", "effect": {}}]},
+		"a choice policy outside safe/greedy")
+	_one_error(check, card_base, {"choices": [
+		{"label": "", "policy": "safe", "effect": {}}, card_base["choices"][1]]},
+		"a choice with no label")
+	_one_error(check, card_base, {"choices": [
+		card_base["choices"][0], {"label": "Push luck", "policy": "greedy", "effect": "lots"}]},
+		"a non-object choice effect")
+	_one_error(check, card_base, {"choices": [
+		card_base["choices"][0], {"label": "Push luck", "policy": "greedy", "effect": {"nope": 1.0}}]},
+		"an unknown choice effect key")
+
+	var shipped: Array = []
+	for skill_id in DataLoader.events.keys():
+		var skills_pool: Variant = DataLoader.events[skill_id]
+		if typeof(skills_pool) != TYPE_ARRAY:
+			continue
+		for ev in (skills_pool as Array):
+			if typeof(ev) == TYPE_DICTIONARY:
+				shipped.append_array(ContentValidator.check_event_record(ev, str(skill_id)))
+	_ok(shipped.is_empty(), "every shipped event validates (%s)" % _failure_text(shipped))
+
+	# The wiring, not just the free function: --validate must walk the shipped pools itself. The
+	# probes are appended and popped so the pool is byte-identical afterwards.
+	var pool: Array = DataLoader.events.get("woodcutting", [])
+	var probe_size: int = pool.size()
+	pool.append({"id": "wired_probe", "kind": "mystery"})
+	pool.append((pool[0] as Dictionary).duplicate(true))
+	var saw_broken: bool = false
+	var saw_duplicate: bool = false
+	for issue in ContentValidator.new().validate_all():
+		var severity: String = str((issue as Dictionary).get("severity", ""))
+		var code: String = str((issue as Dictionary).get("code", ""))
+		var message: String = str((issue as Dictionary).get("message", ""))
+		if severity == "error" and message.contains("wired_probe"):
+			saw_broken = true
+		if severity == "error" and code == "duplicate_id" and message.contains("woodcutting_bonus"):
+			saw_duplicate = true
+	while pool.size() > probe_size:
+		pool.pop_back()
+	_ok(saw_broken, "validate_all reports a broken event record, not just the free function")
+	_ok(saw_duplicate, "validate_all rejects a duplicate event id inside one pool")
 
 func _test_mastery_stall() -> void:
 	_heading("Mastery stall")

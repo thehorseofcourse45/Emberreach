@@ -28,6 +28,13 @@ const KNOWN_ABILITY_EFFECTS: Array[String] = ["max_hit_percent", "interval_perce
 	"crit_chance_percent", "apply_status", "heal_on_hit_fraction"]
 const VALID_ABILITY_STYLES: Array[String] = ["melee", "ranged", "magic", "any"]
 const VALID_SPECIAL_BIAS: Array[String] = ["eager", "normal", "hold"]
+## The activity-events vocabulary (data/events.json). Like KNOWN_ABILITY_EFFECTS, the effect keys
+## are a CLOSED set: EventDirector consumes exactly these, so a key outside the set would ship as a
+## validated-but-inert event — the same silent no-op the ability vocabulary exists to prevent.
+const VALID_EVENT_KINDS: Array[String] = ["spawn", "card"]
+const VALID_EVENT_POLICIES: Array[String] = ["safe", "greedy"]
+const KNOWN_EVENT_EFFECTS: Array[String] = ["xp_percent", "fail_chance"]
+const KNOWN_EVENT_BONUS_EFFECTS: Array[String] = ["xp_percent", "success_penalty"]
 const EQUIPMENT_SLOT_NAMES: Dictionary = {
 	0: "helmet", 1: "platebody", 2: "platelegs", 3: "boots", 4: "gloves", 5: "cape",
 	6: "amulet", 7: "ring", 8: "weapon", 9: "shield", 10: "quiver", 11: "summon_1",
@@ -44,6 +51,7 @@ func validate_all() -> Array:
 	_check_recipe_graph()
 	_check_monsters()
 	_check_abilities()
+	_check_events()
 	_check_regions()
 	_check_shop()
 	_check_side_systems()
@@ -482,6 +490,124 @@ func _check_abilities() -> void:
 			continue
 		for failure in check_ability_record(ab):
 			_err(str(failure["code"]), str(failure["message"]))
+
+# ---------------- activity events ----------------
+
+## Validates one events.json record. Returns {code, message} failures (empty == valid), the same
+## shape as check_ability_record, so callers never have to sniff message text.
+## `skill_id` is optional: the --validate wiring and the tests pass the pool's skill so a spawn's
+## target_action can be resolved against that skill's REAL action list; without it every other rule
+## still runs and only the reference check is skipped.
+static func check_event_record(ev: Dictionary, skill_id: String = "") -> Array:
+	var errs: Array = []
+	var id: String = str(ev.get("id", "")).strip_edges()
+	var label: String = "event '%s'" % (id if id != "" else "?")
+	if id == "":
+		_fail(errs, "invalid_record", "an event has no id")
+	var kind: String = str(ev.get("kind", ""))
+	if not VALID_EVENT_KINDS.has(kind):
+		_fail(errs, "invalid_record", "%s has kind '%s' (expected spawn or card)" % [label, kind])
+	# Absent is reported as absent: a missing weight is an authoring gap, not "weight 0.0".
+	var weight: Variant = ev.get("weight", null)
+	if weight == null:
+		_fail(errs, "invalid_record", "%s has no weight" % label)
+	elif not _is_finite_number(weight) or float(weight) <= 0.0:
+		_fail(errs, "invalid_record", "%s weight %s must be > 0" % [label, str(weight)])
+	var min_level: Variant = ev.get("min_level", null)
+	if min_level == null:
+		_fail(errs, "invalid_record", "%s has no min_level" % label)
+	elif not _is_finite_number(min_level) or float(min_level) != float(int(min_level)) or int(min_level) < 1:
+		_fail(errs, "invalid_record", "%s min_level %s must be an integer >= 1" % [label, str(min_level)])
+	# Kind-specific rules only run for their own kind, so an unknown kind reports once and a
+	# single-defect fixture can never trip a second branch.
+	if kind == "spawn":
+		_check_spawn_fields(errs, label, ev, skill_id)
+	elif kind == "card":
+		_check_card_fields(errs, label, ev)
+	return errs
+
+## Spawn-only fields. A spawn without a resolvable target_action is a bonus that can never fire.
+static func _check_spawn_fields(errs: Array, label: String, ev: Dictionary, skill_id: String) -> void:
+	var duration: Variant = ev.get("duration_actions", null)
+	if duration == null:
+		_fail(errs, "invalid_record", "%s has no duration_actions" % label)
+	elif not _is_finite_number(duration) or float(duration) != float(int(duration)) or int(duration) < 1:
+		_fail(errs, "invalid_record", "%s duration_actions %s must be an integer >= 1" % [label, str(duration)])
+	var bonus: Variant = ev.get("bonus", null)
+	if typeof(bonus) != TYPE_DICTIONARY:
+		_fail(errs, "invalid_record", "%s bonus is not an object" % label)
+	else:
+		for key in (bonus as Dictionary).keys():
+			var k: String = str(key)
+			if not KNOWN_EVENT_BONUS_EFFECTS.has(k):
+				_fail(errs, "invalid_record", "%s bonus has unknown key '%s'" % [label, k])
+			elif not _is_finite_number((bonus as Dictionary)[key]):
+				_fail(errs, "invalid_record", "%s bonus '%s' is not a number" % [label, k])
+	var target: Variant = ev.get("target_action", null)
+	if target == null or str(target).strip_edges() == "":
+		_fail(errs, "invalid_record", "%s has no target_action" % label)
+	elif skill_id != "" and DataLoader.get_action(skill_id, str(target)).is_empty():
+		_fail(errs, "missing_reference", "%s target_action '%s' is not a %s action" % [label, str(target), skill_id])
+
+## Card-only fields. Exactly two choices is the shape EventDirector's timeout path and the
+## dialog's two buttons are built on; a third choice has nowhere to be clicked.
+static func _check_card_fields(errs: Array, label: String, ev: Dictionary) -> void:
+	var choices: Variant = ev.get("choices", null)
+	if typeof(choices) != TYPE_ARRAY:
+		_fail(errs, "invalid_record", "%s choices is not an array" % label)
+		return
+	if (choices as Array).size() != 2:
+		_fail(errs, "invalid_record", "%s needs exactly 2 choices (found %d)" % [label, (choices as Array).size()])
+	# Do not return: a wrong-count card whose individual choices are also broken should report both.
+	for i in (choices as Array).size():
+		var choice: Variant = (choices as Array)[i]
+		if typeof(choice) != TYPE_DICTIONARY:
+			_fail(errs, "invalid_record", "%s choice %d is not an object" % [label, i])
+			continue
+		var row: Dictionary = choice
+		var text: Variant = row.get("label", null)
+		if typeof(text) != TYPE_STRING or str(text).strip_edges() == "":
+			_fail(errs, "invalid_record", "%s choice %d has no label" % [label, i])
+		var policy: String = str(row.get("policy", ""))
+		if not VALID_EVENT_POLICIES.has(policy):
+			_fail(errs, "invalid_record", "%s choice %d has policy '%s' (expected safe or greedy)" % [label, i, policy])
+		var effect: Variant = row.get("effect", null)
+		if typeof(effect) != TYPE_DICTIONARY:
+			_fail(errs, "invalid_record", "%s choice %d effect is not an object" % [label, i])
+		else:
+			for key in (effect as Dictionary).keys():
+				var k: String = str(key)
+				if not KNOWN_EVENT_EFFECTS.has(k):
+					_fail(errs, "invalid_record", "%s choice %d effect has unknown key '%s'" % [label, i, k])
+				elif not _is_finite_number((effect as Dictionary)[key]):
+					_fail(errs, "invalid_record", "%s choice %d effect '%s' is not a number" % [label, i, k])
+
+## Walks every per-skill pool in data/events.json into the same report --validate prints for the
+## rest of the content. Event ids are unique WITHIN a pool (like action ids within a skill):
+## EventDirector resolves a card by id while it is open, so a second copy would answer for the first.
+func _check_events() -> void:
+	for skill_key in DataLoader.events.keys():
+		var skill_id: String = str(skill_key)
+		var pool: Variant = DataLoader.events[skill_key]
+		if typeof(pool) != TYPE_ARRAY:
+			_err("invalid_record", "event pool '%s' is not an array" % skill_id)
+			continue
+		var skill_known: bool = _has_skill(skill_id)
+		if not skill_known:
+			_err("missing_reference", "event pool '%s' is not a known skill" % skill_id)
+		var seen: Dictionary = {}
+		for ev in (pool as Array):
+			if typeof(ev) != TYPE_DICTIONARY:
+				_err("invalid_record", "event pool '%s' has a non-object event" % skill_id)
+				continue
+			var ev_id: String = str((ev as Dictionary).get("id", ""))
+			if seen.has(ev_id):
+				_err("duplicate_id", "event pool '%s' declares event id '%s' twice" % [skill_id, ev_id])
+			seen[ev_id] = true
+			# Pass the skill id only when it resolves, so an unknown pool key is reported once, at
+			# the pool, instead of once more for every spawn's target_action.
+			for failure in check_event_record(ev, skill_id if skill_known else ""):
+				_err(str(failure["code"]), str(failure["message"]))
 
 # ---------------- regions ----------------
 
