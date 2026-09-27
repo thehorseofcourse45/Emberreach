@@ -22,6 +22,7 @@ var pets: Dictionary = {}
 var slayer_tasks: Dictionary = {}
 var special_attacks: Dictionary = {}
 var abilities: Dictionary = {}          # ability_id -> {id, name, description, style, req_levels, unlock, effect, status_duration, trigger_chance, cooldown_attacks}
+var events: Dictionary = {}
 var township_buildings: Dictionary = {}
 var cartography_hexes: Dictionary = {}
 var archaeology_sites: Dictionary = {}
@@ -56,6 +57,7 @@ func _load_all() -> void:
     slayer_tasks = _load_file("slayer_tasks.json")
     special_attacks = _load_file("special_attacks.json")
     abilities = _load_file("abilities.json")
+    events = _load_file("events.json")
     township_buildings = _load_file("shop_township.json")
     cartography_hexes = _load_file("cartography_hexes.json")
     archaeology_sites = _load_file("archaeology_sites.json")
@@ -126,6 +128,10 @@ func get_special_attack(sa_id: String) -> Dictionary:
 
 func get_ability(ability_id: String) -> Dictionary:
     return abilities.get(ability_id, {})
+
+func get_skill_events(skill_id: String) -> Array:
+    var pool: Variant = events.get(skill_id, [])
+    return pool if typeof(pool) == TYPE_ARRAY else []
 
 func get_skill_ids() -> Array[String]:
     return _skill_order.duplicate()

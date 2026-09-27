@@ -66,6 +66,7 @@ func run_all(host: Node) -> void:
 	_test_favorites()
 	_test_overview_skill_tabs(host)
 	test_abilities_load()
+	test_events_load()
 	test_ability_validation_rejects()
 	test_ability_cooldown_respected()
 	test_ability_roll_count()
@@ -98,6 +99,21 @@ func run_all(host: Node) -> void:
 ## The mastery stall is the only acquisition path for the 58 skillcapes and the 2 completion
 ## capes, so its gate has to be real: ungated it is a gold-only shortcut to a 99 reward, and
 ## mispriced it is a currency printer.
+func test_events_load() -> void:
+	_heading("Activity event content")
+	_ok(DataLoader.has_method("get_skill_events"), "event pool lookup exists")
+	if not DataLoader.has_method("get_skill_events"):
+		return
+	for skill_id in ["woodcutting", "fishing", "mining", "cooking"]:
+		var pool: Array = DataLoader.call("get_skill_events", skill_id)
+		_ok(pool.size() >= 2 and pool.size() <= 3, "%s has exemplar events" % skill_id)
+		var kinds: Array = []
+		for event in pool:
+			kinds.append(str(event.get("kind", "")))
+		_ok(kinds.has("spawn") and kinds.has("card"), "%s includes a spawn and a card" % skill_id)
+	_eq(DataLoader.call("get_skill_events", "thieving"), [], "skills without event pools return an empty array")
+	_eq(DataLoader.call("get_skill_events", "unknown_skill"), [], "unknown skills return an empty array")
+
 func _test_mastery_stall() -> void:
 	_heading("Mastery stall")
 	var offers: Array = ShopManager.stall_offers()
