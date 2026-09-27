@@ -61,6 +61,12 @@ var _rng := RandomNumberGenerator.new()
 func _ready() -> void:
 	_rng.randomize()
 
+## Pin the skill/event stream from tests. Task 4's offline-equivalence check needs two runs of
+## the SAME seed through different drivers (tick loop vs simulate_elapsed), so the seed must be
+## settable instead of only randomizable.
+func seed_rng(seed_value: int) -> void:
+	_rng.seed = seed_value
+
 # =========================================================================
 #  Control
 # =========================================================================

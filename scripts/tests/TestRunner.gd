@@ -70,6 +70,7 @@ func run_all(host: Node) -> void:
 	test_event_validation_rejects()
 	test_card_timeout_applies_policy()
 	test_spawn_switch_no_double_consume()
+	test_events_offline_equivalence()
 	test_ability_validation_rejects()
 	test_ability_cooldown_respected()
 	test_ability_roll_count()
@@ -339,6 +340,61 @@ func test_spawn_switch_no_double_consume() -> void:
 	EventDirector.pending_card = {}
 	EventDirector._pending_card_effect = {}
 	SkillManager.paused = false
+
+## Task 4 pin, plan Review Focus: offline resolution must equal online resolution for the same
+## seed. The SAME 600 seconds run twice from identical fresh state — once as real online ticks,
+## once as a silent simulate_elapsed replay — with an immediately-resolving stored policy, and
+## both must land on identical action counts and identical XP. The pause path's equality (default
+## manual policy, cards timing out) is pinned separately by _test_online_offline_consistency;
+## this proves the stored-policy path AND that event rolls sit on the SAME stream in both
+## drivers. Not vacuous: it asserts the pool exists and that events actually fired mid-run.
+func test_events_offline_equivalence() -> void:
+	_heading("Offline event equivalence")
+	var gather: Dictionary = _find_gather_action()
+	if gather.is_empty():
+		_ok(false, "found a gathering action")
+		return
+	var skill_id: String = str(gather["skill_id"])
+	var action_id: String = str(gather["action_id"])
+	_ok(not DataLoader.get_skill_events(skill_id).is_empty(),
+		"%s draws from an event pool" % skill_id)
+	var fired: Array = []
+	var on_offered := func(event: Dictionary) -> void: fired.append(str(event.get("id", "")))
+	var on_resolved := func(event_id: String, _policy: String) -> void: fired.append(str(event_id))
+	EventBus.event_offered.connect(on_offered)
+	EventBus.event_resolved.connect(on_resolved)
+
+	# Run A — online: the stored policy resolves every card the instant it fires (no pause).
+	GameManager.start_new_game("standard")
+	PlayerData.event_policies = {"risk": "safe", "bonus": "safe"}
+	_deterministic(true)
+	SkillManager.seed_rng(99)
+	_ok(SkillManager.start_action(skill_id, action_id), "the online run starts its action")
+	var xp0: float = PlayerData.get_xp(skill_id)
+	for _i in range(600):
+		SkillManager.tick(1.0, false)
+	var online_actions: int = SkillManager.total_action_count
+	var online_dxp: float = PlayerData.get_xp(skill_id) - xp0
+
+	# Run B — offline: identical fresh state, identical seed, silent replay of the same 600s.
+	GameManager.start_new_game("standard")
+	PlayerData.event_policies = {"risk": "safe", "bonus": "safe"}
+	_deterministic(true)
+	SkillManager.seed_rng(99)
+	_ok(SkillManager.start_action(skill_id, action_id), "the offline run starts its action")
+	var xp1: float = PlayerData.get_xp(skill_id)
+	SimulationMode.begin()
+	var offline: Dictionary = SkillManager.simulate_elapsed(600.0)
+	SimulationMode.end()
+	var offline_dxp: float = PlayerData.get_xp(skill_id) - xp1
+	SkillManager.stop_action()
+	EventBus.event_offered.disconnect(on_offered)
+	EventBus.event_resolved.disconnect(on_resolved)
+
+	_ok(fired.size() >= 1,
+		"the seeded run actually fired events (%d: %s)" % [fired.size(), ", ".join(fired)])
+	_eq(int(offline.get("actions", 0)), online_actions, "same seed, same action count")
+	_approx(offline_dxp, online_dxp, 0.0001, "same seed, same xp")
 
 func _test_mastery_stall() -> void:
 	_heading("Mastery stall")
