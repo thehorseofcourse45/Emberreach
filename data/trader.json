@@ -19,7 +19,7 @@
   "trader_bars": {
     "id": "trader_bars",
     "name": "Smelted Crate",
-    "description": "Pig bars, still warm from the mould.",
+    "description": "Fresh bars, still warm from the mould.",
     "cost": { "metal": 80, "goods": 10 },
     "grant_items": { "bar_box": 1 },
     "requires_building": "township_building_smelter"

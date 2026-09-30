@@ -7,7 +7,7 @@ var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
     _rng.randomize()
-    EventBus.monster_killed.connect(_on_kill)
+    # CombatManager advances tasks directly, including silent offline kills.
 
 func get_task() -> Dictionary:
     return PlayerData.slayer_task

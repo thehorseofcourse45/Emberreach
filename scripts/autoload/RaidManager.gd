@@ -28,14 +28,22 @@ func start_raid(diff: String = "normal") -> bool:
         return false
     difficulty = diff
     active = true
-    wave = 0
     coins_this_raid = 0.0
     pending_choices = []
+    # Wave Skip: start past the early waves instead of grinding them. The wave COUNTER is the
+    # reward curve (see _on_combat_ended), so a skipped wave costs the coins it would have paid
+    # and gains nothing for free.
+    wave = maxi(0, int(ModifierManager.get_modifier(ModifierKeys.RAID_WAVE_SKIP)))
     _start_wave()
     return true
 
 func _wave_size(w: int) -> int:
     return int(floor(2.0 + float(w) / 4.0))
+
+## Enemy hitpoint multiplier for this difficulty. Read by CombatManager at spawn, so hard mode
+## really is a tougher fight instead of only a prettier label in the panel.
+func enemy_hp_mult() -> float:
+    return maxf(0.1, float(difficulty_cfg().get("hp_mult", 1.0)))
 
 func _start_wave() -> void:
     wave += 1

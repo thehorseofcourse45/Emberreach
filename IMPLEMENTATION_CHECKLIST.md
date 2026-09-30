@@ -15,17 +15,21 @@ Run commands (Godot 4.7.2 binary used during development):
 /c/Godot/Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --offline 3600  # offline probe
 /c/Godot/Godot_v4.7.2-stable_win64_console.exe --headless --path . -- --assetreport   # asset coverage
 /c/Godot/Godot_v4.7.2-stable_win64_console.exe --path . -- --shot res://shots     # REAL window PNGs (no --headless)
+python tools/shot_gate.py [--update]     # screenshot-diff gate vs tools/shot_baseline (display required)
 ```
 
-`--shot` is the one mode that must **not** be run headless: it opens the real window, renders the
-6 busiest screens at 420 / 900 / 1440 px and writes PNGs to `shots/`. It exists because every defect
-below was invisible to the headless suite.
+`--shot` is the one mode that must **not** be run headless: it opens the real window, renders
+every screen at 420 / 900 / 1440 px and writes PNGs to `shots/`. It exists because every defect
+below was invisible to the headless suite. `tools/shot_gate.py` runs the same sweep into
+`.shot_gate/run/` and diffs it against the committed baselines — a layout regression exits 1
+with a magenta heatmap instead of waiting for someone to eyeball the shots.
 
 ---
 
 ## Stage 1 — Audit and protect
 
-- [x] Audited framework (Godot 4.7.2, GDScript, JSON content, no package manager, no git repo),
+- [x] Audited framework (Godot 4.7.2, GDScript, JSON content, no package manager, no git repo at
+      the time — the project is a git repository now),
       entry point (`scenes/main.tscn` -> `scripts/ui/MainUI.gd`), 29 autoload singletons,
       4,771 lines of GDScript, 293 KB of JSON, 379 item icons / 29 monster sprites.
 - [x] Identified the architecture split (content / state / simulation / persistence / UI) and
@@ -82,9 +86,13 @@ below was invisible to the headless suite.
 - [x] Original names + flavour text for all 29 skills, 12 regions, 11 dungeons and 29 enemies.
 - [x] Original names for the visible equipment/resource spine (tiered gear, ores, bars,
       logs, fish, foods, potions).
-- [~] Long-tail item display names (the remaining ~250 items). IDs are stable, so this is a
-      rename-only pass with no save or icon impact. The three Melvor-specific offenders
-      (`golbin*`, `alt_magic`, `Melvor` in text) are done.
+- [x] Long-tail item display names — completed by `tools/long_tail_rename.py` (idempotent,
+      re-runnable): verbatim Melvor items (Chapeau Noir, Knight's Defender, the five slayer-area
+      keys, Ring of Power, Cape of Completion, township boxes, Dragon tool trio), skill action
+      names still using pre-rename words (trees, herbs, fish, staves, d'hide), the 15 base-game
+      constellations, seven prayers, the pet roster, the familiar roster, the placeholder
+      "Obstacle N-M" names and the verbatim shop upgrades. IDs stable, saves and icons untouched;
+      `--validate` 0 errors, `--tests` 310/310, `--selftest` 22/22 after the pass.
 
 ## Stage 4 — Balance, polish, tests
 
@@ -105,7 +113,8 @@ below was invisible to the headless suite.
 - [x] Reconciled `ContentValidator` with the balance report: the validator had treated *being an
       ingredient* as a way to obtain an item, which hid real orphans. Removed that rule, modelled
       the familiar-mark source it was missing, and closed every gap it then exposed (see below).
-      `--validate` is now honestly clean: **0 errors, 0 warnings, 9 notes**.
+      `--validate` is now honestly clean: **0 errors, 0 warnings** (23 notes, all
+      `system_driven_action` — actions whose system owns the reward, e.g. farming/agility).
 - [x] Narrow/wide layout sweep on real hardware. `--shot` renders the real window at each
       breakpoint and writes PNGs for review. Doing this found five defects the headless suite
       could not see (see "Real-window pass" below); the suite now asserts the assembled shell
@@ -151,7 +160,7 @@ spirit but not to the letter of the brief.
 | 3 | Cohesive game loop | Done — gather → refine → craft → loadout → fight → unlock → settlement; goals show requirements, missing materials, prerequisites, sources and a route |
 | 4 | Visual / interaction overhaul | Done, after the real-window pass — dark-fantasy tokens, shell, drawer, stacking, wrapping rows, focus rings, `reduced_motion`, no icon-only controls, scroll preservation |
 | 5 | Overview and goals | Done — activity, skills, readiness, goals, unlocks, events, suggestions; a sub-tab per skill with a compact level/mastery/estimate card; pinning with full dependency chains and circular-dependency detection |
-| 6 | Skills and mastery | Done — 29 skills, level vs mastery separated, estimates show XP/action, XP/h, output/h, time to next level, supply exhaustion and every modifier with its source |
+| 6 | Skills and mastery | Done — 34 skills, level vs mastery separated, estimates show XP/action, XP/h, output/h, time to next level, supply exhaustion and every modifier with its source |
 | 7 | Items, inventory, economy | Done — search, filters, sorting, favourites, protection, quantity select, bulk sell with preview, transaction guards. Favourites and protection are separate features with separate jobs |
 | 8 | Crafting and production | Done — one / chosen quantity / maximum, repeat until stopped, atomic consumption, explained stop conditions, goal-aware |
 | 9 | Combat overhaul | Done — automated, style/loadout/food/rites preparation, win-chance from the real model, saved loadouts, retreat, stops on defeat, never destroys rare gear |
@@ -241,6 +250,37 @@ Found by making `--validate` stop trusting "is an ingredient" as a source, then 
       assembles the shell the screen tests share.
       `--tests` is now **307 checks, 0 failed**; `--selftest` **22 passed**; `--shot` **46 PNGs**, 0
       script errors.
+
+## Audio, mid-level content, thin-skill depth, and the visual gate — 2026-09-27
+
+- [x] **Enrage bug:** both combat engines applied the enrage damage curve to *every* monster
+      instead of only monsters with the `enrage` passive (control fight == enraged fight).
+      Gated on `passives.has("enrage")` in `CombatManager._monster_attack()` and the simulator.
+- [x] **Audio system:** `data/audio.json` (16 SFX recipes, 2 music tracks, 18 EventBus event
+      mappings with throttles) + `AudioManager` autoload synthesising `AudioStreamWAV` PCM at
+      load, Music/SFX buses, Settings SOUND section (volume sliders, debounced save, Test
+      sound). `_check_audio` in the validator, 16 checks in `--tests`. Cartography hexes with
+      `"poi": null` normalised at load (they raised a runtime script error on survey — 16/25 hexes).
+- [x] **Mid-level content:** Greyharrow Quarry (area, L43–60, dust hazard) + Greyharrow Deep
+      (dungeon, L43–60, Slayer 40) + 4 monsters L45–58 — closes the L43–L59 hole between the
+      Mossbound Colossus (L42) and Sunderhold Sentry (L60), with a strictly rising HP curve.
+      Slag Golem is the first monster carrying the enrage passive. Hard slayer pool 2 → 5,
+      elite 2 → 3. Six art assets generated in the house style and imported (manifest 749/750;
+      the only missing asset is the pre-existing `fonts/ui.ttf`).
+- [x] **Thin-skill depth:** Excavation 7 → 11 dig sites (paired `archaeology_sites.json`
+      entries, because `on_excavate(action_id)` keys by action id), Surveying 6 → 9,
+      Wayfaring 7 → 10, Blight 8 → 13. Umbral Essence — produced by every Blight action and
+      consumed by nothing — now feeds the Umbral Binding Shard refine instead of rune essence,
+      closing the corruption → summoning loop; it drops off the balance dead-output list.
+- [x] **Screenshot-diff gate:** `tools/shot_gate.py` runs `--shot` into `.shot_gate/run/` and
+      compares all 49 PNGs against `tools/shot_baseline/` per-pixel (channel tolerance 8,
+      0.25 % changed-pixel budget; measured run-to-run drift on identical code ≤ 0.06 % on the
+      8 screens with live digits, the other 41 byte-identical). Writes heatmaps to
+      `.shot_gate/diff/`, exits 1 on changed/missing/stale shots, `--update` re-baselines.
+      Failure path proven by perturbing a baseline (exit 1, heatmap written), then restored.
+- [x] Verified: `--tests` **396/396**, `--validate` 0 errors / 0 warnings, `--selftest` 22/22,
+      `--balance` clean (no XP inversions, no enemy-curve dips), `--smoke` ok (41 monsters,
+      16 dungeons), screenshot gate **PASS** (49 compared).
 
 ## Stage 5 — Deferred / known limitations
 

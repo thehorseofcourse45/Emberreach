@@ -1,4 +1,9 @@
 relative_path,category,id,size,priority,name,status
+icons/navigation/action_queue.png,icons,action_queue,32x32,P0,Action Queue,delivered
+icons/navigation/combat_simulator.png,icons,combat_simulator,32x32,P0,Simulator,delivered
+icons/navigation/prayers.png,icons,prayers,32x32,P0,Prayers,delivered
+icons/navigation/raids.png,icons,raids,32x32,P0,Raid,delivered
+icons/navigation/settings.png,icons,settings,32x32,P0,Settings,delivered
 icons/items/normal_log.png,icons,normal_log,32x32,P0,Emberpine Log,delivered
 icons/items/oak_log.png,icons,oak_log,32x32,P0,Ironbark Log,delivered
 icons/items/willow_log.png,icons,willow_log,32x32,P0,Silverleaf Log,delivered
@@ -8,6 +13,8 @@ icons/items/mahogany_log.png,icons,mahogany_log,32x32,P0,Blackgrain Log,delivere
 icons/items/yew_log.png,icons,yew_log,32x32,P0,Gravewood Log,delivered
 icons/items/magic_log.png,icons,magic_log,32x32,P0,Witchpine Log,delivered
 icons/items/redwood_log.png,icons,redwood_log,32x32,P0,Bloodwood Log,delivered
+icons/items/cinderbark_log.png,icons,cinderbark_log,32x32,P0,Cinderbark Log,delivered
+icons/items/voidwood_log.png,icons,voidwood_log,32x32,P0,Voidwood Log,delivered
 icons/items/bird_nest.png,icons,bird_nest,32x32,P0,Bird Nest,delivered
 icons/items/raw_shrimp.png,icons,raw_shrimp,32x32,P0,Raw Marsh Shrimp,delivered
 icons/items/raw_sardine.png,icons,raw_sardine,32x32,P0,Raw Silverfin,delivered
@@ -21,6 +28,8 @@ icons/items/raw_shark.png,icons,raw_shark,32x32,P0,Raw Gale Shark,delivered
 icons/items/raw_cave_fish.png,icons,raw_cave_fish,32x32,P0,Raw Cavern Char,delivered
 icons/items/raw_manta_ray.png,icons,raw_manta_ray,32x32,P0,Raw Void Ray,delivered
 icons/items/raw_whale.png,icons,raw_whale,32x32,P0,Raw Leviathan,delivered
+icons/items/raw_dreadfin.png,icons,raw_dreadfin,32x32,P0,Raw Dreadfin,delivered
+icons/items/raw_abyssal_eel.png,icons,raw_abyssal_eel,32x32,P0,Raw Abyssal Eel,delivered
 icons/items/shrimp.png,icons,shrimp,32x32,P0,Marsh Shrimp,delivered
 icons/items/sardine.png,icons,sardine,32x32,P0,Silverfin,delivered
 icons/items/herring.png,icons,herring,32x32,P0,Reedfish,delivered
@@ -29,6 +38,10 @@ icons/items/salmon.png,icons,salmon,32x32,P0,Ember Salmon,delivered
 icons/items/lobster.png,icons,lobster,32x32,P0,Fen Lobster,delivered
 icons/items/swordfish.png,icons,swordfish,32x32,P0,Bladefin,delivered
 icons/items/shark.png,icons,shark,32x32,P0,Gale Shark,delivered
+icons/items/manta_ray.png,icons,manta_ray,32x32,P0,Glidefin Manta,delivered
+icons/items/whale.png,icons,whale,32x32,P0,Leviathan Steak,delivered
+icons/items/dreadfin.png,icons,dreadfin,32x32,P0,Dreadfin Fillet,delivered
+icons/items/abyssal_eel.png,icons,abyssal_eel,32x32,P0,Abyssal Eel Roll,delivered
 icons/items/copper_ore.png,icons,copper_ore,32x32,P0,Copper Ore,delivered
 icons/items/tin_ore.png,icons,tin_ore,32x32,P0,Tin Ore,delivered
 icons/items/iron_ore.png,icons,iron_ore,32x32,P0,Iron Ore,delivered
@@ -53,9 +66,9 @@ icons/items/big_bones.png,icons,big_bones,32x32,P0,Heavy Bones,delivered
 icons/items/dragon_bones.png,icons,dragon_bones,32x32,P0,Wyrm Bones,delivered
 icons/items/garum_herb.png,icons,garum_herb,32x32,P0,Emberleaf,delivered
 icons/items/potion_dr_1.png,icons,potion_dr_1,32x32,P0,Warded Hide I,delivered
-icons/items/ent_mark.png,icons,ent_mark,32x32,P0,Ent Mark,delivered
+icons/items/ent_mark.png,icons,ent_mark,32x32,P0,Oldroot Mark,delivered
 icons/items/summoning_shard_green.png,icons,summoning_shard_green,32x32,P0,Verdant Binding Shard,delivered
-icons/items/ent_tablet.png,icons,ent_tablet,32x32,P0,Ent Tablet,delivered
+icons/items/ent_tablet.png,icons,ent_tablet,32x32,P0,Oldroot Tablet,delivered
 icons/items/stardust.png,icons,stardust,32x32,P0,Stardust,delivered
 icons/items/artefact_shard.png,icons,artefact_shard,32x32,P0,Artefact Shard,delivered
 icons/items/harvested_essence.png,icons,harvested_essence,32x32,P0,Harvested Essence,delivered
@@ -70,7 +83,7 @@ icons/items/bronze_platebody_g.png,icons,bronze_platebody_g,32x32,P0,Verdigris P
 icons/items/bronze_shield.png,icons,bronze_shield,32x32,P0,Verdigris Shield,delivered
 icons/items/leather_body.png,icons,leather_body,32x32,P0,Leather Body,delivered
 icons/items/gold_ring.png,icons,gold_ring,32x32,P0,Gold Ring,delivered
-icons/items/ring_of_power.png,icons,ring_of_power,32x32,P0,Ring of Power,delivered
+icons/items/ring_of_power.png,icons,ring_of_power,32x32,P0,Signet of Force,delivered
 icons/items/firemaking_cape.png,icons,firemaking_cape,32x32,P0,Kilncraft Skillcape,delivered
 icons/items/silver_ore.png,icons,silver_ore,32x32,P0,Silver Ore,delivered
 icons/items/gold_ore.png,icons,gold_ore,32x32,P0,Gold Ore,delivered
@@ -78,10 +91,16 @@ icons/items/mithril_ore.png,icons,mithril_ore,32x32,P0,Ghoststeel Ore,delivered
 icons/items/adamantite_ore.png,icons,adamantite_ore,32x32,P0,Skyiron Ore,delivered
 icons/items/runite_ore.png,icons,runite_ore,32x32,P0,Starforge Ore,delivered
 icons/items/dragonite_ore.png,icons,dragonite_ore,32x32,P0,Wyrmsteel Ore,delivered
+icons/items/umbral_ore.png,icons,umbral_ore,32x32,P0,Umbral Ore,delivered
+icons/items/herald_ore.png,icons,herald_ore,32x32,P0,Herald Ore,delivered
 icons/items/mithril_bar.png,icons,mithril_bar,32x32,P0,Ghoststeel Bar,delivered
 icons/items/adamantite_bar.png,icons,adamantite_bar,32x32,P0,Skyiron Bar,delivered
 icons/items/runite_bar.png,icons,runite_bar,32x32,P0,Starforge Bar,delivered
 icons/items/dragonite_bar.png,icons,dragonite_bar,32x32,P0,Wyrmsteel Bar,delivered
+icons/items/umbral_bar.png,icons,umbral_bar,32x32,P0,Umbral Bar,delivered
+icons/items/herald_bar.png,icons,herald_bar,32x32,P0,Herald Bar,delivered
+icons/items/herald_platebody.png,icons,herald_platebody,32x32,P0,Herald Platebody,delivered
+icons/items/herald_godsword.png,icons,herald_godsword,32x32,P0,Herald Godsword,delivered
 icons/items/pure_essence.png,icons,pure_essence,32x32,P0,Refined Glyph Essence,delivered
 icons/items/bronze_platelegs.png,icons,bronze_platelegs,32x32,P0,Verdigris Platelegs,delivered
 icons/items/bronze_boots.png,icons,bronze_boots,32x32,P0,Verdigris Boots,delivered
@@ -128,10 +147,20 @@ icons/items/iron_arrow.png,icons,iron_arrow,32x32,P0,Iron Arrow,delivered
 icons/items/steel_arrow.png,icons,steel_arrow,32x32,P0,Steel Arrow,delivered
 icons/items/normal_shortbow.png,icons,normal_shortbow,32x32,P0,Emberpine Shortbow,delivered
 icons/items/normal_longbow.png,icons,normal_longbow,32x32,P0,Emberpine Longbow,delivered
-icons/items/oak_shortbow.png,icons,oak_shortbow,32x32,P0,Oak Shortbow,delivered
-icons/items/oak_longbow.png,icons,oak_longbow,32x32,P0,Oak Longbow,delivered
-icons/items/willow_shortbow.png,icons,willow_shortbow,32x32,P0,Willow Shortbow,delivered
-icons/items/willow_longbow.png,icons,willow_longbow,32x32,P0,Willow Longbow,delivered
+icons/items/oak_shortbow.png,icons,oak_shortbow,32x32,P0,Ironbark Shortbow,delivered
+icons/items/oak_longbow.png,icons,oak_longbow,32x32,P0,Ironbark Longbow,delivered
+icons/items/willow_shortbow.png,icons,willow_shortbow,32x32,P0,Silverleaf Shortbow,delivered
+icons/items/willow_longbow.png,icons,willow_longbow,32x32,P0,Silverleaf Longbow,delivered
+icons/items/yew_shortbow.png,icons,yew_shortbow,32x32,P0,Gravewood Shortbow,delivered
+icons/items/yew_longbow.png,icons,yew_longbow,32x32,P0,Gravewood Longbow,delivered
+icons/items/magic_shortbow.png,icons,magic_shortbow,32x32,P0,Witchpine Shortbow,delivered
+icons/items/magic_longbow.png,icons,magic_longbow,32x32,P0,Witchpine Longbow,delivered
+icons/items/redwood_shortbow.png,icons,redwood_shortbow,32x32,P0,Bloodwood Shortbow,delivered
+icons/items/redwood_longbow.png,icons,redwood_longbow,32x32,P0,Bloodwood Longbow,delivered
+icons/items/cinderbark_shortbow.png,icons,cinderbark_shortbow,32x32,P0,Cinderbark Shortbow,delivered
+icons/items/cinderbark_longbow.png,icons,cinderbark_longbow,32x32,P0,Cinderbark Longbow,delivered
+icons/items/voidwood_shortbow.png,icons,voidwood_shortbow,32x32,P0,Voidwood Shortbow,delivered
+icons/items/voidwood_longbow.png,icons,voidwood_longbow,32x32,P0,Voidwood Longbow,delivered
 icons/items/topaz.png,icons,topaz,32x32,P0,Topaz,delivered
 icons/items/sapphire.png,icons,sapphire,32x32,P0,Sapphire,delivered
 icons/items/emerald.png,icons,emerald,32x32,P0,Emerald,delivered
@@ -162,16 +191,18 @@ icons/items/red_dhide_chaps.png,icons,red_dhide_chaps,32x32,P0,Crimson Wyrmhide 
 icons/items/red_dhide_vambraces.png,icons,red_dhide_vambraces,32x32,P0,Crimson Wyrmhide Vambraces,delivered
 icons/items/red_dhide_coif.png,icons,red_dhide_coif,32x32,P0,Crimson Wyrmhide Coif,delivered
 icons/items/black_dragonhide.png,icons,black_dragonhide,32x32,P0,Umbral Wyrmhide,delivered
-icons/items/black_dhide_body.png,icons,black_dhide_body,32x32,P0,Blighted D'hide Body,delivered
-icons/items/black_dhide_chaps.png,icons,black_dhide_chaps,32x32,P0,Blighted D'hide Chaps,delivered
-icons/items/black_dhide_vambraces.png,icons,black_dhide_vambraces,32x32,P0,Blighted D'hide Vambraces,delivered
-icons/items/black_dhide_coif.png,icons,black_dhide_coif,32x32,P0,Blighted D'hide Coif,delivered
+icons/items/black_dhide_body.png,icons,black_dhide_body,32x32,P0,Blighted Wyrmhide Body,delivered
+icons/items/black_dhide_chaps.png,icons,black_dhide_chaps,32x32,P0,Blighted Wyrmhide Chaps,delivered
+icons/items/black_dhide_vambraces.png,icons,black_dhide_vambraces,32x32,P0,Blighted Wyrmhide Vambraces,delivered
+icons/items/black_dhide_coif.png,icons,black_dhide_coif,32x32,P0,Blighted Wyrmhide Coif,delivered
 icons/items/water_rune.png,icons,water_rune,32x32,P0,Tide Rune,delivered
 icons/items/earth_rune.png,icons,earth_rune,32x32,P0,Stone Rune,delivered
 icons/items/mind_rune.png,icons,mind_rune,32x32,P0,Waking Rune,delivered
 icons/items/chaos_rune.png,icons,chaos_rune,32x32,P0,Discord Rune,delivered
 icons/items/death_rune.png,icons,death_rune,32x32,P0,Mourning Rune,delivered
 icons/items/blood_rune.png,icons,blood_rune,32x32,P0,Vital Rune,delivered
+icons/items/soul_rune.png,icons,soul_rune,32x32,P0,Soul Rune,delivered
+icons/items/umbral_rune.png,icons,umbral_rune,32x32,P0,Umbral Rune,delivered
 icons/items/nature_rune.png,icons,nature_rune,32x32,P0,Verdant Rune,delivered
 icons/items/law_rune.png,icons,law_rune,32x32,P0,Bond Rune,delivered
 icons/items/cosmic_rune.png,icons,cosmic_rune,32x32,P0,Astral Rune,delivered
@@ -188,10 +219,10 @@ icons/items/lemontyle.png,icons,lemontyle,32x32,P0,Goldpetal,delivered
 icons/items/lemontyle_seed.png,icons,lemontyle_seed,32x32,P0,Goldpetal Seed,delivered
 icons/items/oxilyme.png,icons,oxilyme,32x32,P0,Fenblossom,delivered
 icons/items/oxilyme_seed.png,icons,oxilyme_seed,32x32,P0,Fenblossom Seed,delivered
-icons/items/poraxx.png,icons,poraxx,32x32,P0,Poraxx Herb,delivered
-icons/items/poraxx_seed.png,icons,poraxx_seed,32x32,P0,Poraxx Seed,delivered
-icons/items/barrentoe.png,icons,barrentoe,32x32,P0,Barrentoe Herb,delivered
-icons/items/barrentoe_seed.png,icons,barrentoe_seed,32x32,P0,Barrentoe Seed,delivered
+icons/items/poraxx.png,icons,poraxx,32x32,P0,Ashcap Herb,delivered
+icons/items/poraxx_seed.png,icons,poraxx_seed,32x32,P0,Ashcap Seed,delivered
+icons/items/barrentoe.png,icons,barrentoe,32x32,P0,Gravemoss Herb,delivered
+icons/items/barrentoe_seed.png,icons,barrentoe_seed,32x32,P0,Gravemoss Seed,delivered
 icons/items/potion_dr_2.png,icons,potion_dr_2,32x32,P0,Warded Hide II,delivered
 icons/items/potion_dr_3.png,icons,potion_dr_3,32x32,P0,Warded Hide III,delivered
 icons/items/potion_dr_4.png,icons,potion_dr_4,32x32,P0,Warded Hide IV,delivered
@@ -207,82 +238,89 @@ icons/items/potion_firemaking_1.png,icons,potion_firemaking_1,32x32,P0,Banked Co
 icons/items/potion_firemaking_2.png,icons,potion_firemaking_2,32x32,P0,Banked Coals II,delivered
 icons/items/potion_firemaking_3.png,icons,potion_firemaking_3,32x32,P0,Banked Coals III,delivered
 icons/items/potion_firemaking_4.png,icons,potion_firemaking_4,32x32,P0,Banked Coals IV,delivered
-icons/items/chapeau_noir.png,icons,chapeau_noir,32x32,P0,Chapeau Noir,delivered
-icons/items/knights_defender.png,icons,knights_defender,32x32,P0,Knight's Defender,delivered
-icons/items/mole_mark.png,icons,mole_mark,32x32,P0,Mole Mark,delivered
-icons/items/mole_tablet.png,icons,mole_tablet,32x32,P0,Mole Tablet,delivered
-icons/items/octopus_mark.png,icons,octopus_mark,32x32,P0,Octopus Mark,delivered
-icons/items/octopus_tablet.png,icons,octopus_tablet,32x32,P0,Octopus Tablet,delivered
-icons/items/pig_mark.png,icons,pig_mark,32x32,P0,Pig Mark,delivered
-icons/items/pig_tablet.png,icons,pig_tablet,32x32,P0,Pig Tablet,delivered
-icons/items/crow_mark.png,icons,crow_mark,32x32,P0,Crow Mark,delivered
-icons/items/crow_tablet.png,icons,crow_tablet,32x32,P0,Crow Tablet,delivered
-icons/items/leprechaun_mark.png,icons,leprechaun_mark,32x32,P0,Leprechaun Mark,delivered
-icons/items/leprechaun_tablet.png,icons,leprechaun_tablet,32x32,P0,Leprechaun Tablet,delivered
-icons/items/monkey_mark.png,icons,monkey_mark,32x32,P0,Monkey Mark,delivered
-icons/items/monkey_tablet.png,icons,monkey_tablet,32x32,P0,Monkey Tablet,delivered
-icons/items/salamander_mark.png,icons,salamander_mark,32x32,P0,Salamander Mark,delivered
-icons/items/salamander_tablet.png,icons,salamander_tablet,32x32,P0,Salamander Tablet,delivered
-icons/items/bear_mark.png,icons,bear_mark,32x32,P0,Bear Mark,delivered
-icons/items/bear_tablet.png,icons,bear_tablet,32x32,P0,Bear Tablet,delivered
-icons/items/devil_mark.png,icons,devil_mark,32x32,P0,Devil Mark,delivered
-icons/items/devil_tablet.png,icons,devil_tablet,32x32,P0,Devil Tablet,delivered
-icons/items/eagle_mark.png,icons,eagle_mark,32x32,P0,Eagle Mark,delivered
-icons/items/eagle_tablet.png,icons,eagle_tablet,32x32,P0,Eagle Tablet,delivered
-icons/items/owl_mark.png,icons,owl_mark,32x32,P0,Owl Mark,delivered
-icons/items/owl_tablet.png,icons,owl_tablet,32x32,P0,Owl Tablet,delivered
-icons/items/beaver_mark.png,icons,beaver_mark,32x32,P0,Beaver Mark,delivered
-icons/items/beaver_tablet.png,icons,beaver_tablet,32x32,P0,Beaver Tablet,delivered
-icons/items/fox_mark.png,icons,fox_mark,32x32,P0,Fox Mark,delivered
-icons/items/fox_tablet.png,icons,fox_tablet,32x32,P0,Fox Tablet,delivered
+icons/items/potion_dr_5.png,icons,potion_dr_5,32x32,P0,Stoneskin Draught V,delivered
+icons/items/potion_dr_6.png,icons,potion_dr_6,32x32,P0,Stoneskin Draught VI,delivered
+icons/items/potion_mining_5.png,icons,potion_mining_5,32x32,P0,Delver's Draught V,delivered
+icons/items/potion_skilling_5.png,icons,potion_skilling_5,32x32,P0,Polymath Tonic V,delivered
+icons/items/potion_firemaking_5.png,icons,potion_firemaking_5,32x32,P0,Banked Coals V,delivered
+icons/items/chapeau_noir.png,icons,chapeau_noir,32x32,P0,Duskbrim,delivered
+icons/items/knights_defender.png,icons,knights_defender,32x32,P0,Sentinel's Defender,delivered
+icons/items/mole_mark.png,icons,mole_mark,32x32,P0,Ashmole Mark,delivered
+icons/items/mole_tablet.png,icons,mole_tablet,32x32,P0,Ashmole Tablet,delivered
+icons/items/octopus_mark.png,icons,octopus_mark,32x32,P0,Tidegrasp Mark,delivered
+icons/items/octopus_tablet.png,icons,octopus_tablet,32x32,P0,Tidegrasp Tablet,delivered
+icons/items/pig_mark.png,icons,pig_mark,32x32,P0,Sootsow Mark,delivered
+icons/items/pig_tablet.png,icons,pig_tablet,32x32,P0,Sootsow Tablet,delivered
+icons/items/crow_mark.png,icons,crow_mark,32x32,P0,Cindercrow Mark,delivered
+icons/items/crow_tablet.png,icons,crow_tablet,32x32,P0,Cindercrow Tablet,delivered
+icons/items/leprechaun_mark.png,icons,leprechaun_mark,32x32,P0,Glimmerkin Mark,delivered
+icons/items/leprechaun_tablet.png,icons,leprechaun_tablet,32x32,P0,Glimmerkin Tablet,delivered
+icons/items/monkey_mark.png,icons,monkey_mark,32x32,P0,Riftmonkey Mark,delivered
+icons/items/monkey_tablet.png,icons,monkey_tablet,32x32,P0,Riftmonkey Tablet,delivered
+icons/items/salamander_mark.png,icons,salamander_mark,32x32,P0,Cinderling Mark,delivered
+icons/items/salamander_tablet.png,icons,salamander_tablet,32x32,P0,Cinderling Tablet,delivered
+icons/items/bear_mark.png,icons,bear_mark,32x32,P0,Ashbear Mark,delivered
+icons/items/bear_tablet.png,icons,bear_tablet,32x32,P0,Ashbear Tablet,delivered
+icons/items/devil_mark.png,icons,devil_mark,32x32,P0,Ashfiend Mark,delivered
+icons/items/devil_tablet.png,icons,devil_tablet,32x32,P0,Ashfiend Tablet,delivered
+icons/items/eagle_mark.png,icons,eagle_mark,32x32,P0,Galecrest Mark,delivered
+icons/items/eagle_tablet.png,icons,eagle_tablet,32x32,P0,Galecrest Tablet,delivered
+icons/items/owl_mark.png,icons,owl_mark,32x32,P0,Duskwing Mark,delivered
+icons/items/owl_tablet.png,icons,owl_tablet,32x32,P0,Duskwing Tablet,delivered
+icons/items/beaver_mark.png,icons,beaver_mark,32x32,P0,Muddam Mark,delivered
+icons/items/beaver_tablet.png,icons,beaver_tablet,32x32,P0,Muddam Tablet,delivered
+icons/items/fox_mark.png,icons,fox_mark,32x32,P0,Ashfox Mark,delivered
+icons/items/fox_tablet.png,icons,fox_tablet,32x32,P0,Ashfox Tablet,delivered
 icons/items/golbin_thief_mark.png,icons,golbin_thief_mark,32x32,P0,Cinderkin Mark,delivered
 icons/items/golbin_thief_tablet.png,icons,golbin_thief_tablet,32x32,P0,Cinderkin Thief Tablet,delivered
-icons/items/occultist_mark.png,icons,occultist_mark,32x32,P0,Occultist Mark,delivered
-icons/items/occultist_tablet.png,icons,occultist_tablet,32x32,P0,Occultist Tablet,delivered
-icons/items/wolf_mark.png,icons,wolf_mark,32x32,P0,Wolf Mark,delivered
-icons/items/wolf_tablet.png,icons,wolf_tablet,32x32,P0,Wolf Tablet,delivered
-icons/items/minotaur_mark.png,icons,minotaur_mark,32x32,P0,Minotaur Mark,delivered
-icons/items/minotaur_tablet.png,icons,minotaur_tablet,32x32,P0,Minotaur Tablet,delivered
-icons/items/centaur_mark.png,icons,centaur_mark,32x32,P0,Centaur Mark,delivered
-icons/items/centaur_tablet.png,icons,centaur_tablet,32x32,P0,Centaur Tablet,delivered
-icons/items/witch_mark.png,icons,witch_mark,32x32,P0,Witch Mark,delivered
-icons/items/witch_tablet.png,icons,witch_tablet,32x32,P0,Witch Tablet,delivered
-icons/items/cyclops_mark.png,icons,cyclops_mark,32x32,P0,Cyclops Mark,delivered
-icons/items/cyclops_tablet.png,icons,cyclops_tablet,32x32,P0,Cyclops Tablet,delivered
-icons/items/yak_mark.png,icons,yak_mark,32x32,P0,Yak Mark,delivered
-icons/items/yak_tablet.png,icons,yak_tablet,32x32,P0,Yak Tablet,delivered
-icons/items/unicorn_mark.png,icons,unicorn_mark,32x32,P0,Unicorn Mark,delivered
-icons/items/unicorn_tablet.png,icons,unicorn_tablet,32x32,P0,Unicorn Tablet,delivered
-icons/items/dragon_mark.png,icons,dragon_mark,32x32,P0,Wyrm Mark,delivered
-icons/items/dragon_tablet.png,icons,dragon_tablet,32x32,P0,Dragon Tablet,delivered
-icons/items/tortoise_mark.png,icons,tortoise_mark,32x32,P0,Tortoise Mark,delivered
-icons/items/tortoise_tablet.png,icons,tortoise_tablet,32x32,P0,Tortoise Tablet,delivered
+icons/items/occultist_mark.png,icons,occultist_mark,32x32,P0,Ashcaller Mark,delivered
+icons/items/occultist_tablet.png,icons,occultist_tablet,32x32,P0,Ashcaller Tablet,delivered
+icons/items/wolf_mark.png,icons,wolf_mark,32x32,P0,Dustwolf Mark,delivered
+icons/items/wolf_tablet.png,icons,wolf_tablet,32x32,P0,Dustwolf Tablet,delivered
+icons/items/minotaur_mark.png,icons,minotaur_mark,32x32,P0,Sunderhorn Mark,delivered
+icons/items/minotaur_tablet.png,icons,minotaur_tablet,32x32,P0,Sunderhorn Tablet,delivered
+icons/items/centaur_mark.png,icons,centaur_mark,32x32,P0,Windhoof Mark,delivered
+icons/items/centaur_tablet.png,icons,centaur_tablet,32x32,P0,Windhoof Tablet,delivered
+icons/items/witch_mark.png,icons,witch_mark,32x32,P0,Hexweaver Mark,delivered
+icons/items/witch_tablet.png,icons,witch_tablet,32x32,P0,Hexweaver Tablet,delivered
+icons/items/cyclops_mark.png,icons,cyclops_mark,32x32,P0,Stonegaze Mark,delivered
+icons/items/cyclops_tablet.png,icons,cyclops_tablet,32x32,P0,Stonegaze Tablet,delivered
+icons/items/yak_mark.png,icons,yak_mark,32x32,P0,Rimeyak Mark,delivered
+icons/items/yak_tablet.png,icons,yak_tablet,32x32,P0,Rimeyak Tablet,delivered
+icons/items/unicorn_mark.png,icons,unicorn_mark,32x32,P0,Starfoil Mark,delivered
+icons/items/unicorn_tablet.png,icons,unicorn_tablet,32x32,P0,Starfoil Tablet,delivered
+icons/items/dragon_mark.png,icons,dragon_mark,32x32,P0,Ashwyrm Mark,delivered
+icons/items/dragon_tablet.png,icons,dragon_tablet,32x32,P0,Ashwyrm Tablet,delivered
+icons/items/tortoise_mark.png,icons,tortoise_mark,32x32,P0,Mossback Mark,delivered
+icons/items/tortoise_tablet.png,icons,tortoise_tablet,32x32,P0,Mossback Tablet,delivered
 icons/items/summoning_shard_crimson.png,icons,summoning_shard_crimson,32x32,P0,Crimson Binding Shard,delivered
 icons/items/summoning_shard_blue.png,icons,summoning_shard_blue,32x32,P0,Azure Binding Shard,delivered
 icons/items/summoning_shard_silver.png,icons,summoning_shard_silver,32x32,P0,Silver Binding Shard,delivered
 icons/items/summoning_shard_black.png,icons,summoning_shard_black,32x32,P0,Umbral Binding Shard,delivered
 icons/items/summoning_shard_gold.png,icons,summoning_shard_gold,32x32,P0,Gilded Binding Shard,delivered
 icons/items/golden_stardust.png,icons,golden_stardust,32x32,P0,Golden Stardust,delivered
-icons/items/food_box.png,icons,food_box,32x32,P0,Food Box,delivered
-icons/items/bar_box.png,icons,bar_box,32x32,P0,Bar Box,delivered
-icons/items/wood_box.png,icons,wood_box,32x32,P0,Wood Box,delivered
-icons/items/herb_box.png,icons,herb_box,32x32,P0,Herb Box,delivered
+icons/items/food_box.png,icons,food_box,32x32,P0,Larder Crate,delivered
+icons/items/bar_box.png,icons,bar_box,32x32,P0,Ingot Crate,delivered
+icons/items/wood_box.png,icons,wood_box,32x32,P0,Timber Crate,delivered
+icons/items/herb_box.png,icons,herb_box,32x32,P0,Apothecary Crate,delivered
 icons/items/artefact_common.png,icons,artefact_common,32x32,P0,Common Artefact,delivered
 icons/items/artefact_uncommon.png,icons,artefact_uncommon,32x32,P0,Uncommon Artefact,delivered
 icons/items/artefact_rare.png,icons,artefact_rare,32x32,P0,Rare Artefact,delivered
 icons/items/artefact_unique.png,icons,artefact_unique,32x32,P0,Unique Artefact,delivered
 icons/items/prismatic_essence.png,icons,prismatic_essence,32x32,P0,Prismatic Essence,delivered
+icons/items/umbral_essence.png,icons,umbral_essence,32x32,P0,Umbral Essence,delivered
+icons/items/herald_essence.png,icons,herald_essence,32x32,P0,Herald Essence,delivered
 icons/items/slayer_armour_basic.png,icons,slayer_armour_basic,32x32,P0,Basic Huntsman Armour,delivered
 icons/items/slayer_armour_strong.png,icons,slayer_armour_strong,32x32,P0,Strong Huntsman Armour,delivered
 icons/items/slayer_armour_elite.png,icons,slayer_armour_elite,32x32,P0,Elite Huntsman Armour,delivered
 icons/items/slayer_armour_master.png,icons,slayer_armour_master,32x32,P0,Master Huntsman Armour,delivered
 icons/items/slayer_armour_legendary.png,icons,slayer_armour_legendary,32x32,P0,Legendary Huntsman Armour,delivered
 icons/items/slayer_armour_mythical.png,icons,slayer_armour_mythical,32x32,P0,Mythical Huntsman Armour,delivered
-icons/items/mirror_shield.png,icons,mirror_shield,32x32,P0,Mirror Shield,delivered
-icons/items/magical_ring.png,icons,magical_ring,32x32,P0,Magical Ring,delivered
-icons/items/blazing_lantern.png,icons,blazing_lantern,32x32,P0,Blazing Lantern,delivered
-icons/items/desert_hat.png,icons,desert_hat,32x32,P0,Desert Hat,delivered
-icons/items/climbing_boots.png,icons,climbing_boots,32x32,P0,Climbing Boots,delivered
+icons/items/mirror_shield.png,icons,mirror_shield,32x32,P0,Lookingglass Ward,delivered
+icons/items/magical_ring.png,icons,magical_ring,32x32,P0,Hexward Ring,delivered
+icons/items/blazing_lantern.png,icons,blazing_lantern,32x32,P0,Cinder Lantern,delivered
+icons/items/desert_hat.png,icons,desert_hat,32x32,P0,Dustveil Hat,delivered
+icons/items/climbing_boots.png,icons,climbing_boots,32x32,P0,Craghooks,delivered
 icons/items/firemaking_cape_superior.png,icons,firemaking_cape_superior,32x32,P0,Superior Kilncraft Skillcape,delivered
 icons/items/woodcutting_cape.png,icons,woodcutting_cape,32x32,P0,Timbercraft Skillcape,delivered
 icons/items/woodcutting_cape_superior.png,icons,woodcutting_cape_superior,32x32,P0,Superior Timbercraft Skillcape,delivered
@@ -341,7 +379,7 @@ icons/items/alt_magic_cape_superior.png,icons,alt_magic_cape_superior,32x32,P0,S
 icons/items/corruption_cape.png,icons,corruption_cape,32x32,P0,Blight Skillcape,delivered
 icons/items/corruption_cape_superior.png,icons,corruption_cape_superior,32x32,P0,Superior Blight Skillcape,delivered
 icons/items/max_skillcape.png,icons,max_skillcape,32x32,P0,Frontier Cape,delivered
-icons/items/cape_of_completion.png,icons,cape_of_completion,32x32,P0,Cape of Completion,delivered
+icons/items/cape_of_completion.png,icons,cape_of_completion,32x32,P0,Frontier Laurel,delivered
 icons/items/shard_air.png,icons,shard_air,32x32,P0,Gale Shard,delivered
 icons/items/air_god_helmet.png,icons,air_god_helmet,32x32,P0,Aeris Helmet,delivered
 icons/items/air_god_platebody.png,icons,air_god_platebody,32x32,P0,Aeris Platebody,delivered
@@ -408,6 +446,26 @@ icons/items/wayfolding_cape.png,icons,wayfolding_cape,32x32,P0,Wayfolder's Cape,
 icons/items/fermentation_cape.png,icons,fermentation_cape,32x32,P0,Fermenter's Cape,delivered
 icons/items/customcraft_cape.png,icons,customcraft_cape,32x32,P0,Custom-Maker's Cape,delivered
 icons/items/lostfinding_cape.png,icons,lostfinding_cape,32x32,P0,Lostfinder's Cape,delivered
+icons/items/grand_vintage.png,icons,grand_vintage,32x32,P0,Grand Vintage,delivered
+icons/items/herald_cask.png,icons,herald_cask,32x32,P0,Herald Cask,delivered
+icons/items/flawless_echo.png,icons,flawless_echo,32x32,P0,Flawless Echo,delivered
+icons/items/herald_echo.png,icons,herald_echo,32x32,P0,Herald Echo,delivered
+icons/items/grand_confluence.png,icons,grand_confluence,32x32,P0,Grand Confluence,delivered
+icons/items/herald_gate.png,icons,herald_gate,32x32,P0,Herald Gate,delivered
+icons/items/living_legend.png,icons,living_legend,32x32,P0,Living Legend,delivered
+icons/items/herald_craft.png,icons,herald_craft,32x32,P0,Herald Craft,delivered
+icons/items/cold_trail.png,icons,cold_trail,32x32,P0,Cold Trail,delivered
+icons/items/herald_case.png,icons,herald_case,32x32,P0,Herald Case,delivered
+icons/items/adamantite_sword.png,icons,adamantite_sword,32x32,P0,Skyiron Sword,delivered
+icons/items/adamantite_scimitar.png,icons,adamantite_scimitar,32x32,P0,Skyiron Scimitar,delivered
+icons/items/adamantite_battleaxe.png,icons,adamantite_battleaxe,32x32,P0,Skyiron Battleaxe,delivered
+icons/items/adamantite_2h_sword.png,icons,adamantite_2h_sword,32x32,P0,Skyiron 2H Sword,delivered
+icons/items/adamantite_helmet.png,icons,adamantite_helmet,32x32,P0,Skyiron Helm,delivered
+icons/items/adamantite_platebody.png,icons,adamantite_platebody,32x32,P0,Skyiron Platebody,delivered
+icons/items/adamantite_platelegs.png,icons,adamantite_platelegs,32x32,P0,Skyiron Platelegs,delivered
+icons/items/adamantite_boots.png,icons,adamantite_boots,32x32,P0,Skyiron Boots,delivered
+icons/items/adamantite_gloves.png,icons,adamantite_gloves,32x32,P0,Skyiron Gauntlets,delivered
+icons/items/burnt_food.png,icons,burnt_food,32x32,P0,Burnt Food,delivered
 icons/skills/attack.png,icons,attack,128x128,P0,Bladework,delivered
 icons/skills/strength.png,icons,strength,128x128,P0,Might,delivered
 icons/skills/defence.png,icons,defence,128x128,P0,Warding,delivered
@@ -471,6 +529,18 @@ sprites/monsters/abyssal_imp.png,sprites,abyssal_imp,96x96,P0,Umbral Imp,deliver
 sprites/monsters/abyssal_fiend.png,sprites,abyssal_fiend,96x96,P0,Umbral Fiend,delivered
 sprites/monsters/abyssal_lord.png,sprites,abyssal_lord,96x96,P0,Umbral Lord,delivered
 sprites/monsters/the_herald.png,sprites,the_herald,96x96,P0,The Herald Ascendant,delivered
+sprites/monsters/cinderkin_scout.png,sprites,cinderkin_scout,96x96,P0,Cinderkin Scout,delivered
+sprites/monsters/barrow_wraith.png,sprites,barrow_wraith,96x96,P0,Barrow Wraith,delivered
+sprites/monsters/drowned_wayfarer.png,sprites,drowned_wayfarer,96x96,P0,Drowned Wayfarer,delivered
+sprites/monsters/rook_marksman.png,sprites,rook_marksman,96x96,P0,Rook Marksman,delivered
+sprites/monsters/frostfang_wolf.png,sprites,frostfang_wolf,96x96,P0,Frostfang Wolf,delivered
+sprites/monsters/ash_drake.png,sprites,ash_drake,96x96,P0,Ash Drake,delivered
+sprites/monsters/broodweb_hunter.png,sprites,broodweb_hunter,96x96,P0,Broodweb Hunter,delivered
+sprites/monsters/rift_weaver.png,sprites,rift_weaver,96x96,P0,Rift Weaver,delivered
+sprites/monsters/greyharrow_husk.png,sprites,greyharrow_husk,96x96,P0,Greyharrow Husk,delivered
+sprites/monsters/shale_stalker.png,sprites,shale_stalker,96x96,P0,Shale Stalker,delivered
+sprites/monsters/quarry_echo.png,sprites,quarry_echo,96x96,P0,Quarry Echo,delivered
+sprites/monsters/slag_golem.png,sprites,slag_golem,96x96,P0,Slag Golem,delivered
 icons/currencies/gp.png,icons,gp,24x24,P0,Gold Pieces,delivered
 icons/currencies/slayer_coins.png,icons,slayer_coins,24x24,P0,Slayer Coins,delivered
 icons/currencies/prayer_points.png,icons,prayer_points,24x24,P0,Prayer Points,delivered
@@ -500,6 +570,7 @@ icons/areas/sandy_shores.png,icons,sandy_shores,64x64,P1,Sunken Strand,delivered
 icons/areas/wet_forest.png,icons,wet_forest,64x64,P1,Reedwrack Marsh,delivered
 icons/areas/bandit_hideout.png,icons,bandit_hideout,64x64,P1,Rook's Hollow,delivered
 icons/areas/icy_hills.png,icons,icy_hills,64x64,P1,Frostbound Reach,delivered
+icons/areas/greyharrow_quarry.png,icons,greyharrow_quarry,64x64,P1,Greyharrow Quarry,delivered
 icons/areas/castle_of_kings.png,icons,castle_of_kings,64x64,P1,Sunderhold Keep,delivered
 icons/areas/dragon_valley.png,icons,dragon_valley,64x64,P1,Ashwyrm Hollow,delivered
 icons/areas/spider_slayer_area.png,icons,spider_slayer_area,64x64,P1,Broodweb Fen,delivered
@@ -516,9 +587,14 @@ icons/dungeons/into_the_mist.png,icons,into_the_mist,64x64,P1,Into the Murk,deli
 icons/dungeons/impending_darkness.png,icons,impending_darkness,64x64,P1,The Long Dusk,delivered
 icons/dungeons/underwater_city.png,icons,underwater_city,64x64,P1,"Nhalassar, the Drowned City",delivered
 icons/dungeons/throne_of_the_herald.png,icons,throne_of_the_herald,64x64,P1,Seat of the Herald,delivered
+icons/dungeons/cinderkin_forge.png,icons,cinderkin_forge,64x64,P1,Cinderkin Forge,delivered
+icons/dungeons/drowned_causeway.png,icons,drowned_causeway,64x64,P1,Drowned Causeway,delivered
+icons/dungeons/rook_viaduct.png,icons,rook_viaduct,64x64,P1,Rook's Viaduct,delivered
+icons/dungeons/frostfang_den.png,icons,frostfang_den,64x64,P1,Frostfang Den,delivered
+icons/dungeons/greyharrow_deep.png,icons,greyharrow_deep,64x64,P1,Greyharrow Deep,delivered
 icons/prayers/thick_skin.png,icons,thick_skin,32x32,P1,Hearthide,delivered
 icons/prayers/burst_of_strength.png,icons,burst_of_strength,32x32,P1,Surge of Might,delivered
-icons/prayers/clarity_of_thought.png,icons,clarity_of_thought,32x32,P1,Clear Thought,delivered
+icons/prayers/clarity_of_thought.png,icons,clarity_of_thought,32x32,P1,Steady Mind,delivered
 icons/prayers/sharp_eye.png,icons,sharp_eye,32x32,P1,Keen Sight,delivered
 icons/prayers/mystic_will.png,icons,mystic_will,32x32,P1,Arcane Will,delivered
 icons/prayers/ultimate_strength.png,icons,ultimate_strength,32x32,P1,Unbound Might,delivered
@@ -527,141 +603,180 @@ icons/prayers/protect_from_magic.png,icons,protect_from_magic,32x32,P1,Ward Agai
 icons/prayers/protect_from_ranged.png,icons,protect_from_ranged,32x32,P1,Ward Against Arrows,delivered
 icons/prayers/protect_from_melee.png,icons,protect_from_melee,32x32,P1,Ward Against Steel,delivered
 icons/prayers/protect_item.png,icons,protect_item,32x32,P1,Ward the Satchel,delivered
-icons/prayers/battleheart.png,icons,battleheart,32x32,P1,Battleheart,delivered
+icons/prayers/battleheart.png,icons,battleheart,32x32,P1,Ironwill,delivered
 icons/prayers/holy_aegis.png,icons,holy_aegis,32x32,P1,Sanctified Aegis,delivered
-icons/prayers/annihilation.png,icons,annihilation,32x32,P1,Annihilation,delivered
+icons/prayers/annihilation.png,icons,annihilation,32x32,P1,Ruinfall,delivered
 icons/prayers/rock_skin.png,icons,rock_skin,32x32,P1,Bedrock Ward,delivered
 icons/prayers/steel_skin.png,icons,steel_skin,32x32,P1,Ironsheen,delivered
 icons/prayers/eagle_eye.png,icons,eagle_eye,32x32,P1,Farwatcher,delivered
 icons/prayers/mystic_lore.png,icons,mystic_lore,32x32,P1,Arcane Lore,delivered
 icons/prayers/mystic_might.png,icons,mystic_might,32x32,P1,Arcane Might,delivered
-icons/prayers/rigour.png,icons,rigour,32x32,P1,Rigour,delivered
+icons/prayers/rigour.png,icons,rigour,32x32,P1,Steady Aim,delivered
 icons/prayers/piety.png,icons,piety,32x32,P1,Devout Focus,delivered
-icons/prayers/augury.png,icons,augury,32x32,P1,Augury,delivered
-icons/prayers/redemption.png,icons,redemption,32x32,P1,Redemption,delivered
-icons/prayers/smite.png,icons,smite,32x32,P1,Smite,delivered
-icons/pets/pyro.png,icons,pyro,32x32,P1,Pyro,delivered
-icons/pets/beavis.png,icons,beavis,32x32,P1,Beavis,delivered
-icons/pets/leonardo.png,icons,leonardo,32x32,P1,Leonardo,delivered
-icons/pets/mark.png,icons,mark,32x32,P1,Mark,delivered
-icons/pets/sam.png,icons,sam,32x32,P1,Sam,delivered
+icons/prayers/augury.png,icons,augury,32x32,P1,Portent,delivered
+icons/prayers/redemption.png,icons,redemption,32x32,P1,Second Wind,delivered
+icons/prayers/smite.png,icons,smite,32x32,P1,Wrathfall,delivered
+icons/prayers/hunter_1.png,icons,hunter_1,32x32,P1,Hunter's Spark,delivered
+icons/prayers/hunter_2.png,icons,hunter_2,32x32,P1,Bowstring Blessing,delivered
+icons/prayers/hunter_3.png,icons,hunter_3,32x32,P1,Fletched Fury,delivered
+icons/prayers/hunter_4.png,icons,hunter_4,32x32,P1,Hawkwind,delivered
+icons/prayers/hunter_5.png,icons,hunter_5,32x32,P1,Stormflight,delivered
+icons/prayers/hunter_6.png,icons,hunter_6,32x32,P1,Celestial Volley,delivered
+icons/prayers/arcanist_1.png,icons,arcanist_1,32x32,P1,Ember Invocation,delivered
+icons/prayers/arcanist_2.png,icons,arcanist_2,32x32,P1,Runic Surge,delivered
+icons/prayers/arcanist_3.png,icons,arcanist_3,32x32,P1,Spellfire,delivered
+icons/prayers/arcanist_4.png,icons,arcanist_4,32x32,P1,Astral Flame,delivered
+icons/prayers/arcanist_5.png,icons,arcanist_5,32x32,P1,Starfall Rite,delivered
+icons/prayers/arcanist_6.png,icons,arcanist_6,32x32,P1,Eternal Spellfire,delivered
+icons/prayers/veil_1.png,icons,veil_1,32x32,P1,Sheltering Veil,delivered
+icons/prayers/veil_2.png,icons,veil_2,32x32,P1,Windward Veil,delivered
+icons/prayers/veil_3.png,icons,veil_3,32x32,P1,Wraithward,delivered
+icons/prayers/veil_4.png,icons,veil_4,32x32,P1,Twilight Shelter,delivered
+icons/prayers/veil_5.png,icons,veil_5,32x32,P1,Astral Shelter,delivered
+icons/prayers/veil_6.png,icons,veil_6,32x32,P1,Veil Beyond,delivered
+icons/prayers/focus_1.png,icons,focus_1,32x32,P1,Guiding Light,delivered
+icons/prayers/focus_2.png,icons,focus_2,32x32,P1,Surehand Rite,delivered
+icons/prayers/focus_3.png,icons,focus_3,32x32,P1,Unerring Focus,delivered
+icons/prayers/focus_4.png,icons,focus_4,32x32,P1,Fatewatch,delivered
+icons/prayers/focus_5.png,icons,focus_5,32x32,P1,Oracle's Sight,delivered
+icons/prayers/focus_6.png,icons,focus_6,32x32,P1,Perfect Clarity,delivered
+icons/prayers/aegis_1.png,icons,aegis_1,32x32,P1,Oakheart,delivered
+icons/prayers/aegis_2.png,icons,aegis_2,32x32,P1,Granite Covenant,delivered
+icons/prayers/aegis_3.png,icons,aegis_3,32x32,P1,Iron Covenant,delivered
+icons/prayers/aegis_4.png,icons,aegis_4,32x32,P1,Citadel Ward,delivered
+icons/prayers/aegis_5.png,icons,aegis_5,32x32,P1,Dawnguard,delivered
+icons/prayers/aegis_6.png,icons,aegis_6,32x32,P1,Eternal Bastion,delivered
+icons/prayers/zeal_1.png,icons,zeal_1,32x32,P1,Quickened Spirit,delivered
+icons/prayers/zeal_2.png,icons,zeal_2,32x32,P1,Battle Rhythm,delivered
+icons/prayers/zeal_3.png,icons,zeal_3,32x32,P1,Fervent Steps,delivered
+icons/prayers/zeal_4.png,icons,zeal_4,32x32,P1,Relentless Zeal,delivered
+icons/prayers/zeal_5.png,icons,zeal_5,32x32,P1,Radiant Tempo,delivered
+icons/prayers/zeal_6.png,icons,zeal_6,32x32,P1,Timeless Fervor,delivered
+icons/pets/pyro.png,icons,pyro,32x32,P1,Emberpaw,delivered
+icons/pets/beavis.png,icons,beavis,32x32,P1,Barkbite,delivered
+icons/pets/leonardo.png,icons,leonardo,32x32,P1,Tinshield,delivered
+icons/pets/mark.png,icons,mark,32x32,P1,Bindle,delivered
+icons/pets/sam.png,icons,sam,32x32,P1,Quickpaw,delivered
 icons/pets/golden_golbin.png,icons,golden_golbin,32x32,P1,Golden Cinderkin,delivered
-icons/pets/erran.png,icons,erran,32x32,P1,Erran,delivered
-icons/pets/harold.png,icons,harold,32x32,P1,Harold,delivered
-icons/pets/saki.png,icons,saki,32x32,P1,Saki,delivered
-icons/pets/rocky.png,icons,rocky,32x32,P1,Rocky,delivered
-icons/pets/bubbles.png,icons,bubbles,32x32,P1,Bubbles,delivered
-icons/pets/cook.png,icons,cook,32x32,P1,Cook,delivered
-icons/pets/tomato.png,icons,tomato,32x32,P1,Tomato,delivered
-icons/pets/sprinkles.png,icons,sprinkles,32x32,P1,Sprinkles,delivered
-icons/pets/bob.png,icons,bob,32x32,P1,Bob,delivered
-icons/pets/smith.png,icons,smith,32x32,P1,Smith,delivered
-icons/pets/fletch.png,icons,fletch,32x32,P1,Fletch,delivered
-icons/pets/rune.png,icons,rune,32x32,P1,Rune,delivered
-icons/pets/astro.png,icons,astro,32x32,P1,Astro,delivered
-icons/pets/cart.png,icons,cart,32x32,P1,Cart,delivered
-icons/pets/dig.png,icons,dig,32x32,P1,Dig,delivered
-icons/pets/harvest.png,icons,harvest,32x32,P1,Harvest,delivered
-icons/pets/alt.png,icons,alt,32x32,P1,Alt,delivered
-icons/pets/town.png,icons,town,32x32,P1,Town,delivered
-icons/pets/atk.png,icons,atk,32x32,P1,Atk,delivered
-icons/pets/str.png,icons,str,32x32,P1,Str,delivered
-icons/pets/hp.png,icons,hp,32x32,P1,Hp,delivered
-icons/pets/rng.png,icons,rng,32x32,P1,Rng,delivered
-icons/pets/mag.png,icons,mag,32x32,P1,Mag,delivered
-icons/pets/pray.png,icons,pray,32x32,P1,Pray,delivered
-icons/pets/slay.png,icons,slay,32x32,P1,Slay,delivered
-icons/familiars/ent.png,icons,ent,32x32,P2,Ent,delivered
-icons/familiars/mole.png,icons,mole,32x32,P2,Mole,delivered
-icons/familiars/octopus.png,icons,octopus,32x32,P2,Octopus,delivered
-icons/familiars/pig.png,icons,pig,32x32,P2,Pig,delivered
-icons/familiars/crow.png,icons,crow,32x32,P2,Crow,delivered
-icons/familiars/leprechaun.png,icons,leprechaun,32x32,P2,Leprechaun,delivered
-icons/familiars/monkey.png,icons,monkey,32x32,P2,Monkey,delivered
-icons/familiars/salamander.png,icons,salamander,32x32,P2,Salamander,delivered
-icons/familiars/bear.png,icons,bear,32x32,P2,Bear,delivered
-icons/familiars/devil.png,icons,devil,32x32,P2,Devil,delivered
-icons/familiars/eagle.png,icons,eagle,32x32,P2,Eagle,delivered
-icons/familiars/owl.png,icons,owl,32x32,P2,Owl,delivered
-icons/familiars/beaver.png,icons,beaver,32x32,P2,Beaver,delivered
-icons/familiars/fox.png,icons,fox,32x32,P2,Fox,delivered
+icons/pets/erran.png,icons,erran,32x32,P1,Trailfoot,delivered
+icons/pets/harold.png,icons,harold,32x32,P1,Longdusk,delivered
+icons/pets/saki.png,icons,saki,32x32,P1,Slink,delivered
+icons/pets/rocky.png,icons,rocky,32x32,P1,Flint,delivered
+icons/pets/bubbles.png,icons,bubbles,32x32,P1,Ripple,delivered
+icons/pets/cook.png,icons,cook,32x32,P1,Simmer,delivered
+icons/pets/tomato.png,icons,tomato,32x32,P1,Turnip,delivered
+icons/pets/sprinkles.png,icons,sprinkles,32x32,P1,Fennel,delivered
+icons/pets/bob.png,icons,bob,32x32,P1,Bobbin,delivered
+icons/pets/smith.png,icons,smith,32x32,P1,Anvil,delivered
+icons/pets/fletch.png,icons,fletch,32x32,P1,Quill,delivered
+icons/pets/rune.png,icons,rune,32x32,P1,Glyph,delivered
+icons/pets/astro.png,icons,astro,32x32,P1,Twinkle,delivered
+icons/pets/cart.png,icons,cart,32x32,P1,Compass,delivered
+icons/pets/dig.png,icons,dig,32x32,P1,Trowel,delivered
+icons/pets/harvest.png,icons,harvest,32x32,P1,Bramble,delivered
+icons/pets/alt.png,icons,alt,32x32,P1,Wisp,delivered
+icons/pets/town.png,icons,town,32x32,P1,Hearth,delivered
+icons/pets/atk.png,icons,atk,32x32,P1,Redblade,delivered
+icons/pets/str.png,icons,str,32x32,P1,Boulder,delivered
+icons/pets/hp.png,icons,hp,32x32,P1,Redcap,delivered
+icons/pets/rng.png,icons,rng,32x32,P1,Longshot,delivered
+icons/pets/mag.png,icons,mag,32x32,P1,Glimmer,delivered
+icons/pets/pray.png,icons,pray,32x32,P1,Vigil,delivered
+icons/pets/slay.png,icons,slay,32x32,P1,Tracker,delivered
+icons/familiars/ent.png,icons,ent,32x32,P2,Oldroot,delivered
+icons/familiars/mole.png,icons,mole,32x32,P2,Ashmole,delivered
+icons/familiars/octopus.png,icons,octopus,32x32,P2,Tidegrasp,delivered
+icons/familiars/pig.png,icons,pig,32x32,P2,Sootsow,delivered
+icons/familiars/crow.png,icons,crow,32x32,P2,Cindercrow,delivered
+icons/familiars/leprechaun.png,icons,leprechaun,32x32,P2,Glimmerkin,delivered
+icons/familiars/monkey.png,icons,monkey,32x32,P2,Riftmonkey,delivered
+icons/familiars/salamander.png,icons,salamander,32x32,P2,Cinderling,delivered
+icons/familiars/bear.png,icons,bear,32x32,P2,Ashbear,delivered
+icons/familiars/devil.png,icons,devil,32x32,P2,Ashfiend,delivered
+icons/familiars/eagle.png,icons,eagle,32x32,P2,Galecrest,delivered
+icons/familiars/owl.png,icons,owl,32x32,P2,Duskwing,delivered
+icons/familiars/beaver.png,icons,beaver,32x32,P2,Muddam,delivered
+icons/familiars/fox.png,icons,fox,32x32,P2,Ashfox,delivered
 icons/familiars/golbin_thief.png,icons,golbin_thief,32x32,P2,Cinderkin Thief,delivered
-icons/familiars/occultist.png,icons,occultist,32x32,P2,Occultist,delivered
-icons/familiars/wolf.png,icons,wolf,32x32,P2,Wolf,delivered
-icons/familiars/minotaur.png,icons,minotaur,32x32,P2,Minotaur,delivered
-icons/familiars/centaur.png,icons,centaur,32x32,P2,Centaur,delivered
-icons/familiars/witch.png,icons,witch,32x32,P2,Witch,delivered
-icons/familiars/cyclops.png,icons,cyclops,32x32,P2,Cyclops,delivered
-icons/familiars/yak.png,icons,yak,32x32,P2,Yak,delivered
-icons/familiars/unicorn.png,icons,unicorn,32x32,P2,Unicorn,delivered
-icons/familiars/dragon.png,icons,dragon,32x32,P2,Dragon,delivered
-icons/familiars/tortoise.png,icons,tortoise,32x32,P2,Tortoise,delivered
-icons/obstacles/obstacle_1_0.png,icons,obstacle_1_0,32x32,P2,Obstacle 1-1,delivered
-icons/obstacles/obstacle_1_1.png,icons,obstacle_1_1,32x32,P2,Obstacle 1-2,delivered
-icons/obstacles/obstacle_1_2.png,icons,obstacle_1_2,32x32,P2,Obstacle 1-3,delivered
-icons/obstacles/obstacle_2_0.png,icons,obstacle_2_0,32x32,P2,Obstacle 2-1,delivered
-icons/obstacles/obstacle_2_1.png,icons,obstacle_2_1,32x32,P2,Obstacle 2-2,delivered
-icons/obstacles/obstacle_2_2.png,icons,obstacle_2_2,32x32,P2,Obstacle 2-3,delivered
-icons/obstacles/obstacle_3_0.png,icons,obstacle_3_0,32x32,P2,Obstacle 3-1,delivered
-icons/obstacles/obstacle_3_1.png,icons,obstacle_3_1,32x32,P2,Obstacle 3-2,delivered
-icons/obstacles/obstacle_3_2.png,icons,obstacle_3_2,32x32,P2,Obstacle 3-3,delivered
-icons/obstacles/obstacle_4_0.png,icons,obstacle_4_0,32x32,P2,Obstacle 4-1,delivered
-icons/obstacles/obstacle_4_1.png,icons,obstacle_4_1,32x32,P2,Obstacle 4-2,delivered
-icons/obstacles/obstacle_4_2.png,icons,obstacle_4_2,32x32,P2,Obstacle 4-3,delivered
-icons/obstacles/obstacle_5_0.png,icons,obstacle_5_0,32x32,P2,Obstacle 5-1,delivered
-icons/obstacles/obstacle_5_1.png,icons,obstacle_5_1,32x32,P2,Obstacle 5-2,delivered
-icons/obstacles/obstacle_5_2.png,icons,obstacle_5_2,32x32,P2,Obstacle 5-3,delivered
-icons/obstacles/obstacle_6_0.png,icons,obstacle_6_0,32x32,P2,Obstacle 6-1,delivered
-icons/obstacles/obstacle_6_1.png,icons,obstacle_6_1,32x32,P2,Obstacle 6-2,delivered
-icons/obstacles/obstacle_6_2.png,icons,obstacle_6_2,32x32,P2,Obstacle 6-3,delivered
-icons/obstacles/obstacle_7_0.png,icons,obstacle_7_0,32x32,P2,Obstacle 7-1,delivered
-icons/obstacles/obstacle_7_1.png,icons,obstacle_7_1,32x32,P2,Obstacle 7-2,delivered
-icons/obstacles/obstacle_7_2.png,icons,obstacle_7_2,32x32,P2,Obstacle 7-3,delivered
-icons/obstacles/obstacle_8_0.png,icons,obstacle_8_0,32x32,P2,Obstacle 8-1,delivered
-icons/obstacles/obstacle_8_1.png,icons,obstacle_8_1,32x32,P2,Obstacle 8-2,delivered
-icons/obstacles/obstacle_8_2.png,icons,obstacle_8_2,32x32,P2,Obstacle 8-3,delivered
-icons/obstacles/obstacle_9_0.png,icons,obstacle_9_0,32x32,P2,Obstacle 9-1,delivered
-icons/obstacles/obstacle_9_1.png,icons,obstacle_9_1,32x32,P2,Obstacle 9-2,delivered
-icons/obstacles/obstacle_9_2.png,icons,obstacle_9_2,32x32,P2,Obstacle 9-3,delivered
-icons/obstacles/obstacle_10_0.png,icons,obstacle_10_0,32x32,P2,Obstacle 10-1,delivered
-icons/obstacles/obstacle_10_1.png,icons,obstacle_10_1,32x32,P2,Obstacle 10-2,delivered
-icons/obstacles/obstacle_10_2.png,icons,obstacle_10_2,32x32,P2,Obstacle 10-3,delivered
-icons/obstacles/obstacle_11_0.png,icons,obstacle_11_0,32x32,P2,Obstacle 11-1,delivered
-icons/obstacles/obstacle_11_1.png,icons,obstacle_11_1,32x32,P2,Obstacle 11-2,delivered
-icons/obstacles/obstacle_11_2.png,icons,obstacle_11_2,32x32,P2,Obstacle 11-3,delivered
-icons/obstacles/obstacle_12_0.png,icons,obstacle_12_0,32x32,P2,Obstacle 12-1,delivered
-icons/obstacles/obstacle_12_1.png,icons,obstacle_12_1,32x32,P2,Obstacle 12-2,delivered
-icons/obstacles/obstacle_12_2.png,icons,obstacle_12_2,32x32,P2,Obstacle 12-3,delivered
-icons/obstacles/obstacle_13_0.png,icons,obstacle_13_0,32x32,P2,Obstacle 13-1,delivered
-icons/obstacles/obstacle_13_1.png,icons,obstacle_13_1,32x32,P2,Obstacle 13-2,delivered
-icons/obstacles/obstacle_13_2.png,icons,obstacle_13_2,32x32,P2,Obstacle 13-3,delivered
-icons/obstacles/obstacle_14_0.png,icons,obstacle_14_0,32x32,P2,Obstacle 14-1,delivered
-icons/obstacles/obstacle_14_1.png,icons,obstacle_14_1,32x32,P2,Obstacle 14-2,delivered
-icons/obstacles/obstacle_14_2.png,icons,obstacle_14_2,32x32,P2,Obstacle 14-3,delivered
-icons/obstacles/obstacle_15_0.png,icons,obstacle_15_0,32x32,P2,Obstacle 15-1,delivered
-icons/obstacles/obstacle_15_1.png,icons,obstacle_15_1,32x32,P2,Obstacle 15-2,delivered
-icons/obstacles/obstacle_15_2.png,icons,obstacle_15_2,32x32,P2,Obstacle 15-3,delivered
-icons/obstacles/pillar_of_combat.png,icons,pillar_of_combat,32x32,P2,Pillar of Combat,delivered
-icons/obstacles/pillar_of_skilling.png,icons,pillar_of_skilling,32x32,P2,Pillar of Skilling,delivered
-icons/obstacles/pillar_of_generosity.png,icons,pillar_of_generosity,32x32,P2,Pillar of Generosity,delivered
-icons/obstacles/elite_pillar_of_conflict.png,icons,elite_pillar_of_conflict,32x32,P2,Elite Pillar Of Conflict,delivered
-icons/obstacles/elite_pillar_of_endowment.png,icons,elite_pillar_of_endowment,32x32,P2,Elite Pillar Of Endowment,delivered
-icons/obstacles/elite_pillar_of_expertise.png,icons,elite_pillar_of_expertise,32x32,P2,Elite Pillar Of Expertise,delivered
-icons/constellations/deedree.png,icons,deedree,48x48,P2,Deedree,delivered
-icons/constellations/iridan.png,icons,iridan,48x48,P2,Iridan,delivered
-icons/constellations/ameria.png,icons,ameria,48x48,P2,Ameria,delivered
-icons/constellations/terra.png,icons,terra,48x48,P2,Terra,delivered
-icons/constellations/vale.png,icons,vale,48x48,P2,Vale,delivered
-icons/constellations/syllia.png,icons,syllia,48x48,P2,Syllia,delivered
-icons/constellations/arachi.png,icons,arachi,48x48,P2,Arachi,delivered
-icons/constellations/ko.png,icons,ko,48x48,P2,Ko,delivered
-icons/constellations/tellus.png,icons,tellus,48x48,P2,Tellus,delivered
-icons/constellations/qimican.png,icons,qimican,48x48,P2,Qimican,delivered
+icons/familiars/occultist.png,icons,occultist,32x32,P2,Ashcaller,delivered
+icons/familiars/wolf.png,icons,wolf,32x32,P2,Dustwolf,delivered
+icons/familiars/minotaur.png,icons,minotaur,32x32,P2,Sunderhorn,delivered
+icons/familiars/centaur.png,icons,centaur,32x32,P2,Windhoof,delivered
+icons/familiars/witch.png,icons,witch,32x32,P2,Hexweaver,delivered
+icons/familiars/cyclops.png,icons,cyclops,32x32,P2,Stonegaze,delivered
+icons/familiars/yak.png,icons,yak,32x32,P2,Rimeyak,delivered
+icons/familiars/unicorn.png,icons,unicorn,32x32,P2,Starfoil,delivered
+icons/familiars/dragon.png,icons,dragon,32x32,P2,Ashwyrm,delivered
+icons/familiars/tortoise.png,icons,tortoise,32x32,P2,Mossback,delivered
+icons/obstacles/obstacle_1_0.png,icons,obstacle_1_0,32x32,P2,Hedgerow Hop,delivered
+icons/obstacles/obstacle_1_1.png,icons,obstacle_1_1,32x32,P2,Ditch Vault,delivered
+icons/obstacles/obstacle_1_2.png,icons,obstacle_1_2,32x32,P2,Stacked Crates,delivered
+icons/obstacles/obstacle_2_0.png,icons,obstacle_2_0,32x32,P2,Lean-To Scramble,delivered
+icons/obstacles/obstacle_2_1.png,icons,obstacle_2_1,32x32,P2,Rope Ladder,delivered
+icons/obstacles/obstacle_2_2.png,icons,obstacle_2_2,32x32,P2,Stockade Wall,delivered
+icons/obstacles/obstacle_3_0.png,icons,obstacle_3_0,32x32,P2,Hayrick Leap,delivered
+icons/obstacles/obstacle_3_1.png,icons,obstacle_3_1,32x32,P2,Fence Run,delivered
+icons/obstacles/obstacle_3_2.png,icons,obstacle_3_2,32x32,P2,Grain Silo Climb,delivered
+icons/obstacles/obstacle_4_0.png,icons,obstacle_4_0,32x32,P2,Cartwheel Beam,delivered
+icons/obstacles/obstacle_4_1.png,icons,obstacle_4_1,32x32,P2,Market Awning,delivered
+icons/obstacles/obstacle_4_2.png,icons,obstacle_4_2,32x32,P2,Cobblestone Dash,delivered
+icons/obstacles/obstacle_5_0.png,icons,obstacle_5_0,32x32,P2,Ravine Ropebridge,delivered
+icons/obstacles/obstacle_5_1.png,icons,obstacle_5_1,32x32,P2,Scree Slide,delivered
+icons/obstacles/obstacle_5_2.png,icons,obstacle_5_2,32x32,P2,Fallen Arch,delivered
+icons/obstacles/obstacle_6_0.png,icons,obstacle_6_0,32x32,P2,Marsh Causeway,delivered
+icons/obstacles/obstacle_6_1.png,icons,obstacle_6_1,32x32,P2,Reed Stiltwalk,delivered
+icons/obstacles/obstacle_6_2.png,icons,obstacle_6_2,32x32,P2,Sunken Pillar,delivered
+icons/obstacles/obstacle_7_0.png,icons,obstacle_7_0,32x32,P2,Barrow Stairs,delivered
+icons/obstacles/obstacle_7_1.png,icons,obstacle_7_1,32x32,P2,Ossuary Crawl,delivered
+icons/obstacles/obstacle_7_2.png,icons,obstacle_7_2,32x32,P2,Cairn Hopping,delivered
+icons/obstacles/obstacle_8_0.png,icons,obstacle_8_0,32x32,P2,Rookery Ascent,delivered
+icons/obstacles/obstacle_8_1.png,icons,obstacle_8_1,32x32,P2,Broken Viaduct,delivered
+icons/obstacles/obstacle_8_2.png,icons,obstacle_8_2,32x32,P2,Rook's Ladder,delivered
+icons/obstacles/obstacle_9_0.png,icons,obstacle_9_0,32x32,P2,Frostledge Traverse,delivered
+icons/obstacles/obstacle_9_1.png,icons,obstacle_9_1,32x32,P2,Icicle Ladder,delivered
+icons/obstacles/obstacle_9_2.png,icons,obstacle_9_2,32x32,P2,Blackglass Climb,delivered
+icons/obstacles/obstacle_10_0.png,icons,obstacle_10_0,32x32,P2,Battlement Run,delivered
+icons/obstacles/obstacle_10_1.png,icons,obstacle_10_1,32x32,P2,Courtyard Vault,delivered
+icons/obstacles/obstacle_10_2.png,icons,obstacle_10_2,32x32,P2,Siege Ramp,delivered
+icons/obstacles/obstacle_11_0.png,icons,obstacle_11_0,32x32,P2,Caldera Ridge,delivered
+icons/obstacles/obstacle_11_1.png,icons,obstacle_11_1,32x32,P2,Pumice Hops,delivered
+icons/obstacles/obstacle_11_2.png,icons,obstacle_11_2,32x32,P2,Ashfall Climb,delivered
+icons/obstacles/obstacle_12_0.png,icons,obstacle_12_0,32x32,P2,Fenweb Crossing,delivered
+icons/obstacles/obstacle_12_1.png,icons,obstacle_12_1,32x32,P2,Spindlewalk,delivered
+icons/obstacles/obstacle_12_2.png,icons,obstacle_12_2,32x32,P2,Nesting Ropes,delivered
+icons/obstacles/obstacle_13_0.png,icons,obstacle_13_0,32x32,P2,Deep Shaft Rappel,delivered
+icons/obstacles/obstacle_13_1.png,icons,obstacle_13_1,32x32,P2,Fossil Gallery,delivered
+icons/obstacles/obstacle_13_2.png,icons,obstacle_13_2,32x32,P2,Trench Run,delivered
+icons/obstacles/obstacle_14_0.png,icons,obstacle_14_0,32x32,P2,Rift Bridges,delivered
+icons/obstacles/obstacle_14_1.png,icons,obstacle_14_1,32x32,P2,Breath Ledge,delivered
+icons/obstacles/obstacle_14_2.png,icons,obstacle_14_2,32x32,P2,Woundstep,delivered
+icons/obstacles/obstacle_15_0.png,icons,obstacle_15_0,32x32,P2,Stormspire Ascent,delivered
+icons/obstacles/obstacle_15_1.png,icons,obstacle_15_1,32x32,P2,Thunderline Run,delivered
+icons/obstacles/obstacle_15_2.png,icons,obstacle_15_2,32x32,P2,Skybound Rigging,delivered
+icons/obstacles/pillar_of_combat.png,icons,pillar_of_combat,32x32,P2,Pillar of the Vanguard,delivered
+icons/obstacles/pillar_of_skilling.png,icons,pillar_of_skilling,32x32,P2,Pillar of the Craft,delivered
+icons/obstacles/pillar_of_generosity.png,icons,pillar_of_generosity,32x32,P2,Pillar of the Open Hand,delivered
+icons/obstacles/elite_pillar_of_conflict.png,icons,elite_pillar_of_conflict,32x32,P2,Elite Pillar of the Skirmish,delivered
+icons/obstacles/elite_pillar_of_endowment.png,icons,elite_pillar_of_endowment,32x32,P2,Elite Pillar of the Gift,delivered
+icons/obstacles/elite_pillar_of_expertise.png,icons,elite_pillar_of_expertise,32x32,P2,Elite Pillar of Mastery,delivered
+icons/constellations/deedree.png,icons,deedree,48x48,P2,Vespera,delivered
+icons/constellations/iridan.png,icons,iridan,48x48,P2,Irielle,delivered
+icons/constellations/ameria.png,icons,ameria,48x48,P2,Aurelia,delivered
+icons/constellations/terra.png,icons,terra,48x48,P2,Loamara,delivered
+icons/constellations/vale.png,icons,vale,48x48,P2,Vaelith,delivered
+icons/constellations/syllia.png,icons,syllia,48x48,P2,Serith,delivered
+icons/constellations/arachi.png,icons,arachi,48x48,P2,Keshari,delivered
+icons/constellations/ko.png,icons,ko,48x48,P2,Orrin,delivered
+icons/constellations/tellus.png,icons,tellus,48x48,P2,Petrava,delivered
+icons/constellations/qimican.png,icons,qimican,48x48,P2,Qimara,delivered
 icons/constellations/roshaniya.png,icons,roshaniya,48x48,P2,Rosaniya,delivered
-icons/constellations/ashtar.png,icons,ashtar,48x48,P2,Ashtar,delivered
-icons/constellations/variel.png,icons,variel,48x48,P2,Variel,delivered
-icons/constellations/nysa.png,icons,nysa,48x48,P2,Nysa,delivered
-icons/constellations/haemir.png,icons,haemir,48x48,P2,Haemir,delivered
+icons/constellations/ashtar.png,icons,ashtar,48x48,P2,Emberine,delivered
+icons/constellations/variel.png,icons,variel,48x48,P2,Varrel,delivered
+icons/constellations/nysa.png,icons,nysa,48x48,P2,Nyssara,delivered
+icons/constellations/haemir.png,icons,haemir,48x48,P2,Haemros,delivered
+icons/constellations/orison.png,icons,orison,48x48,P2,Orison,delivered
+icons/constellations/vex.png,icons,vex,48x48,P2,Vex,delivered
+icons/constellations/halcyon.png,icons,halcyon,48x48,P2,Halcyon,delivered
 icons/status/stun.png,icons,stun,24x24,P2,Stun / Freeze,delivered
 icons/status/sleep.png,icons,sleep,24x24,P2,Sleep,delivered
 icons/status/burn.png,icons,burn,24x24,P2,Burn,delivered

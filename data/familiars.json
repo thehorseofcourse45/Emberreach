@@ -1,7 +1,7 @@
 {
   "ent": {
     "id": "ent",
-    "name": "Ent",
+    "name": "Oldroot",
     "tier": 1,
     "mark_skill": "woodcutting",
     "effect": {
@@ -21,7 +21,7 @@
   },
   "mole": {
     "id": "mole",
-    "name": "Mole",
+    "name": "Ashmole",
     "tier": 1,
     "mark_skill": "mining",
     "effect": {
@@ -32,7 +32,7 @@
   },
   "octopus": {
     "id": "octopus",
-    "name": "Octopus",
+    "name": "Tidegrasp",
     "tier": 1,
     "mark_skill": "fishing",
     "effect": {
@@ -43,7 +43,7 @@
   },
   "pig": {
     "id": "pig",
-    "name": "Pig",
+    "name": "Sootsow",
     "tier": 1,
     "mark_skill": "cooking",
     "effect": {
@@ -63,7 +63,7 @@
   },
   "crow": {
     "id": "crow",
-    "name": "Crow",
+    "name": "Cindercrow",
     "tier": 1,
     "mark_skill": "runecrafting",
     "effect": {
@@ -74,7 +74,7 @@
   },
   "leprechaun": {
     "id": "leprechaun",
-    "name": "Leprechaun",
+    "name": "Glimmerkin",
     "tier": 1,
     "mark_skill": "thieving",
     "effect": {
@@ -85,7 +85,7 @@
   },
   "monkey": {
     "id": "monkey",
-    "name": "Monkey",
+    "name": "Riftmonkey",
     "tier": 1,
     "mark_skill": "crafting",
     "effect": {
@@ -96,7 +96,7 @@
   },
   "salamander": {
     "id": "salamander",
-    "name": "Salamander",
+    "name": "Cinderling",
     "tier": 1,
     "mark_skill": "smithing",
     "effect": {
@@ -107,7 +107,7 @@
   },
   "bear": {
     "id": "bear",
-    "name": "Bear",
+    "name": "Ashbear",
     "tier": 1,
     "mark_skill": "herblore",
     "effect": {
@@ -118,7 +118,7 @@
   },
   "devil": {
     "id": "devil",
-    "name": "Devil",
+    "name": "Ashfiend",
     "tier": 1,
     "mark_skill": "firemaking",
     "effect": {
@@ -129,7 +129,7 @@
   },
   "eagle": {
     "id": "eagle",
-    "name": "Eagle",
+    "name": "Galecrest",
     "tier": 1,
     "mark_skill": "agility",
     "effect": {
@@ -140,7 +140,7 @@
   },
   "owl": {
     "id": "owl",
-    "name": "Owl",
+    "name": "Duskwing",
     "tier": 1,
     "mark_skill": "astrology",
     "effect": {
@@ -151,7 +151,7 @@
   },
   "beaver": {
     "id": "beaver",
-    "name": "Beaver",
+    "name": "Muddam",
     "tier": 1,
     "mark_skill": "fletching",
     "effect": {
@@ -162,7 +162,7 @@
   },
   "fox": {
     "id": "fox",
-    "name": "Fox",
+    "name": "Ashfox",
     "tier": 1,
     "mark_skill": "summoning",
     "effect": {
@@ -193,7 +193,7 @@
   },
   "occultist": {
     "id": "occultist",
-    "name": "Occultist",
+    "name": "Ashcaller",
     "tier": 1,
     "mark_skill": "magic",
     "effect": {
@@ -204,7 +204,7 @@
   },
   "wolf": {
     "id": "wolf",
-    "name": "Wolf",
+    "name": "Dustwolf",
     "tier": 1,
     "mark_skill": "ranged",
     "effect": {
@@ -215,7 +215,7 @@
   },
   "minotaur": {
     "id": "minotaur",
-    "name": "Minotaur",
+    "name": "Sunderhorn",
     "tier": 1,
     "mark_skill": "strength",
     "effect": {
@@ -226,7 +226,7 @@
   },
   "centaur": {
     "id": "centaur",
-    "name": "Centaur",
+    "name": "Windhoof",
     "tier": 1,
     "mark_skill": "ranged",
     "effect": {
@@ -237,7 +237,7 @@
   },
   "witch": {
     "id": "witch",
-    "name": "Witch",
+    "name": "Hexweaver",
     "tier": 1,
     "mark_skill": "magic",
     "effect": {
@@ -248,7 +248,7 @@
   },
   "cyclops": {
     "id": "cyclops",
-    "name": "Cyclops",
+    "name": "Stonegaze",
     "tier": 1,
     "mark_skill": "slayer",
     "effect": {
@@ -259,7 +259,7 @@
   },
   "yak": {
     "id": "yak",
-    "name": "Yak",
+    "name": "Rimeyak",
     "tier": 1,
     "mark_skill": "defence",
     "effect": {
@@ -270,7 +270,7 @@
   },
   "unicorn": {
     "id": "unicorn",
-    "name": "Unicorn",
+    "name": "Starfoil",
     "tier": 1,
     "mark_skill": "prayer",
     "effect": {
@@ -281,7 +281,7 @@
   },
   "dragon": {
     "id": "dragon",
-    "name": "Dragon",
+    "name": "Ashwyrm",
     "tier": 1,
     "mark_skill": "hitpoints",
     "effect": {
@@ -292,7 +292,7 @@
   },
   "tortoise": {
     "id": "tortoise",
-    "name": "Tortoise",
+    "name": "Mossback",
     "tier": 2,
     "mark_skill": "defence",
     "effect": {

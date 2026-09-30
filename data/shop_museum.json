@@ -1,0 +1,45 @@
+{
+  "_comment": "Museum stock: Museum Tokens are earned by donating artefacts (ArchaeologyManager). Keys are entry ids; grant_items are real item ids; 'gp' is optional.",
+  "museum_shards": {
+    "id": "museum_shards",
+    "name": "Curio: Verdant Shards",
+    "description": "A display case of binding shards, quietly redirected to the workshop.",
+    "cost": 6,
+    "grant_items": { "summoning_shard_green": 10 }
+  },
+  "museum_stardust": {
+    "id": "museum_stardust",
+    "name": "Curio: Gilded Stardust",
+    "description": "Sifted from a donor's telescope. The Starreading terrace will take it.",
+    "cost": 10,
+    "grant_items": { "stardust": 200 }
+  },
+  "museum_glyph": {
+    "id": "museum_glyph",
+    "name": "Curio: Glyph Hoard",
+    "description": "Refined essence, catalogued and condemned to the stores.",
+    "cost": 8,
+    "grant_items": { "pure_essence": 100 }
+  },
+  "museum_prismatic": {
+    "id": "museum_prismatic",
+    "name": "Curio: Prismatic Splinters",
+    "description": "Too pretty to grind, too useful to keep. Five splinters.",
+    "cost": 14,
+    "grant_items": { "prismatic_essence": 5 }
+  },
+  "museum_wyrmsteel": {
+    "id": "museum_wyrmsteel",
+    "name": "Curio: Wyrmsteel Offcuts",
+    "description": "Offcuts from a commissioned plate, stamped by the museum's smith.",
+    "cost": 20,
+    "grant_items": { "dragonite_bar": 2 }
+  },
+  "museum_purse": {
+    "id": "museum_purse",
+    "name": "Patron's Purse",
+    "description": "The museum pays its patrons in coin when it runs out of things to display.",
+    "cost": 25,
+    "gp": 150000
+  }
+}

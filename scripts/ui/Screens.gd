@@ -17,6 +17,9 @@ const COMBAT_SIMULATOR := "combat_simulator"
 const QUESTS := "quests"
 const ACHIEVEMENTS := "achievements"
 const COLLECTION := "collection"
+## The lifetime record. Milestones tell you what a condition unlocks; this tells you what you have
+## already done, so it sits beside the collection log rather than among the goal screens.
+const STATS := "stats"
 const SETTLEMENT := "settlement"
 const PROVISIONER := "provisioner"
 ## The general store is a counter you come back to, the provisioner a catalogue you exhaust, so
@@ -25,12 +28,22 @@ const STORE := "store"
 const EQUIPMENT := "equipment"
 const SETTINGS := "settings"
 const RECOVERY := "recovery"
+## Prayer and raid both had complete backends with no entry point; they sit with the combat
+## screens because both are combat-time systems.
+const PRAYERS := "prayers"
+const RAIDS := "raids"
+## The Farm screen is Husbandry made reachable: plots that grow in real time, planted and
+## harvested by hand. It sits with the other system screens above the task lists.
+const FARM := "farm"
+## Ascendancy: the reset layer. It is the only screen that can delete a run, so it sits with
+## Settings and Recovery at the bottom rather than up in the progress screens.
+const PRESTIGE := "prestige"
 
 ## Storage leads: the bank is the screen a player returns to between everything else, so it is the
 ## first thing under the brand rather than the fourth.
-const ORDER: Array[String] = [BANK, OVERVIEW, SKILLS, COMBAT, EQUIPMENT, EXPEDITIONS,
-	QUESTS, ACHIEVEMENTS, COLLECTION, SETTLEMENT, PROVISIONER, STORE, ACTION_QUEUE,
-	COMBAT_SIMULATOR, SETTINGS]
+const ORDER: Array[String] = [BANK, OVERVIEW, SKILLS, COMBAT, PRAYERS, EQUIPMENT, EXPEDITIONS, RAIDS, FARM,
+	QUESTS, ACHIEVEMENTS, COLLECTION, STATS, SETTLEMENT, PROVISIONER, STORE, ACTION_QUEUE,
+	COMBAT_SIMULATOR, PRESTIGE, SETTINGS]
 
 const LABELS: Dictionary = {
 	OVERVIEW: "Overview",
@@ -43,12 +56,17 @@ const LABELS: Dictionary = {
 	QUESTS: "Tasks",
 	ACHIEVEMENTS: "Milestones",
 	COLLECTION: "Collection",
+	STATS: "Stats",
 	SETTLEMENT: "Settlement",
 	PROVISIONER: "Provisioner",
 	STORE: "General Store",
 	EQUIPMENT: "Equipment",
 	SETTINGS: "Settings",
 	RECOVERY: "Recovery",
+	PRAYERS: "Prayers",
+	RAIDS: "Raid",
+	FARM: "Farm",
+	PRESTIGE: "Ascendancy",
 }
 
 const ICONS: Dictionary = {
@@ -57,16 +75,21 @@ const ICONS: Dictionary = {
 	COMBAT: "areas",
 	EXPEDITIONS: "dungeons",
 	BANK: "items",
-	ACTION_QUEUE: "status",
-	COMBAT_SIMULATOR: "combat",
+	ACTION_QUEUE: "navigation",
+	COMBAT_SIMULATOR: "navigation",
 	QUESTS: "currencies",
 	ACHIEVEMENTS: "pets",
 	COLLECTION: "items",
+	STATS: "items",
 	SETTLEMENT: "obstacles",
 	PROVISIONER: "currencies",
 	STORE: "items",
 	EQUIPMENT: "items",
-	SETTINGS: "status",
+	SETTINGS: "navigation",
+	PRAYERS: "navigation",
+	RAIDS: "navigation",
+	FARM: "skills",
+	PRESTIGE: "navigation",
 }
 
 static var _shell: Node = null

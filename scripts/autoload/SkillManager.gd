@@ -86,6 +86,9 @@ func check_action(skill_id: String, action_id: String) -> Dictionary:
 	var space: Dictionary = _check_output_space(data)
 	if not bool(space["ok"]):
 		return space
+	if skill_id == "farming" and not FarmingManager.has_free_plot():
+		return {"ok": false, "reason": "no_space",
+			"detail": "All farm plots are occupied — harvest or clear them first"}
 	return {"ok": true, "reason": "", "detail": ""}
 
 ## Backwards-compatible boolean form.
@@ -165,18 +168,26 @@ func stop_reason_text() -> String:
 func _process(delta: float) -> void:
 	if SimulationMode.is_silent():
 		return   # offline catch-up drives tick() explicitly
+	if GameManager.is_paused:
+		return   # Pause must stop the activity, not just the playtime clock
 	tick(delta)
 
 func tick(delta: float, emit_progress: bool = true) -> void:
 	if not running:
 		return
+	# A stun or respawn pauses the action, but only for the part of delta it actually covers.
+	# Anything left over must continue into progress, or a long offline slice silently loses it.
 	if stun_timer > 0.0:
+		var stunned: float = minf(stun_timer, delta)
 		stun_timer = maxf(0.0, stun_timer - delta)
-		return   # stunned (e.g. a failed pickpocket)
+		delta -= stunned      # stunned (e.g. a failed pickpocket)
 	if node_respawn_timer > 0.0:
+		var respawning: float = minf(node_respawn_timer, delta)
 		node_respawn_timer = maxf(0.0, node_respawn_timer - delta)
 		if node_respawn_timer <= 0.0:
 			node_hp = node_max_hp
+		delta -= respawning
+	if delta <= 0.0:
 		return
 	progress += delta
 	if emit_progress and not SimulationMode.is_silent():
@@ -238,13 +249,17 @@ func perform_action() -> Dictionary:
 	if not bool(space["ok"]):
 		stop_action(StopReason.STORAGE_FULL, str(space["detail"]))
 		return {"success": false, "stop": "storage_full"}
+	if active_skill == "farming" and not FarmingManager.has_free_plot():
+		stop_action(StopReason.STORAGE_FULL, "All farm plots are occupied")
+		return {"success": false, "stop": "no_space"}
 
 	# 1) Success roll. Thieving uses stealth vs perception; others use success_chance.
 	if _rng.randf() > _success_chance(data):
-		_on_action_failure(data)
+		var waste: Dictionary = _on_action_failure(data)
 		if not SimulationMode.is_silent():
-			EventBus.action_completed.emit(active_skill, active_action_id, {"success": false})
-		return {"success": false, "stop": ""}
+			EventBus.action_completed.emit(active_skill, active_action_id,
+				{"success": false, "items": waste})
+		return {"success": false, "stop": "", "items": waste}
 
 	# 2) Consume inputs (with preservation chance), then produce outputs (with doubling).
 	_consume_inputs(data)
@@ -285,18 +300,55 @@ func _check_output_space(data: Dictionary) -> Dictionary:
 				"detail": "Storage is full — no room for %s" % DataLoader.get_item(str(item_id)).get("name", item_id)}
 	return {"ok": true, "reason": "", "detail": ""}
 
-func _on_action_failure(data: Dictionary) -> void:
+func _on_action_failure(data: Dictionary) -> Dictionary:
 	var stun: float = float(data.get("stun_seconds", 0.0))
 	if stun > 0.0:
 		stun_timer = stun
 	var dmg: float = float(data.get("fail_damage", 0.0))
 	if dmg > 0.0:
 		CombatManager.damage_player_out_of_combat(dmg, "Failed action")
+	# A failed craft still used up its materials. Without this the failure branch returned before
+	# _consume_inputs() and a burnt fish cost the player nothing, which made cooking failure free.
+	_consume_inputs(data, true)
+	var waste: Dictionary = _produce_failure_output(data)
 	if not SimulationMode.is_silent():
-		EventBus.notification.emit("Failed: %s" % str(data.get("name", active_action_id)), "warn")
+		# Name what the failure left behind, so the player sees the loss rather than a bare
+		# "Failed". A failure that quietly eats a fish reads as a bug, not as cooking.
+		var note: String = "Failed: %s" % str(data.get("name", active_action_id))
+		if not waste.is_empty():
+			var names: Array[String] = []
+			for item_id in waste.keys():
+				if int(waste[item_id]) > 0:
+					names.append("%s x%d" % [str(DataLoader.get_item(str(item_id)).get("name", item_id)),
+						int(waste[item_id])])
+			if not names.is_empty():
+				note += " — %s" % ", ".join(names)
+		EventBus.notification.emit(note, "warn")
+	return waste
 
-func _consume_inputs(data: Dictionary) -> void:
-	var preserve: float = ModifierManager.get_preservation_chance(active_skill)
+## What a failed action leaves behind. Cooked food comes out burnt; anything else that takes
+## inputs (customcraft) yields nothing, so a failure there is a pure material loss.
+## ponytail: one shared burnt item, not one per recipe. Add a per-recipe waste item if the
+## fiction ever needs fish to burn differently from bread.
+func _produce_failure_output(data: Dictionary) -> Dictionary:
+	if str(data.get("fail_output_item", "")) == "":
+		return {}
+	var item_id: String = str(data["fail_output_item"])
+	var qty: int = maxi(0, int(data.get("fail_output_qty", 1)))
+	# Respect the same storage guard a success does: a full bank must not silently delete items.
+	if not BankManager.items.has(item_id) and BankManager.is_full():
+		return {}
+	var stored: int = BankManager.add_item(item_id, qty)
+	if stored > 0:
+		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, item_id, float(stored))
+	# Report it in the same shape as a success so the UI has nothing new to special-case.
+	return {item_id: stored}
+
+## Consume the action's inputs. `forced` means the attempt already failed: preservation refunds
+## exist to reward good fortune on a craft that worked, and applying one to a failure would refund
+## the fish AND hand over burnt food, turning a loss into a free item.
+func _consume_inputs(data: Dictionary, forced: bool = false) -> void:
+	var preserve: float = 0.0 if forced else ModifierManager.get_preservation_chance(active_skill)
 	for item_id in (data.get("input_items", {}) as Dictionary).keys():
 		var qty: int = int(data["input_items"][item_id])
 		# Each unit independently has a preservation chance to be refunded.
@@ -354,6 +406,10 @@ func _post_action(data: Dictionary, action_time: float) -> void:
 	if active_skill == "archaeology":
 		ArchaeologyManager.on_excavate(active_action_id)
 
+	if active_skill == "farming":
+		# The seed was paid through input_items; land it in the first free plot.
+		FarmingManager.plant_first_free(FarmingManager.seed_id_for_action(active_action_id), false)
+
 func _damage_node() -> void:
 	if node_max_hp <= 0:
 		return
@@ -388,18 +444,20 @@ func simulate_elapsed(elapsed: float) -> Dictionary:
 	var before_actions: int = last_action_count
 	var remaining: float = elapsed
 	var guard: int = 0
-	var max_slices: int = int(ceil(elapsed / SIM_SLICE)) + 2
-	while remaining > 1e-6 and running and guard < max_slices:
+	# ponytail: cap the per-call slice by the interval so node depletion, respawn and stun timers
+	# behave exactly as they do online. Wasting a whole slice on one 3s respawn is what made
+	# offline mining/harvesting/thieving run at ~45% of online.
+	var step_cap: float = maxf(1.0, minf(SIM_SLICE, current_interval))
+	var max_steps: int = int(ceil(elapsed / step_cap)) + 2
+	while remaining > 1e-6 and running and guard < max_steps:
 		guard += 1
 		if last_action_count - before_actions >= MAX_SIM_ACTIONS:
 			stop_action(StopReason.OFFLINE_LIMIT)
 			break
-		# Slice size keeps node depletion, respawn and stun timers behaving exactly as they
-		# do online, instead of consuming a whole day in one step.
-		var slice: float = minf(remaining, SIM_SLICE)
+		var slice: float = minf(remaining, step_cap)
 		tick(slice, false)
 		remaining -= slice
-		out["seconds_processed"] = elapsed - remaining
+	out["seconds_processed"] = elapsed - remaining
 	out["actions"] = last_action_count - before_actions
 	out["stopped"] = not running
 	out["stop_reason"] = stop_reason_text()

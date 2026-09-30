@@ -67,7 +67,7 @@ static func progress_bar(value: float, maximum: float, color: Color, text := "",
 	bar.max_value = maxf(1.0, maximum)
 	bar.value = clampf(value, 0.0, maxf(1.0, maximum))
 	bar.show_percentage = false
-	bar.custom_minimum_size = Vector2(0, height)
+	bar.custom_minimum_size = Vector2(0, maxi(height, 18) if text != "" else height)
 	bar.add_theme_stylebox_override("fill", UIStyle._solid(color, UITokens.R_SM))
 	bar.tooltip_text = tooltip if tooltip != "" else text
 	if text != "":
@@ -263,7 +263,7 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var card := VBoxContainer.new()
 	card.add_theme_constant_override("separation", UITokens.SP_1)
 	var row := Button.new()
-	row.custom_minimum_size = Vector2(0, UITokens.H_ROW)
+	row.custom_minimum_size = Vector2(0, 60)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.disabled = not unlocked
 	row.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "row"))
@@ -279,7 +279,16 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	content.offset_left = UITokens.SP_4
 	content.offset_right = -UITokens.SP_4
+	var outputs: Dictionary = action.get("output_items", {})
+	var preview := UIStyle.icon_texture("skills", skill_id)
+	if not outputs.is_empty():
+		preview.texture = AssetRegistry.item_icon(str(outputs.keys()[0]))
+	preview.custom_minimum_size = Vector2(40, 40)
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.modulate.a = 1.0 if unlocked else 0.4
+	content.add_child(preview)
 	var name_label := UIStyle.label(str(action.get("name", action_id)), false, UITokens.FONT_SMALL)
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if not unlocked:
@@ -455,12 +464,39 @@ static func event_log(max_lines := 60) -> Dictionary:
 	var api := {
 		"root": box,
 		"push": func(text: String):
-			lines.append(text)
+			lines.insert(0, text)
 			while lines.size() > max_lines:
-				lines.pop_front()
+				lines.pop_back()
 			label.text = "\n".join(lines),
 		"clear": func():
 			lines.clear()
 			label.text = "",
 	}
 	return api
+
+## Compact number cards that wrap instead of forcing narrow screens wider.
+static func stat_card(caption: String, value: String, color: Color = UITokens.GOLD) -> Control:
+	var card := UIStyle.card()
+	card.custom_minimum_size = Vector2(148, 0)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var col := UIStyle.vbox(UITokens.SP_2)
+	card.add_child(col)
+	var number := UIStyle.colored_label(value, color, UITokens.FONT_HEAD)
+	number.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	col.add_child(number)
+	col.add_child(UIStyle.label(caption, true, UITokens.FONT_MICRO))
+	return card
+
+static func item_rewards(items: Dictionary) -> Control:
+	var flow := HFlowContainer.new()
+	flow.add_theme_constant_override("h_separation", UITokens.SP_4)
+	flow.add_theme_constant_override("v_separation", UITokens.SP_3)
+	for item_id in items:
+		var chip := UIStyle.card()
+		var row := UIStyle.hbox()
+		chip.add_child(row)
+		row.add_child(item_icon(str(item_id), 40))
+		row.add_child(UIStyle.colored_label("×%s" % UIStyle.fmt_exact(float(items[item_id])), UITokens.GOLD_BRIGHT))
+		chip.tooltip_text = item_tooltip(str(item_id))
+		flow.add_child(chip)
+	return flow

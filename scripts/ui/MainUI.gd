@@ -127,6 +127,14 @@ func _build() -> void:
 
 	# Loading / blocked states get their own screen instead of a silent failure.
 	_recovery_panel = load("res://scripts/ui/panels/RecoveryPanel.gd").new()
+	# The sidebar is built from the current levels, but a new game (or save import) can have reset
+	# them since. state_refreshed is connected above, before this shell exists, so a reset that
+	# happens during construction never reached the nav; relabel once the buttons exist.
+	_refresh_nav()
+	# The sidebar carries levels ("Timbercraft · Lv 12"), so a level-up relabels its one
+	# entry right away. The is_connected guard keeps a rebuilt shell from double-connecting.
+	if not EventBus.skill_level_up.is_connected(_on_skill_level_up):
+		EventBus.skill_level_up.connect(_on_skill_level_up)
 
 
 
@@ -141,6 +149,8 @@ func navigate(route: Dictionary) -> void:
 		screen = _screen
 	if screen == "skill":
 		screen = Screens.SKILLS
+	if screen == Screens.SKILLS and str(route.get("skill_id", "")) == "prayer":
+		screen = Screens.PRAYERS
 	if screen == Screens.COMBAT and CombatManager.is_expedition(str(route.get("area_id", ""))):
 		screen = Screens.EXPEDITIONS
 	_show_screen(screen, route)
@@ -240,11 +250,16 @@ const PANEL_SCRIPTS: Dictionary = {
 	Screens.QUESTS: "QuestsPanel",
 	Screens.ACHIEVEMENTS: "AchievementsPanel",
 	Screens.COLLECTION: "CollectionPanel",
+	Screens.STATS: "StatsPanel",
 	Screens.SETTLEMENT: "SettlementPanel",
 	Screens.PROVISIONER: "ProvisionerPanel",
 	Screens.STORE: "GeneralStorePanel",
 	Screens.EQUIPMENT: "EquipmentPanel",
 	Screens.SETTINGS: "SettingsPanel",
+	Screens.PRAYERS: "PrayerPanel",
+	Screens.RAIDS: "RaidPanel",
+	Screens.FARM: "FarmPanel",
+	Screens.PRESTIGE: "PrestigePanel",
 	# Not a sidebar tab (it takes over only when a save cannot load), but listed so the smoke
 	# check and the layout tests cover it like every other screen.
 	Screens.RECOVERY: "RecoveryPanel",
@@ -285,9 +300,17 @@ func _refresh_nav() -> void:
 		selected_skill = str((_panels[Screens.SKILLS] as Control).get("_skill_id"))
 	for skill_id in _skill_nav_buttons.keys():
 		var button: Button = _skill_nav_buttons[skill_id]
-		var selected: bool = _screen == Screens.SKILLS and skill_id == selected_skill
+		button.text = SidebarNav.skill_nav_text(skill_id)
+		var selected: bool = (_screen == Screens.SKILLS and skill_id == selected_skill) or (_screen == Screens.PRAYERS and skill_id == "prayer")
 		button.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "row", selected))
 		button.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT if selected else UITokens.TEXT)
+
+## Sidebar skill labels carry levels, so the one button whose skill just leveled is relabelled
+## on the spot instead of rebuilding the whole navigation.
+func _on_skill_level_up(skill_id: String, _level: int) -> void:
+	var button: Button = _skill_nav_buttons.get(skill_id)
+	if button != null and is_instance_valid(button):
+		button.text = SidebarNav.skill_nav_text(skill_id)
 
 func _bump_badge(screen: String) -> void:
 	if _screen == screen:
@@ -453,6 +476,23 @@ func _run_screenshot_sweep() -> void:
 			var card_out: String = "%s/%d_skillcard.png" % [_shot_dir.trim_suffix("/"), w]
 			print("shot: %s (%s)" % [card_out, "ok" if card.save_png(card_out) == OK else "FAILED"])
 			overview.call("_select_tab", "")
+		# The Tasks screen's Rotating tab is a distinct view too: capture it so the countdown
+		# and featured cards are covered by the gate, then restore the default difficulty tab.
+		var tasks_panel: Node = _panels.get(Screens.QUESTS)
+		if tasks_panel != null and is_instance_valid(tasks_panel) and tasks_panel.has_method("_select_tab"):
+			# Pin the rotation window for this capture: the featured set and countdown are then
+			# identical on every run, instead of flapping across six-hour boundaries.
+			Quests.rotation_window_override = 123456
+			_show_screen(Screens.QUESTS, {})
+			tasks_panel.call("_select_tab", "rotating")
+			for _i in 3:
+				await get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			var rot: Image = get_viewport().get_texture().get_image()
+			var rot_out: String = "%s/%d_tasks_rotation.png" % [_shot_dir.trim_suffix("/"), w]
+			print("shot: %s (%s)" % [rot_out, "ok" if rot.save_png(rot_out) == OK else "FAILED"])
+			tasks_panel.call("_select_tab", str(Quests.DIFFICULTIES[0]))
+			Quests.rotation_window_override = -1
 		if w == 420:
 			_show_screen(Screens.SKILLS, {"skill_id": "woodcutting"})
 			_drawer.visible = true

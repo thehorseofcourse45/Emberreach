@@ -50,21 +50,46 @@ func run_all(host: Node) -> void:
 	_test_malformed_save_rejected()
 	_test_offline_cap_and_negative_time()
 	_test_online_offline_consistency()
-	_test_combat_defeat_and_retreat()
+	_test_online_offline_consistency_with_timers()
+	_test_session_time_is_not_paid_out_twice()
+	await _test_pause_and_speed_controls(host)
+	_test_reachable_systems()
+	_test_unobtainable_content()
+	_test_raid_shop_upgrades_are_real()
+	_test_melee_tier_ladder()
+	_test_quest_coverage()
+	await _test_xp_updates_live(host)
+	await _test_cooking_failure_burns_materials(host)
+	await _test_food_heals_in_combat(host)
+	_test_combat_defeat_and_retreat(host)
 	_test_duplicate_submissions()
 	_test_mastery_stall()
 	_test_general_store()
 	_test_endgame_crafting_chains()
+	_test_monster_passives()
+	_test_dungeon_sequencing()
+	_test_session_meters()
+	_test_equipment_upgrade()
+	_test_prestige()
+	_test_tutorial()
 	_test_responsive_layouts(host)
 	# After the layout suite, which is what assembles the shell the tests share: a screen test run
 	# before it would navigate a shell with no panels built and no sidebar to find a tab in.
 	_test_general_store_screen(host)
 	await _test_task_feedback_layout(host)
 	_test_combat_screen_split(host)
+	_test_prayer_expansion(host)
+	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
 	_test_favorites()
+	_test_lifetime_stats_screen(host)
 	_test_overview_skill_tabs(host)
+	_test_task_tabs_and_rotation(host)
+	_test_systems_wiring(host)
+	_test_audio()
+	_test_settings_gap_keys()
 	_test_content_validation()
+	_test_game_modes()
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
@@ -416,15 +441,10 @@ func _test_overview_skill_tabs(host: Node) -> void:
 	_ok(menu.get_item_text(menu.item_count - 1).contains("Lv"), "non-combat skills follow their heading")
 	var skills_panel: Control = load("res://scripts/ui/panels/SkillsPanel.gd").new()
 	host.add_child(skills_panel)
-	var skills_menu: OptionButton = skills_panel.get("_skill_picker")
-	_eq(skills_menu.item_count, 2 + DataLoader.get_skill_ids().size(),
-		"the Skills picker includes both group headings")
-	_ok(skills_menu.get_item_text(0) == "Combat", "the Skills picker starts with Combat")
-	var non_combat_index: int = -1
-	for i in skills_menu.item_count:
-		if skills_menu.get_item_text(i) == "Non-combat":
-			non_combat_index = i
-	_ok(non_combat_index > 0, "the Skills picker separates non-combat skills")
+	_ok(skills_panel.get("_skill_picker") == null,
+		"the Skills tab carries no dropdown: skills are chosen from the sidebar instead")
+	_ok(DataLoader.skills.has(str(skills_panel.get("_skill_id"))),
+		"the Skills tab still lands on a real skill without its picker")
 	skills_panel.queue_free()
 
 	panel.call("_select_tab", "woodcutting")
@@ -443,6 +463,61 @@ func _test_overview_skill_tabs(host: Node) -> void:
 	panel.call("_select_tab", "")
 	_ok(dashboard.visible, "the Dashboard tab restores the dashboard")
 	_ok(not skill_box.visible, "the skill card is hidden again")
+	panel.queue_free()
+
+## The Tasks screen is organised by difficulty with a six-hour rotation tab. Both are
+## data-driven, and the rotation must stay deterministic for a given window.
+func _test_task_tabs_and_rotation(host: Node) -> void:
+	_heading("Task tabs and rotation")
+	var counts: Dictionary = {}
+	var bad: Array[String] = []
+	for quest_id in Quests.all_quest_ids():
+		var difficulty: String = str(Quests.get_quest(quest_id).get("difficulty", ""))
+		if Quests.DIFFICULTIES.has(difficulty):
+			counts[difficulty] = int(counts.get(difficulty, 0)) + 1
+		else:
+			bad.append(quest_id)
+	_eq(bad.size(), 0, "every task has a known difficulty (%s)" % ("none missing" if bad.is_empty() else ", ".join(bad)))
+	for tier in Quests.DIFFICULTIES:
+		_ok(int(counts.get(tier, 0)) >= 10, "difficulty '%s' has ten or more tasks (%d)" % [tier, int(counts.get(tier, 0))])
+	var pool: Array[String] = Quests.rotating_pool_ids()
+	_ok(pool.size() >= 10, "the rotation pool is stocked (%d tasks)" % pool.size())
+	var clean: bool = true
+	for id in pool:
+		var rq: Dictionary = Quests.get_quest(id)
+		if not Quests.is_rotating(id) or not (rq.get("prerequisites", []) as Array).is_empty():
+			clean = false
+		if not Quests.DIFFICULTIES.has(str(rq.get("difficulty", ""))):
+			clean = false
+	_ok(clean, "rotation tasks are flagged, un-gated, and carry a known difficulty")
+	var featured: Array[String] = Quests.featured_rotating_ids_for_window(12345)
+	_ok(featured.size() == mini(Quests.FEATURED_ROTATING_COUNT, pool.size()),
+		"a window features %d tasks" % featured.size())
+	_ok(featured == Quests.featured_rotating_ids_for_window(12345), "the featured set is deterministic for a window")
+	var unique: Dictionary = {}
+	for id in featured:
+		unique[id] = true
+	_ok(unique.size() == featured.size() and featured.all(func(id): return Quests.is_rotating(id)),
+		"featured tasks are unique and come from the pool")
+	var secs: int = Quests.seconds_until_rotation()
+	_ok(secs > 0 and secs <= Quests.ROTATION_PERIOD_SECONDS, "the rotation countdown is bounded (%ds)" % secs)
+	if host == null or not host.is_inside_tree():
+		_ok(false, "a live shell is available to host the panel")
+		return
+	var panel: Control = load("res://scripts/ui/panels/QuestsPanel.gd").new()
+	host.add_child(panel)
+	var tabs: Array = panel.get("_tab_buttons")
+	_eq(tabs.size(), Quests.DIFFICULTIES.size() + 1, "the Tasks screen has one tab per difficulty plus the rotation")
+	_ok((tabs[0] as Button).text == "Easy" and (tabs[tabs.size() - 1] as Button).text == "Rotating",
+		"tabs run from Easy to Nightmare and end on Rotating")
+	var filter: OptionButton = panel.get("_filter")
+	filter.select(5)
+	panel.call("_select_tab", "easy")
+	var list: VBoxContainer = panel.get("_list")
+	_ok(list.get_child_count() > 0, "the Easy tab lists its tasks (%d cards)" % list.get_child_count())
+	panel.call("_select_tab", "rotating")
+	_ok(panel.get("_rotation_label") != null, "the rotating tab shows the next-rotation countdown")
+	_ok(list.get_child_count() >= 3, "the rotating tab lists featured tasks (%d nodes)" % list.get_child_count())
 	panel.queue_free()
 
 ## Favourites and protection are separate features and the brief lists both. The failure that
@@ -555,6 +630,13 @@ func _test_responsive_layouts(host: Node) -> void:
 		"the shell builds its navigation, sidebar and detail panes")
 	if nav == null or sidebar == null or detail == null:
 		return
+	# The activity strip is the one row reserved on every screen; it must stay a thin band so
+	# the workspace keeps the height (the shell reserves it rather than floating it).
+	var strip: Control = shell.get("_strip")
+	_ok(strip != null, "the shell builds its persistent activity strip")
+	if strip != null:
+		_ok(strip.get_combined_minimum_size().y <= 52.0,
+			"the activity strip stays a thin band (%dpx tall)" % int(strip.get_combined_minimum_size().y))
 	# A plain Control reports a minimum of zero, so the shell's contents are measured on its layout
 	# root instead: asserting on `shell` alone would pass no matter how badly things overflow.
 	var layout_root: Control = shell.get("_root")
@@ -645,6 +727,10 @@ func _test_task_feedback_layout(host: Node) -> void:
 
 func _test_combat_screen_split(host: Node) -> void:
 	_heading("Combat navigation")
+	# This test asserts sidebar labels match live levels. Earlier suites reset the game, so rebuild
+	# the nav first rather than depending on whichever levels happened to be current when the shell
+	# was assembled.
+	host.call("_refresh_nav")
 	var skill_buttons: Dictionary = host.get("_skill_nav_buttons")
 	_ok(skill_buttons.size() == DataLoader.get_skill_ids().size(),
 		"every skill has a left sidebar entry")
@@ -660,17 +746,60 @@ func _test_combat_screen_split(host: Node) -> void:
 			noncombat_heading = i
 		if node is HSeparator:
 			divider = i
-	var first_game: int = (host.get("_nav_buttons") as Dictionary)[Screens.BANK].get_index()
-	_ok(combat_heading >= 0 and noncombat_heading > combat_heading and divider > noncombat_heading and first_game > divider,
+	var bank_idx: int = (host.get("_nav_buttons") as Dictionary)[Screens.BANK].get_index()
+	_ok(combat_heading >= 0 and noncombat_heading > combat_heading and divider > noncombat_heading,
 		"combat and non-combat skills precede a divider and the other screens")
-	(skill_buttons["fishing"] as Button).pressed.emit()
+	_ok(bank_idx < combat_heading, "Storage is pinned above the skills section")
+	var prayer_button: Button = skill_buttons["prayer"]
+	_ok(prayer_button.get_index() > combat_heading and prayer_button.get_index() < noncombat_heading,
+		"Prayers sits inside the combat skills section")
+	prayer_button.pressed.emit()
+	_ok(host.get("_screen") == Screens.PRAYERS, "the combat prayer entry opens the prayer list")
+	var fishing_button: Button = skill_buttons["fishing"]
+	var fishing_name: String = str(DataLoader.get_skill("fishing").get("name", "fishing"))
+	_ok(fishing_button.text.begins_with(fishing_name)
+		and fishing_button.text.contains("Lv %d" % PlayerData.get_level("fishing")),
+		"sidebar skill entries show the level next to the skill name")
+	fishing_button.pressed.emit()
 	_ok(host.get("_screen") == Screens.SKILLS and str((host.get("_panels") as Dictionary)[Screens.SKILLS].get("_skill_id")) == "fishing",
 		"a sidebar skill opens that skill's activities")
+	# The label tracks a level-up that happens while the shell is live, not only the level at
+	# build time: grant exactly one level and read the button back.
+	var before_level: int = PlayerData.get_level("fishing")
+	PlayerData.add_xp("fishing", float(XPTable.xp_for_level(before_level + 1) - XPTable.xp_for_level(before_level)))
+	_ok(PlayerData.get_level("fishing") == before_level + 1,
+		"test setup: Angling leveled up (%d -> %d)" % [before_level, before_level + 1])
+	_ok(fishing_button.text.contains("Lv %d" % (before_level + 1)),
+		"the sidebar entry relabels itself after a level-up")
+	# Width guard: the sidebar must fit its longest possible label at the level cap without
+	# clipping. Available room = sidebar width - panel margins (28) - scrollbar (8) - button
+	# side padding (28) - icon (18) - icon/text gap (6); the font is what buttons render with.
+	var font: Font = ThemeDB.fallback_font
+	var worst_label: String = ""
+	var worst_width: float = 0.0
+	for sid in DataLoader.get_skill_ids():
+		var candidate: String = "%s · Lv %d" % [
+			str(DataLoader.get_skill(sid).get("name", sid)), XPTable.MAX_LEVEL]
+		var label_width: float = font.get_string_size(candidate, HORIZONTAL_ALIGNMENT_LEFT, -1,
+			UITokens.FONT_SMALL).x
+		if label_width > worst_width:
+			worst_width = label_width
+			worst_label = candidate
+	var label_room: float = float(UITokens.W_SIDEBAR - 28 - 8 - 28 - 18 - 6)
+	_ok(worst_width + 4.0 <= label_room,
+		"the sidebar fits its longest label '%s' (needs %.0fpx of %.0fpx)"
+			% [worst_label, worst_width, label_room])
 	var order: Array[String] = Screens.ORDER
-	_ok(order[order.size() - 3] == Screens.ACTION_QUEUE
-		and order[order.size() - 2] == Screens.COMBAT_SIMULATOR
-		and order[order.size() - 1] == Screens.SETTINGS,
-		"Action Queue and Simulator sit immediately above Settings")
+	# Settings anchors the bottom of the sidebar, and Action Queue / Simulator stay directly
+	# above it. Prayer and Raid were added after that pair, so assert the intent rather than
+	# three fixed indices: Settings last, and the two automation screens adjacent to it.
+	_ok(order[order.size() - 1] == Screens.SETTINGS,
+		"Settings is the last sidebar entry")
+	var aq: int = order.find(Screens.ACTION_QUEUE)
+	var sim: int = order.find(Screens.COMBAT_SIMULATOR)
+	_ok(aq >= 0 and sim >= 0 and absi(aq - sim) == 1,
+		"Action Queue and Simulator sit next to each other (%d, %d)" % [aq, sim])
+	_ok(order.size() == Screens.ORDER.size(), "the sidebar order has no duplicate entries")
 	var regular: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
 	host.add_child(regular)
 	var expedition: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
@@ -699,6 +828,189 @@ func _test_combat_screen_split(host: Node) -> void:
 	host.call("navigate", {"screen": Screens.COMBAT, "area_id": "air_god_dungeon"})
 	_ok(host.get("_screen") == Screens.EXPEDITIONS, "high-tier dungeon routes open Expeditions")
 
+func _test_prayer_expansion(host: Node) -> void:
+	_heading("Prayer progression and navigation icons")
+	GameManager.start_new_game("standard")
+	_ok(DataLoader.prayers.size() == 60 and int(DataLoader.prayers["aegis_6"]["level"]) == 120,
+		"sixty prayers include unlocks through level 120")
+	_ok(not PrayerManager.toggle("aegis_6"), "an endgame prayer is locked at level one")
+	PlayerData.set_level("prayer", 120)
+	PlayerData.prayer_points = 20.0
+	_ok(PrayerManager.toggle("hunter_6") and PrayerManager.toggle("arcanist_6"),
+		"new ranged and magic prayers can be activated at their required level")
+	_ok(is_equal_approx(ModifierManager.get_max_hit_percent("ranged"), 34.0)
+		and is_equal_approx(ModifierManager.get_max_hit_percent("magic"), 34.0),
+		"new prayers register their real combat bonuses")
+	_ok(not PrayerManager.toggle("aegis_6") and is_equal_approx(PrayerManager.cost_per_attack(), 8.0),
+		"the two-prayer limit and combined point cost still apply")
+	PrayerManager.spend_for_attack()
+	_ok(is_equal_approx(PlayerData.prayer_points, 12.0), "new prayers consume points on attack")
+	PrayerManager.deactivate_all()
+	_ok(is_zero_approx(ModifierManager.get_max_hit_percent("ranged")), "deactivating removes the bonus")
+	GameManager.start_new_game("standard")
+	host.call("navigate", {"screen": "skill", "skill_id": "prayer"})
+	_ok(host.get("_screen") == Screens.PRAYERS, "legacy prayer skill routes open Prayers")
+	var panel: Control = (host.get("_panels") as Dictionary)[Screens.PRAYERS]
+	var filter: OptionButton = panel.get("_filter")
+	var list: VBoxContainer = panel.get("_list")
+	filter.select(0)
+	panel.call("_rebuild")
+	_ok(list.get_child_count() == 60, "the list previews every future prayer unlock")
+	filter.select(1)
+	panel.call("_rebuild")
+	_ok(list.get_child_count() == 1, "Unlocked shows only the level-one prayer on a new save")
+	filter.select(0)
+	panel.call("_rebuild")
+	for screen in [Screens.ACTION_QUEUE, Screens.COMBAT_SIMULATOR, Screens.PRAYERS, Screens.RAIDS, Screens.SETTINGS]:
+		_ok(AssetRegistry.has_asset("icons/navigation/%s.png" % screen), "%s has its own navigation icon" % screen)
+
+
+## Husbandry: the plot engine, its seed economy and the Farm screen are one loop now.
+## Planting spends seeds, growth is wall-clock, harvest pays XP and per-crop mastery — and the
+## skill's plant actions fill plots through the same manager, so both doors stay consistent.
+func _test_husbandry(host: Node) -> void:
+	_heading("Husbandry")
+	GameManager.start_new_game("standard")
+	var farm: Dictionary = DataLoader.get_skill("farming")
+	_ok((farm.get("actions", []) as Array).size() == 10, "Husbandry lists ten crops")
+	var seeds_ok: bool = true
+	var gates_ok: bool = true
+	var products_ok: bool = true
+	for a in (farm.get("actions", []) as Array):
+		var action_id: String = str((a as Dictionary).get("id", ""))
+		var seed_id: String = FarmingManager.seed_id_for_action(action_id)
+		var seed_item: Dictionary = DataLoader.get_item(seed_id)
+		if seed_item.is_empty() or str(seed_item.get("item_type", "")) != "seed":
+			seeds_ok = false
+			continue
+		if not ((a as Dictionary).get("input_items", {}) as Dictionary).has(seed_id):
+			seeds_ok = false
+		var product: String = str(seed_item.get("product_item", ""))
+		if product == "" or DataLoader.get_item(product).is_empty():
+			products_ok = false
+		if FarmingManager.plant_level(seed_id) != int((a as Dictionary).get("level_required", 0)):
+			gates_ok = false
+	_ok(seeds_ok, "every plant action consumes its matching seed")
+	_ok(gates_ok, "each crop is gated at its plant action's level")
+	_ok(products_ok, "every seed names a real harvested product")
+	var drops_ok: bool = true
+	for pair in [["king", "duskroot_seed"], ["high_priest", "herald_bloom_seed"], ["herald_mark", "emberbloom_seed"]]:
+		var target: Dictionary = DataLoader.get_action("thieving", str(pair[0]))
+		var found: bool = false
+		for sec in (target.get("secondary_outputs", []) as Array):
+			if str((sec as Dictionary).get("item_id", "")) == str(pair[1]):
+				found = true
+		if not found:
+			drops_ok = false
+	_ok(drops_ok, "the three late seeds drop from their thieving tier")
+
+	_ok(FarmingManager.plots.size() == 15, "a fresh farm has fifteen plots")
+	var type_counts: Dictionary = {}
+	for p in FarmingManager.plots:
+		type_counts[str(p["type"])] = int(type_counts.get(str(p["type"]), 0)) + 1
+	_ok(int(type_counts.get("allotment", 0)) == 6 and int(type_counts.get("herb", 0)) == 6
+		and int(type_counts.get("tree", 0)) == 3, "plots split six allotment, six herb, three tree")
+
+	# Planting rules: level gates, seed spend, occupied plots, out-of-range index.
+	PlayerData.set_level("farming", 1)
+	BankManager.add_item("emberbloom_seed", 1)
+	_ok(not FarmingManager.plant(0, "emberbloom_seed"), "a level-115 crop refuses to plant at level 1")
+	_ok(BankManager.get_count("emberbloom_seed") == 1, "a refused planting leaves the seed in storage")
+	BankManager.add_item("garum_herb_seed", 3)
+	_ok(FarmingManager.plant(0, "garum_herb_seed"), "a level-1 crop plants at level 1")
+	_ok(BankManager.get_count("garum_herb_seed") == 2, "planting spends exactly one seed")
+	_ok(not FarmingManager.plant(0, "garum_herb_seed"), "an occupied plot refuses a second seed")
+	_ok(BankManager.get_count("garum_herb_seed") == 2, "a refused planting spends nothing")
+	_ok(not FarmingManager.plant(99, "garum_herb_seed"), "an out-of-range plot index is refused")
+	_ok(FarmingManager.plant_first_free("garum_herb_seed") == 1, "plant_first_free takes the first empty plot")
+	_ok(FarmingManager.plant_first_free("garum_herb_seed") == 2, "plant_first_free continues down the row")
+	_ok(FarmingManager.plant_first_free("garum_herb_seed") == -1, "plant_first_free fails cleanly without seeds")
+	# Compost.
+	_ok(not FarmingManager.apply_compost(2), "compost cannot be applied with none in storage")
+	BankManager.add_item("compost", 2)
+	_ok(FarmingManager.apply_compost(0), "compost applies to a plot")
+	_ok(int(FarmingManager.plots[0]["compost"]) == 1, "the plot records its compost")
+	# Growth and harvest.
+	_ok(not FarmingManager.is_ready(0), "a fresh planting is not ready yet")
+	FarmingManager.plots[0]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
+	_ok(FarmingManager.is_ready(0), "a backdated crop reads as ready")
+	var xp_before: float = PlayerData.get_xp("farming")
+	var res: Dictionary = FarmingManager.harvest(0)
+	_ok(int(res.get("quantity", 0)) >= 3, "harvest yields at least the seed minimum")
+	_ok(BankManager.get_count("garum_herb") >= 3, "the crop lands in storage")
+	_ok(PlayerData.get_xp("farming") > xp_before, "harvesting grants XP")
+	_ok(FarmingManager.harvest(0).is_empty(), "an empty plot cannot be harvested twice")
+	_ok(MasteryManager.get_xp("farming", "plant_garum_herb") > 0.0, "harvest mastery lands on the crop's action")
+	# Failed crops stay on the plot until cleared.
+	FarmingManager.plots[1]["alive"] = false
+	_ok(not FarmingManager.is_ready(1), "a failed crop is never ready")
+	_ok(FarmingManager.clear_plot(1), "a failed crop can be cleared")
+	_ok(str(FarmingManager.plots[1]["seed_id"]) == "", "clearing frees the plot for replanting")
+	# Batch harvest and the offline counter.
+	BankManager.add_item("garum_herb_seed", 3)
+	_ok(FarmingManager.plant_first_free("garum_herb_seed") == 0, "replanting reuses a harvested plot")
+	_ok(FarmingManager.plant_first_free("garum_herb_seed") == 1, "and continues down the row")
+	FarmingManager.plots[0]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
+	FarmingManager.plots[1]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
+	# Pin survival so this check is about batch collection, not the seeded survival roll.
+	FarmingManager.plots[0]["alive"] = true
+	FarmingManager.plots[1]["alive"] = true
+	var batch: Dictionary = FarmingManager.harvest_all()
+	_ok(int(batch.get("plots", 0)) == 2, "harvest_all collects exactly the ready plots")
+	_ok(FarmingManager.advance_offline(3600.0) == 0, "the offline counter reads zero with nothing ready")
+	BankManager.add_item("garum_herb_seed", 1)
+	FarmingManager.plant_first_free("garum_herb_seed")
+	FarmingManager.plots[0]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
+	FarmingManager.plots[0]["alive"] = true
+	_ok(FarmingManager.advance_offline(3600.0) == 1, "a ready crop is counted for the offline summary")
+	FarmingManager.harvest_all()
+
+	# The skill-tab bridge: plant actions spend seeds into plots, then stop with a reason.
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("farming", 1)
+	BankManager.add_item("garum_herb_seed", 3)
+	_ok(SkillManager.start_action("farming", "plant_garum_herb"), "the plant action starts with seeds in storage")
+	SimulationMode.begin()
+	SkillManager.simulate_elapsed(5.0)
+	SimulationMode.end()
+	var planted: int = 0
+	for p in FarmingManager.plots:
+		if str(p["seed_id"]) != "":
+			planted += 1
+	_ok(planted == 3, "the plant action filled three plots with three seeds")
+	_ok(BankManager.get_count("garum_herb_seed") == 0, "the plant action spent every seed")
+	_ok(not SkillManager.running and SkillManager.stop_reason_text().contains("Emberleaf"),
+		"the loop stops with a named reason when the seeds run out")
+	for i in range(FarmingManager.plots.size()):
+		BankManager.add_item("garum_herb_seed", 1)
+		FarmingManager.plant_first_free("garum_herb_seed")
+	_ok(not bool(SkillManager.check_action("farming", "plant_garum_herb")["ok"]),
+		"planting is refused while every plot is occupied")
+
+	# The Farm screen.
+	host.call("navigate", {"screen": Screens.FARM})
+	var panel: Control = (host.get("_panels") as Dictionary).get(Screens.FARM)
+	if panel == null or not is_instance_valid(panel):
+		_ok(false, "the Farm screen exists")
+		return
+	_ok(true, "the Farm screen exists")
+	_ok(panel.call("_plot_count") == 15, "the Farm screen renders all fifteen plots")
+	_ok((panel.get("_summary") as Label).text.contains("Husbandry"), "the summary names the skill")
+	var options: Array = panel.call("_seed_options")
+	_ok(options.size() == 10, "the seed picker lists every crop")
+	var locked_ok: bool = false
+	for o in options:
+		if str((o as Dictionary).get("id", "")) == "emberbloom_seed" and not bool((o as Dictionary).get("unlocked", false)):
+			locked_ok = true
+	_ok(locked_ok, "the picker locks crops above the player's level")
+	BankManager.remove_item("garum_herb_seed", BankManager.get_count("garum_herb_seed"))
+	var spent_ok: bool = false
+	for o in panel.call("_seed_options"):
+		if str((o as Dictionary).get("id", "")) == "garum_herb_seed" and bool((o as Dictionary).get("unlocked", false)) \
+				and int((o as Dictionary).get("count", 0)) == 0:
+			spent_ok = true
+	_ok(spent_ok, "a spent seed still lists, marked unavailable")
+	host.call("_show_screen", Screens.OVERVIEW, {})
 const PANEL_SCRIPTS: Dictionary = {
 	Screens.OVERVIEW: "OverviewPanel",
 	Screens.SKILLS: "SkillsPanel",
@@ -710,11 +1022,16 @@ const PANEL_SCRIPTS: Dictionary = {
 	Screens.QUESTS: "QuestsPanel",
 	Screens.ACHIEVEMENTS: "AchievementsPanel",
 	Screens.COLLECTION: "CollectionPanel",
+	Screens.STATS: "StatsPanel",
 	Screens.SETTLEMENT: "SettlementPanel",
 	Screens.PROVISIONER: "ProvisionerPanel",
 	Screens.STORE: "GeneralStorePanel",
 	Screens.EQUIPMENT: "EquipmentPanel",
 	Screens.SETTINGS: "SettingsPanel",
+	Screens.PRAYERS: "PrayerPanel",
+	Screens.RAIDS: "RaidPanel",
+	Screens.FARM: "FarmPanel",
+	Screens.PRESTIGE: "PrestigePanel",
 	Screens.RECOVERY: "RecoveryPanel",
 }
 
@@ -876,7 +1193,7 @@ func run_end_to_end(host: Node) -> void:
 	_ok(Quests.claimed_count() >= 1, "at least one task completed")
 	_ok(PlayerData.get_stat("gp_earned") >= 0.0, "lifetime gold counter is valid")
 	steps.append("10. Totals: total levels %d, tasks claimed %d, milestones %d, items discovered %d" % [
-		total_level, Quests.claimed_count(), Achievements.unlocked_count(),
+		total_level, Quests.claimed_count(), Achievements.claimed_count(),
 		(PlayerData.completion_log.get("items", {}) as Dictionary).size()])
 
 	ok = _failed == 0
@@ -1038,21 +1355,76 @@ func _test_quest_reward_once() -> void:
 		_ok(true, "the reward added %s GP" % UIStyle.fmt(gp_after_first - gp_before))
 
 func _test_achievement_reward_once() -> void:
-	_heading("Achievement rewards are granted exactly once")
-	# Level several skills up so at least one achievement condition is satisfiable.
+	_heading("Milestone rewards are claimed exactly once")
+	# Level several skills up so at least one milestone condition is satisfiable.
 	for skill_id in DataLoader.get_skill_ids():
 		PlayerData.set_level(skill_id, 40)
-	var unlocked_before: int = Achievements.unlocked_count()
+	var completed_before: int = Achievements.completed_count()
 	var first: Array = Achievements.evaluate_all()
-	var unlocked_after: int = Achievements.unlocked_count()
 	var second: Array = Achievements.evaluate_all()
-	_ok(first.size() > 0, "the first evaluation unlocks at least one milestone")
-	_eq(second.size(), 0, "the second evaluation unlocks nothing new")
-	_eq(unlocked_after, unlocked_before + first.size(), "every milestone unlocked this pass is recorded once")
-	# A second full pass over every condition must not change the gold balance.
+	_ok(first.size() > 0, "the first evaluation completes at least one milestone")
+	_eq(second.size(), 0, "evaluation never double-reports a completion")
+	_eq(Achievements.completed_count(), completed_before + first.size(), "every completed milestone is recorded once")
+	_eq(Achievements.claimed_count(), 0, "completion alone never pays out - milestones are claimed")
+	_ok(Achievements.ready_count() > 0, "completed milestones wait to be claimed (%d ready)" % Achievements.ready_count())
 	var gp_before: float = PlayerData.gp
 	Achievements.evaluate_all()
-	_approx(PlayerData.gp, gp_before, 0.000001, "re-evaluating grants no further reward")
+	_approx(PlayerData.gp, gp_before, 0.000001, "re-evaluating still grants nothing")
+	# Claiming pays out exactly once and delivers the reward bundle.
+	var probe_id: String = ""
+	var probe_item: String = ""
+	var probe_qty: int = 0
+	for ach_id in Achievements.all_ids():
+		if not Achievements.is_ready(ach_id):
+			continue
+		var items: Dictionary = Achievements.get_record(ach_id).get("reward", {}).get("items", {})
+		if not items.is_empty():
+			probe_id = ach_id
+			probe_item = str(items.keys()[0])
+			probe_qty = int(items[probe_item])
+			break
+	_ok(probe_id != "", "a completed milestone with an item bundle exists for the probe")
+	if probe_id != "":
+		var bank_before: int = BankManager.get_count(probe_item)
+		_ok(Achievements.claim(probe_id), "a completed milestone can be claimed")
+		var bank_after: int = BankManager.get_count(probe_item)
+		_ok(bank_after >= bank_before + probe_qty, "the claim delivered its supplies (%s x%d)" % [probe_item, probe_qty])
+		_ok(not Achievements.claim(probe_id), "the same milestone cannot be claimed twice")
+		_eq(BankManager.get_count(probe_item), bank_after, "supplies are granted exactly once")
+	# An unmet milestone cannot be claimed.
+	var unmet_id: String = ""
+	for ach_id in Achievements.all_ids():
+		if not Achievements.is_completed(ach_id):
+			unmet_id = ach_id
+			break
+	_ok(unmet_id != "", "some milestones are still unmet (%d claimed of %d)" % [Achievements.claimed_count(), Achievements.count()])
+	_ok(not Achievements.claim(unmet_id), "an unmet milestone cannot be claimed")
+	# Claimed supplies can complete further milestones; claim-all settles the cascade.
+	var rounds: int = 0
+	while Achievements.ready_count() > 0 and rounds < 12:
+		rounds += 1
+		Achievements.claim_all()
+	_eq(Achievements.ready_count(), 0, "claiming settles every cascade (%d rounds)" % rounds)
+	_eq(Achievements.claimed_count(), Achievements.completed_count(), "every completed milestone ends up claimed")
+	# Every condition kind must be exercised by at least one milestone.
+	var kinds_seen: Dictionary = {}
+	for ach_id in Achievements.all_ids():
+		kinds_seen[str(Achievements.get_record(ach_id).get("condition", {}).get("kind", ""))] = true
+	var missing_kinds: Array[String] = []
+	for kind in ["skill_level", "total_level", "item_count", "lifetime_item", "monsters_killed",
+		"dungeons_cleared", "items_discovered", "gp_earned", "actions_completed", "quests_completed",
+		"pets_unlocked", "settlement_buildings"]:
+		if not kinds_seen.has(kind):
+			missing_kinds.append(kind)
+	_eq(missing_kinds.size(), 0, "every condition kind has milestones (%s)"
+		% ("none missing" if missing_kinds.is_empty() else ", ".join(missing_kinds)))
+	# Pre-claim saves (the auto-grant era) migrate as already claimed.
+	var keep: Dictionary = Achievements.serialize()
+	Achievements.deserialize({"unlocked": {"first_shavings": true}, "unlocked_unix": {"first_shavings": 123}})
+	_ok(Achievements.is_completed("first_shavings") and Achievements.is_claimed("first_shavings"),
+		"pre-claim saves arrive already claimed")
+	Achievements.deserialize(keep)
+	_eq(Achievements.claimed_count(), (keep.get("claimed", {}) as Dictionary).size(), "the milestone snapshot restores cleanly")
 
 func _test_save_round_trip() -> void:
 	_heading("Save round-trip")
@@ -1192,7 +1564,7 @@ func _test_online_offline_consistency() -> void:
 	_eq(offline_items, online_items, "both paths produced identical items")
 	_ok(online_items > 0, "the consistent run actually produced something")
 
-func _test_combat_defeat_and_retreat() -> void:
+func _test_combat_defeat_and_retreat(host: Node) -> void:
 	_heading("Combat defeat and retreat")
 	var area: Dictionary = _find_area()
 	var dungeon_ok: bool = not area.is_empty()
@@ -1236,6 +1608,42 @@ func _test_combat_defeat_and_retreat() -> void:
 		_ok(EquipmentManager.is_equipped(weapon), "the equipped weapon was NOT destroyed by the defeat")
 	_ok(_total_items_held() >= items_before, "no item was destroyed by the defeat")
 	_ok(CombatManager.state == CombatManager.State.IDLE, "the fight ended after the defeat")
+	# Portrait refresh contract: a new enemy must announce itself as an activity change, or
+	# the strip and the fight readout keep showing the session's first spawn forever.
+	var spawn_events: Array = [0]
+	var watcher := func(): spawn_events[0] += 1
+	EventBus.activity_changed.connect(watcher)
+	var watch_area: Dictionary = _find_area()
+	CombatManager.start_combat({"type": "area", "id": str(watch_area["id"]), "monsters": watch_area["monsters"],
+		"endless": true, "attack_style": "melee", "melee_style": "stab"})
+	var after_start: int = int(spawn_events[0])
+	CombatManager.apply_damage_to_monster(99_999_999)
+	_ok(int(spawn_events[0]) > after_start, "each new enemy announces an activity change (%d -> %d)" % [after_start, int(spawn_events[0])])
+	_ok(CombatManager.state == CombatManager.State.FIGHTING and CombatManager.current_monster_id != "",
+		"an endless region respawns a new enemy after each kill")
+	CombatManager.stop_combat("retreat")
+	EventBus.activity_changed.disconnect(watcher)
+	# End to end: a live panel must show the enemy actually being fought, across respawns.
+	CombatManager.start_combat({"type": "area", "id": str(watch_area["id"]), "monsters": watch_area["monsters"],
+		"endless": true, "attack_style": "melee", "melee_style": "stab"})
+	var panel: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
+	host.add_child(panel)
+	CombatManager.apply_damage_to_monster(99_999_999)
+	var want_tex: Texture2D = AssetRegistry.monster_sprite(CombatManager.current_monster_id)
+	var want_name: String = str(DataLoader.get_monster(CombatManager.current_monster_id).get("name", ""))
+	var sprite_ok: bool = false
+	for tr2 in panel.find_children("", "TextureRect", true, false):
+		if (tr2 as TextureRect).texture == want_tex:
+			sprite_ok = true
+	var name_ok: bool = false
+	for lbl in panel.find_children("", "Label", true, false):
+		if (lbl as Label).text.contains(want_name):
+			name_ok = true
+	_ok(sprite_ok, "the fight readout's portrait matches the enemy being fought")
+	_ok(name_ok, "the fight readout names the enemy being fought")
+	panel.call("_process", 0.0)
+	CombatManager.stop_combat("retreat")
+	panel.queue_free()
 
 func _test_duplicate_submissions() -> void:
 	_heading("Duplicate action submissions")
@@ -1271,6 +1679,135 @@ func _report_suite(name: String, state: Dictionary) -> void:
 		_ok(false, "%s: %s" % [name, str(label)])
 	_ok(true, "%s policy, safety and persistence checks" % name)
 
+## The audio system is pure data + pure math: recipes in data/audio.json become PCM
+## buffers. These checks never open a device — they assert the recipes resolve, the
+## synthesis produces real samples, and throttles/settings behave.
+func _test_audio() -> void:
+	_heading("Audio")
+	var audio: Dictionary = DataLoader.audio
+	_ok(not audio.is_empty(), "the audio table loaded (%d sounds, %d tracks)" % [
+		audio.get("sfx", {}).size(), audio.get("music", {}).size()])
+	_ok(audio.get("sfx", {}).size() >= 10, "a meaningful sound set exists (%d)" % audio.get("sfx", {}).size())
+	_ok(audio.get("music", {}).size() >= 2, "both music tracks exist (%d)" % audio.get("music", {}).size())
+	# Every reference resolves: ContentValidator checks these too, but the test states
+	# the promise directly so a validator regression cannot hide a broken mapping.
+	var broken: Array[String] = []
+	for signal_name in audio.get("events", {}).keys():
+		if not EventBus.has_signal(str(signal_name)):
+			broken.append(str(signal_name))
+	_ok(broken.is_empty(), "every audio event is a real signal (broken: %s)" % str(broken))
+	# Synthesis produces actual samples: non-trivial length, silent at both edges so
+	# the sound cannot click when it starts or ends.
+	var stream: AudioStreamWAV = AudioManager.sfx_stream("levelup")
+	_ok(stream != null and stream.data.size() > 4000,
+		"a sound effect synthesizes to real PCM (%d bytes)" % (stream.data.size() if stream != null else 0))
+	if stream != null:
+		_ok(_pcm_edge_is_quiet(stream.data, 0), "the sound starts from silence (no click)")
+		_ok(_pcm_edge_is_quiet(stream.data, stream.data.size() - 4), "the sound ends at silence (no click)")
+	var music: AudioStreamWAV = AudioManager.music_stream("explore")
+	_ok(music != null and music.data.size() > 32000,
+		"the music track synthesizes to real PCM (%d bytes)" % (music.data.size() if music != null else 0))
+	_ok(music != null and music.loop_mode == AudioStreamWAV.LOOP_FORWARD,
+		"the music track loops seamlessly")
+	# Cache identity: the same recipe is not re-synthesized on every play.
+	_ok(AudioManager.sfx_stream("levelup") == stream, "synthesized sounds are cached")
+	# Throttling: one window honored, a different key unaffected.
+	var first: bool = AudioManager.play_sfx("pickup", "test-throttle", 60000)
+	var second: bool = AudioManager.play_sfx("pickup", "test-throttle", 60000)
+	_ok(first and not second, "a throttled sound plays once inside its window")
+	# Volume keys exist so old saves migrate them in, and applying zero mutes the bus.
+	_ok(SettingsDefaults.DEFAULTS.has("music_volume") and SettingsDefaults.DEFAULTS.has("sfx_volume"),
+		"volume settings have declared defaults")
+	var saved_music: float = float(PlayerData.settings.get("music_volume", 60.0))
+	var saved_sfx: float = float(PlayerData.settings.get("sfx_volume", 80.0))
+	PlayerData.settings["music_volume"] = 0.0
+	PlayerData.settings["sfx_volume"] = 0.0
+	AudioManager.apply_volumes()
+	var music_bus: int = AudioServer.get_bus_index("Music")
+	var sfx_bus: int = AudioServer.get_bus_index("SFX")
+	_ok(music_bus >= 0 and sfx_bus >= 0, "the Music and SFX buses exist")
+	_ok(AudioServer.is_bus_mute(music_bus) and AudioServer.is_bus_mute(sfx_bus),
+		"zero volume mutes the bus")
+	PlayerData.settings["music_volume"] = saved_music
+	PlayerData.settings["sfx_volume"] = saved_sfx
+	AudioManager.apply_volumes()
+
+## Whether the 16-bit sample at `offset` is (near) silence: the first and last samples
+## of a synthesized effect must be zero or the sound audibly clicks.
+func _pcm_edge_is_quiet(data: PackedByteArray, offset: int) -> bool:
+	if offset < 0 or offset + 1 >= data.size():
+		return false
+	var v: int = absi(data.decode_s16(offset))
+	return v <= 327   # 0.1% of full scale
+
+func _test_game_modes() -> void:
+	_heading("Game modes promise only what the game does")
+	# 1. Every flag the modes declare is on the honoured list, so no flag can be added to the
+	# JSON without some code being written to read it.
+	for mode_id in DataLoader.game_modes.keys():
+		if str(mode_id).begins_with("_"):
+			continue
+		var unhonoured: Array[String] = []
+		for key in (DataLoader.game_modes[mode_id] as Dictionary).keys():
+			if not ContentValidator.HONOURED_MODE_FLAGS.has(str(key)):
+				unhonoured.append(str(key))
+		_ok(unhonoured.is_empty(), "mode '%s' declares only honoured flags%s"
+			% [str(mode_id), "" if unhonoured.is_empty() else " (stray: %s)" % ", ".join(unhonoured)])
+	# 2. The flags that were promises with no code behind them are gone for good.
+	var retired: Array[String] = ["death_deletes_character", "passive_hp_regen", "hp_damage_food_multiplier",
+		"xp_multiplier", "skills_locked", "locked_skills", "start_skills", "skills_purchased_with_gp",
+		"unlock_locked_skills_at", "use_hardcore_triangle", "no_preservation_or_doubling"]
+	for key in retired:
+		var present: bool = ContentValidator.HONOURED_MODE_FLAGS.has(key)
+		for mode_id in DataLoader.game_modes.keys():
+			if str(mode_id).begins_with("_"):
+				continue
+			present = present or (DataLoader.game_modes[mode_id] as Dictionary).has(key)
+		_ok(not present, "the unimplemented flag '%s' is absent from the modes and the honoured list" % key)
+	# 3. No mode's name or description claims a permanent death or a deleted character.
+	for mode_id in DataLoader.game_modes.keys():
+		if str(mode_id).begins_with("_"):
+			continue
+		var mode: Dictionary = DataLoader.game_modes[mode_id]
+		var copy: String = ("%s %s" % [str(mode.get("name", "")), str(mode.get("description", ""))]).to_lower()
+		var promise: String = ""
+		for claim in ContentValidator.FORBIDDEN_MODE_CLAIMS:
+			if copy.contains(claim):
+				promise = claim
+				break
+		_ok(promise == "", "mode '%s' makes no unkeepable claim%s" % [str(mode_id), "" if promise == "" else " ('%s')" % promise])
+		_ok(str(mode.get("description", "")) != "", "mode '%s' has a description for the picker" % str(mode_id))
+	# 4. The flags that ARE honoured actually change behaviour, so none of the above is vacuous.
+	var saved_mode: String = PlayerData.game_mode
+	var saved_slots: int = BankManager.purchased_slots
+	BankManager.purchased_slots = 0
+	PlayerData.game_mode = "standard"
+	var standard_bank: int = BankManager.get_slot_limit()
+	PlayerData.game_mode = "hardcore"
+	var hardcore_bank: int = BankManager.get_slot_limit()
+	_ok(hardcore_bank != standard_bank, "bank_limit is honoured: standard %d vs hardcore %d stacks"
+		% [standard_bank, hardcore_bank])
+	PlayerData.game_mode = "ancient_relics"
+	PlayerData.set_level("woodcutting", 1)
+	PlayerData.add_xp("woodcutting", 1.0e12)
+	_ok(PlayerData.get_level("woodcutting") == 10, "ancient_relics stops XP at 10 (skill_level_cap honoured), got %d"
+		% PlayerData.get_level("woodcutting"))
+	PlayerData.game_mode = "adventure"
+	PlayerData.set_level("attack", 40)
+	PlayerData.set_level("woodcutting", 40)
+	_ok(PlayerData.get_level_cap("woodcutting") < PlayerData.get_level_cap("attack"),
+		"adventure caps a non-combat skill (%d) below a combat skill (%d)"
+		% [PlayerData.get_level_cap("woodcutting"), PlayerData.get_level_cap("attack")])
+	PlayerData.set_level("woodcutting", 1)
+	PlayerData.add_xp("woodcutting", 1.0e12)
+	_ok(PlayerData.get_level("woodcutting") < XPTable.MAX_LEVEL,
+		"adventure stops a non-combat skill at the combat level (%d), not the global max"
+		% PlayerData.get_level("woodcutting"))
+	PlayerData.game_mode = "standard"
+	_ok(PlayerData.get_level_cap("woodcutting") == XPTable.MAX_LEVEL, "standard mode caps nothing")
+	PlayerData.game_mode = saved_mode
+	BankManager.purchased_slots = saved_slots
+
 func _test_content_validation() -> void:
 	_heading("Content reference validation")
 	var report: Array = ContentValidator.new().validate_all()
@@ -1285,7 +1822,7 @@ func _test_content_validation() -> void:
 	_ok(DataLoader.items.size() > 300, "the item table loaded (%d items)" % DataLoader.items.size())
 	_ok(DataLoader.skills.size() >= 25, "the skill table loaded (%d skills)" % DataLoader.skills.size())
 	_ok(DataLoader.monsters.size() >= 25, "the monster table loaded (%d monsters)" % DataLoader.monsters.size())
-	_ok(Quests.count() >= 20, "the task table loaded (%d tasks)" % Quests.count())
+	_ok(Quests.count() >= 320, "the task table loaded (%d tasks)" % Quests.count())
 	var covered: Dictionary = {}
 	for quest_id in Quests.all_quest_ids():
 		for objective in Quests.get_quest(quest_id).get("objectives", []):
@@ -1298,12 +1835,651 @@ func _test_content_validation() -> void:
 	for skill_id in DataLoader.get_skill_ids():
 		if str(DataLoader.get_skill(skill_id).get("category", "")) == "non_combat":
 			_ok(covered.has(skill_id), "%s has a non-combat task" % skill_id)
-	_ok(Achievements.count() >= 20, "the milestone table loaded (%d milestones)" % Achievements.count())
+	_ok(Achievements.count() >= 380, "the milestone table loaded (%d milestones)" % Achievements.count())
 	print("  note: %d validation warning(s)" % warnings)
 
 # =========================================================================
 #  Content lookups
 # =========================================================================
+
+## The endgame has to be a SEQUENCE, not eight doors that open at once. Every god dungeon and
+## every endgame descent used to gate on slayer 60 alone, so the player had no reason to clear
+## the air dungeon before the water one — and no signal that the order was intended.
+func _test_dungeon_sequencing() -> void:
+	_heading("Dungeon sequencing")
+	# Two independent chains, not one list: the four god dungeons open off the god line, and the
+	# descent has its own head. Walking them as a single sequence is the bug this test exists to
+	# prevent — it would demand that into_the_mist follow fire_god_dungeon, which it never should.
+	var chains: Array = [
+		["air_god_dungeon", "water_god_dungeon", "earth_god_dungeon", "fire_god_dungeon"],
+		["into_the_mist", "impending_darkness", "underwater_city", "throne_of_the_herald"],
+	]
+	GameManager.start_new_game("standard")
+	PlayerData.skills["slayer"] = {"xp": 0.0, "level": 120}
+	for chain in chains:
+		for i in range((chain as Array).size()):
+			var id: String = str((chain as Array)[i])
+			var d: Dictionary = DataLoader.get_dungeon(id)
+			_ok(not d.is_empty(), "%s exists" % id)
+			# Slayer is a hunting skill capped at 120, while level_range tracks COMBAT level — a
+			# different track. So the gate is a floor, not a ladder; all that matters is that no
+			# door asks for a level the cap forbids.
+			_ok(int((d.get("requires", {}) as Dictionary).get("slayer", 0))
+				<= PlayerData.get_level_cap("slayer"), "%s is inside the slayer cap" % id)
+			if i == 0:
+				_ok(not d.has("requires_dungeon"), "%s is a chain head" % id)
+				_eq(CombatManager.dungeon_lock_reason(id), "", "%s opens on slayer alone" % id)
+			else:
+				var prev: String = str((chain as Array)[i - 1])
+				_eq(str(d.get("requires_dungeon", "")), prev, "%s opens only after %s" % [id, prev])
+				_ok(CombatManager.dungeon_lock_reason(id) != "", "%s is shut before %s is cleared" % [id, prev])
+				# Clearing the predecessor opens this door and only this door.
+				PlayerData.discover_dungeon(prev)
+				_eq(CombatManager.dungeon_lock_reason(id), "",
+					"clearing %s opens %s" % [prev, id])
+				PlayerData.completion_log["dungeons"].erase(prev)
+				if i + 1 < (chain as Array).size():
+					_ok(CombatManager.dungeon_lock_reason(str((chain as Array)[i + 1])) != "",
+						"but not the one after it")
+	# And the whole ladder is walkable, with no door left permanently shut.
+	for chain in chains:
+		for id in (chain as Array):
+			PlayerData.discover_dungeon(str(id))
+	_ok(CombatManager.dungeon_lock_reason("throne_of_the_herald") == "",
+		"a cleared endgame leaves nothing locked")
+	GameManager.start_new_game("standard")
+
+## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
+## understands, the pure maths each passive uses, and content that actually carries them.
+func _test_monster_passives() -> void:
+	_heading("Monster passives")
+	for passive_id in ["regeneration", "thorns", "enrage"]:
+		_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(passive_id),
+			"the engine knows the '%s' passive" % passive_id)
+	_eq(CombatFormulas.thorns_reflect(100, CombatManager.ENEMY_THORNS_FRACTION), 10,
+		"thorns reflects a tenth of a solid hit")
+	_eq(CombatFormulas.thorns_reflect(4, CombatManager.ENEMY_THORNS_FRACTION), 1,
+		"thorns still costs the attacker at least 1 for a chip hit")
+	_eq(CombatFormulas.thorns_reflect(0, CombatManager.ENEMY_THORNS_FRACTION), 0,
+		"nothing dealt means nothing to reflect")
+	_approx(CombatFormulas.enrage_multiplier(0.2, CombatManager.ENRAGE_HP_FRACTION,
+		CombatManager.ENRAGE_MULTIPLIER), CombatManager.ENRAGE_MULTIPLIER, 0.001,
+		"a monster at or below the threshold hits harder")
+	_approx(CombatFormulas.enrage_multiplier(0.9, CombatManager.ENRAGE_HP_FRACTION,
+		CombatManager.ENRAGE_MULTIPLIER), 1.0, 0.001,
+		"a healthy monster does not rage")
+	# Content must carry the passives the engine claims to support, and every passive in the
+	# database must be in that vocabulary (ContentValidator enforces the same both ways).
+	# The live fight loop and the offline simulator must agree on the numbers they use: a
+	# passive that only the simulator honours is one the player never sees work.
+	_approx(CombatSimulator.ENEMY_THORNS_FRACTION, CombatManager.ENEMY_THORNS_FRACTION, 0.0001,
+		"both combat paths reflect the same fraction for thorns")
+	_approx(CombatSimulator.ENRAGE_HP_FRACTION, CombatManager.ENRAGE_HP_FRACTION, 0.0001,
+		"both combat paths rage at the same health threshold")
+	_approx(CombatSimulator.ENRAGE_MULTIPLIER, CombatManager.ENRAGE_MULTIPLIER, 0.0001,
+		"both combat paths rage by the same multiplier")
+	_ok("thorns" in (DataLoader.monsters["moss_giant"].get("passives", []) as Array),
+		"the Mossbound Colossus carries thorns")
+	_ok("enrage" in (DataLoader.monsters["green_dragon"].get("passives", []) as Array),
+		"the Verdant Wyrm enrages")
+	var with_passives := 0
+	for monster_id in DataLoader.monsters.keys():
+		if not (DataLoader.monsters[monster_id].get("passives", []) as Array).is_empty():
+			with_passives += 1
+		for passive_id in (DataLoader.monsters[monster_id].get("passives", []) as Array):
+			_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(str(passive_id)),
+				"monster '%s' passive '%s' is implemented" % [monster_id, str(passive_id)])
+	_ok(with_passives >= 10, "a meaningful share of the roster carries a passive (%d)" % with_passives)
+	# The live fight loop has to actually act on them. These two monsters exist for the purpose:
+	# the Mossbound Colossus thorns, the Verdant Wyrm enrages. HP lives on CombatManager, which
+	# owns the fight; PlayerData is the character sheet.
+	GameManager.start_new_game("standard")
+	# start_combat needs an explicit monster list: it is a sequence, not a region lookup.
+	CombatManager.start_combat({"type": "area", "id": "farmlands", "monsters": ["moss_giant"],
+		"endless": false, "attack_style": "melee"})
+	CombatManager.player_hp = 5000.0
+	CombatManager.player_max_hp = 5000.0
+	CombatManager.current_monster_id = "moss_giant"
+	CombatManager.monster_max_hp = 500
+	CombatManager.monster_hp = 500
+	var hp_before_thorns: float = CombatManager.player_hp
+	CombatManager.apply_damage_to_monster(100)
+	_approx(hp_before_thorns - CombatManager.player_hp, 10.0, 0.001,
+		"a live hit on a thorny monster costs the player health")
+	_eq(CombatManager.monster_hp, 400.0, "and the monster still takes the full hit")
+	# A killing blow must not be answered by thorns: the corpse does not bite back.
+	CombatManager.player_hp = 5000.0
+	CombatManager.monster_hp = 10
+	CombatManager.apply_damage_to_monster(100)
+	_approx(CombatManager.player_hp, 5000.0, 0.001,
+		"a dead thorny monster does not reflect the killing blow")
+	# A healthy enraging monster must not be boosted; a wounded one must be. Driven through the
+	# real _monster_attack() rather than a copy of the formula, so the test fails if enrage is
+	# ever moved out of the damage path again. The killing blow above ended that fight, so a
+	# fresh one is started: _monster_attack() is a no-op unless the fight is live.
+	# The Golbin Chief, not the Verdant Wyrm: a level-105 magic attacker can miss a level-1
+	# character indefinitely, and a test that only passes when the dice cooperate is not a test.
+	# The earlier killing blow left a fight running and start_combat refuses to start a second
+	# one, so retreat first or the whole block silently measures an idle engine.
+	CombatManager.stop_combat("test")
+	CombatManager.start_combat({"type": "area", "id": "farmlands", "monsters": ["golbin_chief"],
+		"endless": false, "attack_style": "melee"})
+	CombatManager.current_monster_id = "golbin_chief"
+	CombatManager.monster_max_hp = 45
+	var healthy_total: float = 0.0
+	var wounded_total: float = 0.0
+	for _i in range(60):
+		CombatManager.player_hp = 9000.0
+		CombatManager.player_max_hp = 9000.0
+		CombatManager.monster_hp = 45
+		CombatManager._monster_attack()
+		healthy_total += 9000.0 - CombatManager.player_hp
+		CombatManager.player_hp = 9000.0
+		CombatManager.player_max_hp = 9000.0
+		CombatManager.monster_hp = 5
+		CombatManager._monster_attack()
+		wounded_total += 9000.0 - CombatManager.player_hp
+	_ok(healthy_total > 0.0, "an enraging monster lands hits while healthy")
+	_ok(wounded_total > healthy_total,
+		"the same monster hits harder once worn down (%d > %d over 60 attacks)" % [int(wounded_total), int(healthy_total)])
+	CombatManager.stop_combat("test")
+
+## The rolling DPS window and the session tallies. The window is the easy thing to get
+## subtly wrong (entries must age out, and a window shorter than its own contents must not
+## divide by zero), so this drives the real clock rather than asserting on internals.
+func _test_session_meters() -> void:
+	_heading("Combat session meters")
+	CombatManager._dmg_deque = []
+	CombatManager._fight_clock = 0.0
+	CombatManager.session_damage_dealt = 0.0
+	CombatManager.session_damage_taken = 0.0
+	CombatManager.session_gp_earned = 0.0
+	_ok(is_zero_approx(CombatManager.dps()), "DPS is zero before any damage lands")
+	# 120 damage over 60 seconds is 2.0/s. The clock only advances inside tick(), so the
+	# test drives tick() rather than poking _fight_clock — otherwise it would be asserting
+	# against a state the real simulation can never produce.
+	CombatManager._record_damage(120)
+	CombatManager._fight_clock = 60.0
+	CombatManager._trim_dps_window()
+	_approx(CombatManager.dps(), 2.0, 0.01, "120 damage over 60s reads 2.0 DPS")
+	# A window that ages out while nobody is attacking must not keep reporting the old rate:
+	# this is the case a cached running total got wrong. At t=130 the t=60 hit is 70s old and
+	# has left the 60s window entirely, so the rate is 0 until a new hit lands inside it.
+	CombatManager._record_damage(120)
+	CombatManager._fight_clock = 130.0
+	CombatManager._trim_dps_window()
+	_approx(CombatManager.dps(), 0.0, 0.01, "a hit older than the window stops counting")
+	_eq(CombatManager.session_damage_dealt, 240.0, "the session total keeps both hits")
+	CombatManager._record_damage(120)
+	CombatManager._trim_dps_window()
+	_approx(CombatManager.dps(), 120.0 / 60.0, 0.01, "a fresh hit restores the rate")
+	_eq(CombatManager.session_damage_dealt, 360.0, "and the session total keeps counting")
+	# Taken damage routes through the same recorder, so the two columns cannot disagree.
+	CombatManager._record_damage_taken(35.0)
+	_eq(CombatManager.session_damage_taken, 35.0, "damage taken is recorded")
+	CombatManager._record_damage(0)
+	_eq(CombatManager.session_damage_dealt, 360.0, "a zero hit leaves the total alone")
+	var readout: Dictionary = CombatManager.session_readout()
+	_ok(readout.has("dps") and readout.has("fight_dps") and readout.has("gp_earned"),
+		"the readout carries every column the panel renders")
+	CombatManager._record_gp(12.0)
+	_eq(CombatManager.session_readout()["gp_earned"], 12.0, "combat gold accumulates")
+	CombatManager._record_gp(-5.0)
+	_eq(CombatManager.session_readout()["gp_earned"], 12.0, "a negative amount never reduces the tally")
+	# Offline runs the same tick(), so meters must not depend on being watched. A real fight
+	# lands its own attacks here too, so assert the clock advanced rather than an exact rate.
+	CombatManager._dmg_deque = []
+	CombatManager._fight_clock = 0.0
+	CombatManager.start_combat({"type": "area", "id": "farmlands", "monsters": ["chicken"]})
+	SimulationMode.begin()
+	CombatManager.tick(30.0)
+	var silent_dps: float = CombatManager.dps()
+	SimulationMode.end()
+	_approx(CombatManager._fight_clock, 30.0, 0.01, "the fight clock advances during a silent offline step")
+	_ok(silent_dps > 0.0, "a silent offline step still feeds the DPS window")
+	CombatManager.stop_combat("test")
+
+## The equipment upgrade chain. upgrade_path/upgrade_materials were declared in the data and
+## checked by the validator, but nothing implemented them, so every (S)/(G) tier was dead.
+func _test_equipment_upgrade() -> void:
+	_heading("Equipment upgrades")
+	GameManager.start_new_game("standard")
+	var base: Dictionary = DataLoader.get_item("bronze_platebody")
+	_ok(str(base.get("upgrade_path", "")) == "bronze_platebody_s",
+		"the base platebody declares its upgrade target")
+	_ok(not bool(EquipmentManager.upgrade("bronze_platebody")["ok"]),
+		"upgrading without the item fails")
+	BankManager.add_item("bronze_platebody", 1)
+	_ok(EquipmentManager.upgrade_blocker("bronze_platebody") != "",
+		"a missing upgrade material is reported as a blocker")
+	_ok(not bool(EquipmentManager.upgrade("bronze_platebody")["ok"]),
+		"a missing material refuses the upgrade")
+	_ok(BankManager.get_count("bronze_platebody") == 1,
+		"a refused upgrade consumes nothing")
+	BankManager.add_item("silver_bar", 1)
+	_ok(EquipmentManager.upgrade_blocker("bronze_platebody") == "",
+		"with the material in hand nothing blocks the upgrade")
+	var result: Dictionary = EquipmentManager.upgrade("bronze_platebody")
+	_ok(bool(result.get("ok", false)), "the upgrade fires")
+	_eq(str(result.get("item_id", "")), "bronze_platebody_s", "it produces the (S) tier")
+	_eq(BankManager.get_count("bronze_platebody"), 0, "the base item is consumed")
+	_eq(BankManager.get_count("silver_bar"), 0, "the material is consumed")
+	_eq(BankManager.get_count("bronze_platebody_s"), 1, "the upgraded item lands in storage")
+	# Chained: (S) -> (G).
+	BankManager.add_item("gold_bar", 1)
+	var second: Dictionary = EquipmentManager.upgrade("bronze_platebody_s")
+	_ok(bool(second.get("ok", false)), "the chain continues to the (G) tier")
+	_eq(BankManager.get_count("bronze_platebody_g"), 1, "the (G) tier is now reachable")
+	# Upgrading something worn swaps it in place rather than unequipping it silently.
+	PlayerData.set_level("defence", 1)
+	BankManager.add_item("bronze_platebody", 1)
+	_ok(EquipmentManager.equip("bronze_platebody"), "the fresh base piece equips")
+	BankManager.add_item("silver_bar", 1)
+	_ok(bool(EquipmentManager.upgrade("bronze_platebody")["ok"]), "a worn item can be upgraded")
+	_eq(EquipmentManager.get_equipped(ItemData.EquipmentSlot.PLATEBODY), "bronze_platebody_s",
+		"the upgraded piece is what ends up worn")
+	# An item with no upgrade path reports no blocker and refuses cleanly.
+	_ok(EquipmentManager.upgrade_blocker("chicken") == "", "a non-upgradeable item has no blocker")
+	_ok(not bool(EquipmentManager.upgrade("chicken")["ok"]), "and refuses to upgrade")
+	for slot in EquipmentManager.slots.keys():
+		EquipmentManager.unequip(int(slot))
+	GameManager.start_new_game("standard")
+
+## Ascendancy. The reset is the destructive path in the whole game, so the checks are about
+## what survives it: the bonus must apply, and the collection log and lifetime counters must
+## not be wiped by a run the player already completed.
+func _test_prestige() -> void:
+	_heading("Ascendancy")
+	GameManager.start_new_game("standard")
+	_eq(PrestigeManager.ascensions(), 0, "a new character has taken no ascensions")
+	_ok(PrestigeManager.blocker() != "", "a fresh character is told what it still needs")
+	_ok(not bool(PrestigeManager.ascend()["ok"]), "ascending below the gate is refused")
+	# Clear the gate by granting XP directly, not by grinding: this test is about the reset.
+	PlayerData.skills["woodcutting"] = {"xp": PrestigeManager.GATE_XP, "level": 1}
+	_ok(PrestigeManager.can_ascend(), "the gate opens at the lifetime XP threshold")
+	_ok(PrestigeManager.blocker() == "", "the blocker clears once the gate is met")
+	# Things the reset must NOT destroy.
+	BankManager.add_item_guaranteed("chicken", 3)
+	PlayerData.discover_item("chicken")
+	PlayerData.discover_monster("chicken")
+	PlayerData.discover_dungeon("chicken_coop")
+	PlayerData.bump_stat("monsters_killed", "chicken", 7.0)
+	var xp_before: float = PlayerData.get_xp("woodcutting")
+	var result: Dictionary = PrestigeManager.ascend()
+	_ok(bool(result.get("ok", false)), "the ascension fires once the gate is met")
+	_eq(PrestigeManager.ascensions(), 1, "the ascension is counted")
+	# The bonus must be live in the simulation, not just recorded.
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT),
+		PrestigeManager.XP_PER_ASCENSION, 0.001, "the XP bonus reaches ModifierManager")
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT),
+		PrestigeManager.GP_PER_ASCENSION, 0.001, "the gold bonus reaches ModifierManager")
+	_ok(ModifierManager.has_source("prestige"), "the bonus is a real registered source")
+	# The run is genuinely gone.
+	_ok(PlayerData.get_xp("woodcutting") < xp_before, "training is reset")
+	_eq(BankManager.get_count("chicken"), 0, "items are reset")
+	# The record is not.
+	_eq(PlayerData.get_stat("monsters_killed", "chicken"), 7.0,
+		"lifetime kill counts survive the reset")
+	_ok(PlayerData.completion_log["items"].has("chicken"), "the item collection log survives")
+	_ok(PlayerData.completion_log["monsters"].has("chicken"), "the monster log survives")
+	_ok(PlayerData.completion_log["dungeons"].has("chicken_coop"), "the expedition log survives")
+	# The bonus must also survive a save round-trip.
+	var saved: Dictionary = SaveManager.build_save_data()
+	PlayerData.prestige = {"ascensions": 0, "total": 0, "history": {}, "lifetime_stats": {}}
+	PrestigeManager.deserialize(saved.get("prestige", {}))
+	_eq(PrestigeManager.ascensions(), 1, "ascensions survive a save round-trip")
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT),
+		PrestigeManager.XP_PER_ASCENSION, 0.001, "and the bonus is re-applied on load")
+	# A second ascension stacks rather than replacing.
+	PlayerData.skills["woodcutting"] = {"xp": PrestigeManager.GATE_XP, "level": 1}
+	_ok(bool(PrestigeManager.ascend()["ok"]), "a second ascension is reachable")
+	_eq(PrestigeManager.ascensions(), 2, "ascensions stack")
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT),
+		PrestigeManager.XP_PER_ASCENSION * 2.0, 0.001, "the bonus stacks additively")
+	# A save with no prestige key at all must load cleanly (every pre-ascension save).
+	PlayerData.deserialize({"skills": {}, "stats": {}})
+	_eq(PrestigeManager.ascensions(), 0, "a legacy save without prestige loads as zero")
+	GameManager.start_new_game("standard")
+
+## First-run onboarding. The failure this guards against is silence: a new character with a step
+## list that fails to load, starts somewhere other than the beginning, never advances, or loses
+## its place on reload.
+func _test_tutorial() -> void:
+	_heading("First-run onboarding")
+	_ok(DataLoader.tutorial.size() >= 5,
+		"the onboarding content loaded (%d steps)" % DataLoader.tutorial.size())
+	_eq(TutorialManager.step_count(), DataLoader.tutorial.size(),
+		"every authored step is in the ordered list")
+	# Every step must be self-describing and actually routable, or the guide dead-ends on a blank
+	# card with no way forward.
+	var bad: Array[String] = []
+	var screens: Dictionary = {}
+	for i in range(TutorialManager.step_count()):
+		var d: Dictionary = TutorialManager.describe(i)
+		if str(d.get("title", "")) == "" or str(d.get("body", "")) == "":
+			bad.append("step %d has no title/body" % i)
+		var cond: Dictionary = d.get("condition", {})
+		if cond.is_empty() or str(cond.get("label", "")) == "":
+			bad.append("step %d has no labelled condition" % i)
+		var route: Dictionary = d.get("route", {})
+		if str(route.get("screen", "")) == "":
+			bad.append("step %d has no route" % i)
+		else:
+			screens[str(route["screen"])] = true
+	_ok(bad.is_empty(), "every step is complete and routable (%s)" %
+		("none broken" if bad.is_empty() else "; ".join(bad)))
+	_ok(screens.has(Screens.SKILLS) and screens.has(Screens.COMBAT),
+		"the guide points at both gathering and combat")
+	# Authored content must reference things that exist: a route to a deleted action sends the
+	# player to a screen with nothing selected, and a condition on a missing item never completes.
+	var dangling: Array[String] = []
+	for i in range(TutorialManager.step_count()):
+		var d: Dictionary = TutorialManager.describe(i)
+		var route: Dictionary = d.get("route", {})
+		var skill_id: String = str(route.get("skill_id", ""))
+		if skill_id != "" and not DataLoader.skills.has(skill_id):
+			dangling.append("step %d -> skill '%s'" % [i, skill_id])
+		elif skill_id != "" and str(route.get("action_id", "")) != "" \
+				and DataLoader.get_action(skill_id, str(route["action_id"])).is_empty():
+			dangling.append("step %d -> action '%s:%s'" % [i, skill_id, str(route["action_id"])])
+		var area_id: String = str(route.get("area_id", ""))
+		if area_id != "" and not DataLoader.areas.has(area_id) and not DataLoader.dungeons.has(area_id):
+			dangling.append("step %d -> area '%s'" % [i, area_id])
+		var raw: Dictionary = (DataLoader.tutorial[str(d["id"])] as Dictionary).get("condition", {})
+		if str(raw.get("item_id", "")) != "" and not DataLoader.items.has(str(raw["item_id"])):
+			dangling.append("step %d -> item '%s'" % [i, str(raw["item_id"])])
+		if str(raw.get("monster_id", "")) != "" and not DataLoader.monsters.has(str(raw["monster_id"])):
+			dangling.append("step %d -> monster '%s'" % [i, str(raw["monster_id"])])
+	_ok(dangling.is_empty(), "no step references content that does not exist (%s)" %
+		("none" if dangling.is_empty() else "; ".join(dangling)))
+
+	# A genuinely fresh character: all stats zero, nothing in the bank.
+	GameManager.start_new_game("standard")
+	_eq(PlayerData.tutorial_step, 0, "a new character starts at the first step")
+	_eq(TutorialManager.current_index(), 0, "and the guide points at it")
+	_ok(not TutorialManager.is_finished(), "the guide is not already finished")
+	var first: Dictionary = TutorialManager.describe(0)
+	_ok(not bool(first.get("satisfied", true)),
+		"the first step is genuinely unmet on a fresh save")
+	_ok(not TutorialManager.next_step(), "a fresh character does not skip past unmet steps")
+
+	# Advancing: satisfy the first step's own condition and nothing else.
+	PlayerData.bump_stat("actions", "woodcutting:normal_tree", 10.0)
+	_ok(TutorialManager.next_step(), "the guide advances once the step's condition is met")
+	_ok(TutorialManager.current_index() > 0, "the player is now on a later step (%d)" % TutorialManager.current_index())
+	_ok(not TutorialManager.next_step(), "it does not advance again on the same state")
+	_ok(str(TutorialManager.describe(TutorialManager.current_index())["title"]) != str(first["title"]),
+		"the new step is a different one")
+
+	# Progress must survive a save round-trip, and the manager half must agree with the field.
+	var saved: Dictionary = SaveManager.build_save_data()
+	var reached: int = PlayerData.tutorial_step
+	var reached_id: String = str(TutorialManager.current_step().get("id", ""))
+	_ok(int(saved.get("tutorial", {}).get("tutorial_step", -1)) == reached,
+		"the step index is written to the save")
+	_ok(int(saved.get("player", {}).get("tutorial_step", -1)) == reached,
+		"and rides in the player block too")
+	PlayerData.tutorial_step = 0
+	TutorialManager.deserialize(saved.get("tutorial", {}))
+	_eq(PlayerData.tutorial_step, reached, "progress survives a save round-trip")
+	_eq(str(TutorialManager.current_step().get("id", "")), reached_id,
+		"the reloaded player resumes on the same step, not the first one")
+
+	# A save written before the tutorial existed has no key at all: it must load, not crash.
+	PlayerData.tutorial_step = 3
+	TutorialManager.deserialize({})
+	_eq(PlayerData.tutorial_step, 3, "a save with no tutorial section leaves the index alone")
+	PlayerData.deserialize({"skills": {}, "stats": {}})
+	_eq(PlayerData.tutorial_step, 0, "a legacy player block with no tutorial key loads as zero")
+	TutorialManager.deserialize({})
+	_ok(TutorialManager.current_index() >= 0 and TutorialManager.current_index() < TutorialManager.step_count(),
+		"the guide is still on a real step after a legacy load")
+	# A hand-edited index cannot point past the end of the list.
+	PlayerData.tutorial_step = 9999
+	TutorialManager.deserialize({"tutorial_step": 9999})
+	_ok(TutorialManager.current_index() < TutorialManager.step_count(),
+		"an out-of-range index is clamped to a real step")
+	# An unmet step cannot be walked past: this is the guard that stops the guide from racing
+	# ahead of a player who did nothing, since it is the only thing that advances it.
+	GameManager.start_new_game("standard")
+	PlayerData.tutorial_step = 0
+	_ok(not TutorialManager.next_step(),
+		"an unmet first step does not advance (step %d after the attempt)" % PlayerData.tutorial_step)
+	# Satisfying it does, and the guide stops on the next unmet step rather than running to the end.
+	PlayerData.bump_stat("actions", "woodcutting:normal_tree", 10.0)
+	_ok(TutorialManager.next_step(), "a satisfied step advances the guide")
+	_ok(not TutorialManager.next_step(),
+		"and it then stops on the next unmet step (step %d)" % PlayerData.tutorial_step)
+	# The last step passing is what retires the guide into its one-line summary.
+	PlayerData.tutorial_step = TutorialManager.step_count()
+	_ok(TutorialManager.is_finished(), "a finished guide reports itself finished")
+	_ok(TutorialManager.current_step().is_empty(),
+		"and current_step() offers nothing to show")
+	_ok(not TutorialManager.describe(TutorialManager.current_index()).is_empty(),
+		"the panel's clamped index still resolves to a real step, so nothing indexes off the end")
+	GameManager.start_new_game("standard")
+	_eq(PlayerData.tutorial_step, 0, "starting a new run restarts the guide")
+
+## The systems sections are the only way several engines are reachable at all: taking slayer
+## tasks, equipping familiars, buying stars, building obstacles, travelling hexes and donating
+## to the museum. This covers both halves of that claim — the section renders for exactly the
+## skills that own a system, and each manager it drives actually does its job.
+func _test_systems_wiring(host: Node) -> void:
+	_heading("Systems sections (per-skill UI wiring)")
+	host.call("navigate", {"screen": Screens.SKILLS, "skill_id": "woodcutting"})
+	var panel: Control = (host.get("_panels") as Dictionary).get(Screens.SKILLS, null)
+	_ok(panel != null, "the Skills screen exists")
+	if panel == null:
+		return
+	var systems: Control = panel.get("_systems")
+	_ok(systems != null, "the Skills screen carries a systems section")
+	if systems == null:
+		return
+	_ok(not systems.visible, "a plain gathering skill shows no systems section")
+	for skill_id in ["slayer", "summoning", "astrology", "agility", "cartography", "archaeology"]:
+		host.call("navigate", {"screen": Screens.SKILLS, "skill_id": skill_id})
+		_ok(systems.visible and systems.get_child_count() > 0,
+			"%s shows its system section" % str(DataLoader.get_skill(skill_id).get("name", skill_id)))
+	_test_slayer_task_flow()
+	_test_museum_flow()
+	_test_ship_flow()
+	_test_familiar_star_and_obstacle_flow()
+
+func _test_slayer_task_flow() -> void:
+	var coins_before: float = PlayerData.slayer_coins
+	SlayerManager.deserialize({})
+	_ok(SlayerManager.assign_task("easy"), "an easy slayer task can be taken")
+	_ok(SlayerManager.has_task(), "the task is recorded on the player")
+	var monster_id := str(PlayerData.slayer_task.get("monster_id", ""))
+	_ok(monster_id != "", "the task names a monster")
+	var required := int(PlayerData.slayer_task.get("kills_required", 1))
+	var guard := 0
+	while SlayerManager.has_task() and guard <= required + 1:
+		CombatManager.start_combat({"type": "area", "id": "farmlands", "monsters": [monster_id]})
+		CombatManager.apply_damage_to_monster(100000)
+		CombatManager.stop_combat("test")
+		guard += 1
+	_ok(not SlayerManager.has_task(), "the task completes once its kills are done")
+	_ok(PlayerData.slayer_coins > coins_before, "a completed task pays Slayer Coins")
+	SlayerManager.deserialize({})
+
+func _test_museum_flow() -> void:
+	var before: Dictionary = ArchaeologyManager.serialize()
+	var gp_before: float = PlayerData.gp
+	var shards_before := BankManager.get_count("summoning_shard_green")
+	ArchaeologyManager.tokens = 0
+	BankManager.add_item_guaranteed("artefact_common", 2)
+	_ok(ArchaeologyManager.donate("artefact_common"), "an artefact can be donated")
+	_ok(ArchaeologyManager.tokens == 1, "a common donation pays 1 Museum Token")
+	_ok(BankManager.get_count("artefact_common") == 1, "donation spends exactly one artefact")
+	ArchaeologyManager.tokens = 6
+	_ok(ArchaeologyManager.buy_museum("museum_shards"), "museum stock can be bought with tokens")
+	_ok(ArchaeologyManager.tokens == 0, "the purchase spends exactly its token cost")
+	_ok(BankManager.get_count("summoning_shard_green") == shards_before + 10,
+		"the purchase grants the stock it lists")
+	ArchaeologyManager.deserialize(ArchaeologyManager.serialize())
+	_ok(ArchaeologyManager.tokens == 0, "museum tokens survive a save round trip")
+	var leftover := BankManager.get_count("artefact_common")
+	if leftover > 0:
+		BankManager.remove_item("artefact_common", leftover)
+	var shards_added := BankManager.get_count("summoning_shard_green") - shards_before
+	if shards_added > 0:
+		BankManager.remove_item("summoning_shard_green", shards_added)
+	ArchaeologyManager.deserialize(before)
+	PlayerData.gp = gp_before
+
+func _test_ship_flow() -> void:
+	var before: Dictionary = CartographyManager.serialize()
+	var gp_before: float = PlayerData.gp
+	PlayerData.add_gp(10000000.0)
+	var tide: Dictionary = CartographyManager.can_buy_ship("tide_sloop")
+	_ok(not bool(tide["ok"]), "hulls must be bought in order (%s)" % str(tide["reason"]))
+	var cutter: Dictionary = CartographyManager.can_buy_ship("keel_cutter")
+	_ok(bool(cutter["ok"]), "the first upgrade hull is buyable with gold")
+	_ok(CartographyManager.buy_ship("keel_cutter"), "the keel cutter can be bought")
+	_ok(absf(CartographyManager.travel_percent() - 80.0) < 0.01,
+		"the cutter discounts travel to 80% of base")
+	var hex_id := ""
+	var base := 0.0
+	for key in DataLoader.cartography_hexes.keys():
+		hex_id = str(key)
+		base = float((DataLoader.cartography_hexes[key] as Dictionary).get("travel_cost", 0))
+		break
+	if hex_id != "" and base > 0.0:
+		var gp0 := PlayerData.gp
+		_ok(CartographyManager.travel(hex_id), "travel succeeds with gold")
+		_ok(not CartographyManager.is_discovered(hex_id) or gp0 - PlayerData.gp <= base + 0.5,
+			"discounted travel never costs more than base")
+		_approx(gp0 - PlayerData.gp, base * 0.8, 0.51, "travel costs 80% of base with the cutter")
+	CartographyManager.deserialize(CartographyManager.serialize())
+	_ok(CartographyManager.ship == "keel_cutter", "the hull survives a save round trip")
+	CartographyManager.deserialize(before)
+	PlayerData.gp = gp_before
+
+func _test_familiar_star_and_obstacle_flow() -> void:
+	var summoning_before: Dictionary = SummoningManager.serialize()
+	var astrology_before: Dictionary = AstrologyManager.serialize()
+	var agility_before: Dictionary = AgilityManager.serialize()
+	var gp_before: float = PlayerData.gp
+	# Familiars require a discovered mark and actual crafted tablets.
+	_ok(not SummoningManager.equip_familiar("ent"), "a familiar without a mark cannot be equipped")
+	SummoningManager.marks["ent"] = 1
+	BankManager.add_item_guaranteed("ent_tablet", 25)
+	_ok(SummoningManager.equip_familiar("ent"), "a marked familiar with tablets can be equipped")
+	_ok(SummoningManager.equipped.has("ent"), "the familiar is recorded as equipped")
+	_ok(int(SummoningManager.charges.get("ent", 0)) > 0, "equipping loads tablet charges")
+	SummoningManager.unequip_familiar("ent")
+	# Stars: Stardust in, permanent star out.
+	var stardust_before := BankManager.get_count("stardust")
+	BankManager.add_item_guaranteed("stardust", 100)
+	_ok(AstrologyManager.buy_star("deedree", "deedree_1"), "a star can be bought with Stardust")
+	_ok(AstrologyManager.is_purchased("deedree_1"), "the purchased star is recorded")
+	_ok(BankManager.get_count("stardust") == stardust_before + 90, "the star spends its cost")
+	# Obstacles: gold in, a course slot out, and clearing really clears.
+	var cost := float((AgilityManager.cost_for("obstacle_1_0")).get("gp", 0))
+	PlayerData.add_gp(cost + 100.0)
+	_ok(AgilityManager.build(1, "obstacle_1_0"), "the first obstacle can be built into slot 1")
+	_ok(AgilityManager.built.has(1), "the course records the built obstacle")
+	AgilityManager.clear_slot(1)
+	_ok(not AgilityManager.built.has(1), "clearing a slot empties it")
+	SummoningManager.deserialize(summoning_before)
+	AstrologyManager.deserialize(astrology_before)
+	AgilityManager.deserialize(agility_before)
+	var stardust_added := BankManager.get_count("stardust") - stardust_before
+	if stardust_added > 0:
+		BankManager.remove_item("stardust", stardust_added)
+	PlayerData.gp = gp_before
+
+## Three companions declared their unlock source under a key PetManager never reads, and three
+## slayer tiers asked for a level above the slayer cap. Both made content permanently unreachable
+## while every other check passed, so these state the two promises directly.
+func _test_unobtainable_content() -> void:
+	_heading("Every companion and slayer tier can be reached")
+	# --- pets: the declared source must be one PetManager actually matches on ---------------
+	var stray: Array[String] = []
+	var unsourceable: Array[String] = []
+	var skill_sources: Array[String] = []
+	var dungeon_sources: Array[String] = []
+	for pet_id in DataLoader.pets.keys():
+		var p: Dictionary = DataLoader.pets[pet_id]
+		if p.has("source"):
+			stray.append(str(pet_id))
+		var src_skill: String = str(p.get("source_skill", ""))
+		var src_dungeon: String = str(p.get("source_dungeon", ""))
+		# The two roll functions match source_skill against a skill id or the literal "combat";
+		# nothing else can ever be drawn into a pool.
+		if src_skill != "":
+			if src_skill != "combat" and not DataLoader.skills.has(src_skill):
+				unsourceable.append("%s(%s)" % [str(pet_id), src_skill])
+			else:
+				skill_sources.append(str(pet_id))
+		elif src_dungeon != "" and DataLoader.dungeons.has(src_dungeon):
+			dungeon_sources.append(str(pet_id))
+		elif src_dungeon != "":
+			unsourceable.append("%s(%s)" % [str(pet_id), src_dungeon])
+		else:
+			unsourceable.append("%s(no source)" % str(pet_id))
+	_ok(stray.is_empty(), "no pet uses the unread key 'source'%s"
+		% ("" if stray.is_empty() else " (stray: %s)" % ", ".join(stray)))
+	_ok(unsourceable.is_empty(), "every pet names a source PetManager can roll%s"
+		% ("" if unsourceable.is_empty() else " (bad: %s)" % ", ".join(unsourceable)))
+	_ok(skill_sources.size() > 0 and dungeon_sources.size() > 0,
+		"both acquisition routes exist (%d skill-sourced, %d dungeon-sourced)"
+		% [skill_sources.size(), dungeon_sources.size()])
+
+	# --- the two dungeon companions unlock by actually clearing their expedition -------------
+	GameManager.start_new_game("standard")
+	_ok(not PetManager.is_unlocked("erran") and not PetManager.is_unlocked("harold"),
+		"neither expedition companion starts unlocked")
+	for pet_id in ["erran", "harold"]:
+		var declared: String = str((DataLoader.pets.get(pet_id, {}) as Dictionary).get("source_dungeon", ""))
+		_ok(declared != "" and DataLoader.dungeons.has(declared),
+			"%s declares a real expedition as its source (%s)" % [pet_id, declared])
+	PetManager.on_dungeon_cleared("earth_god_dungeon")
+	_ok(PetManager.is_unlocked("erran"), "clearing Deepstone Sanctum unlocks erran")
+	_ok(not PetManager.is_unlocked("harold"), "clearing it does not also grant harold")
+	PetManager.on_dungeon_cleared("throne_of_the_herald")
+	_ok(PetManager.is_unlocked("harold"), "clearing the Seat of the Herald unlocks harold")
+	# Idempotent: clearing the same expedition again must not double-grant or re-notify.
+	var count_before: int = PlayerData.unlocked_pets.size()
+	PetManager.on_dungeon_cleared("throne_of_the_herald")
+	_eq(PlayerData.unlocked_pets.size(), count_before, "re-clearing an expedition grants nothing new")
+
+	# --- slayer tiers: no requirement above the cap, and the ladder still ascends ------------
+	var slayer_cap: int = int(DataLoader.get_skill("slayer").get("max_level", XPTable.MAX_LEVEL))
+	var too_high: Array[String] = []
+	var ordered: Array[int] = []
+	for tier_id in DataLoader.slayer_tasks.keys():
+		if tier_id == "_monsters":
+			continue
+		ordered.append(int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)))
+		if int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)) > slayer_cap:
+			too_high.append("%s(Lv %d)" % [str(tier_id),
+				int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1))])
+	_ok(too_high.is_empty(), "every slayer tier is within the slayer cap of %d%s"
+		% [slayer_cap, "" if too_high.is_empty() else " (stray: %s)" % ", ".join(too_high)])
+	var rising: bool = true
+	for i in range(1, ordered.size()):
+		if ordered[i] < ordered[i - 1]:
+			rising = false
+	_ok(rising, "slayer tier requirements still ascend (%s)" % str(ordered))
+	var top_required: int = 0
+	for req in ordered:
+		top_required = maxi(top_required, req)
+	_ok(top_required == slayer_cap, "the top tier sits at the cap, so the ladder is fully climbable")
+	# The top tier is not just numerically reachable: at the cap the player can take it.
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("slayer", slayer_cap)
+	var top_tier: String = ""
+	for tier_id in DataLoader.slayer_tasks.keys():
+		if tier_id == "_monsters":
+			continue
+		if int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)) == slayer_cap:
+			top_tier = str(tier_id)
+	_ok(top_tier != "" and SlayerManager.assign_task(top_tier),
+		"a maxed Huntsman can take the final tier (%s)" % top_tier)
+	SlayerManager.deserialize({})
+	GameManager.start_new_game("standard")
 
 func _find_gather_action() -> Dictionary:
 	for skill_id in DataLoader.get_skill_ids():
@@ -1323,6 +2499,609 @@ func _find_gather_action() -> Dictionary:
 			if not (a.get("output_items", {}) as Dictionary).is_empty():
 				return {"skill_id": skill_id, "action_id": str(a["id"])}
 	return {}
+
+## The consistency check above deliberately skips node-based and failing actions, which is exactly
+## where offline time was being dropped: a respawn or stun consumed a whole simulation slice and
+## `return`ed, discarding the remainder. This pins both shapes.
+func _test_online_offline_consistency_with_timers() -> void:
+	_heading("Offline time is not dropped by node respawn or stun")
+	for case in [_find_node_based_action(), _find_stun_action()]:
+		if (case as Dictionary).is_empty():
+			_ok(false, "found a %s action" % str((case as Dictionary).get("kind", "?")))
+			continue
+		var skill_id: String = str(case["skill_id"])
+		var action_id: String = str(case["action_id"])
+		var item_id: String = _primary_output(skill_id, action_id)
+		var level: int = int(case.get("level", 1))
+
+		GameManager.start_new_game("standard")
+		_deterministic(true)
+		PlayerData.set_level(skill_id, level)
+		SkillManager.start_action(skill_id, action_id, 0)
+		for _i in range(600):
+			SkillManager.tick(1.0, false)
+		var online_actions: int = SkillManager.total_action_count
+		var online_items: int = BankManager.get_total_owned(item_id)
+		var online_xp: float = PlayerData.get_xp(skill_id)
+
+		GameManager.start_new_game("standard")
+		_deterministic(true)
+		PlayerData.set_level(skill_id, level)
+		SkillManager.start_action(skill_id, action_id, 0)
+		SimulationMode.begin()
+		var result: Dictionary = SkillManager.simulate_elapsed(600.0)
+		SimulationMode.end()
+		var offline_items: int = BankManager.get_total_owned(item_id)
+		var offline_xp: float = PlayerData.get_xp(skill_id)
+
+		var kind: String = str(case["kind"])
+		# Randomised actions (stun) cannot match exactly, but offline must not fall far behind.
+		var tolerance: float = 0.20 if kind == "stun" else 0.10
+		var xp_ratio: float = (offline_xp / online_xp) if online_xp > 0.0 else 1.0
+		_ok(xp_ratio > 1.0 - tolerance,
+			"%s: offline XP keeps up with online (%.0f%% of %d actions online)" % [
+				kind, xp_ratio * 100.0, online_actions])
+		_ok(offline_xp > 0.0, "%s: the run actually progressed" % kind)
+		if online_items > 0:
+			_ok(offline_items >= int(float(online_items) * (1.0 - tolerance)),
+				"%s: offline items keep up with online (%d vs %d)" % [kind, offline_items, online_items])
+		_ok(int(result.get("actions", 0)) > 0, "%s: offline simulation reported actions" % kind)
+
+## A node-based action: depletes, respawns, and must not lose the time the respawn does not cover.
+func _find_node_based_action() -> Dictionary:
+	for skill_id in DataLoader.get_skill_ids():
+		for a in DataLoader.get_skill_actions(skill_id):
+			if typeof(a) != TYPE_DICTIONARY:
+				continue
+			if int(a.get("node_hp", 0)) <= 0:
+				continue
+			if not (a.get("input_items", {}) as Dictionary).is_empty():
+				continue
+			if str(a.get("required_tool", "")) != "":
+				continue
+			if not (a.get("output_items", {}) as Dictionary).is_empty():
+				return {"kind": "node", "skill_id": skill_id, "action_id": str(a["id"]),
+					"level": int(a.get("level_required", 1))}
+	return {}
+
+## A stun-on-failure action: a failed roll pauses the action and must not eat the whole slice.
+func _find_stun_action() -> Dictionary:
+	for skill_id in DataLoader.get_skill_ids():
+		for a in DataLoader.get_skill_actions(skill_id):
+			if typeof(a) != TYPE_DICTIONARY:
+				continue
+			if float(a.get("stun_seconds", 0.0)) <= 0.0:
+				continue
+			if not (a.get("input_items", {}) as Dictionary).is_empty():
+				continue
+			if str(a.get("required_tool", "")) != "":
+				continue
+			return {"kind": "stun", "skill_id": skill_id, "action_id": str(a["id"]),
+				"level": int(a.get("level_required", 1))}
+	return {}
+
+## The offline marker must move with every save, or the next launch replays the whole session
+## as unclaimed time. This is the headline feature, so it must be exactly-once.
+func _test_session_time_is_not_paid_out_twice() -> void:
+	_heading("Session time is not granted twice")
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	var skill_id: String = "woodcutting"
+	SkillManager.start_action(skill_id, _first_action_of(skill_id), 0)
+	for _i in range(600):
+		SkillManager.tick(1.0, false)
+	# Stand in for the autosave that ends every session.
+	var before: int = PlayerData.last_offline_unix
+	SaveManager.save_game()
+	_ok(PlayerData.last_offline_unix >= before,
+		"saving does not move the marker backwards")
+	var lag: int = int(Time.get_unix_time_from_system()) - PlayerData.last_offline_unix
+	_ok(lag >= 0, "the marker is not in the future after a save (lag %ds)" % lag)
+	# The real invariant: after a save, reopening must not replay unclaimed time.
+	var summary: Dictionary = OfflineProgression.empty_summary()
+	_ok(int(summary.get("elapsed_seconds", 0.0)) == 0, "a fresh summary claims no time")
+	_ok(PlayerData.last_offline_unix > 0, "a new game has a real marker, not zero")
+
+## Pause must stop the simulation, and the speed control must actually change its rate.
+## Both are user-facing controls that were wired to a flag nothing read.
+func _test_pause_and_speed_controls(host: Node) -> void:
+	_heading("Pause and speed controls drive the simulation")
+	var skill_id: String = "woodcutting"
+	var action_id: String = _first_action_of(skill_id)
+	var speed_before: float = Engine.time_scale
+
+	# --- pause ---
+	# The window must exceed one action interval, or no action could complete even unpaused and
+	# the check would pass for the wrong reason.
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	SkillManager.start_action(skill_id, action_id, 0)
+	for _i in range(600):
+		SkillManager.tick(1.0, false)
+	var before_pause: int = SkillManager.total_action_count
+	_ok(before_pause > 0, "the action completed work before the pause (%d actions)" % before_pause)
+	GameManager.set_paused(true)
+	# With the guard, the autoload's own _process must not advance the action.
+	for _i in range(600):
+		SkillManager._process(1.0 / 60.0)
+	var after_pause: int = SkillManager.total_action_count
+	GameManager.set_paused(false)
+	_eq(after_pause, before_pause, "a paused action does not advance over 10 simulated seconds")
+	_ok(Engine.time_scale == speed_before, "pause does not disturb the engine time scale")
+
+	# --- speed ---
+	# Engine.time_scale multiplies the delta the engine hands _process, so this can only be
+	# observed by letting real frames run. A no-input action with a short interval is used so
+	# both speeds finish a measurable number of actions inside the window.
+	GameManager.start_new_game("standard")
+	GameManager.set_speed(4.0)
+	_ok(is_equal_approx(Engine.time_scale, 4.0), "set_speed scales the engine clock")
+	var actions_at_4x: int = await _actions_over_frames(host, 4.0, 12.0)
+	GameManager.set_speed(1.0)
+	_ok(is_equal_approx(Engine.time_scale, 1.0), "speed 1.0 restores the engine clock")
+	var actions_at_1x: int = await _actions_over_frames(host, 1.0, 12.0)
+	_ok(actions_at_4x > actions_at_1x, "4x completes more actions than 1x (%d vs %d)" % [
+		actions_at_4x, actions_at_1x])
+
+## Let the real engine drive frames at the current Engine.time_scale, so the speed setting is
+## actually applied to the delta the autoloads receive.
+func _actions_over_frames(host: Node, speed: float, seconds: float) -> int:
+	Engine.time_scale = speed
+	GameManager.start_new_game("standard")
+	SkillManager.start_action("woodcutting", _first_action_of("woodcutting"), 0)
+	for _i in range(int(seconds * 60.0)):
+		await host.get_tree().process_frame
+	return SkillManager.total_action_count
+
+func _first_action_of(skill_id: String) -> String:
+	var gather: Dictionary = _find_gather_action()
+	if not gather.is_empty() and str(gather.get("skill_id", "")) == skill_id:
+		return str(gather["action_id"])
+	for a in DataLoader.get_skill_actions(skill_id):
+		if typeof(a) == TYPE_DICTIONARY and not (a.get("output_items", {}) as Dictionary).is_empty():
+			return str(a.get("id", ""))
+	return ""
+
+## Six raid upgrades used to sell raid coins for a modifier key that nothing in scripts/ ever
+## read back: _apply_upgrade() registered them and the raid felt none of them. Taking money for
+## nothing is worse than not selling the upgrade, so each was either wired to a real mechanic or
+## deleted from the shop.
+##
+## The key list is walked from the data, not hardcoded per upgrade, so the next invented raid
+## upgrade fails here too.
+## RAID_LIVE_KEYS is every modifier key an upgrade may sell, and each one is read by a
+## consumer: RAID_WAVE_SKIP by RaidManager.start_raid(), the rest by combat/skill systems that
+## query ModifierManager by name.
+const RAID_LIVE_KEYS: Array[String] = [
+	ModifierKeys.RAID_WAVE_SKIP,
+	ModifierKeys.FOOD_HEALING_PERCENT,
+	ModifierKeys.AUTO_EAT_EFFICIENCY_PERCENT,
+	ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT,
+	ModifierKeys.PRAYER_COST_REDUCTION_PERCENT,
+	ModifierKeys.HITPOINTS_REGEN_FLAT,
+	ModifierKeys.GLOBAL_DOUBLE_LOOT_PERCENT,
+	ModifierKeys.GLOBAL_GP_PERCENT,
+	ModifierKeys.GLOBAL_SLAYER_COINS_PERCENT,
+	ModifierKeys.ATTACK_INTERVAL_PERCENT,
+	ModifierKeys.ATTACK_INTERVAL_FLAT,
+	ModifierKeys.DAMAGE_REDUCTION_PERCENT,
+	ModifierKeys.CRIT_CHANCE_PERCENT,
+	ModifierKeys.CRIT_MULTIPLIER_PERCENT,
+	ModifierKeys.LIFE_STEAL_PERCENT,
+	ModifierKeys.GLOBAL_ACCURACY_PERCENT,
+	ModifierKeys.GLOBAL_SKILL_XP_PERCENT,
+	ModifierKeys.GLOBAL_MASTERY_XP_PERCENT,
+	ModifierKeys.BANK_SPACE_FLAT,
+	ModifierKeys.BLESSED_BONE_OFFERING_FLAT,
+	ModifierKeys.RESPWAN_TIME_PERCENT,
+	ModifierKeys.SLAYER_AREA_NEGATION_PERCENT,
+]
+
+func _test_raid_shop_upgrades_are_real() -> void:
+	_heading("Raid shop upgrades do something")
+	GameManager.start_new_game("standard")
+	var upgrades: Dictionary = DataLoader.raid_shop.get("upgrades", {})
+	_ok(not upgrades.is_empty(), "the raid shop still stocks upgrades")
+
+	# 1. No dangling keys: an upgrade may only sell a key the game actually reads back. A key
+	#    outside the list is a purchase that costs coins and does nothing.
+	for uid in upgrades.keys():
+		var eff: Dictionary = (upgrades[uid] as Dictionary).get("effect", {})
+		_ok(not eff.is_empty(), "upgrade %s declares an effect" % uid)
+		_ok(int((upgrades[uid] as Dictionary).get("cost", 0)) > 0, "upgrade %s has a price" % uid)
+		for key in eff.keys():
+			_ok(RAID_LIVE_KEYS.has(str(key)),
+				"upgrade %s sells %s, which the game reads" % [uid, key])
+	for item_id in (DataLoader.raid_shop.get("alt_items", []) as Array):
+		_ok(not DataLoader.get_item(str(item_id)).is_empty(), "alt item %s exists" % item_id)
+
+	# 2. raid_wave_skip: the run must start past the early waves.
+	_ok(RaidManager.start_raid("normal"), "a raid starts with no purchases")
+	_eq(RaidManager.wave, 1, "a fresh raid begins at wave 1")
+	RaidManager.end_raid()
+	PlayerData.raid_coins = 100000.0
+	_ok(RaidManager.buy("raid_wave_skip"), "raid_wave_skip can be bought")
+	_ok(ModifierManager.get_modifier(ModifierKeys.RAID_WAVE_SKIP) == 1.0,
+		"raid_wave_skip registers the modifier start_raid() reads")
+	_ok(RaidManager.start_raid("normal"), "a raid starts after buying wave skip")
+	_eq(RaidManager.wave, 2, "raid_wave_skip starts the run at wave 2, not 1")
+	RaidManager.end_raid()
+
+	# 3. raid_food: the raid forces auto-eat tier II, so healing more per food is exactly the
+	#    "restore between waves" the upgrade claims. Measured through consume_food() — the one
+	#    function that reads food_healing_percent, and what the raid's auto-eat calls.
+	#    A real HP pool matters: healing is capped at max HP, and a level-1 character would cap
+	#    at 10 and make both sides look identical.
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("hitpoints", 50)
+	BankManager.add_item_guaranteed("shrimp", 20)
+	var maxhp: float = CombatManager._compute_max_hp()
+	var shrimp_heal: float = float(DataLoader.get_item("shrimp").get("heal_amount", 0))
+	_ok(maxhp > shrimp_heal, "the HP pool is large enough to measure a heal in (%d HP)" % int(maxhp))
+	var food_pct: float = float((DataLoader.raid_shop["upgrades"]["raid_food"] as Dictionary)
+		.get("effect", {}).get(ModifierKeys.FOOD_HEALING_PERCENT, 0.0))
+	_ok(food_pct > 0.0, "raid_food sells a positive food_healing_percent (%.0f%%)" % food_pct)
+	_eq(ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT), 0.0,
+		"no food healing bonus is active before the upgrade is bought")
+	CombatManager.player_hp = maxhp * 0.05
+	_eq(CombatManager.consume_food("shrimp"), "shrimp", "a banked food is eaten")
+	var plain_heal: float = CombatManager.player_hp - maxhp * 0.05
+	_approx(plain_heal, shrimp_heal, 0.001, "the food heals its full amount (%.0f HP)" % plain_heal)
+	ModifierManager.register("test:raid_food", {ModifierKeys.FOOD_HEALING_PERCENT: food_pct}, "test")
+	CombatManager.player_hp = maxhp * 0.05
+	CombatManager.consume_food("shrimp")
+	var boosted_heal: float = CombatManager.player_hp - maxhp * 0.05
+	ModifierManager.unregister("test:raid_food")
+	_approx(boosted_heal, shrimp_heal * (1.0 + food_pct / 100.0), 0.001,
+		"the upgrade heals %.0f HP per food instead of %.0f" % [boosted_heal, plain_heal])
+	_ok(boosted_heal > plain_heal, "food_healing_percent heals more per food (%.0f vs %.0f HP)"
+		% [boosted_heal, plain_heal])
+
+	# 4. difficulties.hp_mult: hard must really be tankier, not just print a label. Enemy HP is
+	#    set in one place, so the multiplier lands on every wave of a hard run.
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("hitpoints", 50)
+	_ok(RaidManager.start_raid("normal"), "a normal raid starts for the HP comparison")
+	var normal_hp: int = CombatManager.monster_max_hp
+	RaidManager.end_raid()
+	_ok(RaidManager.start_raid("hard"), "a hard raid starts for the HP comparison")
+	var hard_hp: int = CombatManager.monster_max_hp
+	RaidManager.end_raid()
+	var cfg: Dictionary = DataLoader.raid_shop["difficulties"]["hard"]
+	var cfg_mult: float = float(cfg.get("hp_mult", 1.0))
+	_ok(cfg_mult > 1.0, "hard declares a hp_mult above 1 (%.2f)" % cfg_mult)
+	_eq(hard_hp, int(round(float(normal_hp) * cfg_mult)),
+		"a hard raid spawns normal HP x hp_mult (%d vs %d)" % [hard_hp, int(round(float(normal_hp) * cfg_mult))])
+	_ok(is_equal_approx(RaidManager.enemy_hp_mult(), cfg_mult),
+		"enemy_hp_mult() reports the difficulty's declared multiplier")
+	# A difficulty key nothing reads (the old "modifiers": true) is the bug in its purest form.
+	for diff in (DataLoader.raid_shop.get("difficulties", {}) as Dictionary).keys():
+		_ok(not (DataLoader.raid_shop["difficulties"][diff] as Dictionary).has("modifiers"),
+			"difficulty %s declares no key nothing reads" % diff)
+
+## Systems that shipped complete but had no live path from data to player: prayer and raid had
+## no UI entry point, and the Beastbinding tablets needed mark items nothing produced. Each of
+## these is now reachable; the checks fail if that regresses.
+func _test_reachable_systems() -> void:
+	_heading("Previously unreachable systems are reachable")
+	# --- prayer: toggle must work and register its modifier ---
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("prayer", 20)
+	PlayerData.add_prayer_points(1000.0)
+	var prayer_id: String = ""
+	for id in DataLoader.prayers.keys():
+		var p: Dictionary = DataLoader.prayers[id]
+		if not p.is_empty() and not p.has("_comment") and int(p.get("level", 99)) <= 20:
+			prayer_id = str(id)
+			break
+	_ok(prayer_id != "", "a low-level prayer exists to toggle")
+	if prayer_id != "":
+		var toggled: bool = PrayerManager.toggle(prayer_id)
+		_ok(toggled and PrayerManager.is_active(prayer_id), "a prayer can be activated (%s)" % prayer_id)
+		PrayerManager.toggle(prayer_id)
+		_ok(not PrayerManager.is_active(prayer_id), "a prayer can be deactivated again")
+
+	# --- raid: start_raid must begin a fight ---
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("hitpoints", 50)
+	var raid_started: bool = RaidManager.start_raid("normal")
+	_ok(raid_started and RaidManager.active, "a raid can be started")
+	_ok(CombatManager.state != CombatManager.State.IDLE, "a raid occupies the activity slot")
+	_ok(RaidManager.wave == 1, "the first wave begins")
+	if RaidManager.active:
+		RaidManager.end_raid()
+	_ok(not RaidManager.active, "a raid can be ended")
+
+	# --- summoning: a gained mark must reach the bank, or the tablets can never be crafted ---
+	GameManager.start_new_game("standard")
+	var fam_id: String = ""
+	for fid in DataLoader.familiars.keys():
+		if not DataLoader.items.has("%s_mark" % str(fid)):
+			continue
+		if DataLoader.items.has(str(DataLoader.familiars[fid].get("tablet_item", ""))):
+			fam_id = str(fid)
+			break
+	_ok(fam_id != "", "a familiar has both a mark item and a tablet")
+	if fam_id != "":
+		var mark_id: String = "%s_mark" % fam_id
+		var tablet_id: String = str(DataLoader.familiars[fam_id].get("tablet_item", ""))
+		_ok(BankManager.get_total_owned(mark_id) == 0, "the mark starts unbanked")
+		SummoningManager._gain_mark(fam_id)
+		_ok(BankManager.get_total_owned(mark_id) > 0, "gaining a mark banks the item (%s)" % mark_id)
+		# With the mark in hand, the level-1 recipe's only missing input is its shard.
+		for shard in (DataLoader.get_action("summoning", tablet_id).get("input_items", {}) as Dictionary).keys():
+			BankManager.add_item_guaranteed(str(shard), 50)
+		var check: Dictionary = SkillManager.check_action("summoning", tablet_id)
+		_ok(bool(check.get("ok", false)), "the tablet recipe is now craftable (%s)" % tablet_id)
+
+## A weapon that beats the previous tier is required: a flat ladder means no combat progression.
+## Melee is the reference style here; ranged and magic have their own ladders.
+func _test_melee_tier_ladder() -> void:
+	_heading("The melee weapon ladder rises at every tier")
+	var best: Dictionary = {}
+	for id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.get_item(str(id))
+		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8:
+			continue
+		var st: Dictionary = it.get("equipment_stats", {})
+		if not st.has("slash"):
+			continue
+		var lvl: int = int((it.get("level_requirements", {}) as Dictionary).get("attack", 0))
+		if not best.has(lvl) or int(st.get("slash", 0)) > int(best[lvl]):
+			best[lvl] = int(st.get("slash", 0))
+	var levels: Array = best.keys()
+	levels.sort()
+	_ok(levels.size() >= 5, "the melee ladder has several tiers (%d)" % levels.size())
+	for i in range(1, levels.size()):
+		var prev_lvl: int = int(levels[i - 1])
+		var lvl: int = int(levels[i])
+		_ok(int(best[lvl]) > int(best[prev_lvl]),
+			"melee damage rises from L%d (%d slash) to L%d (%d slash)" % [
+				prev_lvl, int(best[prev_lvl]), lvl, int(best[lvl])])
+
+## Every skill a player can raise needs at least one quest objective pointing at it, or it is
+## invisible content. The combat skills were the gap: 238 quests and not one mentioned them.
+func _test_quest_coverage() -> void:
+	_heading("Quests cover every trainable skill")
+	var covered: Dictionary = {}
+	var kinds: Dictionary = {}
+	for id in Quests.all_quest_ids():
+		if Quests.is_rotating(id):
+			continue
+		var q: Dictionary = Quests.get_quest(id)
+		for o in (q.get("objectives", []) as Array):
+			kinds[str(o.get("kind", ""))] = true
+			var sid: String = str(o.get("skill_id", ""))
+			if sid != "":
+				covered[sid] = true
+	for skill_id in DataLoader.get_skill_ids():
+		if str(DataLoader.get_skill(skill_id).get("type", "")) == "combat" or skill_id == "slayer":
+			_ok(covered.has(skill_id), "a quest objective trains %s" % skill_id)
+	_ok(kinds.has("defeat_boss"), "a quest uses defeat_boss (the boss fights are quested)")
+	_ok(kinds.has("unlock_pet"), "a quest uses unlock_pet (companions are quested)")
+	# Prerequisite chains must point at quests that exist, or a quest locks itself forever.
+	for id in Quests.all_quest_ids():
+		if Quests.is_rotating(id):
+			continue
+		for pre in (Quests.get_quest(id).get("prerequisites", []) as Array):
+			_ok(Quests.has_quest(str(pre)), "%s prerequisite %s exists" % [id, pre])
+
+## The skill XP bar must track the simulation while an action runs, not only when the panel is
+## rebuilt. Rebuilding on every action was the obvious fix and the wrong one: it destroys and
+## re-creates the whole header (activities list, mastery, modifiers) several times a second.
+func _test_xp_updates_live(host: Node) -> void:
+	_heading("Skill XP updates live while an action runs")
+	GameManager.start_new_game("standard")
+	GameManager.set_paused(false)
+	var panel = load("res://scripts/ui/panels/SkillsPanel.gd").new()
+	host.add_child(panel)
+	panel.focus_route({"skill_id": "woodcutting"})
+	await host.get_tree().process_frame
+	await host.get_tree().process_frame
+	var action_id: String = _first_action_of("woodcutting")
+	_ok(action_id != "", "a woodcutting action exists to run")
+
+	var bar: ProgressBar = panel.get("_xp_bar")
+	var text: Label = panel.get("_xp_bar_text")
+	_ok(bar != null, "the skill header exposes its live XP bar")
+	_ok(text != null, "the XP bar exposes its value label")
+
+	# Capture the bar identity, then run a real action. queue_free() defers the destruction to the
+	# end of the frame, so a node captured before a rebuild stays non-null for a frame; assert on
+	# the bar the panel currently holds, and separately prove it was never rebuilt mid-action.
+	var xp_before: float = PlayerData.get_xp("woodcutting")
+	SkillManager.start_action("woodcutting", action_id)
+	# action_started triggers a rebuild, which frees the pre-action bar. Settle that first, then
+	# capture the identity: from here on the bar must be mutated in place, never re-created.
+	await host.get_tree().process_frame
+	await host.get_tree().process_frame
+	bar = panel.get("_xp_bar")
+	text = panel.get("_xp_bar_text")
+	_ok(bar != null, "the XP bar exists after the action started")
+	_ok(text != null, "the XP bar label exists after the action started")
+	var node_id: int = bar.get_instance_id()
+	var value_at_start: float = bar.value
+	var text_at_start: String = text.text
+	xp_before = PlayerData.get_xp("woodcutting")
+	var deadline: int = Time.get_ticks_msec() + 15000
+	while PlayerData.get_xp("woodcutting") <= xp_before and Time.get_ticks_msec() < deadline:
+		await host.get_tree().process_frame
+	_ok(PlayerData.get_xp("woodcutting") > xp_before, "the running action granted XP")
+	_ok(is_instance_valid(bar) and bar.get_instance_id() == node_id,
+		"the bar was updated in place, not rebuilt per action")
+	_ok(bar.value != value_at_start, "the XP bar moved while the action ran")
+	_ok(text.text != text_at_start, "the XP total on the bar moved while the action ran")
+	# The displayed total must equal the authoritative value, not a stale snapshot.
+	var xp_now: float = PlayerData.get_xp("woodcutting")
+	var level_now: int = PlayerData.get_level("woodcutting")
+	_ok(text.text.begins_with(UIStyle.fmt_exact(xp_now)),
+		"the bar shows the live total (%s), not a snapshot" % UIStyle.fmt_exact(xp_now))
+	# Compare with a tolerance: _process() rounds through the same clampf, and 0.12 vs 0.12048 is
+	# float noise, not a stale bar.
+	var want: float = clampf(XPTable.level_progress(xp_now, level_now), 0.0, 1.0)
+	_ok(absf(bar.value - want) < 0.01,
+		"the bar position matches the real progress toward level %d" % (level_now + 1))
+	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+	panel.queue_free()
+
+## A failed cook must cost the player the fish. Before this, the failure branch returned before
+## _consume_inputs(), so cooking failure was free and the only cost was the wait.
+func _test_cooking_failure_burns_materials(host: Node) -> void:
+	_heading("A failed cook consumes its ingredients and yields burnt food")
+	GameManager.start_new_game("standard")
+	GameManager.set_paused(false)
+	var action: Dictionary = DataLoader.get_action("cooking", "cook_shrimp")
+	_ok(not action.is_empty(), "the shrimp recipe exists")
+	_ok(str(action.get("fail_output_item", "")) == "burnt_food",
+		"the shrimp recipe declares burnt food as its failure output")
+	var input_id: String = str((action.get("input_items", {}) as Dictionary).keys()[0])
+
+	# Drive the real action path repeatedly: success_chance is 0.5, so this mixes both outcomes and
+	# proves the failure branch specifically, not a hand-called internal. perform_action() operates
+	# on the running action, so it has to be started first.
+	GameManager.start_new_game("standard")
+	# start_new_game emits state_refreshed, but the shared shell was built before this test ran, so
+	# ask it to rebuild its nav now that its buttons exist. Without this the sidebar keeps the labels
+	# it was built with and every later test reads stale levels.
+	host.call("_refresh_nav")
+	# Stock the bank BEFORE starting: start_action() refuses an action whose inputs are missing.
+	BankManager.add_item_guaranteed(input_id, 500)
+	_ok(SkillManager.start_action("cooking", "cook_shrimp"),
+		"the shrimp cook can be started (%s)" % str(SkillManager.check_action("cooking", "cook_shrimp").get("detail", "")))
+	var burnt_seen: int = 0
+	var failures: int = 0
+	var successes: int = 0
+	for _i in range(400):
+		BankManager.add_item_guaranteed(input_id, 10)
+		var raw_before: int = BankManager.get_count(input_id)
+		var burnt_before: int = BankManager.get_count("burnt_food")
+		var res: Dictionary = SkillManager.perform_action()
+		var raw_after: int = BankManager.get_count(input_id)
+		if bool(res.get("success", false)):
+			successes += 1
+			# Preservation (a mastery bonus) can legitimately refund the input, so a success is not
+			# guaranteed to cost materials. What must always hold: no burnt food on a success.
+			_ok(BankManager.get_count("burnt_food") == burnt_before,
+				"a successful cook produced no burnt food")
+			continue
+		failures += 1
+		_ok(raw_after < raw_before,
+			"a failed cook still consumed its ingredients (%d -> %d)" % [raw_before, raw_after])
+		_ok(BankManager.get_count("burnt_food") > burnt_before,
+			"a failed cook produced burnt food")
+		burnt_seen += 1
+		# The waste must be reported in the same shape a success uses, so the UI needs no branch.
+		_ok((res.get("items", {}) as Dictionary).has("burnt_food"),
+			"the failure result reports the burnt food it produced")
+	_ok(failures > 0, "the loop actually produced failures (%d)" % failures)
+	_ok(successes > 0, "the loop actually produced successes (%d)" % successes)
+	_ok(burnt_seen == failures, "every failure yielded exactly burnt food (%d of %d)" % [burnt_seen, failures])
+
+	# Burnt food is worthless: it must not be a gold faucet or an item the player can eat.
+	var burnt_item: Dictionary = DataLoader.get_item("burnt_food")
+	_ok(not burnt_item.is_empty(), "burnt food exists in the item table")
+	_ok(int(burnt_item.get("sell_price", -1)) == 0, "burnt food sells for nothing")
+	_ok(int(burnt_item.get("heal_amount", 0)) == 0, "burnt food cannot be eaten for healing")
+	_ok(burnt_item.get("item_type", "") == "resource",
+		"burnt food is a resource, not food, so no cooking recipe can target it")
+	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+
+## Food is a combat resource: the player must be able to eat it deliberately, mid-fight, to heal.
+## Auto-eat existed but was off by default and shop-gated, so a new player had no way to heal.
+func _test_food_heals_in_combat(host: Node) -> void:
+	_heading("Food heals you when you choose to eat it")
+	GameManager.start_new_game("standard")
+	var shrimp: Dictionary = DataLoader.get_item("shrimp")
+	_ok(int(shrimp.get("heal_amount", 0)) > 0, "cooked shrimp heals")
+
+	# Hurt, stock food, eat: the player heals and the food leaves the bank. Use a fraction of real
+	# max HP: a level-1 character tops out around 10 HP, so an absolute "10" would already be full.
+	CombatManager.player_hp = CombatManager._compute_max_hp()
+	BankManager.add_item_guaranteed("shrimp", 5)
+	var maxhp: float = CombatManager._compute_max_hp()
+	CombatManager.player_hp = maxf(1.0, maxhp * 0.25)
+	var hurt_at: float = CombatManager.player_hp
+	var shrimp_before: int = BankManager.get_count("shrimp")
+	_ok(CombatManager.eat_best_food() == "shrimp", "eating picks a food you actually have")
+	_ok(CombatManager.player_hp > hurt_at, "eating healed the player (%d -> %d HP)" % [int(hurt_at), int(CombatManager.player_hp)])
+	_ok(BankManager.get_count("shrimp") == shrimp_before - 1, "the food was consumed from the bank")
+	_ok(CombatManager.player_hp <= maxhp, "healing never exceeds max HP")
+
+	# The pick is the smallest food that covers the gap, so a big meal is not wasted on a scratch.
+	CombatManager.player_hp = maxf(1.0, maxhp * 0.25)
+	BankManager.add_item_guaranteed("shrimp", 5)
+	BankManager.add_item_guaranteed("abyssal_eel", 5)
+	_ok(not CombatManager.find_food().is_empty(), "find_food returns a stocked food id")
+
+	# Non-food must be refused: burnt food is item_type resource, so it can never heal.
+	CombatManager.player_hp = maxf(1.0, maxhp * 0.25)
+	BankManager.add_item_guaranteed("burnt_food", 5)
+	_ok(CombatManager.consume_food("burnt_food") == "", "burnt food cannot be eaten")
+	_ok(BankManager.get_count("burnt_food") == 5, "refused food is not consumed")
+	_ok(CombatManager.consume_food("nonexistent_item") == "", "an unknown item cannot be eaten")
+
+	# The button lives on the strip that is visible in every screen, and says why it is disabled.
+	GameManager.start_new_game("standard")
+	BankManager.add_item_guaranteed("shrimp", 3)
+	var strip = load("res://scripts/ui/ActivityStrip.gd").new()
+	host.add_child(strip)
+	await host.get_tree().process_frame
+	var eat: Button = strip.get("_eat")
+	_ok(eat != null, "the activity strip exposes an Eat button")
+	CombatManager.player_hp = CombatManager._compute_max_hp()
+	strip.call("_refresh_eat")
+	_ok(eat.disabled, "Eat is disabled at full health")
+	_ok(eat.tooltip_text.contains("full health"), "the disabled Eat explains why (%s)" % eat.tooltip_text)
+	CombatManager.player_hp = maxf(1.0, CombatManager._compute_max_hp() * 0.25)
+	strip.call("_refresh_eat")
+	_ok(not eat.disabled, "Eat is enabled when hurt and stocked")
+	_ok(eat.text.contains("Shrimp"), "Eat names the food it will use (%s)" % eat.text)
+	# Pressing it must heal, not just relabel.
+	var hp_before: int = int(CombatManager.player_hp)
+	eat.pressed.emit()
+	_ok(CombatManager.player_hp > hp_before, "pressing Eat healed the player")
+	_ok(BankManager.get_count("shrimp") == 2, "pressing Eat consumed exactly one food")
+	# No food at all is its own reason, distinct from full health.
+	GameManager.start_new_game("standard")
+	strip.call("_refresh_eat")
+	_ok(eat.disabled, "Eat is disabled with no food in Storage")
+	_ok(eat.tooltip_text.contains("No food"), "the empty-bank reason is explained (%s)" % eat.tooltip_text)
+	strip.queue_free()
+
+	# Storage needs its own Eat action. The strip button only ever picks the best food for you, so
+	# without this row a player who cooked a specific meal has no way to choose to eat that one.
+	GameManager.start_new_game("standard")
+	BankManager.add_item_guaranteed("shrimp", 4)
+	var bank = load("res://scripts/ui/panels/BankPanel.gd").new()
+	host.add_child(bank)
+	bank.call("refresh")
+	await host.get_tree().process_frame
+	var labels: Array[String] = []
+	for b in bank.find_children("", "Button", true, false):
+		labels.append((b as Button).text)
+	_ok(labels.has("Eat 1"), "a food row in Storage offers Eat 1 (%s)" % str(labels))
+	_ok(labels.has("Eat all"), "a food row in Storage offers Eat all")
+	_ok(not labels.has("Equip"), "food is not offered an Equip action")
+	# Pressing it must really heal.
+	CombatManager.player_hp = maxf(1.0, CombatManager._compute_max_hp() * 0.25)
+	var hp_in_bank: int = int(CombatManager.player_hp)
+	var shrimp_stored: int = BankManager.get_count("shrimp")
+	for b in bank.find_children("", "Button", true, false):
+		if (b as Button).text == "Eat 1":
+			(b as Button).pressed.emit()
+			break
+	_ok(CombatManager.player_hp > hp_in_bank, "Storage's Eat 1 healed the player")
+	_ok(BankManager.get_count("shrimp") == shrimp_stored - 1, "Storage's Eat 1 consumed one shrimp")
+	# A non-food row must not grow an Eat button.
+	GameManager.start_new_game("standard")
+	BankManager.add_item_guaranteed("normal_log", 3)
+	bank.call("refresh")
+	await host.get_tree().process_frame
+	labels = []
+	for b in bank.find_children("", "Button", true, false):
+		labels.append((b as Button).text)
+	_ok(not labels.has("Eat 1"), "a log row has no Eat button")
+	bank.queue_free()
 
 func _find_artisan_with_inputs() -> Dictionary:
 	for skill_id in DataLoader.get_skill_ids():
@@ -1611,3 +3390,200 @@ func _report() -> void:
 		print("ALL TESTS PASSED (%d checks)" % _passed)
 	else:
 		print("TESTS FAILED (%d of %d checks)" % [_failed, _passed + _failed])
+
+## The Stats screen is a read-out, so the only thing worth asserting is that it reads the
+## persisted record rather than recomputing: per-skill folding of "skill:action" keys, totals
+## that sum a per-id bucket, and an empty save that says so instead of printing a table of zeros.
+func _test_lifetime_stats_screen(host: Node) -> void:
+	_heading("Lifetime stats screen")
+	GameManager.start_new_game("standard")
+	var panel: Control = load("res://scripts/ui/panels/StatsPanel.gd").new()
+	host.add_child(panel)
+	var body: VBoxContainer = panel.get("_body")
+	_ok(body.get_child_count() == 1 and body.get_child(0) is Label,
+		"a fresh save shows one friendly line, not a table of zeros")
+	# Two activities under one skill: the per-skill ranking must fold them together rather than
+	# reporting each action separately, and must not leak the raw "skill:action" key as a name.
+	PlayerData.bump_stat("actions", "woodcutting:normal_log", 4.0)
+	PlayerData.bump_stat("actions", "woodcutting:oak_log", 6.0)
+	PlayerData.bump_stat("actions", "fishing:shrimp", 9.0)
+	PlayerData.bump_stat("monsters_killed", "goblin", 12.0)
+	PlayerData.bump_stat("monsters_killed", "wolf", 3.0)
+	PlayerData.bump_stat("items_gained", "normal_log", 10.0)
+	PlayerData.bump_total("deaths", 2.0)
+	PlayerData.stats["region_visits"]["farmlands"] = true
+	panel.call("refresh")
+	var specs: Array = panel.get("RANKINGS")
+	var skill_spec: Dictionary = specs[0]
+	for spec in specs:
+		if str((spec as Dictionary)["kind"]) == "skills":
+			skill_spec = spec
+	var skills: Array = panel.call("_top", skill_spec)
+	_eq(skills.size(), 2, "two skills with activity, not three activities")
+	_eq(str(skills[0]["name"]), str(DataLoader.get_skill("woodcutting").get("name", "woodcutting")),
+		"the busier skill leads the ranking")
+	_eq(float(skills[0]["count"]), 10.0, "both woodcutting activities fold into one total")
+	_eq(float(skills[1]["count"]), 9.0, "the other skill's count is read back")
+	var monsters: Array = panel.call("_top", specs[0])
+	_eq(str(monsters[0]["name"]), str(DataLoader.get_monster("goblin").get("name", "goblin")),
+		"the monster ranking resolves a display name and sorts by count")
+	_eq(float(monsters[1]["count"]), 3.0, "the second-placed monster is ordered by count")
+	_eq(panel.call("_total", PlayerData.stats, "actions"), 19.0, "the actions bucket totals across every id")
+	_eq(panel.call("_total", PlayerData.stats, "region_visits"), 1.0, "a visit flag counts as one region")
+	_eq(panel.call("_total", PlayerData.stats, "deaths"), 2.0, "a scalar bucket is already its own total")
+	panel.queue_free()
+
+
+# =========================================================================
+#  Settings gaps: autosave cadence, game speed, notification categories
+# =========================================================================
+
+## The three settings added to Settings (autosave cadence, game speed, notification categories)
+## have the three properties every setting must have, and the reset action has one more: it must
+## not be destructive by default. Each is checked against the real singletons, because a setting
+## written to a dictionary the game never reads is worse than no setting at all.
+func _test_settings_gap_keys() -> void:
+	_heading("Settings: autosave cadence, speed and notification categories")
+	var new_keys: Array[String] = ["autosave_interval", "game_speed",
+		"notify_success", "notify_warn", "notify_info"]
+	for key in new_keys:
+		_ok(SettingsDefaults.DEFAULTS.has(key), "the setting '%s' has a declared default" % key)
+
+	# --- defaults are the documented ones, not placeholder zeros.
+	_approx(float(SettingsDefaults.get_default("autosave_interval", 0.0)),
+		SaveManager.AUTOSAVE_INTERVAL, 0.001, "autosave defaults to the SaveManager cadence")
+	_approx(float(SettingsDefaults.get_default("game_speed", 0.0)), 1.0, 0.001,
+		"game speed defaults to 1x")
+	for kind in EventBus.MUTABLE_NOTIFICATION_KINDS:
+		_ok(bool(SettingsDefaults.get_default("notify_%s" % kind, false)),
+			"'%s' notifications are on by default" % kind)
+	_ok(not EventBus.MUTABLE_NOTIFICATION_KINDS.has("error"),
+		"errors are not offerable as a mute, so a failed save can never be silenced")
+
+	# --- save round-trip: a value written to settings comes back through _apply, live.
+	GameManager.set_speed(4.0)
+	SaveManager.set_autosave_interval(120.0)
+	PlayerData.settings["notify_warn"] = false
+	_ok(absf(Engine.time_scale - 4.0) < 0.001, "setting the speed scales the engine clock")
+	_approx(SaveManager.get_autosave_interval(), 120.0, 0.001, "the chosen cadence takes effect")
+	_approx(float(PlayerData.settings["game_speed"]), 4.0, 0.001,
+		"the speed control writes the setting the save file carries")
+	_ok(SaveManager.AUTOSAVE_CHOICES.has(120.0), "the chosen cadence is one the UI offers")
+	SaveManager._apply(JSON.parse_string(JSON.stringify(SaveManager.build_save_data(), "\t")))
+	_approx(float(PlayerData.settings["game_speed"]), 4.0, 0.001,
+		"the game speed survived a save round-trip")
+	_approx(SaveManager.get_autosave_interval(), 120.0, 0.001,
+		"the autosave cadence survived a round-trip and was re-applied to the live timer")
+	_ok(not bool(PlayerData.settings["notify_warn"]),
+		"a muted notification category survived a save round-trip")
+	_ok(is_equal_approx(Engine.time_scale, 4.0),
+		"the restored speed is live, not merely stored")
+
+	# --- a legacy save predating all three keys loads cleanly and gains the defaults.
+	var legacy: Dictionary = JSON.parse_string(JSON.stringify(SaveManager.build_save_data(), "\t"))
+	var legacy_settings: Dictionary = (legacy.get("settings", {}) as Dictionary).duplicate(true)
+	for key in new_keys:
+		legacy_settings.erase(key)
+	legacy["settings"] = legacy_settings
+	legacy["player"] = (legacy.get("player", {}) as Dictionary).duplicate(true)
+	(legacy["player"] as Dictionary)["settings"] = legacy_settings
+	_ok(SaveManager.validate_save(legacy).is_empty(), "a save missing the new keys is still valid")
+	SaveManager._apply(legacy)
+	for key in new_keys:
+		_ok(PlayerData.settings.has(key), "the legacy load filled in the missing key '%s'" % key)
+	_approx(float(PlayerData.settings.get("game_speed", 0.0)), 1.0, 0.001,
+		"a legacy save resumes at normal speed")
+	_approx(SaveManager.get_autosave_interval(), SaveManager.AUTOSAVE_INTERVAL, 0.001,
+		"a legacy save resumes at the default cadence")
+	for kind in EventBus.MUTABLE_NOTIFICATION_KINDS:
+		_ok(bool(PlayerData.settings.get("notify_%s" % kind, false)),
+			"a legacy save has '%s' notifications switched back on" % kind)
+
+	# --- a mute gates the toast only. It must never gate the data, and never gate errors.
+	PlayerData.settings["notify_warn"] = false
+	_ok(not EventBus.toasts_enabled("warn"), "a muted category reports itself as muted")
+	_ok(EventBus.toasts_enabled("error"), "errors are never muted, muted category or not")
+	_ok(EventBus.toasts_enabled("success"), "muting one category leaves the others alone")
+	PlayerData.settings["notify_warn"] = true
+	_ok(EventBus.toasts_enabled("warn"), "un-muting a category restores it immediately")
+
+	# --- a hostile value outranks the UI: the clamp lives where the value is read, not set.
+	SaveManager.set_autosave_interval(0.0)
+	_approx(SaveManager.get_autosave_interval(), SaveManager.AUTOSAVE_CHOICES[0], 0.001,
+		"a zero cadence is clamped up, so the autosave cannot be made to write every frame")
+	SaveManager.set_autosave_interval(999999.0)
+	_approx(SaveManager.get_autosave_interval(), SaveManager.MAX_AUTOSAVE_INTERVAL, 0.001,
+		"an absurdly long cadence is clamped to the documented maximum")
+
+	# --- both speed controls read and write the one setting, so they cannot drift apart.
+	_ok(StatusBar.GAME_SPEEDS.has(float(PlayerData.settings.get("game_speed", 0.0))),
+		"the top bar and the settings screen offer the same speed ladder")
+	GameManager.set_speed(2.0)
+	_approx(float(PlayerData.settings["game_speed"]), 2.0, 0.001,
+		"changing the speed from the top bar updates the setting the settings screen reads")
+
+	_test_reset_is_confirmed_not_destructive()
+
+	# Leave the shared singletons as the rest of the suite expects to find them.
+	PlayerData.settings["confirm_reset"] = bool(SettingsDefaults.get_default("confirm_reset", true))
+	GameManager.set_speed(1.0)
+	SaveManager.set_autosave_interval(SaveManager.AUTOSAVE_INTERVAL)
+
+## The reset control must ask before it destroys. This presses the real button and checks that
+## what came back was a dialog with the focus on Cancel — and that the player's progress was NOT
+## wiped by the press itself.
+func _test_reset_is_confirmed_not_destructive() -> void:
+	_ok(bool(SettingsDefaults.get_default("confirm_reset", false)),
+		"resetting asks for confirmation by default")
+	PlayerData.settings["confirm_reset"] = true
+	var panel: Control = load("res://scripts/ui/panels/SettingsPanel.gd").new()
+	_attach(panel)
+	_ok(panel.get("_speed_menu") != null, "the settings screen carries a game speed control")
+	var reset_button: Button = _find_button(panel, "Reset")
+	_ok(reset_button != null, "the settings screen carries a reset control")
+	if reset_button == null:
+		panel.queue_free()
+		return
+	# A press must NOT be allowed to destroy anything on its own.
+	PlayerData.gp = 1234.0
+	var before_level: int = PlayerData.get_level("woodcutting")
+	reset_button.pressed.emit()
+	_approx(PlayerData.gp, 1234.0, 0.001, "pressing reset alone destroys no progress")
+	_eq(PlayerData.get_level("woodcutting"), before_level, "pressing reset alone resets no skills")
+
+	var dialogs: Array[ConfirmDialog] = []
+	for node in _walk(panel):
+		if node is ConfirmDialog:
+			dialogs.append(node)
+	_ok(dialogs.size() == 1, "pressing reset raises exactly one confirmation dialog")
+	if dialogs.size() == 1:
+		var dlg: ConfirmDialog = dialogs[0]
+		_ok(dlg.dialog_text.find("cannot be undone") >= 0,
+			"the reset dialog states plainly that the save is destroyed")
+		_ok(dlg.dialog_text.find("deletes your save") >= 0,
+			"the reset dialog says what is destroyed")
+		_ok(dlg.ok_button_text.find("Reset") >= 0, "the confirm button names the action it takes")
+		_ok(dlg.get_cancel_button() == dlg.get_cancel_button() and
+			dlg.get_cancel_button() != dlg.get_ok_button(),
+			"the dialog offers a separate cancel from the destructive confirm")
+		dlg.queue_free()
+	panel.queue_free()
+
+## Put a freshly built widget into the live tree when there is one, so focus and sizing behave
+## as they do in the game. A null main loop is fine: the checks here are about wiring, not paint.
+func _attach(node: Node) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null and tree.root != null and node.get_parent() == null:
+		tree.root.add_child(node)
+
+func _find_button(root: Node, needle: String) -> Button:
+	for node in _walk(root):
+		if node is Button and (node as Button).text.find(needle) >= 0:
+			return node
+	return null
+
+func _walk(node: Node) -> Array:
+	var out: Array = [node]
+	for c in node.get_children():
+		out.append_array(_walk(c))
+	return out

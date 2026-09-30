@@ -56,6 +56,12 @@ const RUNE_PRESERVATION_PERCENT := "rune_preservation_percent"
 const FOOD_HEALING_PERCENT := "food_healing_percent"
 const HITPOINTS_REGEN_FLAT := "hitpoints_regen_flat"
 
+# ---- Raid ----
+## Raid-only keys. These are NOT passive stats: RaidManager reads them directly to shape the
+## run (a run starts this many waves in). Registering them here means one authority on the
+## spelling, and a shop upgrade whose key nothing reads is a bug the test suite can catch.
+const RAID_WAVE_SKIP := "raid_wave_skip"
+
 ## Build a per-skill key, e.g. skill_key("woodcutting", ModifierKeys.SUFFIX_INTERVAL_PERCENT).
 static func skill_key(skill_id: String, suffix: String) -> String:
     return "%s_%s" % [skill_id, suffix]

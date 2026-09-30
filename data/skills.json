@@ -1,5 +1,4 @@
 {
-  "_comment": "Skill + action definitions. Woodcutting / Fishing / Cooking are COMPLETE reference skills; the rest carry representative actions to establish the schema. Data-driven: swap this file to mod content.",
   "attack": {
     "id": "attack",
     "name": "Bladework",
@@ -7,7 +6,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 1
+    "order": 1,
+    "description": "Combat accuracy with stab, slash and block weapons."
   },
   "strength": {
     "id": "strength",
@@ -16,7 +16,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 2
+    "order": 2,
+    "description": "Melee damage output — how hard you hit."
   },
   "defence": {
     "id": "defence",
@@ -25,7 +26,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 3
+    "order": 3,
+    "description": "Damage reduction and the chance to dodge incoming attacks."
   },
   "hitpoints": {
     "id": "hitpoints",
@@ -34,7 +36,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 4
+    "order": 4,
+    "description": "Your health pool. When it hits zero you respawn with penalties."
   },
   "ranged": {
     "id": "ranged",
@@ -43,7 +46,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 5
+    "order": 5,
+    "description": "Accuracy and damage with bows and thrown weapons."
   },
   "magic": {
     "id": "magic",
@@ -52,7 +56,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 6
+    "order": 6,
+    "description": "Rune-based spell damage, effects and utility."
   },
   "prayer": {
     "id": "prayer",
@@ -61,7 +66,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 7
+    "order": 7,
+    "description": "Activate rites that buff combat, at the cost of Devotion points per attack."
   },
   "slayer": {
     "id": "slayer",
@@ -70,7 +76,8 @@
     "type": "combat",
     "max_level": 120,
     "actions": [],
-    "order": 8
+    "order": 8,
+    "description": "Assign monster tasks for slayer points, rewards and combat bonuses."
   },
   "corruption": {
     "id": "corruption",
@@ -91,11 +98,33 @@
         "mastery_action_time": 5.0
       },
       {
+        "id": "listen_abyss",
+        "name": "Listen to the Abyss",
+        "level_required": 10,
+        "base_interval": 5.0,
+        "base_xp": 64,
+        "output_items": {
+          "abyssal_essence": 1
+        },
+        "mastery_action_time": 5.0
+      },
+      {
         "id": "feed_darkness",
         "name": "Feed the Darkness",
         "level_required": 20,
         "base_interval": 5.0,
         "base_xp": 80,
+        "output_items": {
+          "abyssal_essence": 1
+        },
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "open_veil",
+        "name": "Open the Veil",
+        "level_required": 30,
+        "base_interval": 5.0,
+        "base_xp": 100,
         "output_items": {
           "abyssal_essence": 1
         },
@@ -113,6 +142,17 @@
         "mastery_action_time": 5.0
       },
       {
+        "id": "steep_shadow",
+        "name": "Steep in Shadow",
+        "level_required": 50,
+        "base_interval": 5.0,
+        "base_xp": 145,
+        "output_items": {
+          "abyssal_essence": 2
+        },
+        "mastery_action_time": 5.0
+      },
+      {
         "id": "bind_horror",
         "name": "Bind a Lesser Horror",
         "level_required": 60,
@@ -124,6 +164,17 @@
         "mastery_action_time": 5.0
       },
       {
+        "id": "chain_restless",
+        "name": "Chain a Restless One",
+        "level_required": 70,
+        "base_interval": 5.0,
+        "base_xp": 195,
+        "output_items": {
+          "abyssal_essence": 3
+        },
+        "mastery_action_time": 5.0
+      },
+      {
         "id": "crown_hollow",
         "name": "Crown the Hollow",
         "level_required": 85,
@@ -131,6 +182,17 @@
         "base_xp": 230,
         "output_items": {
           "abyssal_essence": 3
+        },
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "shoulder_dark",
+        "name": "Shoulder the Dark",
+        "level_required": 95,
+        "base_interval": 5.0,
+        "base_xp": 275,
+        "output_items": {
+          "abyssal_essence": 4
         },
         "mastery_action_time": 5.0
       },
@@ -176,7 +238,8 @@
         "damage_reduction_percent": 2
       }
     },
-    "order": 9
+    "order": 9,
+    "description": "Abyssal pact magic — trade safety and sanity for raw power."
   },
   "woodcutting": {
     "id": "woodcutting",
@@ -207,7 +270,7 @@
     "actions": [
       {
         "id": "normal_tree",
-        "name": "Normal Tree",
+        "name": "Emberpine Tree",
         "level_required": 1,
         "base_interval": 3.0,
         "base_xp": 10,
@@ -220,13 +283,19 @@
             "chance": 0.005,
             "min_qty": 1,
             "max_qty": 1
+          },
+          {
+            "item_id": "bowstring",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 3.0
       },
       {
         "id": "oak_tree",
-        "name": "Oak Tree",
+        "name": "Ironbark Tree",
         "level_required": 10,
         "base_interval": 4.0,
         "base_xp": 25,
@@ -237,7 +306,7 @@
       },
       {
         "id": "willow_tree",
-        "name": "Willow Tree",
+        "name": "Silverleaf Tree",
         "level_required": 25,
         "base_interval": 5.0,
         "base_xp": 40,
@@ -248,7 +317,7 @@
       },
       {
         "id": "teak_tree",
-        "name": "Teak Tree",
+        "name": "Reedwood Tree",
         "level_required": 35,
         "base_interval": 6.0,
         "base_xp": 60,
@@ -259,7 +328,7 @@
       },
       {
         "id": "maple_tree",
-        "name": "Maple Tree",
+        "name": "Amberwood Tree",
         "level_required": 45,
         "base_interval": 7.0,
         "base_xp": 80,
@@ -270,7 +339,7 @@
       },
       {
         "id": "mahogany_tree",
-        "name": "Mahogany Tree",
+        "name": "Blackgrain Tree",
         "level_required": 55,
         "base_interval": 8.0,
         "base_xp": 100,
@@ -281,7 +350,7 @@
       },
       {
         "id": "yew_tree",
-        "name": "Yew Tree",
+        "name": "Gravewood Tree",
         "level_required": 60,
         "base_interval": 9.0,
         "base_xp": 120,
@@ -292,7 +361,7 @@
       },
       {
         "id": "magic_tree",
-        "name": "Sorcery Tree",
+        "name": "Witchpine Tree",
         "level_required": 75,
         "base_interval": 12.0,
         "base_xp": 180,
@@ -303,7 +372,7 @@
       },
       {
         "id": "redwood_tree",
-        "name": "Redwood Tree",
+        "name": "Bloodwood Tree",
         "level_required": 90,
         "base_interval": 15.0,
         "base_xp": 250,
@@ -335,7 +404,8 @@
         "mastery_action_time": 19.0
       }
     ],
-    "order": 10
+    "order": 10,
+    "description": "Chop trees for logs, the base material for many crafts."
   },
   "fishing": {
     "id": "fishing",
@@ -440,7 +510,7 @@
       },
       {
         "id": "crab",
-        "name": "Crab",
+        "name": "Mudcrab",
         "level_required": 60,
         "base_interval": 8.0,
         "base_xp": 140,
@@ -462,7 +532,7 @@
       },
       {
         "id": "cave_fish",
-        "name": "Cave Fish",
+        "name": "Cavern Char",
         "level_required": 75,
         "base_interval": 10.0,
         "base_xp": 200,
@@ -473,7 +543,7 @@
       },
       {
         "id": "manta_ray",
-        "name": "Manta Ray",
+        "name": "Void Ray",
         "level_required": 85,
         "base_interval": 12.0,
         "base_xp": 260,
@@ -484,7 +554,7 @@
       },
       {
         "id": "whale",
-        "name": "Whale",
+        "name": "Leviathan",
         "level_required": 95,
         "base_interval": 15.0,
         "base_xp": 340,
@@ -516,7 +586,8 @@
         "mastery_action_time": 19.0
       }
     ],
-    "order": 11
+    "order": 11,
+    "description": "Catch fish from rivers, lakes and the sea."
   },
   "mining": {
     "id": "mining",
@@ -821,7 +892,8 @@
         "mastery_action_time": 3.0
       }
     ],
-    "order": 12
+    "order": 12,
+    "description": "Quarry ores, stones and gems from veins."
   },
   "farming": {
     "id": "farming",
@@ -852,66 +924,90 @@
     "actions": [
       {
         "id": "plant_garum_herb",
-        "name": "Garum",
+        "name": "Emberleaf",
         "level_required": 1,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "garum_herb_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
         "id": "plant_sourweed",
-        "name": "Sourweed",
+        "name": "Sourthistle",
         "level_required": 10,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "sourweed_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
         "id": "plant_mantalyme",
-        "name": "Mantalyme",
+        "name": "Mirebloom",
         "level_required": 25,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "mantalyme_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
         "id": "plant_lemontyle",
-        "name": "Lemontyle",
+        "name": "Goldpetal",
         "level_required": 40,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "lemontyle_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
         "id": "plant_oxilyme",
-        "name": "Oxilyme",
+        "name": "Fenblossom",
         "level_required": 55,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "oxilyme_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
         "id": "plant_poraxx",
-        "name": "Poraxx",
+        "name": "Ashcap",
         "level_required": 70,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "poraxx_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
         "id": "plant_barrentoe",
-        "name": "Barrentoe",
+        "name": "Gravemoss",
         "level_required": 85,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "barrentoe_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
         "id": "plant_duskroot",
-        "name": "Duskroot",
+        "name": "Hushroot",
         "level_required": 95,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "duskroot_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
@@ -920,6 +1016,9 @@
         "level_required": 105,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "herald_bloom_seed": 1
+        },
         "mastery_action_time": 1.0
       },
       {
@@ -928,10 +1027,14 @@
         "level_required": 115,
         "base_interval": 1.0,
         "base_xp": 0,
+        "input_items": {
+          "emberbloom_seed": 1
+        },
         "mastery_action_time": 1.0
       }
     ],
-    "order": 13
+    "order": 13,
+    "description": "Plant seeds into your farm plots; crops grow over real time and are harvested for XP. Seeds come from thieving drops; compost from the settlement trader."
   },
   "firemaking": {
     "id": "firemaking",
@@ -1200,7 +1303,8 @@
         "mastery_action_time": 1.2
       }
     ],
-    "order": 14
+    "order": 14,
+    "description": "Burn logs into charcoal, ash and kindling."
   },
   "cooking": {
     "id": "cooking",
@@ -1239,7 +1343,9 @@
         "output_items": {
           "shrimp": 1
         },
-        "mastery_action_time": 3.4
+        "mastery_action_time": 3.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_sardine",
@@ -1254,7 +1360,9 @@
         "output_items": {
           "sardine": 1
         },
-        "mastery_action_time": 3.4
+        "mastery_action_time": 3.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_herring",
@@ -1269,7 +1377,9 @@
         "output_items": {
           "herring": 1
         },
-        "mastery_action_time": 4.25
+        "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_trout",
@@ -1284,7 +1394,9 @@
         "output_items": {
           "trout": 1
         },
-        "mastery_action_time": 4.25
+        "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_salmon",
@@ -1299,7 +1411,9 @@
         "output_items": {
           "salmon": 1
         },
-        "mastery_action_time": 5.1
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_lobster",
@@ -1314,7 +1428,9 @@
         "output_items": {
           "lobster": 1
         },
-        "mastery_action_time": 5.1
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_swordfish",
@@ -1329,7 +1445,9 @@
         "output_items": {
           "swordfish": 1
         },
-        "mastery_action_time": 5.95
+        "mastery_action_time": 5.95,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_shark",
@@ -1344,7 +1462,9 @@
         "output_items": {
           "shark": 1
         },
-        "mastery_action_time": 7.65
+        "mastery_action_time": 7.65,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_manta_ray",
@@ -1359,7 +1479,9 @@
         "output_items": {
           "manta_ray": 1
         },
-        "mastery_action_time": 8.5
+        "mastery_action_time": 8.5,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_whale",
@@ -1374,7 +1496,9 @@
         "output_items": {
           "whale": 1
         },
-        "mastery_action_time": 9.35
+        "mastery_action_time": 9.35,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_dreadfin",
@@ -1389,7 +1513,9 @@
         "output_items": {
           "dreadfin": 1
         },
-        "mastery_action_time": 10.2
+        "mastery_action_time": 10.2,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       },
       {
         "id": "cook_abyssal_eel",
@@ -1404,10 +1530,13 @@
         "output_items": {
           "abyssal_eel": 1
         },
-        "mastery_action_time": 11.05
+        "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       }
     ],
-    "order": 15
+    "order": 15,
+    "description": "Turn raw fish and ingredients into cooked meals that restore health."
   },
   "smithing": {
     "id": "smithing",
@@ -2236,6 +2365,136 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "smith_adamantite_sword",
+        "name": "Skyiron Sword",
+        "level_required": 50,
+        "base_interval": 3.0,
+        "base_xp": 120,
+        "input_items": {
+          "adamantite_bar": 1,
+          "coal": 6
+        },
+        "output_items": {
+          "adamantite_sword": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_adamantite_scimitar",
+        "name": "Skyiron Scimitar",
+        "level_required": 50,
+        "base_interval": 3.0,
+        "base_xp": 120,
+        "input_items": {
+          "adamantite_bar": 1,
+          "coal": 6
+        },
+        "output_items": {
+          "adamantite_scimitar": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_adamantite_battleaxe",
+        "name": "Skyiron Battleaxe",
+        "level_required": 50,
+        "base_interval": 3.0,
+        "base_xp": 120,
+        "input_items": {
+          "adamantite_bar": 1,
+          "coal": 6
+        },
+        "output_items": {
+          "adamantite_battleaxe": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_adamantite_2h_sword",
+        "name": "Skyiron 2H Sword",
+        "level_required": 50,
+        "base_interval": 3.0,
+        "base_xp": 120,
+        "input_items": {
+          "adamantite_bar": 1,
+          "coal": 6
+        },
+        "output_items": {
+          "adamantite_2h_sword": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_adamantite_helmet",
+        "name": "Skyiron Helm",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 180,
+        "input_items": {
+          "adamantite_bar": 2
+        },
+        "output_items": {
+          "adamantite_helmet": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_adamantite_platebody",
+        "name": "Skyiron Platebody",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 420,
+        "input_items": {
+          "adamantite_bar": 5
+        },
+        "output_items": {
+          "adamantite_platebody": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_adamantite_platelegs",
+        "name": "Skyiron Platelegs",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 260,
+        "input_items": {
+          "adamantite_bar": 3
+        },
+        "output_items": {
+          "adamantite_platelegs": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_adamantite_boots",
+        "name": "Skyiron Boots",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 180,
+        "input_items": {
+          "adamantite_bar": 2
+        },
+        "output_items": {
+          "adamantite_boots": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_adamantite_gloves",
+        "name": "Skyiron Gauntlets",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 110,
+        "input_items": {
+          "adamantite_bar": 1
+        },
+        "output_items": {
+          "adamantite_gloves": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
         "id": "forge_air_god_helmet",
         "name": "Aeris Helmet",
         "level_required": 95,
@@ -2676,7 +2935,8 @@
         "mastery_action_time": 34.0
       }
     ],
-    "order": 16
+    "order": 16,
+    "description": "Smelt bars and forge them into armour and weapons."
   },
   "fletching": {
     "id": "fletching",
@@ -2749,7 +3009,7 @@
       },
       {
         "id": "fletch_normal_shortbow",
-        "name": "Normal Shortbow",
+        "name": "Emberpine Shortbow",
         "level_required": 1,
         "base_interval": 1.3,
         "base_xp": 16,
@@ -2764,7 +3024,7 @@
       },
       {
         "id": "fletch_normal_longbow",
-        "name": "Normal Longbow",
+        "name": "Emberpine Longbow",
         "level_required": 1,
         "base_interval": 1.3,
         "base_xp": 22,
@@ -2779,7 +3039,7 @@
       },
       {
         "id": "fletch_oak_shortbow",
-        "name": "Oak Shortbow",
+        "name": "Ironbark Shortbow",
         "level_required": 20,
         "base_interval": 1.3,
         "base_xp": 40,
@@ -2794,7 +3054,7 @@
       },
       {
         "id": "fletch_oak_longbow",
-        "name": "Oak Longbow",
+        "name": "Ironbark Longbow",
         "level_required": 20,
         "base_interval": 1.3,
         "base_xp": 56,
@@ -2809,7 +3069,7 @@
       },
       {
         "id": "fletch_willow_shortbow",
-        "name": "Willow Shortbow",
+        "name": "Silverleaf Shortbow",
         "level_required": 35,
         "base_interval": 1.3,
         "base_xp": 80,
@@ -2824,7 +3084,7 @@
       },
       {
         "id": "fletch_willow_longbow",
-        "name": "Willow Longbow",
+        "name": "Silverleaf Longbow",
         "level_required": 35,
         "base_interval": 1.3,
         "base_xp": 112,
@@ -2839,7 +3099,7 @@
       },
       {
         "id": "fletch_yew_shortbow",
-        "name": "Yew Shortbow",
+        "name": "Gravewood Shortbow",
         "level_required": 55,
         "base_interval": 1.3,
         "base_xp": 150,
@@ -2854,7 +3114,7 @@
       },
       {
         "id": "fletch_yew_longbow",
-        "name": "Yew Longbow",
+        "name": "Gravewood Longbow",
         "level_required": 60,
         "base_interval": 1.3,
         "base_xp": 200,
@@ -2869,7 +3129,7 @@
       },
       {
         "id": "fletch_magic_shortbow",
-        "name": "Magic Shortbow",
+        "name": "Witchpine Shortbow",
         "level_required": 75,
         "base_interval": 1.3,
         "base_xp": 260,
@@ -2884,7 +3144,7 @@
       },
       {
         "id": "fletch_magic_longbow",
-        "name": "Magic Longbow",
+        "name": "Witchpine Longbow",
         "level_required": 80,
         "base_interval": 1.3,
         "base_xp": 330,
@@ -2899,7 +3159,7 @@
       },
       {
         "id": "fletch_redwood_shortbow",
-        "name": "Redwood Shortbow",
+        "name": "Bloodwood Shortbow",
         "level_required": 90,
         "base_interval": 1.3,
         "base_xp": 410,
@@ -2914,7 +3174,7 @@
       },
       {
         "id": "fletch_redwood_longbow",
-        "name": "Redwood Longbow",
+        "name": "Bloodwood Longbow",
         "level_required": 95,
         "base_interval": 1.3,
         "base_xp": 500,
@@ -3002,7 +3262,8 @@
         "fletching_doubling_percent": 10
       }
     },
-    "order": 17
+    "order": 17,
+    "description": "Craft arrow shafts, arrows and bows from logs and feathers."
   },
   "crafting": {
     "id": "crafting",
@@ -3171,7 +3432,7 @@
       },
       {
         "id": "craft_green_dhide_body",
-        "name": "Green D'hide Body",
+        "name": "Verdant Wyrmhide Body",
         "level_required": 40,
         "base_interval": 1.65,
         "base_xp": 60,
@@ -3185,7 +3446,7 @@
       },
       {
         "id": "craft_green_dhide_chaps",
-        "name": "Green D'hide Chaps",
+        "name": "Verdant Wyrmhide Chaps",
         "level_required": 40,
         "base_interval": 1.65,
         "base_xp": 60,
@@ -3199,7 +3460,7 @@
       },
       {
         "id": "craft_green_dhide_vambraces",
-        "name": "Green D'hide Vambraces",
+        "name": "Verdant Wyrmhide Vambraces",
         "level_required": 40,
         "base_interval": 1.65,
         "base_xp": 60,
@@ -3213,7 +3474,7 @@
       },
       {
         "id": "craft_green_dhide_coif",
-        "name": "Green D'hide Coif",
+        "name": "Verdant Wyrmhide Coif",
         "level_required": 40,
         "base_interval": 1.65,
         "base_xp": 60,
@@ -3227,7 +3488,7 @@
       },
       {
         "id": "craft_blue_dhide_body",
-        "name": "Blue D'hide Body",
+        "name": "Azure Wyrmhide Body",
         "level_required": 50,
         "base_interval": 1.65,
         "base_xp": 80,
@@ -3241,7 +3502,7 @@
       },
       {
         "id": "craft_blue_dhide_chaps",
-        "name": "Blue D'hide Chaps",
+        "name": "Azure Wyrmhide Chaps",
         "level_required": 50,
         "base_interval": 1.65,
         "base_xp": 80,
@@ -3255,7 +3516,7 @@
       },
       {
         "id": "craft_blue_dhide_vambraces",
-        "name": "Blue D'hide Vambraces",
+        "name": "Azure Wyrmhide Vambraces",
         "level_required": 50,
         "base_interval": 1.65,
         "base_xp": 80,
@@ -3269,7 +3530,7 @@
       },
       {
         "id": "craft_blue_dhide_coif",
-        "name": "Blue D'hide Coif",
+        "name": "Azure Wyrmhide Coif",
         "level_required": 50,
         "base_interval": 1.65,
         "base_xp": 80,
@@ -3283,7 +3544,7 @@
       },
       {
         "id": "craft_red_dhide_body",
-        "name": "Red D'hide Body",
+        "name": "Crimson Wyrmhide Body",
         "level_required": 60,
         "base_interval": 1.65,
         "base_xp": 105,
@@ -3297,7 +3558,7 @@
       },
       {
         "id": "craft_red_dhide_chaps",
-        "name": "Red D'hide Chaps",
+        "name": "Crimson Wyrmhide Chaps",
         "level_required": 60,
         "base_interval": 1.65,
         "base_xp": 105,
@@ -3311,7 +3572,7 @@
       },
       {
         "id": "craft_red_dhide_vambraces",
-        "name": "Red D'hide Vambraces",
+        "name": "Crimson Wyrmhide Vambraces",
         "level_required": 60,
         "base_interval": 1.65,
         "base_xp": 105,
@@ -3325,7 +3586,7 @@
       },
       {
         "id": "craft_red_dhide_coif",
-        "name": "Red D'hide Coif",
+        "name": "Crimson Wyrmhide Coif",
         "level_required": 60,
         "base_interval": 1.65,
         "base_xp": 105,
@@ -3339,7 +3600,7 @@
       },
       {
         "id": "craft_black_dhide_body",
-        "name": "Blighted D'hide Body",
+        "name": "Blighted Wyrmhide Body",
         "level_required": 70,
         "base_interval": 1.65,
         "base_xp": 135,
@@ -3353,7 +3614,7 @@
       },
       {
         "id": "craft_black_dhide_chaps",
-        "name": "Blighted D'hide Chaps",
+        "name": "Blighted Wyrmhide Chaps",
         "level_required": 70,
         "base_interval": 1.65,
         "base_xp": 135,
@@ -3367,7 +3628,7 @@
       },
       {
         "id": "craft_black_dhide_vambraces",
-        "name": "Blighted D'hide Vambraces",
+        "name": "Blighted Wyrmhide Vambraces",
         "level_required": 70,
         "base_interval": 1.65,
         "base_xp": 135,
@@ -3381,7 +3642,7 @@
       },
       {
         "id": "craft_black_dhide_coif",
-        "name": "Blighted D'hide Coif",
+        "name": "Blighted Wyrmhide Coif",
         "level_required": 70,
         "base_interval": 1.65,
         "base_xp": 135,
@@ -3395,7 +3656,7 @@
       },
       {
         "id": "craft_reinforced_dhide_body",
-        "name": "Reinforced D'hide Body",
+        "name": "Blighted Wyrmhide Body",
         "level_required": 85,
         "base_interval": 1.65,
         "base_xp": 190,
@@ -3409,7 +3670,7 @@
       },
       {
         "id": "craft_reinforced_dhide_chaps",
-        "name": "Reinforced D'hide Chaps",
+        "name": "Blighted Wyrmhide Chaps",
         "level_required": 95,
         "base_interval": 1.65,
         "base_xp": 250,
@@ -3424,7 +3685,7 @@
       },
       {
         "id": "craft_umbral_dhide_vambraces",
-        "name": "Umbral D'hide Vambraces",
+        "name": "Blighted Wyrmhide Vambraces",
         "level_required": 115,
         "base_interval": 1.65,
         "base_xp": 400,
@@ -3439,7 +3700,7 @@
       },
       {
         "id": "craft_reinforced_dhide_coif",
-        "name": "Reinforced D'hide Coif",
+        "name": "Blighted Wyrmhide Coif",
         "level_required": 105,
         "base_interval": 1.65,
         "base_xp": 320,
@@ -3467,7 +3728,8 @@
         "crafting_doubling_percent": 10
       }
     },
-    "order": 18
+    "order": 18,
+    "description": "Work leather, cloth and gems into armour, jewellery and accessories."
   },
   "runecrafting": {
     "id": "runecrafting",
@@ -3632,7 +3894,7 @@
       },
       {
         "id": "craft_air_staff",
-        "name": "Air Staff",
+        "name": "Gale Staff",
         "level_required": 1,
         "base_interval": 1.7,
         "base_xp": 31,
@@ -3647,7 +3909,7 @@
       },
       {
         "id": "craft_water_staff",
-        "name": "Water Staff",
+        "name": "Tide Staff",
         "level_required": 10,
         "base_interval": 1.7,
         "base_xp": 40,
@@ -3662,7 +3924,7 @@
       },
       {
         "id": "craft_earth_staff",
-        "name": "Earth Staff",
+        "name": "Stone Staff",
         "level_required": 20,
         "base_interval": 1.7,
         "base_xp": 50,
@@ -3677,7 +3939,7 @@
       },
       {
         "id": "craft_fire_staff",
-        "name": "Fire Staff",
+        "name": "Ember Staff",
         "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 60,
@@ -3734,7 +3996,8 @@
         "runecrafting_resource_flat": 5
       }
     },
-    "order": 19
+    "order": 19,
+    "description": "Bind elemental runes for magic spells and enchantments."
   },
   "herblore": {
     "id": "herblore",
@@ -4052,7 +4315,8 @@
         "herblore_doubling_percent": 10
       }
     },
-    "order": 20
+    "order": 20,
+    "description": "Brew potions and combat consumables from herbs and reagents."
   },
   "thieving": {
     "id": "thieving",
@@ -4366,6 +4630,12 @@
         "mastery_action_time": 4.2,
         "secondary_outputs": [
           {
+            "item_id": "duskroot_seed",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
             "item_id": "chapeau_noir",
             "chance": 0.05,
             "min_qty": 1,
@@ -4387,6 +4657,12 @@
         "output_items": {},
         "mastery_action_time": 4.4,
         "secondary_outputs": [
+          {
+            "item_id": "herald_bloom_seed",
+            "chance": 0.07,
+            "min_qty": 1,
+            "max_qty": 1
+          },
           {
             "item_id": "chapeau_noir",
             "chance": 0.06,
@@ -4410,6 +4686,12 @@
         "mastery_action_time": 4.6,
         "secondary_outputs": [
           {
+            "item_id": "emberbloom_seed",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
             "item_id": "chapeau_noir",
             "chance": 0.07,
             "min_qty": 1,
@@ -4432,7 +4714,8 @@
         "thieving_stealth": 100
       }
     },
-    "order": 21
+    "order": 21,
+    "description": "Pick pockets and lift goods from NPCs and stalls."
   },
   "agility": {
     "id": "agility",
@@ -4451,6 +4734,15 @@
         "mastery_action_time": 3.0
       },
       {
+        "id": "hedge_run",
+        "name": "Hedge Run",
+        "level_required": 10,
+        "base_interval": 3.0,
+        "base_xp": 32,
+        "output_items": {},
+        "mastery_action_time": 3.0
+      },
+      {
         "id": "trail_run",
         "name": "Trail Run",
         "level_required": 25,
@@ -4460,11 +4752,29 @@
         "mastery_action_time": 3.0
       },
       {
+        "id": "ridge_run",
+        "name": "Ridge Run",
+        "level_required": 40,
+        "base_interval": 3.0,
+        "base_xp": 65,
+        "output_items": {},
+        "mastery_action_time": 3.0
+      },
+      {
         "id": "summit_run",
         "name": "Summit Run",
         "level_required": 50,
         "base_interval": 3.0,
         "base_xp": 80,
+        "output_items": {},
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "cloudline_run",
+        "name": "Cloudline Run",
+        "level_required": 62,
+        "base_interval": 3.0,
+        "base_xp": 98,
         "output_items": {},
         "mastery_action_time": 3.0
       },
@@ -4516,7 +4826,8 @@
         "agility_interval_percent": 3
       }
     },
-    "order": 22
+    "order": 22,
+    "description": "Run obstacle courses to earn agility points and passive bonuses."
   },
   "summoning": {
     "id": "summoning",
@@ -4527,7 +4838,7 @@
     "actions": [
       {
         "id": "ent_tablet",
-        "name": "Ent Tablet",
+        "name": "Oldroot Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4542,7 +4853,7 @@
       },
       {
         "id": "mole_tablet",
-        "name": "Mole Tablet",
+        "name": "Ashmole Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4557,7 +4868,7 @@
       },
       {
         "id": "octopus_tablet",
-        "name": "Octopus Tablet",
+        "name": "Tidegrasp Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4572,7 +4883,7 @@
       },
       {
         "id": "pig_tablet",
-        "name": "Pig Tablet",
+        "name": "Sootsow Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4587,7 +4898,7 @@
       },
       {
         "id": "crow_tablet",
-        "name": "Crow Tablet",
+        "name": "Cindercrow Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4602,7 +4913,7 @@
       },
       {
         "id": "leprechaun_tablet",
-        "name": "Leprechaun Tablet",
+        "name": "Glimmerkin Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4617,7 +4928,7 @@
       },
       {
         "id": "monkey_tablet",
-        "name": "Monkey Tablet",
+        "name": "Riftmonkey Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4632,7 +4943,7 @@
       },
       {
         "id": "salamander_tablet",
-        "name": "Salamander Tablet",
+        "name": "Cinderling Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4647,7 +4958,7 @@
       },
       {
         "id": "bear_tablet",
-        "name": "Bear Tablet",
+        "name": "Ashbear Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4662,7 +4973,7 @@
       },
       {
         "id": "devil_tablet",
-        "name": "Devil Tablet",
+        "name": "Ashfiend Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4677,7 +4988,7 @@
       },
       {
         "id": "eagle_tablet",
-        "name": "Eagle Tablet",
+        "name": "Galecrest Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4692,7 +5003,7 @@
       },
       {
         "id": "owl_tablet",
-        "name": "Owl Tablet",
+        "name": "Duskwing Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4707,7 +5018,7 @@
       },
       {
         "id": "beaver_tablet",
-        "name": "Beaver Tablet",
+        "name": "Muddam Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4722,7 +5033,7 @@
       },
       {
         "id": "fox_tablet",
-        "name": "Fox Tablet",
+        "name": "Ashfox Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4752,7 +5063,7 @@
       },
       {
         "id": "occultist_tablet",
-        "name": "Occultist Tablet",
+        "name": "Ashcaller Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4767,7 +5078,7 @@
       },
       {
         "id": "wolf_tablet",
-        "name": "Wolf Tablet",
+        "name": "Dustwolf Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4782,7 +5093,7 @@
       },
       {
         "id": "minotaur_tablet",
-        "name": "Minotaur Tablet",
+        "name": "Sunderhorn Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4797,7 +5108,7 @@
       },
       {
         "id": "centaur_tablet",
-        "name": "Centaur Tablet",
+        "name": "Windhoof Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4812,7 +5123,7 @@
       },
       {
         "id": "witch_tablet",
-        "name": "Witch Tablet",
+        "name": "Hexweaver Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4827,7 +5138,7 @@
       },
       {
         "id": "cyclops_tablet",
-        "name": "Cyclops Tablet",
+        "name": "Stonegaze Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4842,7 +5153,7 @@
       },
       {
         "id": "yak_tablet",
-        "name": "Yak Tablet",
+        "name": "Rimeyak Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4857,7 +5168,7 @@
       },
       {
         "id": "unicorn_tablet",
-        "name": "Unicorn Tablet",
+        "name": "Starfoil Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4872,7 +5183,7 @@
       },
       {
         "id": "dragon_tablet",
-        "name": "Dragon Tablet",
+        "name": "Ashwyrm Tablet",
         "level_required": 1,
         "base_interval": 5.0,
         "base_xp": 15,
@@ -4887,7 +5198,7 @@
       },
       {
         "id": "tortoise_tablet",
-        "name": "Tortoise Tablet",
+        "name": "Mossback Tablet",
         "level_required": 2,
         "base_interval": 5.0,
         "base_xp": 30,
@@ -4953,7 +5264,7 @@
         "base_xp": 420,
         "input_items": {
           "summoning_shard_silver": 3,
-          "rune_essence": 20
+          "abyssal_essence": 5
         },
         "output_items": {
           "summoning_shard_black": 1
@@ -4990,7 +5301,8 @@
         "summoning_resource_flat": 15
       }
     },
-    "order": 23
+    "order": 23,
+    "description": "Craft tablets and summon familiars that aid you in combat and skilling."
   },
   "astrology": {
     "id": "astrology",
@@ -5021,7 +5333,7 @@
     "actions": [
       {
         "id": "study_deedree",
-        "name": "Study Deedree",
+        "name": "Study Vespera",
         "level_required": 1,
         "base_interval": 3.0,
         "base_xp": 16,
@@ -5032,7 +5344,7 @@
       },
       {
         "id": "study_iridan",
-        "name": "Study Iridan",
+        "name": "Study Irielle",
         "level_required": 10,
         "base_interval": 3.0,
         "base_xp": 25,
@@ -5043,7 +5355,7 @@
       },
       {
         "id": "study_ameria",
-        "name": "Study Ameria",
+        "name": "Study Aurelia",
         "level_required": 20,
         "base_interval": 3.0,
         "base_xp": 35,
@@ -5054,7 +5366,7 @@
       },
       {
         "id": "study_terra",
-        "name": "Study Terra",
+        "name": "Study Loamara",
         "level_required": 30,
         "base_interval": 3.0,
         "base_xp": 45,
@@ -5065,7 +5377,7 @@
       },
       {
         "id": "study_vale",
-        "name": "Study Vale",
+        "name": "Study Vaelith",
         "level_required": 35,
         "base_interval": 3.0,
         "base_xp": 50,
@@ -5076,7 +5388,7 @@
       },
       {
         "id": "study_syllia",
-        "name": "Study Syllia",
+        "name": "Study Serith",
         "level_required": 40,
         "base_interval": 3.0,
         "base_xp": 55,
@@ -5087,7 +5399,7 @@
       },
       {
         "id": "study_arachi",
-        "name": "Study Arachi",
+        "name": "Study Keshari",
         "level_required": 45,
         "base_interval": 3.0,
         "base_xp": 60,
@@ -5098,7 +5410,7 @@
       },
       {
         "id": "study_ko",
-        "name": "Study Ko",
+        "name": "Study Orrin",
         "level_required": 50,
         "base_interval": 3.0,
         "base_xp": 65,
@@ -5109,7 +5421,7 @@
       },
       {
         "id": "study_tellus",
-        "name": "Study Tellus",
+        "name": "Study Petrava",
         "level_required": 55,
         "base_interval": 3.0,
         "base_xp": 70,
@@ -5120,7 +5432,7 @@
       },
       {
         "id": "study_qimican",
-        "name": "Study Qimican",
+        "name": "Study Qimara",
         "level_required": 60,
         "base_interval": 3.0,
         "base_xp": 75,
@@ -5142,7 +5454,7 @@
       },
       {
         "id": "study_ashtar",
-        "name": "Study Ashtar",
+        "name": "Study Emberine",
         "level_required": 70,
         "base_interval": 3.0,
         "base_xp": 85,
@@ -5153,7 +5465,7 @@
       },
       {
         "id": "study_variel",
-        "name": "Study Variel",
+        "name": "Study Varrel",
         "level_required": 75,
         "base_interval": 3.0,
         "base_xp": 90,
@@ -5164,7 +5476,7 @@
       },
       {
         "id": "study_nysa",
-        "name": "Study Nysa",
+        "name": "Study Nyssara",
         "level_required": 80,
         "base_interval": 3.0,
         "base_xp": 95,
@@ -5183,7 +5495,7 @@
       },
       {
         "id": "study_haemir",
-        "name": "Study Haemir",
+        "name": "Study Haemros",
         "level_required": 85,
         "base_interval": 3.0,
         "base_xp": 100,
@@ -5258,7 +5570,8 @@
         ]
       }
     ],
-    "order": 24
+    "order": 24,
+    "description": "Study constellations to grant skill and combat bonuses."
   },
   "alt_magic": {
     "id": "alt_magic",
@@ -5289,7 +5602,7 @@
     "actions": [
       {
         "id": "superheat_item",
-        "name": "Superheat Item",
+        "name": "Superheat Iron",
         "level_required": 1,
         "base_interval": 1.7,
         "base_xp": 35,
@@ -5419,7 +5732,8 @@
         "mastery_action_time": 1.7
       }
     ],
-    "order": 25
+    "order": 25,
+    "description": "Alternative magic — alchemy, item enchanting and superheating."
   },
   "township": {
     "id": "township",
@@ -5428,7 +5742,8 @@
     "type": "passive",
     "max_level": 120,
     "actions": [],
-    "order": 26
+    "order": 26,
+    "description": "Build and manage a settlement: houses, farms and production."
   },
   "cartography": {
     "id": "cartography",
@@ -5467,11 +5782,29 @@
         "mastery_action_time": 5.0
       },
       {
+        "id": "chart_coast",
+        "name": "Chart the Coast",
+        "level_required": 15,
+        "base_interval": 5.0,
+        "base_xp": 20,
+        "output_items": {},
+        "mastery_action_time": 5.0
+      },
+      {
         "id": "chart_waters",
         "name": "Chart Waters",
         "level_required": 30,
         "base_interval": 5.0,
         "base_xp": 30,
+        "output_items": {},
+        "mastery_action_time": 5.0
+      },
+      {
+        "id": "chart_frontier",
+        "name": "Chart the Frontier",
+        "level_required": 45,
+        "base_interval": 5.0,
+        "base_xp": 45,
         "output_items": {},
         "mastery_action_time": 5.0
       },
@@ -5494,6 +5827,15 @@
         "mastery_action_time": 5.0
       },
       {
+        "id": "chart_storms",
+        "name": "Chart the Storms",
+        "level_required": 85,
+        "base_interval": 5.0,
+        "base_xp": 120,
+        "output_items": {},
+        "mastery_action_time": 5.0
+      },
+      {
         "id": "chart_herald",
         "name": "Chart the Herald",
         "level_required": 92,
@@ -5512,7 +5854,8 @@
         "mastery_action_time": 5.0
       }
     ],
-    "order": 27
+    "order": 27,
+    "description": "Survey and chart the world's hexes, coasts and waters."
   },
   "archaeology": {
     "id": "archaeology",
@@ -5571,6 +5914,35 @@
         "mastery_action_time": 6.0
       },
       {
+        "id": "shallow",
+        "name": "Shallow Dig Site",
+        "level_required": 15,
+        "base_interval": 6.0,
+        "base_xp": 32,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ],
+        "mastery_action_time": 6.0
+      },
+      {
         "id": "medium",
         "name": "Medium Dig Site",
         "level_required": 30,
@@ -5594,6 +5966,35 @@
         "mastery_action_time": 6.0
       },
       {
+        "id": "weathered",
+        "name": "Weathered Dig Site",
+        "level_required": 45,
+        "base_interval": 6.0,
+        "base_xp": 62,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ],
+        "mastery_action_time": 6.0
+      },
+      {
         "id": "large",
         "name": "Large Dig Site",
         "level_required": 60,
@@ -5612,6 +6013,35 @@
           {
             "item_id": "artefact_rare",
             "chance": 0.08
+          }
+        ],
+        "mastery_action_time": 6.0
+      },
+      {
+        "id": "sunken",
+        "name": "Sunken Dig Site",
+        "level_required": 70,
+        "base_interval": 6.0,
+        "base_xp": 100,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.22,
+            "min_qty": 1,
+            "max_qty": 3
           }
         ],
         "mastery_action_time": 6.0
@@ -5679,6 +6109,39 @@
         "mastery_action_time": 6.0
       },
       {
+        "id": "reliquary",
+        "name": "Reliquary Dig Site",
+        "level_required": 100,
+        "base_interval": 6.0,
+        "base_xp": 180,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.45
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.37
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.15
+          },
+          {
+            "item_id": "artefact_unique",
+            "chance": 0.04
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.25,
+            "min_qty": 2,
+            "max_qty": 4
+          }
+        ],
+        "mastery_action_time": 6.0
+      },
+      {
         "id": "heraldic",
         "name": "Heraldic Dig Site",
         "level_required": 105,
@@ -5733,7 +6196,8 @@
         "mastery_action_time": 6.0
       }
     ],
-    "order": 28
+    "order": 28,
+    "description": "Excavate dig sites to recover ancient relics and artefacts."
   },
   "harvesting": {
     "id": "harvesting",
@@ -5893,7 +6357,8 @@
         "mastery_action_time": 4.0
       }
     ],
-    "order": 29
+    "order": 29,
+    "description": "Harvest veins, nodes and wild resources from the landscape."
   },
   "echo_keeping": {
     "id": "echo_keeping",
@@ -6147,7 +6612,8 @@
         "success_chance": 0.55
       }
     ],
-    "order": 30
+    "order": 30,
+    "description": "Preserve echoes of your actions for later replay and bonuses."
   },
   "wayfolding": {
     "id": "wayfolding",
@@ -6404,7 +6870,8 @@
         "success_chance": 0.45
       }
     ],
-    "order": 31
+    "order": 31,
+    "description": "Chart routes and place anchors to fast-travel across the world."
   },
   "fermentation": {
     "id": "fermentation",
@@ -6672,7 +7139,8 @@
         "success_chance": 0.38
       }
     ],
-    "order": 32
+    "order": 32,
+    "description": "Ferment resources into potent brews and concentrates."
   },
   "customcraft": {
     "id": "customcraft",
@@ -6767,7 +7235,8 @@
         "output_items": {
           "tradition_progress": 3
         },
-        "success_chance": 0.8
+        "success_chance": 0.8,
+        "fail_output_item": ""
       },
       {
         "id": "establish_custom",
@@ -6784,7 +7253,8 @@
         "output_items": {
           "established_tradition": 1
         },
-        "success_chance": 0.7
+        "success_chance": 0.7,
+        "fail_output_item": ""
       },
       {
         "id": "pair_custom",
@@ -6801,7 +7271,8 @@
         "output_items": {
           "paired_tradition": 1
         },
-        "success_chance": 0.75
+        "success_chance": 0.75,
+        "fail_output_item": ""
       },
       {
         "id": "archive_custom",
@@ -6818,7 +7289,8 @@
         "output_items": {
           "paired_tradition": 1
         },
-        "success_chance": 0.95
+        "success_chance": 0.95,
+        "fail_output_item": ""
       },
       {
         "id": "regional_variant",
@@ -6835,7 +7307,8 @@
         "output_items": {
           "paired_tradition": 2
         },
-        "success_chance": 0.6
+        "success_chance": 0.6,
+        "fail_output_item": ""
       },
       {
         "id": "living_legend",
@@ -6853,7 +7326,8 @@
         "output_items": {
           "living_legend": 1
         },
-        "success_chance": 0.55
+        "success_chance": 0.55,
+        "fail_output_item": ""
       },
       {
         "id": "herald_craft",
@@ -6871,7 +7345,8 @@
         "output_items": {
           "herald_craft": 1
         },
-        "success_chance": 0.5
+        "success_chance": 0.5,
+        "fail_output_item": ""
       },
       {
         "id": "myth_knit",
@@ -6889,10 +7364,12 @@
         "output_items": {
           "herald_craft": 2
         },
-        "success_chance": 0.45
+        "success_chance": 0.45,
+        "fail_output_item": ""
       }
     ],
-    "order": 33
+    "order": 33,
+    "description": "Propose and run customs — community traditions with unique rewards."
   },
   "lostfinding": {
     "id": "lostfinding",
@@ -7164,6 +7641,7 @@
         "success_chance": 0.5
       }
     ],
-    "order": 34
+    "order": 34,
+    "description": "Take on lost-item cases, search broadly, and recover what was misplaced."
   }
 }

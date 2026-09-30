@@ -14,6 +14,9 @@ var dungeons: Dictionary = {}        # dungeon_id -> {...}
 var areas: Dictionary = {}           # area_id -> {...}
 var shop: Dictionary = {}            # upgrade_id -> {...}
 var game_modes: Dictionary = {}      # mode_id -> {...}
+## First-run onboarding: the ordered list of early steps the Overview walks a new player through.
+## Content only — where the player sits in it is TutorialManager's business.
+var tutorial: Dictionary = {}
 var prayers: Dictionary = {}
 var constellations: Dictionary = {}
 var obstacles: Dictionary = {}
@@ -30,6 +33,12 @@ var raid_shop: Dictionary = {}
 var trader: Dictionary = {}
 ## General store stock: goods bought outright with gold.
 var shop_store: Dictionary = {}
+## Museum stock: bought with Museum Tokens earned by donating artefacts.
+var shop_museum: Dictionary = {}
+## Cartography ships: hull upgrades that discount hex travel.
+var cartography_ships: Dictionary = {}
+## Audio: synthesized SFX recipes, music tracks and event-to-sound mappings.
+var audio: Dictionary = {}
 
 # Derived indexes
 var _actions_by_skill: Dictionary = {}      # skill_id -> Array[Dictionary]
@@ -61,6 +70,17 @@ func _load_all() -> void:
     raid_shop = _load_file("raid_shop.json")
     trader = _load_file("trader.json")
     shop_store = _load_file("shop_store.json")
+    shop_museum = _load_file("shop_museum.json")
+    cartography_ships = _load_file("cartography_ships.json")
+    audio = _load_file("audio.json")
+    tutorial = _load_file("tutorial.json")
+    # Authoring convenience: a hex with no Point of Interest is written "poi": null.
+    # Dictionary.get() only falls back to its default when the KEY is absent, so a null
+    # value would leak into every typed Dictionary read downstream. Normalise once here.
+    for hex_id in cartography_hexes.keys():
+        var hex: Variant = cartography_hexes[hex_id]
+        if typeof(hex) == TYPE_DICTIONARY and (hex as Dictionary).get("poi", null) == null:
+            (hex as Dictionary)["poi"] = {}
     _build_indexes()
 
 func _load_file(file_name: String) -> Dictionary:

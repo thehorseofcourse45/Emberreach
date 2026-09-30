@@ -13,39 +13,7 @@
       "name": "Food Bonus",
       "cost": 1500,
       "effect": {
-        "raid_food_bonus": 1
-      }
-    },
-    "raid_ammo": {
-      "id": "raid_ammo",
-      "name": "Ammo Gatherer",
-      "cost": 1800,
-      "effect": {
-        "raid_ammo": 1
-      }
-    },
-    "raid_rune_pouch": {
-      "id": "raid_rune_pouch",
-      "name": "Rune Pouch",
-      "cost": 2500,
-      "effect": {
-        "raid_rune_pouch": 1
-      }
-    },
-    "raid_prayer": {
-      "id": "raid_prayer",
-      "name": "Devotion Unlock",
-      "cost": 4000,
-      "effect": {
-        "raid_prayer": 1
-      }
-    },
-    "raid_passive_slot": {
-      "id": "raid_passive_slot",
-      "name": "Passive Slot",
-      "cost": 6000,
-      "effect": {
-        "raid_passive_slot": 1
+        "food_healing_percent": 25
       }
     },
     "raid_pet": {
@@ -76,8 +44,7 @@
     },
     "hard": {
       "coin_mult": 1.5,
-      "hp_mult": 1.25,
-      "modifiers": true
+      "hp_mult": 1.25
     }
   }
 }

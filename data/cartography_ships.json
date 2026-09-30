@@ -1,0 +1,35 @@
+{
+  "_comment": "Cartography ships: each hull lowers the GP cost of hex travel to travel_cost_percent of base. 'order' defines the upgrade chain; you must own the previous hull.",
+  "river_skiff": {
+    "id": "river_skiff",
+    "name": "River Skiff",
+    "description": "Borrowed from the ferryman. It floats, mostly.",
+    "cost": 0,
+    "travel_cost_percent": 100,
+    "order": 1
+  },
+  "keel_cutter": {
+    "id": "keel_cutter",
+    "name": "Keel Cutter",
+    "description": "A proper hull and a hired hand who knows the reeds.",
+    "cost": 250000,
+    "travel_cost_percent": 80,
+    "order": 2
+  },
+  "tide_sloop": {
+    "id": "tide_sloop",
+    "name": "Tide Sloop",
+    "description": "Rigged for open water. The strand crossings stop being an event.",
+    "cost": 900000,
+    "travel_cost_percent": 65,
+    "order": 3
+  },
+  "frontier_galleon": {
+    "id": "frontier_galleon",
+    "name": "Frontier Galleon",
+    "description": "The largest thing afloat on the frontier, and yours.",
+    "cost": 3000000,
+    "travel_cost_percent": 50,
+    "order": 4
+  }
+}

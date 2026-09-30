@@ -9,10 +9,12 @@ signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
 const QUANTITY_PRESETS: Array[int] = [1, 5, 10, 25, 50]
+## Preloaded by path: the global class cache is not guaranteed to know a freshly added
+## file when the headless test suite runs.
+const SkillSystemsView = preload("res://scripts/ui/panels/SkillSystems.gd")
 
 var _skill_id: String = ""
 var _selected_action: String = ""
-var _skill_picker: OptionButton
 var _header: VBoxContainer
 var _main_grid: GridContainer
 var _activities_card: PanelContainer
@@ -24,6 +26,16 @@ var _mods_box: VBoxContainer
 var _mastery_box: VBoxContainer
 var _quantity_index: int = 0
 var _built: bool = false
+var _systems: SkillSystemsView
+## Live XP readout. The bar is rebuilt on every refresh(), so these are re-cached each rebuild and
+## then polled per frame: the simulation grants XP per action, not per stop, and a bar that only
+## moves when you leave the screen makes you guess what you earned.
+var _xp_bar: ProgressBar = null
+var _xp_bar_text: Label = null
+var _xp_remaining: Label = null
+## Level the cached bar was built for. While this differs from the live level the header is
+## mid-rebuild, so _process() must not write stale values over the new widgets.
+var _xp_level_shown: int = -1
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_7)
@@ -64,21 +76,8 @@ func detail_context() -> Dictionary:
 
 func _build() -> void:
 	_built = true
-	var picker_card := UIStyle.card()
-	add_child(picker_card)
-	var picker_row := UIStyle.hbox(UITokens.SP_5)
-	picker_card.add_child(picker_row)
-	var picker_label := UIStyle.vbox(UITokens.SP_1)
-	picker_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	picker_label.add_child(UIStyle.title("SKILLS", UITokens.FONT_SUBHEAD))
-	picker_label.add_child(UIStyle.label("Choose a skill to train", true, UITokens.FONT_SMALL))
-	picker_row.add_child(picker_label)
-	_skill_picker = OptionButton.new()
-	_skill_picker.custom_minimum_size = Vector2(190, UITokens.H_HEADER + 8)
-	_skill_picker.clip_text = true
-	_skill_picker.fit_to_longest_item = false
-	_skill_picker.item_selected.connect(func(index): _select_skill(str(_skill_picker.get_item_metadata(index))))
-	picker_row.add_child(_skill_picker)
+	# No skill dropdown here on purpose: the left sidebar lists every skill with its level and
+	# switches to it, so a picker on this tab only duplicated navigation and crowded the top.
 	_header = UIStyle.vbox(UITokens.SP_4)
 	add_child(_header)
 	_main_grid = GridContainer.new()
@@ -86,6 +85,10 @@ func _build() -> void:
 	_main_grid.add_theme_constant_override("h_separation", UITokens.SP_5)
 	_main_grid.add_theme_constant_override("v_separation", UITokens.SP_5)
 	add_child(_main_grid)
+	_systems = SkillSystemsView.new()
+	_systems.visible = false
+	add_child(_systems)
+	_systems.navigated.connect(func(route): navigated.emit(route))
 	_activities_card = UIStyle.panel()
 	_activities_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_main_grid.add_child(_activities_card)
@@ -124,6 +127,7 @@ func _update_columns() -> void:
 
 func _select_skill(skill_id: String) -> void:
 	_skill_id = skill_id if DataLoader.skills.has(skill_id) else "woodcutting"
+	_systems.set_skill(_skill_id)
 	_selected_action = SkillManager.active_action_id if SkillManager.running and SkillManager.active_skill == _skill_id else ""
 	if _selected_action == "":
 		for action in DataLoader.get_skill_actions(_skill_id):
@@ -135,28 +139,12 @@ func _select_skill(skill_id: String) -> void:
 func refresh() -> void:
 	if not _built or _skill_id == "":
 		return
-	_rebuild_strip()
 	_rebuild_header()
 	_rebuild_activities()
 	_refresh_selected()
 	_refresh_mastery()
 	_rebuild_modifiers()
-
-func _rebuild_strip() -> void:
-	_skill_picker.clear()
-	var selected_index: int = 0
-	for category in ["combat", "non_combat"]:
-		_skill_picker.add_separator("Combat" if category == "combat" else "Non-combat")
-		for skill_id in DataLoader.get_skill_ids():
-			var skill: Dictionary = DataLoader.get_skill(skill_id)
-			if str(skill.get("category", "")) != category:
-				continue
-			_skill_picker.add_item("%s  ·  Lv %d" % [skill.get("name", skill_id), PlayerData.get_level(skill_id)])
-			var index: int = _skill_picker.item_count - 1
-			_skill_picker.set_item_metadata(index, skill_id)
-			if skill_id == _skill_id:
-				selected_index = index
-	_skill_picker.select(selected_index)
+	_systems.rebuild()
 
 func _rebuild_header() -> void:
 	_clear(_header)
@@ -179,24 +167,61 @@ func _rebuild_header() -> void:
 	col.add_child(UIStyle.colored_label("ACTIVE SKILL" if running_here else "SKILL PROGRESS",
 		UITokens.TEAL if running_here else UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
 	col.add_child(UIStyle.title("%s  ·  Level %d" % [str(skill.get("name", _skill_id)), level], UITokens.FONT_DISPLAY))
+	col.add_child(UIStyle.label(str(skill.get("description", "")), true, UITokens.FONT_MICRO))
 	var next_level: int = mini(level + 1, XPTable.MAX_LEVEL)
 	var to_next: int = XPTable.xp_to_next_level(xp, level)
-	col.add_child(Widgets.progress_bar(XPTable.level_progress(xp, level), 1.0, UITokens.GOLD,
+	var bar := Widgets.progress_bar(XPTable.level_progress(xp, level), 1.0, UITokens.GOLD,
 		"%s / %s" % [UIStyle.fmt_exact(xp), UIStyle.fmt_exact(float(XPTable.xp_for_level(next_level)))], 16,
-		"Level %d progress" % level))
-	col.add_child(Widgets.key_value("XP to level %d" % next_level, UIStyle.fmt_exact(float(to_next)),
-		UITokens.GOLD, "Level cap for this skill in your game mode: %d" % PlayerData.get_level_cap(_skill_id)))
-	col.add_child(Widgets.key_value("Mastery pool", "%.1f%%" % MasteryManager.get_pool_percent(_skill_id),
-		UITokens.PURPLE, "Pool XP can be spent to raise any activity's mastery on this skill"))
-	col.add_child(Widgets.key_value("Activities", "%d total · %d unlocked at level %d" % [
-		DataLoader.get_action_count(_skill_id), DataLoader.get_unlocked_action_count(_skill_id, level), level]))
+		"Level %d progress" % level)
+	col.add_child(bar)
+	# Cache for the per-frame update in _process(). progress_bar() puts the text in a child Label.
+	_xp_bar = bar
+	_xp_bar_text = bar.get_child(0) as Label if bar.get_child_count() > 0 else null
+	var to_next_row := Widgets.key_value("XP to level %d" % next_level, UIStyle.fmt_exact(float(to_next)),
+		UITokens.GOLD, "Level cap for this skill in your game mode: %d" % PlayerData.get_level_cap(_skill_id))
+	col.add_child(to_next_row)
+	_xp_remaining = _value_label_of(to_next_row)
+	_xp_level_shown = level
+	var highlights := HFlowContainer.new()
+	highlights.add_theme_constant_override("h_separation", UITokens.SP_4)
+	highlights.add_theme_constant_override("v_separation", UITokens.SP_4)
+	highlights.add_child(Widgets.stat_card("Mastery pool", "%.1f%%" % MasteryManager.get_pool_percent(_skill_id), UITokens.PURPLE))
+	highlights.add_child(Widgets.stat_card("Activities unlocked", "%d / %d" % [DataLoader.get_unlocked_action_count(_skill_id, level), DataLoader.get_action_count(_skill_id)], UITokens.TEAL))
+	col.add_child(highlights)
 	head.add_child(col)
 	_header.add_child(hero)
+
+## key_value() returns an HBox of [key Label, value Label]; the value is the one we rewrite.
+func _value_label_of(row: Control) -> Label:
+	if row == null or row.get_child_count() < 2:
+		return null
+	return row.get_child(1) as Label
+
+## Poll the authoritative XP state rather than rebuilding. PlayerData mutates xp in place, so this
+## is one float read per frame; the level-up signal still forces a full refresh because a level
+## change re-derives the bar maximum, the next-level label and the cap notice.
+func _process(_delta: float) -> void:
+	# is_instance_valid, not != null: _clear() uses queue_free(), so a node freed by the last
+	# rebuild is still a non-null reference for the rest of that frame.
+	if not is_instance_valid(_xp_bar) or not is_instance_valid(_xp_bar_text) or _skill_id == "":
+		return
+	var xp: float = PlayerData.get_xp(_skill_id)
+	var level: int = PlayerData.get_level(_skill_id)
+	if level != _xp_level_shown:
+		return
+	# The bar was built with max_value 1.0, so write the 0..1 fraction, not a 0..100 percent.
+	_xp_bar.value = clampf(XPTable.level_progress(xp, level), 0.0, 1.0)
+	var next_level: int = mini(level + 1, XPTable.MAX_LEVEL)
+	if _xp_bar_text != null:
+		_xp_bar_text.text = "%s / %s" % [UIStyle.fmt_exact(xp),
+			UIStyle.fmt_exact(float(XPTable.xp_for_level(next_level)))]
+	if _xp_remaining != null:
+		_xp_remaining.text = UIStyle.fmt_exact(float(XPTable.xp_to_next_level(xp, level)))
 
 func _rebuild_activities() -> void:
 	_clear(_activities)
 	_activities.add_child(UIStyle.title("Activities", UITokens.FONT_SUBHEAD))
-	_activities.add_child(UIStyle.label("Choose an activity. Level requirements and action time appear on each row.", true, UITokens.FONT_SMALL))
+	_activities.add_child(UIStyle.label("Choose a reward to train toward.", true, UITokens.FONT_SMALL))
 	var actions: Array = DataLoader.get_skill_actions(_skill_id)
 	if actions.is_empty():
 		_activities.add_child(UIStyle.label("This skill has no trainable actions yet (%s)." % _skill_id, true, UITokens.FONT_SMALL))
@@ -207,7 +232,7 @@ func _rebuild_activities() -> void:
 		var action_id: String = str(a.get("id", ""))
 		var row := Widgets.activity_row(_skill_id, a, action_id == _selected_action,
 			func(id): _select_action(str(id)))
-		(row.get_child(0) as Button).custom_minimum_size.y = 46
+		(row.get_child(0) as Button).custom_minimum_size.y = 60
 		_activities.add_child(row)
 
 func _select_action(action_id: String) -> void:
@@ -232,6 +257,9 @@ func _refresh_selected() -> void:
 
 	_selected_box.add_child(UIStyle.title("%s%s" % [str(action.get("name", _selected_action)),
 		"  ·  running" if running else ""], UITokens.FONT_SUBHEAD))
+	var rewards: Dictionary = action.get("output_items", {})
+	if not rewards.is_empty():
+		_selected_box.add_child(Widgets.item_rewards(rewards))
 	var check: Dictionary = SkillManager.check_action(_skill_id, _selected_action)
 	if not bool(check["ok"]):
 		_selected_box.add_child(UIStyle.colored_label("Cannot start: %s" % str(check["detail"]), UITokens.AMBER, UITokens.FONT_SMALL))
@@ -259,8 +287,7 @@ func _refresh_selected() -> void:
 		var gains := UIStyle.section("What you gain")
 		gains.tooltip_text = str(est["assumptions"])
 		_selected_box.add_child(gains)
-		var grid := GridContainer.new()
-		grid.columns = 2
+		var grid := HFlowContainer.new()
 		grid.add_theme_constant_override("h_separation", UITokens.SP_6)
 		grid.add_theme_constant_override("v_separation", UITokens.SP_2)
 		_add_stat(grid, "Action time", "%.2fs" % float(est["interval"]))
@@ -320,11 +347,8 @@ func _refresh_selected() -> void:
 			_selected_box.add_child(UIStyle.label("Completed %d action(s) this session." % SkillManager.total_action_count,
 				true, UITokens.FONT_MICRO))
 
-func _add_stat(grid: GridContainer, key: String, value: String) -> void:
-	var k := UIStyle.label(key, true, UITokens.FONT_SMALL)
-	k.custom_minimum_size = Vector2(170, 0)
-	grid.add_child(k)
-	grid.add_child(UIStyle.label(value, false, UITokens.FONT_SMALL))
+func _add_stat(grid: HFlowContainer, key: String, value: String) -> void:
+	grid.add_child(Widgets.stat_card(key, value, UITokens.TEAL if key.contains("XP") else UITokens.GOLD_BRIGHT))
 
 func _target_for_index() -> int:
 	match _quantity_index:

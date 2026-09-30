@@ -1,20 +1,22 @@
 extends Node
 ## Achievements — data-driven milestones (res://data/achievements.json).
 ##
-## Rewards are intentionally modest (mostly small GP or a title flag) so achievements never
-## become a mandatory grind, per the design brief. Unlock state is persisted and each reward
-## is granted exactly once, guarded by the _unlocked dictionary.
-##
-## Evaluation is a pure function of persisted state (skills, completion log, lifetime stats),
-## so an achievement unlocked offline or before it was added to the game is picked up on the
-## next evaluation instead of being missed.
+## Completion and payout are separate: satisfying a condition marks the milestone complete
+## (persisted and announced), and its reward is collected with an explicit claim — exactly
+## once, guarded by the claimed set. Evaluation is a pure function of persisted state (skills,
+## completion log, lifetime stats), so a milestone earned offline or before it was added to the
+## game is picked up on the next evaluation and waits to be claimed instead of being missed.
+## Rewards are modest (a little GP, XP, and a bundle of useful supplies) so milestones never
+## become a mandatory grind, per the design brief.
 
 const DATA_PATH: String = "res://data/achievements.json"
 
 var _records: Dictionary = {}
 var _order: Array[String] = []
-var _unlocked: Dictionary = {}       # achievement_id -> true
-var _unlocked_unix: Dictionary = {}  # achievement_id -> unix time (for a tidy timeline)
+var _completed: Dictionary = {}        # achievement_id -> true (condition satisfied)
+var _claimed: Dictionary = {}          # achievement_id -> true (reward collected)
+var _completed_unix: Dictionary = {}   # achievement_id -> unix time (tidy timeline)
+var _claimed_unix: Dictionary = {}     # achievement_id -> unix time
 
 func _ready() -> void:
 	_load()
@@ -58,14 +60,34 @@ func get_record(id: String) -> Dictionary:
 func count() -> int:
 	return _records.size()
 
-func unlocked_count() -> int:
-	return _unlocked.size()
+func completed_count() -> int:
+	return _completed.size()
 
-func is_unlocked(id: String) -> bool:
-	return _unlocked.has(id)
+func claimed_count() -> int:
+	return _claimed.size()
 
-func unlocked_at(id: String) -> int:
-	return int(_unlocked_unix.get(id, 0))
+## Completed but not yet collected.
+func ready_count() -> int:
+	var n: int = 0
+	for id in _completed.keys():
+		if not _claimed.has(id):
+			n += 1
+	return n
+
+func is_completed(id: String) -> bool:
+	return _completed.has(id)
+
+func is_claimed(id: String) -> bool:
+	return _claimed.has(id)
+
+func is_ready(id: String) -> bool:
+	return _completed.has(id) and not _claimed.has(id)
+
+func completed_at(id: String) -> int:
+	return int(_completed_unix.get(id, 0))
+
+func claimed_at(id: String) -> int:
+	return int(_claimed_unix.get(id, 0))
 
 func categories() -> Array[String]:
 	var out: Array[String] = []
@@ -75,7 +97,7 @@ func categories() -> Array[String]:
 			out.append(c)
 	return out
 
-## Live progress for the UI: {current, required, percent, unlocked}.
+## Live progress for the UI: {current, required, percent, completed, claimed, ready}.
 func progress(id: String) -> Dictionary:
 	var rec: Dictionary = get_record(id)
 	if rec.is_empty():
@@ -86,7 +108,9 @@ func progress(id: String) -> Dictionary:
 	return {
 		"current": current, "required": value,
 		"percent": clampf(0.0 if value <= 0.0 else current / value, 0.0, 1.0),
-		"unlocked": is_unlocked(id),
+		"completed": is_completed(id),
+		"claimed": is_claimed(id),
+		"ready": is_ready(id),
 		"description": _describe(cond),
 	}
 
@@ -169,12 +193,12 @@ func _describe(cond: Dictionary) -> String:
 
 # ---------------- evaluation ----------------
 
-## Evaluate every achievement. Grants rewards for anything newly satisfied.
-## Safe to call repeatedly and from any code path.
+## Evaluate every milestone. Newly satisfied conditions are marked complete (and announced);
+## rewards are NOT granted here; they are collected with claim().
 func evaluate_all() -> Array[String]:
 	var newly: Array[String] = []
 	for id in _order:
-		if _unlocked.has(id):
+		if _completed.has(id):
 			continue
 		var rec: Dictionary = _records[id]
 		var cond: Dictionary = rec.get("condition", {})
@@ -183,13 +207,52 @@ func evaluate_all() -> Array[String]:
 		var value: float = float(cond.get("value", 1))
 		if float(measure(cond)) < value:
 			continue
-		_unlocked[id] = true
-		_unlocked_unix[id] = int(Time.get_unix_time_from_system())
+		_completed[id] = true
+		_completed_unix[id] = int(Time.get_unix_time_from_system())
 		newly.append(id)
-		_grant(id, rec.get("reward", {}))
 		EventBus.achievement_unlocked.emit(id)
-		EventBus.notify("Achievement: %s" % str(rec.get("name", id)), "success")
+		EventBus.notify("Milestone complete: %s" % str(rec.get("name", id)), "success")
 	return newly
+
+# ---------------- claiming ----------------
+
+## Collect a completed milestone's reward. Exactly once, guarded by the claimed set.
+func claim(id: String) -> bool:
+	var rec: Dictionary = get_record(id)
+	if rec.is_empty() or not _completed.has(id):
+		EventBus.notify("That milestone is not complete yet.", "warn")
+		return false
+	if _claimed.has(id):
+		EventBus.notify("That reward was already collected.", "warn")
+		return false
+	_claimed[id] = true
+	_claimed_unix[id] = int(Time.get_unix_time_from_system())
+	_grant(id, rec.get("reward", {}))
+	EventBus.achievement_reward_claimed.emit(id)
+	EventBus.notify("Milestone reward collected: %s" % str(rec.get("name", id)), "success")
+	# Collected supplies can complete further milestones; settle before saving.
+	ProgressTracker.evaluate_now()
+	SaveManager.save_game()
+	return true
+
+## Collect every completed milestone in one pass (batched: one save, one evaluation).
+## Returns how many payouts landed.
+func claim_all() -> int:
+	var n: int = 0
+	for id in _order:
+		if not _completed.has(id) or _claimed.has(id):
+			continue
+		var rec: Dictionary = _records[id]
+		_claimed[id] = true
+		_claimed_unix[id] = int(Time.get_unix_time_from_system())
+		_grant(id, rec.get("reward", {}))
+		EventBus.achievement_reward_claimed.emit(id)
+		n += 1
+	if n > 0:
+		EventBus.notify("Collected %d milestone rewards." % n, "success")
+		ProgressTracker.evaluate_now()
+		SaveManager.save_game()
+	return n
 
 func _grant(_id: String, reward: Dictionary) -> void:
 	if reward.is_empty():
@@ -218,18 +281,44 @@ func describe_reward(id: String) -> String:
 # ---------------- persistence ----------------
 
 func serialize() -> Dictionary:
-	return {"unlocked": _unlocked.duplicate(), "unlocked_unix": _unlocked_unix.duplicate()}
+	return {
+		"completed": _completed.duplicate(), "claimed": _claimed.duplicate(),
+		"completed_unix": _completed_unix.duplicate(), "claimed_unix": _claimed_unix.duplicate(),
+	}
 
 func deserialize(d: Dictionary) -> void:
-	_unlocked = d.get("unlocked", {})
-	_unlocked_unix = d.get("unlocked_unix", {})
-	if typeof(_unlocked) != TYPE_DICTIONARY:
-		_unlocked = {}
-	if typeof(_unlocked_unix) != TYPE_DICTIONARY:
-		_unlocked_unix = {}
-	# Retroactive unlock: a save made before an achievement existed still gets credit for
-	# milestones it already earned. Rewards are granted here exactly once.
-	for id in _unlocked.keys():
+	if d.has("completed") or d.has("claimed"):
+		_completed = d.get("completed", {})
+		_claimed = d.get("claimed", {})
+		_completed_unix = d.get("completed_unix", {})
+		_claimed_unix = d.get("claimed_unix", {})
+	else:
+		# Migration from the pre-claim era: everything previously unlocked had already been
+		# paid out, so it arrives already completed and already claimed; nothing is owed.
+		var old: Dictionary = d.get("unlocked", {})
+		var old_unix: Dictionary = d.get("unlocked_unix", {})
+		_completed = old.duplicate()
+		_claimed = old.duplicate()
+		_completed_unix = old_unix.duplicate()
+		_claimed_unix = old_unix.duplicate()
+	if typeof(_completed) != TYPE_DICTIONARY:
+		_completed = {}
+	if typeof(_claimed) != TYPE_DICTIONARY:
+		_claimed = {}
+	if typeof(_completed_unix) != TYPE_DICTIONARY:
+		_completed_unix = {}
+	if typeof(_claimed_unix) != TYPE_DICTIONARY:
+		_claimed_unix = {}
+	# Claimed implies completed (defensive repair for hand-edited saves).
+	for id in _claimed.keys():
+		if not _completed.has(id):
+			_completed[id] = true
+	# Drop records whose achievement no longer exists.
+	for id in _completed.keys():
 		if not _records.has(id):
-			_unlocked.erase(id)
-			_unlocked_unix.erase(id)
+			_completed.erase(id)
+			_completed_unix.erase(id)
+	for id in _claimed.keys():
+		if not _records.has(id):
+			_claimed.erase(id)
+			_claimed_unix.erase(id)

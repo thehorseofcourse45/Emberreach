@@ -29,7 +29,31 @@
 
 ---
 
-### Task 1: events.json exemplar content + DataLoader
+### Carry-in constraints from the combat-decisions plan (MUST be honoured)
+
+1. **`event_policies` and `momentum` are NOT reliably present in a v3 save.** The combat plan's
+   `_migrate_2_to_3` writes defaults for both, but `PlayerData.serialize()` has no field for either,
+   so the write-back drops them before the save persists — and the save is already stamped v3, so the
+   migration chain never runs again. Verified end to end: `load_game()` → `save_game()` →
+   `build_save_data()` → `PlayerData.serialize()`.
+   **Therefore: this plan must default both on ABSENCE in `deserialize`, unconditionally, for every
+   save including one this build just wrote.** Do not assume the migration seeded them.
+2. `ContentValidator.check_strategy_record` returns `Array[{code, message}]`, not bare strings.
+3. `CombatManager.set_loadout` enforces `req_levels` via `PlayerData.get_level` and clamps to the
+   slot cap `mini(4, 1 + int(defence/25))`. A preset may legitimately name a valid-but-locked ability;
+   the UI should show the EFFECTIVE loadout, not the preset's nominal one.
+4. `CombatManager.strategy_for()` returns a deep copy. `CombatManager.active_loadout` does NOT — it
+   is handed out by reference, so do not mutate what it returns.
+5. The full suite takes ~30 seconds, not minutes. The top-level check count is blind to assertion
+   count for the simulator sub-suite (`_report_suite` folds a sub-suite into one check) — judge new
+   pins by mutation evidence, not by the total.
+6. Probe Godot 4.7 APIs live. Known traps in this repo: `StyleBoxTexture` uses `content_margin_*`;
+   `Object.CONNECT_ONE_SHOT`; GDScript lambdas capture locals **by value** (use an object for
+   callbacks that must read live state); a `frames`-counted wait is machine-speed dependent.
+7. PREREQUISITE: this plan's Task 5 (momentum) must add a `PlayerData` field for `momentum` and Task 3
+   one for `event_policies`, or neither key survives a save/load cycle.
+
+## Task 1: events.json exemplar content + DataLoader
 
 **Files:**
 - Create: `data/events.json` (pools for woodcutting, fishing, mining, cooking; 2–3 events each: 1 spawn + 1–2 cards)

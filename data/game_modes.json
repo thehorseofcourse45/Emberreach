@@ -1,13 +1,10 @@
 {
-  "_comment": "Game modes. Combat-triangle advantage/disadvantage values are [assumption]: the brief fixes the direction but gives no numbers, so they are data-driven and tunable here.",
+  "_comment": "Game modes. Every flag here must appear in ContentValidator.HONOURED_MODE_FLAGS and be read by real code; a flag the game does not read is a promise the game does not keep. Combat-triangle advantage/disadvantage values are [assumption]: the brief fixes the direction but gives no numbers, so they are data-driven and tunable here.",
   "standard": {
     "id": "standard",
     "name": "Standard",
-    "death_deletes_character": false,
-    "passive_hp_regen": true,
+    "description": "no caps, no extra limits — the intended first experience",
     "bank_limit": 0,
-    "xp_multiplier": 1.0,
-    "hp_damage_food_multiplier": 1.0,
     "advantage_accuracy": 10.0,
     "advantage_damage": 10.0,
     "disadvantage_accuracy": -10.0,
@@ -16,11 +13,8 @@
   "hardcore": {
     "id": "hardcore",
     "name": "Hardcore",
-    "death_deletes_character": true,
-    "passive_hp_regen": false,
+    "description": "a 108-stack storage cap and a 20% combat-triangle penalty",
     "bank_limit": 108,
-    "xp_multiplier": 1.0,
-    "hp_damage_food_multiplier": 1.0,
     "advantage_accuracy": 10.0,
     "advantage_damage": 10.0,
     "disadvantage_accuracy": -20.0,
@@ -29,18 +23,8 @@
   "adventure": {
     "id": "adventure",
     "name": "Adventure",
-    "death_deletes_character": false,
-    "skills_locked": true,
-    "skills_purchased_with_gp": true,
+    "description": "non-combat skills cap at your combat level, and combat hits 10x harder",
     "non_combat_level_capped_by_combat_level": true,
-    "start_skills": [
-      "attack",
-      "strength",
-      "defence",
-      "hitpoints"
-    ],
-    "hp_damage_food_multiplier": 10.0,
-    "xp_multiplier": 1.0,
     "advantage_accuracy": 10.0,
     "advantage_damage": 10.0,
     "disadvantage_accuracy": -20.0,
@@ -49,15 +33,8 @@
   "ancient_relics": {
     "id": "ancient_relics",
     "name": "Ancient Relics",
-    "death_deletes_character": false,
-    "initial_level_cap": 10,
-    "no_preservation_or_doubling": true,
-    "locked_skills": [
-      "fishing",
-      "cooking"
-    ],
-    "unlock_locked_skills_at": "impending_darkness",
-    "use_hardcore_triangle": true,
+    "description": "every skill caps at 10 and a 20% combat-triangle penalty applies",
+    "skill_level_cap": 10,
     "advantage_accuracy": 10.0,
     "advantage_damage": 10.0,
     "disadvantage_accuracy": -20.0,

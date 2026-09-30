@@ -136,3 +136,17 @@ static func slayer_xp_for_kill(monster_max_hp: float, on_task: bool, in_slayer_a
     if in_slayer_area:
         pct += 0.05
     return monster_max_hp * pct
+
+# ---- 10. Monster passives ----
+## Damage a thorny creature reflects back at its attacker when it is hit. A minimum of 1
+## keeps the identity real for chip damage; nothing in reflects nothing.
+static func thorns_reflect(damage_dealt_to_monster: int, fraction: float) -> int:
+    if damage_dealt_to_monster <= 0 or fraction <= 0.0:
+        return 0
+    return maxi(1, int(floor(float(damage_dealt_to_monster) * fraction)))
+
+## A raging monster hits harder once it is at or below `threshold` of its maximum health.
+static func enrage_multiplier(hp_fraction: float, threshold: float, multiplier: float) -> float:
+    if multiplier <= 1.0 or threshold <= 0.0:
+        return 1.0
+    return multiplier if hp_fraction <= threshold else 1.0

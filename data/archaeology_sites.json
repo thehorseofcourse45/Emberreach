@@ -23,6 +23,30 @@
       }
     ]
   },
+  "shallow": {
+    "id": "shallow",
+    "name": "Shallow Dig Site",
+    "level_required": 15,
+    "excavate_xp": 32,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.02
+      }
+    ]
+  },
   "medium": {
     "id": "medium",
     "name": "Medium Dig Site",
@@ -47,11 +71,59 @@
       }
     ]
   },
+  "weathered": {
+    "id": "weathered",
+    "name": "Weathered Dig Site",
+    "level_required": 45,
+    "excavate_xp": 62,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.02
+      }
+    ]
+  },
   "large": {
     "id": "large",
     "name": "Large Dig Site",
     "level_required": 60,
     "excavate_xp": 80,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.02
+      }
+    ]
+  },
+  "sunken": {
+    "id": "sunken",
+    "name": "Sunken Dig Site",
+    "level_required": 70,
+    "excavate_xp": 100,
     "artefacts": [
       {
         "item_id": "artefact_common",
@@ -116,6 +188,30 @@
       {
         "item_id": "artefact_unique",
         "chance": 0.03
+      }
+    ]
+  },
+  "reliquary": {
+    "id": "reliquary",
+    "name": "Reliquary Dig Site",
+    "level_required": 100,
+    "excavate_xp": 180,
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.45
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.37
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.15
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.04
       }
     ]
   },

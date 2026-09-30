@@ -18,6 +18,11 @@ var _built: bool = false
 var _import_menu: OptionButton
 var _import_paths: Array[String] = []
 var _save_health_box: VBoxContainer
+## The speed control here, kept so a change made at the top bar can move it too.
+var _speed_menu: OptionButton
+## Debounces settings writes while a volume slider is being dragged: the change applies
+## live, the disk write happens once the slider has been quiet for a moment.
+var _volume_save_timer: Timer
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
@@ -28,11 +33,15 @@ func _ready() -> void:
 		"These options change how the simulation behaves. Anything that changes a rule says so in its tooltip.",
 		true, UITokens.FONT_SMALL))
 	_build_offline()
+	_build_simulation()
 	_build_automation()
+	_build_notifications()
 	_build_presentation()
+	_build_sound()
 	_build_confirmations()
 	_build_saves()
 	EventBus.state_refreshed.connect(_refresh_save_health)
+	EventBus.game_speed_changed.connect(_on_speed_changed)
 
 func focus_route(_route: Dictionary) -> void:
 	pass
@@ -73,6 +82,57 @@ func _build_offline() -> void:
 	menu.tooltip_text = "Time beyond this is excluded and reported in the offline summary rather than silently granted."
 	row.add_child(menu)
 	box.add_child(row)
+
+## Simulation speed and the save cadence live here because both are clocks the game runs on,
+## not preferences about how it looks. Both write the same settings the top bar and the save
+## file use, so the top-bar selector and this screen are two views of one value.
+func _build_simulation() -> void:
+	var box := UIStyle.section("Simulation", "how fast the game runs and how often it saves")
+	add_child(box)
+	var speed_row := UIStyle.hbox(UITokens.SP_4)
+	speed_row.add_child(UIStyle.label("Game speed", true, UITokens.FONT_SMALL))
+	_speed_menu = Widgets.option_menu(StatusBar.GAME_SPEEDS_LABELS, func(i):
+		GameManager.set_speed(StatusBar.GAME_SPEEDS[clampi(i, 0, StatusBar.GAME_SPEEDS.size() - 1)])
+		SaveManager.save_game(), maxi(0, StatusBar.GAME_SPEEDS.find(_nearest_speed(GameManager.game_speed))))
+	_speed_menu.tooltip_text = "Same control as the top bar. Higher speeds finish actions faster and progress faster; lower speeds make the systems easier to follow."
+	speed_row.add_child(_speed_menu)
+	box.add_child(speed_row)
+
+	var save_row := UIStyle.hbox(UITokens.SP_4)
+	save_row.add_child(UIStyle.label("Autosave every", true, UITokens.FONT_SMALL))
+	var labels: Array[String] = []
+	var current: float = SaveManager.get_autosave_interval()
+	var selected: int = 1
+	for i in range(SaveManager.AUTOSAVE_CHOICES.size()):
+		var seconds: float = SaveManager.AUTOSAVE_CHOICES[i]
+		labels.append(UIStyle.fmt_duration(seconds))
+		if absf(seconds - current) < 0.5:
+			selected = i
+	var interval_menu := Widgets.option_menu(labels, func(i):
+		var seconds: float = SaveManager.AUTOSAVE_CHOICES[clampi(i, 0, SaveManager.AUTOSAVE_CHOICES.size() - 1)]
+		SaveManager.set_autosave_interval(seconds)
+		SaveManager.save_game()
+		EventBus.notify("Autosaving every %s." % UIStyle.fmt_duration(seconds), "info"), selected)
+	interval_menu.tooltip_text = "How often progress is written to disk. Major events also save immediately, so a longer interval is safe; it only widens the window a crash can cost you."
+	save_row.add_child(interval_menu)
+	box.add_child(save_row)
+
+## Toast categories, not all forty signals: these three are the ones that actually repeat during
+## play. "error" is not offered — it reports a save that failed, and muting that would be a way to
+## hide data loss. Muting hides the toast and its chime; the overview event log still records
+## every entry, so nothing is lost.
+func _build_notifications() -> void:
+	var box := UIStyle.section("Notifications", "which messages are allowed to interrupt")
+	add_child(box)
+	box.add_child(_check("notify_success", "Confirmations",
+		"Purchases, level-ups and completed objectives. Muted entries still appear in the Overview event log."))
+	box.add_child(_check("notify_warn", "Warnings",
+		"Blocked purchases, an empty bank, a run out of materials. Muted entries still appear in the Overview event log."))
+	box.add_child(_check("notify_info", "Routine updates",
+		"Low-frequency notes such as a depleted node respawning or a potion expiring — the noisiest category in an idle session."))
+	box.add_child(UIStyle.colored_label(
+		"Errors are always shown. A failed save or a failed load is a data problem, not chatter.",
+		UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
 
 func _build_automation() -> void:
 	var box := UIStyle.section("Automation", "conveniences bought in the Provisioner")
@@ -115,6 +175,51 @@ func _build_presentation() -> void:
 	menu.tooltip_text = "Scales the whole interface for readability."
 	row.add_child(menu)
 	box.add_child(row)
+
+## Two buses, two sliders: music and effects are independently adjustable because an
+## idle game is often left running for hours — the score and the level-up chime are
+## heard in very different proportions over a session.
+func _build_sound() -> void:
+	_volume_save_timer = Timer.new()
+	_volume_save_timer.one_shot = true
+	_volume_save_timer.wait_time = 0.4
+	_volume_save_timer.timeout.connect(func(): SaveManager.save_game())
+	add_child(_volume_save_timer)
+	var box := UIStyle.section("Sound", "music and effects, both synthesized in-game")
+	add_child(box)
+	box.add_child(_volume_slider("music_volume", "Music volume",
+		"Background score volume. The soundtrack is generated live, so there is no track to skip — zero mutes it."))
+	box.add_child(_volume_slider("sfx_volume", "Sound effects volume",
+		"Level-up, combat and notification sounds. Zero mutes them entirely."))
+	var test := UIStyle.button("Test sound", "Play a sample effect so the volume can be judged without leveling up")
+	test.pressed.connect(func(): AudioManager.play_sfx("levelup"))
+	box.add_child(test)
+
+func _volume_slider(key: String, label: String, tooltip: String) -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", UITokens.SP_4)
+	row.add_child(UIStyle.label(label, true, UITokens.FONT_SMALL))
+	var slider := HSlider.new()
+	slider.min_value = 0.0
+	slider.max_value = 100.0
+	slider.step = 5.0
+	slider.value = float(PlayerData.settings.get(key, 50.0))
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.tooltip_text = tooltip
+	var readout := UIStyle.label("%d%%" % int(slider.value), true, UITokens.FONT_SMALL)
+	var k: String = key
+	slider.value_changed.connect(func(v: float):
+		PlayerData.settings[k] = v
+		readout.text = "%d%%" % int(v)
+		AudioManager.apply_volumes()
+		# Volume changes are cheap and reversible, so they save on release rather than
+		# on every tick of the drag — this Godot build's Range has no drag_ended signal,
+		# hence the debounce timer.
+		if _volume_save_timer != null:
+			_volume_save_timer.start())
+	row.add_child(slider)
+	row.add_child(readout)
+	return row
 
 func _build_confirmations() -> void:
 	var box := UIStyle.section("Confirmations", "where the game asks first")
@@ -165,7 +270,7 @@ func _build_saves() -> void:
 			continue
 		mode_ids.append(str(mode_id))
 		mode_labels.append("%s — %s" % [str(DataLoader.game_modes[mode_id].get("name", mode_id)),
-			_mode_summary(str(mode_id))])
+			str(DataLoader.game_modes[mode_id].get("description", ""))])
 	var mode_selected: int = maxi(0, mode_ids.find(PlayerData.game_mode))
 	var mode_menu := Widgets.option_menu(mode_labels, func(i):
 		PlayerData.settings["new_game_mode"] = mode_ids[clampi(i, 0, mode_ids.size() - 1)],
@@ -182,13 +287,6 @@ func _build_saves() -> void:
 		"Between sessions the game keeps one automatic backup of the last good save and quarantines any file that fails validation.",
 		UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
 	_refresh_save_health()
-
-func _mode_summary(mode_id: String) -> String:
-	match mode_id:
-		"hardcore": return "death is permanent"
-		"adventure": return "skills unlocked with gold"
-		"ancient_relics": return "low level cap, unlocks through play"
-	return "the intended first experience"
 
 # =========================================================================
 #  Helpers
@@ -214,6 +312,22 @@ func _apply_scale() -> void:
 	if is_inside_tree():
 		get_window().content_scale_factor = clampf(s, 0.75, 2.0)
 
+## The ladder entry closest to a speed the engine may already hold — a save can carry any value
+## in the 0.25–16 clamp range, not just the three the control offers.
+static func _nearest_speed(speed: float) -> float:
+	var best: float = StatusBar.GAME_SPEEDS[0]
+	for s in StatusBar.GAME_SPEEDS:
+		if absf(s - speed) < absf(best - speed):
+			best = s
+	return best
+
+## The speed changed at the top bar (or was restored by a save load): follow it rather than
+## leaving this screen showing a number that is no longer running.
+func _on_speed_changed(speed: float) -> void:
+	if _speed_menu == null:
+		return
+	_speed_menu.select(maxi(0, StatusBar.GAME_SPEEDS.find(_nearest_speed(speed))))
+
 func _refresh_save_health() -> void:
 	if not _built or _save_health_box == null:
 		return
@@ -231,10 +345,14 @@ func _refresh_save_health() -> void:
 		"Written every time a new save is committed, before the live file is replaced"))
 	_save_health_box.add_child(Widgets.key_value("Save format version", str(int(health["version"])),
 		UITokens.TEXT, "Older saves are migrated forward automatically; the original is preserved."))
+	# "12m ago" reads the same whether the write succeeded or failed, so the state needs a
+	# word. The tooltip already explains the colour; the row itself must not depend on it.
+	var _write_ok: bool = bool(health["last_save_ok"])
 	_save_health_box.add_child(Widgets.key_value("Last write",
-		"never" if int(health["last_save_unix"]) <= 0 else UIStyle.fmt_duration(
-			maxf(0.0, float(Time.get_unix_time_from_system() - int(health["last_save_unix"])))) + " ago",
-		UITokens.GREEN if bool(health["last_save_ok"]) else UITokens.RED,
+		("%s ✓" if _write_ok else "%s ✗ FAILED") % (
+			"never" if int(health["last_save_unix"]) <= 0 else UIStyle.fmt_duration(
+				maxf(0.0, float(Time.get_unix_time_from_system() - int(health["last_save_unix"])))) + " ago"),
+		UITokens.GREEN if _write_ok else UITokens.RED,
 		"Green means the most recent write reached disk and re-read cleanly"))
 	if bool(health.get("session_active_elsewhere", false)):
 		_save_health_box.add_child(UIStyle.colored_label(

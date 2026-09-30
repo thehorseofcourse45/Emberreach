@@ -31,6 +31,10 @@ const MAX_STEPS_PER_FIGHT: int = 6000
 ## fraction of max HP per own attack. Kept literal so the pure model stays
 ## dependency-free; the simulator suite pins parity with the live loop.
 const ENEMY_REGEN_FRACTION: float = 0.02
+## Mirrors CombatManager.ENEMY_THORNS_FRACTION / ENRAGE_* — kept literal for the same reason.
+const ENEMY_THORNS_FRACTION: float = 0.10
+const ENRAGE_HP_FRACTION: float = 0.25
+const ENRAGE_MULTIPLIER: float = 1.5
 
 ## Run the whole simulation. `snapshot` must already be flattened — see CombatSimulatorManager.
 ## `trials` is the count; the production UI always passes 10,000.
@@ -211,6 +215,10 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					_xp(xp, "prayer", CombatFormulas.prayer_xp(dealt, float(snapshot.get("prayer_points", 0.0))))
 				if life_steal > 0.0:
 					hp = minf(max_hp, hp + dealt * life_steal / 100.0)
+				# Thorns: a spiny creature pays back a fraction of what it was dealt while it
+				# still stands (the live loop reflects before the monster gets to swing).
+				if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("thorns"):
+					hp -= float(CombatFormulas.thorns_reflect(int(dealt), ENEMY_THORNS_FRACTION))
 		if monster_hp <= 0.0:
 			kills = 1
 			_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max,
@@ -221,7 +229,14 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			var their_roll: Dictionary = CombatFormulas.roll_damage(rng, monster_min_hit, monster_max_hit,
 				0.0, 0.0, 0.0, "normal")
 			if CombatFormulas.chance_to_hit(monster_accuracy, float(player_evasion)) > rng.randf() * 100.0:
-				var taken: float = float(their_roll["damage"]) * (1.0 - player_dr / 100.0)
+				# A raging monster hits harder as it nears death (applied before DR, like the live
+				# loop) — gated on the passive, exactly as CombatManager gates it.
+				var raw_taken: float = float(their_roll["damage"])
+				if (monster.get("passives", []) as Array).has("enrage"):
+					raw_taken *= CombatFormulas.enrage_multiplier( 						monster_hp / monster_hp_max, ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
+				# Clamped for the same reason as the live loop: an unbounded reduction would make
+				# the multiplier negative and every hit a heal.
+				var taken: float = raw_taken * (1.0 - clampf(player_dr, 0.0, 90.0) / 100.0)
 				taken *= (1.0 + float(hazard.get("enemy_damage_percent", 0.0)) / 100.0)
 				hp -= maxf(0.0, taken)
 			if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("regeneration"):

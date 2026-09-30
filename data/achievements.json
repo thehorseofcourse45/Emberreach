@@ -1,12 +1,12 @@
 {
-  "_comment": "Emberreach milestones. Rewards are deliberately modest (small GP or XP) so achievements never become mandatory grinding. Condition kinds: skill_level, total_level, item_count, lifetime_item, monsters_killed, dungeons_cleared, items_discovered, gp_earned, actions_completed, quests_completed, pets_unlocked, settlement_buildings. Evaluation is a pure function of persisted state, so a milestone earned offline or before it was added still counts.",
+  "_comment": "Emberreach milestones. Rewards are deliberately modest (small GP, XP, or useful item supplies) and are collected by claiming them on the Milestones screen, so achievements never become mandatory grinding. Condition kinds: skill_level, total_level, item_count, lifetime_item, monsters_killed, dungeons_cleared, items_discovered, gp_earned, actions_completed, quests_completed, pets_unlocked, settlement_buildings. Evaluation is a pure function of persisted state, so a milestone earned offline or before it was added still counts.",
   "first_shavings": {
     "id": "first_shavings",
     "name": "First Shavings",
     "description": "Fell your first Emberpine tree.",
     "category": "gathering",
     "condition": { "kind": "lifetime_item", "item_id": "normal_log", "value": 1 },
-    "reward": { "gp": 25 }
+    "reward": { "gp": 25, "items": { "normal_log": 10 } }
   },
   "sawdust_and_sweat": {
     "id": "sawdust_and_sweat",
@@ -14,7 +14,7 @@
     "description": "Fell a thousand logs in total.",
     "category": "gathering",
     "condition": { "kind": "lifetime_item", "item_id": "normal_log", "value": 1000 },
-    "reward": { "gp": 2500, "xp": { "woodcutting": 500 } }
+    "reward": { "gp": 2500, "xp": { "woodcutting": 500 }, "items": { "normal_log": 100 } }
   },
   "deep_vein": {
     "id": "deep_vein",
@@ -22,7 +22,7 @@
     "description": "Bring 500 ore of any kind to the surface.",
     "category": "gathering",
     "condition": { "kind": "lifetime_item", "item_id": "coal", "value": 500 },
-    "reward": { "gp": 2500, "xp": { "mining": 500 } }
+    "reward": { "gp": 2500, "xp": { "mining": 500 }, "items": { "coal": 100 } }
   },
   "full_creel": {
     "id": "full_creel",
@@ -30,7 +30,7 @@
     "description": "Land 250 marsh shrimp.",
     "category": "gathering",
     "condition": { "kind": "lifetime_item", "item_id": "raw_shrimp", "value": 250 },
-    "reward": { "gp": 1200, "xp": { "fishing": 300 } }
+    "reward": { "gp": 1200, "xp": { "fishing": 300 }, "items": { "shrimp": 50 } }
   },
   "ash_and_ember": {
     "id": "ash_and_ember",
@@ -38,7 +38,7 @@
     "description": "Produce 1,000 ash at the kiln.",
     "category": "gathering",
     "condition": { "kind": "lifetime_item", "item_id": "ash", "value": 1000 },
-    "reward": { "gp": 2000, "xp": { "firemaking": 800 } }
+    "reward": { "gp": 2000, "xp": { "firemaking": 800 }, "items": { "ash": 100 } }
   },
   "apprentice_smith": {
     "id": "apprentice_smith",
@@ -46,7 +46,7 @@
     "description": "Reach Forgecraft 30.",
     "category": "progression",
     "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 30 },
-    "reward": { "gp": 3000 }
+    "reward": { "gp": 3000, "items": { "bronze_bar": 25 } }
   },
   "journeyman_smith": {
     "id": "journeyman_smith",
@@ -54,7 +54,7 @@
     "description": "Reach Forgecraft 70.",
     "category": "progression",
     "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 70 },
-    "reward": { "gp": 25000 }
+    "reward": { "gp": 25000, "items": { "steel_bar": 50 } }
   },
   "frontier_master": {
     "id": "frontier_master",
@@ -62,7 +62,7 @@
     "description": "Bring one trade to level 99.",
     "category": "progression",
     "condition": { "kind": "total_level", "value": 99 },
-    "reward": { "gp": 100000 }
+    "reward": { "gp": 100000, "items": { "potion_dr_3": 3 } }
   },
   "well_rounded": {
     "id": "well_rounded",
@@ -70,7 +70,7 @@
     "description": "Accumulate 500 total skill levels.",
     "category": "progression",
     "condition": { "kind": "total_level", "value": 500 },
-    "reward": { "gp": 15000 }
+    "reward": { "gp": 15000, "items": { "garum_herb": 50 } }
   },
   "jack_of_all_trades": {
     "id": "jack_of_all_trades",
@@ -78,7 +78,7 @@
     "description": "Accumulate 1,000 total skill levels.",
     "category": "progression",
     "condition": { "kind": "total_level", "value": 1000 },
-    "reward": { "gp": 75000 }
+    "reward": { "gp": 75000, "items": { "potion_skilling_3": 5 } }
   },
   "first_blood": {
     "id": "first_blood",
@@ -86,7 +86,7 @@
     "description": "Defeat your first enemy.",
     "category": "combat",
     "condition": { "kind": "monsters_killed", "value": 1 },
-    "reward": { "gp": 50 }
+    "reward": { "gp": 50, "items": { "shrimp": 10 } }
   },
   "hundred_felled": {
     "id": "hundred_felled",
@@ -94,7 +94,7 @@
     "description": "Defeat 100 enemies.",
     "category": "combat",
     "condition": { "kind": "monsters_killed", "value": 100 },
-    "reward": { "gp": 3000, "xp": { "hitpoints": 1000 } }
+    "reward": { "gp": 3000, "xp": { "hitpoints": 1000 }, "items": { "lobster": 25 } }
   },
   "thousand_felled": {
     "id": "thousand_felled",
@@ -102,7 +102,7 @@
     "description": "Defeat 1,000 enemies.",
     "category": "combat",
     "condition": { "kind": "monsters_killed", "value": 1000 },
-    "reward": { "gp": 40000 }
+    "reward": { "gp": 40000, "items": { "swordfish": 50 } }
   },
   "warren_breaker": {
     "id": "warren_breaker",
@@ -110,7 +110,7 @@
     "description": "Defeat the Cinderkin Warchief.",
     "category": "combat",
     "condition": { "kind": "monsters_killed", "monster_id": "golbin_chief", "value": 1 },
-    "reward": { "gp": 1500 }
+    "reward": { "gp": 1500, "items": { "bones": 50 } }
   },
   "barrow_warden": {
     "id": "barrow_warden",
@@ -118,7 +118,7 @@
     "description": "Clear the Barrow of Names.",
     "category": "combat",
     "condition": { "kind": "dungeons_cleared", "dungeon_id": "undead_graveyard", "value": 1 },
-    "reward": { "gp": 4000 }
+    "reward": { "gp": 4000, "items": { "big_bones": 25 } }
   },
   "gale_student": {
     "id": "gale_student",
@@ -126,7 +126,7 @@
     "description": "Clear the Observatory of Gales.",
     "category": "combat",
     "condition": { "kind": "dungeons_cleared", "dungeon_id": "air_god_dungeon", "value": 1 },
-    "reward": { "gp": 20000 }
+    "reward": { "gp": 20000, "items": { "air_rune": 500 } }
   },
   "expedition_veteran": {
     "id": "expedition_veteran",
@@ -134,7 +134,7 @@
     "description": "Clear 25 expeditions in total.",
     "category": "combat",
     "condition": { "kind": "dungeons_cleared", "value": 25 },
-    "reward": { "gp": 30000 }
+    "reward": { "gp": 30000, "items": { "shark": 50 } }
   },
   "first_forge": {
     "id": "first_forge",
@@ -142,7 +142,7 @@
     "description": "Craft 100 items with your own hands.",
     "category": "crafting",
     "condition": { "kind": "actions_completed", "value": 100 },
-    "reward": { "gp": 500 }
+    "reward": { "gp": 500, "items": { "iron_bar": 25 } }
   },
   "industrious": {
     "id": "industrious",
@@ -150,7 +150,7 @@
     "description": "Complete 10,000 actions.",
     "category": "crafting",
     "condition": { "kind": "actions_completed", "value": 10000 },
-    "reward": { "gp": 30000 }
+    "reward": { "gp": 30000, "items": { "steel_bar": 100 } }
   },
   "the_long_haul": {
     "id": "the_long_haul",
@@ -158,7 +158,7 @@
     "description": "Complete 100,000 actions.",
     "category": "crafting",
     "condition": { "kind": "actions_completed", "value": 100000 },
-    "reward": { "gp": 250000 }
+    "reward": { "gp": 250000, "items": { "mithril_bar": 100 } }
   },
   "first_coin": {
     "id": "first_coin",
@@ -166,7 +166,7 @@
     "description": "Earn your first 1,000 GP.",
     "category": "collection",
     "condition": { "kind": "gp_earned", "value": 1000 },
-    "reward": { "gp": 100 }
+    "reward": { "gp": 100, "items": { "bronze_arrow": 50 } }
   },
   "merchant_of_the_marches": {
     "id": "merchant_of_the_marches",
@@ -174,7 +174,7 @@
     "description": "Earn 10,000,000 GP in total.",
     "category": "collection",
     "condition": { "kind": "gp_earned", "value": 10000000 },
-    "reward": { "gp": 500000 }
+    "reward": { "gp": 500000, "items": { "gold_ore": 250 } }
   },
   "cataloguer": {
     "id": "cataloguer",
@@ -182,7 +182,7 @@
     "description": "Discover 100 distinct items.",
     "category": "discovery",
     "condition": { "kind": "items_discovered", "value": 100 },
-    "reward": { "gp": 5000 }
+    "reward": { "gp": 5000, "items": { "potion_dr_2": 5 } }
   },
   "archivist": {
     "id": "archivist",
@@ -190,7 +190,7 @@
     "description": "Discover 250 distinct items.",
     "category": "discovery",
     "condition": { "kind": "items_discovered", "value": 250 },
-    "reward": { "gp": 60000 }
+    "reward": { "gp": 60000, "items": { "potion_skilling_4": 5 } }
   },
   "the_complete_ledger": {
     "id": "the_complete_ledger",
@@ -198,7 +198,7 @@
     "description": "Discover 350 distinct items.",
     "category": "discovery",
     "condition": { "kind": "items_discovered", "value": 350 },
-    "reward": { "gp": 250000 }
+    "reward": { "gp": 250000, "items": { "umbral_rune": 100 } }
   },
   "new_roofs": {
     "id": "new_roofs",
@@ -206,7 +206,7 @@
     "description": "Reach 10 total structure levels in Emberreach.",
     "category": "progression",
     "condition": { "kind": "settlement_buildings", "value": 10 },
-    "reward": { "gp": 3000 }
+    "reward": { "gp": 3000, "items": { "oak_log": 50 } }
   },
   "a_settlement_again": {
     "id": "a_settlement_again",
@@ -214,7 +214,7 @@
     "description": "Reach 40 total structure levels in Emberreach.",
     "category": "progression",
     "condition": { "kind": "settlement_buildings", "value": 40 },
-    "reward": { "gp": 50000 }
+    "reward": { "gp": 50000, "items": { "mahogany_log": 100 } }
   },
   "good_neighbours": {
     "id": "good_neighbours",
@@ -222,7 +222,7 @@
     "description": "Bond with 10 companions.",
     "category": "discovery",
     "condition": { "kind": "pets_unlocked", "value": 10 },
-    "reward": { "gp": 20000 }
+    "reward": { "gp": 20000, "items": { "ent_tablet": 25 } }
   },
   "completionist": {
     "id": "completionist",
@@ -230,7 +230,7 @@
     "description": "Complete 10 frontier tasks.",
     "category": "progression",
     "condition": { "kind": "quests_completed", "value": 10 },
-    "reward": { "gp": 10000 }
+    "reward": { "gp": 10000, "items": { "potion_dr_3": 5 } }
   },
   "the_whole_story": {
     "id": "the_whole_story",
@@ -238,7 +238,7 @@
     "description": "Complete 20 frontier tasks.",
     "category": "progression",
     "condition": { "kind": "quests_completed", "value": 20 },
-    "reward": { "gp": 75000 }
+    "reward": { "gp": 75000, "items": { "soul_rune": 100 } }
   },
   "hoarder": {
     "id": "hoarder",
@@ -246,7 +246,7 @@
     "description": "Hold 1,000 of a single resource at once.",
     "category": "collection",
     "condition": { "kind": "item_count", "item_id": "normal_log", "value": 1000 },
-    "reward": { "gp": 2000 }
+    "reward": { "gp": 2000, "items": { "normal_log": 250 } }
   },
   "well_fed": {
     "id": "well_fed",
@@ -254,7 +254,7 @@
     "description": "Keep 250 cooked marsh shrimp in storage.",
     "category": "collection",
     "condition": { "kind": "item_count", "item_id": "shrimp", "value": 250 },
-    "reward": { "gp": 1500 }
+    "reward": { "gp": 1500, "items": { "shrimp": 100 } }
   },
   "optional_speedrun": {
     "id": "optional_speedrun",
@@ -262,6 +262,3046 @@
     "description": "Optional challenge: reach 25 total skill levels while the collection log holds fewer than 40 items.",
     "category": "optional",
     "condition": { "kind": "items_discovered", "value": 15 },
-    "reward": { "gp": 2000, "notes": ["Cosmetic milestone — deliberately modest"] }
+    "reward": { "gp": 2000, "notes": ["Cosmetic milestone — deliberately modest"], "items": { "bronze_arrow": 25 } }
+  },
+  "attack_25": {
+    "id": "attack_25",
+    "name": "First Edge",
+    "description": "Reach Bladework level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "attack", "value": 25 },
+    "reward": { "gp": 500, "items": { "raw_shrimp": 25 }, "xp": { "attack": 200 } }
+  },
+  "attack_50": {
+    "id": "attack_50",
+    "name": "Honed Steel",
+    "description": "Reach Bladework level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "attack", "value": 50 },
+    "reward": { "gp": 2500, "items": { "raw_lobster": 50 }, "xp": { "attack": 800 } }
+  },
+  "attack_99": {
+    "id": "attack_99",
+    "name": "The Last Duel",
+    "description": "Reach Bladework level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "attack", "value": 99 },
+    "reward": { "gp": 10000, "items": { "raw_shark": 99 }, "xp": { "attack": 2500 } }
+  },
+  "strength_25": {
+    "id": "strength_25",
+    "name": "Firm Grip",
+    "description": "Reach Might level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "strength", "value": 25 },
+    "reward": { "gp": 500, "items": { "raw_shrimp": 25 }, "xp": { "strength": 200 } }
+  },
+  "strength_50": {
+    "id": "strength_50",
+    "name": "Bull Strength",
+    "description": "Reach Might level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "strength", "value": 50 },
+    "reward": { "gp": 2500, "items": { "raw_lobster": 50 }, "xp": { "strength": 800 } }
+  },
+  "strength_99": {
+    "id": "strength_99",
+    "name": "Mountain Mantle",
+    "description": "Reach Might level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "strength", "value": 99 },
+    "reward": { "gp": 10000, "items": { "raw_shark": 99 }, "xp": { "strength": 2500 } }
+  },
+  "defence_25": {
+    "id": "defence_25",
+    "name": "Iron Stance",
+    "description": "Reach Warding level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "defence", "value": 25 },
+    "reward": { "gp": 500, "items": { "raw_shrimp": 25 }, "xp": { "defence": 200 } }
+  },
+  "defence_50": {
+    "id": "defence_50",
+    "name": "The Unmoved",
+    "description": "Reach Warding level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "defence", "value": 50 },
+    "reward": { "gp": 2500, "items": { "raw_lobster": 50 }, "xp": { "defence": 800 } }
+  },
+  "defence_99": {
+    "id": "defence_99",
+    "name": "Living Bastion",
+    "description": "Reach Warding level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "defence", "value": 99 },
+    "reward": { "gp": 10000, "items": { "raw_shark": 99 }, "xp": { "defence": 2500 } }
+  },
+  "hitpoints_25": {
+    "id": "hitpoints_25",
+    "name": "Second Wind",
+    "description": "Reach Vitality level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "hitpoints", "value": 25 },
+    "reward": { "gp": 500, "items": { "raw_shrimp": 25 }, "xp": { "hitpoints": 200 } }
+  },
+  "hitpoints_50": {
+    "id": "hitpoints_50",
+    "name": "Iron Blood",
+    "description": "Reach Vitality level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "hitpoints", "value": 50 },
+    "reward": { "gp": 2500, "items": { "raw_lobster": 50 }, "xp": { "hitpoints": 800 } }
+  },
+  "hitpoints_99": {
+    "id": "hitpoints_99",
+    "name": "The Undying",
+    "description": "Reach Vitality level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "hitpoints", "value": 99 },
+    "reward": { "gp": 10000, "items": { "raw_shark": 99 }, "xp": { "hitpoints": 2500 } }
+  },
+  "ranged_25": {
+    "id": "ranged_25",
+    "name": "First Arrow",
+    "description": "Reach Marksmanship level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "ranged", "value": 25 },
+    "reward": { "gp": 500, "items": { "bronze_arrow": 25 }, "xp": { "ranged": 200 } }
+  },
+  "ranged_50": {
+    "id": "ranged_50",
+    "name": "True Shot",
+    "description": "Reach Marksmanship level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "ranged", "value": 50 },
+    "reward": { "gp": 2500, "items": { "iron_arrow": 50 }, "xp": { "ranged": 800 } }
+  },
+  "ranged_99": {
+    "id": "ranged_99",
+    "name": "Eye of the Frontier",
+    "description": "Reach Marksmanship level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "ranged", "value": 99 },
+    "reward": { "gp": 10000, "items": { "raw_shark": 99 }, "xp": { "ranged": 2500 } }
+  },
+  "magic_25": {
+    "id": "magic_25",
+    "name": "First Words",
+    "description": "Reach Sorcery level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "magic", "value": 25 },
+    "reward": { "gp": 500, "items": { "air_rune": 25 }, "xp": { "magic": 200 } }
+  },
+  "magic_50": {
+    "id": "magic_50",
+    "name": "The Studied Hand",
+    "description": "Reach Sorcery level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "magic", "value": 50 },
+    "reward": { "gp": 2500, "items": { "chaos_rune": 50 }, "xp": { "magic": 800 } }
+  },
+  "magic_99": {
+    "id": "magic_99",
+    "name": "Words of Power",
+    "description": "Reach Sorcery level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "magic", "value": 99 },
+    "reward": { "gp": 10000, "items": { "blood_rune": 99 }, "xp": { "magic": 2500 } }
+  },
+  "prayer_25": {
+    "id": "prayer_25",
+    "name": "First Vigil",
+    "description": "Reach Devotion level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "prayer", "value": 25 },
+    "reward": { "gp": 500, "items": { "bones": 25 }, "xp": { "prayer": 200 } }
+  },
+  "prayer_50": {
+    "id": "prayer_50",
+    "name": "Steady Flame",
+    "description": "Reach Devotion level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "prayer", "value": 50 },
+    "reward": { "gp": 2500, "items": { "big_bones": 50 }, "xp": { "prayer": 800 } }
+  },
+  "prayer_99": {
+    "id": "prayer_99",
+    "name": "The Devout Heart",
+    "description": "Reach Devotion level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "prayer", "value": 99 },
+    "reward": { "gp": 10000, "items": { "big_bones": 150 }, "xp": { "prayer": 2500 } }
+  },
+  "slayer_25": {
+    "id": "slayer_25",
+    "name": "Apprentice Hunter",
+    "description": "Reach Huntsman level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "slayer", "value": 25 },
+    "reward": { "gp": 500, "items": { "raw_shrimp": 25 }, "xp": { "slayer": 200 } }
+  },
+  "slayer_50": {
+    "id": "slayer_50",
+    "name": "The Tracker",
+    "description": "Reach Huntsman level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "slayer", "value": 50 },
+    "reward": { "gp": 2500, "items": { "raw_lobster": 50 }, "xp": { "slayer": 800 } }
+  },
+  "slayer_99": {
+    "id": "slayer_99",
+    "name": "Apex of the Hunt",
+    "description": "Reach Huntsman level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "slayer", "value": 99 },
+    "reward": { "gp": 10000, "items": { "raw_shark": 99 }, "xp": { "slayer": 2500 } }
+  },
+  "corruption_25": {
+    "id": "corruption_25",
+    "name": "First Stain",
+    "description": "Reach Blight level 25. The first real foothold.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "corruption", "value": 25 },
+    "reward": { "gp": 500, "items": { "abyssal_essence": 25 }, "xp": { "corruption": 200 } }
+  },
+  "corruption_50": {
+    "id": "corruption_50",
+    "name": "Comfortable Dark",
+    "description": "Reach Blight level 50. Solidly half-way up the discipline.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "corruption", "value": 50 },
+    "reward": { "gp": 2500, "items": { "abyssal_essence": 50 }, "xp": { "corruption": 800 } }
+  },
+  "corruption_99": {
+    "id": "corruption_99",
+    "name": "The Blight Itself",
+    "description": "Reach Blight level 99. A lifetime's practice.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "corruption", "value": 99 },
+    "reward": { "gp": 10000, "items": { "abyssal_essence": 99 }, "xp": { "corruption": 2500 } }
+  },
+  "woodcutting_25": {
+    "id": "woodcutting_25",
+    "name": "Green Timbers",
+    "description": "Reach Timbercraft level 25. The first real foothold.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "woodcutting", "value": 25 },
+    "reward": { "gp": 500, "items": { "willow_log": 25 }, "xp": { "woodcutting": 200 } }
+  },
+  "woodcutting_50": {
+    "id": "woodcutting_50",
+    "name": "Seasoned Cutter",
+    "description": "Reach Timbercraft level 50. Solidly half-way up the discipline.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "woodcutting", "value": 50 },
+    "reward": { "gp": 2500, "items": { "maple_log": 50 }, "xp": { "woodcutting": 800 } }
+  },
+  "woodcutting_99": {
+    "id": "woodcutting_99",
+    "name": "The Forest Remembers",
+    "description": "Reach Timbercraft level 99. A lifetime's practice.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "woodcutting", "value": 99 },
+    "reward": { "gp": 10000, "items": { "voidwood_log": 99 }, "xp": { "woodcutting": 2500 } }
+  },
+  "fishing_25": {
+    "id": "fishing_25",
+    "name": "Wet Boots",
+    "description": "Reach Angling level 25. The first real foothold.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "fishing", "value": 25 },
+    "reward": { "gp": 500, "items": { "raw_trout": 25 }, "xp": { "fishing": 200 } }
+  },
+  "fishing_50": {
+    "id": "fishing_50",
+    "name": "The Patient Line",
+    "description": "Reach Angling level 50. Solidly half-way up the discipline.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "fishing", "value": 50 },
+    "reward": { "gp": 2500, "items": { "raw_swordfish": 50 }, "xp": { "fishing": 800 } }
+  },
+  "fishing_99": {
+    "id": "fishing_99",
+    "name": "One With the Tide",
+    "description": "Reach Angling level 99. A lifetime's practice.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "fishing", "value": 99 },
+    "reward": { "gp": 10000, "items": { "raw_abyssal_eel": 99 }, "xp": { "fishing": 2500 } }
+  },
+  "mining_25": {
+    "id": "mining_25",
+    "name": "First Claims",
+    "description": "Reach Delving level 25. The first real foothold.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "mining", "value": 25 },
+    "reward": { "gp": 500, "items": { "iron_ore": 25 }, "xp": { "mining": 200 } }
+  },
+  "mining_50": {
+    "id": "mining_50",
+    "name": "The Deep Swing",
+    "description": "Reach Delving level 50. Solidly half-way up the discipline.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "mining", "value": 50 },
+    "reward": { "gp": 2500, "items": { "gold_ore": 50 }, "xp": { "mining": 800 } }
+  },
+  "mining_99": {
+    "id": "mining_99",
+    "name": "Voice of the Veins",
+    "description": "Reach Delving level 99. A lifetime's practice.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "mining", "value": 99 },
+    "reward": { "gp": 10000, "items": { "herald_ore": 99 }, "xp": { "mining": 2500 } }
+  },
+  "farming_25": {
+    "id": "farming_25",
+    "name": "First Furrows",
+    "description": "Reach Husbandry level 25. The first real foothold.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "farming", "value": 25 },
+    "reward": { "gp": 500, "items": { "normal_log": 25 }, "xp": { "farming": 200 } }
+  },
+  "farming_50": {
+    "id": "farming_50",
+    "name": "The Patient Plot",
+    "description": "Reach Husbandry level 50. Solidly half-way up the discipline.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "farming", "value": 50 },
+    "reward": { "gp": 2500, "items": { "normal_log": 25 }, "xp": { "farming": 800 } }
+  },
+  "farming_99": {
+    "id": "farming_99",
+    "name": "Keeper of the Terraces",
+    "description": "Reach Husbandry level 99. A lifetime's practice.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "farming", "value": 99 },
+    "reward": { "gp": 10000, "items": { "normal_log": 25 }, "xp": { "farming": 2500 } }
+  },
+  "firemaking_25": {
+    "id": "firemaking_25",
+    "name": "Where There's Smoke",
+    "description": "Reach Kilncraft level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "firemaking", "value": 25 },
+    "reward": { "gp": 500, "items": { "normal_log": 25 }, "xp": { "firemaking": 200 } }
+  },
+  "firemaking_50": {
+    "id": "firemaking_50",
+    "name": "The Kiln Keeper",
+    "description": "Reach Kilncraft level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "firemaking", "value": 50 },
+    "reward": { "gp": 2500, "items": { "normal_log": 25 }, "xp": { "firemaking": 800 } }
+  },
+  "firemaking_99": {
+    "id": "firemaking_99",
+    "name": "Master of the Flame",
+    "description": "Reach Kilncraft level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "firemaking", "value": 99 },
+    "reward": { "gp": 10000, "items": { "normal_log": 25 }, "xp": { "firemaking": 2500 } }
+  },
+  "cooking_25": {
+    "id": "cooking_25",
+    "name": "Edible, Probably",
+    "description": "Reach Cookery level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "cooking", "value": 25 },
+    "reward": { "gp": 500, "items": { "trout": 25 }, "xp": { "cooking": 200 } }
+  },
+  "cooking_50": {
+    "id": "cooking_50",
+    "name": "The Camp Cook",
+    "description": "Reach Cookery level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "cooking", "value": 50 },
+    "reward": { "gp": 2500, "items": { "swordfish": 50 }, "xp": { "cooking": 800 } }
+  },
+  "cooking_99": {
+    "id": "cooking_99",
+    "name": "A Taste of Home",
+    "description": "Reach Cookery level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "cooking", "value": 99 },
+    "reward": { "gp": 10000, "items": { "abyssal_eel": 99 }, "xp": { "cooking": 2500 } }
+  },
+  "smithing_25": {
+    "id": "smithing_25",
+    "name": "First Sparks",
+    "description": "Reach Forgecraft level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 25 },
+    "reward": { "gp": 500, "items": { "steel_sword": 25 }, "xp": { "smithing": 200 } }
+  },
+  "smithing_50": {
+    "id": "smithing_50",
+    "name": "The Steady Hammer",
+    "description": "Reach Forgecraft level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 50 },
+    "reward": { "gp": 2500, "items": { "gold_bar": 50 }, "xp": { "smithing": 800 } }
+  },
+  "smithing_99": {
+    "id": "smithing_99",
+    "name": "The Forge Answers",
+    "description": "Reach Forgecraft level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 99 },
+    "reward": { "gp": 10000, "items": { "herald_godsword": 99 }, "xp": { "smithing": 2500 } }
+  },
+  "fletching_25": {
+    "id": "fletching_25",
+    "name": "Kindling Bows",
+    "description": "Reach Bowyering level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fletching", "value": 25 },
+    "reward": { "gp": 500, "items": { "oak_shortbow": 25 }, "xp": { "fletching": 200 } }
+  },
+  "fletching_50": {
+    "id": "fletching_50",
+    "name": "The Steady Knife",
+    "description": "Reach Bowyering level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fletching", "value": 50 },
+    "reward": { "gp": 2500, "items": { "willow_shortbow": 50 }, "xp": { "fletching": 800 } }
+  },
+  "fletching_99": {
+    "id": "fletching_99",
+    "name": "Bowyers' Reckoning",
+    "description": "Reach Bowyering level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fletching", "value": 99 },
+    "reward": { "gp": 10000, "items": { "voidwood_longbow": 99 }, "xp": { "fletching": 2500 } }
+  },
+  "crafting_25": {
+    "id": "crafting_25",
+    "name": "Needle and Thread",
+    "description": "Reach Artifice level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "crafting", "value": 25 },
+    "reward": { "gp": 500, "items": { "sapphire_ring": 25 }, "xp": { "crafting": 200 } }
+  },
+  "crafting_50": {
+    "id": "crafting_50",
+    "name": "The Tanner's Hand",
+    "description": "Reach Artifice level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "crafting", "value": 50 },
+    "reward": { "gp": 2500, "items": { "blue_dhide_vambraces": 50 }, "xp": { "crafting": 800 } }
+  },
+  "crafting_99": {
+    "id": "crafting_99",
+    "name": "Artifice Absolute",
+    "description": "Reach Artifice level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "crafting", "value": 99 },
+    "reward": { "gp": 10000, "items": { "black_dhide_vambraces": 99 }, "xp": { "crafting": 2500 } }
+  },
+  "runecrafting_25": {
+    "id": "runecrafting_25",
+    "name": "Glyphs and Guesswork",
+    "description": "Reach Glyphcraft level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "runecrafting", "value": 25 },
+    "reward": { "gp": 500, "items": { "earth_staff": 25 }, "xp": { "runecrafting": 200 } }
+  },
+  "runecrafting_50": {
+    "id": "runecrafting_50",
+    "name": "The Glyphwell Song",
+    "description": "Reach Glyphcraft level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "runecrafting", "value": 50 },
+    "reward": { "gp": 2500, "items": { "nature_rune": 50 }, "xp": { "runecrafting": 800 } }
+  },
+  "runecrafting_99": {
+    "id": "runecrafting_99",
+    "name": "Speaker to the Well",
+    "description": "Reach Glyphcraft level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "runecrafting", "value": 99 },
+    "reward": { "gp": 10000, "items": { "umbral_rune": 99 }, "xp": { "runecrafting": 2500 } }
+  },
+  "herblore_25": {
+    "id": "herblore_25",
+    "name": "Bitter Beginnings",
+    "description": "Reach Apothecary level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "herblore", "value": 25 },
+    "reward": { "gp": 500, "items": { "potion_skilling_2": 25 }, "xp": { "herblore": 200 } }
+  },
+  "herblore_50": {
+    "id": "herblore_50",
+    "name": "The Measured Hand",
+    "description": "Reach Apothecary level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "herblore", "value": 50 },
+    "reward": { "gp": 2500, "items": { "potion_skilling_3": 50 }, "xp": { "herblore": 800 } }
+  },
+  "herblore_99": {
+    "id": "herblore_99",
+    "name": "The Apothecary's Answer",
+    "description": "Reach Apothecary level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "herblore", "value": 99 },
+    "reward": { "gp": 10000, "items": { "potion_dr_6": 99 }, "xp": { "herblore": 2500 } }
+  },
+  "thieving_25": {
+    "id": "thieving_25",
+    "name": "Light Fingers",
+    "description": "Reach Larceny level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "thieving", "value": 25 },
+    "reward": { "gp": 500, "items": { "potion_dr_2": 10 }, "xp": { "thieving": 200 } }
+  },
+  "thieving_50": {
+    "id": "thieving_50",
+    "name": "The Quiet Departure",
+    "description": "Reach Larceny level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "thieving", "value": 50 },
+    "reward": { "gp": 2500, "items": { "potion_dr_3": 10 }, "xp": { "thieving": 800 } }
+  },
+  "thieving_99": {
+    "id": "thieving_99",
+    "name": "Ghost of the Market",
+    "description": "Reach Larceny level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "thieving", "value": 99 },
+    "reward": { "gp": 10000, "items": { "potion_dr_4": 10 }, "xp": { "thieving": 2500 } }
+  },
+  "agility_25": {
+    "id": "agility_25",
+    "name": "Sturdy Ankles",
+    "description": "Reach Wayfaring level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "agility", "value": 25 },
+    "reward": { "gp": 500, "items": { "potion_skilling_1": 10 }, "xp": { "agility": 200 } }
+  },
+  "agility_50": {
+    "id": "agility_50",
+    "name": "The Long Stride",
+    "description": "Reach Wayfaring level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "agility", "value": 50 },
+    "reward": { "gp": 2500, "items": { "potion_skilling_3": 10 }, "xp": { "agility": 800 } }
+  },
+  "agility_99": {
+    "id": "agility_99",
+    "name": "The Frontier Dash",
+    "description": "Reach Wayfaring level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "agility", "value": 99 },
+    "reward": { "gp": 10000, "items": { "potion_skilling_4": 10 }, "xp": { "agility": 2500 } }
+  },
+  "summoning_25": {
+    "id": "summoning_25",
+    "name": "A Polite Request",
+    "description": "Reach Beastbinding level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "summoning", "value": 25 },
+    "reward": { "gp": 500, "items": { "summoning_shard_crimson": 25 }, "xp": { "summoning": 200 } }
+  },
+  "summoning_50": {
+    "id": "summoning_50",
+    "name": "The Binding Voice",
+    "description": "Reach Beastbinding level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "summoning", "value": 50 },
+    "reward": { "gp": 2500, "items": { "summoning_shard_blue": 50 }, "xp": { "summoning": 800 } }
+  },
+  "summoning_99": {
+    "id": "summoning_99",
+    "name": "Keeper of Pacts",
+    "description": "Reach Beastbinding level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "summoning", "value": 99 },
+    "reward": { "gp": 10000, "items": { "summoning_shard_gold": 99 }, "xp": { "summoning": 2500 } }
+  },
+  "astrology_25": {
+    "id": "astrology_25",
+    "name": "First Starlight",
+    "description": "Reach Starreading level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "astrology", "value": 25 },
+    "reward": { "gp": 500, "items": { "stardust": 25 }, "xp": { "astrology": 200 } }
+  },
+  "astrology_50": {
+    "id": "astrology_50",
+    "name": "The Counting Sky",
+    "description": "Reach Starreading level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "astrology", "value": 50 },
+    "reward": { "gp": 2500, "items": { "stardust": 50 }, "xp": { "astrology": 800 } }
+  },
+  "astrology_99": {
+    "id": "astrology_99",
+    "name": "Reader of the Riven Sky",
+    "description": "Reach Starreading level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "astrology", "value": 99 },
+    "reward": { "gp": 10000, "items": { "stardust": 99 }, "xp": { "astrology": 2500 } }
+  },
+  "alt_magic_25": {
+    "id": "alt_magic_25",
+    "name": "Runescribbles",
+    "description": "Reach Runescribing level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "alt_magic", "value": 25 },
+    "reward": { "gp": 500, "items": { "iron_bar": 25 }, "xp": { "alt_magic": 200 } }
+  },
+  "alt_magic_50": {
+    "id": "alt_magic_50",
+    "name": "The Scriber's Oath",
+    "description": "Reach Runescribing level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "alt_magic", "value": 50 },
+    "reward": { "gp": 2500, "items": { "gold_ring": 50 }, "xp": { "alt_magic": 800 } }
+  },
+  "alt_magic_99": {
+    "id": "alt_magic_99",
+    "name": "The Scribe Ascendant",
+    "description": "Reach Runescribing level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "alt_magic", "value": 99 },
+    "reward": { "gp": 10000, "items": { "herald_bar": 99 }, "xp": { "alt_magic": 2500 } }
+  },
+  "township_25": {
+    "id": "township_25",
+    "name": "Village Roots",
+    "description": "Reach Settlement level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "township", "value": 25 },
+    "reward": { "gp": 500, "items": { "normal_log": 25 }, "xp": { "township": 200 } }
+  },
+  "township_50": {
+    "id": "township_50",
+    "name": "The Growing Streets",
+    "description": "Reach Settlement level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "township", "value": 50 },
+    "reward": { "gp": 2500, "items": { "oak_log": 50 }, "xp": { "township": 800 } }
+  },
+  "township_99": {
+    "id": "township_99",
+    "name": "Heart of the Settlement",
+    "description": "Reach Settlement level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "township", "value": 99 },
+    "reward": { "gp": 10000, "items": { "mahogany_log": 99 }, "xp": { "township": 2500 } }
+  },
+  "cartography_25": {
+    "id": "cartography_25",
+    "name": "First Hexes",
+    "description": "Reach Surveying level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "cartography", "value": 25 },
+    "reward": { "gp": 500, "items": { "freight_manifest": 15 }, "xp": { "cartography": 200 } }
+  },
+  "cartography_50": {
+    "id": "cartography_50",
+    "name": "The Patient Pen",
+    "description": "Reach Surveying level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "cartography", "value": 50 },
+    "reward": { "gp": 2500, "items": { "freight_manifest": 45 }, "xp": { "cartography": 800 } }
+  },
+  "cartography_99": {
+    "id": "cartography_99",
+    "name": "The Map Is the Land",
+    "description": "Reach Surveying level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "cartography", "value": 99 },
+    "reward": { "gp": 10000, "items": { "freight_manifest": 120 }, "xp": { "cartography": 2500 } }
+  },
+  "archaeology_25": {
+    "id": "archaeology_25",
+    "name": "Dust and Bones",
+    "description": "Reach Excavation level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "archaeology", "value": 25 },
+    "reward": { "gp": 500, "items": { "normal_log": 25 }, "xp": { "archaeology": 200 } }
+  },
+  "archaeology_50": {
+    "id": "archaeology_50",
+    "name": "The Careful Brush",
+    "description": "Reach Excavation level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "archaeology", "value": 50 },
+    "reward": { "gp": 2500, "items": { "normal_log": 25 }, "xp": { "archaeology": 800 } }
+  },
+  "archaeology_99": {
+    "id": "archaeology_99",
+    "name": "Voice of the Ashes",
+    "description": "Reach Excavation level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "archaeology", "value": 99 },
+    "reward": { "gp": 10000, "items": { "normal_log": 25 }, "xp": { "archaeology": 2500 } }
+  },
+  "harvesting_25": {
+    "id": "harvesting_25",
+    "name": "First Tap",
+    "description": "Reach Prospecting level 25. The first real foothold.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "harvesting", "value": 25 },
+    "reward": { "gp": 500, "items": { "harvested_essence": 25 }, "xp": { "harvesting": 200 } }
+  },
+  "harvesting_50": {
+    "id": "harvesting_50",
+    "name": "Vein Whisperer",
+    "description": "Reach Prospecting level 50. Solidly half-way up the discipline.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "harvesting", "value": 50 },
+    "reward": { "gp": 2500, "items": { "harvested_essence": 50 }, "xp": { "harvesting": 800 } }
+  },
+  "harvesting_99": {
+    "id": "harvesting_99",
+    "name": "The Living Well",
+    "description": "Reach Prospecting level 99. A lifetime's practice.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "harvesting", "value": 99 },
+    "reward": { "gp": 10000, "items": { "herald_essence": 99 }, "xp": { "harvesting": 2500 } }
+  },
+  "echo_keeping_25": {
+    "id": "echo_keeping_25",
+    "name": "First Listening",
+    "description": "Reach Echo Keeping level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "echo_keeping", "value": 25 },
+    "reward": { "gp": 500, "items": { "echo_charge": 25 }, "xp": { "echo_keeping": 200 } }
+  },
+  "echo_keeping_50": {
+    "id": "echo_keeping_50",
+    "name": "The Attentive Ear",
+    "description": "Reach Echo Keeping level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "echo_keeping", "value": 50 },
+    "reward": { "gp": 2500, "items": { "echo_inscription": 50 }, "xp": { "echo_keeping": 800 } }
+  },
+  "echo_keeping_99": {
+    "id": "echo_keeping_99",
+    "name": "The Echo Answers",
+    "description": "Reach Echo Keeping level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "echo_keeping", "value": 99 },
+    "reward": { "gp": 10000, "items": { "master_echo_loop": 99 }, "xp": { "echo_keeping": 2500 } }
+  },
+  "wayfolding_25": {
+    "id": "wayfolding_25",
+    "name": "A Short Fold",
+    "description": "Reach Wayfolding level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "wayfolding", "value": 25 },
+    "reward": { "gp": 500, "items": { "fold_anchor": 25 }, "xp": { "wayfolding": 200 } }
+  },
+  "wayfolding_50": {
+    "id": "wayfolding_50",
+    "name": "The Long Fold",
+    "description": "Reach Wayfolding level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "wayfolding", "value": 50 },
+    "reward": { "gp": 2500, "items": { "freight_manifest": 50 }, "xp": { "wayfolding": 800 } }
+  },
+  "wayfolding_99": {
+    "id": "wayfolding_99",
+    "name": "Every Road at Once",
+    "description": "Reach Wayfolding level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "wayfolding", "value": 99 },
+    "reward": { "gp": 10000, "items": { "herald_gate": 99 }, "xp": { "wayfolding": 2500 } }
+  },
+  "fermentation_25": {
+    "id": "fermentation_25",
+    "name": "First Bubbles",
+    "description": "Reach Fermentation level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fermentation", "value": 25 },
+    "reward": { "gp": 500, "items": { "weather_charge": 25 }, "xp": { "fermentation": 200 } }
+  },
+  "fermentation_50": {
+    "id": "fermentation_50",
+    "name": "The Patient Cask",
+    "description": "Reach Fermentation level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fermentation", "value": 50 },
+    "reward": { "gp": 2500, "items": { "weather_charge": 50 }, "xp": { "fermentation": 800 } }
+  },
+  "fermentation_99": {
+    "id": "fermentation_99",
+    "name": "Weatherwright",
+    "description": "Reach Fermentation level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fermentation", "value": 99 },
+    "reward": { "gp": 10000, "items": { "blended_weather": 99 }, "xp": { "fermentation": 2500 } }
+  },
+  "customcraft_25": {
+    "id": "customcraft_25",
+    "name": "Made to Order",
+    "description": "Reach Customcraft level 25. The first real foothold.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "customcraft", "value": 25 },
+    "reward": { "gp": 500, "items": { "paired_tradition": 25 }, "xp": { "customcraft": 200 } }
+  },
+  "customcraft_50": {
+    "id": "customcraft_50",
+    "name": "The Commission",
+    "description": "Reach Customcraft level 50. Solidly half-way up the discipline.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "customcraft", "value": 50 },
+    "reward": { "gp": 2500, "items": { "paired_tradition": 50 }, "xp": { "customcraft": 800 } }
+  },
+  "customcraft_99": {
+    "id": "customcraft_99",
+    "name": "The Custom Answer",
+    "description": "Reach Customcraft level 99. A lifetime's practice.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "customcraft", "value": 99 },
+    "reward": { "gp": 10000, "items": { "herald_craft": 99 }, "xp": { "customcraft": 2500 } }
+  },
+  "lostfinding_25": {
+    "id": "lostfinding_25",
+    "name": "First Finds",
+    "description": "Reach Lostfinding level 25. The first real foothold.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "lostfinding", "value": 25 },
+    "reward": { "gp": 500, "items": { "trace_evidence": 25 }, "xp": { "lostfinding": 200 } }
+  },
+  "lostfinding_50": {
+    "id": "lostfinding_50",
+    "name": "The Keen Eye",
+    "description": "Reach Lostfinding level 50. Solidly half-way up the discipline.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "lostfinding", "value": 50 },
+    "reward": { "gp": 2500, "items": { "restored_label": 50 }, "xp": { "lostfinding": 800 } }
+  },
+  "lostfinding_99": {
+    "id": "lostfinding_99",
+    "name": "Nothing Stays Lost",
+    "description": "Reach Lostfinding level 99. A lifetime's practice.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "lostfinding", "value": 99 },
+    "reward": { "gp": 10000, "items": { "herald_case": 99 }, "xp": { "lostfinding": 2500 } }
+  },
+  "many_hats": {
+    "id": "many_hats",
+    "name": "Many Hats",
+    "description": "Reach 250 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 250 },
+    "reward": { "gp": 8000, "xp": {  }, "items": { "garum_herb": 50 } }
+  },
+  "the_long_curriculum": {
+    "id": "the_long_curriculum",
+    "name": "The Long Curriculum",
+    "description": "Reach 750 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 750 },
+    "reward": { "gp": 40000, "xp": {  }, "items": { "potion_skilling_4": 10 } }
+  },
+  "master_of_all_trades": {
+    "id": "master_of_all_trades",
+    "name": "Master of All Trades",
+    "description": "Reach 1500 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 1500 },
+    "reward": { "gp": 120000, "xp": {  }, "items": { "umbral_rune": 100 } }
+  },
+  "ten_thousand_trunks": {
+    "id": "ten_thousand_trunks",
+    "name": "Ten Thousand Trunks",
+    "description": "Fell ten thousand Emberpine Logs in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "normal_log", "value": 10000 },
+    "reward": { "gp": 20000, "xp": { "woodcutting": 4000 }, "items": { "normal_log": 500 } }
+  },
+  "oak_by_the_acre": {
+    "id": "oak_by_the_acre",
+    "name": "Oak by the Acre",
+    "description": "Fell 2,500 Oak Logs in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "oak_log", "value": 2500 },
+    "reward": { "gp": 12000, "xp": { "woodcutting": 2000 }, "items": { "oak_log": 250 } }
+  },
+  "the_black_pile": {
+    "id": "the_black_pile",
+    "name": "The Black Pile",
+    "description": "Mine 5,000 Coal in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "coal", "value": 5000 },
+    "reward": { "gp": 15000, "xp": { "mining": 3000 }, "items": { "coal": 500 } }
+  },
+  "iron_orchard": {
+    "id": "iron_orchard",
+    "name": "Iron Orchard",
+    "description": "Mine 2,500 Iron Ore in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "iron_ore", "value": 2500 },
+    "reward": { "gp": 10000, "xp": { "mining": 2000 }, "items": { "iron_ore": 250 } }
+  },
+  "shrimp_boat": {
+    "id": "shrimp_boat",
+    "name": "Shrimp Boat",
+    "description": "Catch 1,000 Raw Marsh Shrimp in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_shrimp", "value": 1000 },
+    "reward": { "gp": 8000, "xp": { "fishing": 1500 }, "items": { "raw_shrimp": 100 } }
+  },
+  "trout_run": {
+    "id": "trout_run",
+    "name": "Trout Run",
+    "description": "Catch 500 Raw Trout in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_trout", "value": 500 },
+    "reward": { "gp": 9000, "xp": { "fishing": 1800 }, "items": { "raw_trout": 50 } }
+  },
+  "ossuary": {
+    "id": "ossuary",
+    "name": "Ossuary",
+    "description": "Collect 2,500 Bones in total.",
+    "category": "combat",
+    "condition": { "kind": "lifetime_item", "item_id": "bones", "value": 2500 },
+    "reward": { "gp": 12000, "xp": { "prayer": 2500 }, "items": { "bones": 250 } }
+  },
+  "herbalists_garden": {
+    "id": "herbalists_garden",
+    "name": "Herbalist's Garden",
+    "description": "Harvest 1,000 Garum Herbs in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "garum_herb", "value": 1000 },
+    "reward": { "gp": 9000, "xp": { "farming": 1800 }, "items": { "garum_herb": 100 } }
+  },
+  "essence_drift": {
+    "id": "essence_drift",
+    "name": "Essence Drift",
+    "description": "Gather 500 Harvested Essence in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "harvested_essence", "value": 500 },
+    "reward": { "gp": 10000, "xp": { "harvesting": 2000 }, "items": { "harvested_essence": 50 } }
+  },
+  "glyphwell_tap": {
+    "id": "glyphwell_tap",
+    "name": "Glyphwell Tap",
+    "description": "Cut 1,000 Raw Glyph Essence in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "rune_essence", "value": 1000 },
+    "reward": { "gp": 10000, "xp": { "runecrafting": 2000 }, "items": { "rune_essence": 100 } }
+  },
+  "pocketful_of_air": {
+    "id": "pocketful_of_air",
+    "name": "Pocketful of Air",
+    "description": "Cut 5,000 Air Runes in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "air_rune", "value": 5000 },
+    "reward": { "gp": 15000, "xp": { "runecrafting": 3000 }, "items": { "air_rune": 500 } }
+  },
+  "bronze_age": {
+    "id": "bronze_age",
+    "name": "Bronze Age",
+    "description": "Smelt 1,000 Verdigris Bars in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "bronze_bar", "value": 1000 },
+    "reward": { "gp": 9000, "xp": { "smithing": 1800 }, "items": { "bronze_bar": 100 } }
+  },
+  "iron_age": {
+    "id": "iron_age",
+    "name": "Iron Age",
+    "description": "Smelt 1,000 Iron Bars in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "iron_bar", "value": 1000 },
+    "reward": { "gp": 12000, "xp": { "smithing": 2400 }, "items": { "iron_bar": 100 } }
+  },
+  "ghoststeel_stockpile": {
+    "id": "ghoststeel_stockpile",
+    "name": "Ghoststeel Stockpile",
+    "description": "Smelt 500 Ghoststeel Bars in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "mithril_bar", "value": 500 },
+    "reward": { "gp": 18000, "xp": { "smithing": 3600 }, "items": { "mithril_bar": 50 } }
+  },
+  "oak_wardrobe": {
+    "id": "oak_wardrobe",
+    "name": "Oak Wardrobe",
+    "description": "Hold 500 Oak Logs at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "oak_log", "value": 500 },
+    "reward": { "gp": 6000, "xp": {  }, "items": { "oak_log": 50 } }
+  },
+  "bone_cellar": {
+    "id": "bone_cellar",
+    "name": "Bone Cellar",
+    "description": "Hold 500 Bones at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "bones", "value": 500 },
+    "reward": { "gp": 6000, "xp": {  }, "items": { "bones": 50 } }
+  },
+  "potion_shelf": {
+    "id": "potion_shelf",
+    "name": "Potion Shelf",
+    "description": "Hold 25 Draughts of Resilience II at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "potion_dr_2", "value": 25 },
+    "reward": { "gp": 7000, "xp": {  }, "items": { "potion_dr_2": 5 } }
+  },
+  "arrow_hoard": {
+    "id": "arrow_hoard",
+    "name": "Arrow Hoard",
+    "description": "Hold 1,000 Verdigris Arrows at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "bronze_arrow", "value": 1000 },
+    "reward": { "gp": 7000, "xp": {  }, "items": { "bronze_arrow": 100 } }
+  },
+  "now_its_personal": {
+    "id": "now_its_personal",
+    "name": "Now It's Personal",
+    "description": "Defeat 10 enemies in total.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "value": 10 },
+    "reward": { "gp": 800, "xp": {  }, "items": { "raw_shrimp": 25 } }
+  },
+  "the_warpath": {
+    "id": "the_warpath",
+    "name": "The Warpath",
+    "description": "Defeat 5,000 enemies in total.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "value": 5000 },
+    "reward": { "gp": 20000, "xp": { "hitpoints": 3000 }, "items": { "lobster": 100 } }
+  },
+  "legend_of_the_frontier": {
+    "id": "legend_of_the_frontier",
+    "name": "Legend of the Frontier",
+    "description": "Defeat 25,000 enemies in total.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "value": 25000 },
+    "reward": { "gp": 60000, "xp": { "hitpoints": 6000 }, "items": { "shark": 150 } }
+  },
+  "herd_thinner": {
+    "id": "herd_thinner",
+    "name": "Herd Thinner",
+    "description": "Defeat 100 Longhorn Steers.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "cow", "value": 100 },
+    "reward": { "gp": 3000, "xp": { "strength": 600 }, "items": { "raw_shrimp": 50 } }
+  },
+  "cinderkin_menace": {
+    "id": "cinderkin_menace",
+    "name": "Cinderkin Menace",
+    "description": "Defeat 500 Cinderkin Raiders.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "golbin", "value": 500 },
+    "reward": { "gp": 12000, "xp": { "attack": 2400 }, "items": { "lobster": 75 } }
+  },
+  "web_breaker": {
+    "id": "web_breaker",
+    "name": "Web Breaker",
+    "description": "Defeat 300 Fen Spinners.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "spider", "value": 300 },
+    "reward": { "gp": 10000, "xp": { "ranged": 2000 }, "items": { "swordfish": 50 } }
+  },
+  "bone_breaker": {
+    "id": "bone_breaker",
+    "name": "Bone Breaker",
+    "description": "Defeat 300 Barrowbones.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "skeleton", "value": 300 },
+    "reward": { "gp": 10000, "xp": { "prayer": 2000 }, "items": { "big_bones": 50 } }
+  },
+  "wraith_warden": {
+    "id": "wraith_warden",
+    "name": "Wraith Warden",
+    "description": "Defeat 150 Barrow Wraiths.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "barrow_wraith", "value": 150 },
+    "reward": { "gp": 14000, "xp": { "prayer": 2800 }, "items": { "potion_dr_3": 10 } }
+  },
+  "colossus_down": {
+    "id": "colossus_down",
+    "name": "Colossus Down",
+    "description": "Defeat 150 Mossbound Colossi.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "moss_giant", "value": 150 },
+    "reward": { "gp": 16000, "xp": { "strength": 3000 }, "items": { "shark": 75 } }
+  },
+  "fang_collector": {
+    "id": "fang_collector",
+    "name": "Fang Collector",
+    "description": "Defeat 150 Frostfang Wolves.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "frostfang_wolf", "value": 150 },
+    "reward": { "gp": 16000, "xp": { "ranged": 3000 }, "items": { "raw_shark": 50 } }
+  },
+  "drake_slayer": {
+    "id": "drake_slayer",
+    "name": "Drake Slayer",
+    "description": "Slay 200 Verdant Wyrms.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "green_dragon", "value": 200 },
+    "reward": { "gp": 22000, "xp": { "attack": 4000 }, "items": { "lobster": 150 } }
+  },
+  "imp_catcher": {
+    "id": "imp_catcher",
+    "name": "Imp Catcher",
+    "description": "Defeat 300 Umbral Imps.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "abyssal_imp", "value": 300 },
+    "reward": { "gp": 26000, "xp": { "magic": 4500 }, "items": { "potion_dr_4": 10 } }
+  },
+  "herald_again": {
+    "id": "herald_again",
+    "name": "Herald, Again",
+    "description": "Defeat The Herald Ascendant 25 times.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "the_herald", "value": 25 },
+    "reward": { "gp": 45000, "xp": { "hitpoints": 5000 }, "items": { "umbral_rune": 50 } }
+  },
+  "expeditioneer": {
+    "id": "expeditioneer",
+    "name": "Expeditioneer",
+    "description": "Clear 5 expeditions in total.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "value": 5 },
+    "reward": { "gp": 5000, "xp": {  }, "items": { "potion_dr_2": 5 } }
+  },
+  "the_hundred_gates": {
+    "id": "the_hundred_gates",
+    "name": "The Hundred Gates",
+    "description": "Clear 100 expeditions in total.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "value": 100 },
+    "reward": { "gp": 45000, "xp": { "hitpoints": 4000 }, "items": { "shark": 100 } }
+  },
+  "brood_cleared": {
+    "id": "brood_cleared",
+    "name": "Brood Cleared",
+    "description": "Clear the Broodweb Warren four times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "spider_forest", "value": 4 },
+    "reward": { "gp": 12000, "xp": { "ranged": 2000 }, "items": { "potion_dr_3": 5 } }
+  },
+  "forge_doused": {
+    "id": "forge_doused",
+    "name": "Forge Doused",
+    "description": "Clear the Cinderkin Forge four times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "cinderkin_forge", "value": 4 },
+    "reward": { "gp": 14000, "xp": { "hitpoints": 2200 }, "items": { "lobster": 100 } }
+  },
+  "deep_and_back": {
+    "id": "deep_and_back",
+    "name": "Deep and Back",
+    "description": "Clear Greyharrow Deep four times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "greyharrow_deep", "value": 4 },
+    "reward": { "gp": 16000, "xp": { "defence": 2400 }, "items": { "shark": 75 } }
+  },
+  "den_denied": {
+    "id": "den_denied",
+    "name": "Den Denied",
+    "description": "Clear the Frostfang Den four times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "frostfang_den", "value": 4 },
+    "reward": { "gp": 16000, "xp": { "ranged": 2400 }, "items": { "raw_shark": 75 } }
+  },
+  "tides_answered": {
+    "id": "tides_answered",
+    "name": "Tides Answered",
+    "description": "Clear the Tidal Reliquary four times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "water_god_dungeon", "value": 4 },
+    "reward": { "gp": 26000, "xp": { "prayer": 3500 }, "items": { "potion_dr_4": 10 } }
+  },
+  "deepstone_moved": {
+    "id": "deepstone_moved",
+    "name": "Deepstone Moved",
+    "description": "Clear the Deepstone Sanctum four times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "earth_god_dungeon", "value": 4 },
+    "reward": { "gp": 26000, "xp": { "defence": 3500 }, "items": { "mithril_bar": 75 } }
+  },
+  "kiln_cold": {
+    "id": "kiln_cold",
+    "name": "Kiln Cold",
+    "description": "Clear the Emberthrone Kiln four times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "fire_god_dungeon", "value": 4 },
+    "reward": { "gp": 30000, "xp": { "hitpoints": 4000 }, "items": { "umbral_rune": 50 } }
+  },
+  "tenfold_thrones": {
+    "id": "tenfold_thrones",
+    "name": "Tenfold Thrones",
+    "description": "Clear the Seat of the Herald ten times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "throne_of_the_herald", "value": 10 },
+    "reward": { "gp": 60000, "xp": { "hitpoints": 8000 }, "items": { "umbral_rune": 100 } }
+  },
+  "collector_of_records": {
+    "id": "collector_of_records",
+    "name": "Collector of Records",
+    "description": "Discover 200 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 200 },
+    "reward": { "gp": 15000, "xp": {  }, "items": { "potion_skilling_3": 10 } }
+  },
+  "almost_everything": {
+    "id": "almost_everything",
+    "name": "Almost Everything",
+    "description": "Discover 400 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 400 },
+    "reward": { "gp": 90000, "xp": {  }, "items": { "umbral_rune": 75 } }
+  },
+  "the_full_shelf": {
+    "id": "the_full_shelf",
+    "name": "The Full Shelf",
+    "description": "Discover 450 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 450 },
+    "reward": { "gp": 120000, "xp": {  }, "items": { "umbral_rune": 150 } }
+  },
+  "deep_pockets": {
+    "id": "deep_pockets",
+    "name": "Deep Pockets",
+    "description": "Earn 25,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 25000 },
+    "reward": { "gp": 4000, "xp": {  }, "items": { "garum_herb": 50 } }
+  },
+  "war_chest": {
+    "id": "war_chest",
+    "name": "War Chest",
+    "description": "Earn 250,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 250000 },
+    "reward": { "gp": 20000, "xp": { "hitpoints": 2000 }, "items": { "lobster": 100 } }
+  },
+  "millionaire_of_the_marches": {
+    "id": "millionaire_of_the_marches",
+    "name": "Millionaire of the Marches",
+    "description": "Earn 1,000,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 1000000 },
+    "reward": { "gp": 60000, "xp": {  }, "items": { "potion_dr_4": 15 } }
+  },
+  "the_golden_century": {
+    "id": "the_golden_century",
+    "name": "The Golden Century",
+    "description": "Earn 100,000,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 100000000 },
+    "reward": { "gp": 200000, "xp": {  }, "items": { "umbral_rune": 200 } }
+  },
+  "getting_somewhere": {
+    "id": "getting_somewhere",
+    "name": "Getting Somewhere",
+    "description": "Complete 500 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 500 },
+    "reward": { "gp": 2000, "xp": {  }, "items": { "potion_skilling_2": 5 } }
+  },
+  "second_nature": {
+    "id": "second_nature",
+    "name": "Second Nature",
+    "description": "Complete 2,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 2000 },
+    "reward": { "gp": 8000, "xp": {  }, "items": { "potion_skilling_3": 5 } }
+  },
+  "the_machine": {
+    "id": "the_machine",
+    "name": "The Machine",
+    "description": "Complete 50,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 50000 },
+    "reward": { "gp": 40000, "xp": {  }, "items": { "potion_skilling_4": 10 } }
+  },
+  "perpetual_motion": {
+    "id": "perpetual_motion",
+    "name": "Perpetual Motion",
+    "description": "Complete 500,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 500000 },
+    "reward": { "gp": 150000, "xp": {  }, "items": { "umbral_rune": 100 } }
+  },
+  "a_good_start": {
+    "id": "a_good_start",
+    "name": "A Good Start",
+    "description": "Complete your first task.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 1 },
+    "reward": { "gp": 500, "xp": {  }, "items": { "shrimp": 25 } }
+  },
+  "trusted_hands": {
+    "id": "trusted_hands",
+    "name": "Trusted Hands",
+    "description": "Complete 50 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 50 },
+    "reward": { "gp": 20000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "the_long_list": {
+    "id": "the_long_list",
+    "name": "The Long List",
+    "description": "Complete 150 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 150 },
+    "reward": { "gp": 60000, "xp": {  }, "items": { "lobster": 100 } }
+  },
+  "taskmaster_of_the_frontier": {
+    "id": "taskmaster_of_the_frontier",
+    "name": "Taskmaster of the Frontier",
+    "description": "Complete 230 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 230 },
+    "reward": { "gp": 120000, "xp": {  }, "items": { "umbral_rune": 150 } }
+  },
+  "first_friend": {
+    "id": "first_friend",
+    "name": "First Friend",
+    "description": "Bond with your first companion.",
+    "category": "discovery",
+    "condition": { "kind": "pets_unlocked", "value": 1 },
+    "reward": { "gp": 3000, "xp": {  }, "items": { "garum_herb": 25 } }
+  },
+  "menagerie": {
+    "id": "menagerie",
+    "name": "Menagerie",
+    "description": "Bond with 25 companions.",
+    "category": "discovery",
+    "condition": { "kind": "pets_unlocked", "value": 25 },
+    "reward": { "gp": 45000, "xp": {  }, "items": { "ent_tablet": 50 } }
+  },
+  "breaking_ground": {
+    "id": "breaking_ground",
+    "name": "Breaking Ground",
+    "description": "Reach 1 total structure level.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 1 },
+    "reward": { "gp": 2000, "xp": {  }, "items": { "normal_log": 50 } }
+  },
+  "a_proper_town": {
+    "id": "a_proper_town",
+    "name": "A Proper Town",
+    "description": "Reach 25 total structure levels.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 25 },
+    "reward": { "gp": 25000, "xp": {  }, "items": { "mahogany_log": 100 } }
+  },
+  "city_of_the_frontier": {
+    "id": "city_of_the_frontier",
+    "name": "City of the Frontier",
+    "description": "Reach 60 total structure levels.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 60 },
+    "reward": { "gp": 80000, "xp": {  }, "items": { "umbral_rune": 100 } }
+  },
+  "attack_10": {
+    "id": "attack_10",
+    "name": "Scrap Practice",
+    "description": "Reach Bladework level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "attack", "value": 10 },
+    "reward": { "gp": 250, "xp": { "attack": 100 }, "items": { "raw_shrimp": 10 } }
+  },
+  "attack_75": {
+    "id": "attack_75",
+    "name": "Warborn",
+    "description": "Reach Bladework level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "attack", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "attack": 1800 }, "items": { "raw_lobster": 75 } }
+  },
+  "strength_10": {
+    "id": "strength_10",
+    "name": "Heavy Haul",
+    "description": "Reach Might level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "strength", "value": 10 },
+    "reward": { "gp": 250, "xp": { "strength": 100 }, "items": { "raw_shrimp": 10 } }
+  },
+  "strength_75": {
+    "id": "strength_75",
+    "name": "Titan Grip",
+    "description": "Reach Might level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "strength", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "strength": 1800 }, "items": { "raw_lobster": 75 } }
+  },
+  "defence_10": {
+    "id": "defence_10",
+    "name": "Bruised But Standing",
+    "description": "Reach Warding level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "defence", "value": 10 },
+    "reward": { "gp": 250, "xp": { "defence": 100 }, "items": { "raw_shrimp": 10 } }
+  },
+  "defence_75": {
+    "id": "defence_75",
+    "name": "Set Like Stone",
+    "description": "Reach Warding level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "defence", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "defence": 1800 }, "items": { "raw_lobster": 75 } }
+  },
+  "hitpoints_10": {
+    "id": "hitpoints_10",
+    "name": "Hard to Kill",
+    "description": "Reach Vitality level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "hitpoints", "value": 10 },
+    "reward": { "gp": 250, "xp": { "hitpoints": 100 }, "items": { "raw_shrimp": 10 } }
+  },
+  "hitpoints_75": {
+    "id": "hitpoints_75",
+    "name": "Deep Reserves",
+    "description": "Reach Vitality level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "hitpoints", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "hitpoints": 1800 }, "items": { "raw_lobster": 75 } }
+  },
+  "ranged_10": {
+    "id": "ranged_10",
+    "name": "Sighting In",
+    "description": "Reach Marksmanship level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "ranged", "value": 10 },
+    "reward": { "gp": 250, "xp": { "ranged": 100 }, "items": { "bronze_arrow": 10 } }
+  },
+  "ranged_75": {
+    "id": "ranged_75",
+    "name": "Longshot",
+    "description": "Reach Marksmanship level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "ranged", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "ranged": 1800 }, "items": { "iron_arrow": 75 } }
+  },
+  "magic_10": {
+    "id": "magic_10",
+    "name": "Apprentice Spark",
+    "description": "Reach Sorcery level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "magic", "value": 10 },
+    "reward": { "gp": 250, "xp": { "magic": 100 }, "items": { "air_rune": 10 } }
+  },
+  "magic_75": {
+    "id": "magic_75",
+    "name": "Arcane Cadence",
+    "description": "Reach Sorcery level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "magic", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "magic": 1800 }, "items": { "chaos_rune": 75 } }
+  },
+  "prayer_10": {
+    "id": "prayer_10",
+    "name": "Small Offerings",
+    "description": "Reach Devotion level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "prayer", "value": 10 },
+    "reward": { "gp": 250, "xp": { "prayer": 100 }, "items": { "bones": 10 } }
+  },
+  "prayer_75": {
+    "id": "prayer_75",
+    "name": "Constant Flame",
+    "description": "Reach Devotion level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "prayer", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "prayer": 1800 }, "items": { "big_bones": 75 } }
+  },
+  "slayer_10": {
+    "id": "slayer_10",
+    "name": "First Contracts",
+    "description": "Reach Huntsman level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "slayer", "value": 10 },
+    "reward": { "gp": 250, "xp": { "slayer": 100 }, "items": { "raw_shrimp": 10 } }
+  },
+  "slayer_75": {
+    "id": "slayer_75",
+    "name": "The Bounty Board",
+    "description": "Reach Huntsman level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "slayer", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "slayer": 1800 }, "items": { "raw_shark": 75 } }
+  },
+  "corruption_10": {
+    "id": "corruption_10",
+    "name": "A Whiff of Blight",
+    "description": "Reach Blight level 10.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "corruption", "value": 10 },
+    "reward": { "gp": 250, "xp": { "corruption": 100 }, "items": { "abyssal_essence": 10 } }
+  },
+  "corruption_75": {
+    "id": "corruption_75",
+    "name": "The Comfortable Void",
+    "description": "Reach Blight level 75.",
+    "category": "combat",
+    "condition": { "kind": "skill_level", "skill_id": "corruption", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "corruption": 1800 }, "items": { "abyssal_essence": 75 } }
+  },
+  "woodcutting_10": {
+    "id": "woodcutting_10",
+    "name": "Apprentice Feller",
+    "description": "Reach Timbercraft level 10.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "woodcutting", "value": 10 },
+    "reward": { "gp": 250, "xp": { "woodcutting": 100 }, "items": { "oak_log": 10 } }
+  },
+  "woodcutting_75": {
+    "id": "woodcutting_75",
+    "name": "Timber Baron",
+    "description": "Reach Timbercraft level 75.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "woodcutting", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "woodcutting": 1800 }, "items": { "magic_log": 75 } }
+  },
+  "fishing_10": {
+    "id": "fishing_10",
+    "name": "First Cast",
+    "description": "Reach Angling level 10.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "fishing", "value": 10 },
+    "reward": { "gp": 250, "xp": { "fishing": 100 }, "items": { "raw_herring": 10 } }
+  },
+  "fishing_75": {
+    "id": "fishing_75",
+    "name": "Deep Waters",
+    "description": "Reach Angling level 75.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "fishing", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "fishing": 1800 }, "items": { "raw_cave_fish": 75 } }
+  },
+  "mining_10": {
+    "id": "mining_10",
+    "name": "Pick Dents",
+    "description": "Reach Delving level 10.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "mining", "value": 10 },
+    "reward": { "gp": 250, "xp": { "mining": 100 }, "items": { "tin_ore": 10 } }
+  },
+  "mining_75": {
+    "id": "mining_75",
+    "name": "Below the Veins",
+    "description": "Reach Delving level 75.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "mining", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "mining": 1800 }, "items": { "adamantite_ore": 75 } }
+  },
+  "farming_10": {
+    "id": "farming_10",
+    "name": "Seedling Care",
+    "description": "Reach Husbandry level 10.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "farming", "value": 10 },
+    "reward": { "gp": 250, "xp": { "farming": 100 }, "items": { "normal_log": 10 } }
+  },
+  "farming_75": {
+    "id": "farming_75",
+    "name": "The Green Ledger",
+    "description": "Reach Husbandry level 75.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "farming", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "farming": 1800 }, "items": { "normal_log": 75 } }
+  },
+  "firemaking_10": {
+    "id": "firemaking_10",
+    "name": "First Embers",
+    "description": "Reach Kilncraft level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "firemaking", "value": 10 },
+    "reward": { "gp": 250, "xp": { "firemaking": 100 }, "items": { "normal_log": 10 } }
+  },
+  "firemaking_75": {
+    "id": "firemaking_75",
+    "name": "Pyre Discipline",
+    "description": "Reach Kilncraft level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "firemaking", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "firemaking": 1800 }, "items": { "normal_log": 75 } }
+  },
+  "cooking_10": {
+    "id": "cooking_10",
+    "name": "Kitchen Help",
+    "description": "Reach Cookery level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "cooking", "value": 10 },
+    "reward": { "gp": 250, "xp": { "cooking": 100 }, "items": { "herring": 10 } }
+  },
+  "cooking_75": {
+    "id": "cooking_75",
+    "name": "The Long Table",
+    "description": "Reach Cookery level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "cooking", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "cooking": 1800 }, "items": { "shark": 75 } }
+  },
+  "smithing_10": {
+    "id": "smithing_10",
+    "name": "Bellows Boy",
+    "description": "Reach Forgecraft level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 10 },
+    "reward": { "gp": 250, "xp": { "smithing": 100 }, "items": { "iron_sword": 10 } }
+  },
+  "smithing_75": {
+    "id": "smithing_75",
+    "name": "Anvil Weather",
+    "description": "Reach Forgecraft level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "smithing", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "smithing": 1800 }, "items": { "adamantite_bar": 75 } }
+  },
+  "fletching_10": {
+    "id": "fletching_10",
+    "name": "First Shafts",
+    "description": "Reach Bowyering level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fletching", "value": 10 },
+    "reward": { "gp": 250, "xp": { "fletching": 100 }, "items": { "normal_shortbow": 10 } }
+  },
+  "fletching_75": {
+    "id": "fletching_75",
+    "name": "Straight and True",
+    "description": "Reach Bowyering level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fletching", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "fletching": 1800 }, "items": { "magic_shortbow": 75 } }
+  },
+  "crafting_10": {
+    "id": "crafting_10",
+    "name": "Odd Jobs",
+    "description": "Reach Artifice level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "crafting", "value": 10 },
+    "reward": { "gp": 250, "xp": { "crafting": 100 }, "items": { "gold_necklace": 10 } }
+  },
+  "crafting_75": {
+    "id": "crafting_75",
+    "name": "The Master's Bench",
+    "description": "Reach Artifice level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "crafting", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "crafting": 1800 }, "items": { "black_dhide_vambraces": 75 } }
+  },
+  "runecrafting_10": {
+    "id": "runecrafting_10",
+    "name": "Dusty Fingers",
+    "description": "Reach Glyphcraft level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "runecrafting", "value": 10 },
+    "reward": { "gp": 250, "xp": { "runecrafting": 100 }, "items": { "water_staff": 10 } }
+  },
+  "runecrafting_75": {
+    "id": "runecrafting_75",
+    "name": "The Deep Well",
+    "description": "Reach Glyphcraft level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "runecrafting", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "runecrafting": 1800 }, "items": { "death_rune": 75 } }
+  },
+  "herblore_10": {
+    "id": "herblore_10",
+    "name": "Mixing Badly",
+    "description": "Reach Apothecary level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "herblore", "value": 10 },
+    "reward": { "gp": 250, "xp": { "herblore": 100 }, "items": { "potion_skilling_1": 10 } }
+  },
+  "herblore_75": {
+    "id": "herblore_75",
+    "name": "Measured Doses",
+    "description": "Reach Apothecary level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "herblore", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "herblore": 1800 }, "items": { "potion_dr_5": 75 } }
+  },
+  "thieving_10": {
+    "id": "thieving_10",
+    "name": "Sticky Fingers",
+    "description": "Reach Larceny level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "thieving", "value": 10 },
+    "reward": { "gp": 250, "xp": { "thieving": 100 }, "items": { "potion_dr_1": 10 } }
+  },
+  "thieving_75": {
+    "id": "thieving_75",
+    "name": "The Unmarked Exit",
+    "description": "Reach Larceny level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "thieving", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "thieving": 1800 }, "items": { "potion_dr_3": 10 } }
+  },
+  "agility_10": {
+    "id": "agility_10",
+    "name": "Quick Footwork",
+    "description": "Reach Wayfaring level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "agility", "value": 10 },
+    "reward": { "gp": 250, "xp": { "agility": 100 }, "items": { "potion_skilling_1": 10 } }
+  },
+  "agility_75": {
+    "id": "agility_75",
+    "name": "Featherfoot",
+    "description": "Reach Wayfaring level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "agility", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "agility": 1800 }, "items": { "potion_skilling_3": 10 } }
+  },
+  "summoning_10": {
+    "id": "summoning_10",
+    "name": "A Whispered Name",
+    "description": "Reach Beastbinding level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "summoning", "value": 10 },
+    "reward": { "gp": 250, "xp": { "summoning": 100 }, "items": { "tortoise_tablet": 10 } }
+  },
+  "summoning_75": {
+    "id": "summoning_75",
+    "name": "The Binding Circle",
+    "description": "Reach Beastbinding level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "summoning", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "summoning": 1800 }, "items": { "summoning_shard_silver": 75 } }
+  },
+  "astrology_10": {
+    "id": "astrology_10",
+    "name": "Nightschool",
+    "description": "Reach Starreading level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "astrology", "value": 10 },
+    "reward": { "gp": 250, "xp": { "astrology": 100 }, "items": { "stardust": 10 } }
+  },
+  "astrology_75": {
+    "id": "astrology_75",
+    "name": "The Star Ledger",
+    "description": "Reach Starreading level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "astrology", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "astrology": 1800 }, "items": { "stardust": 75 } }
+  },
+  "alt_magic_10": {
+    "id": "alt_magic_10",
+    "name": "Copying Marks",
+    "description": "Reach Runescribing level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "alt_magic", "value": 10 },
+    "reward": { "gp": 250, "xp": { "alt_magic": 100 }, "items": { "iron_bar": 10 } }
+  },
+  "alt_magic_75": {
+    "id": "alt_magic_75",
+    "name": "Ink and Intent",
+    "description": "Reach Runescribing level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "alt_magic", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "alt_magic": 1800 }, "items": { "umbral_bar": 75 } }
+  },
+  "township_10": {
+    "id": "township_10",
+    "name": "First Fences",
+    "description": "Reach Settlement level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "township", "value": 10 },
+    "reward": { "gp": 250, "xp": { "township": 100 }, "items": { "normal_log": 10 } }
+  },
+  "township_75": {
+    "id": "township_75",
+    "name": "The Surveyor's Seat",
+    "description": "Reach Settlement level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "township", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "township": 1800 }, "items": { "oak_log": 75 } }
+  },
+  "cartography_10": {
+    "id": "cartography_10",
+    "name": "Rough Sketches",
+    "description": "Reach Surveying level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "cartography", "value": 10 },
+    "reward": { "gp": 250, "xp": { "cartography": 100 }, "items": { "route_survey": 10 } }
+  },
+  "cartography_75": {
+    "id": "cartography_75",
+    "name": "The Blank Places",
+    "description": "Reach Surveying level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "cartography", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "cartography": 1800 }, "items": { "freight_manifest": 75 } }
+  },
+  "archaeology_10": {
+    "id": "archaeology_10",
+    "name": "First Sweeps",
+    "description": "Reach Excavation level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "archaeology", "value": 10 },
+    "reward": { "gp": 250, "xp": { "archaeology": 100 }, "items": { "bones": 10 } }
+  },
+  "archaeology_75": {
+    "id": "archaeology_75",
+    "name": "The Deep Strata",
+    "description": "Reach Excavation level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "archaeology", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "archaeology": 1800 }, "items": { "big_bones": 75 } }
+  },
+  "harvesting_10": {
+    "id": "harvesting_10",
+    "name": "Gentle Hands",
+    "description": "Reach Prospecting level 10.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "harvesting", "value": 10 },
+    "reward": { "gp": 250, "xp": { "harvesting": 100 }, "items": { "harvested_essence": 10 } }
+  },
+  "harvesting_75": {
+    "id": "harvesting_75",
+    "name": "Vein Sense",
+    "description": "Reach Prospecting level 75.",
+    "category": "gathering",
+    "condition": { "kind": "skill_level", "skill_id": "harvesting", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "harvesting": 1800 }, "items": { "harvested_essence": 75 } }
+  },
+  "echo_keeping_10": {
+    "id": "echo_keeping_10",
+    "name": "Something in the Walls",
+    "description": "Reach Echo Keeping level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "echo_keeping", "value": 10 },
+    "reward": { "gp": 250, "xp": { "echo_keeping": 100 }, "items": { "echo_charge": 10 } }
+  },
+  "echo_keeping_75": {
+    "id": "echo_keeping_75",
+    "name": "The Listening Post",
+    "description": "Reach Echo Keeping level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "echo_keeping", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "echo_keeping": 1800 }, "items": { "master_echo_loop": 75 } }
+  },
+  "wayfolding_10": {
+    "id": "wayfolding_10",
+    "name": "One Small Step",
+    "description": "Reach Wayfolding level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "wayfolding", "value": 10 },
+    "reward": { "gp": 250, "xp": { "wayfolding": 100 }, "items": { "route_survey": 10 } }
+  },
+  "wayfolding_75": {
+    "id": "wayfolding_75",
+    "name": "Two Places at Once",
+    "description": "Reach Wayfolding level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "wayfolding", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "wayfolding": 1800 }, "items": { "wayfold_link": 75 } }
+  },
+  "fermentation_10": {
+    "id": "fermentation_10",
+    "name": "Bad Batch",
+    "description": "Reach Fermentation level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fermentation", "value": 10 },
+    "reward": { "gp": 250, "xp": { "fermentation": 100 }, "items": { "matured_culture": 10 } }
+  },
+  "fermentation_75": {
+    "id": "fermentation_75",
+    "name": "The Cellar Master",
+    "description": "Reach Fermentation level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "fermentation", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "fermentation": 1800 }, "items": { "blended_weather": 75 } }
+  },
+  "customcraft_10": {
+    "id": "customcraft_10",
+    "name": "Special Orders",
+    "description": "Reach Customcraft level 10.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "customcraft", "value": 10 },
+    "reward": { "gp": 250, "xp": { "customcraft": 100 }, "items": { "tradition_progress": 10 } }
+  },
+  "customcraft_75": {
+    "id": "customcraft_75",
+    "name": "The Signed Piece",
+    "description": "Reach Customcraft level 75.",
+    "category": "crafting",
+    "condition": { "kind": "skill_level", "skill_id": "customcraft", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "customcraft": 1800 }, "items": { "paired_tradition": 75 } }
+  },
+  "lostfinding_10": {
+    "id": "lostfinding_10",
+    "name": "Looking Around",
+    "description": "Reach Lostfinding level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "lostfinding", "value": 10 },
+    "reward": { "gp": 250, "xp": { "lostfinding": 100 }, "items": { "witness_timeline": 10 } }
+  },
+  "lostfinding_75": {
+    "id": "lostfinding_75",
+    "name": "The Finder General",
+    "description": "Reach Lostfinding level 75.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "lostfinding", "value": 75 },
+    "reward": { "gp": 6000, "xp": { "lostfinding": 1800 }, "items": { "restored_label": 75 } }
+  },
+  "lifetime_normal_log_5000": {
+    "id": "lifetime_normal_log_5000",
+    "name": "Half a Forest",
+    "description": "Obtain 5,000 Emberpine Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "normal_log", "value": 5000 },
+    "reward": { "gp": 3250, "xp": { "woodcutting": 1200 }, "items": { "normal_log": 250 } }
+  },
+  "lifetime_normal_log_50000": {
+    "id": "lifetime_normal_log_50000",
+    "name": "The Standing Harvest",
+    "description": "Obtain 50,000 Emberpine Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "normal_log", "value": 50000 },
+    "reward": { "gp": 14500, "xp": { "woodcutting": 1200 }, "items": { "normal_log": 500 } }
+  },
+  "lifetime_oak_log_1000": {
+    "id": "lifetime_oak_log_1000",
+    "name": "An Oak Orchard",
+    "description": "Obtain 1,000 Ironbark Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "oak_log", "value": 1000 },
+    "reward": { "gp": 2250, "xp": { "woodcutting": 800 }, "items": { "oak_log": 50 } }
+  },
+  "lifetime_oak_log_5000": {
+    "id": "lifetime_oak_log_5000",
+    "name": "The Oak Question",
+    "description": "Obtain 5,000 Ironbark Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "oak_log", "value": 5000 },
+    "reward": { "gp": 3250, "xp": { "woodcutting": 800 }, "items": { "oak_log": 250 } }
+  },
+  "lifetime_willow_log_1000": {
+    "id": "lifetime_willow_log_1000",
+    "name": "Willow in Bulk",
+    "description": "Obtain 1,000 Silverleaf Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "willow_log", "value": 1000 },
+    "reward": { "gp": 2250, "xp": { "woodcutting": 600 }, "items": { "willow_log": 50 } }
+  },
+  "lifetime_teak_log_600": {
+    "id": "lifetime_teak_log_600",
+    "name": "The Teak Contract",
+    "description": "Obtain 600 Reedwood Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "teak_log", "value": 600 },
+    "reward": { "gp": 2150, "xp": { "woodcutting": 500 }, "items": { "teak_log": 30 } }
+  },
+  "lifetime_maple_log_400": {
+    "id": "lifetime_maple_log_400",
+    "name": "Sugar Season",
+    "description": "Obtain 400 Amberwood Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "maple_log", "value": 400 },
+    "reward": { "gp": 2100, "xp": { "woodcutting": 400 }, "items": { "maple_log": 25 } }
+  },
+  "lifetime_yew_log_300": {
+    "id": "lifetime_yew_log_300",
+    "name": "Yew Enough",
+    "description": "Obtain 300 Gravewood Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "yew_log", "value": 300 },
+    "reward": { "gp": 2075, "xp": { "woodcutting": 350 }, "items": { "yew_log": 25 } }
+  },
+  "lifetime_redwood_log_200": {
+    "id": "lifetime_redwood_log_200",
+    "name": "Redwood Renaissance",
+    "description": "Obtain 200 Bloodwood Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "redwood_log", "value": 200 },
+    "reward": { "gp": 2050, "xp": { "woodcutting": 300 }, "items": { "redwood_log": 25 } }
+  },
+  "lifetime_magic_log_150": {
+    "id": "lifetime_magic_log_150",
+    "name": "A Magic Number",
+    "description": "Obtain 150 Witchpine Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "magic_log", "value": 150 },
+    "reward": { "gp": 2037, "xp": { "woodcutting": 250 }, "items": { "magic_log": 25 } }
+  },
+  "lifetime_voidwood_log_75": {
+    "id": "lifetime_voidwood_log_75",
+    "name": "Timber from Nowhere",
+    "description": "Obtain 75 Voidwood Log in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "voidwood_log", "value": 75 },
+    "reward": { "gp": 2018, "xp": { "woodcutting": 200 }, "items": { "voidwood_log": 25 } }
+  },
+  "lifetime_raw_herring_500": {
+    "id": "lifetime_raw_herring_500",
+    "name": "The Silver Shoal",
+    "description": "Obtain 500 Raw Reedfish in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_herring", "value": 500 },
+    "reward": { "gp": 2125, "xp": { "fishing": 500 }, "items": { "raw_herring": 25 } }
+  },
+  "lifetime_raw_salmon_300": {
+    "id": "lifetime_raw_salmon_300",
+    "name": "Upstream",
+    "description": "Obtain 300 Raw Ember Salmon in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_salmon", "value": 300 },
+    "reward": { "gp": 2075, "xp": { "fishing": 400 }, "items": { "raw_salmon": 25 } }
+  },
+  "lifetime_raw_swordfish_200": {
+    "id": "lifetime_raw_swordfish_200",
+    "name": "The Swordfish Shelf",
+    "description": "Obtain 200 Raw Bladefin in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_swordfish", "value": 200 },
+    "reward": { "gp": 2050, "xp": { "fishing": 350 }, "items": { "raw_swordfish": 25 } }
+  },
+  "lifetime_raw_lobster_500": {
+    "id": "lifetime_raw_lobster_500",
+    "name": "Lobster Lines",
+    "description": "Obtain 500 Raw Fen Lobster in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_lobster", "value": 500 },
+    "reward": { "gp": 2125, "xp": { "fishing": 500 }, "items": { "raw_lobster": 25 } }
+  },
+  "lifetime_raw_shark_300": {
+    "id": "lifetime_raw_shark_300",
+    "name": "The Shark Ledger",
+    "description": "Obtain 300 Raw Gale Shark in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_shark", "value": 300 },
+    "reward": { "gp": 2075, "xp": { "fishing": 400 }, "items": { "raw_shark": 25 } }
+  },
+  "lifetime_raw_manta_ray_150": {
+    "id": "lifetime_raw_manta_ray_150",
+    "name": "Shelf Life",
+    "description": "Obtain 150 Raw Void Ray in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_manta_ray", "value": 150 },
+    "reward": { "gp": 2037, "xp": { "fishing": 350 }, "items": { "raw_manta_ray": 25 } }
+  },
+  "lifetime_raw_whale_75": {
+    "id": "lifetime_raw_whale_75",
+    "name": "The Whale Road Ledger",
+    "description": "Obtain 75 Raw Leviathan in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_whale", "value": 75 },
+    "reward": { "gp": 2018, "xp": { "fishing": 300 }, "items": { "raw_whale": 25 } }
+  },
+  "lifetime_raw_abyssal_eel_50": {
+    "id": "lifetime_raw_abyssal_eel_50",
+    "name": "Eels from Below",
+    "description": "Obtain 50 Raw Abyssal Eel in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "raw_abyssal_eel", "value": 50 },
+    "reward": { "gp": 2012, "xp": { "fishing": 250 }, "items": { "raw_abyssal_eel": 25 } }
+  },
+  "lifetime_copper_ore_1000": {
+    "id": "lifetime_copper_ore_1000",
+    "name": "The Copper Cellars",
+    "description": "Obtain 1,000 Copper Ore in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "copper_ore", "value": 1000 },
+    "reward": { "gp": 2250, "xp": { "mining": 600 }, "items": { "copper_ore": 50 } }
+  },
+  "lifetime_iron_ore_5000": {
+    "id": "lifetime_iron_ore_5000",
+    "name": "Mount Ironsides",
+    "description": "Obtain 5,000 Iron Ore in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "iron_ore", "value": 5000 },
+    "reward": { "gp": 3250, "xp": { "mining": 1500 }, "items": { "iron_ore": 250 } }
+  },
+  "lifetime_coal_10000": {
+    "id": "lifetime_coal_10000",
+    "name": "The Coal Beds",
+    "description": "Obtain 10,000 Coal Ore in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "coal", "value": 10000 },
+    "reward": { "gp": 4500, "xp": { "mining": 2000 }, "items": { "coal": 500 } }
+  },
+  "lifetime_gold_ore_750": {
+    "id": "lifetime_gold_ore_750",
+    "name": "The Gold Count",
+    "description": "Obtain 750 Gold Ore in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "gold_ore", "value": 750 },
+    "reward": { "gp": 2187, "xp": { "mining": 500 }, "items": { "gold_ore": 37 } }
+  },
+  "lifetime_mithril_ore_600": {
+    "id": "lifetime_mithril_ore_600",
+    "name": "Ghoststeel Rows",
+    "description": "Obtain 600 Ghoststeel Ore in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "mithril_ore", "value": 600 },
+    "reward": { "gp": 2150, "xp": { "mining": 500 }, "items": { "mithril_ore": 30 } }
+  },
+  "lifetime_adamantite_ore_400": {
+    "id": "lifetime_adamantite_ore_400",
+    "name": "Skyiron Quotas",
+    "description": "Obtain 400 Skyiron Ore in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "adamantite_ore", "value": 400 },
+    "reward": { "gp": 2100, "xp": { "mining": 400 }, "items": { "adamantite_ore": 25 } }
+  },
+  "lifetime_rune_essence_5000": {
+    "id": "lifetime_rune_essence_5000",
+    "name": "The Glyphwell Drains",
+    "description": "Obtain 5,000 Raw Glyph Essence in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "rune_essence", "value": 5000 },
+    "reward": { "gp": 3250, "xp": { "mining": 1200 }, "items": { "rune_essence": 250 } }
+  },
+  "lifetime_bronze_bar_2000": {
+    "id": "lifetime_bronze_bar_2000",
+    "name": "The Bronze Warehouse",
+    "description": "Obtain 2,000 Bronze Bar in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "bronze_bar", "value": 2000 },
+    "reward": { "gp": 2500, "xp": { "smithing": 600 }, "items": { "bronze_bar": 100 } }
+  },
+  "lifetime_iron_bar_2000": {
+    "id": "lifetime_iron_bar_2000",
+    "name": "Ironhouse",
+    "description": "Obtain 2,000 Iron Bar in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "iron_bar", "value": 2000 },
+    "reward": { "gp": 2500, "xp": { "smithing": 800 }, "items": { "iron_bar": 100 } }
+  },
+  "lifetime_steel_bar_1000": {
+    "id": "lifetime_steel_bar_1000",
+    "name": "The Steel Standard",
+    "description": "Obtain 1,000 Steel Bar in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "steel_bar", "value": 1000 },
+    "reward": { "gp": 2250, "xp": { "smithing": 600 }, "items": { "steel_bar": 50 } }
+  },
+  "lifetime_mithril_bar_800": {
+    "id": "lifetime_mithril_bar_800",
+    "name": "Ghoststeel Foundry",
+    "description": "Obtain 800 Ghoststeel Bar in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "mithril_bar", "value": 800 },
+    "reward": { "gp": 2200, "xp": { "smithing": 500 }, "items": { "mithril_bar": 40 } }
+  },
+  "lifetime_air_rune_10000": {
+    "id": "lifetime_air_rune_10000",
+    "name": "The Air Standard",
+    "description": "Obtain 10,000 Gale Rune in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "air_rune", "value": 10000 },
+    "reward": { "gp": 4500, "xp": { "runecrafting": 800 }, "items": { "air_rune": 500 } }
+  },
+  "lifetime_chaos_rune_3000": {
+    "id": "lifetime_chaos_rune_3000",
+    "name": "Chaos by the Thousand",
+    "description": "Obtain 3,000 Discord Rune in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "chaos_rune", "value": 3000 },
+    "reward": { "gp": 2750, "xp": { "runecrafting": 600 }, "items": { "chaos_rune": 150 } }
+  },
+  "lifetime_law_rune_3000": {
+    "id": "lifetime_law_rune_3000",
+    "name": "The Book of Law",
+    "description": "Obtain 3,000 Bond Rune in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "law_rune", "value": 3000 },
+    "reward": { "gp": 2750, "xp": { "runecrafting": 600 }, "items": { "law_rune": 150 } }
+  },
+  "lifetime_death_rune_3000": {
+    "id": "lifetime_death_rune_3000",
+    "name": "Death, Itemised",
+    "description": "Obtain 3,000 Mourning Rune in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "death_rune", "value": 3000 },
+    "reward": { "gp": 2750, "xp": { "runecrafting": 600 }, "items": { "death_rune": 150 } }
+  },
+  "lifetime_blood_rune_2000": {
+    "id": "lifetime_blood_rune_2000",
+    "name": "The Blood Ledger",
+    "description": "Obtain 2,000 Vital Rune in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "blood_rune", "value": 2000 },
+    "reward": { "gp": 2500, "xp": { "runecrafting": 500 }, "items": { "blood_rune": 100 } }
+  },
+  "lifetime_soul_rune_1000": {
+    "id": "lifetime_soul_rune_1000",
+    "name": "Soul Ledger",
+    "description": "Obtain 1,000 Soul Rune in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "soul_rune", "value": 1000 },
+    "reward": { "gp": 2250, "xp": { "runecrafting": 400 }, "items": { "soul_rune": 50 } }
+  },
+  "lifetime_umbral_rune_500": {
+    "id": "lifetime_umbral_rune_500",
+    "name": "The Shadow Runes",
+    "description": "Obtain 500 Umbral Rune in total.",
+    "category": "crafting",
+    "condition": { "kind": "lifetime_item", "item_id": "umbral_rune", "value": 500 },
+    "reward": { "gp": 2125, "xp": { "runecrafting": 350 }, "items": { "umbral_rune": 25 } }
+  },
+  "lifetime_garum_herb_5000": {
+    "id": "lifetime_garum_herb_5000",
+    "name": "Herbal Mountains",
+    "description": "Obtain 5,000 Emberleaf in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "garum_herb", "value": 5000 },
+    "reward": { "gp": 3250, "xp": { "farming": 800 }, "items": { "garum_herb": 250 } }
+  },
+  "lifetime_bones_10000": {
+    "id": "lifetime_bones_10000",
+    "name": "The Great Ossuary",
+    "description": "Obtain 10,000 Bones in total.",
+    "category": "combat",
+    "condition": { "kind": "lifetime_item", "item_id": "bones", "value": 10000 },
+    "reward": { "gp": 4500, "xp": { "prayer": 1000 }, "items": { "bones": 500 } }
+  },
+  "lifetime_harvested_essence_2000": {
+    "id": "lifetime_harvested_essence_2000",
+    "name": "Essence Abundance",
+    "description": "Obtain 2,000 Harvested Essence in total.",
+    "category": "gathering",
+    "condition": { "kind": "lifetime_item", "item_id": "harvested_essence", "value": 2000 },
+    "reward": { "gp": 2500, "xp": { "harvesting": 700 }, "items": { "harvested_essence": 100 } }
+  },
+  "kill_chicken_500": {
+    "id": "kill_chicken_500",
+    "name": "Coop Sickness",
+    "description": "Defeat 500 Scrub Fowl.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "chicken", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_cow_500": {
+    "id": "kill_cow_500",
+    "name": "Cattle Drive",
+    "description": "Defeat 500 Longhorn Steer.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "cow", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_golbin_2500": {
+    "id": "kill_golbin_2500",
+    "name": "Cinderkin Attrition",
+    "description": "Defeat 2,500 Cinderkin Raider.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "golbin", "value": 2500 },
+    "reward": { "gp": 9000, "xp": { "hitpoints": 2700 }, "items": { "shark": 50 } }
+  },
+  "kill_cinderkin_scout_500": {
+    "id": "kill_cinderkin_scout_500",
+    "name": "Scouted Out",
+    "description": "Defeat 500 Cinderkin Scout.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "cinderkin_scout", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_zombie_hand_500": {
+    "id": "kill_zombie_hand_500",
+    "name": "Finger by Finger",
+    "description": "Defeat 500 Graveclaw.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "zombie_hand", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_spider_1500": {
+    "id": "kill_spider_1500",
+    "name": "Cobwebbed Out",
+    "description": "Defeat 1,500 Fen Spinner.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "spider", "value": 1500 },
+    "reward": { "gp": 6000, "xp": { "hitpoints": 1700 }, "items": { "shark": 50 } }
+  },
+  "kill_bandit_500": {
+    "id": "kill_bandit_500",
+    "name": "Rooked",
+    "description": "Defeat 500 Sable Rook.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "bandit", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_skeleton_1000": {
+    "id": "kill_skeleton_1000",
+    "name": "Barrowbones Stacked",
+    "description": "Defeat 1,000 Barrowbones.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "skeleton", "value": 1000 },
+    "reward": { "gp": 4500, "xp": { "hitpoints": 1200 }, "items": { "shark": 50 } }
+  },
+  "kill_barrow_wraith_500": {
+    "id": "kill_barrow_wraith_500",
+    "name": "Wraith Tax",
+    "description": "Defeat 500 Barrow Wraith.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "barrow_wraith", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_guard_500": {
+    "id": "kill_guard_500",
+    "name": "Gatecrasher",
+    "description": "Defeat 500 Sunderhold Sentry.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "guard", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_moss_giant_500": {
+    "id": "kill_moss_giant_500",
+    "name": "Colossus Efficiency",
+    "description": "Defeat 500 Mossbound Colossus.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "moss_giant", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_moss_giant_1000": {
+    "id": "kill_moss_giant_1000",
+    "name": "Colossus Obsolete",
+    "description": "Defeat 1,000 Mossbound Colossus.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "moss_giant", "value": 1000 },
+    "reward": { "gp": 4500, "xp": { "hitpoints": 1200 }, "items": { "shark": 50 } }
+  },
+  "kill_rune_knight_500": {
+    "id": "kill_rune_knight_500",
+    "name": "Knightfall",
+    "description": "Defeat 500 Glyphbound Knight.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "rune_knight", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_green_dragon_500": {
+    "id": "kill_green_dragon_500",
+    "name": "Wyrms Ad Infinitum",
+    "description": "Defeat 500 Verdant Wyrm.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "green_dragon", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_ash_drake_300": {
+    "id": "kill_ash_drake_300",
+    "name": "Drake Ledger",
+    "description": "Defeat 300 Ash Drake.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "ash_drake", "value": 300 },
+    "reward": { "gp": 2400, "xp": { "hitpoints": 500 }, "items": { "lobster": 50 } }
+  },
+  "kill_frostfang_wolf_300": {
+    "id": "kill_frostfang_wolf_300",
+    "name": "The Pack Thinned",
+    "description": "Defeat 300 Frostfang Wolf.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "frostfang_wolf", "value": 300 },
+    "reward": { "gp": 2400, "xp": { "hitpoints": 500 }, "items": { "lobster": 50 } }
+  },
+  "kill_golbin_chief_50": {
+    "id": "kill_golbin_chief_50",
+    "name": "Chief Concerns",
+    "description": "Defeat 50 Cinderkin Warchief.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "golbin_chief", "value": 50 },
+    "reward": { "gp": 1650, "xp": { "hitpoints": 250 }, "items": { "lobster": 50 } }
+  },
+  "kill_air_elemental_250": {
+    "id": "kill_air_elemental_250",
+    "name": "Elemental: Air",
+    "description": "Defeat 250 Gale Wisp.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "air_elemental", "value": 250 },
+    "reward": { "gp": 2250, "xp": { "hitpoints": 450 }, "items": { "lobster": 50 } }
+  },
+  "kill_water_elemental_250": {
+    "id": "kill_water_elemental_250",
+    "name": "Elemental: Water",
+    "description": "Defeat 250 Tide Wisp.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "water_elemental", "value": 250 },
+    "reward": { "gp": 2250, "xp": { "hitpoints": 450 }, "items": { "lobster": 50 } }
+  },
+  "kill_earth_elemental_250": {
+    "id": "kill_earth_elemental_250",
+    "name": "Elemental: Earth",
+    "description": "Defeat 250 Stone Wisp.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "earth_elemental", "value": 250 },
+    "reward": { "gp": 2250, "xp": { "hitpoints": 450 }, "items": { "lobster": 50 } }
+  },
+  "kill_fire_elemental_250": {
+    "id": "kill_fire_elemental_250",
+    "name": "Elemental: Fire",
+    "description": "Defeat 250 Ember Wisp.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "fire_elemental", "value": 250 },
+    "reward": { "gp": 2250, "xp": { "hitpoints": 450 }, "items": { "lobster": 50 } }
+  },
+  "kill_air_god_100": {
+    "id": "kill_air_god_100",
+    "name": "Galebreaker",
+    "description": "Defeat 100 Warden of Gales, Sylphine.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "air_god", "value": 100 },
+    "reward": { "gp": 1800, "xp": { "hitpoints": 300 }, "items": { "lobster": 50 } }
+  },
+  "kill_water_god_100": {
+    "id": "kill_water_god_100",
+    "name": "Tidebreaker",
+    "description": "Defeat 100 Warden of Tides, Marrowen.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "water_god", "value": 100 },
+    "reward": { "gp": 1800, "xp": { "hitpoints": 300 }, "items": { "lobster": 50 } }
+  },
+  "kill_earth_god_100": {
+    "id": "kill_earth_god_100",
+    "name": "Stonebreaker",
+    "description": "Defeat 100 Warden of Stone, Delvhar.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "earth_god", "value": 100 },
+    "reward": { "gp": 1800, "xp": { "hitpoints": 300 }, "items": { "lobster": 50 } }
+  },
+  "kill_fire_god_100": {
+    "id": "kill_fire_god_100",
+    "name": "Emberbreaker",
+    "description": "Defeat 100 Warden of Embers, Pyrra.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "fire_god", "value": 100 },
+    "reward": { "gp": 1800, "xp": { "hitpoints": 300 }, "items": { "lobster": 50 } }
+  },
+  "kill_mist_wraith_500": {
+    "id": "kill_mist_wraith_500",
+    "name": "Mist Tintel",
+    "description": "Defeat 500 Murk Wraith.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "mist_wraith", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_the_mist_150": {
+    "id": "kill_the_mist_150",
+    "name": "The Murk, Measured",
+    "description": "Defeat 150 The Murk Incarnate.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "the_mist", "value": 150 },
+    "reward": { "gp": 1950, "xp": { "hitpoints": 350 }, "items": { "lobster": 50 } }
+  },
+  "kill_drowned_sailor_500": {
+    "id": "kill_drowned_sailor_500",
+    "name": "Sailor's Dirge",
+    "description": "Defeat 500 Barnacled Deckhand.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "drowned_sailor", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_underwater_king_100": {
+    "id": "kill_underwater_king_100",
+    "name": "Regicide, Repeated",
+    "description": "Defeat 100 Tidewrack King.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "underwater_king", "value": 100 },
+    "reward": { "gp": 1800, "xp": { "hitpoints": 300 }, "items": { "lobster": 50 } }
+  },
+  "kill_abyssal_imp_1000": {
+    "id": "kill_abyssal_imp_1000",
+    "name": "Imp Accounting",
+    "description": "Defeat 1,000 Umbral Imp.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "abyssal_imp", "value": 1000 },
+    "reward": { "gp": 4500, "xp": { "hitpoints": 1200 }, "items": { "shark": 50 } }
+  },
+  "kill_abyssal_fiend_500": {
+    "id": "kill_abyssal_fiend_500",
+    "name": "Fiend Inventory",
+    "description": "Defeat 500 Umbral Fiend.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "abyssal_fiend", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_abyssal_lord_200": {
+    "id": "kill_abyssal_lord_200",
+    "name": "Lord of Nothing",
+    "description": "Defeat 200 Umbral Lord.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "abyssal_lord", "value": 200 },
+    "reward": { "gp": 2100, "xp": { "hitpoints": 400 }, "items": { "lobster": 50 } }
+  },
+  "kill_the_herald_50": {
+    "id": "kill_the_herald_50",
+    "name": "Herald's Bane",
+    "description": "Defeat 50 The Herald Ascendant.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "the_herald", "value": 50 },
+    "reward": { "gp": 1650, "xp": { "hitpoints": 250 }, "items": { "lobster": 50 } }
+  },
+  "kill_dark_herald_200": {
+    "id": "kill_dark_herald_200",
+    "name": "Dusk Tax",
+    "description": "Defeat 200 Herald of the Long Dusk.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "dark_herald", "value": 200 },
+    "reward": { "gp": 2100, "xp": { "hitpoints": 400 }, "items": { "lobster": 50 } }
+  },
+  "kill_drowned_wayfarer_300": {
+    "id": "kill_drowned_wayfarer_300",
+    "name": "Wayfarer's End",
+    "description": "Defeat 300 Drowned Wayfarer.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "drowned_wayfarer", "value": 300 },
+    "reward": { "gp": 2400, "xp": { "hitpoints": 500 }, "items": { "lobster": 50 } }
+  },
+  "kill_rook_marksman_500": {
+    "id": "kill_rook_marksman_500",
+    "name": "Marked Down",
+    "description": "Defeat 500 Rook Marksman.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "rook_marksman", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_broodweb_hunter_300": {
+    "id": "kill_broodweb_hunter_300",
+    "name": "Hunter Hunted",
+    "description": "Defeat 300 Broodweb Hunter.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "broodweb_hunter", "value": 300 },
+    "reward": { "gp": 2400, "xp": { "hitpoints": 500 }, "items": { "lobster": 50 } }
+  },
+  "kill_rift_weaver_250": {
+    "id": "kill_rift_weaver_250",
+    "name": "Weaver Unwound",
+    "description": "Defeat 250 Rift Weaver.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "rift_weaver", "value": 250 },
+    "reward": { "gp": 2250, "xp": { "hitpoints": 450 }, "items": { "lobster": 50 } }
+  },
+  "kill_greyharrow_husk_500": {
+    "id": "kill_greyharrow_husk_500",
+    "name": "Husked",
+    "description": "Defeat 500 Greyharrow Husk.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "greyharrow_husk", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_shale_stalker_500": {
+    "id": "kill_shale_stalker_500",
+    "name": "Shale Trail",
+    "description": "Defeat 500 Shale Stalker.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "shale_stalker", "value": 500 },
+    "reward": { "gp": 3000, "xp": { "hitpoints": 700 }, "items": { "shark": 50 } }
+  },
+  "kill_quarry_echo_250": {
+    "id": "kill_quarry_echo_250",
+    "name": "Echo Audit",
+    "description": "Defeat 250 Quarry Echo.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "quarry_echo", "value": 250 },
+    "reward": { "gp": 2250, "xp": { "hitpoints": 450 }, "items": { "lobster": 50 } }
+  },
+  "kill_slag_golem_200": {
+    "id": "kill_slag_golem_200",
+    "name": "Slag Fu",
+    "description": "Defeat 200 Slag Golem.",
+    "category": "combat",
+    "condition": { "kind": "monsters_killed", "monster_id": "slag_golem", "value": 200 },
+    "reward": { "gp": 2100, "xp": { "hitpoints": 400 }, "items": { "lobster": 50 } }
+  },
+  "dungeon_chicken_coop_1": {
+    "id": "dungeon_chicken_coop_1",
+    "name": "Roost Registered",
+    "description": "Clear The Plucked Roost once.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "chicken_coop", "value": 1 },
+    "reward": { "gp": 4000, "xp": { "hitpoints": 500 }, "items": { "potion_dr_3": 3 } }
+  },
+  "dungeon_drowned_causeway_1": {
+    "id": "dungeon_drowned_causeway_1",
+    "name": "Causeway Charter",
+    "description": "Clear Drowned Causeway once.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "drowned_causeway", "value": 1 },
+    "reward": { "gp": 4000, "xp": { "hitpoints": 500 }, "items": { "potion_dr_3": 3 } }
+  },
+  "dungeon_rook_viaduct_1": {
+    "id": "dungeon_rook_viaduct_1",
+    "name": "Viaduct Visited",
+    "description": "Clear Rook's Viaduct once.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "rook_viaduct", "value": 1 },
+    "reward": { "gp": 4000, "xp": { "hitpoints": 500 }, "items": { "potion_dr_3": 3 } }
+  },
+  "dungeon_into_the_mist_1": {
+    "id": "dungeon_into_the_mist_1",
+    "name": "Into the Ledger",
+    "description": "Clear Into the Murk once.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "into_the_mist", "value": 1 },
+    "reward": { "gp": 4000, "xp": { "hitpoints": 500 }, "items": { "potion_dr_3": 3 } }
+  },
+  "dungeon_underwater_city_1": {
+    "id": "dungeon_underwater_city_1",
+    "name": "City on the Record",
+    "description": "Clear Nhalassar, the Drowned City once.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "underwater_city", "value": 1 },
+    "reward": { "gp": 4000, "xp": { "hitpoints": 500 }, "items": { "potion_dr_3": 3 } }
+  },
+  "dungeon_impending_darkness_1": {
+    "id": "dungeon_impending_darkness_1",
+    "name": "Darkness, Accounted",
+    "description": "Clear The Long Dusk once.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "impending_darkness", "value": 1 },
+    "reward": { "gp": 4000, "xp": { "hitpoints": 500 }, "items": { "potion_dr_3": 3 } }
+  },
+  "dungeon_undead_graveyard_10": {
+    "id": "dungeon_undead_graveyard_10",
+    "name": "Barrow Regular",
+    "description": "Clear Barrow of Names 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "undead_graveyard", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "dungeon_air_god_dungeon_10": {
+    "id": "dungeon_air_god_dungeon_10",
+    "name": "Gales: Habitual",
+    "description": "Clear Observatory of Gales 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "air_god_dungeon", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "dungeon_water_god_dungeon_10": {
+    "id": "dungeon_water_god_dungeon_10",
+    "name": "Tides: Habitual",
+    "description": "Clear Tidal Reliquary 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "water_god_dungeon", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "dungeon_earth_god_dungeon_10": {
+    "id": "dungeon_earth_god_dungeon_10",
+    "name": "Stones: Habitual",
+    "description": "Clear Deepstone Sanctum 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "earth_god_dungeon", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "dungeon_fire_god_dungeon_10": {
+    "id": "dungeon_fire_god_dungeon_10",
+    "name": "Embers: Habitual",
+    "description": "Clear Emberthrone Kiln 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "fire_god_dungeon", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "dungeon_cinderkin_forge_10": {
+    "id": "dungeon_cinderkin_forge_10",
+    "name": "Forge Deserter",
+    "description": "Clear Cinderkin Forge 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "cinderkin_forge", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "dungeon_spider_forest_10": {
+    "id": "dungeon_spider_forest_10",
+    "name": "Broodburst",
+    "description": "Clear Broodweb Warren 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "spider_forest", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "dungeon_greyharrow_deep_10": {
+    "id": "dungeon_greyharrow_deep_10",
+    "name": "Deep Routine",
+    "description": "Clear Greyharrow Deep 10 times.",
+    "category": "combat",
+    "condition": { "kind": "dungeons_cleared", "dungeon_id": "greyharrow_deep", "value": 10 },
+    "reward": { "gp": 17500, "xp": { "hitpoints": 2300 }, "items": { "potion_dr_3": 10 } }
+  },
+  "quests_5": {
+    "id": "quests_5",
+    "name": "Fivefold Duty",
+    "description": "Complete 5 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 5 },
+    "reward": { "gp": 2000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "quests_25": {
+    "id": "quests_25",
+    "name": "Quartermaster",
+    "description": "Complete 25 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 25 },
+    "reward": { "gp": 6000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "quests_75": {
+    "id": "quests_75",
+    "name": "The Seventy-Fifth",
+    "description": "Complete 75 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 75 },
+    "reward": { "gp": 16000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "quests_100": {
+    "id": "quests_100",
+    "name": "The Centurion Task",
+    "description": "Complete 100 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 100 },
+    "reward": { "gp": 21000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "quests_125": {
+    "id": "quests_125",
+    "name": "Taskmaster Ascending",
+    "description": "Complete 125 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 125 },
+    "reward": { "gp": 26000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "quests_175": {
+    "id": "quests_175",
+    "name": "Beyond the Board",
+    "description": "Complete 175 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 175 },
+    "reward": { "gp": 36000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "quests_200": {
+    "id": "quests_200",
+    "name": "Two Hundred Reasons",
+    "description": "Complete 200 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 200 },
+    "reward": { "gp": 41000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "quests_240": {
+    "id": "quests_240",
+    "name": "The Task Eternal",
+    "description": "Complete 240 tasks.",
+    "category": "progression",
+    "condition": { "kind": "quests_completed", "value": 240 },
+    "reward": { "gp": 49000, "xp": {  }, "items": { "potion_dr_3": 5 } }
+  },
+  "actions_1500": {
+    "id": "actions_1500",
+    "name": "Fifteen Hundred Strong",
+    "description": "Complete 1,500 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 1500 },
+    "reward": { "gp": 2075, "xp": {  }, "items": { "potion_skilling_3": 5 } }
+  },
+  "actions_5000": {
+    "id": "actions_5000",
+    "name": "Five Thousand Habits",
+    "description": "Complete 5,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 5000 },
+    "reward": { "gp": 2250, "xp": {  }, "items": { "potion_skilling_3": 5 } }
+  },
+  "actions_25000": {
+    "id": "actions_25000",
+    "name": "The Workshop Mile",
+    "description": "Complete 25,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 25000 },
+    "reward": { "gp": 3250, "xp": {  }, "items": { "potion_skilling_3": 5 } }
+  },
+  "actions_75000": {
+    "id": "actions_75000",
+    "name": "Seventy-Five Thousand Motions",
+    "description": "Complete 75,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 75000 },
+    "reward": { "gp": 5750, "xp": {  }, "items": { "potion_skilling_3": 5 } }
+  },
+  "actions_150000": {
+    "id": "actions_150000",
+    "name": "The Motion Economy",
+    "description": "Complete 150,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 150000 },
+    "reward": { "gp": 9500, "xp": {  }, "items": { "potion_skilling_3": 5 } }
+  },
+  "actions_1000000": {
+    "id": "actions_1000000",
+    "name": "The Millionth Action",
+    "description": "Complete 1,000,000 actions in total.",
+    "category": "crafting",
+    "condition": { "kind": "actions_completed", "value": 1000000 },
+    "reward": { "gp": 52000, "xp": {  }, "items": { "potion_skilling_3": 5 } }
+  },
+  "gp_2500": {
+    "id": "gp_2500",
+    "name": "Purse Strings",
+    "description": "Earn 2,500 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 2500 },
+    "reward": { "gp": 550, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "gp_7500": {
+    "id": "gp_7500",
+    "name": "The Petty Fortune",
+    "description": "Earn 7,500 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 7500 },
+    "reward": { "gp": 650, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "gp_75000": {
+    "id": "gp_75000",
+    "name": "The Marching Fund",
+    "description": "Earn 75,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 75000 },
+    "reward": { "gp": 2000, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "gp_500000": {
+    "id": "gp_500000",
+    "name": "Half a Million",
+    "description": "Earn 500,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 500000 },
+    "reward": { "gp": 10500, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "gp_2500000": {
+    "id": "gp_2500000",
+    "name": "Two and a Half Million",
+    "description": "Earn 2,500,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 2500000 },
+    "reward": { "gp": 50500, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "gp_25000000": {
+    "id": "gp_25000000",
+    "name": "Twenty-Five Million",
+    "description": "Earn 25,000,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 25000000 },
+    "reward": { "gp": 150000, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "gp_50000000": {
+    "id": "gp_50000000",
+    "name": "The Fifty Million Question",
+    "description": "Earn 50,000,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 50000000 },
+    "reward": { "gp": 150000, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "gp_250000000": {
+    "id": "gp_250000000",
+    "name": "The Quarter-Billion March",
+    "description": "Earn 250,000,000 GP in total.",
+    "category": "collection",
+    "condition": { "kind": "gp_earned", "value": 250000000 },
+    "reward": { "gp": 150000, "xp": {  }, "items": { "potion_dr_4": 5 } }
+  },
+  "discovered_50": {
+    "id": "discovered_50",
+    "name": "A Keen Shelf",
+    "description": "Discover 50 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 50 },
+    "reward": { "gp": 10500, "xp": {  }, "items": { "umbral_rune": 10 } }
+  },
+  "discovered_75": {
+    "id": "discovered_75",
+    "name": "Seventy-Five Finds",
+    "description": "Discover 75 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 75 },
+    "reward": { "gp": 14250, "xp": {  }, "items": { "umbral_rune": 15 } }
+  },
+  "discovered_125": {
+    "id": "discovered_125",
+    "name": "The Wide Catalogue",
+    "description": "Discover 125 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 125 },
+    "reward": { "gp": 21750, "xp": {  }, "items": { "umbral_rune": 25 } }
+  },
+  "discovered_175": {
+    "id": "discovered_175",
+    "name": "The Expanding Ledger",
+    "description": "Discover 175 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 175 },
+    "reward": { "gp": 29250, "xp": {  }, "items": { "umbral_rune": 35 } }
+  },
+  "discovered_225": {
+    "id": "discovered_225",
+    "name": "Two Hundred Twenty-Five",
+    "description": "Discover 225 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 225 },
+    "reward": { "gp": 36750, "xp": {  }, "items": { "umbral_rune": 45 } }
+  },
+  "discovered_275": {
+    "id": "discovered_275",
+    "name": "The Nearly-Full Room",
+    "description": "Discover 275 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 275 },
+    "reward": { "gp": 44250, "xp": {  }, "items": { "umbral_rune": 55 } }
+  },
+  "discovered_300": {
+    "id": "discovered_300",
+    "name": "Three Hundred Kinds",
+    "description": "Discover 300 distinct items.",
+    "category": "discovery",
+    "condition": { "kind": "items_discovered", "value": 300 },
+    "reward": { "gp": 48000, "xp": {  }, "items": { "umbral_rune": 60 } }
+  },
+  "held_shrimp_500": {
+    "id": "held_shrimp_500",
+    "name": "The Shrimp Vault",
+    "description": "Hold 500 Marsh Shrimp at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "shrimp", "value": 500 },
+    "reward": { "gp": 5000, "xp": {  }, "items": { "shrimp": 50 } }
+  },
+  "held_lobster_250": {
+    "id": "held_lobster_250",
+    "name": "Lobster Pantry",
+    "description": "Hold 250 Fen Lobster at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "lobster", "value": 250 },
+    "reward": { "gp": 3750, "xp": {  }, "items": { "lobster": 25 } }
+  },
+  "held_bones_1000": {
+    "id": "held_bones_1000",
+    "name": "Bone Vault",
+    "description": "Hold 1,000 Bones at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "bones", "value": 1000 },
+    "reward": { "gp": 7500, "xp": {  }, "items": { "bones": 100 } }
+  },
+  "held_oak_log_2000": {
+    "id": "held_oak_log_2000",
+    "name": "The Oak Room",
+    "description": "Hold 2,000 Ironbark Log at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "oak_log", "value": 2000 },
+    "reward": { "gp": 12500, "xp": {  }, "items": { "oak_log": 100 } }
+  },
+  "held_coal_1000": {
+    "id": "held_coal_1000",
+    "name": "Coal Cellar",
+    "description": "Hold 1,000 Coal Ore at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "coal", "value": 1000 },
+    "reward": { "gp": 7500, "xp": {  }, "items": { "coal": 100 } }
+  },
+  "held_air_rune_2000": {
+    "id": "held_air_rune_2000",
+    "name": "Air Vault",
+    "description": "Hold 2,000 Gale Rune at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "air_rune", "value": 2000 },
+    "reward": { "gp": 12500, "xp": {  }, "items": { "air_rune": 100 } }
+  },
+  "held_iron_bar_500": {
+    "id": "held_iron_bar_500",
+    "name": "Bar Hall",
+    "description": "Hold 500 Iron Bar at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "iron_bar", "value": 500 },
+    "reward": { "gp": 5000, "xp": {  }, "items": { "iron_bar": 50 } }
+  },
+  "held_mithril_bar_200": {
+    "id": "held_mithril_bar_200",
+    "name": "Ghoststeel Cage",
+    "description": "Hold 200 Ghoststeel Bar at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "mithril_bar", "value": 200 },
+    "reward": { "gp": 3500, "xp": {  }, "items": { "mithril_bar": 20 } }
+  },
+  "held_garum_herb_1000": {
+    "id": "held_garum_herb_1000",
+    "name": "Herb Loft",
+    "description": "Hold 1,000 Emberleaf at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "garum_herb", "value": 1000 },
+    "reward": { "gp": 7500, "xp": {  }, "items": { "garum_herb": 100 } }
+  },
+  "held_umbral_rune_250": {
+    "id": "held_umbral_rune_250",
+    "name": "Shadow Shelf",
+    "description": "Hold 250 Umbral Rune at once.",
+    "category": "collection",
+    "condition": { "kind": "item_count", "item_id": "umbral_rune", "value": 250 },
+    "reward": { "gp": 3750, "xp": {  }, "items": { "umbral_rune": 25 } }
+  },
+  "total_125": {
+    "id": "total_125",
+    "name": "The 125 Step",
+    "description": "Reach 125 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 125 },
+    "reward": { "gp": 8750, "xp": {  }, "items": { "potion_skilling_4": 5 } }
+  },
+  "total_200": {
+    "id": "total_200",
+    "name": "Two Hundred Levels",
+    "description": "Reach 200 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 200 },
+    "reward": { "gp": 11000, "xp": {  }, "items": { "potion_skilling_4": 5 } }
+  },
+  "total_350": {
+    "id": "total_350",
+    "name": "Three-Fifty",
+    "description": "Reach 350 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 350 },
+    "reward": { "gp": 15500, "xp": {  }, "items": { "potion_skilling_4": 5 } }
+  },
+  "total_600": {
+    "id": "total_600",
+    "name": "Six Hundred Summits",
+    "description": "Reach 600 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 600 },
+    "reward": { "gp": 23000, "xp": {  }, "items": { "potion_skilling_4": 5 } }
+  },
+  "total_2000": {
+    "id": "total_2000",
+    "name": "The Two-Thousand Ascent",
+    "description": "Reach 2000 total skill levels.",
+    "category": "progression",
+    "condition": { "kind": "total_level", "value": 2000 },
+    "reward": { "gp": 65000, "xp": {  }, "items": { "potion_skilling_4": 5 } }
+  },
+  "settle_3": {
+    "id": "settle_3",
+    "name": "Three Flags",
+    "description": "Reach 3 total structure levels.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 3 },
+    "reward": { "gp": 4900, "xp": {  }, "items": { "normal_log": 30 } }
+  },
+  "settle_8": {
+    "id": "settle_8",
+    "name": "Eight Fires",
+    "description": "Reach 8 total structure levels.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 8 },
+    "reward": { "gp": 8900, "xp": {  }, "items": { "normal_log": 80 } }
+  },
+  "settle_15": {
+    "id": "settle_15",
+    "name": "The Fifteen Beams",
+    "description": "Reach 15 total structure levels.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 15 },
+    "reward": { "gp": 14500, "xp": {  }, "items": { "normal_log": 150 } }
+  },
+  "settle_80": {
+    "id": "settle_80",
+    "name": "Eighty Levels of Town",
+    "description": "Reach 80 total structure levels.",
+    "category": "progression",
+    "condition": { "kind": "settlement_buildings", "value": 80 },
+    "reward": { "gp": 66500, "xp": {  }, "items": { "normal_log": 250 } }
+  },
+  "pets_5": {
+    "id": "pets_5",
+    "name": "A Small Circle",
+    "description": "Bond with 5 companions.",
+    "category": "discovery",
+    "condition": { "kind": "pets_unlocked", "value": 5 },
+    "reward": { "gp": 15500, "xp": {  }, "items": { "ent_tablet": 25 } }
+  },
+  "pets_15": {
+    "id": "pets_15",
+    "name": "Fifteen Friends",
+    "description": "Bond with 15 companions.",
+    "category": "discovery",
+    "condition": { "kind": "pets_unlocked", "value": 15 },
+    "reward": { "gp": 30500, "xp": {  }, "items": { "ent_tablet": 75 } }
   }
 }

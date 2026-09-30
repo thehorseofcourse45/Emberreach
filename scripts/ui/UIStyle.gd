@@ -40,6 +40,8 @@ static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBo
 	else:
 		sb.border_color = UITokens.BORDER
 		sb.set_border_width_all(1)
+	if accent:
+		sb.border_width_left = 3
 	sb.set_corner_radius_all(UITokens.R_LG)
 	_inset(sb, UITokens.SP_5, UITokens.SP_5, UITokens.SP_4, UITokens.SP_4)
 	if kind == "panel":
@@ -252,7 +254,12 @@ static func colored_label(text: String, color: Color, size := UITokens.FONT_BODY
 static func section(title_text: String, hint := "") -> VBoxContainer:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", UITokens.SP_3)
-	var head := label(title_text.to_upper(), false, UITokens.FONT_SMALL)
+	var head := label(title_text, false, UITokens.FONT_SUBHEAD)
+	var frame := surface_box("sunken")
+	frame.border_color = UITokens.BORDER_GOLD
+	frame.set_border_width_all(0)
+	frame.border_width_left = 3
+	head.add_theme_stylebox_override("normal", frame)
 	head.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
 	box.add_child(head)
 	if hint != "":
@@ -330,7 +337,8 @@ static func spacer() -> Control:
 static func icon_texture(kind: String, id: String) -> TextureRect:
 	var tex_rect := TextureRect.new()
 	tex_rect.texture = AssetRegistry.icon(kind, id)
-	tex_rect.custom_minimum_size = Vector2(UITokens.ICON_MD, UITokens.ICON_MD)
+	tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tex_rect.custom_minimum_size = Vector2(UITokens.ICON_LG, UITokens.ICON_LG)
 	tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	return tex_rect
 

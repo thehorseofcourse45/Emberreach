@@ -1,5 +1,66 @@
 # CHANGELOG
 
+## 2026-09-27 — audio, mid-level content, thin-skill depth, screenshot gate
+
+### Fixed
+- **Enrage was applied to every monster.** `CombatManager._monster_attack()` and the
+  `CombatSimulator` multiplied all monster damage by the enrage curve regardless of the
+  `enrage` passive, so the control fight and the "enraged" fight were the same fight.
+  Both engines now gate on `passives.has("enrage")`; the first real user is the new
+  Slag Golem.
+- Cartography hexes shipped with `"poi": null`, which `Dictionary.get(key, default)` does
+  *not* default (the key exists) — 16 of 25 hexes raised a runtime script error whenever a
+  survey reward was read. `DataLoader` normalises `poi` to `{}` on load.
+
+### Added (audio)
+- `data/audio.json` — 16 synthesized SFX recipes (click, levelup, pickup, crit, kill,
+  victory, quest, rare, error …), 2 music tracks (explore/combat), 18 EventBus
+  event → sound mappings with per-event throttles, plus music and notification routing.
+- `AudioManager` autoload: renders `AudioStreamWAV` PCM at 22 050 Hz from the recipes
+  (multi-tone sequencing, frequency sweeps, attack/release envelopes, noise), 8-voice SFX
+  pool, separate Music/SFX buses, throttled `play_sfx` wired to EventBus snapshot-safe
+  lambdas. Music synthesis is skipped in CLI modes; SFX play everywhere so tests cover it.
+- Settings: new SOUND section with Music/SFX volume sliders (debounced save) and a
+  "Test sound" button; `music_volume`/`sfx_volume` defaults in `SettingsDefaults`.
+- Coverage: `ContentValidator._check_audio` (tones, chords, EventBus signal names, sound
+  and track references) and `TestRunner._test_audio` (16 checks: synthesis, loop points,
+  cache identity, throttling, bus muting).
+
+### Added (mid-level content — the L43–L59 gap)
+- **Greyharrow Quarry** (area, L43–60, dust-hazard −5 accuracy) with four new monsters:
+  Greyharrow Husk L45, Shale Stalker L50 (venom bite), Quarry Echo L54 (guaranteed hit),
+  Slag Golem L58 (thorns + enrage) — a strictly rising HP curve from Mossbound Colossus
+  (L42) to Sunderhold Sentry (L60).
+- **Greyharrow Deep** dungeon (L43–60, requires Slayer 40): six fights ending on the golem,
+  35 000 GP + 2 Skyiron Bars per clear, first-clear Ghoststeel Shield.
+- Slayer pools: hard gains the Husk/Stalker/Echo (2 → 5), elite gains the Golem (2 → 3).
+- Art for all six new assets (4 monster sprites, area + dungeon icon) generated in the
+  house noise-silhouette style, imported, manifest refreshed: 749 / 750 on disk.
+
+### Added (thin-skill depth)
+- Excavation 7 → 11 dig sites (Shallow 15, Weathered 45, Sunken 70, Reliquary 100 — each
+  with a paired `archaeology_sites.json` entry, since `SkillManager` calls
+  `on_excavate(action_id)`).
+- Surveying 6 → 9 actions (Coast 15, Frontier 45, Storms 85); Wayfaring 7 → 10 runs
+  (Hedge 10, Ridge 40, Cloudline 62); Blight 8 → 13 actions (Listen/Open the Veil/Steep
+  in Shadow/Chain a Restless One/Shoulder the Dark).
+- **Umbral Essence is no longer a dead resource.** It was produced by every Blight action
+  and consumed by nothing; the Umbral Binding Shard refinement now takes it (5 per shard)
+  instead of rune essence, closing the corruption → summoning loop.
+
+### Added (verification)
+- `tools/shot_gate.py` — screenshot-diff gate over the real-window `--shot` sweep: runs
+  the sweep, compares all 49 PNGs against `tools/shot_baseline/` per-pixel (channel
+  tolerance 8, 0.25 % changed-pixel budget — two runs of identical code drift at most
+  0.06 % on the 8 screens with live digits), writes magenta heatmaps for regressions and
+  exits 1 on any changed/missing/stale shot. `--update` re-baselines after an intentional
+  UI change; `.shot_gate/` is ignored.
+
+### Verified
+- `--tests` **396/396**, `--validate` 0 errors / 0 warnings, `--selftest` 22/22,
+  `--balance` clean (no inversions, no curve dips, essence off the dead-output list),
+  `--smoke` ok (41 monsters, 16 dungeons), screenshot gate **PASS** (49 compared).
+
 ## 2026-09-26 — overhaul: repo hygiene, warnings, content depth, combat polish, decomposition
 
 ### Removed
@@ -565,8 +626,9 @@ setting the player never asked for.
   stable, so this is a rename-only pass with no save or icon impact.
 - **Favourites now exist** as a feature separate from protection, so §7 is complete. What remains
   open is the long-tail item display names and the §13 respecialisation mechanic.
-- **No git repository exists** in this project, so none of this work is committed — it lives in the
-  working tree. There is no history to bisect and no rollback beyond the save backups.
+- **The project is a git repository** (`master`) — but not everything is necessarily committed:
+  run `git status` before relying on history, and commit in small steps so there is something to
+  bisect and roll back to beyond the save backups.
 - **Visual review is automated but not continuous.** `--shot` captures the real window at each
   breakpoint, but nothing runs it automatically, so a future layout change can still regress
   between runs. A screenshot-diff gate in CI is the obvious next step.

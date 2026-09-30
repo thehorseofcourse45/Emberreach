@@ -33,7 +33,7 @@
   },
   "multi_tree": {
     "id": "multi_tree",
-    "name": "Multi-Tree",
+    "name": "Grove Felling",
     "cost": 1000000,
     "currency": "gp",
     "type": "flag",
@@ -91,7 +91,7 @@
   },
   "axe_dragon": {
     "id": "axe_dragon",
-    "name": "Dragon Axe",
+    "name": "Wyrmsteel Axe",
     "cost": 2500000,
     "currency": "gp",
     "effect": {
@@ -100,7 +100,7 @@
   },
   "pickaxe_dragon": {
     "id": "pickaxe_dragon",
-    "name": "Dragon Pickaxe",
+    "name": "Wyrmsteel Pickaxe",
     "cost": 2500000,
     "currency": "gp",
     "effect": {
@@ -110,7 +110,7 @@
   },
   "rod_dragon": {
     "id": "rod_dragon",
-    "name": "Dragon Angling Rod",
+    "name": "Wyrmsteel Angling Rod",
     "cost": 2000000,
     "currency": "gp",
     "effect": {
@@ -119,7 +119,7 @@
   },
   "god_perpetual_haste": {
     "id": "god_perpetual_haste",
-    "name": "Perpetual Haste",
+    "name": "Haste Without End",
     "cost": 5000000,
     "currency": "gp",
     "god": "air",
@@ -130,7 +130,7 @@
   },
   "god_expanded_knowledge": {
     "id": "god_expanded_knowledge",
-    "name": "Expanded Knowledge",
+    "name": "Frontier Scholarship",
     "cost": 5000000,
     "currency": "gp",
     "god": "water",
@@ -141,7 +141,7 @@
   },
   "god_master_of_nature": {
     "id": "god_master_of_nature",
-    "name": "Master of Nature",
+    "name": "Steward of Wilds",
     "cost": 5000000,
     "currency": "gp",
     "god": "earth",
@@ -152,7 +152,7 @@
   },
   "god_art_of_control": {
     "id": "god_art_of_control",
-    "name": "Art of Control",
+    "name": "Hand of Command",
     "cost": 5000000,
     "currency": "gp",
     "god": "fire",

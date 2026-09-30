@@ -1,7 +1,7 @@
 {
   "obstacle_1_0": {
     "id": "obstacle_1_0",
-    "name": "Obstacle 1-1",
+    "name": "Hedgerow Hop",
     "slot": 1,
     "level_required": 1,
     "cost_gp": 5000,
@@ -15,7 +15,7 @@
   },
   "obstacle_1_1": {
     "id": "obstacle_1_1",
-    "name": "Obstacle 1-2",
+    "name": "Ditch Vault",
     "slot": 1,
     "level_required": 1,
     "cost_gp": 5000,
@@ -30,7 +30,7 @@
   },
   "obstacle_1_2": {
     "id": "obstacle_1_2",
-    "name": "Obstacle 1-3",
+    "name": "Stacked Crates",
     "slot": 1,
     "level_required": 1,
     "cost_gp": 5000,
@@ -44,7 +44,7 @@
   },
   "obstacle_2_0": {
     "id": "obstacle_2_0",
-    "name": "Obstacle 2-1",
+    "name": "Lean-To Scramble",
     "slot": 2,
     "level_required": 7,
     "cost_gp": 20000,
@@ -58,7 +58,7 @@
   },
   "obstacle_2_1": {
     "id": "obstacle_2_1",
-    "name": "Obstacle 2-2",
+    "name": "Rope Ladder",
     "slot": 2,
     "level_required": 7,
     "cost_gp": 20000,
@@ -72,7 +72,7 @@
   },
   "obstacle_2_2": {
     "id": "obstacle_2_2",
-    "name": "Obstacle 2-3",
+    "name": "Stockade Wall",
     "slot": 2,
     "level_required": 7,
     "cost_gp": 20000,
@@ -86,7 +86,7 @@
   },
   "obstacle_3_0": {
     "id": "obstacle_3_0",
-    "name": "Obstacle 3-1",
+    "name": "Hayrick Leap",
     "slot": 3,
     "level_required": 13,
     "cost_gp": 45000,
@@ -100,7 +100,7 @@
   },
   "obstacle_3_1": {
     "id": "obstacle_3_1",
-    "name": "Obstacle 3-2",
+    "name": "Fence Run",
     "slot": 3,
     "level_required": 13,
     "cost_gp": 45000,
@@ -114,7 +114,7 @@
   },
   "obstacle_3_2": {
     "id": "obstacle_3_2",
-    "name": "Obstacle 3-3",
+    "name": "Grain Silo Climb",
     "slot": 3,
     "level_required": 13,
     "cost_gp": 45000,
@@ -128,7 +128,7 @@
   },
   "obstacle_4_0": {
     "id": "obstacle_4_0",
-    "name": "Obstacle 4-1",
+    "name": "Cartwheel Beam",
     "slot": 4,
     "level_required": 19,
     "cost_gp": 80000,
@@ -142,7 +142,7 @@
   },
   "obstacle_4_1": {
     "id": "obstacle_4_1",
-    "name": "Obstacle 4-2",
+    "name": "Market Awning",
     "slot": 4,
     "level_required": 19,
     "cost_gp": 80000,
@@ -156,7 +156,7 @@
   },
   "obstacle_4_2": {
     "id": "obstacle_4_2",
-    "name": "Obstacle 4-3",
+    "name": "Cobblestone Dash",
     "slot": 4,
     "level_required": 19,
     "cost_gp": 80000,
@@ -170,7 +170,7 @@
   },
   "obstacle_5_0": {
     "id": "obstacle_5_0",
-    "name": "Obstacle 5-1",
+    "name": "Ravine Ropebridge",
     "slot": 5,
     "level_required": 25,
     "cost_gp": 125000,
@@ -184,7 +184,7 @@
   },
   "obstacle_5_1": {
     "id": "obstacle_5_1",
-    "name": "Obstacle 5-2",
+    "name": "Scree Slide",
     "slot": 5,
     "level_required": 25,
     "cost_gp": 125000,
@@ -199,7 +199,7 @@
   },
   "obstacle_5_2": {
     "id": "obstacle_5_2",
-    "name": "Obstacle 5-3",
+    "name": "Fallen Arch",
     "slot": 5,
     "level_required": 25,
     "cost_gp": 125000,
@@ -213,7 +213,7 @@
   },
   "obstacle_6_0": {
     "id": "obstacle_6_0",
-    "name": "Obstacle 6-1",
+    "name": "Marsh Causeway",
     "slot": 6,
     "level_required": 31,
     "cost_gp": 180000,
@@ -227,7 +227,7 @@
   },
   "obstacle_6_1": {
     "id": "obstacle_6_1",
-    "name": "Obstacle 6-2",
+    "name": "Reed Stiltwalk",
     "slot": 6,
     "level_required": 31,
     "cost_gp": 180000,
@@ -242,7 +242,7 @@
   },
   "obstacle_6_2": {
     "id": "obstacle_6_2",
-    "name": "Obstacle 6-3",
+    "name": "Sunken Pillar",
     "slot": 6,
     "level_required": 31,
     "cost_gp": 180000,
@@ -256,7 +256,7 @@
   },
   "obstacle_7_0": {
     "id": "obstacle_7_0",
-    "name": "Obstacle 7-1",
+    "name": "Barrow Stairs",
     "slot": 7,
     "level_required": 37,
     "cost_gp": 245000,
@@ -270,7 +270,7 @@
   },
   "obstacle_7_1": {
     "id": "obstacle_7_1",
-    "name": "Obstacle 7-2",
+    "name": "Ossuary Crawl",
     "slot": 7,
     "level_required": 37,
     "cost_gp": 245000,
@@ -284,7 +284,7 @@
   },
   "obstacle_7_2": {
     "id": "obstacle_7_2",
-    "name": "Obstacle 7-3",
+    "name": "Cairn Hopping",
     "slot": 7,
     "level_required": 37,
     "cost_gp": 245000,
@@ -298,7 +298,7 @@
   },
   "obstacle_8_0": {
     "id": "obstacle_8_0",
-    "name": "Obstacle 8-1",
+    "name": "Rookery Ascent",
     "slot": 8,
     "level_required": 43,
     "cost_gp": 320000,
@@ -312,7 +312,7 @@
   },
   "obstacle_8_1": {
     "id": "obstacle_8_1",
-    "name": "Obstacle 8-2",
+    "name": "Broken Viaduct",
     "slot": 8,
     "level_required": 43,
     "cost_gp": 320000,
@@ -326,7 +326,7 @@
   },
   "obstacle_8_2": {
     "id": "obstacle_8_2",
-    "name": "Obstacle 8-3",
+    "name": "Rook's Ladder",
     "slot": 8,
     "level_required": 43,
     "cost_gp": 320000,
@@ -340,7 +340,7 @@
   },
   "obstacle_9_0": {
     "id": "obstacle_9_0",
-    "name": "Obstacle 9-1",
+    "name": "Frostledge Traverse",
     "slot": 9,
     "level_required": 49,
     "cost_gp": 405000,
@@ -354,7 +354,7 @@
   },
   "obstacle_9_1": {
     "id": "obstacle_9_1",
-    "name": "Obstacle 9-2",
+    "name": "Icicle Ladder",
     "slot": 9,
     "level_required": 49,
     "cost_gp": 405000,
@@ -368,7 +368,7 @@
   },
   "obstacle_9_2": {
     "id": "obstacle_9_2",
-    "name": "Obstacle 9-3",
+    "name": "Blackglass Climb",
     "slot": 9,
     "level_required": 49,
     "cost_gp": 405000,
@@ -382,7 +382,7 @@
   },
   "obstacle_10_0": {
     "id": "obstacle_10_0",
-    "name": "Obstacle 10-1",
+    "name": "Battlement Run",
     "slot": 10,
     "level_required": 55,
     "cost_gp": 500000,
@@ -396,7 +396,7 @@
   },
   "obstacle_10_1": {
     "id": "obstacle_10_1",
-    "name": "Obstacle 10-2",
+    "name": "Courtyard Vault",
     "slot": 10,
     "level_required": 55,
     "cost_gp": 500000,
@@ -410,7 +410,7 @@
   },
   "obstacle_10_2": {
     "id": "obstacle_10_2",
-    "name": "Obstacle 10-3",
+    "name": "Siege Ramp",
     "slot": 10,
     "level_required": 55,
     "cost_gp": 500000,
@@ -424,7 +424,7 @@
   },
   "obstacle_11_0": {
     "id": "obstacle_11_0",
-    "name": "Obstacle 11-1",
+    "name": "Caldera Ridge",
     "slot": 11,
     "level_required": 61,
     "cost_gp": 605000,
@@ -438,7 +438,7 @@
   },
   "obstacle_11_1": {
     "id": "obstacle_11_1",
-    "name": "Obstacle 11-2",
+    "name": "Pumice Hops",
     "slot": 11,
     "level_required": 61,
     "cost_gp": 605000,
@@ -452,7 +452,7 @@
   },
   "obstacle_11_2": {
     "id": "obstacle_11_2",
-    "name": "Obstacle 11-3",
+    "name": "Ashfall Climb",
     "slot": 11,
     "level_required": 61,
     "cost_gp": 605000,
@@ -466,7 +466,7 @@
   },
   "obstacle_12_0": {
     "id": "obstacle_12_0",
-    "name": "Obstacle 12-1",
+    "name": "Fenweb Crossing",
     "slot": 12,
     "level_required": 67,
     "cost_gp": 720000,
@@ -480,7 +480,7 @@
   },
   "obstacle_12_1": {
     "id": "obstacle_12_1",
-    "name": "Obstacle 12-2",
+    "name": "Spindlewalk",
     "slot": 12,
     "level_required": 67,
     "cost_gp": 720000,
@@ -494,7 +494,7 @@
   },
   "obstacle_12_2": {
     "id": "obstacle_12_2",
-    "name": "Obstacle 12-3",
+    "name": "Nesting Ropes",
     "slot": 12,
     "level_required": 67,
     "cost_gp": 720000,
@@ -508,7 +508,7 @@
   },
   "obstacle_13_0": {
     "id": "obstacle_13_0",
-    "name": "Obstacle 13-1",
+    "name": "Deep Shaft Rappel",
     "slot": 13,
     "level_required": 73,
     "cost_gp": 845000,
@@ -522,7 +522,7 @@
   },
   "obstacle_13_1": {
     "id": "obstacle_13_1",
-    "name": "Obstacle 13-2",
+    "name": "Fossil Gallery",
     "slot": 13,
     "level_required": 73,
     "cost_gp": 845000,
@@ -536,7 +536,7 @@
   },
   "obstacle_13_2": {
     "id": "obstacle_13_2",
-    "name": "Obstacle 13-3",
+    "name": "Trench Run",
     "slot": 13,
     "level_required": 73,
     "cost_gp": 845000,
@@ -550,7 +550,7 @@
   },
   "obstacle_14_0": {
     "id": "obstacle_14_0",
-    "name": "Obstacle 14-1",
+    "name": "Rift Bridges",
     "slot": 14,
     "level_required": 79,
     "cost_gp": 980000,
@@ -564,7 +564,7 @@
   },
   "obstacle_14_1": {
     "id": "obstacle_14_1",
-    "name": "Obstacle 14-2",
+    "name": "Breath Ledge",
     "slot": 14,
     "level_required": 79,
     "cost_gp": 980000,
@@ -578,7 +578,7 @@
   },
   "obstacle_14_2": {
     "id": "obstacle_14_2",
-    "name": "Obstacle 14-3",
+    "name": "Woundstep",
     "slot": 14,
     "level_required": 79,
     "cost_gp": 980000,
@@ -592,7 +592,7 @@
   },
   "obstacle_15_0": {
     "id": "obstacle_15_0",
-    "name": "Obstacle 15-1",
+    "name": "Stormspire Ascent",
     "slot": 15,
     "level_required": 85,
     "cost_gp": 1125000,
@@ -606,7 +606,7 @@
   },
   "obstacle_15_1": {
     "id": "obstacle_15_1",
-    "name": "Obstacle 15-2",
+    "name": "Thunderline Run",
     "slot": 15,
     "level_required": 85,
     "cost_gp": 1125000,
@@ -620,7 +620,7 @@
   },
   "obstacle_15_2": {
     "id": "obstacle_15_2",
-    "name": "Obstacle 15-3",
+    "name": "Skybound Rigging",
     "slot": 15,
     "level_required": 85,
     "cost_gp": 1125000,
@@ -634,7 +634,7 @@
   },
   "pillar_of_combat": {
     "id": "pillar_of_combat",
-    "name": "Pillar of Combat",
+    "name": "Pillar of the Vanguard",
     "type": "pillar",
     "level_required": 99,
     "cost_gp": 10000000,
@@ -646,7 +646,7 @@
   },
   "pillar_of_skilling": {
     "id": "pillar_of_skilling",
-    "name": "Pillar of Skilling",
+    "name": "Pillar of the Craft",
     "type": "pillar",
     "level_required": 99,
     "cost_gp": 10000000,
@@ -656,7 +656,7 @@
   },
   "pillar_of_generosity": {
     "id": "pillar_of_generosity",
-    "name": "Pillar of Generosity",
+    "name": "Pillar of the Open Hand",
     "type": "pillar",
     "level_required": 99,
     "cost_gp": 10000000,
@@ -666,7 +666,7 @@
   },
   "elite_pillar_of_conflict": {
     "id": "elite_pillar_of_conflict",
-    "name": "Elite Pillar Of Conflict",
+    "name": "Elite Pillar of the Skirmish",
     "type": "elite_pillar",
     "level_required": 120,
     "cost_gp": 50000000,
@@ -676,7 +676,7 @@
   },
   "elite_pillar_of_endowment": {
     "id": "elite_pillar_of_endowment",
-    "name": "Elite Pillar Of Endowment",
+    "name": "Elite Pillar of the Gift",
     "type": "elite_pillar",
     "level_required": 120,
     "cost_gp": 50000000,
@@ -686,7 +686,7 @@
   },
   "elite_pillar_of_expertise": {
     "id": "elite_pillar_of_expertise",
-    "name": "Elite Pillar Of Expertise",
+    "name": "Elite Pillar of Mastery",
     "type": "elite_pillar",
     "level_required": 120,
     "cost_gp": 50000000,

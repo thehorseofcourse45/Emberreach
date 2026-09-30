@@ -35,6 +35,15 @@ func roll_for_combat() -> void:
     if not pool.is_empty():
         unlock(pool[_rng.randi_range(0, pool.size() - 1)])
 
+## A pet can hang off a skill roll or a combat kill, or off clearing an expedition. The third
+## form is the only path the two endgame companions have, so it hangs off the existing
+## dungeon_completed site — no new event, no new bus.
+func on_dungeon_cleared(dungeon_id: String) -> void:
+    for pid in DataLoader.pets.keys():
+        var p: Dictionary = DataLoader.pets[pid]
+        if str(p.get("source_dungeon", "")) == dungeon_id and not is_unlocked(pid):
+            unlock(pid)
+
 func unlock(pet_id: String) -> void:
     if is_unlocked(pet_id):
         return

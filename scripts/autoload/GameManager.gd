@@ -95,11 +95,16 @@ func start_new_game(mode: String) -> void:
 	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
 	CombatManager.stop_combat("new game")
 	# Clear every derived modifier category; each owning manager re-registers its own sources.
+	# "prestige" is deliberately absent: an ascension's bonus must survive the reset it bought,
+	# and PrestigeManager re-registers it from PlayerData.prestige.
 	for category in ["prayer", "potion", "shop", "agility", "astrology", "summoning",
 			"pet", "poi", "raid", "township", "mastery_item", "equipment", "goals"]:
 		ModifierManager.clear_category(category)
 	ProgressTracker.mark_dirty(true)
 	boot_state = BootState.NEW
+	# A reset keeps the player's preferences (including their chosen speed and save cadence), so
+	# the session clocks have to be re-read from them rather than left on stale values.
+	apply_session_settings()
 	EventBus.state_refreshed.emit()
 	EventBus.notification.emit("New journey started (%s)" % mode, "success")
 
@@ -127,6 +132,19 @@ func set_paused(p: bool) -> void:
 
 func set_speed(s: float) -> void:
 	game_speed = clampf(s, 0.25, 16.0)
+	# Every simulation reads delta from _process, so the engine's own scale is the one place
+	# that moves every consumer. Scaling playtime alone left the speed control inert.
+	Engine.time_scale = game_speed
+	# The setting is the single source of truth, so the top bar and the Settings screen are
+	# two views of one value rather than two independent controls that can disagree.
+	PlayerData.settings["game_speed"] = game_speed
+	EventBus.game_speed_changed.emit(game_speed)
+
+## Re-apply the persisted speed and save cadence after a load, an import or a reset. Called by
+## the systems that change those settings wholesale, not by the UI, which writes them directly.
+func apply_session_settings() -> void:
+	set_speed(float(PlayerData.settings.get("game_speed", 1.0)))
+	SaveManager.set_autosave_interval(float(PlayerData.settings.get("autosave_interval", SaveManager.AUTOSAVE_INTERVAL)))
 
 ## Called on app quit / menu exit.
 func save_and_quit() -> void:

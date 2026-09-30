@@ -75,7 +75,8 @@ static func _xp_per_hour(action: Dictionary) -> float:
 static func _bottlenecks() -> Dictionary:
 	var used_by: Dictionary = {}
 	var produced_by: Dictionary = {}
-	var supplied_by: Dictionary = {}
+	var loot_supplied: Dictionary = {}
+	var store_supplied: Dictionary = {}
 	for skill_id in DataLoader.skills.keys():
 		for action in DataLoader.get_skill_actions(str(skill_id)):
 			if typeof(action) != TYPE_DICTIONARY:
@@ -84,36 +85,64 @@ static func _bottlenecks() -> Dictionary:
 				used_by[str(item_id)] = int(used_by.get(str(item_id), 0)) + 1
 			for item_id in ((action as Dictionary).get("output_items", {}) as Dictionary).keys():
 				produced_by[str(item_id)] = int(produced_by.get(str(item_id), 0)) + 1
+			# A secondary output is an acquisition route too — without this the report calls a
+			# material unproduced when a gathering action drops it regularly.
+			for secondary in ((action as Dictionary).get("secondary_outputs", []) as Array):
+				if typeof(secondary) != TYPE_DICTIONARY:
+					continue
+				var sec_id: String = str((secondary as Dictionary).get("item_id", ""))
+				if sec_id != "":
+					produced_by[sec_id] = int(produced_by.get(sec_id, 0)) + 1
 	for item_id in DataLoader.items.keys():
 		var it: Dictionary = DataLoader.items[item_id]
 		if str(it.get("upgrade_path", "")) != "":
-			supplied_by[str(it["upgrade_path"])] = true
+			loot_supplied[str(it["upgrade_path"])] = true
 		for mat in (it.get("upgrade_materials", {}) as Dictionary).keys():
 			used_by[str(mat)] = int(used_by.get(str(mat), 0)) + 1
 	for monster_id in DataLoader.monsters.keys():
 		for drop in (DataLoader.monsters[monster_id].get("loot_table", []) as Array):
 			if typeof(drop) == TYPE_DICTIONARY and not bool((drop as Dictionary).get("is_currency", false)):
-				supplied_by[str((drop as Dictionary).get("item_id", ""))] = true
+				loot_supplied[str((drop as Dictionary).get("item_id", ""))] = true
 	for dungeon_id in DataLoader.dungeons.keys():
 		var dungeon: Dictionary = DataLoader.dungeons[dungeon_id]
-		supplied_by[str(dungeon.get("shard_item", ""))] = true
+		loot_supplied[str(dungeon.get("shard_item", ""))] = true
 		for bundle in [dungeon.get("completion_reward", {}), dungeon.get("rewards_first_clear", {})]:
 			for item_id in ((bundle as Dictionary).get("items", {}) as Dictionary).keys():
-				supplied_by[str(item_id)] = true
+				loot_supplied[str(item_id)] = true
 	for offer_id in DataLoader.trader.keys():
 		if typeof(DataLoader.trader[offer_id]) != TYPE_DICTIONARY:
 			continue
 		for item_id in ((DataLoader.trader[offer_id] as Dictionary).get("grant_items", {}) as Dictionary).keys():
-			supplied_by[str(item_id)] = true
+			loot_supplied[str(item_id)] = true
 	for item_id in DataLoader.items.keys():
 		if int(DataLoader.items[item_id].get("slayer_cost", 0)) > 0:
-			supplied_by[str(item_id)] = true
+			loot_supplied[str(item_id)] = true
+	# The General Store is a real supply route (gold for goods); before this it was invisible
+	# to the report, which then claimed stocked materials had "NO SOURCE".
+	for stock_id in DataLoader.shop_store.keys():
+		var stock: Variant = DataLoader.shop_store[stock_id]
+		if typeof(stock) == TYPE_DICTIONARY and str((stock as Dictionary).get("item_id", "")) != "":
+			store_supplied[str((stock as Dictionary).get("item_id"))] = true
 	var ranked: Array = []
 	for item_id in used_by.keys():
 		var producers: int = int(produced_by.get(str(item_id), 0))
+		# Independent routes: craftable, stocked, or looted. One route is one point of failure;
+		# demand spread across two or three routes is visible in the table but cannot strand
+		# every recipe that waits on the material.
+		var channels: int = 0
+		var route_names: Array[String] = []
+		if producers > 0:
+			channels += 1
+			route_names.append("crafted")
+		if store_supplied.has(str(item_id)):
+			channels += 1
+			route_names.append("store")
+		if loot_supplied.has(str(item_id)):
+			channels += 1
+			route_names.append("looted")
 		ranked.append({"item_id": str(item_id), "recipes": int(used_by[item_id]),
-			"producers": producers,
-			"has_source": producers > 0 or supplied_by.has(str(item_id))})
+			"producers": producers, "channels": channels, "routes": " + ".join(route_names),
+			"has_source": channels > 0})
 	ranked.sort_custom(func(a, b): return int((a as Dictionary)["recipes"]) > int((b as Dictionary)["recipes"]))
 	var warnings: Array[String] = []
 	for entry in ranked.slice(0, TOP_BOTTLENECKS):
@@ -123,8 +152,11 @@ static func _bottlenecks() -> Dictionary:
 		if not bool(e["has_source"]) and int(e["recipes"]) >= 3:
 			warnings.append("%s is needed by %d recipes and nothing supplies it" % [
 				DataLoader.get_item(str(e["item_id"])).get("name", e["item_id"]), int(e["recipes"])])
-		elif int(e["recipes"]) >= BOTTLENECK_SHARE:
-			warnings.append("%s is needed by %d recipes — a single point of failure" % [
+		elif int(e["recipes"]) >= BOTTLENECK_SHARE and int(e["channels"]) <= 1:
+			# Demand concentration with several independent routes (visible in the table above)
+			# is a schedule risk, not a single point of failure: only one route — or none —
+			# can actually strand every recipe that needs the material.
+			warnings.append("%s is needed by %d recipes from a single route — a single point of failure" % [
 				DataLoader.get_item(str(e["item_id"])).get("name", e["item_id"]), int(e["recipes"])])
 	var dead: Array[String] = []
 	for item_id in DataLoader.items.keys():
@@ -283,7 +315,7 @@ static func format_text() -> Array[String]:
 		# "0 producers" alone reads like a bug; say whether a drop or the shop supplies it.
 		var source_note: String = ""
 		if int(e["producers"]) == 0:
-			source_note = ", drops only" if bool(e["has_source"]) else ", NO SOURCE"
+			source_note = (", %s" % str(e["routes"])) if bool(e["has_source"]) else ", NO SOURCE"
 		lines.append("  %-24s in %2d recipes (%d producers%s)" % [
 			str(DataLoader.get_item(str(e["item_id"])).get("name", e["item_id"])),
 			int(e["recipes"]), int(e["producers"]), source_note])

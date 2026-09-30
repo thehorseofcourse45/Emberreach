@@ -40,6 +40,17 @@ var last_offline_unix: int = 0
 ## which keeps objective evaluation a pure function of persisted state.
 var stats: Dictionary = {}
 
+## Ascendancy state: {ascensions, total, history, lifetime_stats}. Kept on PlayerData (not in a
+## manager) because it is character state that must survive a save round-trip, and every other
+## persisted field already lives here.
+var prestige: Dictionary = {"ascensions": 0, "total": 0, "history": {}, "lifetime_stats": {}}
+
+## Onboarding: the index of the first tutorial step that is not yet satisfied. It is an INDEX
+## rather than a set of per-step flags on purpose — a step retires when its condition is true
+## against live state, so the only thing worth persisting is "how far along the list this player
+## is". A save that never saw the tutorial lands on 0 and simply re-derives from the start.
+var tutorial_step: int = 0
+
 ## Equipped-item protection: item ids the player marked "do not sell / do not drop".
 var protected_items: Dictionary = {}
 
@@ -122,6 +133,10 @@ func initialize_new_game() -> void:
     slayer_task.clear()
     playtime_seconds = 0.0
     reset_stats()
+    # Onboarding restarts with the run. A character that has just been reset is, by definition,
+    # back at level 1 with empty stores, and the steps re-derive from live state — so a veteran
+    # ascending sails through the ones they have already done instead of being re-taught them.
+    tutorial_step = 0
     last_offline_unix = int(Time.get_unix_time_from_system())
     protected_items.clear()
     favorite_items.clear()
@@ -136,17 +151,14 @@ func get_xp(skill_id: String) -> float:
     return float(s.get("xp", 0.0))
 
 func get_level_cap(skill_id: String) -> int:
-    ## Game-mode skill caps (e.g. Ancient Relics caps at 10 until dungeons raise it).
-    match game_mode:
-        "ancient_relics":
-            return int(shop_upgrades.get("relic_level_cap", 10))
-        "adventure":
-            # Non-combat skills capped by combat level in Adventure mode.
-            if not COMBAT_SKILLS.has(skill_id):
-                return maxi(get_combat_level(), 1)
-            return XPTable.MAX_LEVEL
-        _:
-            return XPTable.MAX_LEVEL
+    ## Game-mode skill caps, read from data/game_modes.json rather than hardcoded, so tuning a
+    ## mode is a data edit. Two rules the game actually honours: a flat `skill_level_cap` (Ancient
+    ## Relics), and `non_combat_level_capped_by_combat_level` (Adventure).
+    var mode: Dictionary = DataLoader.game_modes.get(game_mode, {})
+    var flat_cap: int = int(mode.get("skill_level_cap", XPTable.MAX_LEVEL))
+    if bool(mode.get("non_combat_level_capped_by_combat_level", false)) and not COMBAT_SKILLS.has(skill_id):
+        return maxi(mini(get_combat_level(), XPTable.MAX_LEVEL), 1)
+    return flat_cap
 
 ## Add raw XP (caller already applied XP multipliers). Handles level-ups, including
 ## multiple levels from a single grant, and never banks XP past the level cap.
@@ -270,6 +282,8 @@ func serialize() -> Dictionary:
         "last_offline_unix": last_offline_unix, "stats": stats,
         "protected_items": protected_items,
         "favorite_items": favorite_items,
+        "prestige": prestige,
+        "tutorial_step": tutorial_step,
     }
 
 func deserialize(d: Dictionary) -> void:
@@ -297,7 +311,34 @@ func deserialize(d: Dictionary) -> void:
     stats = _merge_stats(d.get("stats", {}))
     protected_items = d.get("protected_items", {})
     favorite_items = _sanitize_item_flags(d.get("favorite_items", {}))
+    prestige = _sanitize_prestige(d.get("prestige", {}))
+    tutorial_step = sanitize_tutorial_step(d.get("tutorial_step", 0))
     _sanitize_skills()
+
+## An older save has no tutorial_step key, and a hand-edited one can hold a string or a negative.
+## Normalise to a non-negative index; the upper bound belongs to TutorialManager, which owns the
+## step list and already clamps against it (an index past the end would hide the guide for good).
+static func sanitize_tutorial_step(source: Variant) -> int:
+    if typeof(source) != TYPE_INT and typeof(source) != TYPE_FLOAT:
+        return 0
+    return maxi(0, int(source))
+
+## An older save has no prestige key, and a hand-edited one can hold nonsense. Normalise to
+## the full shape so no caller has to guard against a missing field.
+func _sanitize_prestige(source: Variant) -> Dictionary:
+    var out: Dictionary = {"ascensions": 0, "total": 0, "history": {}, "lifetime_stats": {}}
+    if typeof(source) != TYPE_DICTIONARY:
+        return out
+    var d: Dictionary = source
+    out["ascensions"] = maxi(0, int(d.get("ascensions", 0)))
+    out["total"] = maxi(0, int(d.get("total", 0)))
+    var history: Variant = d.get("history", {})
+    if typeof(history) == TYPE_DICTIONARY:
+        out["history"] = _merge_completion_log(history)
+    var lifetime: Variant = d.get("lifetime_stats", {})
+    if typeof(lifetime) == TYPE_DICTIONARY:
+        out["lifetime_stats"] = _merge_stats(lifetime)
+    return out
 
 ## Keep only ids that still exist in the item table. A save can be hand-edited or written by an
 ## older build, and a stale flag would otherwise resurrect a row with no data behind it.

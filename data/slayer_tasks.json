@@ -62,7 +62,7 @@
     "min_kills": 40,
     "max_kills": 80,
     "slayer_coin_multiplier": 6.0,
-    "level_required": 125
+    "level_required": 114
   },
   "godslayer": {
     "id": "godslayer",
@@ -70,7 +70,7 @@
     "min_kills": 30,
     "max_kills": 60,
     "slayer_coin_multiplier": 8.0,
-    "level_required": 160
+    "level_required": 117
   },
   "herald": {
     "id": "herald",
@@ -78,7 +78,7 @@
     "min_kills": 25,
     "max_kills": 50,
     "slayer_coin_multiplier": 10.0,
-    "level_required": 210
+    "level_required": 120
   },
   "_monsters": {
     "easy": [
@@ -94,9 +94,13 @@
     ],
     "hard": [
       "bandit",
-      "moss_giant"
+      "moss_giant",
+      "greyharrow_husk",
+      "shale_stalker",
+      "quarry_echo"
     ],
     "elite": [
+      "slag_golem",
       "guard",
       "mist_wraith"
     ],

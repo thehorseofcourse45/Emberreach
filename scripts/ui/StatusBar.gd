@@ -14,6 +14,20 @@ var _pause_button: Button
 var _speed: OptionButton
 var _save_timer: float = 0.0
 
+## The one speed ladder, shared with Settings → Simulation. Both controls read and write
+## PlayerData.settings["game_speed"] through GameManager.set_speed, so they cannot disagree.
+const GAME_SPEEDS: Array[float] = [1.0, 2.0, 4.0]
+const GAME_SPEEDS_LABELS: Array[String] = ["1×", "2×", "4×"]
+
+## The list entry whose speed is closest to a value the engine may already hold (a save can carry
+## any speed in the 0.25–16 clamp range, not just the three offered here).
+static func _nearest_speed(speed: float) -> float:
+	var best: float = GAME_SPEEDS[0]
+	for s in GAME_SPEEDS:
+		if absf(s - speed) < absf(best - speed):
+			best = s
+	return best
+
 func _ready() -> void:
 	add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
 	custom_minimum_size = Vector2(0, UITokens.H_HEADER + 8)
@@ -42,8 +56,10 @@ func _ready() -> void:
 	_playtime.tooltip_text = "Total time played"
 	row.add_child(_playtime)
 
-	_speed = Widgets.option_menu(["1×", "2×", "4×"], _on_speed, 0)
+	_speed = Widgets.option_menu(GAME_SPEEDS_LABELS, _on_speed,
+		maxi(0, GAME_SPEEDS.find(_nearest_speed(GameManager.game_speed))))
 	_speed.tooltip_text = "Simulation speed. Slower speeds are useful while learning a system."
+	EventBus.game_speed_changed.connect(_on_game_speed_changed)
 	row.add_child(_speed)
 
 	_pause_button = UIStyle.button("Pause", "Pause the simulation")
@@ -131,7 +147,14 @@ func _on_pause() -> void:
 	_pause_button.text = "Resume" if GameManager.is_paused else "Pause"
 
 func _on_speed(index: int) -> void:
-	GameManager.set_speed([1.0, 2.0, 4.0][index])
+	GameManager.set_speed(GAME_SPEEDS[clampi(index, 0, GAME_SPEEDS.size() - 1)])
+
+## The speed changed somewhere else (the Settings screen, or a save that carried one), so the
+## top bar has to show what is actually running rather than a stale selection of its own.
+func _on_game_speed_changed(speed: float) -> void:
+	if _speed == null:
+		return
+	_speed.select(maxi(0, GAME_SPEEDS.find(_nearest_speed(speed))))
 
 func _process(delta: float) -> void:
 	_playtime.text = UIStyle.fmt_duration(maxf(0.0, GameManager.playtime_seconds))

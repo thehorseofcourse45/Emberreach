@@ -25,8 +25,13 @@ const EXPEDITION_COMBAT_LEVEL: int = 60
 const EXPEDITION_CHARTER: String = "expedition_charter"
 ## Fraction of max HP a monster with the "regeneration" passive heals per own attack.
 const ENEMY_REGEN_FRACTION: float = 0.02
+## Fraction of damage a "thorns" monster reflects back at the attacker while it still stands.
+const ENEMY_THORNS_FRACTION: float = 0.10
+## An "enrage" monster hits this much harder once at or below this fraction of its max HP.
+const ENRAGE_HP_FRACTION: float = 0.25
+const ENRAGE_MULTIPLIER: float = 1.5
 ## Monster passive ids the engine understands (data may list more only after engine support).
-const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration"]
+const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage"]
 
 var state: int = State.IDLE
 var context: Dictionary = {}          # {type, id, monsters:[...], index, endless, attack_style}
@@ -51,6 +56,20 @@ var melee_style: String = "stab"      # stab | slash | block
 var kills_this_session: int = 0
 var deaths_this_session: int = 0
 var last_defeat_reason: String = ""
+
+# --- Session meters ---------------------------------------------------------------
+# A rolling window, not a lifetime total: the question a player asks is "is this fight
+# faster than the last one", which a lifetime average cannot answer. Deque of [time, damage]
+# is a ponytail: a full history plus a linear scan is not worth it at one window's width.
+const DPS_WINDOW: float = 60.0
+var _dmg_deque: Array = []          # [elapsed_time, damage] pairs, oldest first
+var _dmg_window_time: float = 0.0
+var session_damage_dealt: float = 0.0
+var session_damage_taken: float = 0.0
+var session_gp_earned: float = 0.0
+var _fight_clock: float = 0.0
+var _fight_damage_start: float = 0.0
+var _fight_dps_clock_start: float = 0.0
 
 var _rng := RandomNumberGenerator.new()
 var combat_enabled: bool = true
@@ -140,11 +159,32 @@ func expedition_unlock_reason() -> String:
 		return "Claim the Expedition Charter task"
 	return ""
 
+## Why a dungeon is still shut: "" when it can be entered. `requires` is a {skill: level} map;
+## `requires_dungeon` reuses the shop-upgrade vocabulary to chain one clear to the next unlock.
+## The single evaluator every UI reads, so the list, the card and the detail pane cannot disagree.
+func dungeon_lock_reason(dungeon_id: String) -> String:
+	var dungeon: Dictionary = DataLoader.get_dungeon(dungeon_id)
+	var reqs: Dictionary = dungeon.get("requires", {}) as Dictionary
+	for skill_id in reqs.keys():
+		var needed: int = int(reqs[skill_id])
+		if PlayerData.get_level(str(skill_id)) < needed:
+			return "Reach %s %d" % [str(DataLoader.get_skill(str(skill_id)).get("name", skill_id)), needed]
+	var prev: String = str(dungeon.get("requires_dungeon", ""))
+	if prev != "" and not (PlayerData.completion_log.get("dungeons", {}) as Dictionary).has(prev):
+		return "Clear %s" % str(DataLoader.get_dungeon(prev).get("name", prev))
+	return ""
+
 func start_combat(ctx: Dictionary) -> bool:
-	if str(ctx.get("type", "")) == "dungeon" and is_expedition(str(ctx.get("id", ""))):
-		var reason: String = expedition_unlock_reason()
-		if reason != "":
-			EventBus.notify("Expedition locked: %s" % reason, "warn")
+	if str(ctx.get("type", "")) == "dungeon":
+		var dungeon_id: String = str(ctx.get("id", ""))
+		if is_expedition(dungeon_id):
+			var reason: String = expedition_unlock_reason()
+			if reason != "":
+				EventBus.notify("Expedition locked: %s" % reason, "warn")
+				return false
+		var gate: String = dungeon_lock_reason(dungeon_id)
+		if gate != "":
+			EventBus.notify("%s is locked: %s" % [str(DataLoader.get_dungeon(dungeon_id).get("name", dungeon_id)), gate], "warn")
 			return false
 	if state != State.IDLE and state != State.DEAD:
 		EventBus.notify("Already fighting — retreat first.", "warn")
@@ -163,6 +203,7 @@ func start_combat(ctx: Dictionary) -> bool:
 	player_attack_timer = 0.0
 	monster_attack_timer = 0.0
 	state = State.FIGHTING
+	_begin_fight_clock()
 	ProgressTracker.record_region_visit(str(ctx.get("id", "")))
 	_sig_combat_started(ctx)
 	EventBus.activity_changed.emit()
@@ -209,6 +250,10 @@ func _spawn_monster(monster_id: String) -> void:
 	current_monster_id = monster_id
 	var m: Dictionary = DataLoader.get_monster(monster_id)
 	monster_max_hp = maxi(1, int(m.get("hitpoints", 10)))
+	# A raid difficulty's hp_mult makes its golbins actually tankier. Every raid enemy is spawned
+	# through here, so this is the one place the multiplier has to be applied.
+	if _in_raid():
+		monster_max_hp = maxi(1, int(round(float(monster_max_hp) * RaidManager.enemy_hp_mult())))
 	monster_hp = monster_max_hp
 	monster_attack_interval = maxf(0.25, float(m.get("attack_speed", 3.0)))
 	monster_attack_timer = 0.0
@@ -217,6 +262,11 @@ func _spawn_monster(monster_id: String) -> void:
 	monster_effects.clear()
 	state = State.FIGHTING
 	_sig_monster_spawned(monster_id, monster_hp)
+	# A new enemy IS a new activity: the fight readout, the activity strip and the overview
+	# rebuild from activity_changed and read current_monster_id when they do, so a spawn
+	# must announce itself or those portraits freeze on the session's first enemy.
+	if not SimulationMode.is_silent():
+		EventBus.activity_changed.emit()
 	SimulationMode.bump("encounters", monster_id, 1.0)
 
 # =========================================================================
@@ -226,6 +276,8 @@ func _spawn_monster(monster_id: String) -> void:
 func _process(delta: float) -> void:
 	if SimulationMode.is_silent():
 		return   # offline catch-up drives tick() explicitly
+	if GameManager.is_paused:
+		return   # Pause must stop the fight, not just the playtime clock
 	tick(delta)
 
 func tick(delta: float) -> void:
@@ -233,6 +285,8 @@ func tick(delta: float) -> void:
 		return
 	if state == State.IDLE:
 		return
+	_fight_clock += delta
+	_trim_dps_window()
 	_tick_player_effects(delta)
 	_tick_monster_effects(delta)
 	match state:
@@ -252,7 +306,7 @@ func _tick_fighting(delta: float) -> void:
 	if _is_player_stunned():
 		return
 	player_attack_interval = maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed()))
-	if bool(context.get("raid", false)):
+	if _in_raid():
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
 	monster_attack_interval = maxf(0.25, float(DataLoader.get_monster(current_monster_id).get("attack_speed", 3.0)))
 	player_attack_timer += delta
@@ -278,6 +332,76 @@ func _compute_max_hp() -> float:
 
 func _player_effective(skill_id: String) -> int:
 	return PlayerData.get_level(skill_id) + ModifierManager.get_hidden_levels(skill_id)
+
+# =========================================================================
+#  Session meters (DPS window, damage and gold tallies)
+# =========================================================================
+
+## Add a player hit to the rolling DPS window. Called from the one place that resolves a
+## player attack, so every damage source (styles, crits, special attacks) is counted once.
+func _record_damage(dmg: int) -> void:
+	var amount: float = float(maxi(0, dmg))
+	if amount <= 0.0:
+		return
+	session_damage_dealt += amount
+	_dmg_deque.append([_fight_clock, amount])
+	_trim_dps_window()
+
+## Damage the player took. Every site that lowers player_hp routes through here so the
+## "taken" column can never disagree with the HP bar.
+func _record_damage_taken(dmg: float) -> void:
+	session_damage_taken += maxf(0.0, dmg)
+
+func _record_gp(amount: float) -> void:
+	if amount > 0.0:
+		session_gp_earned += amount
+
+## Drop window entries that have aged out, and rebase the window clock so `_fight_clock`
+## growing without bound cannot eventually lose float precision.
+func _trim_dps_window() -> void:
+	while not _dmg_deque.is_empty() and (_fight_clock - float(_dmg_deque[0][0])) > DPS_WINDOW:
+		_dmg_deque.pop_front()
+	if _fight_clock - _dmg_window_time > DPS_WINDOW:
+		_dmg_window_time = _fight_clock - DPS_WINDOW
+
+## Damage per second over the trailing window.
+##
+## The total is summed from the deque every read rather than kept as a running cache that
+## _trim_dps_window subtracts from: a window that ages out while nobody is attacking (a
+## monster being slow, a player being stunned) would otherwise keep reporting a rate built
+## on hits that are no longer inside the window. Summing 60s of hits is not a hot path.
+func dps() -> float:
+	if _dmg_deque.is_empty():
+		return 0.0
+	var span: float = minf(_fight_clock, DPS_WINDOW)
+	if span <= 0.0:
+		return 0.0
+	var total: float = 0.0
+	for entry in _dmg_deque:
+		total += float((entry as Array)[1])
+	return total / span
+
+## One dictionary for the whole readout, so the panel never recomputes the window itself.
+func session_readout() -> Dictionary:
+	var fight_damage: float = session_damage_dealt - _fight_damage_start
+	var fight_time: float = _fight_clock - _fight_dps_clock_start
+	return {
+		"dps": dps(),
+		"damage_dealt": session_damage_dealt,
+		"damage_taken": session_damage_taken,
+		"gp_earned": session_gp_earned,
+		"kills": kills_this_session,
+		"deaths": deaths_this_session,
+		"fight_dps": (fight_damage / fight_time) if fight_time > 0.0 else 0.0,
+		"fight_time": fight_time,
+		"fighting": state == State.FIGHTING,
+	}
+
+## Reset the per-fight averages. Called on start_combat; session totals survive so the
+## player can still see the whole run's numbers.
+func _begin_fight_clock() -> void:
+	_fight_dps_clock_start = _fight_clock
+	_fight_damage_start = session_damage_dealt
 
 func _player_accuracy(style: String) -> int:
 	var attack_key: String = "stab"
@@ -407,7 +531,9 @@ func _player_attack() -> void:
 			player_hp = minf(player_hp + float(dmg) * heal_frac, _compute_max_hp())
 	apply_damage_to_monster(dmg)
 	_sig_player_attacked(dmg, is_crit)
+	_record_damage(dmg)
 	_grant_combat_xp(dmg)
+	SummoningManager.on_combat_action()
 	var ls: float = ModifierManager.get_life_steal()
 	if ls > 0.0:
 		player_hp = minf(player_hp + float(dmg) * ls / 100.0, _compute_max_hp())
@@ -433,9 +559,17 @@ func _monster_attack() -> void:
 			return
 	var raw: float = float(_rng.randi_range(1, maxi(1, int(m.get("max_hit", 1)))))
 	raw *= (1.0 + float(tri["damage_percent"]) / 100.0)
+	# A raging monster hits harder as it nears death — but only one that actually has the
+	# enrage passive; every other monster swings at the same strength all fight.
+	if (m.get("passives", []) as Array).has("enrage"):
+		raw *= CombatFormulas.enrage_multiplier(float(monster_hp) / float(maxi(1, monster_max_hp)),
+			ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
 	# Open-region hazard: hostile ground hits harder.
 	raw *= (1.0 + float(_active_hazard().get("enemy_damage_percent", 0.0)) / 100.0)
-	var dr: float = ModifierManager.get_damage_reduction()
+	# ModifierManager combines its own sources; worn equipment adds on top. Clamped because
+	# _combine multiplies out and can exceed 100%, which would make the multiplier negative and
+	# turn every hit into a heal.
+	var dr: float = clampf(ModifierManager.get_damage_reduction() + EquipmentManager.get_damage_reduction(), 0.0, 90.0)
 	var dmg: int = maxi(0, int(floor(raw * (1.0 - dr / 100.0))))
 	var sa: Dictionary = _roll_special_attack_from_ids(m.get("special_attacks", []))
 	if not sa.is_empty():
@@ -443,6 +577,7 @@ func _monster_attack() -> void:
 		_sig_monster_special(str(sa.get("id", "")))
 		_apply_special_status(sa, "player")
 	player_hp -= float(dmg)
+	_record_damage_taken(float(dmg))
 	_sig_monster_attacked(dmg)
 	# Regenerating monsters knit wounds on every own attack while still standing.
 	if monster_hp > 0 and (m.get("passives", []) as Array).has("regeneration"):
@@ -456,6 +591,11 @@ func _active_hazard() -> Dictionary:
 		return {}
 	return DataLoader.areas.get(str(context.get("id", "")), {}).get("hazard", {})
 
+## True while a raid is running. RaidManager marks the fight by context "type" only, so every
+## raid-specific rule in the engine asks here rather than reading a key that is never set.
+func _in_raid() -> bool:
+	return str(context.get("type", "")) == "raid"
+
 func _has_protection_prayer(style: String) -> bool:
 	var want: String = {"melee": "protect_from_melee", "ranged": "protect_from_ranged", "magic": "protect_from_magic"}.get(style, "")
 	return want != "" and PlayerData.active_prayers.has(want)
@@ -467,6 +607,18 @@ func apply_damage_to_monster(dmg: int) -> void:
 	if monster_hp <= 0:
 		monster_hp = 0
 		_on_monster_death()
+		return
+	# Thorns: a spiny creature pays back a fraction of what it was dealt while it still
+	# stands. Reflected damage is not an attack, so DR and prayers do not apply to it.
+	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	if (m.get("passives", []) as Array).has("thorns"):
+		var reflect: int = CombatFormulas.thorns_reflect(dmg, ENEMY_THORNS_FRACTION)
+		if reflect > 0:
+			player_hp -= float(reflect)
+			_record_damage_taken(float(reflect))
+			_sig_monster_attacked(reflect)
+			if player_hp <= 0.0:
+				_player_death(str(m.get("name", current_monster_id)))
 
 func _grant_combat_xp(damage: int) -> void:
 	PlayerData.add_xp("hitpoints", CombatFormulas.hitpoints_xp(float(damage)))
@@ -512,13 +664,14 @@ func _apply_special_status(sa: Dictionary, target: String) -> void:
 
 func _on_monster_death() -> void:
 	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	var on_task: bool = str(PlayerData.slayer_task.get("monster_id", "")) == current_monster_id
+	SlayerManager._on_kill(current_monster_id)
 	_sig_monster_killed(current_monster_id)
 	kills_this_session += 1
 	PlayerData.discover_monster(current_monster_id)
 	ProgressTracker.record_kill(current_monster_id)
 	SimulationMode.bump(SimulationMode.BUCKET_KILLS, current_monster_id, 1.0)
 	_grant_loot(m)
-	var on_task: bool = str(PlayerData.slayer_task.get("monster_id", "")) == current_monster_id
 	var slayer_xp: float = CombatFormulas.slayer_xp_for_kill(float(m.get("hitpoints", 0)), on_task, str(context.get("type", "")) == "slayer_area")
 	if slayer_xp > 0.0:
 		PlayerData.add_xp("slayer", slayer_xp)
@@ -548,7 +701,9 @@ func _grant_loot(m: Dictionary) -> void:
 			match str(drop.get("currency_id", "gp")):
 				"slayer_coins": PlayerData.add_slayer_coins(float(qty))
 				"abyssal_coins": PlayerData.add_abyssal_coins(float(qty))
-				_: PlayerData.add_gp(float(qty) * gp_pct)
+				_:
+					PlayerData.add_gp(float(qty) * gp_pct)
+					_record_gp(float(qty) * gp_pct)
 			continue
 		var item_id: String = str(drop.get("item_id", ""))
 		if item_id == "":
@@ -578,9 +733,10 @@ func damage_player_out_of_combat(amount: float, reason: String = "") -> void:
 ## Defeat policy, stated explicitly:
 ##   * the fight ends immediately;
 ##   * nothing is destroyed;
-##   * in the default mode the worst outcome is that ONE unequipped-protected,
-##     non-consumable, non-companion slot is returned to storage;
-##   * hardcore mode flags the character for deletion by the shell, which asks first.
+##   * in every game mode the worst outcome is that ONE unequipped, unprotected, non-consumable,
+##     non-companion slot is returned to storage.
+## No mode deletes a character. Hardcore differs by a lower storage cap and a harsher combat
+## triangle (data/game_modes.json), not by death.
 func _player_death(killer: String) -> void:
 	if state == State.DEAD:
 		return
@@ -600,8 +756,9 @@ func _player_death(killer: String) -> void:
 ## Choose at most one item to send back to storage. Protected items and the weapon are
 ## excluded so a defeat can never strip the player's only weapon or a cherished drop.
 func _lose_one_item() -> String:
-	if PlayerData.active_prayers.has("protect_item"):
-		return ""
+	for prayer_id in PlayerData.active_prayers:
+		if PrayerManager.get_prayer(str(prayer_id)).get("type", "") == "protect_item":
+			return ""
 	var candidates: Array[int] = []
 	for slot in EquipmentManager.slots.keys():
 		var slot_index: int = int(slot)
@@ -631,6 +788,9 @@ func _complete_combat() -> void:
 		_grant_reward(d.get("completion_reward", {}))
 		if first_clear:
 			_grant_reward(d.get("rewards_first_clear", {}))
+		# A direct call, not the EventBus signal: _sig_dungeon_completed is muted during a silent
+		# offline simulation, and an offline expedition clear must still grant its pet.
+		PetManager.on_dungeon_cleared(dungeon_id)
 		_sig_dungeon_completed(dungeon_id)
 		if not SimulationMode.is_silent():
 			EventBus.notify("Expedition complete: %s" % d.get("name", dungeon_id), "success")
@@ -668,6 +828,7 @@ func _tick_effects(list: Array, delta: float, is_player: bool) -> void:
 		if dmg > 0.0:
 			if is_player:
 				player_hp -= dmg
+				_record_damage_taken(dmg)
 			else:
 				monster_hp -= int(dmg)
 		if not e.is_expired():
@@ -701,7 +862,7 @@ func apply_status(target: String, effect_id: String, duration: float, damage_per
 
 func _auto_eat() -> void:
 	var tier: int = int(PlayerData.settings.get("auto_eat_tier", 0))
-	if bool(context.get("raid", false)):
+	if _in_raid():
 		tier = maxi(tier, 2)   # Auto Eat Tier II is always active in the raid
 	if tier <= 0 or not AUTO_EAT.has(tier):
 		return
@@ -711,21 +872,37 @@ func _auto_eat() -> void:
 	var threshold: float = float(cfg["threshold"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT)
 	if pct > threshold:
 		return
-	var food_id: String = _find_food()
-	if food_id == "":
-		return
-	var heal: float = float(DataLoader.get_item(food_id).get("heal_amount", 0))
 	var eff: float = (float(cfg["efficiency"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_EFFICIENCY_PERCENT)) / 100.0
-	heal *= eff * (1.0 + ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT) / 100.0)
-	if not BankManager.remove_item(food_id, 1):
-		return
-	player_hp = minf(player_hp + heal, maxhp)
+	consume_food(find_food(), eff, "Auto-eat")
+
+## Eat one food from the bank and heal. The single place food becomes health: auto-eat, the manual
+## button and the offline simulator all route through here, so they cannot disagree about what a
+## food is worth. Returns the food eaten, or "" if nothing was usable.
+## `efficiency` is a percent (100 = the food's full heal_amount), so a bought auto-eat tier's
+## penalty applies to automatic eating but never to a deliberate one.
+func consume_food(food_id: String, efficiency: float = 100.0, source: String = "Ate") -> String:
+	if food_id == "" or DataLoader.get_item(food_id).get("item_type", "") != "food":
+		return ""
+	var heal: float = float(DataLoader.get_item(food_id).get("heal_amount", 0))
+	if heal <= 0.0:
+		return ""
+	heal *= (efficiency / 100.0) * (1.0 + ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT) / 100.0)
+	if heal <= 0.0 or not BankManager.remove_item(food_id, 1):
+		return ""
+	player_hp = minf(player_hp + heal, _compute_max_hp())
 	if not SimulationMode.is_silent():
-		EventBus.notification.emit("Auto-eat: %s" % DataLoader.get_item(food_id).get("name", food_id), "info")
+		EventBus.notification.emit("%s: %s (+%d HP)" % [source,
+			str(DataLoader.get_item(food_id).get("name", food_id)), int(heal)], "info")
+	return food_id
+
+## Eat the food that best covers the missing health. This is what the manual button calls.
+func eat_best_food() -> String:
+	return consume_food(find_food(), 100.0, "Ate")
 
 ## Deterministic food choice: the smallest food that still fills the missing health, so a
-## long fight does not burn the player's best supplies first.
-func _find_food() -> String:
+## long fight does not burn the player's best supplies first. Public so the Eat button can label
+## itself with the food it will actually pick.
+func find_food() -> String:
 	var best: String = ""
 	var best_heal: int = -1
 	var maxhp: float = _compute_max_hp()

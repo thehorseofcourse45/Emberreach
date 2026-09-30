@@ -104,6 +104,35 @@ static func run(host: Node) -> Dictionary:
 		"a blinding hazard converts every trial into a timeout, never a win", state)
 
 	# ---------------------------------------------------------------------------
+	# Monster passives: thorns and enrage
+	# ---------------------------------------------------------------------------
+	# Thorns: a monster that can barely fight back still kills a player who keeps hitting
+	# it — the reflection is proportional to damage dealt, so it is deterministic here.
+	var thorns_plain: Dictionary = _strong_snapshot(1400, 1)
+	var thorns_plain_report: Dictionary = CombatSimulator.simulate(thorns_plain, 20, 2718)
+	var thorns_spiky: Dictionary = _strong_snapshot(1400, 1)
+	(thorns_spiky["monsters"][0] as Dictionary)["passives"] = ["thorns"]
+	var thorns_report: Dictionary = CombatSimulator.simulate(thorns_spiky, 20, 2718)
+	_assert(int(thorns_plain_report["deaths"]) == 0,
+		"the control monster (1 max hit) cannot kill the player at all", state)
+	_assert(int(thorns_report["deaths"]) > 0,
+		"thorns kills a player the very same monster otherwise cannot", state)
+
+	# Enrage: identical rolls with the same seed — the only difference is the multiplier
+	# once the monster is below a quarter health.
+	var rage_plain: Dictionary = _strong_snapshot(400, 60)
+	(rage_plain["monsters"][0] as Dictionary)["accuracy_rating"] = 10000
+	(rage_plain["monsters"][0] as Dictionary)["attack_speed"] = 12.0
+	rage_plain["player"]["max_hp"] = 60.0
+	rage_plain["player"]["max_hit"] = 60
+	var rage_plain_report: Dictionary = CombatSimulator.simulate(rage_plain, 20, 31415)
+	var rage_hot: Dictionary = rage_plain.duplicate(true)
+	(rage_hot["monsters"][0] as Dictionary)["passives"] = ["enrage"]
+	var rage_report: Dictionary = CombatSimulator.simulate(rage_hot, 20, 31415)
+	_assert(int(rage_report["deaths"]) > int(rage_plain_report["deaths"]),
+		"an enraged monster lands kills the same monster otherwise does not", state)
+
+	# ---------------------------------------------------------------------------
 	# Food projection
 	# ---------------------------------------------------------------------------
 	# The monster has to actually connect: a 0.5%-to-hit dummy never pushes the player below the

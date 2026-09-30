@@ -5,8 +5,8 @@
 > outward. Prioritize a playable vertical slice with Woodcutting, Fishing, Cooking, basic
 > Combat, and the Bank before expanding to all 29 skills."*
 
-Each phase is shippable and has an explicit **acceptance test**. Phases 0–7 (including the
-playable UI) are implemented in this repository.
+Each phase is shippable and has an explicit **acceptance test**. Phases 0–9 (including the
+playable UI, all 34 skills and the endgame) are implemented in this repository.
 
 ---
 
@@ -39,7 +39,8 @@ toggles a prayer (evasion 0→5), wins 3 fights in an endless area, saves and re
 death, endless areas, dungeons, **weapon & monster special attacks with status application**),
 `StatusEffect`.
 **Acceptance:** HP XP = 0.133/dmg, style XP = 0.4/dmg; death empties a slot; Auto Eat I at 20 %.
-**TODO:** per-monster passive abilities; God Dungeon shard mechanics; area environmental debuffs.
+**TODO:** per-monster passive abilities. (Done since: area hazards apply in both combat engines;
+god-dungeon shard drops are paid on every kill.)
 
 ## Phase 5 — Mastery ✅ core / ✅ item unlocks
 `MasteryManager`: MXP formula, 25 %/50 % pool split, 500 k×items cap, checkpoints, tokens, 1:1 spend,
@@ -84,6 +85,19 @@ museum), Harvesting (3 veins), Pets (32) and the Skillcape/Completion set.
 
 Remaining polish (data + UI, no new engine work): Township tasks/education, Cartography ship
 upgrades, Archaeology museum shop, Summoning tablet quantity scaling, and per-dungeon UI flows.
+
+## Addendum — 2026-09-27: audio, mid-level content, thin-skill depth, visual gate
+
+- **Audio ✅** — `data/audio.json` + `AudioManager` (synthesised SFX/music, Music/SFX buses,
+  Settings volume controls, validator + test coverage). The largest system still untouched.
+- **Mid-level content ✅** — Greyharrow Quarry (area) + Greyharrow Deep (dungeon) + 4 monsters
+  fill the L43–L59 hole, the widest gap on the level curve; slayer pools refilled, art supplied.
+- **Thin-skill depth ✅** — Excavation 7→11, Surveying 6→9, Wayfaring 7→10, Blight 8→13;
+  Umbral Essence now feeds the summoning shard chain instead of dead-ending.
+- **Screenshot gate ✅** — `tools/shot_gate.py` diffs the real-window `--shot` sweep against
+  `tools/shot_baseline/` and exits 1 on visual regressions (needs a display; `--update`
+  re-baselines after an intentional UI change).
+- Also: the enrage passive was being applied to every monster in both combat engines — fixed.
 
 ---
 

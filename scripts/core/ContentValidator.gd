@@ -27,6 +27,23 @@ const EQUIPMENT_SLOT_NAMES: Dictionary = {
 	6: "amulet", 7: "ring", 8: "weapon", 9: "shield", 10: "quiver", 11: "summon_1",
 	12: "summon_2", 13: "passive", 14: "consumable",
 }
+## The ONLY keys a game mode may declare. This list is the contract: a mode flag has to be
+## read by real code, and the player-facing `description` has to state what that code does.
+## Adding a key to data/game_modes.json without adding it here (with code that honours it)
+## fails validation, so a mode can never quietly promise behaviour the game does not implement.
+const HONOURED_MODE_FLAGS: Array[String] = [
+	# presentation, shown verbatim in the mode picker
+	"id", "name", "description",
+	# honoured by PlayerData.get_level_cap()
+	"skill_level_cap", "non_combat_level_capped_by_combat_level",
+	# honoured by BankManager.get_slot_limit()
+	"bank_limit",
+	# honoured by CombatFormulas.triangle() via the mode config
+	"advantage_accuracy", "advantage_damage", "disadvantage_accuracy", "disadvantage_damage",
+]
+## Words that would re-introduce a promise the game cannot keep. Death is never permanent:
+## nothing in this game deletes a character, so no mode may claim it.
+const FORBIDDEN_MODE_CLAIMS: Array[String] = ["permanent", "deleted", "unrecoverable", "lost forever"]
 
 var issues: Array = []
 
@@ -39,7 +56,9 @@ func validate_all() -> Array:
 	_check_monsters()
 	_check_regions()
 	_check_shop()
+	_check_game_modes()
 	_check_side_systems()
+	_check_audio()
 	_check_acquisition_coverage()
 	return issues
 
@@ -387,6 +406,12 @@ func _check_region_requirements(kind: String, id: String, row: Dictionary) -> vo
 				_err("missing_reference", "%s '%s' requires unknown skill '%s'" % [kind, id, skill_id])
 			elif int(reqs[skill_id]) > int(DataLoader.get_skill(str(skill_id)).get("max_level", 120)):
 				_err("unreachable_unlock", "%s '%s' requires %s %d above the skill cap" % [kind, id, skill_id, int(reqs[skill_id])])
+	var prev: String = str(row.get("requires_dungeon", ""))
+	if prev != "":
+		if not DataLoader.dungeons.has(prev):
+			_err("missing_reference", "%s '%s' requires unknown dungeon '%s'" % [kind, id, prev])
+		elif prev == id:
+			_err("circular_dependency", "%s '%s' requires itself" % [kind, id])
 	var rng: Variant = row.get("level_range", [])
 	if typeof(rng) == TYPE_ARRAY and (rng as Array).size() == 2:
 		if int(rng[0]) > int(rng[1]):
@@ -443,6 +468,105 @@ func _check_shop() -> void:
 				if float(cost[res]) < 0.0:
 					_err("negative_value", "township building '%s' cost '%s' is negative" % [id, res])
 
+# ---------------- game modes ----------------
+
+## A mode flag only earns its place if some code reads it, and a mode's description is shown
+## verbatim to the player, so it may not claim behaviour the game lacks. The check is a key
+## allowlist rather than static analysis of the scripts: HONOURED_MODE_FLAGS is the human
+## statement of "these are the flags the game honours", and a new key has to be added there
+## together with the code that reads it.
+func _check_game_modes() -> void:
+	var modes: Dictionary = DataLoader.game_modes
+	if modes.is_empty():
+		_err("missing_content", "game_modes.json is missing or empty")
+		return
+	for mode_id in modes.keys():
+		var mode_id_str: String = str(mode_id)
+		if mode_id_str.begins_with("_"):
+			continue   # document-level comment, not a mode
+		var mode: Variant = modes[mode_id]
+		if typeof(mode) != TYPE_DICTIONARY:
+			_err("invalid_record", "game mode '%s' is not an object" % mode_id_str)
+			continue
+		for key in (mode as Dictionary).keys():
+			if not HONOURED_MODE_FLAGS.has(str(key)):
+				_err("unhonoured_mode_flag", "game mode '%s' declares '%s', which no script reads. "
+					% [mode_id_str, key] + "Implement it and add it to HONOURED_MODE_FLAGS, or delete it.")
+		var m: Dictionary = mode as Dictionary
+		if str(m.get("id", "")) != mode_id_str:
+			_err("invalid_record", "game mode '%s' declares id '%s'" % [mode_id_str, str(m.get("id", ""))])
+		var description: String = str(m.get("description", ""))
+		if description == "":
+			_err("invalid_record", "game mode '%s' has no description for the mode picker" % mode_id_str)
+		var haystack: String = ("%s %s" % [str(m.get("name", "")), description]).to_lower()
+		for claim in FORBIDDEN_MODE_CLAIMS:
+			if haystack.contains(claim):
+				_err("false_mode_claim", "game mode '%s' claims '%s', which this game never does"
+					% [mode_id_str, claim])
+
+# ---------------- audio ----------------
+
+## Audio is data, but its references cross into code (EventBus signal names), so the
+## join has to be checked here: a typo'd signal in audio.json would otherwise fail
+## silently as a sound that never plays.
+func _check_audio() -> void:
+	var audio: Dictionary = DataLoader.audio
+	if audio.is_empty():
+		_err("missing_audio", "audio.json is missing or empty")
+		return
+	var sfx: Dictionary = audio.get("sfx", {})
+	var music: Dictionary = audio.get("music", {})
+	if sfx.is_empty():
+		_err("missing_audio", "audio.json defines no sound effects")
+	if music.is_empty():
+		_err("missing_audio", "audio.json defines no music tracks")
+	for sound_id in sfx.keys():
+		var recipe: Variant = sfx[sound_id]
+		if typeof(recipe) != TYPE_DICTIONARY:
+			_err("invalid_record", "sound '%s' is not an object" % sound_id)
+			continue
+		var tones: Array = (recipe as Dictionary).get("tones", [])
+		if tones.is_empty():
+			_err("invalid_record", "sound '%s' has no tones" % sound_id)
+			continue
+		for i in range(tones.size()):
+			var tone: Variant = tones[i]
+			if typeof(tone) != TYPE_DICTIONARY or float((tone as Dictionary).get("freq", 0.0)) <= 0.0:
+				_err("invalid_value", "sound '%s' tone %d needs a positive freq" % [sound_id, i])
+			elif float((tone as Dictionary).get("dur", 0.0)) <= 0.0:
+				_err("invalid_value", "sound '%s' tone %d needs a positive dur" % [sound_id, i])
+	for track_id in music.keys():
+		var m: Variant = music[track_id]
+		if typeof(m) != TYPE_DICTIONARY:
+			_err("invalid_record", "music track '%s' is not an object" % track_id)
+			continue
+		if (m as Dictionary).get("chords", []).is_empty() or (m as Dictionary).get("pattern", []).is_empty():
+			_err("invalid_record", "music track '%s' needs non-empty chords and pattern" % track_id)
+	var events: Dictionary = audio.get("events", {})
+	for signal_name in events.keys():
+		if not EventBus.has_signal(str(signal_name)):
+			_err("unknown_signal", "audio event '%s' is not an EventBus signal" % signal_name)
+		var spec: Variant = events[signal_name]
+		var sound_id: String = ""
+		if typeof(spec) == TYPE_STRING:
+			sound_id = str(spec)
+		elif typeof(spec) == TYPE_DICTIONARY:
+			sound_id = str((spec as Dictionary).get("sound", ""))
+		if sound_id != "" and not sfx.has(sound_id):
+			_err("unknown_sound", "audio event '%s' references missing sound '%s'" % [signal_name, sound_id])
+	for signal_name in audio.get("music_events", {}).keys():
+		if not EventBus.has_signal(str(signal_name)):
+			_err("unknown_signal", "music event '%s' is not an EventBus signal" % signal_name)
+		var track: String = str((audio.get("music_events", {}) as Dictionary)[signal_name])
+		if not music.has(track):
+			_err("unknown_sound", "music event '%s' references missing track '%s'" % [signal_name, track])
+	var note_table: Dictionary = audio.get("notification_sounds", {})
+	for kind in note_table.keys():
+		if str(kind).begins_with("_"):
+			continue
+		if not sfx.has(str(note_table[kind])):
+			_err("unknown_sound", "notification kind '%s' references missing sound '%s'" % [kind, note_table[kind]])
+
 # ---------------- side systems ----------------
 
 func _check_side_systems() -> void:
@@ -490,11 +614,21 @@ func _check_side_systems() -> void:
 			if partner != "" and not DataLoader.familiars.has(partner):
 				_err("missing_reference", "familiar '%s' synergy references unknown familiar '%s'" % [id, partner])
 
+	# A pet is only ever unlocked by PetManager, which matches "source_skill" against a real skill
+	# id (or the literal "combat") or "source_dungeon" against a cleared expedition. Any other key
+	# or value is content that can never be unlocked, so it is an error, not a warning.
 	for id in DataLoader.pets.keys():
 		var p: Dictionary = DataLoader.pets[id]
-		var src: String = str(p.get("source_skill", ""))
-		if src != "" and not _has_skill(src):
-			_err("missing_reference", "pet '%s' source_skill -> unknown skill '%s'" % [id, src])
+		if p.has("source"):
+			_err("invalid_record", "pet '%s' uses the key 'source'; PetManager reads 'source_skill' or 'source_dungeon'" % id)
+		var src_skill: String = str(p.get("source_skill", ""))
+		var src_dungeon: String = str(p.get("source_dungeon", ""))
+		if src_skill == "" and src_dungeon == "":
+			_err("unreachable_unlock", "pet '%s' declares neither source_skill nor source_dungeon" % id)
+		if src_skill != "" and src_skill != "combat" and not _has_skill(src_skill):
+			_err("missing_reference", "pet '%s' source_skill -> unknown skill '%s'" % [id, src_skill])
+		if src_dungeon != "" and not DataLoader.dungeons.has(src_dungeon):
+			_err("missing_reference", "pet '%s' source_dungeon -> unknown dungeon '%s'" % [id, src_dungeon])
 
 	for id in DataLoader.prayers.keys():
 		var pr: Dictionary = DataLoader.prayers[id]
@@ -515,6 +649,83 @@ func _check_side_systems() -> void:
 		if float(h.get("travel_cost", 0)) < 0.0:
 			_err("negative_value", "hex '%s' has a negative travel_cost" % id)
 
+	# Slayer task pools: the completion reward is the monster's slayer_xp × the tier
+	# multiplier, so a pool monster with no slayer_xp pays nothing for a whole task.
+	var pools: Dictionary = DataLoader.slayer_tasks.get("_monsters", {})
+	for tier_id in DataLoader.slayer_tasks.keys():
+		if tier_id == "_monsters":
+			continue
+		var tier: Variant = DataLoader.slayer_tasks[tier_id]
+		if typeof(tier) != TYPE_DICTIONARY:
+			continue
+		var min_kills: int = int((tier as Dictionary).get("min_kills", 1))
+		var max_kills: int = int((tier as Dictionary).get("max_kills", 1))
+		if min_kills < 1 or max_kills < min_kills:
+			_err("invalid_record", "slayer tier '%s' has kills range %d..%d" % [tier_id, min_kills, max_kills])
+		# SlayerManager refuses a tier above the player's Slayer level, and that level cannot pass
+		# the skill cap, so a requirement above the cap is a tier nobody can ever take.
+		var slayer_cap: int = int(DataLoader.get_skill("slayer").get("max_level", XPTable.MAX_LEVEL))
+		if int((tier as Dictionary).get("level_required", 1)) > slayer_cap:
+			_err("unreachable_unlock", "slayer tier '%s' requires level %d above the slayer cap of %d"
+				% [tier_id, int((tier as Dictionary).get("level_required", 1)), slayer_cap])
+		var pool: Variant = (pools as Dictionary).get(tier_id, [])
+		if typeof(pool) != TYPE_ARRAY or (pool as Array).is_empty():
+			_warn("invalid_record", "slayer tier '%s' has an empty monster pool" % tier_id)
+			continue
+		for monster_id in (pool as Array):
+			var mid := str(monster_id)
+			if not DataLoader.monsters.has(mid):
+				_err("missing_reference", "slayer tier '%s' pool references unknown monster '%s'" % [tier_id, mid])
+			elif float((DataLoader.monsters[mid] as Dictionary).get("slayer_xp", 0)) <= 0.0:
+				_err("invalid_record", "slayer tier '%s' pool monster '%s' has slayer_xp <= 0, so the task would pay nothing" % [tier_id, mid])
+
+	# Museum stock: token costs must be positive and grants must be real items.
+	for entry_id in DataLoader.shop_museum.keys():
+		var entry: Variant = DataLoader.shop_museum[entry_id]
+		if typeof(entry) != TYPE_DICTIONARY:
+			_err("invalid_record", "museum entry '%s' is not an object" % entry_id)
+			continue
+		if str((entry as Dictionary).get("id", entry_id)) != str(entry_id):
+			_err("invalid_record", "museum entry '%s' declares id '%s'" % [entry_id, str((entry as Dictionary).get("id", ""))])
+		if int((entry as Dictionary).get("cost", 0)) <= 0:
+			_err("invalid_record", "museum entry '%s' has a non-positive token cost" % entry_id)
+		if float((entry as Dictionary).get("gp", 0)) < 0.0:
+			_err("negative_value", "museum entry '%s' grants negative GP" % entry_id)
+		for item_id in ((entry as Dictionary).get("grant_items", {}) as Dictionary).keys():
+			if not _has_item(str(item_id)):
+				_err("missing_reference", "museum entry '%s' grants unknown item '%s'" % [entry_id, str(item_id)])
+
+	# Cartography ships: a contiguous upgrade chain where every hull discounts travel.
+	var ship_orders: Dictionary = {}
+	for ship_id in DataLoader.cartography_ships.keys():
+		var ship: Variant = DataLoader.cartography_ships[ship_id]
+		if typeof(ship) != TYPE_DICTIONARY:
+			_err("invalid_record", "ship '%s' is not an object" % ship_id)
+			continue
+		if str((ship as Dictionary).get("id", ship_id)) != str(ship_id):
+			_err("invalid_record", "ship '%s' declares id '%s'" % [ship_id, str((ship as Dictionary).get("id", ""))])
+		var order: int = int((ship as Dictionary).get("order", 0))
+		if order < 1:
+			_err("invalid_record", "ship '%s' has order %d (must be >= 1)" % [ship_id, order])
+		elif ship_orders.has(order):
+			_err("duplicate_id", "ships '%s' and '%s' share order %d" % [str(ship_orders[order]), ship_id, order])
+		else:
+			ship_orders[order] = ship_id
+		var pct := float((ship as Dictionary).get("travel_cost_percent", 100.0))
+		if pct <= 0.0 or pct > 100.0:
+			_err("invalid_number", "ship '%s' travel_cost_percent %s must be in (0, 100]" % [ship_id, str(pct)])
+		if float((ship as Dictionary).get("cost", 0)) < 0.0:
+			_err("negative_value", "ship '%s' has a negative cost" % ship_id)
+	if not ship_orders.is_empty():
+		var expected_order: int = 1
+		var sorted_orders: Array = ship_orders.keys()
+		sorted_orders.sort()
+		for existing_order in sorted_orders:
+			if int(existing_order) != expected_order:
+				_err("invalid_record", "ship upgrade chain must be contiguous from 1; order %d is missing" % expected_order)
+				break
+			expected_order += 1
+
 	# Quests and achievements.
 	for id in Quests.all_quest_ids():
 		var q: Dictionary = Quests.get_quest(id)
@@ -523,6 +734,13 @@ func _check_side_systems() -> void:
 		for obj in q.get("objectives", []):
 			_check_objective("quest '%s'" % id, obj)
 		_check_reward("quest '%s'" % id, q.get("reward", {}))
+		var difficulty: String = str(q.get("difficulty", ""))
+		if not Quests.DIFFICULTIES.has(difficulty):
+			_err("invalid_record", "quest '%s' has unknown difficulty '%s'" % [id, difficulty])
+	for id in Quests.rotating_pool_ids():
+		var rq: Dictionary = Quests.get_quest(id)
+		if not (rq.get("prerequisites", []) as Array).is_empty() or not (rq.get("requires", {}) as Dictionary).is_empty():
+			_err("invalid_record", "rotating task '%s' must not be gated by prerequisites" % id)
 	for id in Achievements.all_ids():
 		var a: Dictionary = Achievements.get_record(id)
 		var cond: Variant = a.get("condition", {})
@@ -577,6 +795,10 @@ func _check_condition(label: String, cond: Variant) -> void:
 		_err("missing_reference", "%s condition references unknown skill '%s'" % [label, str(c["skill_id"])])
 	if c.has("item_id") and not _has_item(str(c["item_id"])):
 		_err("missing_reference", "%s condition references unknown item '%s'" % [label, str(c["item_id"])])
+	if c.has("monster_id") and not DataLoader.monsters.has(str(c["monster_id"])):
+		_err("missing_reference", "%s condition references unknown monster '%s'" % [label, str(c["monster_id"])])
+	if c.has("dungeon_id") and not DataLoader.dungeons.has(str(c["dungeon_id"])):
+		_err("missing_reference", "%s condition references unknown dungeon '%s'" % [label, str(c["dungeon_id"])])
 	if float(c.get("value", 1)) <= 0.0:
 		_err("invalid_quantity", "%s condition value must be > 0" % label)
 
@@ -680,6 +902,14 @@ func _check_acquisition_coverage() -> void:
 			sources[str(item_id)] = true
 		for item_id in (reward.get("unlock_items", {}) as Dictionary).keys():
 			sources[str(item_id)] = true
+	# A failed action that names a failure output produces it: burnt food is a real source.
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(skill_id):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			var fail_item: String = str((action as Dictionary).get("fail_output_item", ""))
+			if fail_item != "":
+				sources[fail_item] = true
 	for achievement_id in Achievements.all_ids():
 		var a_reward: Dictionary = Achievements.get_record(achievement_id).get("reward", {})
 		for item_id in (a_reward.get("items", {}) as Dictionary).keys():

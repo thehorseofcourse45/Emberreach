@@ -32,26 +32,44 @@ func on_skill_action(skill_id: String, action_time: float) -> void:
 func on_combat_action() -> void:
     for fid in DataLoader.familiars.keys():
         var f: Dictionary = DataLoader.familiars[fid]
-        if f.get("mark_skill", "") not in ["attack", "strength", "defence", "ranged", "magic", "hitpoints", "slayer"]:
+        if f.get("mark_skill", "") not in PlayerData.COMBAT_SKILLS:
+            continue
+        if f.get("mark_skill", "") == "prayer" and PlayerData.active_prayers.is_empty():
             continue
         var chance: float = 2.0 * float(f.get("tier", 1)) / 2500.0
         if _rng.randf() < chance:
             _gain_mark(fid)
 
+    for fid in equipped.duplicate():
+        if DataLoader.familiars.get(fid, {}).get("mark_skill", "") in PlayerData.COMBAT_SKILLS:
+            consume_charge(fid)
+
 func _gain_mark(familiar_id: String) -> void:
-    var lvl: int = get_mark_level(familiar_id) + 1
-    if lvl > 6:
-        return
+    var previous: int = get_mark_level(familiar_id)
+    var lvl: int = mini(6, previous + 1)
     marks[familiar_id] = lvl
-    EventBus.notification.emit("Discovered %s mark (Lv %d)" % [familiar_id, lvl], "success")
+    # The 25 tablet recipes declare `<fam>_mark` in input_items, and SkillManager validates
+    # inputs against the BANK. Without this the whole level-1..6 Beastbinding ladder is
+    # unstartable, because nothing else produces a mark item.
+    BankManager.add_item_guaranteed("%s_mark" % familiar_id, 1)
+    if previous < 6:
+        EventBus.notification.emit("Discovered %s mark (Lv %d)" % [familiar_id, lvl], "success")
 
 func equip_familiar(familiar_id: String) -> bool:
     if equipped.has(familiar_id) or equipped.size() >= MAX_EQUIPPED:
         return false
     if get_mark_level(familiar_id) < 1:
         return false
+    var familiar: Dictionary = DataLoader.familiars.get(familiar_id, {})
+    if familiar.is_empty():
+        return false
+    if int(charges.get(familiar_id, 0)) <= 0:
+        var tablet_id: String = str(familiar.get("tablet_item", ""))
+        var available: int = BankManager.get_count(tablet_id)
+        if available <= 0 or not BankManager.remove_item(tablet_id, available):
+            return false
+        charges[familiar_id] = available
     equipped.append(familiar_id)
-    charges[familiar_id] = int(charges.get(familiar_id, 0)) + 25
     _reregister()
     return true
 
@@ -61,6 +79,8 @@ func unequip_familiar(familiar_id: String) -> void:
 
 func consume_charge(familiar_id: String) -> void:
     charges[familiar_id] = maxi(0, int(charges.get(familiar_id, 0)) - 1)
+    if int(charges[familiar_id]) == 0 and equipped.has(familiar_id):
+        unequip_familiar(familiar_id)
 
 ## Called by SkillManager after each completed action.
 func on_action(skill_id: String, action_time: float) -> void:
@@ -71,6 +91,9 @@ func on_action(skill_id: String, action_time: float) -> void:
             consume_charge(fid)
 
 func _reregister() -> void:
+    for fid in equipped.duplicate():
+        if int(charges.get(fid, 0)) <= 0:
+            equipped.erase(fid)
     ModifierManager.unregister("%s:familiars" % CATEGORY)
     ModifierManager.unregister("%s:synergy" % CATEGORY)
     var mods: Dictionary = {}

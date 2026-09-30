@@ -1,0 +1,185 @@
+{
+  "_comment": "Audio definitions. Every sound is SYNTHESIZED at runtime from these recipes (the project ships no audio files): 'sfx' entries are one-shot sound effects, 'music' entries are looping procedural tracks, 'events' maps EventBus signal names to a sound (optional throttle_ms), 'music_events' switches the background track, 'notification_sounds' maps notification kinds to sounds. Tone fields: freq (Hz, required), freq_end (sweep target), dur (seconds), wave (sine|square|triangle|saw|noise), gain (0..1 relative), at (absolute start offset; tones without it play sequentially).",
+  "sfx": {
+    "click": {
+      "wave": "square",
+      "tones": [{ "freq": 880, "freq_end": 660, "dur": 0.045 }],
+      "gain": 0.35
+    },
+    "levelup": {
+      "wave": "square",
+      "tones": [
+        { "freq": 523.25, "dur": 0.1 },
+        { "freq": 659.25, "dur": 0.1 },
+        { "freq": 783.99, "dur": 0.2 }
+      ],
+      "gain": 0.6
+    },
+    "mastery": {
+      "wave": "square",
+      "tones": [
+        { "freq": 659.25, "dur": 0.09 },
+        { "freq": 830.61, "dur": 0.09 },
+        { "freq": 987.77, "dur": 0.09 },
+        { "freq": 1318.51, "dur": 0.22 }
+      ],
+      "gain": 0.55
+    },
+    "pickup": {
+      "wave": "sine",
+      "tones": [{ "freq": 660, "freq_end": 990, "dur": 0.07 }],
+      "gain": 0.5
+    },
+    "chime": {
+      "wave": "sine",
+      "tones": [
+        { "freq": 880, "dur": 0.12 },
+        { "freq": 1174.66, "dur": 0.18 }
+      ],
+      "gain": 0.45
+    },
+    "hit": {
+      "wave": "saw",
+      "tones": [{ "freq": 220, "freq_end": 90, "dur": 0.08 }],
+      "gain": 0.5
+    },
+    "crit": {
+      "wave": "saw",
+      "tones": [
+        { "freq": 440, "freq_end": 110, "dur": 0.12 },
+        { "freq": 110, "freq_end": 55, "dur": 0.1, "at": 0.0 }
+      ],
+      "gain": 0.6
+    },
+    "kill": {
+      "wave": "triangle",
+      "tones": [{ "freq": 392, "freq_end": 98, "dur": 0.16 }],
+      "gain": 0.5
+    },
+    "death": {
+      "wave": "saw",
+      "tones": [
+        { "freq": 330, "freq_end": 220, "dur": 0.25 },
+        { "freq": 220, "freq_end": 110, "dur": 0.3 },
+        { "freq": 110, "freq_end": 55, "dur": 0.5 }
+      ],
+      "gain": 0.6
+    },
+    "combat_start": {
+      "wave": "triangle",
+      "tones": [
+        { "freq": 196, "freq_end": 392, "dur": 0.12 },
+        { "freq": 392, "freq_end": 587.33, "dur": 0.16 }
+      ],
+      "gain": 0.5
+    },
+    "victory": {
+      "wave": "square",
+      "tones": [
+        { "freq": 523.25, "dur": 0.12 },
+        { "freq": 659.25, "dur": 0.12 },
+        { "freq": 783.99, "dur": 0.12 },
+        { "freq": 1046.5, "dur": 0.35 }
+      ],
+      "gain": 0.6
+    },
+    "quest": {
+      "wave": "sine",
+      "tones": [
+        { "freq": 587.33, "dur": 0.12 },
+        { "freq": 880, "dur": 0.12 },
+        { "freq": 1174.66, "dur": 0.28 }
+      ],
+      "gain": 0.5
+    },
+    "achievement": {
+      "wave": "square",
+      "tones": [
+        { "freq": 523.25, "dur": 0.1 },
+        { "freq": 659.25, "dur": 0.1 },
+        { "freq": 783.99, "dur": 0.1 },
+        { "freq": 1046.5, "dur": 0.1 },
+        { "freq": 1318.51, "dur": 0.4 }
+      ],
+      "gain": 0.6
+    },
+    "rare": {
+      "wave": "sine",
+      "tones": [
+        { "freq": 1046.5, "dur": 0.07 },
+        { "freq": 1318.51, "dur": 0.07 },
+        { "freq": 1567.98, "dur": 0.07 },
+        { "freq": 2093.0, "dur": 0.2 }
+      ],
+      "gain": 0.45
+    },
+    "purchase": {
+      "wave": "square",
+      "tones": [
+        { "freq": 987.77, "dur": 0.06 },
+        { "freq": 1318.51, "dur": 0.14 }
+      ],
+      "gain": 0.45
+    },
+    "error": {
+      "wave": "square",
+      "tones": [{ "freq": 160, "freq_end": 120, "dur": 0.22 }],
+      "gain": 0.5
+    }
+  },
+  "music": {
+    "explore": {
+      "_comment": "Calm loop for idle play: gentle arpeggio over Am-F-C-G with a soft bass.",
+      "root_hz": 220.0,
+      "bpm": 84,
+      "chords": [[0, 3, 7], [8, 12, 15], [3, 7, 10], [7, 11, 14]],
+      "pattern": [0, 1, 2, 1, 0, 2, 1, 2],
+      "wave": "triangle",
+      "bass_wave": "sine",
+      "lead_gain": 0.5,
+      "bass_gain": 0.6,
+      "rate": 22050
+    },
+    "combat": {
+      "_comment": "Driving loop for fights: minor arpeggio, faster tempo.",
+      "root_hz": 196.0,
+      "bpm": 132,
+      "chords": [[0, 3, 7], [0, 3, 7], [5, 8, 12], [7, 10, 14]],
+      "pattern": [0, 2, 1, 2, 0, 2, 1, 0],
+      "wave": "saw",
+      "bass_wave": "square",
+      "lead_gain": 0.4,
+      "bass_gain": 0.45,
+      "rate": 22050
+    }
+  },
+  "events": {
+    "skill_level_up": "levelup",
+    "mastery_level_up": "mastery",
+    "item_obtained": { "sound": "pickup", "throttle_ms": 300 },
+    "monster_killed": { "sound": "kill", "throttle_ms": 250 },
+    "player_attacked": { "sound": "hit", "throttle_ms": 200 },
+    "monster_attacked": { "sound": "hit", "throttle_ms": 200 },
+    "player_died": "death",
+    "combat_started": "combat_start",
+    "dungeon_completed": "victory",
+    "quest_completed": "quest",
+    "achievement_unlocked": "achievement",
+    "pet_unlocked": { "sound": "rare", "throttle_ms": 500 },
+    "item_discovered": { "sound": "rare", "throttle_ms": 500 },
+    "monster_discovered": { "sound": "rare", "throttle_ms": 500 },
+    "dungeon_discovered": { "sound": "rare", "throttle_ms": 500 },
+    "shop_upgrade_purchased": "purchase",
+    "prayer_activated": { "sound": "chime", "throttle_ms": 400 },
+    "save_blocked": "error"
+  },
+  "music_events": {
+    "combat_started": "combat",
+    "combat_ended": "explore"
+  },
+  "notification_sounds": {
+    "_comment": "notification(text, kind) picks a sound by kind; unlisted kinds are silent.",
+    "error": "error",
+    "success": "chime"
+  }
+}

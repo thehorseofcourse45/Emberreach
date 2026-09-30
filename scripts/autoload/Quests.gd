@@ -1,5 +1,7 @@
 extends Node
-## Quests — authored, data-driven progression tasks (res://data/quests.json).
+## Quests — authored, data-driven progression tasks (res://data/quests.json), plus the
+## rotating pool (res://data/rotating_tasks.json) whose featured selection changes every six
+## hours; the selection is deterministic per window, so every player sees the same rotation.
 ##
 ## Lifecycle:  locked -> available -> active -> complete -> claimed
 ##
@@ -16,11 +18,25 @@ extends Node
 ## and the bank are absolute, not session-relative.
 
 const DATA_PATH: String = "res://data/quests.json"
+const ROTATING_PATH: String = "res://data/rotating_tasks.json"
+## The rotation window: every six hours the featured selection changes.
+const ROTATION_PERIOD_SECONDS: int = 6 * 3600
+## How many of the pool's tasks are featured per window.
+const FEATURED_ROTATING_COUNT: int = 5
+## Fixed seed so every player sees the same rotation for the same window.
+const ROTATION_SEED: int = 20_260_928
+## Difficulty tiers, in display order; these drive the Tasks screen sub-tabs.
+const DIFFICULTIES: Array[String] = ["easy", "normal", "hard", "expert", "nightmare"]
 
 var _quests: Dictionary = {}          # quest_id -> definition
 var _order: Array[String] = []
 var _accepted: Dictionary = {}        # quest_id -> true
 var _claimed: Dictionary = {}         # quest_id -> true
+var _rotating: Dictionary = {}          # rotating task id -> true
+var _rotating_order: Array[String] = []
+## Verification hook: pins the rotation window so screenshots and checks stay stable.
+## Negative (the default) means the window follows the wall clock.
+var rotation_window_override: int = -1
 
 func _ready() -> void:
 	_load()
@@ -49,6 +65,36 @@ func _load() -> void:
 		_quests[quest_id] = q
 		_order.append(quest_id)
 	_order.sort_custom(func(a, b): return int(_quests[a].get("chapter", 0)) < int(_quests[b].get("chapter", 0)))
+	# Rotation tasks load after the main table and sit at the end of the order: the difficulty
+	# tabs filter them out by flag, and nothing that walks the main progression sees them
+	# interleaved with the chapter chain.
+	_load_rotating()
+	_order.append_array(_rotating_order)
+
+func _load_rotating() -> void:
+	_rotating.clear()
+	_rotating_order.clear()
+	if not FileAccess.file_exists(ROTATING_PATH):
+		push_warning("Quests: %s missing" % ROTATING_PATH)
+		return
+	var f := FileAccess.open(ROTATING_PATH, FileAccess.READ)
+	if f == null:
+		return
+	var text: String = f.get_as_text()
+	f.close()
+	var parsed: Variant = JSON.parse_string(text)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_warning("Quests: rotating_tasks.json is not a JSON object")
+		return
+	var raw: Dictionary = parsed
+	raw.erase("_comment")
+	for quest_id in raw.keys():
+		var q: Variant = raw[quest_id]
+		if typeof(q) != TYPE_DICTIONARY:
+			continue
+		_quests[quest_id] = q
+		_rotating[quest_id] = true
+		_rotating_order.append(quest_id)
 
 # ---------------- queries ----------------
 
@@ -70,6 +116,46 @@ func visible_ids() -> Array[String]:
 		if prerequisites_met(id):
 			out.append(id)
 	return out
+
+## Rotation: the featured selection steps to a new set every six hours.
+func is_rotating(quest_id: String) -> bool:
+	return _rotating.has(quest_id)
+
+## The full rotation pool, in file order (stable: the featured pick depends on it).
+func rotating_pool_ids() -> Array[String]:
+	return _rotating_order.duplicate()
+
+## Unix-time window index; every six hours this steps to the next rotation.
+func rotation_window() -> int:
+	if rotation_window_override >= 0:
+		return rotation_window_override
+	return int(Time.get_unix_time_from_system() / float(ROTATION_PERIOD_SECONDS))
+
+## Seconds until the current window ends (always in (0, ROTATION_PERIOD_SECONDS]).
+func seconds_until_rotation() -> int:
+	if rotation_window_override >= 0:
+		return ROTATION_PERIOD_SECONDS
+	return ROTATION_PERIOD_SECONDS - int(Time.get_unix_time_from_system()) % ROTATION_PERIOD_SECONDS
+
+## Deterministic featured selection for a window: same window, same tasks, for everyone.
+func featured_rotating_ids_for_window(window: int) -> Array[String]:
+	var pool: Array[String] = rotating_pool_ids()
+	var take: int = mini(FEATURED_ROTATING_COUNT, pool.size())
+	var out: Array[String] = []
+	if take <= 0:
+		return out
+	var rng := RandomNumberGenerator.new()
+	rng.seed = ROTATION_SEED + window
+	var keyed: Array = []
+	for quest_id in pool:
+		keyed.append([rng.randi(), quest_id])
+	keyed.sort()
+	for i in range(take):
+		out.append(str(keyed[i][1]))
+	return out
+
+func featured_rotating_ids() -> Array[String]:
+	return featured_rotating_ids_for_window(rotation_window())
 
 func get_quest(quest_id: String) -> Dictionary:
 	return _quests.get(quest_id, {})

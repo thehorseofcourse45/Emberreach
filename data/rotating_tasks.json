@@ -1,0 +1,435 @@
+{
+  "_comment": "Emberreach rotating tasks. A featured selection from this pool changes every six hours (see Quests.ROTATION_PERIOD_SECONDS). These tasks have no prerequisites and rewards are granted exactly once, on explicit claim, like every other task. Reference checks: every id here exists in the item, monster, dungeon and skill tables.",
+  "timber_drive": {
+    "id": "timber_drive",
+    "name": "Timber Drive",
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "The settlement's stockpiles thin faster than the woods regrow. Bring back a proper haul.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 60,
+        "label": "Fell 60 Emberpine Logs",
+        "item_id": "normal_log",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "normal_tree"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "required": 25,
+        "label": "Complete 25 felling actions",
+        "skill_id": "woodcutting",
+        "action_id": "normal_tree",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "normal_tree"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 400,
+      "xp": {
+        "woodcutting": 300
+      }
+    }
+  },
+  "pantry_run": {
+    "id": "pantry_run",
+    "name": "Pantry Run",
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Salt, smoke and patience: the kitchen wants shrimp, and it wants them now.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 40,
+        "label": "Catch 40 Raw Marsh Shrimp",
+        "item_id": "raw_shrimp",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fishing",
+          "action_id": "shrimp"
+        }
+      },
+      {
+        "kind": "craft_item",
+        "required": 40,
+        "label": "Cook 40 Marsh Shrimp",
+        "item_id": "shrimp",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_shrimp"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 700,
+      "xp": {
+        "fishing": 250,
+        "cooking": 250
+      }
+    }
+  },
+  "cattle_call": {
+    "id": "cattle_call",
+    "name": "The Cattle Call",
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "The herds have strayed into the survey lines again. Thin them before they trample the stakes.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 30,
+        "label": "Defeat 30 Longhorn Steers",
+        "monster_id": "cow",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 500,
+      "xp": {
+        "strength": 300,
+        "hitpoints": 200
+      }
+    }
+  },
+  "arrow_quota": {
+    "id": "arrow_quota",
+    "name": "Arrow Quota",
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "The watch never has enough arrows. Nobody has ever complained about too many.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "required": 200,
+        "label": "Fletch 200 Bronze Arrows",
+        "item_id": "bronze_arrow",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fletching",
+          "action_id": "fletch_bronze_arrow"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 650,
+      "xp": {
+        "fletching": 350
+      }
+    }
+  },
+  "ore_convoy": {
+    "id": "ore_convoy",
+    "name": "Ore Convoy",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "Two hills, two metals, one cart. The forge does not care which comes first.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 50,
+        "label": "Mine 50 Iron Ore",
+        "item_id": "iron_ore",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "iron_ore"
+        }
+      },
+      {
+        "kind": "gain_item",
+        "required": 50,
+        "label": "Mine 50 Copper Ore",
+        "item_id": "copper_ore",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "copper_ore"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 800,
+      "xp": {
+        "mining": 400
+      }
+    }
+  },
+  "iron_appetite": {
+    "id": "iron_appetite",
+    "name": "Iron Appetite",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "The forge eats iron faster than the miners can feed it. Keep the crucible busy.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "required": 25,
+        "label": "Smelt 25 Iron Bars",
+        "item_id": "iron_bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 900,
+      "xp": {
+        "smithing": 500
+      }
+    }
+  },
+  "raider_sweep": {
+    "id": "raider_sweep",
+    "name": "Raider Sweep",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "Cinderkin raiding parties are probing the village edges. Push them back.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 40,
+        "label": "Defeat 40 Cinderkin Raiders",
+        "monster_id": "golbin",
+        "route": {
+          "screen": "combat",
+          "area_id": "golbin_village"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 700,
+      "xp": {
+        "attack": 400
+      }
+    }
+  },
+  "web_clearing": {
+    "id": "web_clearing",
+    "name": "Web Clearing",
+    "difficulty": "normal",
+    "region": "wet_forest",
+    "description": "Something in the marsh is spinning ropes across the paths. Cut the routes clear.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 30,
+        "label": "Defeat 30 Fen Spinners",
+        "monster_id": "spider",
+        "route": {
+          "screen": "combat",
+          "area_id": "wet_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 900,
+      "xp": {
+        "ranged": 450
+      }
+    }
+  },
+  "bone_tithe": {
+    "id": "bone_tithe",
+    "name": "The Bone Tithe",
+    "difficulty": "normal",
+    "region": "graveyard",
+    "description": "The Barrow of Names asks its toll in bone. The Devout will take it from there.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 60,
+        "label": "Collect 60 Bones",
+        "item_id": "bones",
+        "route": {
+          "screen": "combat",
+          "area_id": "graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 800,
+      "xp": {
+        "prayer": 400
+      }
+    }
+  },
+  "rune_reserve": {
+    "id": "rune_reserve",
+    "name": "Rune Reserve",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "The glyph well runs low. Raw essence does not mine itself.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 80,
+        "label": "Mine 80 Raw Glyph Essence",
+        "item_id": "rune_essence",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "rune_essence"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 900,
+      "xp": {
+        "runecrafting": 450
+      }
+    }
+  },
+  "essence_hunt": {
+    "id": "essence_hunt",
+    "name": "Essence Hunt",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "Harvested essence goes stale in the field. Get it to the workshops fresh.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 50,
+        "label": "Gather 50 Harvested Essence",
+        "item_id": "harvested_essence",
+        "route": {
+          "screen": "skill",
+          "skill_id": "harvesting",
+          "action_id": "basic"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "harvesting": 500
+      }
+    }
+  },
+  "roost_inspection": {
+    "id": "roost_inspection",
+    "name": "Roost Inspection",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "The roost's wards have gone slack again. Sweep it before the cinderkin settle in.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear The Plucked Roost twice",
+        "dungeon_id": "chicken_coop",
+        "route": {
+          "screen": "combat",
+          "area_id": "chicken_coop"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1200,
+      "xp": {
+        "hitpoints": 600
+      }
+    }
+  },
+  "colossus_patrol": {
+    "id": "colossus_patrol",
+    "name": "Colossus Patrol",
+    "difficulty": "hard",
+    "region": "wet_forest",
+    "description": "The colossi have wandered down-marsh, and rooks follow where they trample.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 15,
+        "label": "Defeat 15 Mossbound Colossi",
+        "monster_id": "moss_giant",
+        "route": {
+          "screen": "combat",
+          "area_id": "wet_forest"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 15,
+        "label": "Defeat 15 Sable Rooks",
+        "monster_id": "bandit",
+        "route": {
+          "screen": "combat",
+          "area_id": "bandit_hideout"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1500,
+      "xp": {
+        "defence": 700
+      }
+    }
+  },
+  "the_long_vigil": {
+    "id": "the_long_vigil",
+    "name": "The Long Vigil",
+    "difficulty": "hard",
+    "region": "graveyard",
+    "description": "The dead of the Barrow grow restless when the watch is thin. Keep the vigil.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear the Barrow of Names",
+        "dungeon_id": "undead_graveyard",
+        "route": {
+          "screen": "combat",
+          "area_id": "undead_graveyard"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 25,
+        "label": "Defeat 25 Barrowbones",
+        "monster_id": "skeleton",
+        "route": {
+          "screen": "combat",
+          "area_id": "graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2500,
+      "xp": {
+        "prayer": 900,
+        "hitpoints": 500
+      }
+    }
+  },
+  "frontier_purse": {
+    "id": "frontier_purse",
+    "name": "The Frontier Purse",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "A campaign is won by ledgers as much as blades. Fatten the war chest.",
+    "objectives": [
+      {
+        "kind": "gp_total",
+        "required": 300000,
+        "label": "Earn 300,000 GP"
+      }
+    ],
+    "reward": {
+      "gp": 2000,
+      "xp": {}
+    }
+  }
+}

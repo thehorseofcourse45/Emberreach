@@ -1,7 +1,7 @@
 {
   "deedree": {
     "id": "deedree",
-    "name": "Deedree",
+    "name": "Vespera",
     "level_required": 1,
     "skill_focus": "farming",
     "stars": [
@@ -30,7 +30,7 @@
   },
   "iridan": {
     "id": "iridan",
-    "name": "Iridan",
+    "name": "Irielle",
     "level_required": 10,
     "skill_focus": "attack",
     "stars": [
@@ -59,7 +59,7 @@
   },
   "ameria": {
     "id": "ameria",
-    "name": "Ameria",
+    "name": "Aurelia",
     "level_required": 20,
     "skill_focus": "firemaking",
     "stars": [
@@ -88,7 +88,7 @@
   },
   "terra": {
     "id": "terra",
-    "name": "Terra",
+    "name": "Loamara",
     "level_required": 30,
     "skill_focus": "strength",
     "stars": [
@@ -117,7 +117,7 @@
   },
   "vale": {
     "id": "vale",
-    "name": "Vale",
+    "name": "Vaelith",
     "level_required": 35,
     "skill_focus": "hitpoints",
     "stars": [
@@ -146,7 +146,7 @@
   },
   "syllia": {
     "id": "syllia",
-    "name": "Syllia",
+    "name": "Serith",
     "level_required": 40,
     "skill_focus": "ranged",
     "stars": [
@@ -175,7 +175,7 @@
   },
   "arachi": {
     "id": "arachi",
-    "name": "Arachi",
+    "name": "Keshari",
     "level_required": 45,
     "skill_focus": "magic",
     "stars": [
@@ -204,7 +204,7 @@
   },
   "ko": {
     "id": "ko",
-    "name": "Ko",
+    "name": "Orrin",
     "level_required": 50,
     "skill_focus": "thieving",
     "stars": [
@@ -233,7 +233,7 @@
   },
   "tellus": {
     "id": "tellus",
-    "name": "Tellus",
+    "name": "Petrava",
     "level_required": 55,
     "skill_focus": "defence",
     "stars": [
@@ -262,7 +262,7 @@
   },
   "qimican": {
     "id": "qimican",
-    "name": "Qimican",
+    "name": "Qimara",
     "level_required": 60,
     "skill_focus": "herblore",
     "stars": [
@@ -320,7 +320,7 @@
   },
   "ashtar": {
     "id": "ashtar",
-    "name": "Ashtar",
+    "name": "Emberine",
     "level_required": 70,
     "skill_focus": "combat",
     "stars": [
@@ -349,7 +349,7 @@
   },
   "variel": {
     "id": "variel",
-    "name": "Variel",
+    "name": "Varrel",
     "level_required": 75,
     "skill_focus": "astrology",
     "stars": [
@@ -378,7 +378,7 @@
   },
   "nysa": {
     "id": "nysa",
-    "name": "Nysa",
+    "name": "Nyssara",
     "level_required": 80,
     "skill_focus": "prayer",
     "stars": [
@@ -407,7 +407,7 @@
   },
   "haemir": {
     "id": "haemir",
-    "name": "Haemir",
+    "name": "Haemros",
     "level_required": 85,
     "skill_focus": "slayer",
     "stars": [

@@ -33,6 +33,8 @@ func push(text: String, kind: String = "info") -> void:
 		return
 	if SimulationMode.is_silent():
 		return   # offline catch-up reports through the summary, not through toasts
+	if not EventBus.toasts_enabled(kind):
+		return   # the player muted this category; the overview log still records it
 	# Collapse a repeated message into a counter instead of adding another toast.
 	for entry in _entries:
 		if entry["text"] == text:

@@ -2,4 +2,24 @@
 .superpowers/
 .worktrees/
 shots/
+.shot_gate/
 *.tmp
+
+# Godot export output. Rebuildable from a checkout, and the .exe alone is 98MB — over
+# GitHub's 100MB per-file ceiling, so a stray export breaks the push outright.
+*.exe
+*.pck
+*.dll
+*.zip
+*.apk
+*.aab
+export_presets.cfg
+
+# Python bytecode from the tools/ audit scripts.
+__pycache__/
+*.pyc
+
+# Local before/after screenshots from the UI gate tool. 9MB of PNGs that only matter to
+# whoever ran the gate on this machine.
+tools/shot_baseline/
+tools/skills_audit/

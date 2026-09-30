@@ -24,7 +24,8 @@
       7
     ],
     "monsters": [
-      "golbin"
+      "golbin",
+      "cinderkin_scout"
     ],
     "flavour": "Tunnels of packed ash and scrap iron, dug by the Cinderkin who took this valley while it burned."
   },
@@ -38,7 +39,8 @@
     ],
     "monsters": [
       "zombie_hand",
-      "skeleton"
+      "skeleton",
+      "barrow_wraith"
     ],
     "flavour": "Stone cairns sink into grey soil. The names cut into them have been worn smooth by the ashfall."
   },
@@ -52,7 +54,8 @@
     ],
     "monsters": [
       "cow",
-      "golbin"
+      "golbin",
+      "drowned_wayfarer"
     ],
     "flavour": "The tide comes in over a drowned road. Whatever walked it still does."
   },
@@ -79,7 +82,8 @@
       44
     ],
     "monsters": [
-      "bandit"
+      "bandit",
+      "rook_marksman"
     ],
     "flavour": "A terraced camp under a broken viaduct, held by the Sable Rooks who tax the only road inland."
   },
@@ -93,13 +97,34 @@
     ],
     "monsters": [
       "moss_giant",
-      "guard"
+      "guard",
+      "frostfang_wolf"
     ],
     "hazard": {
       "player_accuracy_percent": -5.0,
       "label": "Driving ice: −5 accuracy"
     },
     "flavour": "Wind-scoured ridges above the treeline. An observatory of black glass sits at the summit."
+  },
+  "greyharrow_quarry": {
+    "id": "greyharrow_quarry",
+    "name": "Greyharrow Quarry",
+    "type": "area",
+    "level_range": [
+      43,
+      60
+    ],
+    "monsters": [
+      "greyharrow_husk",
+      "shale_stalker",
+      "quarry_echo",
+      "slag_golem"
+    ],
+    "hazard": {
+      "player_accuracy_percent": -5.0,
+      "label": "Dust drift: −5 accuracy"
+    },
+    "flavour": "A cut into the ridge that never closed. The stone it emptied still moves after dark."
   },
   "castle_of_kings": {
     "id": "castle_of_kings",
@@ -127,7 +152,8 @@
       120
     ],
     "monsters": [
-      "green_dragon"
+      "green_dragon",
+      "ash_drake"
     ],
     "requires": {
       "slayer": 60
@@ -147,7 +173,8 @@
       40
     ],
     "monsters": [
-      "spider"
+      "spider",
+      "broodweb_hunter"
     ],
     "requires": {
       "slayer": 20
@@ -190,7 +217,8 @@
     ],
     "monsters": [
       "abyssal_fiend",
-      "abyssal_lord"
+      "abyssal_lord",
+      "rift_weaver"
     ],
     "requires": {
       "slayer": 120

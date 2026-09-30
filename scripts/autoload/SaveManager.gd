@@ -33,6 +33,9 @@ const LEGACY_APP_NAMES: Array[String] = ["Melvor Idle Clone", "melvor-clone-godo
 const SAVE_VERSION: int = 2
 const AUTOSAVE_INTERVAL: float = 60.0
 const MAX_AUTOSAVE_INTERVAL: float = 600.0
+## The cadences Settings → Saves offers, in seconds. The list is deliberately short and
+## ascending: a shorter interval protects progress more, a longer one writes to disk less.
+const AUTOSAVE_CHOICES: Array[float] = [30.0, 60.0, 120.0, 300.0]
 
 ## Sections that must be Dictionaries for a save to be considered loadable.
 const REQUIRED_SECTIONS: Array[String] = ["player", "bank", "equipment"]
@@ -45,6 +48,8 @@ var last_save_unix: int = 0
 var last_save_ok: bool = true
 var save_on_major_event: bool = true
 var autosave_enabled: bool = true
+## The cadence in force. get_autosave_interval() re-derives it from the setting on every tick, so
+## a load or a reset cannot leave the timer running on a value the player never chose.
 var autosave_interval: float = AUTOSAVE_INTERVAL
 
 ## Populated when a load fails so the shell can offer recovery instead of a blank game.
@@ -69,16 +74,38 @@ func _ready() -> void:
 	EventBus.achievement_unlocked.connect(func(_a): _save_on_event())
 
 func _process(delta: float) -> void:
-	if not autosave_enabled:
+	# While the recovery screen waits for a decision the save is not ours to touch: the live slot
+	# holds the corrupt file and the backup is the only good copy.
+	if not autosave_enabled or GameManager.boot_state == GameManager.BootState.LOAD_FAILED:
 		return
 	_autosave_timer += delta
-	if _autosave_timer >= autosave_interval:
+	if _autosave_timer >= get_autosave_interval():
 		_autosave_timer = 0.0
+		# The offline marker must track the last persisted moment, or a save written now still
+		# claims the whole session is unclaimed and the next launch pays it out a second time.
+		PlayerData.last_offline_unix = int(Time.get_unix_time_from_system())
 		save_game()
 
 func _save_on_event() -> void:
 	if save_on_major_event and not _write_in_progress:
 		save_game(true)
+
+## Adopt the player's chosen cadence. The value is clamped here rather than at the UI because it
+## arrives from a save file: an old or hand-edited save must not be able to stall the autosave
+## or hammer the disk once per frame.
+func set_autosave_interval(seconds: float) -> void:
+	autosave_interval = clampf(seconds, AUTOSAVE_CHOICES[0], MAX_AUTOSAVE_INTERVAL)
+	PlayerData.settings["autosave_interval"] = autosave_interval
+	_autosave_timer = 0.0
+
+## The cadence in force, re-read from the live settings so a save load or a reset cannot leave
+## the timer running on a stale value.
+func get_autosave_interval() -> float:
+	var wanted: float = clampf(float(PlayerData.settings.get("autosave_interval", AUTOSAVE_INTERVAL)),
+		AUTOSAVE_CHOICES[0], MAX_AUTOSAVE_INTERVAL)
+	if not is_equal_approx(wanted, autosave_interval):
+		autosave_interval = wanted
+	return autosave_interval
 
 # =========================================================================
 #  Save
@@ -111,6 +138,8 @@ func build_save_data() -> Dictionary:
 		"quests": Quests.serialize(),
 		"achievements": Achievements.serialize(),
 		"goals": Goals.serialize(),
+		"prestige": PrestigeManager.serialize(),
+		"tutorial": TutorialManager.serialize(),
 	}
 
 ## Returns true when the save reached disk and re-read cleanly.
@@ -406,6 +435,12 @@ func _apply(data: Dictionary) -> void:
 	Quests.deserialize(data.get("quests", {}))
 	Achievements.deserialize(data.get("achievements", {}))
 	Goals.deserialize(data.get("goals", {}))
+	PrestigeManager.deserialize(data.get("prestige", {}))
+	TutorialManager.deserialize(data.get("tutorial", {}))
+	# One call, one place: every path that restores a save — load, migration, backup recovery and
+	# import — funnels through _apply, so the persisted speed and save cadence cannot survive in
+	# the file while a different value stays live in the autoloads.
+	GameManager.apply_session_settings()
 
 func delete_save() -> void:
 	_remove_file(SAVE_PATH)

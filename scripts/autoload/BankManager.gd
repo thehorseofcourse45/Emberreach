@@ -46,8 +46,15 @@ func _queue_notify() -> void:
 
 # ---------------- capacity ----------------
 
+## Capacity comes from the game mode's `bank_limit` in data/game_modes.json when it is non-zero
+## (that value becomes the base capacity, so modes can genuinely differ), plus purchased slots
+## and flat modifiers. 0 means "no mode override", so the base capacity applies.
+## ponytail: the mode limit is a base, not a hard ceiling — buying a slot is allowed to push
+## capacity past it. Clamping on every read would make a purchased slot silently vanish.
 func get_slot_limit() -> int:
-	return maxi(1, BASE_SLOTS + purchased_slots + int(ModifierManager.get_modifier(ModifierKeys.BANK_SPACE_FLAT)))
+	var mode_limit: int = int((DataLoader.game_modes.get(PlayerData.game_mode, {}) as Dictionary).get("bank_limit", 0))
+	var base: int = mode_limit if mode_limit > 0 else BASE_SLOTS
+	return maxi(1, base + purchased_slots + int(ModifierManager.get_modifier(ModifierKeys.BANK_SPACE_FLAT)))
 
 func get_used_slots() -> int:
 	return items.size()

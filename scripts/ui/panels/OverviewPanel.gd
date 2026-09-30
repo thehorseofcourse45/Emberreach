@@ -10,6 +10,10 @@ signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
 var _activity_box: VBoxContainer
+## First-run guidance sits directly above the suggestions: on a genuinely new character this is
+## the first thing on the screen that says what to do, and it retires itself into one friendly line
+## once the steps are done. It is a section, not a modal, so the first action is never blocked.
+var _tutorial_box: VBoxContainer
 var _goals_box: VBoxContainer
 var _suggest_box: VBoxContainer
 var _unlocks_box: VBoxContainer
@@ -24,9 +28,17 @@ var _tab_buttons: Array[Button] = []
 var _tab_ids: Array[String] = []
 var _skill_menu: OptionButton
 var _active_tab: String = ""
+var _dashboard_grid: GridContainer
 var _dashboard: VBoxContainer
 var _skill_box: VBoxContainer
 var _stats_box: VBoxContainer
+## Live XP readout for the open skill sub-tab. Cached on rebuild, polled per frame for the same
+## reason as SkillsPanel: the header must not wait for a level-up or a screen change to move.
+var _xp_bar: ProgressBar = null
+var _xp_bar_text: Label = null
+var _xp_remaining: Label = null
+var _xp_skill_id: String = ""
+var _xp_level_shown: int = -1
 var _log: Dictionary = Widgets.event_log(80)
 var _built: bool = false
 
@@ -52,6 +64,9 @@ func _build() -> void:
 	_skill_box = UIStyle.vbox(UITokens.SP_3)
 	add_child(_skill_box)
 	_skill_box.visible = false
+	# Getting started goes first, above "Current activity": on a brand-new character the activity
+	# card is an Idle 0.0% placeholder, and guidance under it would be one scroll too low.
+	_tutorial_box = _section("Getting started", "one step at a time — it moves on by itself")
 	_activity_box = _section("Current activity")
 	_goals_box = _section("Tracked goals", "pin anything with the Track button")
 	_suggest_box = _section("Suggested next steps", "derived from your actual progress")
@@ -60,6 +75,8 @@ func _build() -> void:
 	_loadout_box = _section("Combat readiness")
 	_events_box = _section("Recent events")
 	_stats_box = _section("Journey")
+	resized.connect(_update_dashboard_columns)
+	_update_dashboard_columns()
 
 func _build_tabs() -> void:
 	_tab_ids = [""]
@@ -119,8 +136,23 @@ func _section(title: String, hint := "") -> VBoxContainer:
 	var s := UIStyle.vbox(UITokens.SP_3)
 	s.set_meta("section_title", title)
 	s.set_meta("section_hint", hint)
-	_dashboard.add_child(s)
+	if title in ["Getting started", "Current activity"]:
+		_dashboard.add_child(s)
+	else:
+		if _dashboard_grid == null:
+			_dashboard_grid = GridContainer.new()
+			_dashboard_grid.add_theme_constant_override("h_separation", UITokens.SP_5)
+			_dashboard_grid.add_theme_constant_override("v_separation", UITokens.SP_5)
+			_dashboard.add_child(_dashboard_grid)
+		var card := UIStyle.panel()
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		card.add_child(s)
+		_dashboard_grid.add_child(card)
 	return s
+
+func _update_dashboard_columns() -> void:
+	if _dashboard_grid != null:
+		_dashboard_grid.columns = 2 if size.x >= 760 else 1
 
 # =========================================================================
 #  Refresh
@@ -136,6 +168,8 @@ func refresh() -> void:
 		_rebuild_skill_card(_active_tab)
 		return
 	# Highlighted quest guidance first when something is ready to claim.
+	TutorialManager.next_step()
+	_rebuild_tutorial()
 	_rebuild_activity()
 	_rebuild_goals()
 	_rebuild_suggestions()
@@ -144,6 +178,32 @@ func refresh() -> void:
 	_rebuild_loadout()
 	_rebuild_events()
 	_rebuild_stats()
+
+## key_value() returns an HBox of [key Label, value Label]; the value is the one we rewrite.
+func _value_label_of(row: Control) -> Label:
+	if row == null or row.get_child_count() < 2:
+		return null
+	return row.get_child(1) as Label
+
+## Live XP for the open skill sub-tab. Polled from the authoritative PlayerData state, so the
+## number on screen is the number the simulation awarded rather than a snapshot from page load.
+func _process(_delta: float) -> void:
+	# is_instance_valid, not != null: _clear() uses queue_free(), so a node freed by the last
+	# rebuild is still a non-null reference for the rest of that frame.
+	if not is_instance_valid(_xp_bar) or not is_instance_valid(_xp_bar_text) or _xp_skill_id == "":
+		return
+	var xp: float = PlayerData.get_xp(_xp_skill_id)
+	var level: int = PlayerData.get_level(_xp_skill_id)
+	# A level change re-derives the maximum, the label and the cap notice: let the rebuild do it.
+	if level != _xp_level_shown:
+		return
+	_xp_bar.value = clampf(XPTable.level_progress(xp, level), 0.0, 1.0)
+	var next_level: int = mini(level + 1, XPTable.MAX_LEVEL)
+	if _xp_bar_text != null:
+		_xp_bar_text.text = "%s / %s" % [UIStyle.fmt_exact(xp),
+			UIStyle.fmt_exact(float(XPTable.xp_for_level(next_level)))]
+	if _xp_remaining != null:
+		_xp_remaining.text = UIStyle.fmt_exact(float(XPTable.xp_to_next_level(xp, level)))
 
 func _clear(box: VBoxContainer) -> void:
 	for c in box.get_children():
@@ -167,17 +227,25 @@ func _rebuild_skill_card(skill_id: String) -> void:
 		str(skill.get("category", "skill")).capitalize(), level,
 		PlayerData.get_level_cap(skill_id)]))
 	_skill_box.add_child(UIStyle.title("%s — level %d" % [skill_name, level], UITokens.FONT_HEAD))
-	_skill_box.add_child(Widgets.progress_bar(XPTable.level_progress(xp, level), 1.0, UITokens.GOLD,
+	_skill_box.add_child(UIStyle.label(str(skill.get("description", "")), true, UITokens.FONT_MICRO))
+	var bar := Widgets.progress_bar(XPTable.level_progress(xp, level), 1.0, UITokens.GOLD,
 		"%s / %s" % [UIStyle.fmt_exact(xp), UIStyle.fmt_exact(float(XPTable.xp_for_level(next_level)))], 16,
-		"Level %d progress" % level))
+		"Level %d progress" % level)
+	_skill_box.add_child(bar)
+	_xp_bar = bar
+	_xp_bar_text = bar.get_child(0) as Label if bar.get_child_count() > 0 else null
+	_xp_skill_id = skill_id
+	_xp_level_shown = level
 	if at_cap:
 		_skill_box.add_child(UIStyle.colored_label(
 			"This skill is at its level cap. Activity mastery and gear are still worth raising.",
 			UITokens.GOLD, UITokens.FONT_SMALL))
 	else:
-		_skill_box.add_child(Widgets.key_value("XP to level %d" % next_level,
+		var to_next_row := Widgets.key_value("XP to level %d" % next_level,
 			UIStyle.fmt_exact(float(XPTable.xp_to_next_level(xp, level))), UITokens.GOLD,
-			"Level cap in your game mode: %d" % PlayerData.get_level_cap(skill_id)))
+			"Level cap in your game mode: %d" % PlayerData.get_level_cap(skill_id))
+		_skill_box.add_child(to_next_row)
+		_xp_remaining = _value_label_of(to_next_row)
 	_skill_box.add_child(Widgets.key_value("Activities", "%d total · %d unlocked at level %d" % [
 		DataLoader.get_action_count(skill_id),
 		DataLoader.get_unlocked_action_count(skill_id, level), level],
@@ -237,6 +305,53 @@ func _best_unlocked_action(skill_id: String, level: int) -> Dictionary:
 		best = action
 		best_level = needed
 	return best
+
+## First-run guidance. One card, the step the player is actually on, and a button that goes
+## where the step says. When every step is done the whole section collapses to a single line
+## rather than disappearing: "you finished this" is worth saying once, and the player is on a
+## screen that rebuilds, so an empty gap reads as a bug.
+func _rebuild_tutorial() -> void:
+	_clear(_tutorial_box)
+	if TutorialManager.step_count() <= 0:
+		_tutorial_box.set_meta("section_hint", "no guidance authored")
+		_tutorial_box.add_child(UIStyle.label("No onboarding content is loaded.", true, UITokens.FONT_SMALL))
+		return
+	if TutorialManager.is_finished():
+		_tutorial_box.set_meta("section_hint", "all done")
+		_tutorial_box.add_child(UIStyle.colored_label(
+			"You have been through the beginning. The sections below will keep working out what to do next.",
+			UITokens.GREEN, UITokens.FONT_SMALL))
+		return
+	var step: Dictionary = TutorialManager.describe(TutorialManager.current_index())
+	if step.is_empty():
+		return
+	_tutorial_box.set_meta("section_hint", "step %d of %d" % [int(step["index"]) + 1, TutorialManager.step_count()])
+	var card := UIStyle.card(true)
+	var col := UIStyle.vbox(UITokens.SP_2)
+	card.add_child(col)
+	var head := HFlowContainer.new()
+	head.add_theme_constant_override("h_separation", UITokens.SP_3)
+	head.add_theme_constant_override("v_separation", UITokens.SP_2)
+	head.add_child(UIStyle.label(str(step["title"]), false, UITokens.FONT_SUBHEAD))
+	head.add_child(Widgets.badge("Step %d of %d" % [int(step["index"]) + 1, TutorialManager.step_count()], UITokens.GOLD))
+	col.add_child(head)
+	var body := UIStyle.label(str(step["body"]), true, UITokens.FONT_SMALL)
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	col.add_child(body)
+	var cond: Dictionary = step.get("condition", {})
+	if not cond.is_empty():
+		col.add_child(Widgets.progress_bar(float(cond["current"]), float(cond["required"]),
+			UITokens.TEAL,
+			"%s / %s" % [UIStyle.fmt(float(cond["current"])), UIStyle.fmt(float(cond["required"]))], 10,
+			str(cond["label"])))
+	var route: Dictionary = step.get("route", {})
+	if not route.is_empty():
+		var go := UIStyle.primary_button("Take me there",
+			"Open the screen this step points at: %s" % str(cond.get("label", "next objective")))
+		var r: Dictionary = route
+		go.pressed.connect(func(): navigated.emit(r))
+		col.add_child(go)
+	_tutorial_box.add_child(card)
 
 func _rebuild_activity() -> void:
 	_clear(_activity_box)
@@ -389,7 +504,7 @@ func _rebuild_suggestions() -> void:
 		if str(s.get("icon_id", "")) != "":
 			var icon := TextureRect.new()
 			icon.texture = AssetRegistry.icon(str(s["icon_kind"]), str(s["icon_id"]))
-			icon.custom_minimum_size = Vector2(UITokens.ICON_MD, UITokens.ICON_MD)
+			icon.custom_minimum_size = Vector2(48, 48)
 			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			row.add_child(icon)
@@ -475,6 +590,11 @@ func _unlock_row(kind: String, title: String, detail: String, route: Dictionary,
 	row.add_theme_constant_override("h_separation", UITokens.SP_4)
 	row.add_theme_constant_override("v_separation", UITokens.SP_2)
 	card.add_child(row)
+	var icon := UIStyle.icon_texture("skills", str(route.get("skill_id", "woodcutting")))
+	if not route.has("skill_id"):
+		icon.texture = AssetRegistry.icon("currencies", "gp")
+	icon.custom_minimum_size = Vector2(40, 40)
+	row.add_child(icon)
 	row.add_child(Widgets.badge(kind, color))
 	var col := UIStyle.vbox(UITokens.SP_1)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -580,13 +700,16 @@ func _rebuild_stats() -> void:
 	var total_level: int = 0
 	for skill_id in DataLoader.get_skill_ids():
 		total_level += PlayerData.get_level(skill_id)
-	var unlocked_ach: int = Achievements.unlocked_count()
+	var ready_ach: int = Achievements.ready_count()
+	var claimed_ach: int = Achievements.claimed_count()
 	var claimed: int = Quests.claimed_count()
 	_stats_box.add_child(Widgets.key_value("Playtime", UIStyle.fmt_duration(GameManager.playtime_seconds)))
 	_stats_box.add_child(Widgets.key_value("Total skill levels", UIStyle.fmt_exact(float(total_level))))
 	_stats_box.add_child(Widgets.key_value("Combat level", str(PlayerData.get_combat_level())))
 	_stats_box.add_child(Widgets.key_value("Tasks completed", "%d of %d" % [claimed, Quests.count()]))
-	_stats_box.add_child(Widgets.key_value("Milestones", "%d of %d" % [unlocked_ach, Achievements.count()]))
+	_stats_box.add_child(Widgets.key_value("Milestones", "%d of %d" % [claimed_ach, Achievements.count()],
+		UITokens.GOLD_BRIGHT if ready_ach > 0 else UITokens.TEXT,
+		"%d ready to claim" % ready_ach if ready_ach > 0 else ""))
 	_stats_box.add_child(Widgets.key_value("Items discovered",
 		"%d of %d" % [(PlayerData.completion_log.get("items", {}) as Dictionary).size(), DataLoader.items.size()]))
 	_stats_box.add_child(Widgets.key_value("Enemies defeated (distinct)",

@@ -1,0 +1,116 @@
+{
+  "_comment": "First-run onboarding: the short path through a new character's first ten minutes. Steps are ordered by `order` and retire the moment their own `condition` is already true against live state — there is no claim step and no dismissal. Condition kinds: skill_level, have_item, kill_monster, do_actions (skill_id+action_id narrows it; omit both to count every action), gp_total, quests_claimed. Every counter read here is one the game already keeps, so the guide can never disagree with the save. `route` uses the Screens vocabulary: a screen id plus optionally skill_id / action_id / area_id.",
+  "first_firewood": {
+    "id": "first_firewood",
+    "order": 1,
+    "title": "Fall your first tree",
+    "body": "The survey stakes are in and the hearth is cold. Timbercraft is open to you from the first minute — pick Emberpine Tree and let a handful come down before you decide anything else.",
+    "condition": {
+      "kind": "do_actions",
+      "skill_id": "woodcutting",
+      "action_id": "normal_tree",
+      "required": 10,
+      "label": "Fell 10 Emberpine Trees"
+    },
+    "route": {
+      "screen": "skills",
+      "skill_id": "woodcutting",
+      "action_id": "normal_tree"
+    }
+  },
+  "first_bar": {
+    "id": "first_bar",
+    "order": 2,
+    "title": "Smelt a bar",
+    "body": "Copper and tin, one of each, and out comes something worth building with. Delving and Forgecraft are the two halves of the first real chain in the game.",
+    "condition": {
+      "kind": "have_item",
+      "item_id": "bronze_bar",
+      "required": 1,
+      "label": "Hold a Bronze Bar"
+    },
+    "route": {
+      "screen": "skills",
+      "skill_id": "smithing",
+      "action_id": "smelt_bronze_bar"
+    }
+  },
+  "first_weapon": {
+    "id": "first_weapon",
+    "order": 3,
+    "title": "Forge a weapon",
+    "body": "Holding a blade you made yourself is the difference between a settler and a resident. Anything you craft can be worn straight out of your stores.",
+    "condition": {
+      "kind": "have_item",
+      "item_id": "bronze_scimitar",
+      "required": 1,
+      "label": "Hold a Verdigris Scimitar"
+    },
+    "route": {
+      "screen": "skills",
+      "skill_id": "smithing",
+      "action_id": "smith_bronze_scimitar"
+    }
+  },
+  "first_fight": {
+    "id": "first_fight",
+    "order": 4,
+    "title": "Win a fight",
+    "body": "Combat runs itself once you commit, and the fields past Hearthfall are full of fowl that barely scratches. Wear the scimitar, walk into the Farmlands, and let it play out.",
+    "condition": {
+      "kind": "kill_monster",
+      "monster_id": "chicken",
+      "required": 1,
+      "label": "Defeat a Scrub Fowl"
+    },
+    "route": {
+      "screen": "combat",
+      "area_id": "farmlands"
+    }
+  },
+  "first_gold": {
+    "id": "first_gold",
+    "order": 5,
+    "title": "Earn 1,000 gold",
+    "body": "Gold buys permanent upgrades in the Provisioner and cheap stock in the General Store. Neither is much use until a run of it is behind you.",
+    "condition": {
+      "kind": "gp_total",
+      "required": 1000,
+      "label": "Earn 1,000 GP"
+    },
+    "route": {
+      "screen": "provisioner"
+    }
+  },
+  "timbercraft_five": {
+    "id": "timbercraft_five",
+    "order": 6,
+    "title": "Reach Timbercraft 5",
+    "body": "Levels, not items, open new activities. Keep felling and the bar fills on its own; the Ironbark Tree waiting at 10 is the first one that costs you thought.",
+    "condition": {
+      "kind": "skill_level",
+      "skill_id": "woodcutting",
+      "required": 5,
+      "label": "Timbercraft 5"
+    },
+    "route": {
+      "screen": "skills",
+      "skill_id": "woodcutting"
+    }
+  },
+  "first_task": {
+    "id": "first_task",
+    "order": 7,
+    "title": "Claim a task",
+    "body": "There are hundreds of them and they pay on claim rather than on completion. The easy ones are written for exactly where you are standing now.",
+    "condition": {
+      "kind": "quests_claimed",
+      "required": 1,
+      "label": "Claim 1 task"
+    },
+    "route": {
+      "screen": "quests"
+    },
+    "completion_note": "That is the shape of it: gather, craft, fight, then come back to the Overview and follow what it suggests next."
+  }
+}

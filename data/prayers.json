@@ -20,7 +20,7 @@
   },
   "clarity_of_thought": {
     "id": "clarity_of_thought",
-    "name": "Clear Thought",
+    "name": "Steady Mind",
     "level": 7,
     "prayer_point_cost": 0.5,
     "effect": {
@@ -96,7 +96,7 @@
   },
   "battleheart": {
     "id": "battleheart",
-    "name": "Battleheart",
+    "name": "Ironwill",
     "level": 50,
     "prayer_point_cost": 1.5,
     "effect": {
@@ -115,7 +115,7 @@
   },
   "annihilation": {
     "id": "annihilation",
-    "name": "Annihilation",
+    "name": "Ruinfall",
     "level": 70,
     "prayer_point_cost": 2.0,
     "effect": {
@@ -171,7 +171,7 @@
   },
   "rigour": {
     "id": "rigour",
-    "name": "Rigour",
+    "name": "Steady Aim",
     "level": 74,
     "prayer_point_cost": 2.0,
     "effect": {
@@ -191,7 +191,7 @@
   },
   "augury": {
     "id": "augury",
-    "name": "Augury",
+    "name": "Portent",
     "level": 77,
     "prayer_point_cost": 2.0,
     "effect": {
@@ -201,18 +201,366 @@
   },
   "redemption": {
     "id": "redemption",
-    "name": "Redemption",
+    "name": "Second Wind",
     "level": 49,
     "prayer_point_cost": 1.0,
     "type": "protect_item"
   },
   "smite": {
     "id": "smite",
-    "name": "Smite",
+    "name": "Wrathfall",
     "level": 52,
     "prayer_point_cost": 1.5,
     "effect": {
       "melee_max_hit_percent": 5
+    }
+  },
+  "hunter_1": {
+    "id": "hunter_1",
+    "name": "Hunter's Spark",
+    "level": 2,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "ranged_max_hit_percent": 3
+    }
+  },
+  "hunter_2": {
+    "id": "hunter_2",
+    "name": "Bowstring Blessing",
+    "level": 18,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "ranged_max_hit_percent": 8
+    }
+  },
+  "hunter_3": {
+    "id": "hunter_3",
+    "name": "Fletched Fury",
+    "level": 38,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "ranged_max_hit_percent": 13
+    }
+  },
+  "hunter_4": {
+    "id": "hunter_4",
+    "name": "Hawkwind",
+    "level": 58,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "ranged_max_hit_percent": 18
+    }
+  },
+  "hunter_5": {
+    "id": "hunter_5",
+    "name": "Stormflight",
+    "level": 88,
+    "prayer_point_cost": 3.0,
+    "effect": {
+      "ranged_max_hit_percent": 26
+    }
+  },
+  "hunter_6": {
+    "id": "hunter_6",
+    "name": "Celestial Volley",
+    "level": 110,
+    "prayer_point_cost": 4.0,
+    "effect": {
+      "ranged_max_hit_percent": 34
+    }
+  },
+  "arcanist_1": {
+    "id": "arcanist_1",
+    "name": "Ember Invocation",
+    "level": 6,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "magic_max_hit_percent": 3
+    }
+  },
+  "arcanist_2": {
+    "id": "arcanist_2",
+    "name": "Runic Surge",
+    "level": 24,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "magic_max_hit_percent": 8
+    }
+  },
+  "arcanist_3": {
+    "id": "arcanist_3",
+    "name": "Spellfire",
+    "level": 44,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "magic_max_hit_percent": 13
+    }
+  },
+  "arcanist_4": {
+    "id": "arcanist_4",
+    "name": "Astral Flame",
+    "level": 64,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "magic_max_hit_percent": 18
+    }
+  },
+  "arcanist_5": {
+    "id": "arcanist_5",
+    "name": "Starfall Rite",
+    "level": 92,
+    "prayer_point_cost": 3.0,
+    "effect": {
+      "magic_max_hit_percent": 26
+    }
+  },
+  "arcanist_6": {
+    "id": "arcanist_6",
+    "name": "Eternal Spellfire",
+    "level": 114,
+    "prayer_point_cost": 4.0,
+    "effect": {
+      "magic_max_hit_percent": 34
+    }
+  },
+  "veil_1": {
+    "id": "veil_1",
+    "name": "Sheltering Veil",
+    "level": 10,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "ranged_evasion_percent": 5,
+      "magic_evasion_percent": 5
+    }
+  },
+  "veil_2": {
+    "id": "veil_2",
+    "name": "Windward Veil",
+    "level": 30,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "ranged_evasion_percent": 12,
+      "magic_evasion_percent": 12
+    }
+  },
+  "veil_3": {
+    "id": "veil_3",
+    "name": "Wraithward",
+    "level": 48,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "ranged_evasion_percent": 20,
+      "magic_evasion_percent": 20
+    }
+  },
+  "veil_4": {
+    "id": "veil_4",
+    "name": "Twilight Shelter",
+    "level": 68,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "ranged_evasion_percent": 28,
+      "magic_evasion_percent": 28
+    }
+  },
+  "veil_5": {
+    "id": "veil_5",
+    "name": "Astral Shelter",
+    "level": 96,
+    "prayer_point_cost": 3.0,
+    "effect": {
+      "ranged_evasion_percent": 40,
+      "magic_evasion_percent": 40
+    }
+  },
+  "veil_6": {
+    "id": "veil_6",
+    "name": "Veil Beyond",
+    "level": 116,
+    "prayer_point_cost": 4.0,
+    "effect": {
+      "ranged_evasion_percent": 55,
+      "magic_evasion_percent": 55
+    }
+  },
+  "focus_1": {
+    "id": "focus_1",
+    "name": "Guiding Light",
+    "level": 14,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "melee_accuracy_percent": 3,
+      "ranged_accuracy_percent": 3,
+      "magic_accuracy_percent": 3
+    }
+  },
+  "focus_2": {
+    "id": "focus_2",
+    "name": "Surehand Rite",
+    "level": 32,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "melee_accuracy_percent": 6,
+      "ranged_accuracy_percent": 6,
+      "magic_accuracy_percent": 6
+    }
+  },
+  "focus_3": {
+    "id": "focus_3",
+    "name": "Unerring Focus",
+    "level": 54,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "melee_accuracy_percent": 10,
+      "ranged_accuracy_percent": 10,
+      "magic_accuracy_percent": 10
+    }
+  },
+  "focus_4": {
+    "id": "focus_4",
+    "name": "Fatewatch",
+    "level": 78,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "melee_accuracy_percent": 14,
+      "ranged_accuracy_percent": 14,
+      "magic_accuracy_percent": 14
+    }
+  },
+  "focus_5": {
+    "id": "focus_5",
+    "name": "Oracle's Sight",
+    "level": 100,
+    "prayer_point_cost": 3.0,
+    "effect": {
+      "melee_accuracy_percent": 20,
+      "ranged_accuracy_percent": 20,
+      "magic_accuracy_percent": 20
+    }
+  },
+  "focus_6": {
+    "id": "focus_6",
+    "name": "Perfect Clarity",
+    "level": 118,
+    "prayer_point_cost": 4.0,
+    "effect": {
+      "melee_accuracy_percent": 26,
+      "ranged_accuracy_percent": 26,
+      "magic_accuracy_percent": 26
+    }
+  },
+  "aegis_1": {
+    "id": "aegis_1",
+    "name": "Oakheart",
+    "level": 20,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "damage_reduction_percent": 1
+    }
+  },
+  "aegis_2": {
+    "id": "aegis_2",
+    "name": "Granite Covenant",
+    "level": 36,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "damage_reduction_percent": 2
+    }
+  },
+  "aegis_3": {
+    "id": "aegis_3",
+    "name": "Iron Covenant",
+    "level": 56,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "damage_reduction_percent": 3
+    }
+  },
+  "aegis_4": {
+    "id": "aegis_4",
+    "name": "Citadel Ward",
+    "level": 80,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "damage_reduction_percent": 4
+    }
+  },
+  "aegis_5": {
+    "id": "aegis_5",
+    "name": "Dawnguard",
+    "level": 104,
+    "prayer_point_cost": 3.0,
+    "effect": {
+      "damage_reduction_percent": 6
+    }
+  },
+  "aegis_6": {
+    "id": "aegis_6",
+    "name": "Eternal Bastion",
+    "level": 120,
+    "prayer_point_cost": 4.0,
+    "effect": {
+      "damage_reduction_percent": 8
+    }
+  },
+  "zeal_1": {
+    "id": "zeal_1",
+    "name": "Quickened Spirit",
+    "level": 12,
+    "prayer_point_cost": 0.5,
+    "effect": {
+      "attack_interval_percent": 3,
+      "min_hit_percent_of_max": 3
+    }
+  },
+  "zeal_2": {
+    "id": "zeal_2",
+    "name": "Battle Rhythm",
+    "level": 26,
+    "prayer_point_cost": 1.0,
+    "effect": {
+      "attack_interval_percent": 4,
+      "min_hit_percent_of_max": 5
+    }
+  },
+  "zeal_3": {
+    "id": "zeal_3",
+    "name": "Fervent Steps",
+    "level": 46,
+    "prayer_point_cost": 1.5,
+    "effect": {
+      "attack_interval_percent": 5,
+      "min_hit_percent_of_max": 7
+    }
+  },
+  "zeal_4": {
+    "id": "zeal_4",
+    "name": "Relentless Zeal",
+    "level": 66,
+    "prayer_point_cost": 2.0,
+    "effect": {
+      "attack_interval_percent": 6,
+      "min_hit_percent_of_max": 9
+    }
+  },
+  "zeal_5": {
+    "id": "zeal_5",
+    "name": "Radiant Tempo",
+    "level": 90,
+    "prayer_point_cost": 3.0,
+    "effect": {
+      "attack_interval_percent": 8,
+      "min_hit_percent_of_max": 12
+    }
+  },
+  "zeal_6": {
+    "id": "zeal_6",
+    "name": "Timeless Fervor",
+    "level": 112,
+    "prayer_point_cost": 4.0,
+    "effect": {
+      "attack_interval_percent": 10,
+      "min_hit_percent_of_max": 15
     }
   }
 }

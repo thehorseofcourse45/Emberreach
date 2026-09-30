@@ -94,7 +94,9 @@ const H_CONTROL := 32
 const H_ROW := 36
 const H_HEADER := 38
 const H_STRIP := 40
-const W_SIDEBAR := 208
+## Wide enough for the longest label at the level cap ("Marksmanship · Lv 120") with
+## slack; the sidebar scrolls vertically, so only width decides whether a label clips.
+const W_SIDEBAR := 240
 const W_SIDEBAR_COMPACT := 56
 ## The contextual detail pane. It was wide enough to compete with the workspace for attention, so
 ## it is deliberately the smaller half of the window: the workspace is where the game is played.

@@ -188,6 +188,28 @@ func _rebuild_browser() -> void:
 						EventBus.notify("Cannot equip %s — check requirements and storage space." % _item_name(target), "warn")
 					refresh())
 				row.add_child(b)
+			row.add_child(_upgrade_button(item_id))
+
+## The (S)/(G) upgrade sits next to the item it applies to, disabled with the exact reason
+## when materials are missing, so the recipe is discoverable instead of silently absent.
+func _upgrade_button(item_id: String) -> Control:
+	var data: Dictionary = DataLoader.get_item(item_id)
+	var target: String = str(data.get("upgrade_path", ""))
+	if target == "" or DataLoader.get_item(target).is_empty():
+		return Control.new()
+	var blocker: String = EquipmentManager.upgrade_blocker(item_id)
+	var b := UIStyle.button("Upgrade",
+		"Upgrade to %s — %s" % [
+			DataLoader.get_item(target).get("name", target),
+			"ready" if blocker == "" else blocker])
+	b.disabled = blocker != ""
+	var source: String = item_id
+	b.pressed.connect(func():
+		var result: Dictionary = EquipmentManager.upgrade(source)
+		if not bool(result.get("ok", false)):
+			EventBus.notify(str(result.get("reason", "Upgrade failed")), "warn")
+		refresh())
+	return b
 
 func _rebuild_sets() -> void:
 	_clear(_sets_box)
@@ -201,6 +223,9 @@ func _rebuild_sets() -> void:
 		var idx: int = i
 		var load_b := UIStyle.button(str(idx + 1), "Equip set %d" % [idx + 1])
 		if idx == EquipmentManager.active_set:
+			# The set number alone carries no meaning, so colour must not be the only signal:
+			# a check mark says "worn" in any palette.
+			load_b.text = "%d ✓" % [idx + 1]
 			load_b.add_theme_color_override("font_color", UITokens.GREEN)
 		load_b.pressed.connect(func():
 			if not EquipmentManager.load_set(idx):

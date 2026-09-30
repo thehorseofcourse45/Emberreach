@@ -51,6 +51,11 @@ def entry(tmpl, i, size, prio, name, extra=""):
 
 groups = []
 
+groups.append(("Navigation", "icons/navigation/{id}.png", "32x32", "P0", "Sidebar and navigation drawer icons.",
+    [entry("icons/navigation/{id}.png", i, "32x32", "P0", name) for i, name in [
+        ("action_queue", "Action Queue"), ("combat_simulator", "Simulator"), ("prayers", "Prayers"),
+        ("raids", "Raid"), ("settings", "Settings")]]))
+
 skill_ids = sorted([k for k in skills.keys() if not k.startswith("_")], key=lambda k: skills[k].get("order", 999))
 groups.append(("Items", "icons/items/{id}.png", "32x32", "P0",
     "One per item. Themed sheets are fine, each sheet works on arrival.",

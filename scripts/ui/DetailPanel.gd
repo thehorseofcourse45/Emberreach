@@ -379,6 +379,12 @@ func show_region(area_id: String) -> void:
 		sprite.texture = AssetRegistry.monster_sprite(str(monster_id))
 		sprite.custom_minimum_size = Vector2(UITokens.ICON_MD, UITokens.ICON_MD)
 		sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		if PlayerData.completion_log.get("monsters", {}).has(str(monster_id)):
+			sprite.modulate = Color(1, 1, 1, 1.0)
+			sprite.tooltip_text = "%s — defeated" % str(m.get("name", monster_id))
+		else:
+			sprite.modulate = Color(1, 1, 1, 0.35)
+			sprite.tooltip_text = "%s — not yet defeated" % str(m.get("name", monster_id))
 		head.add_child(sprite)
 		var col := UIStyle.vbox(UITokens.SP_1)
 		col.add_child(UIStyle.label("%s  (Lv %d)" % [str(m.get("name", monster_id)), int(m.get("combat_level", 1))], false, UITokens.FONT_SMALL))
@@ -406,13 +412,19 @@ func show_region(area_id: String) -> void:
 				_body.add_child(l)
 	if is_dungeon:
 		var reqs: Variant = row.get("requires", {})
-		if typeof(reqs) == TYPE_DICTIONARY and not (reqs as Dictionary).is_empty():
+		var prev: String = str(row.get("requires_dungeon", ""))
+		if (typeof(reqs) == TYPE_DICTIONARY and not (reqs as Dictionary).is_empty()) or prev != "":
 			_body.add_child(UIStyle.section("Unlock requirements"))
 			for skill_id in (reqs as Dictionary).keys():
 				var level: int = PlayerData.get_level(str(skill_id))
 				_body.add_child(Widgets.requirement_row(
 					"%s %d" % [str(DataLoader.get_skill(str(skill_id)).get("name", skill_id)), int(reqs[skill_id])],
 					float(level), float(reqs[skill_id]), level >= int(reqs[skill_id])))
+			if prev != "":
+				var cleared: bool = (PlayerData.completion_log.get("dungeons", {}) as Dictionary).has(prev)
+				_body.add_child(Widgets.requirement_row(
+					"Clear %s" % str(DataLoader.get_dungeon(prev).get("name", prev)),
+					1.0 if cleared else 0.0, 1.0, cleared, "Open Expeditions to attempt it"))
 		var reward: Dictionary = row.get("rewards_first_clear", {})
 		if not reward.is_empty():
 			_body.add_child(UIStyle.section("First-clear reward"))

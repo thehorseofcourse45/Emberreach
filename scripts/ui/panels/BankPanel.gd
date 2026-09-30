@@ -89,6 +89,9 @@ func _build() -> void:
 	var sell_all := UIStyle.danger_button("Sell filtered…", "Preview and confirm selling every unprotected item in the current filter")
 	sell_all.pressed.connect(_on_bulk_sell)
 	actions.add_child(sell_all)
+	var bury_all := UIStyle.primary_button("Bury all bones", "Consume every bone in the current filter for Prayer Points")
+	bury_all.pressed.connect(_on_bulk_bury)
+	actions.add_child(bury_all)
 	var track_sel := UIStyle.mini_button("Track selection")
 	track_sel.pressed.connect(func():
 		if _selected != "":
@@ -459,9 +462,33 @@ func _item_row(r: Dictionary) -> Control:
 		actions.add_child(_quick_button("Bury", func():
 			BankManager.bury_bone(item_id, 1)
 			refresh()))
+		actions.add_child(_quick_button("Bury all", func():
+			BankManager.bury_bone(item_id, BankManager.get_count(item_id))
+			refresh()))
 	if str(item.get("item_type", "")) == "potion":
 		actions.add_child(_quick_button("Drink", func():
 			PotionManager.use_potion(item_id)
+			refresh()))
+	elif str(item.get("item_type", "")) == "food":
+		var equip_food := Widgets.quantity_menu([
+			{"label": "Food slot 1"}, {"label": "Food slot 2"}, {"label": "Food slot 3"},
+		], func(slot):
+			if not EquipmentManager.equip_food(slot, item_id):
+				EventBus.notify("This food is already assigned to another slot.", "warn")
+			refresh(), "Assign this Storage stack to a combat food slot")
+		equip_food.text = "Equip food…"
+		actions.add_child(equip_food)
+		# The Eat button on the activity strip only ever picks the best food for you. This is how a
+		# player chooses a specific meal, which is the whole point of cooking your own.
+		var eat := _quick_button("Eat 1", func():
+			CombatManager.consume_food(item_id, 100.0, "Ate")
+			refresh())
+		eat.tooltip_text = "Heal %d HP now" % int(item.get("heal_amount", 0))
+		actions.add_child(eat)
+		actions.add_child(_quick_button("Eat all", func():
+			var n: int = BankManager.get_count(item_id)
+			for _i in range(n):
+				CombatManager.consume_food(item_id, 100.0, "Ate")
 			refresh()))
 	elif str(item.get("item_type", "")) == "equipment":
 		actions.add_child(_quick_button("Equip", func():
@@ -509,6 +536,34 @@ func _sell(item_id: String, mode: int) -> void:
 	if BankManager.sell_item(item_id, qty):
 		EventBus.notify("Sold %s ×%s for %s GP." % [str(preview["name"]),
 			UIStyle.fmt_exact(float(preview["quantity"])), UIStyle.fmt(float(preview["gp_gained"]))], "success")
+	refresh()
+
+func _on_bulk_bury() -> void:
+	var sort_mode: int = [BankManager.SortMode.NAME, BankManager.SortMode.QUANTITY,
+		BankManager.SortMode.VALUE, BankManager.SortMode.TYPE][_sort.selected]
+	var category: String = _category_keys[clampi(_category.selected, 0, maxi(0, _category_keys.size() - 1))]
+	var rows: Array = BankManager.sorted_list(_search.text, sort_mode, _ascending, category)
+	var entries: Array = []
+	for r in rows:
+		if str((r["data"] as Dictionary).get("item_type", "")) != "bone":
+			continue
+		entries.append(str(r["item_id"]))
+	if entries.is_empty():
+		EventBus.notify("No bones in the current filter.", "info")
+		return
+	var total: int = 0
+	for id in entries:
+		total += BankManager.get_count(id)
+	ConfirmDialog.ask(self, "Bury %d bone type(s)?" % entries.size(),
+		"This will consume %s bone(s) for Prayer Points." % UIStyle.fmt_exact(float(total)),
+		"Bury all", func():
+			var buried: int = 0
+			var points: float = 0.0
+			for id in entries:
+				var n: int = BankManager.bury_bone(id, BankManager.get_count(id))
+				buried += n
+			EventBus.notify("Buried %s bone(s)." % UIStyle.fmt_exact(float(buried)), "success")
+			refresh(), true)
 	refresh()
 
 func _on_bulk_sell() -> void:

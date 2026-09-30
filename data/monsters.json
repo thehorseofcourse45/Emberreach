@@ -39,7 +39,7 @@
       }
     ],
     "bone_type": "bones",
-    "slayer_xp": 0,
+    "slayer_xp": 2,
     "is_boss": false,
     "respawn_time": 3.0,
     "can_be_stunned": true,
@@ -84,7 +84,7 @@
       }
     ],
     "bone_type": "bones",
-    "slayer_xp": 0,
+    "slayer_xp": 3,
     "is_boss": false,
     "respawn_time": 3.0,
     "can_be_stunned": true,
@@ -324,7 +324,8 @@
     "magic_evasion": 45,
     "damage_reduction": 15,
     "passives": [
-      "regeneration"
+      "regeneration",
+      "thorns"
     ],
     "loot_table": [
       {
@@ -403,7 +404,10 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Still on duty. The orders are older than the settlement."
+    "flavour": "Still on duty. The orders are older than the settlement.",
+    "passives": [
+      "thorns"
+    ]
   },
   "rune_knight": {
     "id": "rune_knight",
@@ -494,6 +498,11 @@
         "min_quantity": 2
       },
       {
+        "item_id": "dragonite_bar",
+        "quantity": 1,
+        "chance": 0.12
+      },
+      {
         "is_currency": true,
         "currency_id": "gp",
         "quantity": 9000,
@@ -506,7 +515,10 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": false,
-    "flavour": "Slept through the ashfall under the moss. Waking up irritable."
+    "flavour": "Slept through the ashfall under the moss. Waking up irritable.",
+    "passives": [
+      "enrage"
+    ]
   },
   "golbin_chief": {
     "id": "golbin_chief",
@@ -551,7 +563,10 @@
     "respawn_time": 6.0,
     "can_be_stunned": false,
     "is_immune_to_effects": false,
-    "flavour": "Leads the Warrens. Wears the settlement's missing anvil as a shield."
+    "flavour": "Leads the Warrens. Wears the settlement's missing anvil as a shield.",
+    "passives": [
+      "enrage"
+    ]
   },
   "air_elemental": {
     "id": "air_elemental",
@@ -1295,7 +1310,8 @@
       "mist_touch"
     ],
     "passives": [
-      "regeneration"
+      "regeneration",
+      "enrage"
     ],
     "loot_table": [
       {
@@ -1323,5 +1339,584 @@
     "can_be_stunned": false,
     "is_immune_to_effects": true,
     "flavour": "The ashfall wearing a crown. It has been waiting at the Seat for you."
+  },
+  "cinderkin_scout": {
+    "id": "cinderkin_scout",
+    "name": "Cinderkin Scout",
+    "combat_level": 6,
+    "hitpoints": 18,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 4,
+    "accuracy_rating": 17,
+    "melee_evasion": 8,
+    "ranged_evasion": 8,
+    "magic_evasion": 8,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "bronze_sword",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 20,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 8,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Ash tunnel scouts mark trespassers for the raiders behind them."
+  },
+  "barrow_wraith": {
+    "id": "barrow_wraith",
+    "name": "Barrow Wraith",
+    "combat_level": 35,
+    "hitpoints": 92,
+    "attack_type": "magic",
+    "attack_speed": 2.8,
+    "max_hit": 12,
+    "accuracy_rating": 110,
+    "melee_evasion": 40,
+    "ranged_evasion": 40,
+    "magic_evasion": 40,
+    "damage_reduction": 12,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 260,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 60,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "A forgotten name wrapped in burial cloth and cold blue fire."
+  },
+  "drowned_wayfarer": {
+    "id": "drowned_wayfarer",
+    "name": "Drowned Wayfarer",
+    "combat_level": 28,
+    "hitpoints": 72,
+    "attack_type": "melee",
+    "attack_speed": 2.5,
+    "max_hit": 10,
+    "accuracy_rating": 88,
+    "melee_evasion": 31,
+    "ranged_evasion": 31,
+    "magic_evasion": 31,
+    "damage_reduction": 8,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "raw_swordfish",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 190,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 45,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "The old coastal road still leads its travelers out of the surf."
+  },
+  "rook_marksman": {
+    "id": "rook_marksman",
+    "name": "Rook Marksman",
+    "combat_level": 37,
+    "hitpoints": 96,
+    "attack_type": "ranged",
+    "attack_speed": 2.8,
+    "max_hit": 14,
+    "accuracy_rating": 130,
+    "melee_evasion": 43,
+    "ranged_evasion": 43,
+    "magic_evasion": 43,
+    "damage_reduction": 10,
+    "special_attacks": [
+      "quick_strike"
+    ],
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "leather_body",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 300,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 75,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Rook archers watch the viaduct from the ruins above."
+  },
+  "frostfang_wolf": {
+    "id": "frostfang_wolf",
+    "name": "Frostfang Wolf",
+    "combat_level": 70,
+    "hitpoints": 260,
+    "attack_type": "melee",
+    "attack_speed": 2.3,
+    "max_hit": 28,
+    "accuracy_rating": 380,
+    "melee_evasion": 130,
+    "ranged_evasion": 130,
+    "magic_evasion": 130,
+    "damage_reduction": 22,
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1500,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 220,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Ice gathers on its fangs before the pack even comes into view."
+  },
+  "ash_drake": {
+    "id": "ash_drake",
+    "name": "Ash Drake",
+    "combat_level": 115,
+    "hitpoints": 840,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 68,
+    "accuracy_rating": 1150,
+    "melee_evasion": 350,
+    "ranged_evasion": 350,
+    "magic_evasion": 350,
+    "damage_reduction": 43,
+    "special_attacks": [
+      "dragonfire"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "red_dragonhide",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 1,
+        "chance": 0.08
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 11000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 950,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false,
+    "flavour": "Young ashwyrms stalk the lava vents below the greater wyrm.",
+    "passives": [
+      "enrage"
+    ]
+  },
+  "broodweb_hunter": {
+    "id": "broodweb_hunter",
+    "name": "Broodweb Hunter",
+    "combat_level": 34,
+    "hitpoints": 90,
+    "attack_type": "ranged",
+    "attack_speed": 2.5,
+    "max_hit": 13,
+    "accuracy_rating": 115,
+    "melee_evasion": 38,
+    "ranged_evasion": 38,
+    "magic_evasion": 38,
+    "damage_reduction": 6,
+    "special_attacks": [],
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 270,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 65,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "A long-legged ambusher that waits where the web meets the reeds."
+  },
+  "rift_weaver": {
+    "id": "rift_weaver",
+    "name": "Rift Weaver",
+    "combat_level": 300,
+    "hitpoints": 6800,
+    "attack_type": "magic",
+    "attack_speed": 3.3,
+    "max_hit": 290,
+    "accuracy_rating": 4900,
+    "melee_evasion": 1200,
+    "ranged_evasion": 1200,
+    "magic_evasion": 1200,
+    "damage_reduction": 82,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 6,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 135000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5200,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "It knots broken space into snares around Riftmouth."
+  },
+  "greyharrow_husk": {
+    "id": "greyharrow_husk",
+    "name": "Greyharrow Husk",
+    "combat_level": 45,
+    "hitpoints": 140,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 17,
+    "accuracy_rating": 175,
+    "melee_evasion": 68,
+    "ranged_evasion": 56,
+    "magic_evasion": 50,
+    "damage_reduction": 16,
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "coal",
+        "quantity": 3,
+        "chance": 0.9,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "chance": 0.6,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 500,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 105,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "A man-shaped absence in the dust. It stands where the cut was deepest."
+  },
+  "shale_stalker": {
+    "id": "shale_stalker",
+    "name": "Shale Stalker",
+    "combat_level": 50,
+    "hitpoints": 165,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 19,
+    "accuracy_rating": 210,
+    "melee_evasion": 75,
+    "ranged_evasion": 85,
+    "magic_evasion": 60,
+    "damage_reduction": 18,
+    "passives": [],
+    "special_attacks": [
+      "venom_bite"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "steel_arrow",
+        "quantity": 5,
+        "chance": 0.85,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "coal",
+        "quantity": 2,
+        "chance": 0.7,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 650,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 125,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Flat as a fallen slab until it isn't. The shard-spray comes first, the bite after."
+  },
+  "quarry_echo": {
+    "id": "quarry_echo",
+    "name": "Quarry Echo",
+    "combat_level": 54,
+    "hitpoints": 185,
+    "attack_type": "magic",
+    "attack_speed": 2.6,
+    "max_hit": 21,
+    "accuracy_rating": 250,
+    "melee_evasion": 70,
+    "ranged_evasion": 70,
+    "magic_evasion": 95,
+    "damage_reduction": 19,
+    "passives": [],
+    "special_attacks": [
+      "guaranteed_hit"
+    ],
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "chance": 0.7,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 1,
+        "chance": 0.3
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 800,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 145,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Whatever was shouted here last still hasn't finished. It always finds you."
+  },
+  "slag_golem": {
+    "id": "slag_golem",
+    "name": "Slag Golem",
+    "combat_level": 58,
+    "hitpoints": 205,
+    "attack_type": "melee",
+    "attack_speed": 3.0,
+    "max_hit": 23,
+    "accuracy_rating": 290,
+    "melee_evasion": 100,
+    "ranged_evasion": 80,
+    "magic_evasion": 75,
+    "damage_reduction": 22,
+    "passives": [
+      "thorns",
+      "enrage"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "coal",
+        "quantity": 4,
+        "chance": 1.0,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "steel_bar",
+        "quantity": 1,
+        "chance": 0.5
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 165,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Kiln-waste and old mortar, knitted into something with a temper."
   }
 }

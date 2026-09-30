@@ -62,6 +62,10 @@ signal game_saved()
 signal game_loaded()
 signal offline_progress_summary(summary: Dictionary)
 signal notification(text: String, kind: String)
+## Emitted whenever GameManager.set_speed settles on a new value, so every control that displays
+## the speed (the top bar, Settings) can follow the one the player changed rather than keep its
+## own copy of the old number.
+signal game_speed_changed(speed: float)
 
 # --- Save health (Stage 1 hardening) ---
 ## kind is one of: "ok", "saving", "error", "blocked", "recovered".
@@ -80,6 +84,7 @@ signal quest_objective_progress(quest_id: String, index: int, current: float, re
 signal quest_completed(quest_id: String)
 signal quest_reward_claimed(quest_id: String)
 signal achievement_unlocked(achievement_id: String)
+signal achievement_reward_claimed(achievement_id: String)
 
 # --- Shell / activity strip ---
 signal activity_changed()
@@ -94,3 +99,22 @@ signal state_refreshed()
 
 func notify(text: String, kind: String = "info") -> void:
     notification.emit(text, kind)
+
+# --- Notification categories ---
+## Toast categories a player can mute from Settings → Notifications. Only the kinds that
+## actually repeat during normal play are listed: success (purchases, level-ups, completions),
+## warn (blocked purchases, an empty bank, a spent resource) and info (a depleted node
+## respawning, a potion expiring — the noisiest of all).
+##
+## "error" is deliberately absent: five sites in the whole codebase emit it, each one reports a
+## real problem (a save that could not be written, a save that could not be loaded), and there
+## is no play pattern that generates them in bulk. Muting those would be a way to hide data loss.
+const MUTABLE_NOTIFICATION_KINDS: Array[String] = ["success", "warn", "info"]
+
+## Whether a notification of this kind should raise a toast. The sink asks, rather than every
+## one of the ~30 emit sites tagging its call: one guard is the whole feature, and a new emitter
+## inherits it for free instead of needing a setting plumbed to it.
+static func toasts_enabled(kind: String) -> bool:
+    if not MUTABLE_NOTIFICATION_KINDS.has(kind):
+        return true
+    return bool(PlayerData.settings.get("notify_%s" % kind, true))

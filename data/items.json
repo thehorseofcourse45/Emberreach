@@ -461,7 +461,7 @@
   },
   "ent_mark": {
     "id": "ent_mark",
-    "name": "Ent Mark",
+    "name": "Oldroot Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
@@ -475,7 +475,7 @@
   },
   "ent_tablet": {
     "id": "ent_tablet",
-    "name": "Ent Tablet",
+    "name": "Oldroot Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
@@ -552,12 +552,12 @@
     "id": "ancient_sword",
     "name": "Sundering Blade",
     "item_type": "equipment",
-    "sell_price": 900,
+    "sell_price": 2600,
     "equipment_slot": 8,
     "attack_speed": 2.4,
     "equipment_stats": {
-      "slash": 30,
-      "melee_strength": 34
+      "slash": 48,
+      "melee_strength": 54
     },
     "level_requirements": {
       "attack": 70
@@ -673,7 +673,7 @@
   },
   "ring_of_power": {
     "id": "ring_of_power",
-    "name": "Ring of Power",
+    "name": "Signet of Force",
     "item_type": "equipment",
     "sell_price": 250,
     "equipment_slot": 7,
@@ -1482,7 +1482,7 @@
   },
   "oak_shortbow": {
     "id": "oak_shortbow",
-    "name": "Oak Shortbow",
+    "name": "Ironbark Shortbow",
     "item_type": "equipment",
     "sell_price": 30,
     "equipment_slot": 8,
@@ -1497,7 +1497,7 @@
   },
   "oak_longbow": {
     "id": "oak_longbow",
-    "name": "Oak Longbow",
+    "name": "Ironbark Longbow",
     "item_type": "equipment",
     "sell_price": 42,
     "equipment_slot": 8,
@@ -1512,7 +1512,7 @@
   },
   "willow_shortbow": {
     "id": "willow_shortbow",
-    "name": "Willow Shortbow",
+    "name": "Silverleaf Shortbow",
     "item_type": "equipment",
     "sell_price": 50,
     "equipment_slot": 8,
@@ -1527,7 +1527,7 @@
   },
   "willow_longbow": {
     "id": "willow_longbow",
-    "name": "Willow Longbow",
+    "name": "Silverleaf Longbow",
     "item_type": "equipment",
     "sell_price": 70,
     "equipment_slot": 8,
@@ -1542,7 +1542,7 @@
   },
   "yew_shortbow": {
     "id": "yew_shortbow",
-    "name": "Yew Shortbow",
+    "name": "Gravewood Shortbow",
     "item_type": "equipment",
     "sell_price": 110,
     "equipment_slot": 8,
@@ -1557,7 +1557,7 @@
   },
   "yew_longbow": {
     "id": "yew_longbow",
-    "name": "Yew Longbow",
+    "name": "Gravewood Longbow",
     "item_type": "equipment",
     "sell_price": 150,
     "equipment_slot": 8,
@@ -1572,7 +1572,7 @@
   },
   "magic_shortbow": {
     "id": "magic_shortbow",
-    "name": "Magic Shortbow",
+    "name": "Witchpine Shortbow",
     "item_type": "equipment",
     "sell_price": 220,
     "equipment_slot": 8,
@@ -1587,7 +1587,7 @@
   },
   "magic_longbow": {
     "id": "magic_longbow",
-    "name": "Magic Longbow",
+    "name": "Witchpine Longbow",
     "item_type": "equipment",
     "sell_price": 300,
     "equipment_slot": 8,
@@ -1602,7 +1602,7 @@
   },
   "redwood_shortbow": {
     "id": "redwood_shortbow",
-    "name": "Redwood Shortbow",
+    "name": "Bloodwood Shortbow",
     "item_type": "equipment",
     "sell_price": 420,
     "equipment_slot": 8,
@@ -1617,7 +1617,7 @@
   },
   "redwood_longbow": {
     "id": "redwood_longbow",
-    "name": "Redwood Longbow",
+    "name": "Bloodwood Longbow",
     "item_type": "equipment",
     "sell_price": 560,
     "equipment_slot": 8,
@@ -2022,7 +2022,7 @@
   },
   "black_dhide_body": {
     "id": "black_dhide_body",
-    "name": "Blighted D'hide Body",
+    "name": "Blighted Wyrmhide Body",
     "item_type": "equipment",
     "sell_price": 405,
     "equipment_slot": 1,
@@ -2037,7 +2037,7 @@
   },
   "black_dhide_chaps": {
     "id": "black_dhide_chaps",
-    "name": "Blighted D'hide Chaps",
+    "name": "Blighted Wyrmhide Chaps",
     "item_type": "equipment",
     "sell_price": 405,
     "equipment_slot": 2,
@@ -2052,7 +2052,7 @@
   },
   "black_dhide_vambraces": {
     "id": "black_dhide_vambraces",
-    "name": "Blighted D'hide Vambraces",
+    "name": "Blighted Wyrmhide Vambraces",
     "item_type": "equipment",
     "sell_price": 405,
     "equipment_slot": 4,
@@ -2067,7 +2067,7 @@
   },
   "black_dhide_coif": {
     "id": "black_dhide_coif",
-    "name": "Blighted D'hide Coif",
+    "name": "Blighted Wyrmhide Coif",
     "item_type": "equipment",
     "sell_price": 405,
     "equipment_slot": 0,
@@ -2312,14 +2312,14 @@
   },
   "poraxx": {
     "id": "poraxx",
-    "name": "Poraxx Herb",
+    "name": "Ashcap Herb",
     "item_type": "resource",
     "sell_price": 78,
     "is_stackable": true
   },
   "poraxx_seed": {
     "id": "poraxx_seed",
-    "name": "Poraxx Seed",
+    "name": "Ashcap Seed",
     "item_type": "seed",
     "sell_price": 80,
     "is_stackable": true,
@@ -2332,14 +2332,14 @@
   },
   "barrentoe": {
     "id": "barrentoe",
-    "name": "Barrentoe Herb",
+    "name": "Gravemoss Herb",
     "item_type": "resource",
     "sell_price": 93,
     "is_stackable": true
   },
   "barrentoe_seed": {
     "id": "barrentoe_seed",
-    "name": "Barrentoe Seed",
+    "name": "Gravemoss Seed",
     "item_type": "seed",
     "sell_price": 95,
     "is_stackable": true,
@@ -2572,7 +2572,7 @@
   },
   "chapeau_noir": {
     "id": "chapeau_noir",
-    "name": "Chapeau Noir",
+    "name": "Duskbrim",
     "item_type": "equipment",
     "sell_price": 5000,
     "equipment_slot": 0,
@@ -2587,7 +2587,7 @@
   },
   "knights_defender": {
     "id": "knights_defender",
-    "name": "Knight's Defender",
+    "name": "Sentinel's Defender",
     "item_type": "equipment",
     "sell_price": 8000,
     "equipment_slot": 9,
@@ -2600,182 +2600,182 @@
   },
   "mole_mark": {
     "id": "mole_mark",
-    "name": "Mole Mark",
+    "name": "Ashmole Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "mole_tablet": {
     "id": "mole_tablet",
-    "name": "Mole Tablet",
+    "name": "Ashmole Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "octopus_mark": {
     "id": "octopus_mark",
-    "name": "Octopus Mark",
+    "name": "Tidegrasp Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "octopus_tablet": {
     "id": "octopus_tablet",
-    "name": "Octopus Tablet",
+    "name": "Tidegrasp Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "pig_mark": {
     "id": "pig_mark",
-    "name": "Pig Mark",
+    "name": "Sootsow Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "pig_tablet": {
     "id": "pig_tablet",
-    "name": "Pig Tablet",
+    "name": "Sootsow Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "crow_mark": {
     "id": "crow_mark",
-    "name": "Crow Mark",
+    "name": "Cindercrow Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "crow_tablet": {
     "id": "crow_tablet",
-    "name": "Crow Tablet",
+    "name": "Cindercrow Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "leprechaun_mark": {
     "id": "leprechaun_mark",
-    "name": "Leprechaun Mark",
+    "name": "Glimmerkin Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "leprechaun_tablet": {
     "id": "leprechaun_tablet",
-    "name": "Leprechaun Tablet",
+    "name": "Glimmerkin Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "monkey_mark": {
     "id": "monkey_mark",
-    "name": "Monkey Mark",
+    "name": "Riftmonkey Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "monkey_tablet": {
     "id": "monkey_tablet",
-    "name": "Monkey Tablet",
+    "name": "Riftmonkey Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "salamander_mark": {
     "id": "salamander_mark",
-    "name": "Salamander Mark",
+    "name": "Cinderling Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "salamander_tablet": {
     "id": "salamander_tablet",
-    "name": "Salamander Tablet",
+    "name": "Cinderling Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "bear_mark": {
     "id": "bear_mark",
-    "name": "Bear Mark",
+    "name": "Ashbear Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "bear_tablet": {
     "id": "bear_tablet",
-    "name": "Bear Tablet",
+    "name": "Ashbear Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "devil_mark": {
     "id": "devil_mark",
-    "name": "Devil Mark",
+    "name": "Ashfiend Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "devil_tablet": {
     "id": "devil_tablet",
-    "name": "Devil Tablet",
+    "name": "Ashfiend Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "eagle_mark": {
     "id": "eagle_mark",
-    "name": "Eagle Mark",
+    "name": "Galecrest Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "eagle_tablet": {
     "id": "eagle_tablet",
-    "name": "Eagle Tablet",
+    "name": "Galecrest Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "owl_mark": {
     "id": "owl_mark",
-    "name": "Owl Mark",
+    "name": "Duskwing Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "owl_tablet": {
     "id": "owl_tablet",
-    "name": "Owl Tablet",
+    "name": "Duskwing Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "beaver_mark": {
     "id": "beaver_mark",
-    "name": "Beaver Mark",
+    "name": "Muddam Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "beaver_tablet": {
     "id": "beaver_tablet",
-    "name": "Beaver Tablet",
+    "name": "Muddam Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "fox_mark": {
     "id": "fox_mark",
-    "name": "Fox Mark",
+    "name": "Ashfox Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "fox_tablet": {
     "id": "fox_tablet",
-    "name": "Fox Tablet",
+    "name": "Ashfox Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
@@ -2796,140 +2796,140 @@
   },
   "occultist_mark": {
     "id": "occultist_mark",
-    "name": "Occultist Mark",
+    "name": "Ashcaller Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "occultist_tablet": {
     "id": "occultist_tablet",
-    "name": "Occultist Tablet",
+    "name": "Ashcaller Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "wolf_mark": {
     "id": "wolf_mark",
-    "name": "Wolf Mark",
+    "name": "Dustwolf Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "wolf_tablet": {
     "id": "wolf_tablet",
-    "name": "Wolf Tablet",
+    "name": "Dustwolf Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "minotaur_mark": {
     "id": "minotaur_mark",
-    "name": "Minotaur Mark",
+    "name": "Sunderhorn Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "minotaur_tablet": {
     "id": "minotaur_tablet",
-    "name": "Minotaur Tablet",
+    "name": "Sunderhorn Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "centaur_mark": {
     "id": "centaur_mark",
-    "name": "Centaur Mark",
+    "name": "Windhoof Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "centaur_tablet": {
     "id": "centaur_tablet",
-    "name": "Centaur Tablet",
+    "name": "Windhoof Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "witch_mark": {
     "id": "witch_mark",
-    "name": "Witch Mark",
+    "name": "Hexweaver Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "witch_tablet": {
     "id": "witch_tablet",
-    "name": "Witch Tablet",
+    "name": "Hexweaver Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "cyclops_mark": {
     "id": "cyclops_mark",
-    "name": "Cyclops Mark",
+    "name": "Stonegaze Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "cyclops_tablet": {
     "id": "cyclops_tablet",
-    "name": "Cyclops Tablet",
+    "name": "Stonegaze Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "yak_mark": {
     "id": "yak_mark",
-    "name": "Yak Mark",
+    "name": "Rimeyak Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "yak_tablet": {
     "id": "yak_tablet",
-    "name": "Yak Tablet",
+    "name": "Rimeyak Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "unicorn_mark": {
     "id": "unicorn_mark",
-    "name": "Unicorn Mark",
+    "name": "Starfoil Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "unicorn_tablet": {
     "id": "unicorn_tablet",
-    "name": "Unicorn Tablet",
+    "name": "Starfoil Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "dragon_mark": {
     "id": "dragon_mark",
-    "name": "Wyrm Mark",
+    "name": "Ashwyrm Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "dragon_tablet": {
     "id": "dragon_tablet",
-    "name": "Dragon Tablet",
+    "name": "Ashwyrm Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
   },
   "tortoise_mark": {
     "id": "tortoise_mark",
-    "name": "Tortoise Mark",
+    "name": "Mossback Mark",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true
   },
   "tortoise_tablet": {
     "id": "tortoise_tablet",
-    "name": "Tortoise Tablet",
+    "name": "Mossback Tablet",
     "item_type": "tablet",
     "sell_price": 5,
     "is_stackable": true
@@ -2978,28 +2978,28 @@
   },
   "food_box": {
     "id": "food_box",
-    "name": "Food Box",
+    "name": "Larder Crate",
     "item_type": "consumable",
     "sell_price": 500,
     "is_stackable": true
   },
   "bar_box": {
     "id": "bar_box",
-    "name": "Bar Box",
+    "name": "Ingot Crate",
     "item_type": "consumable",
     "sell_price": 500,
     "is_stackable": true
   },
   "wood_box": {
     "id": "wood_box",
-    "name": "Wood Box",
+    "name": "Timber Crate",
     "item_type": "consumable",
     "sell_price": 500,
     "is_stackable": true
   },
   "herb_box": {
     "id": "herb_box",
-    "name": "Herb Box",
+    "name": "Apothecary Crate",
     "item_type": "consumable",
     "sell_price": 500,
     "is_stackable": true
@@ -3156,7 +3156,7 @@
   },
   "mirror_shield": {
     "id": "mirror_shield",
-    "name": "Mirror Shield",
+    "name": "Lookingglass Ward",
     "item_type": "equipment",
     "sell_price": 50000,
     "equipment_slot": 9,
@@ -3165,7 +3165,7 @@
   },
   "magical_ring": {
     "id": "magical_ring",
-    "name": "Magical Ring",
+    "name": "Hexward Ring",
     "item_type": "equipment",
     "sell_price": 50000,
     "equipment_slot": 7,
@@ -3174,7 +3174,7 @@
   },
   "blazing_lantern": {
     "id": "blazing_lantern",
-    "name": "Blazing Lantern",
+    "name": "Cinder Lantern",
     "item_type": "equipment",
     "sell_price": 50000,
     "equipment_slot": 3,
@@ -3183,7 +3183,7 @@
   },
   "desert_hat": {
     "id": "desert_hat",
-    "name": "Desert Hat",
+    "name": "Dustveil Hat",
     "item_type": "equipment",
     "sell_price": 50000,
     "equipment_slot": 0,
@@ -3192,7 +3192,7 @@
   },
   "climbing_boots": {
     "id": "climbing_boots",
-    "name": "Climbing Boots",
+    "name": "Craghooks",
     "item_type": "equipment",
     "sell_price": 50000,
     "equipment_slot": 3,
@@ -4070,7 +4070,7 @@
   },
   "cape_of_completion": {
     "id": "cape_of_completion",
-    "name": "Cape of Completion",
+    "name": "Frontier Laurel",
     "item_type": "equipment",
     "sell_price": 200000000,
     "equipment_slot": 5,
@@ -4519,8 +4519,8 @@
     "equipment_slot": 8,
     "attack_speed": 2.4,
     "equipment_stats": {
-      "slash": 70,
-      "melee_strength": 90
+      "slash": 85,
+      "melee_strength": 108
     },
     "level_requirements": {
       "attack": 120
@@ -4535,10 +4535,12 @@
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
-      "slash": 34,
-      "melee_strength": 38
+      "slash": 52,
+      "melee_strength": 65
     },
-    "level_requirements": {},
+    "level_requirements": {
+      "attack": 50
+    },
     "special_attack": "life_leach",
     "is_raid_item": true,
     "raid_cost": 1500
@@ -4551,10 +4553,12 @@
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
-      "slash": 38,
-      "melee_strength": 42
+      "slash": 56,
+      "melee_strength": 70
     },
-    "level_requirements": {},
+    "level_requirements": {
+      "attack": 70
+    },
     "special_attack": "quick_strike",
     "is_raid_item": true,
     "raid_cost": 3000
@@ -4567,10 +4571,12 @@
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
-      "slash": 42,
-      "melee_strength": 46
+      "slash": 57,
+      "melee_strength": 71
     },
-    "level_requirements": {},
+    "level_requirements": {
+      "attack": 90
+    },
     "special_attack": "stun_bash",
     "is_raid_item": true,
     "raid_cost": 4500
@@ -4583,10 +4589,12 @@
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
-      "slash": 46,
-      "melee_strength": 50
+      "slash": 74,
+      "melee_strength": 92
     },
-    "level_requirements": {},
+    "level_requirements": {
+      "attack": 105
+    },
     "special_attack": "ocean_song",
     "is_raid_item": true,
     "raid_cost": 6000
@@ -4599,10 +4607,12 @@
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
-      "slash": 50,
-      "melee_strength": 54
+      "slash": 92,
+      "melee_strength": 115
     },
-    "level_requirements": {},
+    "level_requirements": {
+      "attack": 120
+    },
     "special_attack": "cloudburst_magic_ray",
     "is_raid_item": true,
     "raid_cost": 7500
@@ -4970,5 +4980,208 @@
     "sell_price": 8400,
     "is_stackable": true,
     "description": "Closed. The label is in your handwriting and you have never seen it before."
+  },
+  "adamantite_sword": {
+    "id": "adamantite_sword",
+    "name": "Skyiron Sword",
+    "item_type": "equipment",
+    "sell_price": 900,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "equipment_stats": {
+      "slash": 38,
+      "melee_strength": 42
+    },
+    "level_requirements": {
+      "attack": 50
+    }
+  },
+  "adamantite_scimitar": {
+    "id": "adamantite_scimitar",
+    "name": "Skyiron Scimitar",
+    "item_type": "equipment",
+    "sell_price": 900,
+    "equipment_slot": 8,
+    "attack_speed": 2.8,
+    "equipment_stats": {
+      "slash": 40,
+      "melee_strength": 42
+    },
+    "level_requirements": {
+      "attack": 50
+    }
+  },
+  "adamantite_battleaxe": {
+    "id": "adamantite_battleaxe",
+    "name": "Skyiron Battleaxe",
+    "item_type": "equipment",
+    "sell_price": 900,
+    "equipment_slot": 8,
+    "attack_speed": 3.4,
+    "equipment_stats": {
+      "slash": 42,
+      "melee_strength": 44
+    },
+    "level_requirements": {
+      "attack": 50
+    }
+  },
+  "adamantite_2h_sword": {
+    "id": "adamantite_2h_sword",
+    "name": "Skyiron 2H Sword",
+    "item_type": "equipment",
+    "sell_price": 900,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "slash": 44,
+      "melee_strength": 46
+    },
+    "level_requirements": {
+      "attack": 50
+    }
+  },
+  "adamantite_helmet": {
+    "id": "adamantite_helmet",
+    "name": "Skyiron Helm",
+    "item_type": "equipment",
+    "sell_price": 760,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 17,
+      "ranged_defence": 17,
+      "magic_defence": 17
+    },
+    "level_requirements": {
+      "defence": 50
+    }
+  },
+  "adamantite_platebody": {
+    "id": "adamantite_platebody",
+    "name": "Skyiron Platebody",
+    "item_type": "equipment",
+    "sell_price": 1900,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 44,
+      "ranged_defence": 44,
+      "magic_defence": 44
+    },
+    "level_requirements": {
+      "defence": 50
+    }
+  },
+  "adamantite_platelegs": {
+    "id": "adamantite_platelegs",
+    "name": "Skyiron Platelegs",
+    "item_type": "equipment",
+    "sell_price": 1140,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "melee_defence": 31,
+      "ranged_defence": 31,
+      "magic_defence": 31
+    },
+    "level_requirements": {
+      "defence": 50
+    }
+  },
+  "adamantite_boots": {
+    "id": "adamantite_boots",
+    "name": "Skyiron Boots",
+    "item_type": "equipment",
+    "sell_price": 760,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 14,
+      "ranged_defence": 14,
+      "magic_defence": 14
+    },
+    "level_requirements": {
+      "defence": 50
+    }
+  },
+  "adamantite_gloves": {
+    "id": "adamantite_gloves",
+    "name": "Skyiron Gauntlets",
+    "item_type": "equipment",
+    "sell_price": 380,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 11,
+      "ranged_defence": 11,
+      "magic_defence": 11
+    },
+    "level_requirements": {
+      "defence": 50
+    }
+  },
+  "burnt_food": {
+    "id": "burnt_food",
+    "name": "Burnt Food",
+    "item_type": "resource",
+    "sell_price": 0,
+    "is_stackable": true,
+    "description": "Ruined food. It cannot be eaten and nobody wants it."
+  },
+  "duskroot": {
+    "id": "duskroot",
+    "name": "Hushroot",
+    "item_type": "resource",
+    "sell_price": 108,
+    "is_stackable": true
+  },
+  "duskroot_seed": {
+    "id": "duskroot_seed",
+    "name": "Hushroot Seed",
+    "item_type": "seed",
+    "sell_price": 110,
+    "is_stackable": true,
+    "grow_seconds": 9600,
+    "base_survival": 0.6,
+    "product_item": "duskroot",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 120
+  },
+  "herald_bloom": {
+    "id": "herald_bloom",
+    "name": "Herald Bloom",
+    "item_type": "resource",
+    "sell_price": 123,
+    "is_stackable": true
+  },
+  "herald_bloom_seed": {
+    "id": "herald_bloom_seed",
+    "name": "Herald Bloom Seed",
+    "item_type": "seed",
+    "sell_price": 125,
+    "is_stackable": true,
+    "grow_seconds": 10500,
+    "base_survival": 0.6,
+    "product_item": "herald_bloom",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 135
+  },
+  "emberbloom": {
+    "id": "emberbloom",
+    "name": "Emberbloom",
+    "item_type": "resource",
+    "sell_price": 138,
+    "is_stackable": true
+  },
+  "emberbloom_seed": {
+    "id": "emberbloom_seed",
+    "name": "Emberbloom Seed",
+    "item_type": "seed",
+    "sell_price": 140,
+    "is_stackable": true,
+    "grow_seconds": 11400,
+    "base_survival": 0.6,
+    "product_item": "emberbloom",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 150
   }
 }

@@ -15,26 +15,29 @@ monsters, recipes, or skills.
 # Open the folder in the Godot 4.x editor and press F5, or run headless checks:
 godot --headless --path . -- --smoke       # formula / data verification
 godot --headless --path . -- --selftest    # end-to-end gameplay self-test
+python tools/shot_gate.py                  # visual regression gate (opens a real window)
 ```
 
 ## 2. Project layout
 
 ```
 melvor_clone_godot/
-├── project.godot              # autoload registration + settings
+├── project.godot              # 35 game autoloads + settings
 ├── data/                      # ALL content (JSON) — the "mod" surface
-│   ├── skills.json            # 29 skills; 10 fully specified (WC/Fish/Cook/Mine/Smith/Fire/Fletch/Craft/RC/Herb)
+│   ├── skills.json            # 34 skills; every skill has authored actions + a working system
 │   ├── items.json  monsters.json  dungeons.json  areas.json  game_modes.json
-│   └── shop.json  prayers.json  special_attacks.json  constellations.json  obstacles.json
-│       familiars.json  pets.json  slayer_tasks.json  shop_township.json
-│       cartography_hexes.json  archaeology_sites.json  harvesting_veins.json
+│   ├── quests.json  achievements.json  trader.json  raid_shop.json
+│   └── shop.json  shop_store.json  shop_township.json  prayers.json  special_attacks.json
+│       constellations.json  obstacles.json  familiars.json  pets.json  slayer_tasks.json
+│       cartography_hexes.json  archaeology_sites.json  harvesting_veins.json  audio.json
 ├── scripts/
-│   ├── autoload/              # 27 singletons (see §4)
-│   ├── combat/                # CombatFormulas.gd, StatusEffect.gd
+│   ├── autoload/              # 34 singletons (see §4)
+│   ├── combat/                # CombatFormulas.gd, StatusEffect.gd, CombatSimulator.gd
+│   ├── core/                  # ContentValidator, BalanceReport, tests helpers
 │   ├── resources/             # typed Resource classes (ItemData, MonsterData, ...)
-│   └── ui/                    # MainUI shell + TopBar, SkillList, SkillPanel,
-│                              #   CombatPanel, BankPanel, ShopPanel, RightPanel,
-│                              #   WelcomeBackModal, UIStyle
+│   ├── tests/                 # TestRunner (--tests, 396 checks)
+│   └── ui/                    # MainUI shell, SidebarNav, StatusBar, DetailPanel,
+│                              #   Widgets, UIStyle/UITokens, ui/screens/* panels
 ├── scenes/main.tscn           # entry scene
 └── assets/icons/icon.svg
 ```
@@ -52,7 +55,7 @@ replays elapsed time through the *same* code paths.
 
 ![Architecture](assets/architecture.png)
 
-## 4. Autoload singletons (27)
+## 4. Autoload singletons (35 game + 1 addon)
 
 | Singleton | Responsibility |
 |---|---|
@@ -81,23 +84,36 @@ replays elapsed time through the *same* code paths.
 | `PetManager` | Rare passive pet unlocks. |
 | `CartographyManager` | Hex travel, survey, Points of Interest. |
 | `ArchaeologyManager` | Excavation tracking + museum donations. |
-| `RaidManager` | Golbin Raid: waves, 3-choice picks, Raid Shop. |
+| `RaidManager` | Raid: waves, 3-choice picks, Raid Shop. |
+| `Goals` | Goal tracker: pinned items/recipes/unlocks with dependency chains. |
+| `Quests` | Data-driven tasks with event-driven objectives and exactly-once rewards. |
+| `Achievements` | Milestones with modest, exactly-once rewards. |
+| `ProgressTracker` | Lifetime counters feeding quests, milestones and the collection log. |
+| `ActionQueueManager` | Queued skill actions; policy and persistence for the queue screen. |
+| `LootFilterManager` | Loot filter policy for the combat simulator. |
+| `CombatSimulatorManager` | Win-chance simulation for an area/dungeon using the real formulas. |
+| `AudioManager` | Synthesized SFX + music from `data/audio.json`; Music/SFX volume buses. |
 | `AssetRegistry` | Art system: loads textures by convention, generates placeholders. |
 
 ## 5. Playable UI
 
-The centre panel swaps between four screens; the left sidebar lists all 29 skills.
+The shell has **16 screens** (Overview, Skills, Combat, Expeditions, Storage, Tasks,
+Milestones, Collection, Settlement, Provisioner, General Store, Equipment, Action Queue,
+Combat Simulator, Settings, Save recovery); the sidebar also lists all 34 skills.
 
 ![Playable UI loop](assets/ui_flow.png)
 
 | Screen | What it does |
 |---|---|
-| **Skill** | Pick any skill → action list (locked actions greyed), details, Start/Stop, live progress, mastery pool %, ≈ XP/hour, per-action mastery levels. |
-| **Combat** | Choose area (endless) or dungeon, attack style + melee sub-style, Start/ **Flee**, live monster/player HP bars, DR/attack-speed/crit readout, prayer toggles. |
-| **Bank** | Search + sort (name/qty/value/type), inspect, Sell 1 / Sell All / Equip / Bury / **Use** (drink potions). |
-| **Shop** | Buy upgrades with a live affordability/requirement check (reason shown when blocked). |
-| Right panel | Equipment by slot + headline combat stats (max hit, DR, attack speed). |
-| Top bar | GP / Slayer Coins / Prayer Points / combat level, Pause, Save. |
+| **Overview** | Dashboard: current activity, skill highlights, loadout readiness, goals, unlocks, events, suggestions — plus a sub-tab per skill. |
+| **Skills** | Pick any skill → action list (locked actions greyed), details, Start/Stop, live progress, mastery pool %, ≈ XP/hour, per-action mastery levels. |
+| **Combat / Expeditions** | Choose area (endless) or dungeon, attack style + sub-style, Start/ **Flee**, live HP bars, DR/attack-speed/crit readout, prayer toggles, area hazard readout. |
+| **Storage** | Search, sort, filters, favourites, protection, inspect, Sell 1 / Sell All / Equip / Bury / **Use**. |
+| **Provisioner / General Store** | Shelves you return to vs. a searchable catalogue of upgrades you exhaust. |
+| **Tasks / Milestones / Collection** | Quests with live objective progress, achievements, and the completion log. |
+| **Settlement** | Buildings with costs, upgrade path, and links to the systems they improve. |
+| Right panel | Contextual detail pane: equipment by slot, stats, goal routing, screen help. |
+| Top bar | Currencies, combat level, Pause, Save, action/activity strip. |
 | Welcome-back | Offline-progression summary modal on load. |
 
 ## 6. Data format
@@ -176,39 +192,48 @@ or the named helpers. Registry: `scripts/resources/ModifierKeys.gd`.
 | Check | Expected | Status |
 |---|---|---|
 | XP to level 99 / 120 | 13,034,431 / 104,273,167 | ✅ exact |
-| `level_for_xp(13034431)` | 99 | ✅ |
-| Hit chance equal / acc 2× / acc 3× | 50 % / 75 % / 83.33 % | ✅ |
-| Fresh-character combat level | 3 | ✅ |
-| Damage-reduction combine [10,15,20] | 38.8 % | ✅ |
-| Skills / items / monsters / dungeons | 29 / 380 / 29 / 11 | ✅ |
-| Special attacks loaded | 8 | ✅ |
-| UI panels constructed | 8 panels, no errors | ✅ |
+| Hit chance at equal ratings | 50 % | ✅ |
+| Fresh-character combat level | 1 | ✅ |
+| Skills / items / monsters / dungeons | 34 / 452 / 41 / 16 | ✅ |
+| Quests / achievements | 43 / 33 | ✅ |
+| Save version | 2 | ✅ |
+
+Formula depth beyond these (hit-chance curves, DR combination, level lookups, panel
+construction) is covered by `--tests` (**396 checks**).
 
 ### 7.2 `--selftest` (end-to-end gameplay)
 
-Observed output:
+22 checks, 0 failed. Progression trace observed:
 
 ```
-woodcutting actions=20 logs=20 xp=200 mastery_xp=27 mastery_src=true
-mining copper=20 node_hp=4
-smithing bars=35 scimitars=16 slash 0->7
-prayer toggled=true active=["thick_skin"] cost/attack=0.5 melee_evasion 0.0->5.0
-potion active=potion_dr_1 charges=10 DR 0.0->2.0
-combat kills(unique monsters)=3 special_attacks=4 hp=100
-slayer assigned=true monster=golbin
-agility built=true skill_xp_bonus=3.02
-astrology star=true attack_xp_bonus=3.0
-summoning tablets=75 equipped=true woodcut_interval_bonus=5.0
-cartography travelled=true poi_found=true
-thieving gp=6100139 pets=2
-god shard drop=1
-raid waves=4 raid_coins=43
-save+load ok=true woodcutting_lvl=3
+  1. New journey started; gold 0, woodcutting level 1
+  2. Gathered 40 × normal_log from woodcutting
+  3. Crafted bronze_helmet ×1 in smithing
+  4. Equipped bronze_helmet: yes
+  5. Expedition in farmlands: 182 victory(ies)
+  6. Task 'hands_that_build' claimed (300 GP, 2 objectives)
+  7. Built township_building_apothecary to level 1
+  8. Saved and reloaded: XP 664 -> 664, 2 buildings
+  9. Offline: 1h 00m processed, 1245 actions, 1 levels
+ 10. Totals: total levels 316, tasks claimed 2, milestones 7, items discovered 10
 ```
 
-The `mining`/`smithing` lines are the closed **gear loop**: ore mined (with node depletion),
-smelted into 35 bronze bars, smithed into 16 bronze scimitars, and equipping one raises the
-Slash attack bonus from 0 to 7.
+The gather → craft → equip → fight steps are the closed **gear loop**: logs gathered,
+a bronze helmet smithed and equipped, then 182 expedition victories.
+
+### 7.3 `tools/shot_gate.py` (visual regression gate)
+
+```bash
+python tools/shot_gate.py            # run the --shot sweep, compare, exit 1 on regressions
+python tools/shot_gate.py --update   # accept the current render as the new baseline
+```
+
+The gate opens a real window (never headless), renders all 49 shots at 420/900/1440 px and
+compares them per-pixel against `tools/shot_baseline/`. Static screens must match exactly;
+the handful of screens with live digits get a 0.25 % changed-pixel budget (measured drift on
+identical code is ≤ 0.06 %). Regressions get a magenta heatmap in `.shot_gate/diff/`.
+Baselines are tied to the machine that rendered them — re-run `--update` there after an
+intentional layout change.
 
 ## 7b. Art system & asset pipeline
 
@@ -246,8 +271,14 @@ version is `assets/manifest/asset_manifest.csv`.
 
 ## 9. Known gaps (see IMPLEMENTATION_ROADMAP.md)
 
-- Panels exist but are unstyled beyond a shared light theme; no art assets beyond the icon.
-- All 29 skills and the Phase 9 endgame (God Dungeons, Golbin Raid, Abyssal) are implemented.
+- All 34 skills, the Phase 9 endgame (God Dungeons, Raid, Abyssal) and the dark-fantasy UI
+  overhaul are implemented; area hazards **are** applied during combat (`_active_hazard()`).
 - Depth still light in places: Township tasks/education, Cartography ship upgrades, Archaeology
-  museum shop, Summoning tablet quantity scaling, Abyssal progression curve.
-- Area/slayer environmental debuffs are defined in data but not yet applied during combat.
+  museum shop, Summoning tablet quantity scaling.
+- Monster passives cover regeneration/thorns/enrage — most monsters still differ
+  statistically, not mechanically.
+- ~250 long-tail item display names are still Melvor-derived (rename-only pass, stable IDs).
+- Audio is fully synthesized (no recorded assets): two generative music tracks and 16 SFX
+  recipes rendered to PCM at load.
+- Prestige/ascension and respecialisation deliberately deferred (first journey not yet long
+  enough for a reset to be interesting).

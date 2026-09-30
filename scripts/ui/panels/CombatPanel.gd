@@ -8,18 +8,28 @@ extends VBoxContainer
 signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
-var _place_menu: OptionButton
+var _place_list: ItemList
 var _places: Array = []
 var _style_menu: OptionButton
 var _melee_menu: OptionButton
 var _area_menu: OptionButton
 var _fight_button: Button
 var _fight_box: VBoxContainer
+var _food_box: VBoxContainer
+var _food_controls: Array[Dictionary] = []
 var _prep_box: VBoxContainer
 var _places_box: VBoxContainer
 var _log: Dictionary = Widgets.event_log(40)
 var _selected_area: String = ""
 var _built: bool = false
+var _enemy_bar: ProgressBar = null
+var _enemy_text: Label = null
+var _player_bar: ProgressBar = null
+var _player_text: Label = null
+## Live meter rows (DPS etc). Polled in _process like the HP bars, so the numbers can never
+## disagree with the fight that produced them.
+var _meter_box: VBoxContainer = null
+var _meter_labels: Dictionary = {}
 var expeditions_only: bool = false
 
 func _ready() -> void:
@@ -35,7 +45,49 @@ func _ready() -> void:
 	EventBus.dungeon_completed.connect(func(d): _log["push"].call("%s cleared." % str(DataLoader.get_dungeon(d).get("name", d))))
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.activity_changed.connect(_refresh_fight)
+	EventBus.bank_changed.connect(_update_food_controls)
 	refresh()
+
+func _process(_delta: float) -> void:
+	# Bars are polled from the live simulation (same contract as the activity strip): the
+	# readout must never disagree with the fight that grants rewards.
+	if not _built:
+		return
+	if CombatManager.state == CombatManager.State.FIGHTING:
+		_live_bar(_enemy_bar, _enemy_text, CombatManager.monster_hp, maxf(1.0, float(CombatManager.monster_max_hp)),
+			"%s / %s" % [UIStyle.fmt(CombatManager.monster_hp), UIStyle.fmt(CombatManager.monster_max_hp)])
+		_live_bar(_player_bar, _player_text, CombatManager.player_hp, maxf(1.0, CombatManager._compute_max_hp()),
+			"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(CombatManager._compute_max_hp())])
+	_update_food_controls()
+	_refresh_meters()
+
+## Damage-per-second and session tallies. Reuses CombatManager.session_readout() so the
+## rolling window is computed once, in the simulation, not re-derived per frame per widget.
+func _refresh_meters() -> void:
+	if _meter_box == null or not is_instance_valid(_meter_box):
+		return
+	var r: Dictionary = CombatManager.session_readout()
+	var values: Dictionary = {
+		"dps": "%.1f/s" % float(r["dps"]),
+		"fight_dps": "%.1f/s" % float(r["fight_dps"]),
+		"damage_dealt": UIStyle.fmt(float(r["damage_dealt"])),
+		"damage_taken": UIStyle.fmt(float(r["damage_taken"])),
+		"gp_earned": UIStyle.fmt(float(r["gp_earned"])),
+		"kills": "%d" % int(r["kills"]),
+		"deaths": "%d" % int(r["deaths"]),
+		"fight_time": UIStyle.fmt_duration(float(r["fight_time"])),
+	}
+	for key in _meter_labels.keys():
+		var node: Variant = _meter_labels[key]
+		if node is Label and is_instance_valid(node):
+			(node as Label).text = str(values.get(str(key), "—"))
+
+func _live_bar(bar: ProgressBar, text_node: Label, value: float, maximum: float, text: String) -> void:
+	if bar != null and is_instance_valid(bar):
+		bar.max_value = maximum
+		bar.value = value
+	if text_node != null and is_instance_valid(text_node):
+		text_node.text = text
 
 func focus_route(route: Dictionary) -> void:
 	var area_id: String = str(route.get("area_id", ""))
@@ -54,6 +106,10 @@ func detail_context() -> Dictionary:
 func _build() -> void:
 	_built = true
 	add_child(UIStyle.title("Expeditions" if expeditions_only else "Combat", UITokens.FONT_DISPLAY))
+	var food_card := UIStyle.panel()
+	add_child(food_card)
+	_food_box = UIStyle.vbox(UITokens.SP_4)
+	food_card.add_child(_food_box)
 	var prep_card := UIStyle.panel()
 	add_child(prep_card)
 	_prep_box = UIStyle.vbox(UITokens.SP_4)
@@ -74,6 +130,7 @@ func _build() -> void:
 func refresh() -> void:
 	if not _built:
 		return
+	_rebuild_food()
 	_rebuild_prep()
 	_refresh_fight()
 	_rebuild_places()
@@ -106,7 +163,9 @@ func _rebuild_prep() -> void:
 		"%s / %s / %s" % [UIStyle.fmt(float(evasion["melee"])), UIStyle.fmt(float(evasion["ranged"])), UIStyle.fmt(float(evasion["magic"]))]))
 	_prep_box.add_child(Widgets.key_value("Damage reduction", UIStyle.fmt_percent(float(summary["damage_reduction"]) / 100.0), UITokens.TEAL))
 	var food: int = _food_count()
-	_prep_box.add_child(Widgets.key_value("Food in storage", UIStyle.fmt_exact(float(food)),
+	# A count of 0 is not self-evidently a problem, so the glyph states it, not just the red.
+	_prep_box.add_child(Widgets.key_value("Food in storage", "%s %s" % [
+			UIStyle.fmt_exact(float(food)), "✓" if food > 0 else "✗ none"],
 		UITokens.GREEN if food > 0 else UITokens.RED,
 		"Auto-eat: tier %d (threshold %s%%, efficiency %s%%)" % [
 			int(PlayerData.settings.get("auto_eat_tier", 0)),
@@ -143,11 +202,20 @@ func _refresh_fight() -> void:
 	# The log is cached across rebuilds, so lift it out before the clear frees the box's children.
 	Widgets.detach(_log["root"])
 	_clear(_fight_box)
+	_enemy_bar = null
+	_enemy_text = null
+	_player_bar = null
+	_player_text = null
+	_meter_box = null
+	_meter_labels = {}
 	_fight_box.add_child(UIStyle.section("Current expedition" if expeditions_only else "Current fight"))
 	var fighting: bool = CombatManager.state != CombatManager.State.IDLE
 	if not fighting:
 		_fight_box.add_child(UIStyle.label("No fight in progress. Choose an encounter below and check your preparation.",
 			true, UITokens.FONT_SMALL))
+		# Session meters outlive the fight: "what did that run earn" is the question asked
+		# immediately after retreating, and an empty panel would answer nothing.
+		_build_meters()
 		_fight_box.add_child(_log["root"])
 		return
 	var cmp: Dictionary = CombatManager.target_comparison()
@@ -155,28 +223,40 @@ func _refresh_fight() -> void:
 	head.add_theme_constant_override("separation", UITokens.SP_5)
 	var sprite := TextureRect.new()
 	sprite.texture = AssetRegistry.monster_sprite(CombatManager.current_monster_id)
-	sprite.custom_minimum_size = Vector2(UITokens.ICON_XL, UITokens.ICON_XL)
+	sprite.custom_minimum_size = Vector2(88, 88)
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	head.add_child(sprite)
 	var col := UIStyle.vbox(UITokens.SP_2)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not cmp.is_empty():
 		col.add_child(UIStyle.title("%s — level %d" % [str(cmp["monster_name"]), int(cmp["monster_level"])], UITokens.FONT_SUBHEAD))
-		col.add_child(Widgets.progress_bar(float(CombatManager.monster_hp),
+		_enemy_bar = Widgets.progress_bar(float(CombatManager.monster_hp),
 			maxf(1.0, float(CombatManager.monster_max_hp)), UITokens.RED,
 			"%s / %s" % [UIStyle.fmt(CombatManager.monster_hp), UIStyle.fmt(CombatManager.monster_max_hp)], 14,
-			"Enemy health"))
+			"Enemy health")
+		_enemy_text = (_enemy_bar.get_child(0) as Label) if _enemy_bar.get_child_count() > 0 else null
+		col.add_child(_enemy_bar)
 		col.add_child(Widgets.key_value("Damage type", str(cmp["monster_damage_type"]).capitalize()))
 		col.add_child(Widgets.key_value("Their max hit", str(int(cmp["monster_max_hit"])), UITokens.RED))
 		col.add_child(Widgets.key_value("Their damage reduction", UIStyle.fmt_percent(float(cmp["monster_damage_reduction"]) / 100.0)))
 		col.add_child(Widgets.key_value("Your hit chance", UIStyle.fmt_percent(float(cmp["your_hit_chance_percent"]) / 100.0), UITokens.TEAL,
 			"Derived from the live combat model, not a separate estimate"))
 		col.add_child(Widgets.key_value("Their hit chance", UIStyle.fmt_percent(float(cmp["their_hit_chance_percent"]) / 100.0), UITokens.AMBER))
+		var passives: Array = DataLoader.get_monster(str(CombatManager.current_monster_id)).get("passives", [])
+		if not passives.is_empty():
+			var passive_row := UIStyle.hbox(UITokens.SP_3)
+			for passive_id in passives:
+				var pid := str(passive_id)
+				passive_row.add_child(Widgets.badge(pid.capitalize(), _passive_color(pid), _passive_tip(pid)))
+			col.add_child(passive_row)
 	head.add_child(col)
 	_fight_box.add_child(head)
 	var maxhp: float = CombatManager._compute_max_hp()
-	_fight_box.add_child(Widgets.progress_bar(CombatManager.player_hp, maxhp, UITokens.GREEN,
-		"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)], 16))
+	_player_bar = Widgets.progress_bar(CombatManager.player_hp, maxhp, UITokens.GREEN,
+		"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)], 16)
+	_player_text = (_player_bar.get_child(0) as Label) if _player_bar.get_child_count() > 0 else null
+	_fight_box.add_child(_player_bar)
 	if not CombatManager.player_effects.is_empty():
 		var effects: Array[String] = []
 		for e in CombatManager.player_effects:
@@ -204,7 +284,40 @@ func _refresh_fight() -> void:
 		resume.pressed.connect(func(): CombatManager.combat_enabled = true)
 		buttons.add_child(resume)
 	_fight_box.add_child(buttons)
+	_build_meters()
 	_fight_box.add_child(_log["root"])
+
+## A rolling DPS window and session tallies. The combat log above already narrates each
+## exchange; these answer the question the log cannot — is the fight going faster than the
+## last one, and what has the session actually earned.
+func _build_meters() -> void:
+	_meter_labels = {}
+	_meter_box = UIStyle.vbox(UITokens.SP_2)
+	_meter_box.add_child(UIStyle.label("Meters", true, UITokens.FONT_MICRO))
+	var rows: Array = [
+		["dps", "DPS (60s window)"],
+		["fight_dps", "DPS (this fight)"],
+		["fight_time", "Fight time"],
+		["damage_dealt", "Damage dealt"],
+		["damage_taken", "Damage taken"],
+		["gp_earned", "Gold from combat"],
+		["kills", "Kills this session"],
+		["deaths", "Deaths this session"],
+	]
+	var r: Dictionary = CombatManager.session_readout()
+	for row in rows:
+		var key: String = str(row[0])
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", UITokens.SP_3)
+		var name_label := UIStyle.label(str(row[1]), true, UITokens.FONT_SMALL)
+		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		line.add_child(name_label)
+		var value_label := UIStyle.label("—", false, UITokens.FONT_SMALL)
+		line.add_child(value_label)
+		_meter_labels[key] = value_label
+		_meter_box.add_child(line)
+	_fight_box.add_child(_meter_box)
+	_refresh_meters()
 
 func _rebuild_places() -> void:
 	_clear(_places_box)
@@ -217,38 +330,47 @@ func _rebuild_places() -> void:
 	var selector := HFlowContainer.new()
 	selector.add_theme_constant_override("h_separation", UITokens.SP_4)
 	selector.add_theme_constant_override("v_separation", UITokens.SP_3)
-	_place_menu = OptionButton.new()
-	# "Region · <long name>" must be able to shrink and clip on a narrow window.
-	_place_menu.custom_minimum_size = Vector2(Widgets.MIN_CONTROL_W, UITokens.H_CONTROL)
-	_place_menu.clip_text = true
-	_place_menu.fit_to_longest_item = false
+	_place_list = ItemList.new()
+	_place_list.custom_minimum_size = Vector2(0, 220)
+	_place_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_place_list.max_columns = 1
+	_place_list.fixed_icon_size = Vector2i(36, 36)
 	_places.clear()
-	var areas: Array = DataLoader.areas.keys()
-	areas.sort_custom(func(a, b):
-		return int((DataLoader.areas[a].get("level_range", [0]) as Array)[0]) < int((DataLoader.areas[b].get("level_range", [0]) as Array)[0]))
 	if not expeditions_only:
-		for area_id in areas:
-			if str(DataLoader.areas[area_id].get("type", "area")) == "slayer_area":
+		for area_id in DataLoader.areas.keys():
+			var area: Dictionary = DataLoader.areas[area_id]
+			if str(area.get("type", "area")) == "slayer_area":
 				continue
-			_places.append({"type": "area", "id": area_id})
-			_place_menu.add_item("Region · %s" % str(DataLoader.areas[area_id].get("name", area_id)))
+			_places.append({"type": "area", "id": area_id,
+				"level": int((area.get("level_range", [0]) as Array)[0])})
 	for dungeon_id in DataLoader.dungeons.keys():
 		if CombatManager.is_expedition(str(dungeon_id)) != expeditions_only:
 			continue
-		_places.append({"type": "dungeon", "id": dungeon_id})
-		_place_menu.add_item(("Expedition · " if expeditions_only else "Dungeon · ") + str(DataLoader.dungeons[dungeon_id].get("name", dungeon_id)))
+		var dungeon: Dictionary = DataLoader.dungeons[dungeon_id]
+		_places.append({"type": "dungeon", "id": dungeon_id,
+			"level": int((dungeon.get("level_range", [0]) as Array)[0])})
+	_places.sort_custom(func(a, b): return int(a["level"]) < int(b["level"]))
+	for place in _places:
+		var id: String = str(place["id"])
+		if str(place["type"]) == "area":
+			_place_list.add_item("Region · %s" % str(DataLoader.areas[id].get("name", id)),
+				AssetRegistry.icon("areas", id))
+		else:
+			_place_list.add_item(("Expedition · " if expeditions_only else "Dungeon · ")
+				+ str(DataLoader.dungeons[id].get("name", id)), AssetRegistry.icon("dungeons", id))
 	if _selected_area == "" and not _places.is_empty():
 		_selected_area = str(_places[0]["id"])
 	var initial: int = 0
 	for i in range(_places.size()):
 		if str(_places[i]["id"]) == _selected_area:
 			initial = i
-	_place_menu.selected = initial
-	_place_menu.item_selected.connect(func(i):
+	_place_list.select(initial)
+	_place_list.item_selected.connect(func(i):
 		_selected_area = str(_places[i]["id"])
 		context_changed.emit({"kind": "region", "area_id": _selected_area})
 		_rebuild_places())
-	selector.add_child(_place_menu)
+	_places_box.add_child(_place_list)
+	_place_list.call_deferred("ensure_current_is_visible")
 	_fight_button = UIStyle.primary_button(("Begin expedition" if expeditions_only else "Start fight") if CombatManager.state == CombatManager.State.IDLE else "Change target (retreats)")
 	_fight_button.pressed.connect(_on_fight)
 	_fight_button.disabled = expeditions_only and CombatManager.expedition_unlock_reason() != ""
@@ -262,7 +384,13 @@ func _rebuild_places() -> void:
 	var card := UIStyle.card()
 	var col := UIStyle.vbox(UITokens.SP_2)
 	card.add_child(col)
-	col.add_child(UIStyle.title(str(place.get("name", _selected_area)), UITokens.FONT_SUBHEAD))
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", UITokens.SP_3)
+	var icon := UIStyle.icon_texture("dungeons" if is_dungeon else "areas", _selected_area)
+	icon.custom_minimum_size = Vector2(64, 64)
+	header.add_child(icon)
+	header.add_child(UIStyle.title(str(place.get("name", _selected_area)), UITokens.FONT_SUBHEAD))
+	col.add_child(header)
 	if str(place.get("flavour", "")) != "":
 		var f := UIStyle.label(str(place["flavour"]), true, UITokens.FONT_SMALL)
 		f.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -276,8 +404,9 @@ func _rebuild_places() -> void:
 			UITokens.AMBER, UITokens.FONT_SMALL))
 	if is_dungeon:
 		var reqs: Variant = place.get("requires", {})
+		var prev: String = str(place.get("requires_dungeon", ""))
 		var locked: bool = false
-		if typeof(reqs) == TYPE_DICTIONARY and not (reqs as Dictionary).is_empty():
+		if (typeof(reqs) == TYPE_DICTIONARY and not (reqs as Dictionary).is_empty()) or prev != "":
 			col.add_child(UIStyle.section("Unlock requirements"))
 			for skill_id in (reqs as Dictionary).keys():
 				var level: int = PlayerData.get_level(str(skill_id))
@@ -287,11 +416,18 @@ func _rebuild_places() -> void:
 				col.add_child(Widgets.requirement_row(
 					"%s %d" % [str(DataLoader.get_skill(str(skill_id)).get("name", skill_id)), needed],
 					float(level), float(needed), level >= needed))
+			if prev != "":
+				var cleared: bool = (PlayerData.completion_log.get("dungeons", {}) as Dictionary).has(prev)
+				if not cleared:
+					locked = true
+				col.add_child(Widgets.requirement_row(
+					"Clear %s" % str(DataLoader.get_dungeon(prev).get("name", prev)),
+					1.0 if cleared else 0.0, 1.0, cleared, "Open Expeditions to attempt it"))
 		if bool(place.get("equipment_locked", false)):
 			col.add_child(UIStyle.colored_label("Equipment cannot be changed during this expedition.",
 				UITokens.AMBER, UITokens.FONT_SMALL))
 		if locked:
-			col.add_child(UIStyle.colored_label("Locked — train the skills above to unlock this expedition.",
+			col.add_child(UIStyle.colored_label("Locked — %s" % CombatManager.dungeon_lock_reason(_selected_area),
 				UITokens.AMBER, UITokens.FONT_SMALL))
 		_fight_button.disabled = locked or (expeditions_only and CombatManager.expedition_unlock_reason() != "")
 		var reward: Dictionary = place.get("rewards_first_clear", {})
@@ -338,7 +474,83 @@ func _food_count() -> int:
 			n += int(BankManager.items[item_id])
 	return n
 
+## Passive tooltips: a mechanic the player cannot see is a mechanic that feels like a bug.
+func _passive_tip(passive_id: String) -> String:
+	match passive_id:
+		"regeneration": return "Heals 2% of its maximum health after every attack it makes."
+		"thorns": return "Reflects 10% of the damage it takes back at you while it stands."
+		"enrage": return "Hits 50% harder once it is at or below 25% health."
+	return passive_id.capitalize()
+
+func _passive_color(passive_id: String) -> Color:
+	match passive_id:
+		"regeneration": return UITokens.GREEN
+		"thorns": return UITokens.AMBER
+		"enrage": return UITokens.RED
+	return UITokens.PURPLE
+
 func _clear(box: Node) -> void:
 	for c in box.get_children():
 		box.remove_child(c)
 		c.queue_free()
+
+func _rebuild_food() -> void:
+	_clear(_food_box)
+	_food_controls.clear()
+	_food_box.add_child(UIStyle.section("Combat food", "Equip up to three foods from Storage. Eating uses one from its stack."))
+	var flow := HFlowContainer.new()
+	flow.add_theme_constant_override("h_separation", UITokens.SP_4)
+	flow.add_theme_constant_override("v_separation", UITokens.SP_4)
+	_food_box.add_child(flow)
+	for slot in range(EquipmentManager.FOOD_SLOT_COUNT):
+		var item_id: String = EquipmentManager.food_slots[slot]
+		var card := UIStyle.card()
+		card.custom_minimum_size.x = 180
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		flow.add_child(card)
+		var col := UIStyle.vbox(UITokens.SP_3)
+		card.add_child(col)
+		col.add_child(UIStyle.label("Food slot %d" % (slot + 1), true, UITokens.FONT_MICRO))
+		if item_id == "":
+			col.add_child(UIStyle.label("Empty", true))
+			var assign := UIStyle.button("Equip from Storage")
+			assign.pressed.connect(func(): navigated.emit({"screen": Screens.BANK}))
+			col.add_child(assign)
+			continue
+		var item: Dictionary = DataLoader.get_item(item_id)
+		var header := UIStyle.hbox()
+		header.add_child(Widgets.item_icon(item_id, 40))
+		var name_label := UIStyle.label(str(item.get("name", item_id)))
+		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		header.add_child(name_label)
+		col.add_child(header)
+		var count := UIStyle.label("", true, UITokens.FONT_SMALL)
+		col.add_child(count)
+		var buttons := UIStyle.hbox()
+		col.add_child(buttons)
+		var eat := UIStyle.primary_button("Eat")
+		var index: int = slot
+		eat.pressed.connect(func():
+			EquipmentManager.eat_food_slot(index)
+			_update_food_controls())
+		buttons.add_child(eat)
+		var clear := UIStyle.mini_button("Clear", "Remove the assignment; food stays in Storage")
+		clear.pressed.connect(func(): EquipmentManager.equip_food(index, ""))
+		buttons.add_child(clear)
+		_food_controls.append({"item_id": item_id, "count": count, "eat": eat})
+	_update_food_controls()
+
+func _update_food_controls() -> void:
+	for entry in _food_controls:
+		var count: Label = entry["count"]
+		var eat: Button = entry["eat"]
+		if not is_instance_valid(count) or not is_instance_valid(eat):
+			continue
+		var item_id: String = str(entry["item_id"])
+		var quantity: int = BankManager.get_count(item_id)
+		var heal: float = float(DataLoader.get_item(item_id).get("heal_amount", 0)) * (1.0 + ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT) / 100.0)
+		count.text = "%s left · +%s HP" % [UIStyle.fmt_exact(quantity), UIStyle.fmt(heal)]
+		var full: bool = CombatManager.player_hp >= CombatManager._compute_max_hp()
+		eat.disabled = quantity <= 0 or full
+		eat.text = "Out of food" if quantity <= 0 else ("Full health" if full else "Eat")
+		eat.tooltip_text = "Eat one to restore up to %s HP" % UIStyle.fmt(heal)
