@@ -59,7 +59,6 @@ ActionQueueManager="*res://scripts/autoload/ActionQueueManager.gd"
 LootFilterManager="*res://scripts/autoload/LootFilterManager.gd"
 CombatSimulatorManager="*res://scripts/autoload/CombatSimulatorManager.gd"
 AudioManager="*res://scripts/autoload/AudioManager.gd"
-_mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
 
 [debug]
 
@@ -74,10 +73,6 @@ window/size/window_height_override=880
 window/stretch/aspect="expand"
 window/size/min_width=420
 window/size/min_height=520
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
 
 [rendering]
 

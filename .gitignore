@@ -43,3 +43,17 @@ assets/ASSET_STATUS.md
 docs/superpowers/
 .unlazy/
 
+# Editor plugins and the MCP bridge. Dev tooling, not game code: project.godot no longer
+# registers them, so a checkout runs without them.
+addons/
+
+# Offline asset/manifest generators. The game's own checks are the Godot flags in §1
+# (--smoke, --tests, --selftest) and need no Python. Kept on disk, just not in the repo.
+*.py
+*.pyc
+
+# Design artefacts from authoring the art, not art the game loads.
+ui_kit_contact_sheet.png*
+tab_check.png*
+assets/architecture.png*
+

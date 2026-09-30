@@ -1,8 +1,7 @@
-# Melvor Idle Clone — Godot 4.2 (GDScript)
+# Emberreach — Godot 4 (GDScript)
 
-A data-driven, offline-capable idle RPG modelled on **Melvor Idle**. All content lives in
-`res://data/*.json` (or `.tres` resources); the code is generic and never hardcodes items,
-monsters, recipes, or skills.
+A data-driven, offline-capable idle RPG. All content lives in `res://data/*.json`; the code is
+generic and never hardcodes items, monsters, recipes, or skills.
 
 > **Engine:** written for **Godot 4.2** (GDScript 2.0). Validated end-to-end with the local
 > Godot 4.7.2 headless build — the project imports and runs with **zero script errors**.
@@ -14,15 +13,15 @@ monsters, recipes, or skills.
 ```bash
 # Open the folder in the Godot 4.x editor and press F5, or run headless checks:
 godot --headless --path . -- --smoke       # formula / data verification
+godot --headless --path . -- --tests       # full test suite (1,748 checks)
 godot --headless --path . -- --selftest    # end-to-end gameplay self-test
-python tools/shot_gate.py                  # visual regression gate (opens a real window)
 ```
 
 ## 2. Project layout
 
 ```
-melvor_clone_godot/
-├── project.godot              # 35 game autoloads + settings
+Emberreach/
+├── project.godot              # game autoloads + settings
 ├── data/                      # ALL content (JSON) — the "mod" surface
 │   ├── skills.json            # 34 skills; every skill has authored actions + a working system
 │   ├── items.json  monsters.json  dungeons.json  areas.json  game_modes.json
@@ -35,7 +34,7 @@ melvor_clone_godot/
 │   ├── combat/                # CombatFormulas.gd, StatusEffect.gd, CombatSimulator.gd
 │   ├── core/                  # ContentValidator, BalanceReport, tests helpers
 │   ├── resources/             # typed Resource classes (ItemData, MonsterData, ...)
-│   ├── tests/                 # TestRunner (--tests, 396 checks)
+│   ├── tests/                 # TestRunner (--tests, 1,748 checks)
 │   └── ui/                    # MainUI shell, SidebarNav, StatusBar, DetailPanel,
 │                              #   Widgets, UIStyle/UITokens, ui/screens/* panels
 ├── scenes/main.tscn           # entry scene
@@ -53,9 +52,8 @@ PlayerData/BankManager. **EventBus** decouples everything — the UI never touch
 directly, it listens to signals. **SaveManager** serialises to JSON, and **OfflineProgression**
 replays elapsed time through the *same* code paths.
 
-![Architecture](assets/architecture.png)
 
-## 4. Autoload singletons (35 game + 1 addon)
+## 4. Autoload singletons
 
 | Singleton | Responsibility |
 |---|---|
@@ -199,7 +197,7 @@ or the named helpers. Registry: `scripts/resources/ModifierKeys.gd`.
 | Save version | 2 | ✅ |
 
 Formula depth beyond these (hit-chance curves, DR combination, level lookups, panel
-construction) is covered by `--tests` (**396 checks**).
+construction) is covered by `--tests` (**1,748 checks**).
 
 ### 7.2 `--selftest` (end-to-end gameplay)
 
@@ -221,20 +219,6 @@ construction) is covered by `--tests` (**396 checks**).
 The gather → craft → equip → fight steps are the closed **gear loop**: logs gathered,
 a bronze helmet smithed and equipped, then 182 expedition victories.
 
-### 7.3 `tools/shot_gate.py` (visual regression gate)
-
-```bash
-python tools/shot_gate.py            # run the --shot sweep, compare, exit 1 on regressions
-python tools/shot_gate.py --update   # accept the current render as the new baseline
-```
-
-The gate opens a real window (never headless), renders all 49 shots at 420/900/1440 px and
-compares them per-pixel against `tools/shot_baseline/`. Static screens must match exactly;
-the handful of screens with live digits get a 0.25 % changed-pixel budget (measured drift on
-identical code is ≤ 0.06 %). Regressions get a magenta heatmap in `.shot_gate/diff/`.
-Baselines are tied to the machine that rendered them — re-run `--update` there after an
-intentional layout change.
-
 ## 7b. Art system & asset pipeline
 
 Textures are loaded **by filename convention** from `res://assets/`, with a generated coloured
@@ -251,14 +235,11 @@ assets/ui/<name>.png                      (panel_9slice, button_9slice, progress
 Add files, then check what's still missing:
 
 ```bash
-godot --headless --path . --import         # import the new textures
-godot --headless --path . -- --assetreport # writes assets/ASSET_STATUS.md
+godot --headless --path . --import    # import the new textures
 ```
 
-The full demand list is `assets/manifest/ASSET_MANIFEST.html` — an interactive grid, one row per
-asset, showing the file path, the human-readable **name**, size, priority and a live preview of your
-art once the file exists (click a row to tick it off; saved in your browser). The machine-readable
-version is `assets/manifest/asset_manifest.csv`.
+A missing file is not an error: `AssetRegistry` falls back to a generated coloured placeholder, so
+the game runs before any art exists.
 
 ## 8. Extending the game
 
@@ -269,7 +250,7 @@ version is `assets/manifest/asset_manifest.csv`.
   (`item_type: "potion"`); the manager registers its `effect` / `potion_effect` automatically.
 - **Add a special attack:** add to `special_attacks.json`, then reference it from a weapon or monster.
 
-## 9. Known gaps (see IMPLEMENTATION_ROADMAP.md)
+## 9. Known gaps
 
 - All 34 skills, the Phase 9 endgame (God Dungeons, Raid, Abyssal) and the dark-fantasy UI
   overhaul are implemented; area hazards **are** applied during combat (`_active_hazard()`).
@@ -280,5 +261,8 @@ version is `assets/manifest/asset_manifest.csv`.
 - ~250 long-tail item display names are still Melvor-derived (rename-only pass, stable IDs).
 - Audio is fully synthesized (no recorded assets): two generative music tracks and 16 SFX
   recipes rendered to PCM at load.
-- Prestige/ascension and respecialisation deliberately deferred (first journey not yet long
-  enough for a reset to be interesting).
+- Ascendancy (prestige) is implemented — a lifetime-XP gate granting +5 % XP and +5 % gold per
+  ascension, additive and capped. Respecialisation is still deferred.
+- The palette is not colourblind-safe: `GREEN` and `RED` are near-identical under deuteranopia.
+  Three rows that once conveyed state by colour alone now carry a glyph, but a palette variant is
+  the real fix and is not done.
