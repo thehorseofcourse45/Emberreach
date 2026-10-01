@@ -75,7 +75,7 @@ func compute_mxp(skill_id: String, action_id: String, action_time: float, bonus:
     var skill_level: int = PlayerData.get_level(skill_id)
     var unlocked: float = float(DataLoader.get_unlocked_action_count(skill_id, skill_level))
     var player_total: float = get_skill_total_mastery_levels(skill_id)
-    var total_mastery_for_skill: float = total_items * 99.0
+    var total_mastery_for_skill: float = total_items * float(XPTable.MAX_LEVEL)
     var item_level: float = float(get_level(skill_id, action_id))
     var base: float = (unlocked * (player_total / total_mastery_for_skill)) + (item_level * total_items / 10.0)
     return base * action_time * 0.5 * (1.0 + bonus)
@@ -143,7 +143,10 @@ func spend_pool_xp_for_levels(skill_id: String, action_id: String, levels: int) 
     if affordable <= 0.0:
         return 0.0
     _pools[skill_id] = get_pool_xp(skill_id) - affordable
+    if not _mastery_xp.has(skill_id): _mastery_xp[skill_id] = {}
     _mastery_xp[skill_id][action_id] = target_xp + affordable
+    EventBus.mastery_pool_changed.emit(skill_id, _pools[skill_id])
+    EventBus.mastery_level_up.emit(skill_id, action_id, get_level(skill_id, action_id))
     _evaluate_checkpoints(skill_id)
     return affordable
 
@@ -151,6 +154,16 @@ func claim_mastery_token(skill_id: String) -> void:
     add_pool_xp(skill_id, get_pool_cap(skill_id) * TOKEN_POOL_FRACTION)
 
 func _evaluate_checkpoints(skill_id: String) -> void:
+    # Data-defined pool effects for the new skills; updated when XP is spent as well as gained.
+    var unlocks: Dictionary = DataLoader.get_skill(skill_id).get("pool_checkpoints", {})
+    var mods: Dictionary = {}
+    for threshold in unlocks:
+        if get_pool_percent(skill_id) >= float(threshold):
+            for key in unlocks[threshold]:
+                mods[key] = float(mods.get(key, 0.0)) + float(unlocks[threshold][key])
+    ModifierManager.unregister("mastery_pool:" + skill_id)
+    if not mods.is_empty():
+        ModifierManager.register("mastery_pool:" + skill_id, mods, "mastery_pool", skill_id.capitalize() + " pool")
     var pct: float = get_pool_percent(skill_id)
     if not _checkpoint_state.has(skill_id):
         _checkpoint_state[skill_id] = [false, false, false, false]
@@ -176,5 +189,34 @@ func deserialize(data: Dictionary) -> void:
     _mastery_xp = data.get("mastery_xp", {})
     _pools = data.get("pools", {})
     _checkpoint_state.clear()
+    ModifierManager.clear_category("mastery_pool")
     for skill_id in _pools.keys():
         _evaluate_checkpoints(skill_id)
+
+func spend_preview(skill_id: String, action_id: String, levels: int) -> Dictionary:
+    var level: int = get_level(skill_id, action_id)
+    var cost: float = maxf(0.0, XPTable.xp_for_level(mini(XPTable.MAX_LEVEL, level + maxi(0, levels))) - get_xp(skill_id, action_id))
+    var before: float = get_pool_percent(skill_id)
+    var after: float = maxf(0.0, get_pool_xp(skill_id) - cost) / maxf(1.0, get_pool_cap(skill_id)) * 100.0
+    var lost: Dictionary = {}
+    for threshold in DataLoader.get_skill(skill_id).get("pool_checkpoints", {}):
+        if before >= float(threshold) and after < float(threshold):
+            for key in DataLoader.get_skill(skill_id).pool_checkpoints[threshold]: lost[key] = float(lost.get(key, 0)) + float(DataLoader.get_skill(skill_id).pool_checkpoints[threshold][key])
+    return {"cost": cost, "before": before, "after": after, "lost": lost}
+
+func item_effects(skill_id: String, action_id: String) -> Dictionary:
+    var mods: Dictionary = {}
+    for threshold in DataLoader.get_skill(skill_id).get("mastery_unlocks", {}):
+        if get_level(skill_id, action_id) >= int(threshold):
+            for key in DataLoader.get_skill(skill_id).mastery_unlocks[threshold]:
+                mods[key] = float(mods.get(key, 0)) + float(DataLoader.get_skill(skill_id).mastery_unlocks[threshold][key])
+    return mods
+
+func next_checkpoint(skill_id: String) -> String:
+    var thresholds: Array = DataLoader.get_skill(skill_id).get("pool_checkpoints", {}).keys()
+    if thresholds.is_empty(): return "This skill has no authored pool bonuses. Spend pool XP to raise activity mastery and unlock its bonuses."
+    thresholds.sort_custom(func(a, b): return float(a) < float(b))
+    for threshold in thresholds:
+        if get_pool_percent(skill_id) < float(threshold):
+            return "Next pool checkpoint %s%%: %s XP remaining · %s" % [str(threshold), UIStyle.fmt(get_pool_cap(skill_id) * float(threshold) / 100.0 - get_pool_xp(skill_id)), UIStyle.describe_modifier_table(DataLoader.get_skill(skill_id).pool_checkpoints[threshold])]
+    return "All authored pool bonuses active. Keeping XP preserves these bonuses; spending can deactivate them."

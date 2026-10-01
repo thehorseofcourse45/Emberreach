@@ -144,9 +144,21 @@ func add_item_guaranteed(item_id: String, quantity: int) -> int:
 		return quantity
 	return add_item(item_id, quantity)
 
+## Equipment transfers are ownership moves, never fresh lifetime rewards.
+func return_item(item_id: String, quantity: int) -> void:
+	if quantity <= 0 or DataLoader.get_item(item_id).is_empty(): return
+	if not items.has(item_id) and is_full():
+		overflow[item_id] = int(overflow.get(item_id, 0)) + quantity
+	else:
+		items[item_id] = int(items.get(item_id, 0)) + quantity
+	_queue_notify()
+
 func _add_overflow(item_id: String, quantity: int) -> void:
 	overflow[item_id] = int(overflow.get(item_id, 0)) + quantity
 	PlayerData.discover_item(item_id)
+	ProgressTracker.record_item_gained(item_id, quantity)
+	EventBus.item_obtained.emit(item_id, quantity)
+	_queue_notify()
 
 func _notice_full(item_id: String) -> void:
 	if _full_notice_cooldown > 0.0 and _last_full_notice == item_id:
@@ -169,7 +181,6 @@ func _withdraw_overflow_now() -> void:
 		if not items.has(item_id):
 			items[item_id] = 0
 		items[item_id] = int(items[item_id]) + qty
-		ProgressTracker.record_item_gained(str(item_id), qty)
 	overflow = remaining
 	if not remaining.is_empty():
 		EventBus.notify("Some overflow items still need more storage space.", "info")
@@ -188,7 +199,6 @@ func withdraw_overflow(item_id: String = "") -> int:
 		if not items.has(item_id):
 			items[item_id] = 0
 		items[item_id] = int(items[item_id]) + want
-		ProgressTracker.record_item_gained(item_id, want)
 		moved = want
 		_queue_notify()
 	return moved
@@ -295,7 +305,7 @@ func sell_preview(item_id: String, quantity: int) -> Dictionary:
 		"quantity": qty,
 		"unit_price": unit,
 		"multiplier": mult,
-		"gp_gained": float(unit * qty) * mult,
+		"gp_gained": float(unit) * float(qty) * mult,
 		"remaining": have - qty,
 		"protected": is_protected(item_id),
 		"equipped": EquipmentManager.is_equipped(item_id),
@@ -312,7 +322,7 @@ func sell_item(item_id: String, quantity: int, allow_protected: bool = false) ->
 	if have < quantity:
 		return false
 	var unit: int = int(DataLoader.get_item(item_id).get("sell_price", 0))
-	var total: float = float(unit * quantity) * (1.0 + ModifierManager.get_modifier("global_gp_percent") / 100.0)
+	var total: float = float(unit) * float(quantity) * (1.0 + ModifierManager.get_modifier("global_gp_percent") / 100.0)
 	if not remove_item(item_id, quantity):
 		return false
 	ProgressTracker.record_item_sold(item_id, quantity)
@@ -351,6 +361,42 @@ func bury_bone(item_id: String, quantity: int = 1) -> bool:
 		PlayerData.add_prayer_points(points)
 		buried += 1
 	return buried > 0
+
+## Open crates and nests, and hatch eggs, from Storage. A container is only ever spent when
+## what it holds has really been handed over, so an opened crate can never silently vanish.
+## Returns {ok, opened, items, pet, reason}.
+func open_container(item_id: String, quantity: int = 1) -> Dictionary:
+	var def: Dictionary = DataLoader.get_item(item_id)
+	var granted: Dictionary = def.get("container_items", {}) as Dictionary
+	var pet_id: String = str(def.get("container_pet", ""))
+	var name: String = str(def.get("name", item_id))
+	if quantity <= 0 or (granted.is_empty() and pet_id == ""):
+		return {"ok": false, "opened": 0, "items": {}, "pet": "", "reason": "%s is not a container" % name}
+	if pet_id != "" and PetManager.is_unlocked(pet_id):
+		return {"ok": false, "opened": 0, "items": {}, "pet": "",
+			"reason": "%s has already hatched" % name}
+	var opened: int = mini(quantity, get_count(item_id))
+	if opened <= 0:
+		return {"ok": false, "opened": 0, "items": {}, "pet": "", "reason": "No %s in Storage" % name}
+	# An egg is a one-off unlock, so hatching one leaves the rest of the stack alone.
+	if pet_id != "":
+		opened = 1
+	var totals: Dictionary = {}
+	for grant in granted.keys():
+		totals[str(grant)] = int(granted[grant]) * opened
+	if not remove_item(item_id, opened):
+		return {"ok": false, "opened": 0, "items": {}, "pet": "", "reason": "No %s in Storage" % name}
+	for grant in totals.keys():
+		add_item_guaranteed(str(grant), int(totals[grant]))
+	if pet_id != "":
+		PetManager.unlock(pet_id)
+	var parts: Array[String] = []
+	for grant in totals.keys():
+		parts.append("%s x%s" % [DataLoader.get_item(str(grant)).get("name", grant), int(totals[grant])])
+	var summary: String = ", ".join(parts)
+	EventBus.notify("Opened %s x%d%s" % [name, opened, "" if summary == "" else ": " + summary], "success")
+	EventBus.state_refreshed.emit()
+	return {"ok": true, "opened": opened, "items": totals, "pet": pet_id, "reason": ""}
 
 # ---------------- queries (bank UI) ----------------
 

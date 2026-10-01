@@ -78,13 +78,23 @@ func _process(delta: float) -> void:
 	# holds the corrupt file and the backup is the only good copy.
 	if not autosave_enabled or GameManager.boot_state == GameManager.BootState.LOAD_FAILED:
 		return
+	# Offline catch-up runs over several frames with the world only partially simulated. Writing
+	# now — and advancing the marker to "now" — would persist a half-applied sim and discard the
+	# unprocessed remainder of the offline window. Every passive manager already defers on this;
+	# the autosave timer must too. The marker is advanced by the catch-up itself when it finishes.
+	if OfflineProgression.is_running:
+		return
 	_autosave_timer += delta
 	if _autosave_timer >= get_autosave_interval():
 		_autosave_timer = 0.0
 		# The offline marker must track the last persisted moment, or a save written now still
 		# claims the whole session is unclaimed and the next launch pays it out a second time.
+		# Only advance it once the write actually succeeded, so a failed/partial write cannot leave
+		# the marker ahead of the last durable save and silently drop the window in between.
+		var previous_marker: int = PlayerData.last_offline_unix
 		PlayerData.last_offline_unix = int(Time.get_unix_time_from_system())
-		save_game()
+		if not save_game():
+			PlayerData.last_offline_unix = previous_marker
 
 func _save_on_event() -> void:
 	if save_on_major_event and not _write_in_progress:
@@ -128,6 +138,11 @@ func build_save_data() -> Dictionary:
 		"combat_state": CombatManager.serialize(),
 		"farming_plots": FarmingManager.serialize(),
 		"township": TownshipManager.serialize(),
+		"ranching": RanchingManager.serialize(),
+		"inscription": InscriptionManager.serialize(),
+		"engineering": EngineeringManager.serialize(),
+		"enchanting": EnchantingManager.serialize(),
+		"dreamwalking": DreamwalkingManager.serialize(),
 		"slayer": SlayerManager.serialize(),
 		"agility": AgilityManager.serialize(),
 		"summoning": SummoningManager.serialize(),
@@ -416,6 +431,12 @@ func _apply(data: Dictionary) -> void:
 	PlayerData.deserialize(data.get("player", {}))
 	PlayerData.settings.merge(data.get("settings", {}), false)
 	MasteryManager.deserialize(data.get("mastery", {}))
+	# Restore derived equipment definitions before bank and equipment lookups.
+	EnchantingManager.deserialize(data.get("enchanting", {}))
+	RanchingManager.deserialize(data.get("ranching", {}))
+	InscriptionManager.deserialize(data.get("inscription", {}))
+	EngineeringManager.deserialize(data.get("engineering", {}))
+	DreamwalkingManager.deserialize(data.get("dreamwalking", {}))
 	BankManager.deserialize(data.get("bank", {}))
 	EquipmentManager.deserialize(data.get("equipment", {}))
 	SkillManager.deserialize(data.get("active_action", {}))
