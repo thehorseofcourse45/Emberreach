@@ -1533,6 +1533,40 @@
         "mastery_action_time": 11.05,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
+      },
+      {
+        "id": "cook_crab",
+        "name": "Crab",
+        "level_required": 60,
+        "base_interval": 8.0,
+        "base_xp": 140,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_crab": 1
+        },
+        "output_items": {
+          "crab": 1
+        },
+        "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_cave_fish",
+        "name": "Cave Fish",
+        "level_required": 75,
+        "base_interval": 8.0,
+        "base_xp": 175,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_cave_fish": 1
+        },
+        "output_items": {
+          "cave_fish": 1
+        },
+        "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       }
     ],
     "order": 15,
@@ -2933,6 +2967,324 @@
           "herald_godsword": 1
         },
         "mastery_action_time": 34.0
+      },
+      {
+        "id": "smith_runite_sword",
+        "name": "Runite Sword",
+        "level_required": 85,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "input_items": {
+          "runite_bar": 1,
+          "coal": 8
+        },
+        "output_items": {
+          "runite_sword": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_runite_scimitar",
+        "name": "Runite Scimitar",
+        "level_required": 85,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "input_items": {
+          "runite_bar": 1,
+          "coal": 8
+        },
+        "output_items": {
+          "runite_scimitar": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_runite_dagger",
+        "name": "Runite Dagger",
+        "level_required": 85,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "input_items": {
+          "runite_bar": 1,
+          "coal": 8
+        },
+        "output_items": {
+          "runite_dagger": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_runite_battleaxe",
+        "name": "Runite Battleaxe",
+        "level_required": 85,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "input_items": {
+          "runite_bar": 1,
+          "coal": 8
+        },
+        "output_items": {
+          "runite_battleaxe": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_runite_2h_sword",
+        "name": "Runite 2H Sword",
+        "level_required": 85,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "input_items": {
+          "runite_bar": 1,
+          "coal": 8
+        },
+        "output_items": {
+          "runite_2h_sword": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_runite_helmet",
+        "name": "Runite Helmet",
+        "level_required": 85,
+        "base_interval": 1.9,
+        "base_xp": 200,
+        "input_items": {
+          "runite_bar": 2
+        },
+        "output_items": {
+          "runite_helmet": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_runite_platebody",
+        "name": "Runite Platebody",
+        "level_required": 85,
+        "base_interval": 1.9,
+        "base_xp": 459,
+        "input_items": {
+          "runite_bar": 5
+        },
+        "output_items": {
+          "runite_platebody": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_runite_platelegs",
+        "name": "Runite Platelegs",
+        "level_required": 85,
+        "base_interval": 1.9,
+        "base_xp": 290,
+        "input_items": {
+          "runite_bar": 3
+        },
+        "output_items": {
+          "runite_platelegs": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_runite_boots",
+        "name": "Runite Boots",
+        "level_required": 85,
+        "base_interval": 1.9,
+        "base_xp": 200,
+        "input_items": {
+          "runite_bar": 2
+        },
+        "output_items": {
+          "runite_boots": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_runite_gloves",
+        "name": "Runite Gloves",
+        "level_required": 85,
+        "base_interval": 1.9,
+        "base_xp": 120,
+        "input_items": {
+          "runite_bar": 1
+        },
+        "output_items": {
+          "runite_gloves": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_runite_shield",
+        "name": "Runite Shield",
+        "level_required": 85,
+        "base_interval": 1.9,
+        "base_xp": 380,
+        "input_items": {
+          "runite_bar": 4
+        },
+        "output_items": {
+          "runite_shield": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_sword",
+        "name": "Dragonite Sword",
+        "level_required": 95,
+        "base_interval": 3.0,
+        "base_xp": 200,
+        "input_items": {
+          "dragonite_bar": 1,
+          "coal": 10
+        },
+        "output_items": {
+          "dragonite_sword": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_dragonite_scimitar",
+        "name": "Dragonite Scimitar",
+        "level_required": 95,
+        "base_interval": 3.0,
+        "base_xp": 200,
+        "input_items": {
+          "dragonite_bar": 1,
+          "coal": 10
+        },
+        "output_items": {
+          "dragonite_scimitar": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_dragonite_dagger",
+        "name": "Dragonite Dagger",
+        "level_required": 95,
+        "base_interval": 3.0,
+        "base_xp": 200,
+        "input_items": {
+          "dragonite_bar": 1,
+          "coal": 10
+        },
+        "output_items": {
+          "dragonite_dagger": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_dragonite_battleaxe",
+        "name": "Dragonite Battleaxe",
+        "level_required": 95,
+        "base_interval": 3.0,
+        "base_xp": 200,
+        "input_items": {
+          "dragonite_bar": 1,
+          "coal": 10
+        },
+        "output_items": {
+          "dragonite_battleaxe": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_dragonite_2h_sword",
+        "name": "Dragonite 2H Sword",
+        "level_required": 95,
+        "base_interval": 3.0,
+        "base_xp": 200,
+        "input_items": {
+          "dragonite_bar": 1,
+          "coal": 10
+        },
+        "output_items": {
+          "dragonite_2h_sword": 1
+        },
+        "mastery_action_time": 3.0
+      },
+      {
+        "id": "smith_dragonite_helmet",
+        "name": "Dragonite Helmet",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 260,
+        "input_items": {
+          "dragonite_bar": 2
+        },
+        "output_items": {
+          "dragonite_helmet": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_platebody",
+        "name": "Dragonite Platebody",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 598,
+        "input_items": {
+          "dragonite_bar": 5
+        },
+        "output_items": {
+          "dragonite_platebody": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_platelegs",
+        "name": "Dragonite Platelegs",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 377,
+        "input_items": {
+          "dragonite_bar": 3
+        },
+        "output_items": {
+          "dragonite_platelegs": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_boots",
+        "name": "Dragonite Boots",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 260,
+        "input_items": {
+          "dragonite_bar": 2
+        },
+        "output_items": {
+          "dragonite_boots": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_gloves",
+        "name": "Dragonite Gloves",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 156,
+        "input_items": {
+          "dragonite_bar": 1
+        },
+        "output_items": {
+          "dragonite_gloves": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_shield",
+        "name": "Dragonite Shield",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 494,
+        "input_items": {
+          "dragonite_bar": 4
+        },
+        "output_items": {
+          "dragonite_shield": 1
+        },
+        "mastery_action_time": 1.9
       }
     ],
     "order": 16,
@@ -3712,6 +4064,246 @@
           "black_dhide_coif": 1
         },
         "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_apprentice_hat",
+        "name": "Apprentice Hat",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "rune_essence": 2,
+          "air_rune": 10
+        },
+        "output_items": {
+          "apprentice_hat": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_apprentice_robe",
+        "name": "Apprentice Robe",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "rune_essence": 2,
+          "air_rune": 10
+        },
+        "output_items": {
+          "apprentice_robe": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_apprentice_legs",
+        "name": "Apprentice Legs",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "rune_essence": 2,
+          "air_rune": 10
+        },
+        "output_items": {
+          "apprentice_legs": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_apprentice_gloves",
+        "name": "Apprentice Gloves",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "rune_essence": 2,
+          "air_rune": 10
+        },
+        "output_items": {
+          "apprentice_gloves": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_adept_hat",
+        "name": "Adept Hat",
+        "level_required": 60,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "rune_essence": 3,
+          "chaos_rune": 10
+        },
+        "output_items": {
+          "adept_hat": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_adept_robe",
+        "name": "Adept Robe",
+        "level_required": 60,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "rune_essence": 3,
+          "chaos_rune": 10
+        },
+        "output_items": {
+          "adept_robe": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_adept_legs",
+        "name": "Adept Legs",
+        "level_required": 60,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "rune_essence": 3,
+          "chaos_rune": 10
+        },
+        "output_items": {
+          "adept_legs": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_adept_gloves",
+        "name": "Adept Gloves",
+        "level_required": 60,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "rune_essence": 3,
+          "chaos_rune": 10
+        },
+        "output_items": {
+          "adept_gloves": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_archmage_hat",
+        "name": "Archmage Hat",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 180,
+        "input_items": {
+          "rune_essence": 4,
+          "blood_rune": 10
+        },
+        "output_items": {
+          "archmage_hat": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_archmage_robe",
+        "name": "Archmage Robe",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 180,
+        "input_items": {
+          "rune_essence": 4,
+          "blood_rune": 10
+        },
+        "output_items": {
+          "archmage_robe": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_archmage_legs",
+        "name": "Archmage Legs",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 180,
+        "input_items": {
+          "rune_essence": 4,
+          "blood_rune": 10
+        },
+        "output_items": {
+          "archmage_legs": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_archmage_gloves",
+        "name": "Archmage Gloves",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 180,
+        "input_items": {
+          "rune_essence": 4,
+          "blood_rune": 10
+        },
+        "output_items": {
+          "archmage_gloves": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_herald_hat",
+        "name": "Herald Hat",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 280,
+        "input_items": {
+          "rune_essence": 6,
+          "umbral_rune": 10
+        },
+        "output_items": {
+          "herald_hat": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_herald_robe",
+        "name": "Herald Robe",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 280,
+        "input_items": {
+          "rune_essence": 6,
+          "umbral_rune": 10
+        },
+        "output_items": {
+          "herald_robe": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_herald_legs",
+        "name": "Herald Legs",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 280,
+        "input_items": {
+          "rune_essence": 6,
+          "umbral_rune": 10
+        },
+        "output_items": {
+          "herald_legs": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_herald_gloves",
+        "name": "Herald Gloves",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 280,
+        "input_items": {
+          "rune_essence": 6,
+          "umbral_rune": 10
+        },
+        "output_items": {
+          "herald_gloves": 1
+        },
+        "mastery_action_time": 1.7
       }
     ],
     "mastery_unlocks": {
@@ -3980,6 +4572,141 @@
           "umbral_rune": 2
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_mind_staff",
+        "name": "Mind Staff",
+        "level_required": 35,
+        "base_interval": 2.0,
+        "base_xp": 70,
+        "input_items": {
+          "mind_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "mind_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_cosmic_staff",
+        "name": "Cosmic Staff",
+        "level_required": 45,
+        "base_interval": 2.0,
+        "base_xp": 90,
+        "input_items": {
+          "cosmic_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "cosmic_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_chaos_staff",
+        "name": "Chaos Staff",
+        "level_required": 55,
+        "base_interval": 2.0,
+        "base_xp": 110,
+        "input_items": {
+          "chaos_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "chaos_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_nature_staff",
+        "name": "Nature Staff",
+        "level_required": 65,
+        "base_interval": 2.0,
+        "base_xp": 130,
+        "input_items": {
+          "nature_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "nature_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_law_staff",
+        "name": "Law Staff",
+        "level_required": 75,
+        "base_interval": 2.0,
+        "base_xp": 150,
+        "input_items": {
+          "law_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "law_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_death_staff",
+        "name": "Death Staff",
+        "level_required": 85,
+        "base_interval": 2.0,
+        "base_xp": 175,
+        "input_items": {
+          "death_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "death_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_blood_staff",
+        "name": "Blood Staff",
+        "level_required": 95,
+        "base_interval": 2.0,
+        "base_xp": 200,
+        "input_items": {
+          "blood_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "blood_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_soul_staff",
+        "name": "Soul Staff",
+        "level_required": 105,
+        "base_interval": 2.0,
+        "base_xp": 230,
+        "input_items": {
+          "soul_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "soul_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_umbral_staff",
+        "name": "Umbral Staff",
+        "level_required": 115,
+        "base_interval": 2.0,
+        "base_xp": 260,
+        "input_items": {
+          "umbral_rune": 15,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "umbral_staff": 1
+        },
+        "mastery_action_time": 2.0
       }
     ],
     "mastery_unlocks": {
