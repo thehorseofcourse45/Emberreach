@@ -1,0 +1,765 @@
+{
+  "species": [
+    {
+      "id": "hen",
+      "name": "Hen",
+      "level": 1,
+      "stock": "ranch_hen",
+      "produce": "ranch_egg",
+      "hide": "feather",
+      "seconds": 7200,
+      "feed": 2,
+      "xp": 268,
+      "meat": 2
+    },
+    {
+      "id": "cow",
+      "name": "Cow",
+      "level": 15,
+      "stock": "ranch_cow",
+      "produce": "ranch_milk",
+      "hide": "leather",
+      "seconds": 7200,
+      "feed": 3,
+      "xp": 1071,
+      "meat": 3
+    },
+    {
+      "id": "sheep",
+      "name": "Sheep",
+      "level": 30,
+      "stock": "ranch_sheep",
+      "produce": "ranch_wool",
+      "hide": "leather",
+      "seconds": 7200,
+      "feed": 4,
+      "xp": 2409,
+      "meat": 4
+    },
+    {
+      "id": "boar",
+      "name": "Boar",
+      "level": 45,
+      "stock": "ranch_boar",
+      "produce": "ranch_tusk",
+      "hide": "leather",
+      "seconds": 7200,
+      "feed": 5,
+      "xp": 4283,
+      "meat": 5
+    },
+    {
+      "id": "moonstag",
+      "name": "Moonstag",
+      "level": 60,
+      "stock": "ranch_moonstag",
+      "produce": "ranch_antler",
+      "hide": "stardust",
+      "seconds": 7200,
+      "feed": 6,
+      "xp": 6692,
+      "meat": 6
+    },
+    {
+      "id": "griffin",
+      "name": "Griffin",
+      "level": 75,
+      "stock": "ranch_griffin",
+      "produce": "ranch_plume",
+      "hide": "feather",
+      "seconds": 7200,
+      "feed": 7,
+      "xp": 9983,
+      "meat": 7
+    },
+    {
+      "id": "wyvern",
+      "name": "Wyvern",
+      "level": 90,
+      "stock": "ranch_wyvern",
+      "produce": "ranch_scale",
+      "hide": "green_dragonhide",
+      "seconds": 7200,
+      "feed": 8,
+      "xp": 15106,
+      "meat": 8
+    },
+    {
+      "id": "dragon",
+      "name": "Dragon",
+      "level": 105,
+      "stock": "ranch_dragon",
+      "produce": "ranch_ember",
+      "hide": "red_dragonhide",
+      "seconds": 7200,
+      "feed": 9,
+      "xp": 21934,
+      "meat": 9
+    },
+    {
+      "id": "celestial_dragon",
+      "name": "Celestial Dragon",
+      "level": 115,
+      "stock": "ranch_celestial_dragon",
+      "produce": "ranch_star_scale",
+      "hide": "golden_stardust",
+      "seconds": 7200,
+      "feed": 10,
+      "xp": 29792,
+      "meat": 10
+    }
+  ],
+  "devices": [
+    {
+      "id": "device_lumberjack",
+      "name": "Clockwork Lumberjack",
+      "level": 1,
+      "skill": "woodcutting",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_miner",
+      "name": "Clockwork Miner",
+      "level": 15,
+      "skill": "mining",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_angler",
+      "name": "Clockwork Angler",
+      "level": 30,
+      "skill": "fishing",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_stoker",
+      "name": "Clockwork Stoker",
+      "level": 45,
+      "skill": "firemaking",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_cook",
+      "name": "Clockwork Cook",
+      "level": 60,
+      "skill": "cooking",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_farmer",
+      "name": "Clockwork Farmhand",
+      "level": 75,
+      "skill": "farming",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_looter",
+      "name": "Clockwork Scavenger",
+      "level": 90,
+      "skill": "combat",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_arcane_miner",
+      "name": "Arcane Delver",
+      "level": 105,
+      "skill": "mining",
+      "fuel": "cosmic_rune",
+      "fuel_cost": 10
+    },
+    {
+      "id": "device_celestial_angler",
+      "name": "Celestial Angler",
+      "level": 115,
+      "skill": "fishing",
+      "fuel": "cosmic_rune",
+      "fuel_cost": 10
+    }
+  ],
+  "enchants": [
+    {
+      "id": "might_1",
+      "name": "Might I",
+      "scope": "weapon",
+      "level": 1,
+      "tier": 1,
+      "mods": {
+        "melee_max_hit_percent": 2
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_1",
+      "name": "Precision I",
+      "scope": "weapon",
+      "level": 1,
+      "tier": 1,
+      "mods": {
+        "global_accuracy_percent": 2
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_1",
+      "name": "Fortune I",
+      "scope": "skilling",
+      "level": 1,
+      "tier": 1,
+      "mods": {
+        "global_doubling_percent": 2
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_1",
+      "name": "Scholar I",
+      "scope": "skilling",
+      "level": 1,
+      "tier": 1,
+      "mods": {
+        "global_skill_xp_percent": 2
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_1",
+      "name": "Warding I",
+      "scope": "armor",
+      "level": 1,
+      "tier": 1,
+      "mods": {
+        "damage_reduction_percent": 1
+      },
+      "essence": "warding"
+    },
+    {
+      "id": "might_1b",
+      "name": "Might 1B",
+      "scope": "weapon",
+      "level": 15,
+      "tier": 1.5,
+      "mods": {
+        "melee_max_hit_percent": 3
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_1b",
+      "name": "Precision 1B",
+      "scope": "weapon",
+      "level": 15,
+      "tier": 1.5,
+      "mods": {
+        "global_accuracy_percent": 3
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_1b",
+      "name": "Fortune 1B",
+      "scope": "skilling",
+      "level": 15,
+      "tier": 1.5,
+      "mods": {
+        "global_doubling_percent": 3
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_1b",
+      "name": "Scholar 1B",
+      "scope": "skilling",
+      "level": 15,
+      "tier": 1.5,
+      "mods": {
+        "global_skill_xp_percent": 3
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_1b",
+      "name": "Ward 1B",
+      "scope": "armor",
+      "level": 15,
+      "tier": 1.5,
+      "mods": {
+        "damage_reduction_percent": 3
+      },
+      "essence": "warding"
+    },
+    {
+      "id": "might_2",
+      "name": "Might II",
+      "scope": "weapon",
+      "level": 30,
+      "tier": 2,
+      "mods": {
+        "melee_max_hit_percent": 4
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_2",
+      "name": "Precision II",
+      "scope": "weapon",
+      "level": 30,
+      "tier": 2,
+      "mods": {
+        "global_accuracy_percent": 4
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_2",
+      "name": "Fortune II",
+      "scope": "skilling",
+      "level": 30,
+      "tier": 2,
+      "mods": {
+        "global_doubling_percent": 4
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_2",
+      "name": "Scholar II",
+      "scope": "skilling",
+      "level": 30,
+      "tier": 2,
+      "mods": {
+        "global_skill_xp_percent": 4
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_2",
+      "name": "Warding II",
+      "scope": "armor",
+      "level": 30,
+      "tier": 2,
+      "mods": {
+        "damage_reduction_percent": 2
+      },
+      "essence": "warding"
+    },
+    {
+      "id": "might_2b",
+      "name": "Might 2B",
+      "scope": "weapon",
+      "level": 45,
+      "tier": 2.5,
+      "mods": {
+        "melee_max_hit_percent": 5
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_2b",
+      "name": "Precision 2B",
+      "scope": "weapon",
+      "level": 45,
+      "tier": 2.5,
+      "mods": {
+        "global_accuracy_percent": 5
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_2b",
+      "name": "Fortune 2B",
+      "scope": "skilling",
+      "level": 45,
+      "tier": 2.5,
+      "mods": {
+        "global_doubling_percent": 5
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_2b",
+      "name": "Scholar 2B",
+      "scope": "skilling",
+      "level": 45,
+      "tier": 2.5,
+      "mods": {
+        "global_skill_xp_percent": 5
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_2b",
+      "name": "Ward 2B",
+      "scope": "armor",
+      "level": 45,
+      "tier": 2.5,
+      "mods": {
+        "damage_reduction_percent": 5
+      },
+      "essence": "warding"
+    },
+    {
+      "id": "might_3",
+      "name": "Might III",
+      "scope": "weapon",
+      "level": 60,
+      "tier": 3,
+      "mods": {
+        "melee_max_hit_percent": 6
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_3",
+      "name": "Precision III",
+      "scope": "weapon",
+      "level": 60,
+      "tier": 3,
+      "mods": {
+        "global_accuracy_percent": 6
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_3",
+      "name": "Fortune III",
+      "scope": "skilling",
+      "level": 60,
+      "tier": 3,
+      "mods": {
+        "global_doubling_percent": 6
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_3",
+      "name": "Scholar III",
+      "scope": "skilling",
+      "level": 60,
+      "tier": 3,
+      "mods": {
+        "global_skill_xp_percent": 6
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_3",
+      "name": "Warding III",
+      "scope": "armor",
+      "level": 60,
+      "tier": 3,
+      "mods": {
+        "damage_reduction_percent": 3
+      },
+      "essence": "warding"
+    },
+    {
+      "id": "might_3b",
+      "name": "Might 3B",
+      "scope": "weapon",
+      "level": 75,
+      "tier": 3.5,
+      "mods": {
+        "melee_max_hit_percent": 7
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_3b",
+      "name": "Precision 3B",
+      "scope": "weapon",
+      "level": 75,
+      "tier": 3.5,
+      "mods": {
+        "global_accuracy_percent": 7
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_3b",
+      "name": "Fortune 3B",
+      "scope": "skilling",
+      "level": 75,
+      "tier": 3.5,
+      "mods": {
+        "global_doubling_percent": 7
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_3b",
+      "name": "Scholar 3B",
+      "scope": "skilling",
+      "level": 75,
+      "tier": 3.5,
+      "mods": {
+        "global_skill_xp_percent": 7
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_3b",
+      "name": "Ward 3B",
+      "scope": "armor",
+      "level": 75,
+      "tier": 3.5,
+      "mods": {
+        "damage_reduction_percent": 7
+      },
+      "essence": "warding"
+    },
+    {
+      "id": "tide",
+      "name": "Tidebound",
+      "scope": "weapon",
+      "level": 90,
+      "tier": 4,
+      "mods": {},
+      "essence": "arcane",
+      "dungeon": "water_god_dungeon",
+      "status": "slow"
+    },
+    {
+      "id": "volcan",
+      "name": "Volcanic Infusion",
+      "scope": "weapon",
+      "level": 90,
+      "tier": 4,
+      "mods": {},
+      "essence": "arcane",
+      "dungeon": "fire_god_dungeon",
+      "status": "burn"
+    },
+    {
+      "id": "might_4",
+      "name": "Might IV",
+      "scope": "weapon",
+      "level": 90,
+      "tier": 4,
+      "mods": {
+        "melee_max_hit_percent": 8
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_4",
+      "name": "Precision IV",
+      "scope": "weapon",
+      "level": 90,
+      "tier": 4,
+      "mods": {
+        "global_accuracy_percent": 8
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_4",
+      "name": "Fortune IV",
+      "scope": "skilling",
+      "level": 90,
+      "tier": 4,
+      "mods": {
+        "global_doubling_percent": 8
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_4",
+      "name": "Scholar IV",
+      "scope": "skilling",
+      "level": 90,
+      "tier": 4,
+      "mods": {
+        "global_skill_xp_percent": 8
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_4",
+      "name": "Warding IV",
+      "scope": "armor",
+      "level": 90,
+      "tier": 4,
+      "mods": {
+        "damage_reduction_percent": 4
+      },
+      "essence": "warding"
+    },
+    {
+      "id": "might_5",
+      "name": "Might V",
+      "scope": "weapon",
+      "level": 105,
+      "tier": 5,
+      "mods": {
+        "melee_max_hit_percent": 10
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "precision_5",
+      "name": "Precision V",
+      "scope": "weapon",
+      "level": 105,
+      "tier": 5,
+      "mods": {
+        "global_accuracy_percent": 10
+      },
+      "essence": "martial"
+    },
+    {
+      "id": "fortune_5",
+      "name": "Fortune V",
+      "scope": "skilling",
+      "level": 105,
+      "tier": 5,
+      "mods": {
+        "global_doubling_percent": 10
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "scholar_5",
+      "name": "Scholar V",
+      "scope": "skilling",
+      "level": 105,
+      "tier": 5,
+      "mods": {
+        "global_skill_xp_percent": 10
+      },
+      "essence": "verdant"
+    },
+    {
+      "id": "ward_5",
+      "name": "Warding V",
+      "scope": "armor",
+      "level": 105,
+      "tier": 5,
+      "mods": {
+        "damage_reduction_percent": 5
+      },
+      "essence": "warding"
+    }
+  ],
+  "dreams": [
+    {
+      "id": "meadow",
+      "name": "Starlit Meadow",
+      "level": 1,
+      "xp_hour": 4324,
+      "essence_hour": 11
+    },
+    {
+      "id": "shore",
+      "name": "Moonlit Shore",
+      "level": 15,
+      "xp_hour": 12943,
+      "essence_hour": 25
+    },
+    {
+      "id": "wood",
+      "name": "Whispering Wood",
+      "level": 30,
+      "xp_hour": 25111,
+      "essence_hour": 40
+    },
+    {
+      "id": "library",
+      "name": "Dream Library",
+      "level": 45,
+      "xp_hour": 39701,
+      "essence_hour": 55
+    },
+    {
+      "id": "citadel",
+      "name": "Sleeping Citadel",
+      "level": 60,
+      "xp_hour": 56362,
+      "essence_hour": 70
+    },
+    {
+      "id": "rift",
+      "name": "Lucid Rift",
+      "level": 75,
+      "xp_hour": 78719,
+      "essence_hour": 85
+    },
+    {
+      "id": "void",
+      "name": "Velvet Void",
+      "level": 90,
+      "xp_hour": 116180,
+      "essence_hour": 100
+    },
+    {
+      "id": "astral",
+      "name": "Astral Sea",
+      "level": 105,
+      "xp_hour": 165937,
+      "essence_hour": 115
+    },
+    {
+      "id": "crown",
+      "name": "Crown of Dreams",
+      "level": 115,
+      "xp_hour": 207486,
+      "essence_hour": 125
+    }
+  ],
+  "bazaar": [
+    {
+      "id": "insight",
+      "name": "Waking Insight",
+      "cost": 250,
+      "seconds": 14400,
+      "mods": {
+        "global_skill_xp_percent": 10
+      }
+    },
+    {
+      "id": "fortune",
+      "name": "Waking Fortune",
+      "cost": 200,
+      "seconds": 7200,
+      "mods": {
+        "global_doubling_percent": 10
+      }
+    },
+    {
+      "id": "town_tick",
+      "name": "Settlement Reverie",
+      "cost": 500,
+      "town_ticks": 1
+    },
+    {
+      "id": "paper",
+      "name": "Dream Paper Bundle",
+      "cost": 40,
+      "items": {
+        "scribe_paper": 50
+      }
+    },
+    {
+      "id": "manure",
+      "name": "Fertile Dream",
+      "cost": 40,
+      "items": {
+        "ranch_manure": 10
+      }
+    },
+    {
+      "id": "ore",
+      "name": "Dream Coal",
+      "cost": 40,
+      "items": {
+        "coal": 100
+      }
+    }
+  ]
+}

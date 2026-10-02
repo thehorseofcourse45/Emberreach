@@ -3303,5 +3303,125 @@
     "category": "discovery",
     "condition": { "kind": "pets_unlocked", "value": 15 },
     "reward": { "gp": 30500, "xp": {  }, "items": { "ent_tablet": 75 } }
+  },
+  "ach_ranching_novice": {
+    "id": "ach_ranching_novice",
+    "name": "Ranching Novice",
+    "description": "Reach Ranching level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "ranching", "value": 10 },
+    "reward": { "gp": 1500 }
+  },
+  "ach_ranching_adept": {
+    "id": "ach_ranching_adept",
+    "name": "Ranching Adept",
+    "description": "Reach Ranching level 50.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "ranching", "value": 50 },
+    "reward": { "gp": 20000 }
+  },
+  "ach_ranching_master": {
+    "id": "ach_ranching_master",
+    "name": "Ranching Master",
+    "description": "Reach Ranching level 99.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "ranching", "value": 99 },
+    "reward": { "gp": 500000 }
+  },
+  "ach_inscription_novice": {
+    "id": "ach_inscription_novice",
+    "name": "Inscription Novice",
+    "description": "Reach Inscription level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "inscription", "value": 10 },
+    "reward": { "gp": 1500 }
+  },
+  "ach_inscription_adept": {
+    "id": "ach_inscription_adept",
+    "name": "Inscription Adept",
+    "description": "Reach Inscription level 50.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "inscription", "value": 50 },
+    "reward": { "gp": 20000 }
+  },
+  "ach_inscription_master": {
+    "id": "ach_inscription_master",
+    "name": "Inscription Master",
+    "description": "Reach Inscription level 99.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "inscription", "value": 99 },
+    "reward": { "gp": 500000 }
+  },
+  "ach_engineering_novice": {
+    "id": "ach_engineering_novice",
+    "name": "Engineering Novice",
+    "description": "Reach Engineering level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "engineering", "value": 10 },
+    "reward": { "gp": 1500 }
+  },
+  "ach_engineering_adept": {
+    "id": "ach_engineering_adept",
+    "name": "Engineering Adept",
+    "description": "Reach Engineering level 50.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "engineering", "value": 50 },
+    "reward": { "gp": 20000 }
+  },
+  "ach_engineering_master": {
+    "id": "ach_engineering_master",
+    "name": "Engineering Master",
+    "description": "Reach Engineering level 99.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "engineering", "value": 99 },
+    "reward": { "gp": 500000 }
+  },
+  "ach_enchanting_novice": {
+    "id": "ach_enchanting_novice",
+    "name": "Enchanting Novice",
+    "description": "Reach Enchanting level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "enchanting", "value": 10 },
+    "reward": { "gp": 1500 }
+  },
+  "ach_enchanting_adept": {
+    "id": "ach_enchanting_adept",
+    "name": "Enchanting Adept",
+    "description": "Reach Enchanting level 50.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "enchanting", "value": 50 },
+    "reward": { "gp": 20000 }
+  },
+  "ach_enchanting_master": {
+    "id": "ach_enchanting_master",
+    "name": "Enchanting Master",
+    "description": "Reach Enchanting level 99.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "enchanting", "value": 99 },
+    "reward": { "gp": 500000 }
+  },
+  "ach_dreamwalking_novice": {
+    "id": "ach_dreamwalking_novice",
+    "name": "Dreamwalking Novice",
+    "description": "Reach Dreamwalking level 10.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "dreamwalking", "value": 10 },
+    "reward": { "gp": 1500 }
+  },
+  "ach_dreamwalking_adept": {
+    "id": "ach_dreamwalking_adept",
+    "name": "Dreamwalking Adept",
+    "description": "Reach Dreamwalking level 50.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "dreamwalking", "value": 50 },
+    "reward": { "gp": 20000 }
+  },
+  "ach_dreamwalking_master": {
+    "id": "ach_dreamwalking_master",
+    "name": "Dreamwalking Master",
+    "description": "Reach Dreamwalking level 99.",
+    "category": "progression",
+    "condition": { "kind": "skill_level", "skill_id": "dreamwalking", "value": 99 },
+    "reward": { "gp": 500000 }
   }
 }
