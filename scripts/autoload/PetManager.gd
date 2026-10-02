@@ -15,8 +15,13 @@ func _ready() -> void:
 func is_unlocked(pet_id: String) -> bool:
     return PlayerData.unlocked_pets.has(pet_id)
 
-func roll_for_skill(_skill_id: String) -> void:
-    if _rng.randf() > SKILL_PET_CHANCE:
+## Four training seconds equal one historical roll; collecting/logging in cannot alter odds.
+func skill_roll_chance(training_seconds: float) -> float:
+    if not is_finite(training_seconds) or training_seconds <= 0: return 0.0
+    return 1.0 - pow(1.0 - SKILL_PET_CHANCE, training_seconds / 4.0)
+
+func roll_for_skill(_skill_id: String, training_seconds: float = 4.0) -> void:
+    if _rng.randf() > skill_roll_chance(training_seconds):
         return
     var pool: Array = []
     for pid in DataLoader.pets.keys():

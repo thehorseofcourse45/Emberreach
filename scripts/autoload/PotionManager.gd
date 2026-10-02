@@ -19,6 +19,8 @@ func get_potion(item_id: String) -> Dictionary:
 
 ## Drink a potion from the bank and make it active.
 func use_potion(item_id: String) -> bool:
+    if item_id == "potion_dreamwalking":
+        return DreamwalkingManager.prepare_draught(item_id)
     var def: Dictionary = get_potion(item_id)
     if def.get("item_type", "") != "potion":
         return false
@@ -34,8 +36,11 @@ func use_potion(item_id: String) -> bool:
     return true
 
 ## Consume one charge; clears the potion when it runs out.
-func consume_charge() -> void:
+func consume_charge(scope: String = "") -> void:
     if PlayerData.active_potion == "":
+        return
+    var required_scope: String = str(get_potion(PlayerData.active_potion).get("charge_scope", ""))
+    if required_scope != "" and required_scope != scope:
         return
     PlayerData.potion_charges -= 1
     if PlayerData.potion_charges <= 0:

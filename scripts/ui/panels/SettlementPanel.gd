@@ -70,6 +70,7 @@ func _rebuild_resources() -> void:
 		_resources_box.add_child(row)
 	_resources_box.add_child(Widgets.key_value("Residents", str(TownshipManager.productions_population()), UITokens.TEXT_MUTED,
 		"Homes raise the settlement's population; population gates larger structures"))
+	_resources_box.add_child(Widgets.key_value("Settlement XP / hour", UIStyle.fmt(TownshipManager.xp_per_hour()), UITokens.GOLD, "Earned each production tick from residents, online or offline"))
 	_ticks.text = "Next production tick in %s  ·  total stored %s" % [
 		UIStyle.fmt_duration(TownshipManager.seconds_to_next_tick()), UIStyle.fmt(total)]
 
@@ -77,7 +78,13 @@ func _rebuild_buildings() -> void:
 	for c in _buildings_box.get_children():
 		_buildings_box.remove_child(c)
 		c.queue_free()
-	for building_id in DataLoader.township_buildings.keys():
+	var candidates: Array = DataLoader.township_buildings.keys()
+	candidates.sort_custom(func(a, b): return float(TownshipManager.build_preview(str(a)).wait_hours) < float(TownshipManager.build_preview(str(b)).wait_hours))
+	var next_id: String = ""
+	for candidate in candidates:
+		if not TownshipManager.is_max_level(str(candidate)): next_id = str(candidate); break
+	if next_id != "": _buildings_box.add_child(UIStyle.label("Next structure: " + str(DataLoader.township_buildings[next_id].name), true, UITokens.FONT_SMALL))
+	for building_id in candidates:
 		var b: Dictionary = DataLoader.township_buildings[building_id]
 		var level: int = int(TownshipManager.buildings.get(building_id, 0))
 		var max_level: int = int(b.get("max_level", 5))
@@ -106,6 +113,8 @@ func _rebuild_buildings() -> void:
 			col.add_child(UIStyle.colored_label("Unlocks: %s" % str(b["unlocks"]), UITokens.GOLD_BRIGHT, UITokens.FONT_MICRO))
 
 		if level < max_level:
+			var forecast: Dictionary = TownshipManager.build_preview(str(building_id))
+			col.add_child(UIStyle.label("Bottleneck: %s · ready %s · own-resource payback %s" % [forecast.bottleneck, "now" if bool(forecast.affordable) else "needs another producer" if is_inf(float(forecast.wait_hours)) else UIStyle.fmt_duration(float(forecast.wait_hours) * 3600), UIStyle.fmt_duration(float(forecast.payoff_hours) * 3600) if float(forecast.payoff_hours) > 0 else "support / unlock structure"], true, UITokens.FONT_SMALL))
 			var cost: Dictionary = TownshipManager.scaled_cost(building_id)
 			col.add_child(UIStyle.section("Cost to build level %d" % (level + 1)))
 			var affordable: bool = true

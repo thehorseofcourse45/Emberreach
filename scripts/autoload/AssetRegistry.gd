@@ -21,7 +21,10 @@ var _placeholders: Dictionary = {}   # kind:id -> Texture2D
 
 # ---------------- Public API ----------------
 func item_icon(item_id: String) -> Texture2D:
-    return _load("icons/items/%s.png" % item_id, "items", item_id)
+    var source: String = str(DataLoader.get_item(item_id).get("icon_id", item_id))
+    if source in ["ranching", "inscription", "engineering", "enchanting", "dreamwalking"]:
+        return skill_icon(source)
+    return _load("icons/items/%s.png" % source, "items", source)
 
 func skill_icon(skill_id: String) -> Texture2D:
     return _load("icons/skills/%s.png" % skill_id, "skills", skill_id)

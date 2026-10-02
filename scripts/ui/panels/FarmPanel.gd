@@ -36,6 +36,7 @@ func _ready() -> void:
 		+ "real time — harvesting pays the experience.", true, UITokens.FONT_SMALL)
 	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_hint)
+	add_child(UIStyle.label("All fifteen plots accept any current seed. Allotment / Herb / Tree are visual sections; current crops are herbs. Manure gives +25% survival and +10% yield; compost gives +10% survival per dressing. Apply both before planting.", true, UITokens.FONT_SMALL))
 	var controls := UIStyle.hbox(UITokens.SP_4)
 	_harvest_button = UIStyle.primary_button("Harvest all ready")
 	_harvest_button.pressed.connect(_harvest_all)
@@ -62,7 +63,7 @@ func focus_route(_route: Dictionary) -> void:
 
 func detail_context() -> Dictionary:
 	return {"kind": "text", "title": "Farm",
-		"body": "Plots grow crops in real time, even while away. Plant a seed, dress the soil "
+		"body": "Plots grow crops in real time, even while away. Dress the soil, plant a seed, "
 			+ "with compost, and harvest when the timer runs out — harvesting pays the XP. "
 			+ "Thieving targets are where every seed comes from."}
 
@@ -156,7 +157,7 @@ func _build_buttons(buttons: HBoxContainer, index: int, state: String) -> void:
 			plant.text = "Plant seed…"
 			plant.add_theme_font_size_override("font_size", UITokens.FONT_SMALL)
 			plant.custom_minimum_size = Vector2(0, UITokens.H_CONTROL - 6)
-			plant.get_popup().about_to_popup.connect(func(): _fill_planter(plant))
+			plant.get_popup().about_to_popup.connect(func(): _fill_planter(plant, index))
 			plant.get_popup().id_pressed.connect(func(id: int): _plant(index, str(_popup_seeds[id])))
 			buttons.add_child(plant)
 			if BankManager.get_count("compost") > 0:
@@ -168,6 +169,12 @@ func _build_buttons(buttons: HBoxContainer, index: int, state: String) -> void:
 			var harvest := UIStyle.mini_button("Harvest")
 			harvest.pressed.connect(func(): _harvest(index))
 			buttons.add_child(harvest)
+			var replant := UIStyle.mini_button("Harvest & replant")
+			replant.disabled = not BankManager.has_item(str(FarmingManager.plots[index].seed_id), 1)
+			replant.pressed.connect(func():
+				FarmingManager.harvest_replant(index)
+				_rebuild())
+			buttons.add_child(replant)
 		"dead":
 			var clear := UIStyle.mini_button("Clear")
 			clear.tooltip_text = "Remove the failed crop so the plot can be replanted"
@@ -274,7 +281,7 @@ func _stored_seed_kinds() -> int:
 			n += 1
 	return n
 
-func _fill_planter(button: MenuButton) -> void:
+func _fill_planter(button: MenuButton, plot_index: int = 0) -> void:
 	var popup: PopupMenu = button.get_popup()
 	popup.clear()
 	_popup_seeds.clear()
@@ -285,6 +292,8 @@ func _fill_planter(button: MenuButton) -> void:
 			label = "%s — locked until Lv %d" % [str(o["name"]), int(o["level"])]
 		elif int(o["count"]) <= 0:
 			label = "%s — none in storage" % str(o["name"])
+		var preview: Dictionary = FarmingManager.planting_preview(plot_index, str(o.id))
+		label += " · %.0f%% survival · +%d%% yield · %s" % [float(preview.survival) * 100, int(preview.yield_bonus), UIStyle.fmt_duration(float(preview.seconds))]
 		popup.add_item(label, index)
 		popup.set_item_disabled(index, not bool(o["unlocked"]) or int(o["count"]) <= 0)
 		_popup_seeds.append(str(o["id"]))

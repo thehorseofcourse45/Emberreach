@@ -398,13 +398,17 @@ func _handle_cli() -> bool:
 	# leave deferred boot enabled so GameManager loads the player's save.
 	GameManager.cli_mode = false
 	for flag in ["--validate", "--tests", "--smoke", "--selftest", "--assetreport",
-			"--offline", "--balance", "--shot"]:
+			"--offline", "--balance", "--shot", "--docs"]:
 		if flag in args:
 			GameManager.cli_mode = true
 			break
 	if "--validate" in args:
 		_run_validation()
 		get_tree().quit()
+		return true
+	if "--docs" in args:
+		var current: bool = _run_docs_check("--fix" in args)
+		get_tree().quit(0 if current else 1)
 		return true
 	if "--tests" in args:
 		# Awaited: run_all() is a coroutine (the UI suites build nodes across frames). An
@@ -588,3 +592,101 @@ func _run_smoke_checks() -> void:
 	print("hit chance equal ratings: ", CombatFormulas.chance_to_hit(100.0, 100.0), " (expect 50)")
 	print("combat level fresh char: ", PlayerData.get_combat_level(), " (expect 1)")
 	print("save version: ", SaveManager.SAVE_VERSION)
+
+# =========================================================================
+#  README drift check (--docs, --docs --fix)
+# =========================================================================
+#
+# The docs rot the same way every time: a content pass lands, the managers and screens grow, and
+# the hand-written token counts and system tables in README.md keep describing the previous build.
+# Two guards, both cheap: the counts live in ONE generated block that --fix rewrites, and every
+# autoload and screen must at least be *named* in the README, so the systems list cannot silently
+# come up short. Prose is deliberately not scanned — a number that is not written down cannot rot.
+
+const DOC_PATH: String = "res://README.md"
+const DOC_BLOCK_START: String = "<!-- doc-facts:start -->"
+const DOC_BLOCK_END: String = "<!-- doc-facts:end -->"
+
+## Label/value rows, derived from the live singletons. One list feeds both the generated block and
+## the comparison, so they cannot disagree.
+func _doc_facts() -> Array:
+	var combat: int = 0
+	var actions: int = 0
+	for id in DataLoader.skills.keys():
+		var skill: Dictionary = DataLoader.skills[id]
+		if str(skill.get("category", "")) == "combat":
+			combat += 1
+		actions += (skill.get("actions", []) as Array).size()
+	var autoloads: int = 0
+	for prop in ProjectSettings.get_property_list():
+		if str(prop.get("name", "")).begins_with("autoload/"):
+			autoloads += 1
+	return [
+		["Skills", "%d (%d combat / %d non-combat)" % [DataLoader.skills.size(), combat, DataLoader.skills.size() - combat]],
+		["Skill actions", str(actions)],
+		["Items", str(DataLoader.items.size())],
+		["Monsters", str(DataLoader.monsters.size())],
+		["Areas", str(DataLoader.areas.size())],
+		["Dungeons", str(DataLoader.dungeons.size())],
+		["Prayers", str(DataLoader.prayers.size())],
+		["Autoload singletons", str(autoloads)],
+		["Screens", str(Screens.ORDER.size() + 1)],
+	]
+
+func _doc_block() -> String:
+	var lines: Array[String] = [DOC_BLOCK_START, "| Check | Value |", "|---|---|"]
+	for row: Array in _doc_facts():
+		lines.append("| %s | %s |" % [row[0], row[1]])
+	lines.append(DOC_BLOCK_END)
+	return "\n".join(lines)
+
+## Returns true when the README matches the live build. With `fix`, rewrites the fact block first
+## (naming gaps still need a human, since the responsibility text is the thing worth reading).
+func _run_docs_check(fix: bool) -> bool:
+	var file: FileAccess = FileAccess.open(DOC_PATH, FileAccess.READ)
+	if file == null:
+		push_error("docs: cannot read %s" % DOC_PATH)
+		return false
+	var text: String = file.get_as_text()
+	file.close()
+	var generated: String = _doc_block()
+	var start: int = text.find(DOC_BLOCK_START)
+	var end: int = text.find(DOC_BLOCK_END)
+	if fix and start >= 0 and end > start:
+		text = text.substr(0, start) + generated + text.substr(end + DOC_BLOCK_END.length())
+		var out: FileAccess = FileAccess.open(DOC_PATH, FileAccess.WRITE)
+		if out == null:
+			push_error("docs: cannot write %s" % DOC_PATH)
+			return false
+		out.store_string(text)
+		out.close()
+		start = text.find(DOC_BLOCK_START)
+		end = text.find(DOC_BLOCK_END)
+	var stale: Array[String] = []
+	if start < 0 or end < start:
+		stale.append("no %s / %s block found" % [DOC_BLOCK_START, DOC_BLOCK_END])
+	elif text.substr(start, end - start + DOC_BLOCK_END.length()) != generated:
+		stale.append("the fact block no longer matches the loaded content")
+	for prop in ProjectSettings.get_property_list():
+		var prop_name: String = str(prop.get("name", ""))
+		if prop_name.begins_with("autoload/"):
+			var singleton: String = prop_name.trim_prefix("autoload/")
+			if not text.contains(singleton):
+				stale.append("autoload `%s` is never mentioned (add it to the §4 table)" % singleton)
+	var screen_ids: Array[String] = Screens.ORDER.duplicate()
+	screen_ids.append(Screens.RECOVERY)
+	for screen_id in screen_ids:
+		var label: String = Screens.label_for(screen_id)
+		if not text.contains(label):
+			stale.append("screen \"%s\" (%s) is never mentioned (add it to the §5 table)" % [label, screen_id])
+	if stale.is_empty():
+		print("docs: README.md is current (%s autoloads, %d screens, %d fact rows)" % [
+			_doc_facts()[7][1], screen_ids.size(), _doc_facts().size()])
+		return true
+	print("docs: README.md is stale%s" % (" (block rewritten; naming gaps remain)" if fix else ""))
+	for message in stale:
+		print("  STALE  " + message)
+	if not fix:
+		print("--- replacement fact block (run `--docs --fix` to write it) ---")
+		print(generated)
+	return false

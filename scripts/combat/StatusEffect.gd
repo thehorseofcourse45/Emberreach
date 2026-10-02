@@ -74,4 +74,14 @@ func is_expired() -> bool:
     return duration <= 0.0
 
 func serialize() -> Dictionary:
-    return {"id": id, "duration": duration, "damage_per_tick": damage_per_tick, "source_id": source_id}
+    return {"id": id, "duration": duration, "damage_per_tick": damage_per_tick, "source_id": source_id, "tick_timer": tick_timer}
+
+static func from_save(value: Variant) -> StatusEffect:
+    if not value is Dictionary or not TABLE.has(str(value.get("id", ""))): return null
+    for key in ["duration", "damage_per_tick", "tick_timer"]:
+        var number: Variant = value.get(key, 0)
+        if not (number is float or number is int) or not is_finite(float(number)) or float(number) < 0: return null
+    if float(value.get("duration", 0)) <= 0: return null
+    var effect: StatusEffect = create(str(value.id), float(value.duration), float(value.get("damage_per_tick", 0)), str(value.get("source_id", "")))
+    effect.tick_timer = fmod(float(value.get("tick_timer", 0)), effect.tick_interval)
+    return effect

@@ -219,6 +219,7 @@ func _process(_delta: float) -> void:
 		_xp_remaining.text = UIStyle.fmt_exact(float(XPTable.xp_to_next_level(xp, level)))
 
 func _rebuild_activities() -> void:
+	_main_grid.visible = _skill_id not in ["ranching", "dreamwalking"]
 	_clear(_activities)
 	_activities.add_child(UIStyle.title("Activities", UITokens.FONT_SUBHEAD))
 	_activities.add_child(UIStyle.label("Choose a reward to train toward.", true, UITokens.FONT_SMALL))
@@ -303,11 +304,15 @@ func _refresh_selected() -> void:
 			_add_stat(grid, "Current stock lasts (≈)", UIStyle.fmt_duration(float(est["supply_hours"])))
 		_selected_box.add_child(grid)
 
+	if not est.is_empty():
+		_add_forecast_details(est, action)
 	# Quantity controls.
 	var qty_row := HBoxContainer.new()
 	qty_row.add_theme_constant_override("separation", UITokens.SP_3)
 	qty_row.add_child(UIStyle.label("Quantity", true, UITokens.FONT_SMALL))
-	var qty_menu := Widgets.option_menu(["Just run", "1", "5", "10", "25", "50", "Maximum now"], func(i): _quantity_index = i, _quantity_index)
+	var qty_menu := Widgets.option_menu(["Just run", "1", "5", "10", "25", "50", "Maximum now"], func(i):
+		_quantity_index = i
+		_refresh_selected(), _quantity_index)
 	qty_menu.tooltip_text = "A quantity stops the activity when it is reached. It still uses the one activity slot."
 	qty_row.add_child(qty_menu)
 	var max_now: int = _max_craftable(action)
@@ -393,10 +398,17 @@ func _refresh_mastery() -> void:
 	_mastery_box.add_child(Widgets.key_value("Mastery XP", UIStyle.fmt_exact(xp), UITokens.PURPLE))
 	_mastery_box.add_child(Widgets.progress_bar(pool_pct, 100.0, UITokens.PURPLE, "%.1f%%" % pool_pct, 14,
 		"Mastery pool: 25% of mastery XP earned goes here (50% at level 99+). Spend it to level any activity on this skill."))
+	_mastery_box.add_child(UIStyle.label(MasteryManager.next_checkpoint(_skill_id), true, UITokens.FONT_SMALL))
 	var unlocks: Dictionary = DataLoader.get_skill(_skill_id).get("mastery_unlocks", {})
 	if not unlocks.is_empty():
 		var lines: Array[String] = []
-		for threshold in unlocks.keys():
+		var ordered: Array = unlocks.keys()
+		ordered.sort_custom(func(a, b): return int(a) < int(b))
+		for threshold in ordered:
+			if int(threshold) > level:
+				_mastery_box.add_child(UIStyle.label("Next activity mastery %s: %s XP remaining · %s" % [str(threshold), UIStyle.fmt(float(XPTable.xp_for_level(int(threshold))) - xp), UIStyle.describe_modifier_table(unlocks[threshold])], true, UITokens.FONT_SMALL))
+				break
+		for threshold in ordered:
 			var reached: bool = level >= int(threshold)
 			lines.append("%s %s: %s" % ["✓" if reached else "·", str(threshold),
 				UIStyle.describe_modifier_table(unlocks[threshold])])
@@ -408,7 +420,9 @@ func _refresh_mastery() -> void:
 	for n in [1, 5, 25]:
 		var b := UIStyle.mini_button("+%d mastery" % n, "Spend pool XP to raise this activity by %d levels" % n)
 		var count: int = n
-		b.disabled = MasteryManager.get_pool_xp(_skill_id) <= 0.0
+		var preview: Dictionary = MasteryManager.spend_preview(_skill_id, _selected_action, n)
+		b.tooltip_text = "Cost %s pool XP; pool %.1f%% → %.1f%%. Lost bonuses: %s" % [UIStyle.fmt(float(preview.cost)), float(preview.before), float(preview.after), UIStyle.describe_modifier_table(preview.lost)]
+		b.disabled = float(preview.cost) <= 0 or MasteryManager.get_pool_xp(_skill_id) < float(preview.cost)
 		b.pressed.connect(func():
 			var spent: float = MasteryManager.spend_pool_xp_for_levels(_skill_id, _selected_action, count)
 			if spent <= 0.0:
@@ -451,3 +465,44 @@ func _clear(box: Node) -> void:
 	for c in box.get_children():
 		box.remove_child(c)
 		c.queue_free()
+
+func _add_forecast_details(est: Dictionary, action: Dictionary) -> void:
+	var box := UIStyle.section("Planning")
+	_selected_box.add_child(box)
+	if float(est.node_overhead) > 0: box.add_child(Widgets.key_value("Expected node downtime / action", "%.2fs" % float(est.node_overhead)))
+	if float(est.stun_overhead) > 0: box.add_child(Widgets.key_value("Expected stun / attempt", "%.2fs" % float(est.stun_overhead)))
+	if float(est.gp_per_hour) > 0: box.add_child(Widgets.key_value("Sustainable GP / hour", UIStyle.fmt(float(est.gp_per_hour)), UITokens.GOLD))
+	if not est.next_unlock.is_empty(): box.add_child(UIStyle.label("Next unlock: %s · Lv %d · ≈ %s at this rate" % [est.next_unlock.name, int(est.next_unlock.level), UIStyle.fmt_duration(float(est.next_unlock.seconds))], true, UITokens.FONT_SMALL))
+	var quantity: int = _target_for_index()
+	if quantity <= 0: quantity = 1
+	var batch: Dictionary = ActionEstimates.batch(_skill_id, _selected_action, quantity)
+	box.add_child(UIStyle.label("%d successful actions · ≈ %s · preservation %.1f%% · doubling %.1f%%" % [quantity, UIStyle.fmt_duration(float(batch.seconds)), float(est.preservation_chance) * 100, float(est.doubling_chance) * 100], true, UITokens.FONT_SMALL))
+	for id in batch.inputs: box.add_child(Widgets.key_value(str(DataLoader.get_item(str(id)).get("name", id)), "≈ %.1f used / %d owned" % [float(batch.inputs[id]), BankManager.get_count(str(id))]))
+	if str(batch.bottleneck) != "": box.add_child(UIStyle.label("Material bottleneck: " + str(batch.bottleneck) + ". Estimates include failed attempts; quantity counts successful actions.", true, UITokens.FONT_MICRO))
+	if _skill_id == "inscription":
+		box.add_child(UIStyle.label("Research prerequisite: " + str(action.get("requires_research", "none")), true, UITokens.FONT_SMALL))
+		if action.has("quality_product"):
+			var odds: Dictionary = InscriptionManager.quality_odds(_selected_action)
+			box.add_child(UIStyle.label("Faded %.1f%% · Inked %.1f%% · Illuminated %.1f%%" % [float(odds.faded) * 100, float(odds.inked) * 100, float(odds.illuminated) * 100], true, UITokens.FONT_SMALL))
+	if _skill_id == "corruption": box.add_child(UIStyle.label("Produces Abyssal Essence; consumes no materials and deals no self-damage. Mastery 25/99 grants damage reduction while this action is active. Spending time here replaces combat training.", true, UITokens.FONT_SMALL))
+	var identities: Dictionary = {"echo_keeping": "Choose the support echo you need; follow its input sources before committing.", "wayfolding": "Choose a route supply chain: produce maps first, then turn them into travel support.", "fermentation": "Choose a useful fermentation product, then collect its required cultures and ingredients.", "customcraft": "Compare commission rewards with failure losses. Higher rewards can consume more supplies.", "lostfinding": "Choose a case's final reward and work backwards through its search inputs."}
+	if identities.has(_skill_id):
+		box.add_child(UIStyle.label(str(identities[_skill_id]), true, UITokens.FONT_SMALL))
+		for id in action.get("output_items", {}):
+			var reward_id: String = str(id)
+			var target_reward := UIStyle.mini_button("Target " + str(DataLoader.get_item(reward_id).get("name", reward_id)), "Pin this reward and its supply chain")
+			target_reward.clip_text = true
+			target_reward.pressed.connect(func(): Goals.pin("item", reward_id, 1))
+			box.add_child(target_reward)
+			for input_id in action.get("input_items", {}):
+				var supply_id: String = str(input_id)
+				var source_button := UIStyle.mini_button("Find " + str(DataLoader.get_item(supply_id).get("name", supply_id)), "Track the required ingredient and its production routes")
+				source_button.clip_text = true
+				source_button.pressed.connect(func(): Goals.pin("item", supply_id, int(action.input_items[supply_id])))
+				box.add_child(source_button)
+			var consumers: Array = []
+			for sid in DataLoader.get_skill_ids():
+				for recipe in DataLoader.get_skill_actions(str(sid)):
+					if recipe.get("input_items", {}).has(id): consumers.append(str(recipe.get("name", "")))
+			box.add_child(UIStyle.label("Used for: " + (", ".join(consumers.slice(0, 5)) if not consumers.is_empty() else str(DataLoader.get_item(str(id)).get("description", "Final reward; sell or keep in Storage."))), true, UITokens.FONT_MICRO))
+	box.add_child(UIStyle.label(str(est.assumptions), true, UITokens.FONT_MICRO))

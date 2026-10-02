@@ -102,7 +102,10 @@ func run_on_load() -> Dictionary:
 func _begin_job(summary: Dictionary, now: float) -> void:
 	_job = {
 		"summary": summary,
-		"target_seconds": float(summary["elapsed_seconds"]),
+		"target_seconds": float(summary["elapsed_seconds"]) * (1.0 - DreamwalkingManager.allocated_share()),
+		"dream_seconds": float(summary["elapsed_seconds"]) * DreamwalkingManager.allocated_share(),
+		"passive_seconds": 0.0,
+		"township_ticks": 0,
 		"processed": 0.0,
 		"now": now,
 		"xp_before": _snapshot_xp(),
@@ -140,6 +143,7 @@ func _step_chunk() -> bool:
 		return false
 	_chunks_done += 1
 	var slice: float = minf(CHUNK_SECONDS, target - processed)
+	_advance_passive_clocks(slice)
 	# ONE activity slot: combat takes precedence when a fight is in progress, otherwise the
 	# selected skill action runs. This mirrors online play exactly.
 	if CombatManager.state != CombatManager.State.IDLE:
@@ -198,8 +202,16 @@ func _finish() -> void:
 	if processed < float(_job["target_seconds"]) and str(summary.get("stopped_reason", "")) == "":
 		summary["stopped_reason"] = "Simulation budget reached"
 	# Farming and settlement advance on absolute time, so they need no stepping.
-	summary["farming_advanced"] = FarmingManager.advance_offline(processed)
-	summary["township_ticks"] = TownshipManager.advance_offline(processed)
+	summary["farming_advanced"] = FarmingManager.advance_offline(float(summary["elapsed_seconds"]))
+	summary["township_ticks"] = int(_job.get("township_ticks", 0))
+	var dream_seconds: float = float(_job.get("dream_seconds", 0.0))
+	_advance_passive_clocks(maxf(0.0, float(summary["elapsed_seconds"]) - dream_seconds - float(_job.get("passive_seconds", 0.0))))
+	summary["dreamwalking"] = DreamwalkingManager.advance_offline(dream_seconds, true)
+	summary["township_ticks"] = int(_job.get("township_ticks", 0))
+	if dream_seconds > 0:
+		summary["notes"].append("%s allocated to Dreamwalking." % UIStyle.fmt_duration(dream_seconds))
+		# Summary clock describes both allocations, rather than excluding spent dream hours.
+		summary["processed_seconds"] = processed + dream_seconds
 	# Deltas read from real state — no estimated or invented numbers.
 	summary["xp_gained"] = _diff_xp(_job["xp_before"])
 	summary["levels_gained"] = _diff_levels(_job["levels_before"])
@@ -220,7 +232,7 @@ func _finish() -> void:
 			newly.append(PlayerData.unlocked_pets[i])
 		summary["pets"] = newly
 	SimulationMode.end()
-	PlayerData.bump_total("offline_seconds_processed", processed)
+	PlayerData.bump_total("offline_seconds_processed", float(summary["processed_seconds"]))
 	_advance_marker(float(_job["now"]))
 	# Persist immediately: this is the write that makes the catch-up exactly-once.
 	BankManager.flush_notifications()
@@ -230,6 +242,21 @@ func _finish() -> void:
 	EventBus.offline_catchup_finished.emit(summary)
 	_job = {}
 	_last_summary = summary
+
+## Keep real-time systems and expiring buffs on one offline clock, including dream-only sessions.
+func _advance_passive_clocks(seconds: float) -> void:
+	var remaining: float = seconds
+	while remaining > 0.000001:
+		var slice: float = minf(remaining, 3600.0)
+		for buff in InscriptionManager.buffs.values():
+			slice = minf(slice, maxf(0.001, float(buff.remaining)))
+		var end_time: float = float(_job.get("now", Time.get_unix_time_from_system())) - float((_job.get("summary", {}) as Dictionary).get("elapsed_seconds", 0.0)) + float(_job.get("passive_seconds", 0.0)) + slice
+		InscriptionManager.advance(slice)
+		_job["township_ticks"] = int(_job.get("township_ticks", 0)) + TownshipManager.advance_offline(slice)
+		RanchingManager.advance(slice)
+		EngineeringManager.advance(slice, end_time)
+		_job["passive_seconds"] = float(_job.get("passive_seconds", 0.0)) + slice
+		remaining -= slice
 
 func _description_of_activity() -> String:
 	if CombatManager.state != CombatManager.State.IDLE:

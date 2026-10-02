@@ -10,6 +10,7 @@ var slots: Dictionary = {}
 ## Saved loadouts: Array[ Dictionary(slot->item_id) ]
 var sets: Array = []
 var active_set: int = 0
+var set_support: Dictionary = {}
 const FOOD_SLOT_COUNT: int = 3
 ## Food slots reference Storage stacks; assigning never moves or duplicates supplies.
 var food_slots: Array[String] = ["", "", ""]
@@ -29,10 +30,12 @@ func equip(item_id: String) -> bool:
         return false
     # Two-handed weapons occupy the shield slot too.
     if bool(data.get("is_two_handed", false)):
-        slots.erase(ItemData.EquipmentSlot.SHIELD)
+        unequip(ItemData.EquipmentSlot.SHIELD)
+    elif slot == ItemData.EquipmentSlot.SHIELD and bool(DataLoader.get_item(get_equipped(ItemData.EquipmentSlot.WEAPON)).get("is_two_handed", false)):
+        unequip(ItemData.EquipmentSlot.WEAPON)
     BankManager.remove_item(item_id, 1)
     if slots.has(slot) and slots[slot] != "":
-        BankManager.add_item(slots[slot], 1)   # return the displaced item
+        BankManager.return_item(slots[slot], 1)   # return the displaced item
     slots[slot] = item_id
     _reregister_modifiers()
     EventBus.item_equipped.emit(slot, item_id)
@@ -42,7 +45,7 @@ func unequip(slot: int) -> bool:
     if not slots.has(slot) or slots[slot] == "":
         return false
     var item_id: String = slots[slot]
-    BankManager.add_item(item_id, 1)
+    BankManager.return_item(item_id, 1)
     slots.erase(slot)
     _reregister_modifiers()
     EventBus.item_unequipped.emit(slot, item_id)
@@ -109,7 +112,7 @@ func upgrade(item_id: String) -> Dictionary:
         # Take it off first so the upgraded piece lands in the same slot.
         for slot in slots.keys():
             if slots[slot] == item_id:
-                unequip(int(slot))
+                slots.erase(slot)
                 break
     else:
         BankManager.remove_item(item_id, 1)
@@ -184,17 +187,83 @@ func save_current_to_set(index: int) -> void:
     while sets.size() <= index:
         sets.append({})
     sets[index] = slots.duplicate()
+    set_support[str(index)] = {"food": food_slots.duplicate(), "prayers": PlayerData.active_prayers.duplicate(), "familiars": SummoningManager.equipped.duplicate()}
     active_set = index
 
-func load_set(index: int) -> bool:
+func set_preview(index: int) -> Dictionary:
     if index < 0 or index >= sets.size():
+        return {"ok": false, "reason": "Unknown set"}
+    var target: Dictionary = _normalize_slots(sets[index])
+    var needed: Dictionary = {}
+    for slot in target:
+        var id: String = str(target[slot])
+        var item: Dictionary = DataLoader.get_item(id)
+        if item.is_empty() or int(item.get("equipment_slot", -1)) != int(slot) or not _meets_requirements(item):
+            return {"ok": false, "reason": "Invalid slot or unmet requirements: " + id}
+        needed[id] = int(needed.get(id, 0)) + 1
+    if target.has(ItemData.EquipmentSlot.SHIELD) and bool(DataLoader.get_item(str(target.get(ItemData.EquipmentSlot.WEAPON, ""))).get("is_two_handed", false)):
+        return {"ok": false, "reason": "Two-handed weapon conflicts with shield"}
+    for id in needed:
+        var available: int = BankManager.get_count(str(id)) + slots.values().count(id)
+        if available < int(needed[id]):
+            return {"ok": false, "reason": "Missing owned equipment: " + str(id)}
+    var support_value: Variant = set_support.get(str(index), {})
+    if not support_value is Dictionary: return {"ok": false, "reason": "Invalid support loadout"}
+    var support: Dictionary = support_value
+    for key in ["food", "prayers", "familiars"]:
+        if not support.get(key, []) is Array: return {"ok": false, "reason": "Invalid support list"}
+        var seen: Array = []
+        for value in support.get(key, []):
+            if not value is String or (value != "" and seen.has(value)): return {"ok": false, "reason": "Invalid or duplicate support entry"}
+            seen.append(value)
+    var foods: Array = support.get("food", [])
+    if foods.size() > FOOD_SLOT_COUNT: return {"ok": false, "reason": "Too many food slots"}
+    for food in foods:
+        if str(food) != "" and (DataLoader.get_item(str(food)).get("item_type", "") != "food" or not BankManager.has_item(str(food), 1)): return {"ok": false, "reason": "Missing owned food: " + str(food)}
+    var prayers: Array = support.get("prayers", [])
+    if prayers.size() > PrayerManager.MAX_ACTIVE: return {"ok": false, "reason": "Too many prayers"}
+    for prayer in prayers:
+        if PrayerManager.get_prayer(str(prayer)).is_empty() or PlayerData.get_level("prayer") < int(PrayerManager.get_prayer(str(prayer)).get("level", 1)): return {"ok": false, "reason": "Locked prayer: " + str(prayer)}
+    var familiars: Array = support.get("familiars", [])
+    if familiars.size() > SummoningManager.MAX_EQUIPPED: return {"ok": false, "reason": "Too many familiars"}
+    for familiar in familiars:
+        var tablet: String = str(DataLoader.familiars.get(str(familiar), {}).get("tablet_item", ""))
+        if SummoningManager.get_mark_level(str(familiar)) < 1 or (int(SummoningManager.charges.get(str(familiar), 0)) <= 0 and not BankManager.has_item(tablet, 1)): return {"ok": false, "reason": "Missing familiar marks or tablets: " + str(familiar)}
+    var before: Dictionary = {}
+    var after: Dictionary = {}
+    for slot in slots:
+        for key in DataLoader.get_item(str(slots[slot])).get("equipment_stats", {}): before[key] = float(before.get(key, 0)) + float(DataLoader.get_item(str(slots[slot])).equipment_stats[key])
+    for slot in target:
+        for key in DataLoader.get_item(str(target[slot])).get("equipment_stats", {}): after[key] = float(after.get(key, 0)) + float(DataLoader.get_item(str(target[slot])).equipment_stats[key])
+    return {"ok": true, "reason": "", "slots": target, "support": support, "before": before, "after": after}
+
+func load_set(index: int) -> bool:
+    var check: Dictionary = set_preview(index)
+    if not bool(check.ok):
+        EventBus.notify(str(check.reason), "warn")
         return false
-    # Move current equipment to bank first.
-    for slot in slots.keys():
-        BankManager.add_item(slots[slot], 1)
-    slots = _normalize_slots(sets[index])
+    # Validate the whole set before any transfer. Unchanged pieces never enter Storage.
+    var target: Dictionary = check.slots
+    var consume: Dictionary = {}
+    var returning: Dictionary = {}
+    for id in target.values(): consume[id] = int(consume.get(id, 0)) + 1
+    for id in slots.values():
+        if int(consume.get(id, 0)) > 0: consume[id] -= 1
+        else: returning[id] = int(returning.get(id, 0)) + 1
+    for id in consume:
+        if int(consume[id]) > 0: BankManager.remove_item(str(id), int(consume[id]))
+    for id in returning: BankManager.return_item(str(id), int(returning[id]))
+    slots = target.duplicate()
+    if not check.support.is_empty():
+        food_slots = ["", "", ""]
+        for i in range(check.support.get("food", []).size()): food_slots[i] = str(check.support.food[i])
+        PrayerManager.deactivate_all()
+        for prayer in check.support.get("prayers", []): PrayerManager.toggle(str(prayer))
+        for familiar in SummoningManager.equipped.duplicate(): SummoningManager.unequip_familiar(str(familiar))
+        for familiar in check.support.get("familiars", []): SummoningManager.equip_familiar(str(familiar))
     active_set = index
     _reregister_modifiers()
+    EventBus.state_refreshed.emit()
     return true
 
 func add_set() -> int:
@@ -203,9 +272,10 @@ func add_set() -> int:
 
 # ---------------- Persistence ----------------
 func serialize() -> Dictionary:
-    return {"slots": slots, "sets": sets, "active_set": active_set, "food_slots": food_slots.duplicate()}
+    return {"slots": slots, "sets": sets, "active_set": active_set, "food_slots": food_slots.duplicate(), "set_support": set_support.duplicate(true)}
 
 func deserialize(d: Dictionary) -> void:
+    set_support = d.get("set_support", {}).duplicate(true) if d.get("set_support", {}) is Dictionary else {}
     slots = _normalize_slots(d.get("slots", {}))
     sets = []
     for entry in (d.get("sets", []) as Array):
@@ -255,3 +325,18 @@ func eat_food_slot(slot: int) -> String:
     if slot < 0 or slot >= FOOD_SLOT_COUNT or CombatManager.player_hp >= CombatManager._compute_max_hp():
         return ""
     return CombatManager.consume_food(food_slots[slot])
+
+func compare_item(item_id: String) -> String:
+    var candidate: Dictionary = DataLoader.get_item(item_id)
+    var current: Dictionary = DataLoader.get_item(get_equipped(int(candidate.get("equipment_slot", -1))))
+    var values: Array[String] = []
+    var before: Dictionary = current.get("equipment_stats", {})
+    var after: Dictionary = candidate.get("equipment_stats", {})
+    var keys: Array = before.keys()
+    for key in after: if not keys.has(key): keys.append(key)
+    for key in keys:
+        var difference: float = float(after.get(key, 0)) - float(before.get(key, 0))
+        if difference != 0: values.append("%s %+.0f" % [str(key).replace("_", " "), difference])
+    if bool(candidate.get("is_two_handed", false)): values.append("Shield returned to Storage")
+    values.append("Passive bonuses: " + UIStyle.describe_modifier_table(candidate.get("passive_modifiers", {})))
+    return "Compared with " + str(current.get("name", "empty slot")) + ": " + "; ".join(values)

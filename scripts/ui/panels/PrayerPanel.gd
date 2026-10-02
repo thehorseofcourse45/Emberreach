@@ -56,6 +56,8 @@ func _update_summary() -> void:
 	var cost: float = PrayerManager.cost_per_attack()
 	_summary.text = "Prayer Lv %d · %d/%d active · %.1f points · %.2f per attack" % [
 		level, active, PrayerManager.MAX_ACTIVE, PlayerData.prayer_points, cost]
+	var forecast: Dictionary = PrayerManager.runway()
+	_summary.text += " · %.1f points/min · %s remaining at current attack speed" % [float(forecast.per_minute), "unlimited" if is_inf(float(forecast.seconds)) else UIStyle.fmt_duration(float(forecast.seconds))]
 
 func _rebuild() -> void:
 	if not _built:
@@ -69,6 +71,10 @@ func _rebuild() -> void:
 	ids.sort_custom(func(a, b):
 		return int(DataLoader.prayers[a].get("level", 0)) < int(DataLoader.prayers[b].get("level", 0)))
 	var any_shown: bool = false
+	var role_boxes: Dictionary = {}
+	for role in ["Offensive", "Defensive", "Protection", "Utility"]:
+		role_boxes[role] = UIStyle.section(role)
+		_list.add_child(role_boxes[role])
 	for id in ids:
 		var p: Dictionary = DataLoader.prayers[id]
 		if p.is_empty() or p.has("_comment"):
@@ -79,7 +85,7 @@ func _rebuild() -> void:
 		if _filter.selected == 2 and not PrayerManager.is_active(str(id)):
 			continue
 		any_shown = true
-		_list.add_child(_row(str(id), p, level))
+		role_boxes[PrayerManager.role(str(id))].add_child(_row(str(id), p, level))
 	if not any_shown:
 		_list.add_child(Widgets.empty_state("No prayers in this filter",
 			"Choose All prayers to see every unlock, or activate an unlocked prayer."))

@@ -102,13 +102,18 @@
     "elite": [
       "slag_golem",
       "guard",
+      "brine_troll",
+      "tidewrack_hag",
       "mist_wraith"
     ],
     "master": [
-      "rune_knight"
+      "rune_knight",
+      "sunderhold_centurion"
     ],
     "legendary": [
-      "green_dragon"
+      "green_dragon",
+      "ashwyrm_seer",
+      "sunderhold_ballistarius"
     ],
     "mythical": [
       "green_dragon",

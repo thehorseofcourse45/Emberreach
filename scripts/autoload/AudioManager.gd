@@ -54,6 +54,7 @@ func _ready() -> void:
 ## Play a synthesized sound effect by id. Returns false when the sound is unknown,
 ## the SFX volume is zero, or the throttle window has not elapsed.
 func play_sfx(sound_id: String, throttle_key: String = "", throttle_ms: int = 0) -> bool:
+	if SimulationMode.is_silent(): return false
 	if str(sound_id) == "":
 		return false
 	if float(PlayerData.settings.get("sfx_volume", 80.0)) <= 0.0:
@@ -290,6 +291,7 @@ func _wire_data_events() -> void:
 		var throttle_ms: int = int(spec.get("throttle_ms", 0))
 		var ev_name: String = str(signal_name)   # snapshot: never trust loop-var capture
 		EventBus.connect(ev_name, func(_a = null, _b = null, _c = null, _d = null):
+			if ev_name in ["skill_level_up", "mastery_level_up", "pet_unlocked"] and not EventBus.toasts_enabled("success"): return
 			play_sfx(sound_id, ev_name, throttle_ms))
 	# Background music follows combat, straight from data.
 	var music_events: Dictionary = _audio_data().get("music_events", {})

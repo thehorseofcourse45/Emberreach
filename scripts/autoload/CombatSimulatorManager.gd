@@ -49,13 +49,24 @@ func _on_game_loaded() -> void:
 ## Everything the pure model needs, read now while the live singletons are authoritative. Returns
 ## {} when the request cannot produce a meaningful fight, so an invalid target never reaches a
 ## thread.
-func build_snapshot(place_type: String, place_id: String, attack_style: String, melee_style: String) -> Dictionary:
+func build_snapshot(place_type: String, place_id: String, attack_style: String, melee_style: String, finite_supplies: bool = false) -> Dictionary:
 	var monsters: Array = _monster_sequence(place_type, place_id)
 	if monsters.is_empty():
 		last_error = "That target has no monsters to fight."
 		return {}
 	var snapshot: Dictionary = {
 		"player": _player_stats(attack_style, melee_style),
+		"finite_supplies": finite_supplies,
+		"food_counts": {},
+		"prayer_balance": PlayerData.prayer_points,
+		"food_healing_percent": ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT),
+		"auto_eat_efficiency_percent": ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_EFFICIENCY_PERCENT),
+		"player_special": EquipmentManager.get_weapon_special_attack().duplicate(true),
+		"enchant_statuses": DataLoader.get_item(EquipmentManager.get_equipped(8)).get("enchant_statuses", []).duplicate(),
+		"protection_styles": [],
+		"attack_cost": DataLoader.get_item(EquipmentManager.get_equipped(8)).get("attack_cost_items", {}).duplicate(),
+		"ammo_preservation": ModifierManager.get_modifier(ModifierKeys.AMMO_PRESERVATION_PERCENT),
+		"attack_stock": BankManager.items.duplicate(),
 		"monsters": monsters,
 		"food": _owned_food(),
 		"auto_eat_tier": int(PlayerData.settings.get("auto_eat_tier", 0)),
@@ -70,14 +81,20 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	}
 	# The player's own accuracy/max-hit come from CombatManager's derived paths so the simulator
 	# cannot drift from the live numbers.
-	var summary: Dictionary = CombatManager.player_combat_summary()
-	if str(summary.get("style", attack_style)) == attack_style:
-		(snapshot["player"] as Dictionary)["accuracy"] = int(summary.get("accuracy", 10))
-		(snapshot["player"] as Dictionary)["max_hit"] = int(summary.get("max_hit", 1))
-		(snapshot["player"] as Dictionary)["attack_interval"] = float(summary.get("attack_interval", 3.0))
-		(snapshot["player"] as Dictionary)["damage_reduction"] = float(summary.get("damage_reduction", 0.0))
-		(snapshot["player"] as Dictionary)["evasion"] = summary.get("evasion", {})
-		(snapshot["player"] as Dictionary)["max_hp"] = float(summary.get("max_hp", 10.0))
+	var summary: Dictionary = CombatManager.player_combat_summary(attack_style, melee_style.to_lower())
+	for key in ["accuracy", "max_hit", "attack_interval", "damage_reduction", "evasion", "max_hp"]: snapshot.player[key] = summary[key]
+	snapshot.player.min_hit_percent = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0
+	snapshot.player.min_hit_flat = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT)
+	for id in PlayerData.active_prayers:
+		var prayer: Dictionary = PrayerManager.get_prayer(id)
+		if str(prayer.get("type", "")) == "protect": snapshot.protection_styles.append(str(prayer.get("style", "")))
+	for id in snapshot.food: snapshot.food_counts[id] = BankManager.get_count(str(id))
+	if finite_supplies:
+		var equipped_food: Dictionary = {}
+		for id in EquipmentManager.food_slots:
+			if id != "" and snapshot.food.has(id): equipped_food[id] = snapshot.food[id]
+		snapshot.food = equipped_food
+	# Resource costs are authored on weapons. Existing attacks with no costs remain free.
 	last_error = ""
 	return snapshot
 
@@ -104,6 +121,10 @@ func _monster_record(monster_id: String) -> Dictionary:
 		return {}
 	return {
 		"id": monster_id,
+		"passives": m.get("passives", []).duplicate(),
+		"specials": m.get("special_attacks", []).map(func(id): return DataLoader.get_special_attack(str(id)).duplicate(true)),
+		"is_immune_to_effects": bool(m.get("is_immune_to_effects", false)),
+		"can_be_stunned": bool(m.get("can_be_stunned", true)),
 		"name": str(m.get("name", monster_id)),
 		"hitpoints": int(m.get("hitpoints", 10)),
 		"max_hit": int(m.get("max_hit", 1)),
@@ -157,13 +178,13 @@ func _owned_food() -> Dictionary:
 
 ## Start one background run. Returns false (with a reason) rather than queueing a second job.
 func start(place_type: String, place_id: String, attack_style: String, melee_style: String,
-		trials: int = PRODUCTION_TRIALS, seed_value: int = 0) -> bool:
+		trials: int = PRODUCTION_TRIALS, seed_value: int = 0, finite_supplies: bool = false) -> bool:
 	if running:
 		last_error = "A simulation is already running."
 		run_failed.emit(last_error)
 		return false
 	var count: int = clampi(int(trials), MIN_TRIALS, MAX_TRIALS)
-	var snapshot: Dictionary = build_snapshot(place_type, place_id, attack_style, melee_style)
+	var snapshot: Dictionary = build_snapshot(place_type, place_id, attack_style, melee_style, finite_supplies)
 	if snapshot.is_empty():
 		run_failed.emit(last_error)
 		return false

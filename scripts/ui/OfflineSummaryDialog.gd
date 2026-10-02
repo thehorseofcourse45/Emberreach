@@ -64,6 +64,12 @@ func show_summary(summary: Dictionary) -> void:
 		_content.add_child(UIStyle.colored_label("Nothing was running, so no resources were produced.",
 			UITokens.TEXT_MUTED, UITokens.FONT_SMALL))
 
+	var dreaming: Dictionary = summary.get("dreamwalking", {})
+	if float(dreaming.get("seconds", 0.0)) > 0:
+		_content.add_child(Widgets.key_value("Dreamwalking", "%s · %d Essence" % [UIStyle.fmt_duration(float(dreaming.seconds)), int(dreaming.essence)], UITokens.TEAL))
+		if int(dreaming.get("nightmare_loss", 0)) > 0:
+			_content.add_child(UIStyle.label("A nightmare cost %d session Essence." % int(dreaming.nightmare_loss), true, UITokens.FONT_SMALL))
+	preload("res://scripts/ui/panels/NewSkillSystems.gd").build_events(_content)
 	var levels: Dictionary = summary.get("levels_gained", {})
 	if not levels.is_empty():
 		_content.add_child(UIStyle.section("Levels gained"))

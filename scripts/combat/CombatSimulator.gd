@@ -51,7 +51,7 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 		"fights": 0,
 		"damage_dealt": 0.0,
 		"xp": {},
-		"assumptions": _assumptions(),
+		"assumptions": _assumptions(snapshot),
 	}
 	var total: int = maxi(1, int(trials))
 	var rng := RandomNumberGenerator.new()
@@ -113,6 +113,7 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 
 ## One full trial: the target's monster sequence, from full HP, until the run is won or lost.
 static func _run_trial(snapshot: Dictionary, rng: RandomNumberGenerator, xp: Dictionary) -> Dictionary:
+	snapshot = snapshot.duplicate(true) # Fresh finite inventory for each full encounter trial.
 	var player: Dictionary = snapshot.get("player", {})
 	var monsters: Array = snapshot.get("monsters", [])
 	var max_hp: float = maxf(1.0, float(player.get("max_hp", 10.0)))
@@ -160,10 +161,10 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 	var mode_config: Dictionary = snapshot.get("mode_config", {})
 	var triangle: Dictionary = CombatFormulas.triangle(style, monster_style, mode_config)
 	var hazard: Dictionary = snapshot.get("hazard", {})
-	var accuracy: float = float(player.get("accuracy", 10)) * (1.0 + float(triangle["accuracy_percent"]) / 100.0)
+	var accuracy: float = float(player.get("accuracy", 10))
 	# Flat hit-chance points, exactly like the live loop (not rating points).
-	var player_hit_bonus: float = float(hazard.get("player_accuracy_percent", 0.0))
-	var max_hit: int = maxi(1, int(player.get("max_hit", 1)))
+	var player_hit_bonus: float = float(hazard.get("player_accuracy_percent", 0.0)) + float(triangle.accuracy_percent)
+	var max_hit: int = maxi(1, floori(float(player.get("max_hit", 1)) * (1.0 + float(triangle.damage_percent) / 100.0)))
 	var min_hit: int = CombatFormulas.min_hit(max_hit, float(player.get("min_hit_percent", 0.0)),
 		float(player.get("min_hit_flat", 0.0)))
 	var player_interval: float = maxf(0.1, float(player.get("attack_interval", 3.0)))
@@ -189,22 +190,48 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 	var player_timer: float = 0.0
 	var monster_timer: float = 0.0
 	var steps: int = 0
+	var player_effects: Array = []
+	var monster_effects: Array = []
 
 	while monster_hp > 0.0 and hp > 0.0:
 		steps += 1
 		if steps > MAX_STEPS_PER_FIGHT or seconds >= FIGHT_SECONDS_CEILING:
 			return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage,
 				"kills": kills, "player_died": false, "timed_out": true}
-		player_timer += STEP_SECONDS
-		monster_timer += STEP_SECONDS
+		hp -= _tick_statuses(player_effects, STEP_SECONDS)
+		monster_hp -= _tick_statuses(monster_effects, STEP_SECONDS)
+		if hp <= 0: break
+		if monster_hp <= 0:
+			kills = 1
+			_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max, bool(player.get("on_slayer_task", false)), bool(snapshot.get("in_slayer_area", false))))
+			break
+		if not _blocked(player_effects): player_timer += STEP_SECONDS
+		if not _blocked(monster_effects): monster_timer += STEP_SECONDS
 		# Player first: the live loop resolves player attacks before monster attacks in the same
 		# tick, so a monster that would have died this step never gets its swing.
-		if player_timer >= player_interval:
+		if player_timer >= player_interval and not _blocked(player_effects):
 			player_timer -= player_interval
+			if bool(snapshot.get("finite_supplies", false)):
+				# Roll the shot once, then both test and spend it: the live loop and the simulator must
+				# charge the same ammunition for the same attack.
+				var shot: Dictionary = CombatFormulas.ammo_cost(rng, snapshot.get("attack_cost", {}),
+					float(snapshot.get("ammo_preservation", 0.0)))
+				var affordable: bool = float(snapshot.get("prayer_balance", 0)) >= float(snapshot.get("prayer_points", 0))
+				for id in shot: affordable = affordable and int(snapshot.attack_stock.get(id, 0)) >= int(shot[id])
+				if not affordable: return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage, "kills": kills, "player_died": false, "timed_out": true}
+				snapshot.prayer_balance = float(snapshot.get("prayer_balance", 0)) - float(snapshot.get("prayer_points", 0))
+				for id in shot: snapshot.attack_stock[id] -= int(shot[id])
 			var roll: Dictionary = CombatFormulas.roll_damage(rng, min_hit, max_hit, monster_dr,
-				crit_chance, crit_mult, str(monster.get("damage_type", "normal")))
+				crit_chance, crit_mult, "normal")
 			if clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + player_hit_bonus, 0.0, 100.0) > rng.randf() * 100.0:
-				var dealt: float = float(roll["damage"]) * (1.0 + float(triangle["damage_percent"]) / 100.0)
+				var dealt: float = float(roll["damage"])
+				var special: Dictionary = _special([snapshot.get("player_special", {})], rng)
+				if not special.is_empty():
+					dealt = maxi(1, floori(dealt * float(special.get("damage_multiplier", 1))))
+					hp = minf(max_hp, hp + dealt * float(special.get("heal_fraction", 0)))
+					_add_special_status(monster_effects, special, rng, monster)
+				for status in snapshot.get("enchant_statuses", []):
+					if rng.randf() < 0.2 and not bool(monster.get("is_immune_to_effects", false)): monster_effects.append(StatusEffect.create(str(status), 4.0, maxf(1, dealt * 0.1) if str(status) == "burn" else 0))
 				dealt = maxf(0.0, dealt)
 				monster_hp -= dealt
 				damage += dealt
@@ -224,23 +251,27 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max,
 				bool(player.get("on_slayer_task", false)), bool(snapshot.get("in_slayer_area", false))))
 			break
-		if monster_timer >= monster_interval:
+		if monster_timer >= monster_interval and not _blocked(monster_effects):
 			monster_timer -= monster_interval
 			var their_roll: Dictionary = CombatFormulas.roll_damage(rng, monster_min_hit, monster_max_hit,
 				0.0, 0.0, 0.0, "normal")
-			if CombatFormulas.chance_to_hit(monster_accuracy, float(player_evasion)) > rng.randf() * 100.0:
+			if clampf(CombatFormulas.chance_to_hit(monster_accuracy, float(player_evasion)) + float(CombatFormulas.triangle(monster_style, style, mode_config).accuracy_percent), 0, 100) > rng.randf() * 100.0 and (not snapshot.get("protection_styles", []).has(monster_style) or rng.randf() >= 0.8):
 				# A raging monster hits harder as it nears death (applied before DR, like the live
 				# loop) — gated on the passive, exactly as CombatManager gates it.
-				var raw_taken: float = float(their_roll["damage"])
+				var raw_taken: float = float(their_roll["damage"]) * (1.0 + float(CombatFormulas.triangle(monster_style, style, mode_config).damage_percent) / 100.0)
 				if (monster.get("passives", []) as Array).has("enrage"):
 					raw_taken *= CombatFormulas.enrage_multiplier( 						monster_hp / monster_hp_max, ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
 				# Clamped for the same reason as the live loop: an unbounded reduction would make
 				# the multiplier negative and every hit a heal.
 				var taken: float = raw_taken * (1.0 - clampf(player_dr, 0.0, 90.0) / 100.0)
 				taken *= (1.0 + float(hazard.get("enemy_damage_percent", 0.0)) / 100.0)
-				hp -= maxf(0.0, taken)
-			if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("regeneration"):
-				monster_hp = minf(monster_hp_max, monster_hp + maxf(1.0, monster_hp_max * ENEMY_REGEN_FRACTION))
+				var special: Dictionary = _special(monster.get("specials", []), rng)
+				if not special.is_empty():
+					taken = maxi(1, floori(taken * float(special.get("damage_multiplier", 1))))
+					_add_special_status(player_effects, special, rng, {})
+				hp -= maxf(0.0, floorf(taken))
+				if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("regeneration"):
+					monster_hp = minf(monster_hp_max, monster_hp + maxf(1.0, monster_hp_max * ENEMY_REGEN_FRACTION))
 		# Auto Eat is evaluated after attacks, like the live loop.
 		var meal: Dictionary = _auto_eat(snapshot, hp, max_hp)
 		if int(meal["eaten"]) > 0:
@@ -275,19 +306,25 @@ static func _auto_eat(snapshot: Dictionary, hp: float, max_hp: float) -> Diction
 	var missing: float = maxf(1.0, max_hp - hp)
 	var best: int = -1
 	var chosen: int = 0
+	var chosen_id: String = ""
 	# Sorted by heal so the first food that covers the gap is the cheapest such food, which is
 	# what the live manager does.
 	var ids: Array = foods.keys()
 	ids.sort_custom(func(a, b): return int(foods[a]) < int(foods[b]))
 	for food_id in ids:
+		if bool(snapshot.get("finite_supplies", false)) and int(snapshot.get("food_counts", {}).get(food_id, 0)) <= 0: continue
 		var heal: int = int(foods[food_id])
 		if best < 0:
 			best = heal
 			chosen = heal
+			chosen_id = str(food_id)
 		if heal >= missing:
 			chosen = heal
+			chosen_id = str(food_id)
 			break
-	var efficiency: float = float(AUTO_EAT_EFFICIENCY.get(tier, 1.0)) \
+	if chosen_id == "": return none
+	if bool(snapshot.get("finite_supplies", false)): snapshot.food_counts[chosen_id] -= 1
+	var efficiency: float = (float(AUTO_EAT_EFFICIENCY.get(tier, 1.0)) + float(snapshot.get("auto_eat_efficiency_percent", 0)) / 100.0) \
 		* (1.0 + float(snapshot.get("food_healing_percent", 0.0)) / 100.0)
 	return {"eaten": 1, "heal": float(chosen) * efficiency}
 
@@ -308,11 +345,34 @@ static func _xp(table: Dictionary, key: String, amount: float) -> void:
 
 ## The assumptions are shown in the UI, not hidden in this file, because every one of them is a
 ## reason a player's real results could differ from the report.
-static func _assumptions() -> Array[String]:
+static func _assumptions(snapshot: Dictionary = {}) -> Array[String]:
 	return [
-		"Food is unlimited: the food types you own are always available, so food/hour is consumption rather than a run-out prediction.",
+		"Finite mode: each trial uses equipped foods and owned quantities; prayer or authored attack-cost depletion ends the trial." if bool(snapshot.get("finite_supplies", false)) else "Unlimited owned food and prayer points; consumption rates are not a supply runway.",
 		"Every fight starts at full HP, so repeated dungeon trials stay comparable.",
 		"A fight that reaches %d seconds is counted as a loss." % int(FIGHT_SECONDS_CEILING),
-		"Prayer points are unlimited within a fight; prayer XP still uses the live formula.",
+		"Ammo/runes use weapon attack_cost_items; attacks without authored costs are free, matching live combat.",
 		"Level-ups, potion charges and loot drops are not simulated.",
 	]
+
+static func _special(definitions: Array, rng: RandomNumberGenerator) -> Dictionary:
+	for definition in definitions:
+		if definition is Dictionary and not definition.is_empty() and rng.randf() * 100.0 <= float(definition.get("trigger_chance", 10)): return definition
+	return {}
+
+static func _add_special_status(effects: Array, special: Dictionary, rng: RandomNumberGenerator, target: Dictionary) -> void:
+	var id: String = str(special.get("applies_status", ""))
+	if id == "" or bool(target.get("is_immune_to_effects", false)) or rng.randf() * 100.0 > float(special.get("status_chance", 100)): return
+	var effect: StatusEffect = StatusEffect.create(id, float(special.get("status_duration", 3)), float(special.get("status_damage_per_tick", 0)))
+	if effect.blocks_attack() and not bool(target.get("can_be_stunned", true)): return
+	effects.append(effect)
+
+static func _blocked(effects: Array) -> bool:
+	for effect in effects: if effect.blocks_attack(): return true
+	return false
+
+static func _tick_statuses(effects: Array, seconds: float) -> float:
+	var damage: float = 0
+	for effect in effects.duplicate():
+		damage += effect.tick(seconds)
+		if effect.is_expired(): effects.erase(effect)
+	return damage

@@ -473,5 +473,35 @@
 			}
 		},
 		"flavour": "The deep cut goes past the last supported floor. The foreman's lamp is still lit down there."
+	},
+	"sunderhold_undercroft": {
+		"id": "sunderhold_undercroft",
+		"name": "Sunderhold Undercroft",
+		"level_range": [
+			71,
+			105
+		],
+		"monsters": [
+			"rune_knight",
+			"sunderhold_centurion",
+			"sunderhold_ballistarius"
+		],
+		"requires": {
+			"slayer": 50
+		},
+		"equipment_locked": true,
+		"completion_reward": {
+			"gp": 120000,
+			"items": {
+				"summoning_shard_green": 6,
+				"big_bones": 4
+			}
+		},
+		"rewards_first_clear": {
+			"items": {
+				"dragonite_bar": 2
+			}
+		},
+		"flavour": "Beneath the Keep the garrison walled off a floor it could not clear, and left the centurion's banner on the wrong side of the door."
 	}
 }

@@ -281,6 +281,14 @@ func _step_row(index: int, step: Dictionary) -> Control:
 		var ctx: Dictionary = step.get("context", {})
 		detail = "%s · %s" % [str(ctx.get("type", "area")).capitalize(), str(ctx.get("id", "?"))]
 	text.add_child(UIStyle.label(detail, true, UITokens.FONT_MICRO))
+	if kind == "skill":
+		var sid: String = str(step.get("skill_id", ""))
+		var aid: String = str(step.get("action_id", ""))
+		var action: Dictionary = DataLoader.get_action(sid, aid)
+		text.add_child(UIStyle.label("Inputs: " + Goals._input_summary(action.get("input_items", {})) + " · output: " + str(action.get("output_items", {})), true, UITokens.FONT_MICRO))
+		var check: Dictionary = SkillManager.check_action(sid, aid)
+		if not bool(check.ok): text.add_child(UIStyle.colored_label("Current blocker: " + str(check.detail), UITokens.AMBER, UITokens.FONT_MICRO))
+		text.add_child(UIStyle.label("Stop condition uses owned stock; offline quantity targets can overshoot by up to one 30-second slice. Material exhaustion and one-shot research still stop immediately.", true, UITokens.FONT_MICRO))
 	if is_current:
 		row.add_child(Widgets.badge("Current", UITokens.GOLD_BRIGHT))
 	var step_id: String = str(step.get("id", ""))

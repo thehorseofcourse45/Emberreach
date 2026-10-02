@@ -32,12 +32,21 @@ static func resource_chip(icon_kind: String, icon_id: String, text: String,
 	return chip
 
 ## Key=value row used in tables and detail panes.
+## A key longer than the column below is not a key any more: "Enchanting Catalyst Reduction
+## Percent" is wider than the 260px detail pane, and a Label that cannot wrap sets the minimum
+## width of every container it sits in, so the whole card overflows and its values are clipped.
+const KEY_COLUMN: int = 132
+const KEY_WRAP_CHARS: int = 22
+
 static func key_value(key: String, value: String, value_color: Color = UITokens.TEXT,
 		value_tooltip := "") -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", UITokens.SP_4)
 	var k := UIStyle.label(key, true, UITokens.FONT_SMALL)
-	k.custom_minimum_size = Vector2(132, 0)
+	if key.length() > KEY_WRAP_CHARS:
+		k.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	else:
+		k.custom_minimum_size = Vector2(KEY_COLUMN, 0)
 	row.add_child(k)
 	var v := UIStyle.label(value, false, UITokens.FONT_SMALL)
 	v.add_theme_color_override("font_color", value_color)
@@ -178,29 +187,37 @@ static func item_row(item_id: String, quantity: int, action_text := "",
 	var h := HBoxContainer.new()
 	h.add_theme_constant_override("separation", UITokens.SP_4)
 	row.add_child(h)
-	h.add_child(item_icon(item_id))
+	var icon := item_icon(item_id)
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	h.add_child(icon)
 	var text_col := UIStyle.vbox(UITokens.SP_1)
 	text_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var name_row := HBoxContainer.new()
-	name_row.add_theme_constant_override("separation", UITokens.SP_3)
 	var name_label := UIStyle.label(DataLoader.get_item(item_id).get("name", item_id), false, UITokens.FONT_BODY)
-	name_row.add_child(name_label)
+	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_col.add_child(name_label)
 	var rarity: Dictionary = UIStyle.item_rarity(item_id)
-	name_row.add_child(badge(str(rarity["label"]), rarity["color"], "Presentation rarity derived from tier and value"))
-	text_col.add_child(name_row)
+	var metadata := HFlowContainer.new()
+	metadata.add_theme_constant_override("h_separation", UITokens.SP_3)
+	metadata.add_theme_constant_override("v_separation", UITokens.SP_1)
+	metadata.add_child(badge(str(rarity["label"]), rarity["color"], "Presentation rarity derived from tier and value"))
 	var sub: String = subtitle
 	if sub == "":
 		var item: Dictionary = DataLoader.get_item(item_id)
 		sub = str(item.get("item_type", "")).capitalize()
 		if int(item.get("sell_price", 0)) > 0:
 			sub += " · %s GP each" % UIStyle.fmt(float(item["sell_price"]))
-	text_col.add_child(UIStyle.label(sub, true, UITokens.FONT_MICRO))
+	var sub_label := UIStyle.label(sub, true, UITokens.FONT_MICRO)
+	sub_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text_col.add_child(sub_label)
 	h.add_child(text_col)
-	h.add_child(UIStyle.colored_label("×%s" % UIStyle.fmt_exact(float(quantity)), UITokens.TEXT_STRONG, UITokens.FONT_BODY))
+	metadata.add_child(UIStyle.colored_label("×%s" % UIStyle.fmt_exact(float(quantity)), UITokens.TEXT_STRONG, UITokens.FONT_BODY))
 	if action_text != "" and action.is_valid():
 		var b := UIStyle.mini_button(action_text)
 		b.pressed.connect(action)
-		h.add_child(b)
+		metadata.add_child(b)
+	text_col.add_child(metadata)
 	return row
 
 # =========================================================================
@@ -281,7 +298,9 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	content.offset_right = -UITokens.SP_4
 	var outputs: Dictionary = action.get("output_items", {})
 	var preview := UIStyle.icon_texture("skills", skill_id)
-	if not outputs.is_empty():
+	if skill_id == "inscription" and action.has("research_unlock"):
+		preview.texture = AssetRegistry.item_icon("scribe_" + str(action.research_unlock) + "_inked")
+	elif not outputs.is_empty():
 		preview.texture = AssetRegistry.item_icon(str(outputs.keys()[0]))
 	preview.custom_minimum_size = Vector2(40, 40)
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -303,9 +322,9 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 			DataLoader.get_skill(skill_id).get("name", skill_id), req, level])
 		lock.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		content.add_child(lock)
-	var interval: float = ModifierManager.get_interval(skill_id, float(action.get("base_interval", 3.0)),
-		float(action.get("interval_floor", 0.25)))
-	var time_label := UIStyle.label("%.1fs" % interval, true, UITokens.FONT_MICRO)
+	var estimate: Dictionary = ActionEstimates.for_action(skill_id, action_id)
+	var interval: float = float(estimate.get("effective_interval", action.get("base_interval", 3.0)))
+	var time_label := UIStyle.label("%.1fs\n≈ %s XP/h" % [interval, UIStyle.fmt(float(estimate.get("xp_per_hour", 0)))], true, UITokens.FONT_MICRO)
 	time_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(time_label)
 	row.add_child(content)
@@ -313,7 +332,9 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var tips: Array[String] = [str(action.get("name", action_id))]
 	if str(action.get("description", "")) != "":
 		tips.append(str(action["description"]))
-	tips.append("Action time %.2fs · %s XP" % [interval, UIStyle.fmt(float(action.get("base_xp", 0)))])
+	tips.append(ActionEstimates.summary_line(skill_id, action_id))
+	tips.append("Expected respawn %.2fs + failure stun %.2fs per attempt" % [float(estimate.get("node_overhead", 0)), float(estimate.get("stun_overhead", 0))])
+	if not estimate.get("next_unlock", {}).is_empty(): tips.append("Next unlock: %s · %s" % [str(estimate.next_unlock.name), UIStyle.fmt_duration(float(estimate.next_unlock.seconds))])
 	if not (action.get("input_items", {}) as Dictionary).is_empty():
 		tips.append("Consumes: " + _item_list(action["input_items"]))
 	if not (action.get("output_items", {}) as Dictionary).is_empty():

@@ -300,5 +300,29 @@
     },
     "tablet_item": "tortoise_tablet",
     "mark_item": "tortoise_mark"
+  },
+  "border_collie": {
+    "id": "border_collie",
+    "name": "Border Collie",
+    "tier": 2,
+    "mark_skill": "ranching",
+    "effect": {
+      "ranching_autocollect": 1
+    },
+    "tablet_item": "border_collie_tablet",
+    "mark_item": "border_collie_mark",
+    "synergies": []
+  },
+  "sandman": {
+    "id": "sandman",
+    "name": "Sandman",
+    "tier": 2,
+    "mark_skill": "dreamwalking",
+    "effect": {
+      "dreamwalking_essence_percent": 10
+    },
+    "tablet_item": "sandman_tablet",
+    "mark_item": "sandman_mark",
+    "synergies": []
   }
 }

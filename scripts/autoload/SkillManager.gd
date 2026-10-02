@@ -63,6 +63,14 @@ func _ready() -> void:
 ## Full requirement check. Returns {ok, reason, detail} so the UI can always explain itself.
 func check_action(skill_id: String, action_id: String) -> Dictionary:
 	var data: Dictionary = DataLoader.get_action(skill_id, action_id)
+	if skill_id in ["ranching", "dreamwalking"]:
+		return {"ok": false, "reason": "passive", "detail": "Use this skill’s system controls below; it progresses passively."}
+	if skill_id == "enchanting":
+		data = EnchantingManager.action_data(data)
+	if skill_id == "inscription":
+		var blocked: String = InscriptionManager.blocker(data)
+		if blocked != "":
+			return {"ok": false, "reason": "research", "detail": blocked}
 	if data.is_empty():
 		return {"ok": false, "reason": "unknown_action", "detail": "Unknown action"}
 	if PlayerData.get_level(skill_id) < int(data.get("level_required", 1)):
@@ -96,6 +104,8 @@ func can_perform(skill_id: String, action_id: String) -> bool:
 	return bool(check_action(skill_id, action_id)["ok"])
 
 func start_action(skill_id: String, action_id: String, target_quantity: int = 0) -> bool:
+	if skill_id != "enchanting" or str(EnchantingManager.pending.get("action", "")) != action_id:
+		EnchantingManager.pending = {}
 	var check: Dictionary = check_action(skill_id, action_id)
 	if not bool(check["ok"]):
 		EventBus.notify("Cannot start: %s" % str(check["detail"]), "warn")
@@ -125,6 +135,8 @@ func stop_action(reason: int = StopReason.PLAYER, detail: String = "") -> void:
 	var was_running: bool = running
 	var prev_skill: String = active_skill
 	var prev_action: String = active_action_id
+	if prev_skill == "enchanting":
+		EnchantingManager.pending = {}
 	running = false
 	active_skill = ""
 	active_action_id = ""
@@ -146,7 +158,8 @@ func stop_action(reason: int = StopReason.PLAYER, detail: String = "") -> void:
 func get_action_data() -> Dictionary:
 	if active_skill == "":
 		return {}
-	return DataLoader.get_action(active_skill, active_action_id)
+	var data: Dictionary = DataLoader.get_action(active_skill, active_action_id)
+	return EnchantingManager.action_data(data) if active_skill == "enchanting" else data
 
 ## Human-readable description of why the activity stopped, for the activity strip.
 func stop_reason_text() -> String:
@@ -210,14 +223,7 @@ func _compute_interval() -> float:
 	return ModifierManager.get_interval(active_skill, float(data.get("base_interval", DEFAULT_INTERVAL)), floor_s)
 
 func _success_chance(data: Dictionary) -> float:
-	if data.has("perception"):
-		var stealth: float = 50.0 + ModifierManager.get_modifier(
-			ModifierKeys.skill_key(active_skill, "stealth"))
-		return clampf(0.5 + (stealth - float(data["perception"])) / 300.0, 0.05, 0.95)
-	var c: float = float(data.get("success_chance", 1.0))
-	if data.has("success_chance_percent"):
-		c += float(data["success_chance_percent"]) / 100.0
-	return clampf(c, 0.0, 1.0)
+	return ActionEstimates._success_chance(active_skill, data)
 
 # =========================================================================
 #  Completion
@@ -253,6 +259,12 @@ func perform_action() -> Dictionary:
 		stop_action(StopReason.STORAGE_FULL, "All farm plots are occupied")
 		return {"success": false, "stop": "no_space"}
 
+	if active_skill == "inscription":
+		var blocked: String = InscriptionManager.blocker(data)
+		if blocked != "":
+			stop_action(StopReason.TOOL_LOST, blocked)
+			return {"success": false, "stop": "research"}
+
 	# 1) Success roll. Thieving uses stealth vs perception; others use success_chance.
 	if _rng.randf() > _success_chance(data):
 		var waste: Dictionary = _on_action_failure(data)
@@ -262,11 +274,13 @@ func perform_action() -> Dictionary:
 		return {"success": false, "stop": "", "items": waste}
 
 	# 2) Consume inputs (with preservation chance), then produce outputs (with doubling).
-	_consume_inputs(data)
+	_consume_inputs(data, bool(data.get("enchant_job", false)))
 	var produced: Dictionary = _produce_outputs(data)
 
 	# 3) Grant skill XP (multipliers applied) and mastery XP.
 	var xp: float = float(data.get("base_xp", 0.0)) * ModifierManager.get_skill_xp_multiplier(active_skill)
+	if data.has("research_unlock"):
+		xp *= 1.0 + ModifierManager.get_modifier("inscription_research_xp_percent") / 100.0
 	if xp > 0.0:
 		PlayerData.add_xp(active_skill, xp)
 	var mastery_time: float = float(data.get("mastery_action_time", -1.0))
@@ -278,7 +292,7 @@ func perform_action() -> Dictionary:
 	last_action_count += 1
 	total_action_count += 1
 	# Explicit (not signal-driven) so charges also tick during the silent offline catch-up.
-	PotionManager.consume_charge()
+	PotionManager.consume_charge(active_skill)
 	ProgressTracker.record_action(active_skill, active_action_id)
 	SimulationMode.bump(SimulationMode.BUCKET_ACTIONS, "%s:%s" % [active_skill, active_action_id], 1.0)
 	_damage_node()
@@ -288,7 +302,9 @@ func perform_action() -> Dictionary:
 		EventBus.action_completed.emit(active_skill, active_action_id, rewards)
 	# 4) Queue/target handling. A target occupies the same single activity slot; it does not
 	#    create a parallel worker.
-	if repeat_target > 0 and total_action_count >= repeat_target:
+	if data.has("research_unlock") or bool(data.get("enchant_job", false)):
+		stop_action(StopReason.TARGET_REACHED, "Research complete" if data.has("research_unlock") else "Enchantment work complete")
+	elif repeat_target > 0 and total_action_count >= repeat_target:
 		stop_action(StopReason.TARGET_REACHED, "%s ×%d complete" % [str(data.get("name", active_action_id)), repeat_target])
 	return rewards
 
@@ -362,8 +378,11 @@ func _consume_inputs(data: Dictionary, forced: bool = false) -> void:
 
 func _produce_outputs(data: Dictionary) -> Dictionary:
 	var produced: Dictionary = {}
-	var doubling: float = ModifierManager.get_doubling_chance(active_skill)
-	var flat_bonus: int = ModifierManager.get_resource_flat(active_skill)
+	if active_skill == "inscription" and data.has("quality_product"):
+		data = data.duplicate(true)
+		data.output_items = InscriptionManager.quality_outputs(data)
+	var doubling: float = 0.0 if bool(data.get("enchant_job", false)) else ModifierManager.get_doubling_chance(active_skill)
+	var flat_bonus: int = 0 if bool(data.get("enchant_job", false)) else ModifierManager.get_resource_flat(active_skill)
 	# The action records do not carry a category, so work at a station is identified by the
 	# skill's own type. This is what makes "items you crafted yourself" counters fill at all.
 	var is_artisan: bool = str(DataLoader.get_skill(active_skill).get("type", "")) == "artisan"
@@ -398,11 +417,13 @@ func _produce_outputs(data: Dictionary) -> Dictionary:
 
 ## GP rewards, summoning marks/charges, pet rolls, archaeology tracking.
 func _post_action(data: Dictionary, action_time: float) -> void:
+	if active_skill == "inscription":
+		InscriptionManager.finish_research(data)
 	var gp: float = float(data.get("gp_reward", 0.0))
 	if gp > 0.0:
 		PlayerData.add_gp(gp * (1.0 + ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) / 100.0))
 	SummoningManager.on_action(active_skill, action_time)
-	PetManager.roll_for_skill(active_skill)
+	PetManager.roll_for_skill(active_skill, current_interval)
 	if active_skill == "archaeology":
 		ArchaeologyManager.on_excavate(active_action_id)
 

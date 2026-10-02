@@ -12243,5 +12243,555 @@
       "gp": 80000,
       "xp": {}
     }
+  },
+  "ranching_journey_10": {
+    "id": "ranching_journey_10",
+    "name": "Ranching Journey · 10",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Build a pen, buy and stock a matching pair, add feed, then collect produce. Manure improves your crops.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "ranching",
+        "required": 10,
+        "label": "Ranching 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "ranching"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "ranching": 1000
+      }
+    },
+    "prerequisites": [
+      "ranching_foundation"
+    ]
+  },
+  "ranching_journey_50": {
+    "id": "ranching_journey_50",
+    "name": "Ranching Journey · 50",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Build a pen, buy and stock a matching pair, add feed, then collect produce. Manure improves your crops.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "ranching",
+        "required": 50,
+        "label": "Ranching 50",
+        "route": {
+          "screen": "skill",
+          "skill_id": "ranching"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "ranching": 5000
+      }
+    },
+    "prerequisites": [
+      "ranching_journey_10"
+    ]
+  },
+  "ranching_journey_99": {
+    "id": "ranching_journey_99",
+    "name": "Ranching Journey · 99",
+    "chapter": 5,
+    "difficulty": "expert",
+    "region": "farmlands",
+    "description": "Build a pen, buy and stock a matching pair, add feed, then collect produce. Manure improves your crops.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "ranching",
+        "required": 99,
+        "label": "Ranching 99",
+        "route": {
+          "screen": "skill",
+          "skill_id": "ranching"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9900,
+      "xp": {
+        "ranching": 9900
+      }
+    },
+    "prerequisites": [
+      "ranching_journey_50"
+    ]
+  },
+  "inscription_journey_10": {
+    "id": "inscription_journey_10",
+    "name": "Inscription Journey · 10",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Research a recipe once, scribe texts, compare quality odds, then use the right text for your target skill.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "inscription",
+        "required": 10,
+        "label": "Inscription 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "inscription"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "inscription": 1000
+      }
+    },
+    "prerequisites": [
+      "inscription_foundation"
+    ]
+  },
+  "inscription_journey_50": {
+    "id": "inscription_journey_50",
+    "name": "Inscription Journey · 50",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Research a recipe once, scribe texts, compare quality odds, then use the right text for your target skill.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "inscription",
+        "required": 50,
+        "label": "Inscription 50",
+        "route": {
+          "screen": "skill",
+          "skill_id": "inscription"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "inscription": 5000
+      }
+    },
+    "prerequisites": [
+      "inscription_journey_10"
+    ]
+  },
+  "inscription_journey_99": {
+    "id": "inscription_journey_99",
+    "name": "Inscription Journey · 99",
+    "chapter": 5,
+    "difficulty": "expert",
+    "region": "farmlands",
+    "description": "Research a recipe once, scribe texts, compare quality odds, then use the right text for your target skill.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "inscription",
+        "required": 99,
+        "label": "Inscription 99",
+        "route": {
+          "screen": "skill",
+          "skill_id": "inscription"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9900,
+      "xp": {
+        "inscription": 9900
+      }
+    },
+    "prerequisites": [
+      "inscription_journey_50"
+    ]
+  },
+  "engineering_journey_10": {
+    "id": "engineering_journey_10",
+    "name": "Engineering Journey · 10",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Assemble a device, choose unlocked work, install it and keep its fuel and inputs stocked.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "engineering",
+        "required": 10,
+        "label": "Engineering 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "engineering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "engineering": 1000
+      }
+    },
+    "prerequisites": [
+      "engineering_foundation"
+    ]
+  },
+  "engineering_journey_50": {
+    "id": "engineering_journey_50",
+    "name": "Engineering Journey · 50",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Assemble a device, choose unlocked work, install it and keep its fuel and inputs stocked.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "engineering",
+        "required": 50,
+        "label": "Engineering 50",
+        "route": {
+          "screen": "skill",
+          "skill_id": "engineering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "engineering": 5000
+      }
+    },
+    "prerequisites": [
+      "engineering_journey_10"
+    ]
+  },
+  "engineering_journey_99": {
+    "id": "engineering_journey_99",
+    "name": "Engineering Journey · 99",
+    "chapter": 5,
+    "difficulty": "expert",
+    "region": "farmlands",
+    "description": "Assemble a device, choose unlocked work, install it and keep its fuel and inputs stocked.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "engineering",
+        "required": 99,
+        "label": "Engineering 99",
+        "route": {
+          "screen": "skill",
+          "skill_id": "engineering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9900,
+      "xp": {
+        "engineering": 9900
+      }
+    },
+    "prerequisites": [
+      "engineering_journey_50"
+    ]
+  },
+  "enchanting_journey_10": {
+    "id": "enchanting_journey_10",
+    "name": "Enchanting Journey · 10",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Disenchant spare unprotected gear for Essence, compare the preview, then enchant one owned piece.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "enchanting",
+        "required": 10,
+        "label": "Enchanting 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "enchanting"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "enchanting": 1000
+      }
+    },
+    "prerequisites": [
+      "enchanting_foundation"
+    ]
+  },
+  "enchanting_journey_50": {
+    "id": "enchanting_journey_50",
+    "name": "Enchanting Journey · 50",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Disenchant spare unprotected gear for Essence, compare the preview, then enchant one owned piece.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "enchanting",
+        "required": 50,
+        "label": "Enchanting 50",
+        "route": {
+          "screen": "skill",
+          "skill_id": "enchanting"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "enchanting": 5000
+      }
+    },
+    "prerequisites": [
+      "enchanting_journey_10"
+    ]
+  },
+  "enchanting_journey_99": {
+    "id": "enchanting_journey_99",
+    "name": "Enchanting Journey · 99",
+    "chapter": 5,
+    "difficulty": "expert",
+    "region": "farmlands",
+    "description": "Disenchant spare unprotected gear for Essence, compare the preview, then enchant one owned piece.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "enchanting",
+        "required": 99,
+        "label": "Enchanting 99",
+        "route": {
+          "screen": "skill",
+          "skill_id": "enchanting"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9900,
+      "xp": {
+        "enchanting": 9900
+      }
+    },
+    "prerequisites": [
+      "enchanting_journey_50"
+    ]
+  },
+  "dreamwalking_journey_10": {
+    "id": "dreamwalking_journey_10",
+    "name": "Dreamwalking Journey · 10",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Choose a Dreamscape and offline split, return to collect Essence, then compare events and Bazaar rewards.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "dreamwalking",
+        "required": 10,
+        "label": "Dreamwalking 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "dreamwalking"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "dreamwalking": 1000
+      }
+    },
+    "prerequisites": [
+      "dreamwalking_foundation"
+    ]
+  },
+  "dreamwalking_journey_50": {
+    "id": "dreamwalking_journey_50",
+    "name": "Dreamwalking Journey · 50",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Choose a Dreamscape and offline split, return to collect Essence, then compare events and Bazaar rewards.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "dreamwalking",
+        "required": 50,
+        "label": "Dreamwalking 50",
+        "route": {
+          "screen": "skill",
+          "skill_id": "dreamwalking"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "dreamwalking": 5000
+      }
+    },
+    "prerequisites": [
+      "dreamwalking_journey_10"
+    ]
+  },
+  "dreamwalking_journey_99": {
+    "id": "dreamwalking_journey_99",
+    "name": "Dreamwalking Journey · 99",
+    "chapter": 5,
+    "difficulty": "expert",
+    "region": "farmlands",
+    "description": "Choose a Dreamscape and offline split, return to collect Essence, then compare events and Bazaar rewards.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "dreamwalking",
+        "required": 99,
+        "label": "Dreamwalking 99",
+        "route": {
+          "screen": "skill",
+          "skill_id": "dreamwalking"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9900,
+      "xp": {
+        "dreamwalking": 9900
+      }
+    },
+    "prerequisites": [
+      "dreamwalking_journey_50"
+    ]
+  },
+  "ranching_foundation": {
+    "id": "ranching_foundation",
+    "name": "Ranching · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Build a pen, buy and stock a matching pair, add feed, then collect produce. Manure improves your crops.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "ranch_egg",
+        "required": 1,
+        "label": "Obtain ranch egg",
+        "route": {
+          "screen": "skills",
+          "skill_id": "ranching"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200
+    }
+  },
+  "inscription_foundation": {
+    "id": "inscription_foundation",
+    "name": "Inscription · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Research a recipe once, scribe texts, compare quality odds, then use the right text for your target skill.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "scribe_paper",
+        "required": 1,
+        "label": "Obtain scribe paper",
+        "route": {
+          "screen": "skills",
+          "skill_id": "inscription"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200
+    }
+  },
+  "engineering_foundation": {
+    "id": "engineering_foundation",
+    "name": "Engineering · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Assemble a device, choose unlocked work, install it and keep its fuel and inputs stocked.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "device_lumberjack",
+        "required": 1,
+        "label": "Obtain device woodcutter",
+        "route": {
+          "screen": "skills",
+          "skill_id": "engineering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200
+    }
+  },
+  "enchanting_foundation": {
+    "id": "enchanting_foundation",
+    "name": "Enchanting · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Disenchant spare unprotected gear for Essence, compare the preview, then enchant one owned piece.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "enchant_martial_essence",
+        "required": 1,
+        "label": "Obtain enchant martial essence",
+        "route": {
+          "screen": "skills",
+          "skill_id": "enchanting"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200
+    }
+  },
+  "dreamwalking_foundation": {
+    "id": "dreamwalking_foundation",
+    "name": "Dreamwalking · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Choose a Dreamscape and offline split, return to collect Essence, then compare events and Bazaar rewards.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "dream_essence",
+        "required": 1,
+        "label": "Obtain dream essence",
+        "route": {
+          "screen": "skills",
+          "skill_id": "dreamwalking"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200
+    }
   }
 }

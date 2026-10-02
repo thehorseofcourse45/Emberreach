@@ -83,7 +83,12 @@
     "item_type": "consumable",
     "sell_price": 50,
     "is_stackable": true,
-    "description": "Open for seeds."
+    "description": "Open for seeds.",
+    "container_items": {
+      "garum_herb_seed": 2,
+      "sourweed_seed": 2,
+      "mantalyme_seed": 1
+    }
   },
   "raw_shrimp": {
     "id": "raw_shrimp",
@@ -240,6 +245,14 @@
     "is_stackable": true,
     "heal_amount": 150
   },
+  "crab": {
+    "id": "crab",
+    "name": "Mudcrab",
+    "item_type": "food",
+    "sell_price": 30,
+    "is_stackable": true,
+    "heal_amount": 175
+  },
   "shark": {
     "id": "shark",
     "name": "Gale Shark",
@@ -247,6 +260,14 @@
     "sell_price": 40,
     "is_stackable": true,
     "heal_amount": 200
+  },
+  "cave_fish": {
+    "id": "cave_fish",
+    "name": "Cavern Char",
+    "item_type": "food",
+    "sell_price": 50,
+    "is_stackable": true,
+    "heal_amount": 215
   },
   "manta_ray": {
     "id": "manta_ray",
@@ -412,7 +433,8 @@
     "name": "Ash",
     "item_type": "resource",
     "sell_price": 1,
-    "is_stackable": true
+    "is_stackable": true,
+    "terminal_reason": "fuel byproduct of every firemaking action; 11 routes produce it and it sells for 1 GP"
   },
   "bones": {
     "id": "bones",
@@ -492,7 +514,8 @@
     "name": "Artefact Shard",
     "item_type": "resource",
     "sell_price": 20,
-    "is_stackable": true
+    "is_stackable": true,
+    "terminal_reason": "dig fragment from every excavation action; vendor scrap next to the four graded artefacts"
   },
   "harvested_essence": {
     "id": "harvested_essence",
@@ -1463,6 +1486,9 @@
     },
     "level_requirements": {
       "ranged": 1
+    },
+    "attack_cost_items": {
+      "bronze_arrow": 1
     }
   },
   "normal_longbow": {
@@ -1478,6 +1504,9 @@
     },
     "level_requirements": {
       "ranged": 1
+    },
+    "attack_cost_items": {
+      "bronze_arrow": 1
     }
   },
   "oak_shortbow": {
@@ -1493,6 +1522,9 @@
     },
     "level_requirements": {
       "ranged": 20
+    },
+    "attack_cost_items": {
+      "bronze_arrow": 1
     }
   },
   "oak_longbow": {
@@ -1508,6 +1540,9 @@
     },
     "level_requirements": {
       "ranged": 20
+    },
+    "attack_cost_items": {
+      "bronze_arrow": 1
     }
   },
   "willow_shortbow": {
@@ -1523,6 +1558,9 @@
     },
     "level_requirements": {
       "ranged": 35
+    },
+    "attack_cost_items": {
+      "iron_arrow": 1
     }
   },
   "willow_longbow": {
@@ -1538,6 +1576,9 @@
     },
     "level_requirements": {
       "ranged": 35
+    },
+    "attack_cost_items": {
+      "iron_arrow": 1
     }
   },
   "yew_shortbow": {
@@ -1553,6 +1594,9 @@
     },
     "level_requirements": {
       "ranged": 55
+    },
+    "attack_cost_items": {
+      "iron_arrow": 1
     }
   },
   "yew_longbow": {
@@ -1568,6 +1612,9 @@
     },
     "level_requirements": {
       "ranged": 55
+    },
+    "attack_cost_items": {
+      "iron_arrow": 1
     }
   },
   "magic_shortbow": {
@@ -1583,6 +1630,9 @@
     },
     "level_requirements": {
       "ranged": 75
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "magic_longbow": {
@@ -1598,6 +1648,9 @@
     },
     "level_requirements": {
       "ranged": 75
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "redwood_shortbow": {
@@ -1613,6 +1666,9 @@
     },
     "level_requirements": {
       "ranged": 90
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "redwood_longbow": {
@@ -1628,6 +1684,9 @@
     },
     "level_requirements": {
       "ranged": 90
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "cinderbark_shortbow": {
@@ -1643,6 +1702,9 @@
     },
     "level_requirements": {
       "ranged": 100
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "cinderbark_longbow": {
@@ -1658,6 +1720,9 @@
     },
     "level_requirements": {
       "ranged": 100
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "voidwood_shortbow": {
@@ -1673,6 +1738,9 @@
     },
     "level_requirements": {
       "ranged": 110
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "voidwood_longbow": {
@@ -1688,6 +1756,9 @@
     },
     "level_requirements": {
       "ranged": 110
+    },
+    "attack_cost_items": {
+      "steel_arrow": 1
     }
   },
   "topaz": {
@@ -2065,6 +2136,246 @@
       "ranged": 70
     }
   },
+  "apprentice_hat": {
+    "id": "apprentice_hat",
+    "name": "Apprentice Hat",
+    "item_type": "equipment",
+    "sell_price": 600,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "magic_defence": 8,
+      "melee_defence": 6,
+      "ranged_defence": 6
+    },
+    "level_requirements": {
+      "magic": 30
+    }
+  },
+  "apprentice_robe": {
+    "id": "apprentice_robe",
+    "name": "Apprentice Robe",
+    "item_type": "equipment",
+    "sell_price": 1200,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "magic_defence": 20,
+      "melee_defence": 15,
+      "ranged_defence": 15
+    },
+    "level_requirements": {
+      "magic": 30
+    }
+  },
+  "apprentice_legs": {
+    "id": "apprentice_legs",
+    "name": "Apprentice Legs",
+    "item_type": "equipment",
+    "sell_price": 960,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "magic_defence": 14,
+      "melee_defence": 10,
+      "ranged_defence": 10
+    },
+    "level_requirements": {
+      "magic": 30
+    }
+  },
+  "apprentice_gloves": {
+    "id": "apprentice_gloves",
+    "name": "Apprentice Gloves",
+    "item_type": "equipment",
+    "sell_price": 480,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "magic_defence": 5,
+      "melee_defence": 4,
+      "ranged_defence": 4
+    },
+    "level_requirements": {
+      "magic": 30
+    }
+  },
+  "adept_hat": {
+    "id": "adept_hat",
+    "name": "Adept Hat",
+    "item_type": "equipment",
+    "sell_price": 1440,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "magic_defence": 12,
+      "melee_defence": 8,
+      "ranged_defence": 8
+    },
+    "level_requirements": {
+      "magic": 60
+    }
+  },
+  "adept_robe": {
+    "id": "adept_robe",
+    "name": "Adept Robe",
+    "item_type": "equipment",
+    "sell_price": 2880,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "magic_defence": 30,
+      "melee_defence": 20,
+      "ranged_defence": 20
+    },
+    "level_requirements": {
+      "magic": 60
+    }
+  },
+  "adept_legs": {
+    "id": "adept_legs",
+    "name": "Adept Legs",
+    "item_type": "equipment",
+    "sell_price": 2304,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "magic_defence": 21,
+      "melee_defence": 14,
+      "ranged_defence": 14
+    },
+    "level_requirements": {
+      "magic": 60
+    }
+  },
+  "adept_gloves": {
+    "id": "adept_gloves",
+    "name": "Adept Gloves",
+    "item_type": "equipment",
+    "sell_price": 1152,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "magic_defence": 7,
+      "melee_defence": 5,
+      "ranged_defence": 5
+    },
+    "level_requirements": {
+      "magic": 60
+    }
+  },
+  "archmage_hat": {
+    "id": "archmage_hat",
+    "name": "Archmage Hat",
+    "item_type": "equipment",
+    "sell_price": 3000,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "magic_defence": 18,
+      "melee_defence": 12,
+      "ranged_defence": 12
+    },
+    "level_requirements": {
+      "magic": 90
+    }
+  },
+  "archmage_robe": {
+    "id": "archmage_robe",
+    "name": "Archmage Robe",
+    "item_type": "equipment",
+    "sell_price": 6000,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "magic_defence": 45,
+      "melee_defence": 30,
+      "ranged_defence": 30
+    },
+    "level_requirements": {
+      "magic": 90
+    }
+  },
+  "archmage_legs": {
+    "id": "archmage_legs",
+    "name": "Archmage Legs",
+    "item_type": "equipment",
+    "sell_price": 4800,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "magic_defence": 32,
+      "melee_defence": 21,
+      "ranged_defence": 21
+    },
+    "level_requirements": {
+      "magic": 90
+    }
+  },
+  "archmage_gloves": {
+    "id": "archmage_gloves",
+    "name": "Archmage Gloves",
+    "item_type": "equipment",
+    "sell_price": 2400,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "magic_defence": 11,
+      "melee_defence": 7,
+      "ranged_defence": 7
+    },
+    "level_requirements": {
+      "magic": 90
+    }
+  },
+  "herald_hat": {
+    "id": "herald_hat",
+    "name": "Herald Hat",
+    "item_type": "equipment",
+    "sell_price": 5100,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "magic_defence": 23,
+      "melee_defence": 16,
+      "ranged_defence": 16
+    },
+    "level_requirements": {
+      "magic": 115
+    }
+  },
+  "herald_robe": {
+    "id": "herald_robe",
+    "name": "Herald Robe",
+    "item_type": "equipment",
+    "sell_price": 10200,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "magic_defence": 58,
+      "melee_defence": 40,
+      "ranged_defence": 40
+    },
+    "level_requirements": {
+      "magic": 115
+    }
+  },
+  "herald_legs": {
+    "id": "herald_legs",
+    "name": "Herald Legs",
+    "item_type": "equipment",
+    "sell_price": 8160,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "magic_defence": 40,
+      "melee_defence": 28,
+      "ranged_defence": 28
+    },
+    "level_requirements": {
+      "magic": 115
+    }
+  },
+  "herald_gloves": {
+    "id": "herald_gloves",
+    "name": "Herald Gloves",
+    "item_type": "equipment",
+    "sell_price": 4080,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "magic_defence": 14,
+      "melee_defence": 10,
+      "ranged_defence": 10
+    },
+    "level_requirements": {
+      "magic": 115
+    }
+  },
   "black_dhide_coif": {
     "id": "black_dhide_coif",
     "name": "Blighted Wyrmhide Coif",
@@ -2170,7 +2481,11 @@
     },
     "level_requirements": {
       "magic": 1
-    }
+    },
+    "attack_cost_items": {
+      "air_rune": 1
+    },
+    "spell_max_hit": 14
   },
   "water_staff": {
     "id": "water_staff",
@@ -2185,7 +2500,11 @@
     },
     "level_requirements": {
       "magic": 10
-    }
+    },
+    "attack_cost_items": {
+      "water_rune": 1
+    },
+    "spell_max_hit": 20
   },
   "earth_staff": {
     "id": "earth_staff",
@@ -2200,7 +2519,11 @@
     },
     "level_requirements": {
       "magic": 20
-    }
+    },
+    "attack_cost_items": {
+      "earth_rune": 1
+    },
+    "spell_max_hit": 26
   },
   "fire_staff": {
     "id": "fire_staff",
@@ -2215,6 +2538,181 @@
     },
     "level_requirements": {
       "magic": 30
+    },
+    "attack_cost_items": {
+      "fire_rune": 1
+    },
+    "spell_max_hit": 33
+  },
+  "mind_staff": {
+    "id": "mind_staff",
+    "name": "Whisper Staff",
+    "item_type": "equipment",
+    "sell_price": 2600,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 38,
+    "equipment_stats": {
+      "magic_attack": 31,
+      "magic_damage_percent": 13
+    },
+    "level_requirements": {
+      "magic": 35
+    },
+    "attack_cost_items": {
+      "mind_rune": 1
+    }
+  },
+  "cosmic_staff": {
+    "id": "cosmic_staff",
+    "name": "Astral Staff",
+    "item_type": "equipment",
+    "sell_price": 3800,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 46,
+    "equipment_stats": {
+      "magic_attack": 40,
+      "magic_damage_percent": 16
+    },
+    "level_requirements": {
+      "magic": 45
+    },
+    "attack_cost_items": {
+      "cosmic_rune": 1
+    }
+  },
+  "chaos_staff": {
+    "id": "chaos_staff",
+    "name": "Rift Staff",
+    "item_type": "equipment",
+    "sell_price": 5400,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 53,
+    "equipment_stats": {
+      "magic_attack": 52,
+      "magic_damage_percent": 20
+    },
+    "level_requirements": {
+      "magic": 55
+    },
+    "attack_cost_items": {
+      "chaos_rune": 1
+    }
+  },
+  "nature_staff": {
+    "id": "nature_staff",
+    "name": "Thornwake Staff",
+    "item_type": "equipment",
+    "sell_price": 7400,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 60,
+    "equipment_stats": {
+      "magic_attack": 66,
+      "magic_damage_percent": 24
+    },
+    "level_requirements": {
+      "magic": 65
+    },
+    "attack_cost_items": {
+      "nature_rune": 1
+    }
+  },
+  "law_staff": {
+    "id": "law_staff",
+    "name": "Judgment Staff",
+    "item_type": "equipment",
+    "sell_price": 10200,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 66,
+    "equipment_stats": {
+      "magic_attack": 84,
+      "magic_damage_percent": 28
+    },
+    "level_requirements": {
+      "magic": 75
+    },
+    "attack_cost_items": {
+      "law_rune": 1
+    }
+  },
+  "death_staff": {
+    "id": "death_staff",
+    "name": "Gravebind Staff",
+    "item_type": "equipment",
+    "sell_price": 14000,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 74,
+    "equipment_stats": {
+      "magic_attack": 104,
+      "magic_damage_percent": 32
+    },
+    "level_requirements": {
+      "magic": 85
+    },
+    "attack_cost_items": {
+      "death_rune": 1
+    }
+  },
+  "blood_staff": {
+    "id": "blood_staff",
+    "name": "Bloodtithe Staff",
+    "item_type": "equipment",
+    "sell_price": 19000,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 83,
+    "equipment_stats": {
+      "magic_attack": 126,
+      "magic_damage_percent": 36
+    },
+    "level_requirements": {
+      "magic": 95
+    },
+    "attack_cost_items": {
+      "blood_rune": 1
+    }
+  },
+  "soul_staff": {
+    "id": "soul_staff",
+    "name": "Soulharvest Staff",
+    "item_type": "equipment",
+    "sell_price": 25500,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 93,
+    "equipment_stats": {
+      "magic_attack": 150,
+      "magic_damage_percent": 40
+    },
+    "level_requirements": {
+      "magic": 105
+    },
+    "attack_cost_items": {
+      "soul_rune": 1
+    }
+  },
+  "umbral_staff": {
+    "id": "umbral_staff",
+    "name": "Umbral Staff",
+    "item_type": "equipment",
+    "sell_price": 34000,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 100,
+    "equipment_stats": {
+      "magic_attack": 176,
+      "magic_damage_percent": 45
+    },
+    "level_requirements": {
+      "magic": 115
+    },
+    "attack_cost_items": {
+      "umbral_rune": 1
     }
   },
   "garum_herb_seed": {
@@ -2228,7 +2726,7 @@
     "product_item": "garum_herb",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 21
+    "harvest_xp": 1562
   },
   "sourweed": {
     "id": "sourweed",
@@ -2248,7 +2746,7 @@
     "product_item": "sourweed",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 30
+    "harvest_xp": 2231
   },
   "mantalyme": {
     "id": "mantalyme",
@@ -2268,7 +2766,7 @@
     "product_item": "mantalyme",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 45
+    "harvest_xp": 3346
   },
   "lemontyle": {
     "id": "lemontyle",
@@ -2288,7 +2786,7 @@
     "product_item": "lemontyle",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 60
+    "harvest_xp": 4462
   },
   "oxilyme": {
     "id": "oxilyme",
@@ -2308,7 +2806,7 @@
     "product_item": "oxilyme",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 75
+    "harvest_xp": 5577
   },
   "poraxx": {
     "id": "poraxx",
@@ -2328,7 +2826,7 @@
     "product_item": "poraxx",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 90
+    "harvest_xp": 6693
   },
   "barrentoe": {
     "id": "barrentoe",
@@ -2348,7 +2846,7 @@
     "product_item": "barrentoe",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 105
+    "harvest_xp": 11623
   },
   "potion_dr_2": {
     "id": "potion_dr_2",
@@ -2981,28 +3479,51 @@
     "name": "Larder Crate",
     "item_type": "consumable",
     "sell_price": 500,
-    "is_stackable": true
+    "is_stackable": true,
+    "container_items": {
+      "shrimp": 80,
+      "trout": 25,
+      "salmon": 12,
+      "lobster": 6
+    }
   },
   "bar_box": {
     "id": "bar_box",
     "name": "Ingot Crate",
     "item_type": "consumable",
     "sell_price": 500,
-    "is_stackable": true
+    "is_stackable": true,
+    "container_items": {
+      "bronze_bar": 30,
+      "iron_bar": 15,
+      "steel_bar": 7
+    }
   },
   "wood_box": {
     "id": "wood_box",
     "name": "Timber Crate",
     "item_type": "consumable",
     "sell_price": 500,
-    "is_stackable": true
+    "is_stackable": true,
+    "container_items": {
+      "normal_log": 100,
+      "oak_log": 50,
+      "willow_log": 20,
+      "teak_log": 10
+    }
   },
   "herb_box": {
     "id": "herb_box",
     "name": "Apothecary Crate",
     "item_type": "consumable",
     "sell_price": 500,
-    "is_stackable": true
+    "is_stackable": true,
+    "container_items": {
+      "garum_herb": 20,
+      "sourweed": 10,
+      "mantalyme": 5,
+      "lemontyle": 3
+    }
   },
   "artefact_common": {
     "id": "artefact_common",
@@ -4624,7 +5145,8 @@
     "sell_price": 0,
     "is_stackable": false,
     "is_raid_item": true,
-    "raid_cost": 5000
+    "raid_cost": 5000,
+    "container_pet": "sunderling"
   },
   "resonance_trace": {
     "id": "resonance_trace",
@@ -4656,7 +5178,8 @@
     "item_type": "resource",
     "sell_price": 520,
     "is_stackable": true,
-    "description": "A working of careful craft carrying a captured rhythm inside it."
+    "description": "A working of careful craft carrying a captured rhythm inside it.",
+    "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
   },
   "master_echo_loop": {
     "id": "master_echo_loop",
@@ -4664,7 +5187,8 @@
     "item_type": "resource",
     "sell_price": 4200,
     "is_stackable": true,
-    "description": "A sequence that completes cleanly and cheaply enough to keep running all night."
+    "description": "A sequence that completes cleanly and cheaply enough to keep running all night.",
+    "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
   },
   "route_survey": {
     "id": "route_survey",
@@ -4744,7 +5268,8 @@
     "item_type": "resource",
     "sell_price": 6400,
     "is_stackable": true,
-    "description": "Two climates trained to succeed one another, released as a short programme."
+    "description": "Two climates trained to succeed one another, released as a short programme.",
+    "terminal_reason": "sell-for-GP product of Fermentation; the skill's output is gold, not a reagent"
   },
   "custom_proposal": {
     "id": "custom_proposal",
@@ -4824,7 +5349,8 @@
     "item_type": "resource",
     "sell_price": 2400,
     "is_stackable": true,
-    "description": "An honest reward, and the object back where it belongs."
+    "description": "An honest reward, and the object back where it belongs.",
+    "terminal_reason": "sell-for-GP product of Lostfinding; the skill's output is gold, not a reagent"
   },
   "echo_keeping_cape": {
     "id": "echo_keeping_cape",
@@ -4923,7 +5449,8 @@
     "item_type": "resource",
     "sell_price": 5600,
     "is_stackable": true,
-    "description": "A loop with no seam. Play it once and the room remembers."
+    "description": "A loop with no seam. Play it once and the room remembers.",
+    "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
   },
   "herald_echo": {
     "id": "herald_echo",
@@ -4939,7 +5466,8 @@
     "item_type": "resource",
     "sell_price": 4800,
     "is_stackable": true,
-    "description": "Every road in the survey arriving at once, politely."
+    "description": "Every road in the survey arriving at once, politely.",
+    "terminal_reason": "sell-for-GP product of Wayfolding; the skill's output is gold, not a reagent"
   },
   "herald_gate": {
     "id": "herald_gate",
@@ -4947,7 +5475,8 @@
     "item_type": "resource",
     "sell_price": 8600,
     "is_stackable": true,
-    "description": "A passage drawn to exactly one place. Knock first."
+    "description": "A passage drawn to exactly one place. Knock first.",
+    "terminal_reason": "sell-for-GP product of Wayfolding; the skill's output is gold, not a reagent"
   },
   "living_legend": {
     "id": "living_legend",
@@ -4963,7 +5492,8 @@
     "item_type": "resource",
     "sell_price": 9200,
     "is_stackable": true,
-    "description": "Made the way it will be remembered, which is to say perfectly."
+    "description": "Made the way it will be remembered, which is to say perfectly.",
+    "terminal_reason": "sell-for-GP product of Customcraft; the skill's output is gold, not a reagent"
   },
   "cold_trail": {
     "id": "cold_trail",
@@ -4979,7 +5509,8 @@
     "item_type": "resource",
     "sell_price": 8400,
     "is_stackable": true,
-    "description": "Closed. The label is in your handwriting and you have never seen it before."
+    "description": "Closed. The label is in your handwriting and you have never seen it before.",
+    "terminal_reason": "sell-for-GP product of Lostfinding; the skill's output is gold, not a reagent"
   },
   "adamantite_sword": {
     "id": "adamantite_sword",
@@ -5116,13 +5647,346 @@
       "defence": 50
     }
   },
+  "runite_sword": {
+    "id": "runite_sword",
+    "name": "Stormsteel Sword",
+    "item_type": "equipment",
+    "sell_price": 11000,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "equipment_stats": {
+      "slash": 50,
+      "melee_strength": 55
+    },
+    "level_requirements": {
+      "attack": 70
+    }
+  },
+  "runite_scimitar": {
+    "id": "runite_scimitar",
+    "name": "Stormsteel Scimitar",
+    "item_type": "equipment",
+    "sell_price": 11000,
+    "equipment_slot": 8,
+    "attack_speed": 2.8,
+    "equipment_stats": {
+      "slash": 52,
+      "melee_strength": 55
+    },
+    "level_requirements": {
+      "attack": 70
+    }
+  },
+  "runite_dagger": {
+    "id": "runite_dagger",
+    "name": "Stormsteel Dagger",
+    "item_type": "equipment",
+    "sell_price": 9000,
+    "equipment_slot": 8,
+    "attack_speed": 2.2,
+    "equipment_stats": {
+      "stab": 52,
+      "melee_strength": 48
+    },
+    "level_requirements": {
+      "attack": 70
+    }
+  },
+  "runite_battleaxe": {
+    "id": "runite_battleaxe",
+    "name": "Stormsteel Battleaxe",
+    "item_type": "equipment",
+    "sell_price": 12000,
+    "equipment_slot": 8,
+    "attack_speed": 3.4,
+    "equipment_stats": {
+      "slash": 54,
+      "block": 50,
+      "melee_strength": 57
+    },
+    "level_requirements": {
+      "attack": 70
+    }
+  },
+  "runite_2h_sword": {
+    "id": "runite_2h_sword",
+    "name": "Stormsteel 2H Sword",
+    "item_type": "equipment",
+    "sell_price": 13000,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "slash": 55,
+      "melee_strength": 58
+    },
+    "level_requirements": {
+      "attack": 70
+    }
+  },
+  "runite_helmet": {
+    "id": "runite_helmet",
+    "name": "Stormsteel Helmet",
+    "item_type": "equipment",
+    "sell_price": 6000,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 22,
+      "ranged_defence": 22,
+      "magic_defence": 22
+    },
+    "level_requirements": {
+      "defence": 70
+    }
+  },
+  "runite_platebody": {
+    "id": "runite_platebody",
+    "name": "Stormsteel Platebody",
+    "item_type": "equipment",
+    "sell_price": 14000,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 50,
+      "ranged_defence": 50,
+      "magic_defence": 50
+    },
+    "level_requirements": {
+      "defence": 70
+    }
+  },
+  "runite_platelegs": {
+    "id": "runite_platelegs",
+    "name": "Stormsteel Platelegs",
+    "item_type": "equipment",
+    "sell_price": 10000,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35
+    },
+    "level_requirements": {
+      "defence": 70
+    }
+  },
+  "runite_boots": {
+    "id": "runite_boots",
+    "name": "Stormsteel Boots",
+    "item_type": "equipment",
+    "sell_price": 4500,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 16,
+      "ranged_defence": 16,
+      "magic_defence": 16
+    },
+    "level_requirements": {
+      "defence": 70
+    }
+  },
+  "runite_gloves": {
+    "id": "runite_gloves",
+    "name": "Stormsteel Gloves",
+    "item_type": "equipment",
+    "sell_price": 3500,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 12,
+      "ranged_defence": 12,
+      "magic_defence": 12
+    },
+    "level_requirements": {
+      "defence": 70
+    }
+  },
+  "runite_shield": {
+    "id": "runite_shield",
+    "name": "Stormsteel Shield",
+    "item_type": "equipment",
+    "sell_price": 8000,
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 30,
+      "ranged_defence": 30,
+      "magic_defence": 30
+    },
+    "level_requirements": {
+      "defence": 70
+    }
+  },
+  "dragonite_sword": {
+    "id": "dragonite_sword",
+    "name": "Wyrmforged Sword",
+    "item_type": "equipment",
+    "sell_price": 24000,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "equipment_stats": {
+      "slash": 57,
+      "melee_strength": 63
+    },
+    "level_requirements": {
+      "attack": 85
+    }
+  },
+  "dragonite_scimitar": {
+    "id": "dragonite_scimitar",
+    "name": "Wyrmforged Scimitar",
+    "item_type": "equipment",
+    "sell_price": 24000,
+    "equipment_slot": 8,
+    "attack_speed": 2.8,
+    "equipment_stats": {
+      "slash": 59,
+      "melee_strength": 63
+    },
+    "level_requirements": {
+      "attack": 85
+    }
+  },
+  "dragonite_dagger": {
+    "id": "dragonite_dagger",
+    "name": "Wyrmforged Dagger",
+    "item_type": "equipment",
+    "sell_price": 20000,
+    "equipment_slot": 8,
+    "attack_speed": 2.2,
+    "equipment_stats": {
+      "stab": 59,
+      "melee_strength": 56
+    },
+    "level_requirements": {
+      "attack": 85
+    }
+  },
+  "dragonite_battleaxe": {
+    "id": "dragonite_battleaxe",
+    "name": "Wyrmforged Battleaxe",
+    "item_type": "equipment",
+    "sell_price": 26000,
+    "equipment_slot": 8,
+    "attack_speed": 3.4,
+    "equipment_stats": {
+      "slash": 60,
+      "block": 57,
+      "melee_strength": 65
+    },
+    "level_requirements": {
+      "attack": 85
+    }
+  },
+  "dragonite_2h_sword": {
+    "id": "dragonite_2h_sword",
+    "name": "Wyrmforged 2H Sword",
+    "item_type": "equipment",
+    "sell_price": 28000,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "slash": 60,
+      "melee_strength": 66
+    },
+    "level_requirements": {
+      "attack": 85
+    }
+  },
+  "dragonite_helmet": {
+    "id": "dragonite_helmet",
+    "name": "Wyrmforged Helmet",
+    "item_type": "equipment",
+    "sell_price": 13000,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 27,
+      "ranged_defence": 27,
+      "magic_defence": 27
+    },
+    "level_requirements": {
+      "defence": 85
+    }
+  },
+  "dragonite_platebody": {
+    "id": "dragonite_platebody",
+    "name": "Wyrmforged Platebody",
+    "item_type": "equipment",
+    "sell_price": 30000,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 61,
+      "ranged_defence": 61,
+      "magic_defence": 61
+    },
+    "level_requirements": {
+      "defence": 85
+    }
+  },
+  "dragonite_platelegs": {
+    "id": "dragonite_platelegs",
+    "name": "Wyrmforged Platelegs",
+    "item_type": "equipment",
+    "sell_price": 21000,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "melee_defence": 43,
+      "ranged_defence": 43,
+      "magic_defence": 43
+    },
+    "level_requirements": {
+      "defence": 85
+    }
+  },
+  "dragonite_boots": {
+    "id": "dragonite_boots",
+    "name": "Wyrmforged Boots",
+    "item_type": "equipment",
+    "sell_price": 9500,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20
+    },
+    "level_requirements": {
+      "defence": 85
+    }
+  },
+  "dragonite_gloves": {
+    "id": "dragonite_gloves",
+    "name": "Wyrmforged Gloves",
+    "item_type": "equipment",
+    "sell_price": 7500,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 15,
+      "ranged_defence": 15,
+      "magic_defence": 15
+    },
+    "level_requirements": {
+      "defence": 85
+    }
+  },
+  "dragonite_shield": {
+    "id": "dragonite_shield",
+    "name": "Wyrmforged Shield",
+    "item_type": "equipment",
+    "sell_price": 17000,
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 37,
+      "ranged_defence": 37,
+      "magic_defence": 37
+    },
+    "level_requirements": {
+      "defence": 85
+    }
+  },
   "burnt_food": {
     "id": "burnt_food",
     "name": "Burnt Food",
     "item_type": "resource",
     "sell_price": 0,
     "is_stackable": true,
-    "description": "Ruined food. It cannot be eaten and nobody wants it."
+    "description": "Ruined food. It cannot be eaten and nobody wants it.",
+    "terminal_reason": "the failure result of Cookery; ruined on purpose and worth nothing"
   },
   "duskroot": {
     "id": "duskroot",
@@ -5142,7 +6006,7 @@
     "product_item": "duskroot",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 120
+    "harvest_xp": 17318
   },
   "herald_bloom": {
     "id": "herald_bloom",
@@ -5162,7 +6026,7 @@
     "product_item": "herald_bloom",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 135
+    "harvest_xp": 25400
   },
   "emberbloom": {
     "id": "emberbloom",
@@ -5182,6 +6046,1118 @@
     "product_item": "emberbloom",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 150
+    "harvest_xp": 36793
+  },
+  "ranch_hen": {
+    "id": "ranch_hen",
+    "name": "Hen Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_egg": {
+    "id": "ranch_egg",
+    "name": "Egg",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_cow": {
+    "id": "ranch_cow",
+    "name": "Cow Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_milk": {
+    "id": "ranch_milk",
+    "name": "Milk",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_sheep": {
+    "id": "ranch_sheep",
+    "name": "Sheep Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_wool": {
+    "id": "ranch_wool",
+    "name": "Wool",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true,
+    "bottleneck_reason": "the sheep pen is wool's only supply: the sixteen robe recipes are what make the level-30 animal worth raising"
+  },
+  "ranch_boar": {
+    "id": "ranch_boar",
+    "name": "Boar Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_tusk": {
+    "id": "ranch_tusk",
+    "name": "Boar Tusk",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_moonstag": {
+    "id": "ranch_moonstag",
+    "name": "Moonstag Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_antler": {
+    "id": "ranch_antler",
+    "name": "Moon Antler",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_griffin": {
+    "id": "ranch_griffin",
+    "name": "Griffin Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_plume": {
+    "id": "ranch_plume",
+    "name": "Griffin Plume",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_wyvern": {
+    "id": "ranch_wyvern",
+    "name": "Wyvern Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_scale": {
+    "id": "ranch_scale",
+    "name": "Wyvern Scale",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_dragon": {
+    "id": "ranch_dragon",
+    "name": "Dragon Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_ember": {
+    "id": "ranch_ember",
+    "name": "Dragon Ember",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_celestial_dragon": {
+    "id": "ranch_celestial_dragon",
+    "name": "Celestial Dragon Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Stock one animal in a ranch pen."
+  },
+  "ranch_star_scale": {
+    "id": "ranch_star_scale",
+    "name": "Star Scale",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_feed": {
+    "id": "ranch_feed",
+    "name": "Ranch Feed",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_manure": {
+    "id": "ranch_manure",
+    "name": "Ranch Manure",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "+25% crop survival and +10% harvest yield; apply to an empty plot."
+  },
+  "ranch_meat": {
+    "id": "ranch_meat",
+    "name": "Raw Ranch Meat",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "ranch_cooked_meat": {
+    "id": "ranch_cooked_meat",
+    "name": "Roasted Ranch Meat",
+    "item_type": "food",
+    "sell_price": 10,
+    "is_stackable": true,
+    "heal_amount": 12
+  },
+  "golden_hen_stock": {
+    "id": "golden_hen_stock",
+    "name": "Golden Hen Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "mooncalf_stock": {
+    "id": "mooncalf_stock",
+    "name": "Mooncalf Stock",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "scribe_paper": {
+    "id": "scribe_paper",
+    "name": "Scribe Paper",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "scribe_ink": {
+    "id": "scribe_ink",
+    "name": "Crude Ink",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "scribe_blue_ink": {
+    "id": "scribe_blue_ink",
+    "name": "Azure Ink",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true,
+    "bottleneck_reason": "one azure press at Inscription 25; crude ink below it already has two sources, so the skill widens as it climbs"
+  },
+  "scribe_celestial_ink": {
+    "id": "scribe_celestial_ink",
+    "name": "Celestial Ink",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "raw_squid": {
+    "id": "raw_squid",
+    "name": "Raw Ink Squid",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true,
+    "icon_id": "raw_squid"
+  },
+  "scribe_minor_haste_faded": {
+    "id": "scribe_minor_haste_faded",
+    "name": "Faded Minor Haste Scroll",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "haste",
+    "scribe_amount": 3.75,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_minor_haste_inked": {
+    "id": "scribe_minor_haste_inked",
+    "name": "Inked Minor Haste Scroll",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "haste",
+    "scribe_amount": 5,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_minor_haste_illuminated": {
+    "id": "scribe_minor_haste_illuminated",
+    "name": "Illuminated Minor Haste Scroll",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "haste",
+    "scribe_amount": 7.5,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_xp_tome_1_faded": {
+    "id": "scribe_xp_tome_1_faded",
+    "name": "Faded XP Tome I",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 24,
+    "description": "Use from Inscription to grant 24 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_xp_tome_1_inked": {
+    "id": "scribe_xp_tome_1_inked",
+    "name": "Inked XP Tome I",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 32,
+    "description": "Use from Inscription to grant 32 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_xp_tome_1_illuminated": {
+    "id": "scribe_xp_tome_1_illuminated",
+    "name": "Illuminated XP Tome I",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 48,
+    "description": "Use from Inscription to grant 48 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_doubling_faded": {
+    "id": "scribe_doubling_faded",
+    "name": "Faded Scroll of Doubling",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "doubling",
+    "scribe_amount": 7.5,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_doubling_inked": {
+    "id": "scribe_doubling_inked",
+    "name": "Inked Scroll of Doubling",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "doubling",
+    "scribe_amount": 10,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_doubling_illuminated": {
+    "id": "scribe_doubling_illuminated",
+    "name": "Illuminated Scroll of Doubling",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "doubling",
+    "scribe_amount": 15.0,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_apprentice_faded": {
+    "id": "scribe_apprentice_faded",
+    "name": "Faded Tome of the Apprentice",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 35,
+    "description": "Use from Inscription to grant 35 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_apprentice_inked": {
+    "id": "scribe_apprentice_inked",
+    "name": "Inked Tome of the Apprentice",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 47,
+    "description": "Use from Inscription to grant 47 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_apprentice_illuminated": {
+    "id": "scribe_apprentice_illuminated",
+    "name": "Illuminated Tome of the Apprentice",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 71,
+    "description": "Use from Inscription to grant 71 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_xp_tome_2_faded": {
+    "id": "scribe_xp_tome_2_faded",
+    "name": "Faded XP Tome II",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 35,
+    "description": "Use from Inscription to grant 35 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_xp_tome_2_inked": {
+    "id": "scribe_xp_tome_2_inked",
+    "name": "Inked XP Tome II",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 47,
+    "description": "Use from Inscription to grant 47 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_xp_tome_2_illuminated": {
+    "id": "scribe_xp_tome_2_illuminated",
+    "name": "Illuminated XP Tome II",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 71,
+    "description": "Use from Inscription to grant 71 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_scholar_faded": {
+    "id": "scribe_scholar_faded",
+    "name": "Faded Tome of the Scholar",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 35,
+    "description": "Use from Inscription to grant 35 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_scholar_inked": {
+    "id": "scribe_scholar_inked",
+    "name": "Inked Tome of the Scholar",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 47,
+    "description": "Use from Inscription to grant 47 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_scholar_illuminated": {
+    "id": "scribe_scholar_illuminated",
+    "name": "Illuminated Tome of the Scholar",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 71,
+    "description": "Use from Inscription to grant 71 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_mastery_faded": {
+    "id": "scribe_mastery_faded",
+    "name": "Faded Glyph of Mastery",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "mastery",
+    "scribe_amount": 7.5,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_mastery_inked": {
+    "id": "scribe_mastery_inked",
+    "name": "Inked Glyph of Mastery",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "mastery",
+    "scribe_amount": 10,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_mastery_illuminated": {
+    "id": "scribe_mastery_illuminated",
+    "name": "Illuminated Glyph of Mastery",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "mastery",
+    "scribe_amount": 15.0,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_time_faded": {
+    "id": "scribe_time_faded",
+    "name": "Faded Scroll of Time",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "time",
+    "scribe_amount": 0.75,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_time_inked": {
+    "id": "scribe_time_inked",
+    "name": "Inked Scroll of Time",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "time",
+    "scribe_amount": 1,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_time_illuminated": {
+    "id": "scribe_time_illuminated",
+    "name": "Illuminated Scroll of Time",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "time",
+    "scribe_amount": 1.5,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_sage_faded": {
+    "id": "scribe_sage_faded",
+    "name": "Faded Tome of the Sage",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 35,
+    "description": "Use from Inscription to grant 35 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_sage_inked": {
+    "id": "scribe_sage_inked",
+    "name": "Inked Tome of the Sage",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 46,
+    "description": "Use from Inscription to grant 46 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_sage_illuminated": {
+    "id": "scribe_sage_illuminated",
+    "name": "Illuminated Tome of the Sage",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 70,
+    "description": "Use from Inscription to grant 70 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_mythic_haste_faded": {
+    "id": "scribe_mythic_haste_faded",
+    "name": "Faded Mythic Haste Scroll",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "haste",
+    "scribe_amount": 11.25,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_mythic_haste_inked": {
+    "id": "scribe_mythic_haste_inked",
+    "name": "Inked Mythic Haste Scroll",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "haste",
+    "scribe_amount": 15,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_mythic_haste_illuminated": {
+    "id": "scribe_mythic_haste_illuminated",
+    "name": "Illuminated Mythic Haste Scroll",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "haste",
+    "scribe_amount": 22.5,
+    "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_grand_tome_faded": {
+    "id": "scribe_grand_tome_faded",
+    "name": "Faded Grand Tome",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 94,
+    "description": "Use from Inscription to grant 94 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_grand_tome_inked": {
+    "id": "scribe_grand_tome_inked",
+    "name": "Inked Grand Tome",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 126,
+    "description": "Use from Inscription to grant 126 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_grand_tome_illuminated": {
+    "id": "scribe_grand_tome_illuminated",
+    "name": "Illuminated Grand Tome",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 188,
+    "description": "Use from Inscription to grant 188 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "equipped_tome_apprentice_faded": {
+    "id": "equipped_tome_apprentice_faded",
+    "name": "Faded Tome of the Apprentice",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 40
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 0.75
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_apprentice_inked": {
+    "id": "equipped_tome_apprentice_inked",
+    "name": "Inked Tome of the Apprentice",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 40
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 1
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_apprentice_illuminated": {
+    "id": "equipped_tome_apprentice_illuminated",
+    "name": "Illuminated Tome of the Apprentice",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 40
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 1.5
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_scholar_faded": {
+    "id": "equipped_tome_scholar_faded",
+    "name": "Faded Tome of the Scholar",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 60
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 1.5
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_scholar_inked": {
+    "id": "equipped_tome_scholar_inked",
+    "name": "Inked Tome of the Scholar",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 60
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 2
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_scholar_illuminated": {
+    "id": "equipped_tome_scholar_illuminated",
+    "name": "Illuminated Tome of the Scholar",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 60
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 3.0
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_sage_faded": {
+    "id": "equipped_tome_sage_faded",
+    "name": "Faded Tome of the Sage",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 90
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 2.25
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_sage_inked": {
+    "id": "equipped_tome_sage_inked",
+    "name": "Inked Tome of the Sage",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 90
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 3
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_sage_illuminated": {
+    "id": "equipped_tome_sage_illuminated",
+    "name": "Illuminated Tome of the Sage",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 90
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 4.5
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_grand_tome_faded": {
+    "id": "equipped_tome_grand_tome_faded",
+    "name": "Faded Tome of the Grand",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 115
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 3.0
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_grand_tome_inked": {
+    "id": "equipped_tome_grand_tome_inked",
+    "name": "Inked Tome of the Grand",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 115
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 4
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "equipped_tome_grand_tome_illuminated": {
+    "id": "equipped_tome_grand_tome_illuminated",
+    "name": "Illuminated Tome of the Grand",
+    "item_type": "equipment",
+    "sell_price": 10,
+    "is_stackable": true,
+    "equipment_slot": 9,
+    "level_requirements": {
+      "inscription": 115
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 6.0
+    },
+    "description": "An equippable offhand tome; trades a shield slot for a small skill XP bonus."
+  },
+  "clockwork_gear": {
+    "id": "clockwork_gear",
+    "name": "Clockwork Gear",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "clockwork_frame": {
+    "id": "clockwork_frame",
+    "name": "Clockwork Frame",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "clockwork_spring": {
+    "id": "clockwork_spring",
+    "name": "Clockwork Spring",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "device_lumberjack": {
+    "id": "device_lumberjack",
+    "name": "Clockwork Lumberjack",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_miner": {
+    "id": "device_miner",
+    "name": "Clockwork Miner",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_angler": {
+    "id": "device_angler",
+    "name": "Clockwork Angler",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_stoker": {
+    "id": "device_stoker",
+    "name": "Clockwork Stoker",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_cook": {
+    "id": "device_cook",
+    "name": "Clockwork Cook",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_farmer": {
+    "id": "device_farmer",
+    "name": "Clockwork Farmhand",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_looter": {
+    "id": "device_looter",
+    "name": "Clockwork Scavenger",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_arcane_miner": {
+    "id": "device_arcane_miner",
+    "name": "Arcane Delver",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "device_celestial_angler": {
+    "id": "device_celestial_angler",
+    "name": "Celestial Angler",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Install from Engineering. Runs selected work at 40% efficiency with hourly fuel."
+  },
+  "enchant_martial_essence": {
+    "id": "enchant_martial_essence",
+    "name": "Martial Essence",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "enchant_warding_essence": {
+    "id": "enchant_warding_essence",
+    "name": "Warding Essence",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "enchant_arcane_essence": {
+    "id": "enchant_arcane_essence",
+    "name": "Arcane Essence",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "enchant_verdant_essence": {
+    "id": "enchant_verdant_essence",
+    "name": "Verdant Essence",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "enchant_catalyst": {
+    "id": "enchant_catalyst",
+    "name": "Enchantment Catalyst",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "A dungeon boss catalyst for high-tier enchantments."
+  },
+  "dream_essence": {
+    "id": "dream_essence",
+    "name": "Dream Essence",
+    "item_type": "currency",
+    "sell_price": 10,
+    "is_stackable": true,
+    "description": "Currency earned from offline Dreamwalking; spend in the Dream Bazaar."
+  },
+  "ranching_skillcape": {
+    "id": "ranching_skillcape",
+    "name": "Ranching Skillcape",
+    "item_type": "equipment",
+    "sell_price": 1000000,
+    "is_stackable": true,
+    "equipment_slot": 5,
+    "requires_level": {
+      "skill": "ranching",
+      "level": 99
+    },
+    "level_requirements": {
+      "ranching": 99
+    },
+    "passive_modifiers": {
+      "ranching_interval_percent": 25,
+      "ranching_happiness_floor": 50
+    },
+    "description": "The mastery cape of Ranching."
+  },
+  "potion_ranching": {
+    "id": "potion_ranching",
+    "name": "Rancher's Draught",
+    "item_type": "potion",
+    "sell_price": 10,
+    "is_stackable": true,
+    "charges": 100,
+    "charge_scope": "ranching:collection",
+    "potion_effect": {
+      "ranching_interval_percent": 15
+    }
+  },
+  "inscription_skillcape": {
+    "id": "inscription_skillcape",
+    "name": "Inscription Skillcape",
+    "item_type": "equipment",
+    "sell_price": 1000000,
+    "is_stackable": true,
+    "equipment_slot": 5,
+    "requires_level": {
+      "skill": "inscription",
+      "level": 99
+    },
+    "level_requirements": {
+      "inscription": 99
+    },
+    "passive_modifiers": {
+      "inscription_duration_percent": 50,
+      "inscription_glyph_slots": 1
+    },
+    "description": "The mastery cape of Inscription."
+  },
+  "potion_inscription": {
+    "id": "potion_inscription",
+    "name": "Illuminating Potion",
+    "item_type": "potion",
+    "sell_price": 10,
+    "is_stackable": true,
+    "charges": 100,
+    "charge_scope": "inscription",
+    "potion_effect": {
+      "inscription_quality_percent": 10
+    }
+  },
+  "engineering_skillcape": {
+    "id": "engineering_skillcape",
+    "name": "Engineering Skillcape",
+    "item_type": "equipment",
+    "sell_price": 1000000,
+    "is_stackable": true,
+    "equipment_slot": 5,
+    "requires_level": {
+      "skill": "engineering",
+      "level": 99
+    },
+    "level_requirements": {
+      "engineering": 99
+    },
+    "passive_modifiers": {
+      "engineering_device_slots": 1,
+      "engineering_fuel_reduction_percent": 25
+    },
+    "description": "The mastery cape of Engineering."
+  },
+  "potion_engineering": {
+    "id": "potion_engineering",
+    "name": "Lubricating Potion",
+    "item_type": "potion",
+    "sell_price": 10,
+    "is_stackable": true,
+    "charges": 100,
+    "charge_scope": "engineering:fuel",
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 15
+    }
+  },
+  "enchanting_skillcape": {
+    "id": "enchanting_skillcape",
+    "name": "Enchanting Skillcape",
+    "item_type": "equipment",
+    "sell_price": 1000000,
+    "is_stackable": true,
+    "equipment_slot": 5,
+    "requires_level": {
+      "skill": "enchanting",
+      "level": 99
+    },
+    "level_requirements": {
+      "enchanting": 99
+    },
+    "passive_modifiers": {
+      "enchanting_slots": 1,
+      "enchanting_catalyst_reduction_percent": 25
+    },
+    "description": "The mastery cape of Enchanting."
+  },
+  "potion_enchanting": {
+    "id": "potion_enchanting",
+    "name": "Attunement Potion",
+    "item_type": "potion",
+    "sell_price": 10,
+    "is_stackable": true,
+    "charges": 100,
+    "charge_scope": "enchanting",
+    "potion_effect": {
+      "enchanting_essence_percent": 15
+    }
+  },
+  "dreamwalking_skillcape": {
+    "id": "dreamwalking_skillcape",
+    "name": "Dreamwalking Skillcape",
+    "item_type": "equipment",
+    "sell_price": 1000000,
+    "is_stackable": true,
+    "equipment_slot": 5,
+    "requires_level": {
+      "skill": "dreamwalking",
+      "level": 99
+    },
+    "level_requirements": {
+      "dreamwalking": 99
+    },
+    "passive_modifiers": {
+      "dreamwalking_depth_percent": 50,
+      "dreamwalking_essence_percent": 25
+    },
+    "description": "The mastery cape of Dreamwalking."
+  },
+  "potion_dreamwalking": {
+    "id": "potion_dreamwalking",
+    "name": "Lucid Draught",
+    "item_type": "potion",
+    "sell_price": 10,
+    "is_stackable": true,
+    "charges": 100,
+    "charge_scope": "dreamwalking",
+    "potion_effect": {
+      "dreamwalking_essence_percent": 15
+    }
+  },
+  "border_collie_tablet": {
+    "id": "border_collie_tablet",
+    "name": "Border Collie Tablet",
+    "item_type": "tablet",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "border_collie_mark": {
+    "id": "border_collie_mark",
+    "name": "Border Collie Mark",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "sandman_tablet": {
+    "id": "sandman_tablet",
+    "name": "Sandman Tablet",
+    "item_type": "tablet",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "sandman_mark": {
+    "id": "sandman_mark",
+    "name": "Sandman Mark",
+    "item_type": "consumable",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "topaz_ring": {
+    "id": "topaz_ring",
+    "name": "Topaz Ring",
+    "item_type": "equipment",
+    "sell_price": 60,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "level_requirements": {}
+  },
+  "ranch_omelette": {
+    "id": "ranch_omelette",
+    "name": "Ranch Omelette",
+    "item_type": "food",
+    "sell_price": 6,
+    "is_stackable": true,
+    "heal_amount": 60,
+    "description": "Hen eggs turned in the pan; a steady meal on the road."
+  },
+  "ranch_cheese": {
+    "id": "ranch_cheese",
+    "name": "Ranch Cheese",
+    "item_type": "food",
+    "sell_price": 14,
+    "is_stackable": true,
+    "heal_amount": 105,
+    "description": "Pressed and aged in the dairy. Keeps a party on its feet."
+  },
+  "potion_hushroot": {
+    "id": "potion_hushroot",
+    "name": "Hushroot Draught",
+    "item_type": "potion",
+    "sell_price": 190,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "thieving_stealth": 12
+    }
+  },
+  "potion_herald_bloom": {
+    "id": "potion_herald_bloom",
+    "name": "Herald Bloom Tonic",
+    "item_type": "potion",
+    "sell_price": 260,
+    "is_stackable": true,
+    "charges": 15,
+    "potion_effect": {
+      "global_mastery_xp_percent": 10
+    }
+  },
+  "potion_emberbloom": {
+    "id": "potion_emberbloom",
+    "name": "Emberbloom Tonic",
+    "item_type": "potion",
+    "sell_price": 300,
+    "is_stackable": true,
+    "charges": 15,
+    "potion_effect": {
+      "crit_chance_percent": 8
+    }
   }
 }

@@ -150,3 +150,24 @@ static func enrage_multiplier(hp_fraction: float, threshold: float, multiplier: 
     if multiplier <= 1.0 or threshold <= 0.0:
         return 1.0
     return multiplier if hp_fraction <= threshold else 1.0
+
+# ---- 11. Attack costs ----
+## What one attack actually spends from a weapon's `attack_cost_items` once ammunition
+## preservation is applied. Each unit is rolled independently, so a 50% Marksmanship skillcape
+## halves the average draw and the superior cape makes every shot free.
+## Shared by the live tick loop and the simulator so the two cannot drift apart.
+static func ammo_cost(rng: RandomNumberGenerator, cost: Dictionary, ammo_preservation_percent: float) -> Dictionary:
+    var spent: Dictionary = {}
+    if cost.is_empty():
+        return spent
+    for item_id in cost.keys():
+        var need: int = int(cost[item_id])
+        if need <= 0:
+            continue
+        var used: int = 0
+        for _i in range(need):
+            if rng.randf() * 100.0 >= ammo_preservation_percent:
+                used += 1
+        if used > 0:
+            spent[str(item_id)] = used
+    return spent

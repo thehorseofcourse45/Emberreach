@@ -17,14 +17,13 @@ var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
     _rng.randomize()
-    EventBus.combat_ended.connect(_on_combat_ended)
     EventBus.game_loaded.connect(_reapply)
 
 func difficulty_cfg() -> Dictionary:
     return DataLoader.raid_shop.get("difficulties", {}).get(difficulty, {})
 
 func start_raid(diff: String = "normal") -> bool:
-    if active:
+    if active or not DataLoader.raid_shop.get("difficulties", {}).has(diff) or CombatManager.state != CombatManager.State.IDLE:
         return false
     difficulty = diff
     active = true
@@ -55,11 +54,16 @@ func _start_wave() -> void:
         "endless": false, "raid": true, "attack_style": "melee", "melee_style": "slash"})
 
 func _on_combat_ended(ctx: Dictionary) -> void:
-    if not active or ctx.get("type", "") != "raid":
+    if active and ctx.get("type", "") == "raid" and ctx.get("reason", "") != "complete":
+        end_raid()
+        return
+    if not active or ctx.get("type", "") != "raid" or ctx.get("reason", "") != "complete" or not pending_choices.is_empty():
         return
     var mult: float = float(difficulty_cfg().get("coin_mult", 1.0))
     var earned: float = mult * 3.6 * float(wave) * float(_wave_size(wave)) * float(int(floor(1.0 + float(wave) / 15.0)))
     coins_this_raid += earned
+    if not PlayerData.stats.get("raid_waves_cleared", {}).has(str(wave)): PlayerData.record_unlock("raid", str(wave), "First clear: Raid wave %d (+%d coins)" % [wave, int(earned)])
+    PlayerData.bump_stat("raid_waves_cleared", str(wave), 1)
     pending_choices = _roll_choices()
     EventBus.notification.emit("Wave %d cleared (+%d raid coins) — choose an upgrade" % [wave, int(earned)], "success")
 
@@ -75,9 +79,10 @@ func _roll_choices() -> Array:
 
 ## Pick one of the three offered rewards; advances to the next wave.
 func choose(index: int) -> bool:
-    if index < 0 or index >= pending_choices.size():
+    if not active or index < 0 or index >= pending_choices.size():
         return false
     var choice: String = pending_choices[index]
+    PlayerData.bump_total("raid_choices_taken", 1)
     if DataLoader.raid_shop.get("alt_items", []).has(choice):
         BankManager.add_item(choice, 1)
     else:
@@ -100,6 +105,7 @@ func end_raid() -> void:
     pending_choices = []
     CombatManager.stop_combat()
     PlayerData.raid_coins += coins_this_raid
+    PlayerData.bump_total("raid_coins_banked", coins_this_raid)
     EventBus.notification.emit("Raid ended: +%d Raid Coins" % int(coins_this_raid), "success")
     coins_this_raid = 0.0
 
@@ -134,15 +140,27 @@ func buy(item_id: String) -> bool:
     return true
 
 func _reapply() -> void:
+    ModifierManager.clear_category(CATEGORY)
     for upgrade_id in purchased.keys():
         _apply_upgrade(upgrade_id)
 
 func serialize() -> Dictionary:
-    return {"purchased": purchased, "active": active, "wave": wave, "difficulty": difficulty}
+    return {"purchased": purchased, "active": active, "wave": wave, "difficulty": difficulty,
+        "coins_this_raid": coins_this_raid, "pending_choices": pending_choices.duplicate()}
 
 func deserialize(d: Dictionary) -> void:
     purchased = d.get("purchased", {})
     active = bool(d.get("active", false))
     wave = int(d.get("wave", 0))
     difficulty = d.get("difficulty", "normal")
+    coins_this_raid = maxf(0.0, float(d.get("coins_this_raid", 0.0)))
+    if not is_finite(coins_this_raid): coins_this_raid = 0.0
+    pending_choices = []
+    var choices: Variant = d.get("pending_choices", [])
+    if active and choices is Array:
+        for choice in choices.slice(0, 3):
+            if DataLoader.raid_shop.get("alt_items", []).has(str(choice)) or DataLoader.raid_shop.get("upgrades", {}).has(str(choice)):
+                pending_choices.append(str(choice))
+    wave = maxi(0, wave)
+    if not DataLoader.raid_shop.get("difficulties", {}).has(difficulty): difficulty = "normal"
     _reapply()

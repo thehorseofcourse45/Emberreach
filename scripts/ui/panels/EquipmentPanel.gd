@@ -221,7 +221,10 @@ func _rebuild_sets() -> void:
 	_sets_box.add_child(pager)
 	for i in range(sets.size()):
 		var idx: int = i
-		var load_b := UIStyle.button(str(idx + 1), "Equip set %d" % [idx + 1])
+		var plan: Dictionary = EquipmentManager.set_preview(idx)
+		var load_b := UIStyle.button(str(idx + 1), "Equip set %d. %s Food/prayers/familiars: %s" % [idx + 1, str(plan.reason), str(EquipmentManager.set_support.get(str(idx), {}))])
+		load_b.disabled = not bool(plan.ok)
+		if bool(plan.ok): load_b.tooltip_text += "\nGear before: %s\nGear after: %s" % [str(plan.before), str(plan.after)]
 		if idx == EquipmentManager.active_set:
 			# The set number alone carries no meaning, so colour must not be the only signal:
 			# a check mark says "worn" in any palette.

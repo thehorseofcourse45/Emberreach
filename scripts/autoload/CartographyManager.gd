@@ -25,8 +25,9 @@ func travel(hex_id: String) -> bool:
     if not PlayerData.spend_gp(cost):
         EventBus.notification.emit("Not enough GP to travel", "warn")
         return false
-    discovered[hex_id] = true
-    PlayerData.add_xp("cartography", float(h.get("survey_xp", 10)) * ModifierManager.get_skill_xp_multiplier("cartography"))
+    if not discovered.has(hex_id):
+        discovered[hex_id] = true
+        PlayerData.add_xp("cartography", float(h.get("survey_xp", 10)) * ModifierManager.get_skill_xp_multiplier("cartography"))
     return true
 
 ## Survey the current hex; claim its POI reward once.
@@ -36,7 +37,8 @@ func survey(hex_id: String) -> Dictionary:
         return {}
     if surveyed.has(hex_id):
         return {}
-    var poi: Dictionary = h.get("poi", {})
+    var value: Variant = h.get("poi", {})
+    var poi: Dictionary = value if value is Dictionary else {}
     if poi.is_empty():
         return {}
     surveyed[hex_id] = true
@@ -118,7 +120,8 @@ func _reregister() -> void:
     ModifierManager.unregister("%s:effects" % CATEGORY)
     var mods: Dictionary = {}
     for hex_id in surveyed.keys():
-        var eff: Dictionary = get_hex(hex_id).get("poi", {}).get("effect", {})
+        var value: Variant = get_hex(hex_id).get("poi", {})
+        var eff: Dictionary = value.get("effect", {}) if value is Dictionary else {}
         for k in eff.keys():
             mods[k] = float(mods.get(k, 0.0)) + float(eff[k])
     if not mods.is_empty():

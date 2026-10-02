@@ -116,7 +116,7 @@ func get_interval(skill_id: String, base: float, floor_seconds: float = 0.25) ->
     return maxf(out, floor_seconds)
 
 func get_doubling_chance(skill_id: String) -> float:
-    return get_modifier(ModifierKeys.skill_key(skill_id, ModifierKeys.SUFFIX_DOUBLING_PERCENT))
+    return get_modifier(ModifierKeys.skill_key(skill_id, ModifierKeys.SUFFIX_DOUBLING_PERCENT)) + get_modifier("global_doubling_percent")
 
 func get_preservation_chance(skill_id: String) -> float:
     return get_modifier(ModifierKeys.skill_key(skill_id, ModifierKeys.SUFFIX_PRESERVATION_PERCENT))
@@ -175,3 +175,14 @@ func debug_active_keys() -> Array:
     if _dirty:
         recompute()
     return _cache.keys()
+
+## Read-only hypothetical source replacement; preserves the live stacking rules.
+func projected_modifier(key: String, replacements: Dictionary) -> float:
+    var values: Array = []
+    for id in _sources:
+        if not replacements.has(id):
+            var mods: Dictionary = (_sources[id] as ModifierSource).modifiers
+            if mods.has(key): values.append(float(mods[key]))
+    for mods in replacements.values():
+        if mods.has(key): values.append(float(mods[key]))
+    return _combine(key, values)

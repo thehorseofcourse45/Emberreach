@@ -14,6 +14,7 @@ var _style_picker: OptionButton
 var _melee_picker: OptionButton
 var _seed_field: LineEdit
 var _run_button: Button
+var _finite: CheckBox
 var _gear_box: VBoxContainer
 var _result_box: VBoxContainer
 var _places: Array[Dictionary] = []
@@ -74,7 +75,7 @@ func _build() -> void:
 	_melee_picker = OptionButton.new()
 	_melee_picker.add_item("Stab")
 	_melee_picker.add_item("Slash")
-	_melee_picker.add_item("Crush")
+	_melee_picker.add_item("Block")
 	_melee_picker.item_selected.connect(func(_i): _on_style_changed())
 	style_row.add_child(_melee_picker)
 	style_row.add_child(UIStyle.label("Seed", true, UITokens.FONT_SMALL))
@@ -84,6 +85,12 @@ func _build() -> void:
 	_seed_field.custom_minimum_size = Vector2(120, UITokens.H_HEADER + 8)
 	style_row.add_child(_seed_field)
 
+	_finite = CheckBox.new()
+	_finite.text = "Finite supplies"
+	_finite.tooltip_text = "Equipped foods, remaining prayer points and authored weapon ammo/rune costs. Stops at prayer or attack-material exhaustion."
+	_finite.button_pressed = true
+	add_child(_finite)
+	add_child(UIStyle.label("Every trial starts with your current supplies and full HP. Finite mode ends at prayer/attack-material depletion; attacks without authored costs remain free. Level-ups, potion expiry and drops are excluded.", true, UITokens.FONT_SMALL))
 	_run_button = UIStyle.primary_button("Run 10,000 fights",
 		"Simulate in the background. The game keeps running while this works.")
 	_run_button.pressed.connect(_on_run)
@@ -194,7 +201,7 @@ func _refresh_gear() -> void:
 			food_types += 1
 	_gear_box.add_child(Widgets.key_value("Food types owned", str(food_types),
 		UITokens.TEXT,
-		"The simulator treats these as unlimited, so food/hour is consumption, not a run-out prediction."))
+		"Finite mode uses the three equipped food slots; unlimited mode uses every owned food."))
 	var weapons: Array[String] = []
 	for slot in EquipmentManager.slots.keys():
 		var item_id: String = str(EquipmentManager.slots[slot])
@@ -254,7 +261,7 @@ func _on_run() -> void:
 	var seed_value: int = int(_seed_field.text.strip_edges())
 	var ok: bool = CombatSimulatorManager.start(str(place["type"]), str(place["id"]),
 		_attack_style(), _melee_picker.get_item_text(_melee_picker.selected),
-		CombatSimulatorManager.PRODUCTION_TRIALS, seed_value)
+		CombatSimulatorManager.PRODUCTION_TRIALS, seed_value, _finite.button_pressed)
 	if not ok:
 		EventBus.notify(CombatSimulatorManager.last_error, "warn")
 	refresh()

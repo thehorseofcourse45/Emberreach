@@ -38,6 +38,7 @@ var shop_museum: Dictionary = {}
 ## Cartography ships: hull upgrades that discount hex travel.
 var cartography_ships: Dictionary = {}
 ## Audio: synthesized SFX recipes, music tracks and event-to-sound mappings.
+var new_skill_systems: Dictionary = {}
 var audio: Dictionary = {}
 
 # Derived indexes
@@ -50,6 +51,7 @@ func _ready() -> void:
 
 func _load_all() -> void:
     skills = _load_file("skills.json")
+    new_skill_systems = _load_file("new_skill_systems.json")
     items = _load_file("items.json")
     monsters = _load_file("monsters.json")
     dungeons = _load_file("dungeons.json")

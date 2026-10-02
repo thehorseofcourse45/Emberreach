@@ -1,5 +1,298 @@
 # CHANGELOG
 
+## 2026-09-30 — ammunition, magic gear, the missing metal tiers, mid-game content, dead ends and a clean validator
+
+### Fixed
+- **`attack_cost_items` was implemented but authored on nothing.** `CombatManager._player_attack()`
+  and the combat simulator both consume a weapon's `attack_cost_items` per swing, but no item ever
+  declared one — so the three arrows were craftable and then consumed by nothing, the
+  `ammo_preservation_percent` modifier on both Marksmanship skillcapes was inert, and Ranged and
+  Magic attacks cost nothing at all.
+- **Ammunition preservation now applies to the spend.** `CombatFormulas.ammo_cost()` rolls each unit
+  of the cost independently against the modifier, so the Marksmanship skillcape refunds half the
+  shots and the superior cape makes them free. Put in `CombatFormulas` so the live tick loop and the
+  deterministic simulator charge the same amount for the same attack — the simulator previously
+  deducted the raw cost while nothing gated on preservation.
+
+### Added
+- `attack_cost_items` on the eight bow tiers (bronze/iron/steel arrows by tier) and the four staves
+  (their elemental rune), wiring the Fletching and Runecrafting supply chains into combat.
+- `ContentValidator` now rejects an unknown item id or a non-positive amount inside
+  `attack_cost_items`, matching how it already validates `upgrade_materials`.
+- `_test_attack_costs` (34 checks): preservation maths at 0/50/100%, every ranged and magic weapon
+  declaring a cost, and no craftable ammunition without a weapon that spends it.
+
+### Added (the magic gear line)
+- **Nine new staves**, one per remaining rune, at Magic 35/45/55/65/75/85/95/105/115 (Whisper,
+  Astral, Rift, Thornwake, Judgment, Gravebind, Bloodtithe, Soulharvest, Umbral). With the original
+  four, that is thirteen staves for thirteen runes, so every rune a player binds is now spent by a
+  caster. Each is crafted in Glyphcraft from ten of its rune plus one log, stepping through every
+  woodcutting tier from willow to voidwood.
+- **A `spell_max_hit` weapon stat.** Magic damage is `spell * (1 + magic_damage%/100) *
+  (1 + (level+1)/200)`, and `CombatManager` had no way to read the spell, so every staff in the game
+  cast the same fixed base-10 spell — which is why the style could not progress past its first tier.
+  The stat is read from the equipped weapon with a 10.0 default, so a weapon that declares nothing
+  keeps its existing damage. The full ladder now runs from a 14 max hit at Magic 1 to 229 at Magic
+  115, deliberately under the best bow's 280 because a staff pays runes rather than arrows and needs
+  no offhand.
+- **Sixteen robe pieces**: Apprentice, Adept, Archmage and Herald sets of hat, robe, legs and
+  gloves, at Magic 30/60/90/115, made in Artifice from wool, glyph essence and gems. Offensive stats
+  live only on weapons in this game, so robes follow the wyrmhide shape and carry magic_defence
+  primarily with melee/ranged_defence behind it — the first magic armour the game has had.
+- Icons for all 25 new items, recoloured from existing silhouettes into per-tier tints, imported and
+  added to the asset manifest (985 of 986 assets on disk).
+- `_test_magic_gear` (51 checks): a rising spell tier per tier, one rune per staff, a rising max hit
+  across the ladder, all thirteen runes cast by a staff, robe tiers with four pieces each and rising
+  ward, the staff line measured against the bow line, and a recipe for every new piece.
+
+### Added (Stormsteel and Wyrmforged)
+- **Twenty-two items in two metal tiers**, closing the armour hole the skill audit flagged:
+  `runite_ore` (Mining 85) and `dragonite_bar` had no equipment consumer at all, and gear that gates
+  on a Defence level ran 1 / 10 / 20 / 30 / 50 and then jumped straight to the god sets at 95 — a
+  45-level stretch in which nothing could be worn. Each family carries sword, scimitar, dagger,
+  battleaxe, two-hander, helmet, platebody, platelegs, boots, gloves and shield.
+- **Stormsteel** (the runite family) at Attack/Defence 70, melee strength 48–58, and **Wyrmforged**
+  (dragonite) at Attack/Defence 85, melee strength 56–66. Both sit under the godsword's 80 so the god
+  sets stay the endgame, and the Defence ladder now reads 1 / 10 / 20 / 30 / 50 / 70 / 85 / 95 — no
+  gap wider than the pre-existing 30 → 50 stretch. It also gives both dead bars a purpose: eleven
+  recipes each instead of a dungeon drop with no sink.
+- Twenty-two Smithing recipes (Stormsteel at Smithing 85, Wyrmforged at 95): weapons take a bar plus
+  coal, armour takes bars alone, and the 2H sword and platebody sit at the top of the XP band so the
+  tier is worth the bars.
+- Twenty-two recoloured icons, imported and added to the manifest.
+- `_test_gear_ladder_gap` (crafted weapons and armour fill 50–95 with no hole, both bars consumed,
+  every new item has a recipe) and a rewritten `_test_melee_tier_ladder`, which now measures
+  **crafted** weapons only on `melee_strength`. It previously counted raid rewards and read `slash`,
+  so a reward-track weapon the player cannot smith was setting the tier it compared against. The
+  crafted ladder reads 10 / 14 / 21 / 30 / 46 / 58 / 66 / 80 / 95 across its nine tiers.
+
+### Added (mid-game combat content)
+- **Five monsters between combat level 66 and 102.** The ladder had nothing between the level-85
+  dungeon pair and the level-110 wisp line, so a player who finished the mid-game dungeons faced a
+  25-level stretch with no fight to progress through. Brine Troll (66), Tidewrack Hag (76),
+  Sunderhold Centurion (88), Ashwyrm Seer (96) and Sunderhold Ballistarius (102) fill it: a melee
+  and a magic fight in the open world, a melee and a ranged pair in the Keep, and a caster in the
+  Hollow.
+- **Saltmarch Basin**, the fourteenth region, at level 58–88 — the troll and the hag behind a
+  "Slick brine: −10% evasion" hazard. Sunderhold Keep's roster now reaches 104 and Ashwyrm Hollow
+  gained the Seer, so the arrivals sit in existing regions as well as a new one.
+- **A mid-game dungeon, `sunderhold_undercroft` ("Sunderhold Undercroft"), at 71–105.** The dungeon
+  ladder had nothing between Frostfang Den (stops at 70) and the Observatory of Gales (opens at
+  110) — a 40-level stretch with no expedition to run, and the largest structural gap the audit
+  found. Three escalating encounters from the Keep's garrison (`rune_knight`, `sunderhold_centurion`,
+  `sunderhold_ballistarius`), 120,000 GP plus binding shards on every clear, and two `dragonite_bar`
+  on the first. It opens on Slayer 50 and is the last dungeon before the god line.
+- `_test_dungeon_ladder`: every dungeon's range is ordered, every encounter names a real monster,
+  every dungeon pays on a clear, and — walked in order — no stretch of levels is left with no
+  dungeon to run. It reports a worst gap of twenty levels (before `throne_of_the_herald`) where the
+  same walk measured forty before this.
+- **Three special attacks that no monster could ever fire are now live.** `life_leach`, `ocean_song`
+  and `cloudburst_magic_ray` were authored in `special_attacks.json` with no carrier, so the code
+  behind them was unreachable. The arrivals carry them, and with `stun_bash` and `quick_strike` on
+  the Keep pair, all fourteen attacks in the table are now carried by something.
+- **Deeper slayer pools.** Elite went 3 → 5, master 1 → 2 and legendary 1 → 3, turning three tiers
+  that were a single assignment back into choices. Every pool member has an encounter, which is what
+  the new `thin_slayer_pool` rule below checks.
+- Five recoloured 96×96 monster sprites plus a 64×64 icon for Saltmarch Basin, imported; the asset
+  report is back to full coverage (740 / 740).
+- **Three new `ContentValidator` warnings**: `unused_special_attack` (an attack no monster carries),
+  `orphan_monster` (a monster in no area and no dungeon, so its loot and its slayer assignments are
+  unreachable) and `thin_slayer_pool` (a tier offering fewer than two monsters).
+- `_test_monster_ladder`: roster floor, a worst-case combat-level gap of twelve up to level 120, a
+  monster in every ten-level band, every monster placed in an area or dungeon, every special attack
+  carried, every slayer pool at two or more with each member placed, and the five arrivals pinned at
+  their exact levels, health floors and carriers.
+
+### Added (the Cookery ladder is whole again)
+- **`cook_crab` (Cookery 60) and `cook_cave_fish` (75), with `crab` ("Mudcrab") and `cave_fish`
+  ("Cavern Char").** Fishing landed `raw_crab` at 60 and `raw_cave_fish` at 75 and nothing consumed
+  either, so two of its fifteen catches were dead ends — and Cookery's unlock ladder was broken at
+  exactly those two levels: a twenty-level hole from 50 to 70 and a fifteen-level one from 70 to 85.
+  Mudcrab heals 175 and Cavern Char 215, slotted between Bladefin (150) and Gale Shark (200) and
+  between Gale Shark and Glidefin Manta (240).
+- Two recoloured item icons, imported; the asset report is back to full coverage (743 / 743).
+- `_test_raw_fish_are_consumed`: every raw fish Fishing lands is consumed by some recipe, the two
+  new recipes sit at 60 and 75 and cook into food that actually heals, and the Cookery ladder never
+  pays less for a higher level.
+
+### Fixed (the Attunement study ramp was inverted)
+- **`study_4` paid less than the action it replaced.** The six Attunement studies were identical in
+  inputs, interval and output, and the XP ramp was not a ramp: `study_3` (60) paid exactly what
+  `study_2` (30) paid, and `study_4` (90) paid **180** — less than both — so a player was strictly
+  better off staying on the older action. The ramp is now **96 / 189 / 230 / 270 / 320 / 465**,
+  rising at every step; only `study_3`, `study_4` and `study_5` moved.
+- `_test_study_ramp_rises`: each of the six studies must beat the one below it.
+
+### Added (the Runescribing ladder)
+- **`superheat_adamantite` (65), `superheat_runite` (70), `enchanted_emerald` (42) and
+  `enchanted_ruby` (60).** Runescribing's unlock ladder read 1 / 10 / 20 / 30 / **55** / 75 / 85 /
+  100 / 110 — a twenty-five-level hole at 30 → 55 — and its Superheat line jumped from mithril
+  straight to umbral with no step for adamantite or runite, even though both ores exist at Mining 70
+  and 85. Emerald follows sapphire on a nature rune and ruby on a fire rune, so the gem line now
+  reads sapphire → emerald → ruby → diamond instead of sapphire → diamond. The four arrivals take the
+  skill's largest level gap from twenty-five to fifteen and lift it from nine actions to thirteen.
+
+### Fixed (Inscription's XP ladder ran backwards)
+- **Three recipes paid less for more.** `scribe_time` (75), `scribe_sage` (90) and `bind_tome_sage`
+  (90) consume exactly what the level-40 recipes consume, at the same interval, and paid **188**,
+  **186** and **297** against the level-40 **189** and **302** — the same job for less pay. Retuned
+  to 200, 215 and 310.
+- `_test_action_xp_ladders`: groups each skill's actions by identical inputs and interval, then
+  requires the best payer at each level to beat the best payer below it. It found those three across
+  the whole game — the audit's own list of seven suspected inversions turned out to be seven
+  different jobs (a no-input listener against a chain step, a bar against a finished ring) and
+  contained none of the real ones.
+
+### Fixed (the validator can see how items are actually acquired)
+- **`--validate` is clean: 0 errors, 0 warnings.** It carried 47 permanent `no_acquisition_path`
+  warnings, which made the rule worthless — a genuinely unreachable item looked exactly like the
+  forty-seven false ones. The three manager-owned routes are now modelled: Ranching (each species'
+  stock, produce, hide and meat, plus feed, manure and the two rare breeding variants), Inscription
+  (every recipe with a `quality_product` ships an inked, a faded and an illuminated form) and
+  Enchanting (recycling equipment yields one essence per enchant family).
+- **The provisioner's forty shelves were invisible.** Every store record names a single item under
+  `item_id`, but the check read only `grants_items`, so no shelf was ever counted as a source.
+
+### Fixed (mastery metadata is checked, not assumed)
+- **Fourteen modifier keys were read by name but absent from `ModifierKeys`** — the registry whose
+  stated purpose is "no module typos a key". Because they were missing, a typo in a mastery or pool
+  checkpoint table would fail silently, and the registry check could not be written at all.
+- `_test_mastery_metadata`: every skill with actions declares mastery unlocks; every authored
+  modifier key is registered or follows the `<skill>_<suffix>` convention; pool checkpoints sit only
+  on the four documented marks (10/25/50/95) and are never empty; and every authored
+  `success_chance` is a real probability. The 509 actions that leave it out run at the guaranteed
+  default, which is why Smithing and Crafting never burn materials — that is now an assertion rather
+  than an assumption.
+
+### Fixed (every dead output now has a consumer, or a declaration)
+
+- **The balance report's "materials nothing consumes" list read three demand channels out of fourteen.**
+  It counted a recipe input, an upgrade material and a trader cost, and nothing else — so most of the
+  **126** items it printed were already being spent by code it could not see: ammunition a bow charges
+  per shot, familiar tablets and the marks that craft them, ranch stock, farm compost and manure,
+  engineering devices, inked scribe texts, enchant essences and the tier-4 catalyst, bones buried at
+  the altar, artefacts donated to the museum, and the settlement crates.
+  `BalanceReport.consumed_item_ids()` is now the single model of what spends an item — fifteen
+  channels, 292 items — and `dead_outputs()` sorts every obtainable item into spent, declared
+  terminal, or undeclared. `--balance` reads **0 undeclared, 12 declared terminal**.
+- **The 126 triaged in full: 95 were already spent (channels above), 19 had no consumer at all and now
+  do, and 12 are terminal on purpose.** The nineteen were closed additively — twelve new actions and
+  six new items across five skills — so no existing recipe, price, drop or XP value changed:
+  - Ranch produce had no consumer anywhere: `ranch_egg` → `ranch_omelette` (Cookery 15), `ranch_milk`
+    → `ranch_cheese` (Cookery 35), `ranch_antler` → three bowstring (Fletching 60), `ranch_scale` →
+    blue dragonhide (Crafting 85), `ranch_star_scale` → black dragonhide (Crafting 110), and
+    `ranch_ember` → two martial essence (Herblore 90), which gives the martial enchant family a second
+    source beside disenchanting.
+  - `harvested_essence`, Prospecting's only output, refines into rune essence (Herblore 45).
+  - `topaz`, the one gem with no consumer, becomes a ring (Crafting 18) or its enchanted alt_magic
+    form (25).
+  - `duskroot`, `herald_bloom` and `emberbloom` brew real potions at Herblore 100/110/115 — stealth,
+    global mastery XP and crit chance — each priced and charged in line with the existing ladder.
+  - The five settlement crates (`wood_box`, `bar_box`, `food_box`, `herb_box`, `bird_nest`) and the
+    endgame `raid_pet_egg` are openable: the wrapper is spent and the contents arrive through the
+    guaranteed path. The egg hatches **sunderling**, a new pet that skips a raid wave, and refuses to
+    be spent a second time.
+  - `craft_border_collie` and `craft_sandman` now spend the mark their familiar awards, exactly as
+    the other 25 tablets already did.
+- **Twelve items are terminal on purpose, and now say so in the data.** `terminal_reason` on the item
+  record covers `ash` (a firemaking byproduct with eleven routes and a 1 GP price), `artefact_shard`
+  (excavation scrap beside the graded artefacts) and `burnt_food` (Cookery's failure result), plus the
+  nine sell-for-GP outputs of the newer skills — echo inscriptions, weathers, fees, herald goods and
+  confluences. `--balance` prints the reason beside each one, so "dead on purpose" and "forgotten"
+  stop looking identical.
+- **A new dead output can no longer slip in unnoticed.** `ContentValidator._check_output_demand()`
+  warns `dead_output` for every undeclared item, warns `stale_declaration` when a later recipe consumes
+  something already marked terminal, and errors `dead_channel` if any of the fifteen channels stops
+  matching content — the failure where a renamed field quietly excuses every item it used to catch.
+  The validator also checks that `container_items` is an object of known, positive grants and that
+  `container_pet` names a real pet.
+- `_test_outputs_are_consumed` (55 checks): no undeclared output, every declaration explained and none
+  stale, all fifteen channels live, demand covers 292 items, every farmed crop and every ranch produce
+  is spent, both special familiars spend their mark, every container hands over real items, and a live
+  round-trip opens a crate and hatches an egg through Storage.
+- `_test_balance_report_builds` (5 checks): the report is built inside the suite now. A shape change in
+  `_bottlenecks()` with no matching change in `format_text()` crashed the whole `--balance` run at
+  runtime while the tests stayed green — nothing had ever built it. The test pins every section and
+  the keys the printer reads.
+- `BankManager.open_container()`, plus **Open** / **Open all** buttons in Storage for any item that
+  declares a container. Six new item icons, imported and listed in the asset manifest (749 of 749
+  assets on disk).
+- The pass is reproducible: `tools/dead_end_consumers.py` writes the actions, items, crates and pet,
+  and `tools/gen_deadend_icons.py` draws the six icons. Both are idempotent — re-running them leaves
+  every file byte-identical, and `tools/dead_end_consumers.py` prints zeros when there is nothing to
+  add.
+
+### Fixed (concentration is measured, and then declared)
+
+- **The report's supply model counted kinds of route, not sources.** "Crafted" was one route no matter
+  how many recipes made a material, and every enemy that dropped it was the same route — so Raw Glyph
+  Essence, made by three recipes across two skills, and the Enchantment Catalyst, dropped by twenty
+  enemies, were both reported as "a single point of failure". A route is now a source: one per
+  producing recipe, one per shop, one per enemy, one per quest, one per system that hands items over
+  (farming, ranching, inscription, enchanting, the Dream Bazaar, dig sites, the museum). Raw Glyph
+  Essence has 6 sources, the catalyst 20.
+- **The risk list covers the whole economy, not the top eight.** A hub ranked ninth strands just as
+  many recipes as one ranked first, and the warnings now scan every material. That is what surfaced
+  the two false alarms above, and the phantom material below.
+- **The report was inventing a material.** `consumed_item_ids()` read the settlement trader's `cost`
+  as item demand, but `cost` is paid from the township store in settlement resources
+  (`TownshipManager.ALL_RESOURCES`) — so "goods", a resource, appeared as a material that six recipes
+  need and nothing supplies. A trader cost is now demand only when it names a real item, the `trader`
+  channel is gone (the trader buys nothing from Storage), and `ContentValidator` errors with
+  `phantom_demand` if any channel ever names something that is not an item again.
+- **A single source can be a decision, so the data now says so.** `bottleneck_reason` on an item
+  declares the concentration deliberate, exactly as `terminal_reason` declares a deliberate dead end.
+  Two materials carry it: `scribe_blue_ink` (the level-25 azure press) and `ranch_wool` (the sheep pen
+  the sixteen robe recipes exist to depend on). `--balance` prints the reason beside the item;
+  `ContentValidator` warns `bottleneck_undeclared` for a hub without one and
+  `stale_bottleneck_declaration` when a later change makes a declaration false — a second source, or
+  demand below the line. Both modes are clean: `--validate` 0 errors / 0 warnings, `--balance`
+  0 warnings and 2 declared. The reasons are written by `tools/declare_bottlenecks.py`, which is
+  authoritative and idempotent: it removes a declaration that is no longer true.
+- **The first declaration was wrong, and the new guard caught it.** `scribe_paper` was declared one
+  source, and it is not: the Dream Bazaar sells fifty sheets for forty dream essence. The declaration
+  only became visibly false once the report's source model was completed — the bazaar, quests,
+  achievements, dig sites, raid rewards, the museum's curios, the mastery stall, familiar marks and
+  failure outputs all hand over items and none of them was counted as a source. `--validate` reported
+  `stale_bottleneck_declaration` the moment the bazaar was modelled, and the declaration is gone.
+  Paper now reads two sources: Inscription's mill and the bazaar bundle.
+- **The validator's own source list had a stale read.** The provisioner's forty shelves are in
+  `shop_store.json`, but the coverage check read `DataLoader.shop` — the GP upgrade catalogue — so the
+  shelves stayed invisible even after the `item_id` form was taught to it in the previous pass. That
+  is fixed, and the museum's curios and the bazaar's item grants are counted as sources for the first
+  time. Every acquisition path the validator knows is modelled in the report now, and the suite pins
+  a representative item per path (mill + bazaar for paper, a curio, a dig site, a shelf, a stall
+  cape, a familiar mark, a failed cook) so a path cannot quietly go invisible again.
+- `_test_bottleneck_declarations` (19 checks): every flagged hub is declared and explained, a
+  concentration really means one source, no declaration outlived its concentration, the deliberate
+  hubs are pinned by name, the two false alarms stay fixed (3 and 20 sources), one acquisition path
+  per probe stays visible, and the report prints every reason it relies on.
+
+### Balance notes
+- The five arrivals are sized **into** the enemy-health curve rather than above it. The balance
+  report compares each non-boss with the one below it and warns on a dip, so the level-96 and
+  level-102 pair sit under the level-110 Gale Wisp's 700 health and the level-66 troll under
+  Frostfang Wolf's 260. Raising the wisp line to meet them instead would have cascaded through the
+  drake and the three wisps above it, rebalancing content that was already internally consistent.
+- The four original staves gained an explicit spell tier (14/20/26/33 from a flat 10), a modest buff
+  that keeps the ladder readable; even the level-1 staff stays well under a level-1 bow's 24.
+- The balance report flags `Wool` as "needed by 17 recipes and nothing supplies it" and glyph
+  essence as a single-route material. Both are report blind spots rather than gaps: wool comes from
+  the Ranching system and the report models only content recipes. It does mean magic gear puts real
+  demand on Ranching, Mining and Harvesting, which is intended. (Both are modelled now — see the
+  concentration notes above: the sheep pen is a source, and glyph essence has six of them.)
+- The report's supply warnings are resolved rather than muted. Raw Glyph Essence was never
+  single-route (three recipes across two skills are three sources), the catalyst has twenty dropping
+  enemies, and the two genuine hubs — Azure Ink and Wool — are declared in the data with the reason
+  each one is fine (Scribe Paper looked like a third until the Dream Bazaar turned out to sell it).
+  Wool also stops being a blind spot: the report now models the systems that hand items over without
+  an action naming them, which is where the sheep pen lives.
+- What is left at the top of the risk table is the shape of the economy, not a defect: eight
+  materials with 17+ recipes each, every one of them supplied by at least two sources or declared.
+- The level-70 raid reward weapon (melee strength 70) still outclasses crafted Stormsteel (58) at the
+  same attack level. That is deliberate: raid gear is a parallel reward track, and a raid drop that
+  a shop-or-smith tier immediately obsoletes would be worth less than the dungeon it came from.
+
 ## 2026-09-27 — audio, mid-level content, thin-skill depth, screenshot gate
 
 ### Fixed

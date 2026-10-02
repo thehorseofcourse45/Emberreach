@@ -50,6 +50,7 @@ var prestige: Dictionary = {"ascensions": 0, "total": 0, "history": {}, "lifetim
 ## against live state, so the only thing worth persisting is "how far along the list this player
 ## is". A save that never saw the tutorial lands on 0 and simply re-derives from the start.
 var tutorial_step: int = 0
+var unlock_history: Array = []
 
 ## Equipped-item protection: item ids the player marked "do not sell / do not drop".
 var protected_items: Dictionary = {}
@@ -73,6 +74,9 @@ static func default_stats() -> Dictionary:
         "items_crafted": {},         # item_id -> lifetime quantity produced by artisan actions
         "items_sold": {},            # item_id -> lifetime quantity sold
         "monsters_killed": {},       # monster_id -> lifetime kills
+        "raid_waves_cleared": {},
+        "raid_choices_taken": 0,
+        "raid_coins_banked": 0.0,
         "dungeons_cleared": {},      # dungeon_id -> lifetime clears
         "actions": {},               # "skill:action" -> lifetime completions
         "region_visits": {},         # area/dungeon id -> visited flag
@@ -113,6 +117,7 @@ func get_stat(bucket: String, key: String = "", default: float = 0.0) -> float:
 ## leave gold, shop upgrades or collection flags behind.
 func initialize_new_game() -> void:
     skills.clear()
+    unlock_history.clear()
     for skill_id in DataLoader.get_skill_ids():
         var start_level: int = 1
         skills[skill_id] = {"xp": float(XPTable.xp_for_level(start_level)), "level": start_level}
@@ -179,6 +184,10 @@ func add_xp(skill_id: String, amount: float) -> void:
     if new_xp > old_xp:
         EventBus.skill_xp_gained.emit(skill_id, new_xp - old_xp, new_xp)
     if new_level > old_level:
+        var unlocks: Array[String] = []
+        for action in DataLoader.get_skill_actions(skill_id):
+            if int(action.get("level_required", 1)) > old_level and int(action.get("level_required", 1)) <= new_level: unlocks.append(str(action.get("name", action.id)))
+        record_unlock("skill", skill_id, "%s reached level %d%s" % [str(DataLoader.get_skill(skill_id).get("name", skill_id)), new_level, " · " + ", ".join(unlocks) if not unlocks.is_empty() else ""])
         EventBus.skill_level_up.emit(skill_id, new_level)
 
 func set_level(skill_id: String, level: int) -> void:
@@ -238,18 +247,21 @@ func add_prayer_points(amount: float) -> void:
 func discover_item(item_id: String) -> void:
     if not completion_log["items"].has(item_id):
         completion_log["items"][item_id] = true
+        record_unlock("items", item_id, "Discovered " + item_id.replace("_", " ").capitalize())
         EventBus.item_discovered.emit(item_id)
         _recalc_completion()
 
 func discover_monster(monster_id: String) -> void:
     if not completion_log["monsters"].has(monster_id):
         completion_log["monsters"][monster_id] = true
+        record_unlock("monsters", monster_id, "Discovered " + monster_id.replace("_", " ").capitalize())
         EventBus.monster_discovered.emit(monster_id)
         _recalc_completion()
 
 func discover_dungeon(dungeon_id: String) -> void:
     if not completion_log["dungeons"].has(dungeon_id):
         completion_log["dungeons"][dungeon_id] = true
+        record_unlock("dungeons", dungeon_id, "Discovered " + dungeon_id.replace("_", " ").capitalize())
         EventBus.dungeon_discovered.emit(dungeon_id)
         _recalc_completion()
 
@@ -257,6 +269,7 @@ func unlock_pet(pet_id: String) -> void:
     if not unlocked_pets.has(pet_id):
         unlocked_pets.append(pet_id)
         completion_log["pets"][pet_id] = true
+        record_unlock("pets", pet_id, "Discovered " + pet_id.replace("_", " ").capitalize())
         EventBus.pet_unlocked.emit(pet_id)
         _recalc_completion()
 
@@ -284,9 +297,18 @@ func serialize() -> Dictionary:
         "favorite_items": favorite_items,
         "prestige": prestige,
         "tutorial_step": tutorial_step,
+        "unlock_history": unlock_history.duplicate(true),
     }
 
 func deserialize(d: Dictionary) -> void:
+    unlock_history = []
+    var journal: Variant = d.get("unlock_history", [])
+    if journal is Array:
+        for entry in journal.slice(-300):
+            if entry is Dictionary and entry.get("text", "") is String:
+                var stamp: Variant = entry.get("unix", 0)
+                if not (stamp is int or stamp is float) or not is_finite(float(stamp)): continue
+                unlock_history.append({"kind": str(entry.get("kind", "")), "id": str(entry.get("id", "")), "text": str(entry.text), "unix": maxi(0, int(stamp))})
     username = d.get("username", "Adventurer")
     game_mode = d.get("game_mode", "standard")
     skills = d.get("skills", {})
@@ -400,3 +422,7 @@ func _to_string_array(value: Variant) -> Array[String]:
         for v in value:
             out.append(str(v))
     return out
+
+func record_unlock(kind: String, id: String, text: String) -> void:
+    unlock_history.append({"kind": kind, "id": id, "text": text, "unix": int(Time.get_unix_time_from_system())})
+    if unlock_history.size() > 300: unlock_history.pop_front()

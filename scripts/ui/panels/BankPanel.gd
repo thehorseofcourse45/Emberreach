@@ -465,6 +465,16 @@ func _item_row(r: Dictionary) -> Control:
 		actions.add_child(_quick_button("Bury all", func():
 			BankManager.bury_bone(item_id, BankManager.get_count(item_id))
 			refresh()))
+	# Crates, nests and eggs are opened from Storage. Without this the trader's four crate
+	# offers handed over an item nothing in the game could ever use.
+	var container_items: Dictionary = item.get("container_items", {})
+	if not container_items.is_empty() or str(item.get("container_pet", "")) != "":
+		var open_one := _quick_button("Open", func():
+			BankManager.open_container(item_id, 1))
+		open_one.tooltip_text = "Open one and keep what it holds"
+		actions.add_child(open_one)
+		actions.add_child(_quick_button("Open all", func():
+			BankManager.open_container(item_id, BankManager.get_count(item_id))))
 	if str(item.get("item_type", "")) == "potion":
 		actions.add_child(_quick_button("Drink", func():
 			PotionManager.use_potion(item_id)

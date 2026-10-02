@@ -7,7 +7,7 @@ extends VBoxContainer
 signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
-var _tabs_box: HBoxContainer
+var _tabs_box: HFlowContainer
 var _list: VBoxContainer
 var _summary: VBoxContainer
 var _tab: String = "items"
@@ -21,9 +21,9 @@ func _ready() -> void:
 	add_child(UIStyle.title("Collection log", UITokens.FONT_DISPLAY))
 	_search = Widgets.search_bar("Filter…", func(_t): _rebuild_list(0), 260)
 	add_child(_search)
-	_tabs_box = UIStyle.hbox(UITokens.SP_3)
+	_tabs_box = HFlowContainer.new()
 	add_child(_tabs_box)
-	for entry in [["items", "Items"], ["monsters", "Enemies"], ["dungeons", "Expeditions"], ["pets", "Companions"]]:
+	for entry in [["items", "Items"], ["monsters", "Enemies"], ["dungeons", "Expeditions"], ["pets", "Companions"], ["history", "Unlock history"]]:
 		var b := UIStyle.mini_button(str(entry[1]))
 		var key: String = str(entry[0])
 		b.pressed.connect(func():
@@ -76,6 +76,14 @@ func _rebuild_list(_depth: int) -> void:
 		_list.remove_child(c)
 		c.queue_free()
 	var query: String = _search.text.to_lower().strip_edges()
+	if _tab == "history":
+		var entries: Array = PlayerData.unlock_history.duplicate()
+		entries.reverse()
+		for entry in entries:
+			if query != "" and not str(entry.text).to_lower().contains(query): continue
+			_list.add_child(UIStyle.label(Time.get_datetime_string_from_unix_time(int(entry.get("unix", 0))).replace("T", " ") + " · " + str(entry.text), true, UITokens.FONT_SMALL))
+		if entries.is_empty(): _list.add_child(UIStyle.label("New skill levels and discoveries appear here; older saves keep their collection log.", true, UITokens.FONT_SMALL))
+		return
 	var shown: int = 0
 	# Undiscovered entries are shown first so the next goal is obvious.
 	var entries: Array = []

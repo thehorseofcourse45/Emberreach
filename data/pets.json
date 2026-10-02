@@ -251,5 +251,58 @@
     "effect": {
       "global_skill_xp_percent": 1
     }
+  },
+  "pet_ranching": {
+    "id": "pet_ranching",
+    "name": "Bessie",
+    "source_skill": "ranching",
+    "effect": {
+      "ranching_doubling_percent": 2
+    },
+    "icon_id": "ranching"
+  },
+  "pet_inscription": {
+    "id": "pet_inscription",
+    "name": "Inky",
+    "source_skill": "inscription",
+    "effect": {
+      "inscription_quality_percent": 2
+    },
+    "icon_id": "inscription"
+  },
+  "pet_engineering": {
+    "id": "pet_engineering",
+    "name": "Cogsworth",
+    "source_skill": "engineering",
+    "effect": {
+      "engineering_efficiency_percent": 3
+    },
+    "icon_id": "engineering"
+  },
+  "pet_enchanting": {
+    "id": "pet_enchanting",
+    "name": "Enchanta",
+    "source_skill": "enchanting",
+    "effect": {
+      "enchanting_essence_percent": 2
+    },
+    "icon_id": "enchanting"
+  },
+  "pet_dreamwalking": {
+    "id": "pet_dreamwalking",
+    "name": "Morpheus",
+    "source_skill": "dreamwalking",
+    "effect": {
+      "dreamwalking_essence_percent": 5
+    },
+    "icon_id": "dreamwalking"
+  },
+  "sunderling": {
+    "id": "sunderling",
+    "name": "Sunderling",
+    "source_item": "raid_pet_egg",
+    "effect": {
+      "raid_wave_skip": 1
+    }
   }
 }
