@@ -1647,6 +1647,25 @@
         "mastery_action_time": 5.4,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
+      },
+      {
+        "id": "cook_ranch_feast",
+        "name": "Rancher's Feast",
+        "level_required": 80,
+        "base_interval": 9.0,
+        "base_xp": 240,
+        "success_chance": 0.9,
+        "input_items": {
+          "ranch_omelette": 1,
+          "ranch_cheese": 1,
+          "ranch_cooked_meat": 1
+        },
+        "output_items": {
+          "ranch_feast": 1
+        },
+        "mastery_action_time": 8.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       }
     ],
     "order": 15,

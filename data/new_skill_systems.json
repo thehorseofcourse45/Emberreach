@@ -760,6 +760,23 @@
       "items": {
         "coal": 100
       }
+    },
+    {
+      "id": "feed",
+      "name": "Dream Fodder",
+      "cost": 40,
+      "items": {
+        "ranch_feed": 25
+      }
+    },
+    {
+      "id": "haste",
+      "name": "Waking Haste",
+      "cost": 220,
+      "seconds": 7200,
+      "mods": {
+        "global_skill_xp_percent": 6
+      }
     }
   ]
 }

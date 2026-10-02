@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emberreach — How to Play</title>
+<style>
+  :root{
+    --bg:#14110f; --bg2:#1d1915; --panel:#241f1a; --panel2:#2c2620;
+    --ink:#ece3d4; --ink-dim:#b7ab97; --ink-faint:#8a7e6c;
+    --ember:#e8863c; --ember2:#f0a85a; --gold:#d8b45a;
+    --green:#7fb069; --blue:#6ba3c9; --violet:#a98bc9; --rose:#d07a7a;
+    --line:#39312a; --line2:#4a3f35;
+    --radius:12px;
+    --shadow:0 2px 10px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:linear-gradient(180deg,var(--bg),var(--bg2));
+    color:var(--ink); font:16px/1.65 "Segoe UI",system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px 120px}
+
+  /* Header */
+  header.hero{
+    text-align:center; padding:56px 20px 36px;
+    border-bottom:1px solid var(--line);
+    background:radial-gradient(900px 320px at 50% -40px, rgba(232,134,60,.18), transparent 70%);
+  }
+  header.hero h1{
+    margin:0; font-size:48px; letter-spacing:.5px;
+    background:linear-gradient(90deg,var(--ember2),var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 2px 20px rgba(232,134,60,.25);
+  }
+  header.hero .sub{color:var(--ink-dim); font-size:18px; margin-top:8px}
+  header.hero .tag{color:var(--ink-faint); font-size:14px; margin-top:14px}
+  .pill{
+    display:inline-block; margin:4px; padding:4px 12px; border:1px solid var(--line2);
+    border-radius:999px; font-size:13px; color:var(--ink-dim); background:var(--panel);
+  }
+
+  /* TOC */
+  nav.toc{
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(8px);
+    background:rgba(20,17,15,.86); border-bottom:1px solid var(--line);
+    padding:10px 0;
+  }
+  nav.toc .inner{max-width:1040px; margin:0 auto; padding:0 20px; display:flex; flex-wrap:wrap; gap:6px}
+  nav.toc a{
+    color:var(--ink-dim); text-decoration:none; font-size:13px; padding:5px 11px;
+    border-radius:8px; border:1px solid transparent; white-space:nowrap;
+  }
+  nav.toc a:hover{color:var(--ink); background:var(--panel); border-color:var(--line2)}
+
+  section{margin-top:42px; scroll-margin-top:64px}
+  h2{
+    font-size:28px; margin:0 0 6px; color:var(--ember2);
+    display:flex; align-items:center; gap:12px;
+  }
+  h2 .num{
+    font-size:15px; color:var(--bg); background:var(--ember);
+    width:30px; height:30px; border-radius:8px; display:grid; place-items:center; font-weight:700;
+    flex:0 0 auto;
+  }
+  h3{font-size:19px; color:var(--gold); margin:26px 0 8px}
+  .lead{color:var(--ink-dim); font-size:17px; margin:0 0 18px}
+  p{margin:10px 0}
+  a{color:var(--ember2)}
+  code{
+    background:var(--panel2); border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; font:13px "Cascadia Code",Consolas,monospace; color:var(--gold);
+  }
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px; margin:14px 0; box-shadow:var(--shadow);
+  }
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px}
+  .mini{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px;
+  }
+  .mini h4{margin:0 0 6px; font-size:16px; color:var(--ember2)}
+  .mini p{margin:4px 0; font-size:14.5px; color:var(--ink-dim)}
+
+  .callout{border-left:4px solid var(--ember); background:var(--panel2); padding:14px 18px; border-radius:0 10px 10px 0; margin:16px 0}
+  .callout.tip{border-color:var(--green)}
+  .callout.warn{border-color:var(--rose)}
+  .callout b{color:var(--ink)}
+
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:14px 0}
+  ol.steps li{
+    position:relative; padding:12px 16px 12px 54px; margin:10px 0;
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+  }
+  ol.steps li::before{
+    counter-increment:s; content:counter(s);
+    position:absolute; left:14px; top:12px; width:26px; height:26px;
+    background:var(--ember); color:var(--bg); font-weight:700; border-radius:7px;
+    display:grid; place-items:center; font-size:14px;
+  }
+  ol.steps li b{color:var(--ink)}
+
+  table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14.5px}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line)}
+  th{color:var(--gold); font-weight:600; border-bottom:1px solid var(--line2)}
+  tr:hover td{background:var(--panel2)}
+  td.n,th.n{text-align:right; font-variant-numeric:tabular-nums}
+
+  .tagrow{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 2px}
+  .k{font-size:12px; padding:2px 9px; border-radius:6px; border:1px solid var(--line2); color:var(--ink-dim); background:var(--panel2)}
+  .k.combat{color:var(--rose); border-color:#5a3b3b}
+  .k.gather{color:var(--green); border-color:#44563c}
+  .k.artisan{color:var(--ember2); border-color:#5c4330}
+  .k.support{color:var(--blue); border-color:#36505e}
+  .k.passive{color:var(--violet); border-color:#4b3d5c}
+
+  .loop{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:14px 0; justify-content:center}
+  .loop .node{background:var(--panel2); border:1px solid var(--line2); border-radius:10px; padding:10px 16px; font-weight:600; color:var(--ink)}
+  .loop .arrow{color:var(--ember); font-size:22px}
+
+  footer{margin-top:60px; padding-top:24px; border-top:1px solid var(--line); color:var(--ink-faint); font-size:13px; text-align:center}
+  .back{display:inline-block; margin-top:10px; font-size:13px; color:var(--ink-faint); text-decoration:none}
+  .back:hover{color:var(--ember2)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>⚔️ Emberreach</h1>
+  <div class="sub">A data-driven, offline-capable idle RPG — How to Play</div>
+  <div class="tag">
+    <span class="pill">39 skills</span>
+    <span class="pill">629 items</span>
+    <span class="pill">46 monsters</span>
+    <span class="pill">14 areas · 17 dungeons</span>
+    <span class="pill">60 prayers</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="inner">
+    <a href="#start">Getting Started</a>
+    <a href="#core">The Core Loop</a>
+    <a href="#ui">The Screens</a>
+    <a href="#skills">Skills &amp; Mastery</a>
+    <a href="#gathering">Gathering</a>
+    <a href="#artisan">Crafting</a>
+    <a href="#combat">Combat</a>
+    <a href="#prayers">Prayers &amp; Potions</a>
+    <a href="#gear">Gear &amp; Bank</a>
+    <a href="#offline">Offline &amp; Queue</a>
+    <a href="#new">The Five New Skills</a>
+    <a href="#endgame">Endgame</a>
+    <a href="#support">Support Systems</a>
+    <a href="#prestige">Ascendancy</a>
+    <a href="#faq">Quick FAQ</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ GETTING STARTED ============ -->
+<section id="start">
+  <h2><span class="num">1</span>Getting Started</h2>
+  <p class="lead">Emberreach is an <b>idle RPG</b>: you pick one activity at a time, and it runs on a timer, ticking away even while you do other things — and while the game is closed. There is no twitch skill. Progress comes from choosing <i>what</i> to train, spending the materials you gather, and steadily upgrading your character.</p>
+
+  <div class="card">
+    <h3>The one rule of idle games</h3>
+    <p>At any moment you have <b>one active activity</b> — a skill action, or a combat expedition. It repeats automatically until you stop it, you run out of materials, or something dies. Your job is to decide which activity is worth running, keep it supplied, and come back to collect and re-aim.</p>
+  </div>
+
+  <ol class="steps">
+    <li><b>Start a new journey.</b> You begin at level 1 in every skill with 0 GP (gold).</li>
+    <li><b>Gather raw materials.</b> Open <b>Skills → Timbercraft</b> (woodcutting) and start chopping Normal Trees. Logs pile up in your Bank automatically.</li>
+    <li><b>Turn materials into gear or XP.</b> Logs feed Firemaking/Cooking; ore feeds Smelting → Smithing. Smith a Bronze Helmet.</li>
+    <li><b>Equip and fight.</b> Open <b>Equipment</b>, equip your helmet, then go to <b>Combat</b> and clear the Farmlands.</li>
+    <li><b>Spend the rewards.</b> Loot and GP buy upgrades in the shops, unlock buildings in your Settlement, and complete Tasks for bonuses.</li>
+    <li><b>Repeat, deeper.</b> Higher skill levels unlock better actions; better gear clears harder areas; harder areas drop better loot. That spiral is the whole game.</li>
+  </ol>
+
+  <div class="callout tip"><b>Tip:</b> Everything autosaves (every 60&nbsp;s and on key events). You can close the game at any time — see <a href="#offline">Offline Progression</a>.</div>
+</section>
+
+<!-- ============ CORE LOOP ============ -->
+<section id="core">
+  <h2><span class="num">2</span>The Core Loop</h2>
+  <p class="lead">Almost all progression is one feedback loop. Internally the self-test calls it the <b>gear loop</b>, and it looks like this:</p>
+
+  <div class="loop">
+    <span class="node">🌲 Gather</span><span class="arrow">→</span>
+    <span class="node">🔨 Craft gear</span><span class="arrow">→</span>
+    <span class="node">🛡️ Equip</span><span class="arrow">→</span>
+    <span class="node">⚔️ Fight</span><span class="arrow">→</span>
+    <span class="node">💰 Loot &amp; GP</span><span class="arrow">↩</span>
+  </div>
+
+  <p>Each pass up the loop raises a ceiling: a higher Mining level lets you mine Runite, which smiths into Runite armour at Forgecraft 85, which lets you survive a God Dungeon, which drops the catalyst to enchant that armour even further. You are never doing just one thing for its own sake — every skill feeds another.</p>
+
+  <div class="grid">
+    <div class="mini"><h4>XP &amp; Levels</h4><p>Each action grants skill XP. Levels run <b>1→120</b>. Reaching 99 takes 13,034,431 XP; 120 takes 104,273,167. Higher levels unlock stronger actions.</p></div>
+    <div class="mini"><h4>Currencies</h4><p><b>GP</b> (gold) is the main currency. Specialist currencies (Slayer Coins, Raid Coins, Stardust, Dream Essence, typed enchant essence) buy things in their own shops.</p></div>
+    <div class="mini"><h4>Modifiers</h4><p>Every bonus — gear, prayers, potions, pets, mastery, astrology, shop upgrades — is a <b>modifier</b> that stacks into one combined value. More sources = faster, richer, stronger.</p></div>
+  </div>
+</section>
+
+<!-- ============ UI ============ -->
+<section id="ui">
+  <h2><span class="num">3</span>The Screens</h2>
+  <p class="lead">The left sidebar is your map of the game. Here's what each route does.</p>
+  <table>
+    <tr><th>Screen</th><th>What you do there</th></tr>
+    <tr><td><b>Overview</b></td><td>Your dashboard: current activity, skill highlights, loadout readiness, goals, unlocks, recent events, and suggestions. A sub-tab per skill.</td></tr>
+    <tr><td><b>Skills</b></td><td>Pick any skill → see its action list (locked actions greyed out), Start/Stop, live progress, mastery pool %, estimated XP/hour, and per-action mastery.</td></tr>
+    <tr><td><b>Combat / Expeditions</b></td><td>Choose an area (endless) or dungeon, pick attack style, Start or <b>Flee</b>. Live HP bars, damage-reduction / attack-speed / crit readout, prayer toggles, hazard warnings.</td></tr>
+    <tr><td><b>Prayers</b></td><td>60 prayers grouped by role, with point drain per minute and time-until-empty.</td></tr>
+    <tr><td><b>Raid</b></td><td>Wave-by-wave run with 3-choice reward picks, banked raid coins, and the Raid Shop.</td></tr>
+    <tr><td><b>Storage</b></td><td>Your Bank: search, sort, filter, favourite, protect, inspect; Sell / Equip / Bury / Use.</td></tr>
+    <tr><td><b>Provisioner / General Store</b></td><td>Shelves you return to vs. a searchable catalogue of one-time upgrades.</td></tr>
+    <tr><td><b>Tasks / Milestones / Collection</b></td><td>Quests with live objective progress, achievements, and your completion log.</td></tr>
+    <tr><td><b>Stats</b></td><td>Your lifetime record — the counters that feed quests, milestones, and the collection log.</td></tr>
+    <tr><td><b>Settlement</b></td><td>Buildings with costs and upgrade paths that passively improve your systems.</td></tr>
+    <tr><td><b>Farm</b></td><td>Husbandry/crop plots that grow in real time — planted and harvested by hand.</td></tr>
+    <tr><td><b>Equipment</b></td><td>14 slots, saveable loadout sets with ownership checks, aggregated stats.</td></tr>
+    <tr><td><b>Action Queue / Simulator</b></td><td>Queue up skill actions with a policy; simulate your win-chance against an area or dungeon using the real combat formulas.</td></tr>
+    <tr><td><b>Ascendancy</b></td><td>The prestige/reset layer — see §13.</td></tr>
+    <tr><td><b>Settings / Recovery</b></td><td>Preferences and sound. Recovery takes over only when a save can't load.</td></tr>
+  </table>
+  <p>The <b>top bar</b> shows your currencies, combat level, Pause, Save, and the current activity. The <b>right panel</b> is a contextual detail pane (equipment by slot, stats, goal routing, help for the current screen).</p>
+</section>
+
+<!-- ============ SKILLS ============ -->
+<section id="skills">
+  <h2><span class="num">4</span>Skills &amp; Mastery</h2>
+  <p class="lead">There are <b>39 skills</b>: 9 combat, 30 non-combat. Every skill levels 1→120 and unlocks better actions as it climbs.</p>
+
+  <h3>All 39 skills, one by one</h3>
+  <p>Emberreach uses its own themed names (the familiar term is in brackets). Nothing here is cosmetic — every skill feeds the loop. The nine combat skills train automatically while you fight; the thirty non-combat skills are the activities you pick on the Skills screen (five of them — the <i>signature</i> skills — run their own full systems, detailed in <a href="#new">§11</a>).</p>
+
+  <h3>⚔️ The 9 combat skills</h3>
+  <p>You never "start" these on the Skills screen — they gain XP from <a href="#combat">combat</a> based on your attack style and what you do in a fight.</p>
+  <table>
+    <tr><th>Skill</th><th>Trains from…</th></tr>
+    <tr><td><b>Bladework</b> (attack)</td><td>Melee accuracy sub-style — your to-hit with melee weapons.</td></tr>
+    <tr><td><b>Might</b> (strength)</td><td>Melee power sub-style — raises melee max hit.</td></tr>
+    <tr><td><b>Warding</b> (defence)</td><td>Defensive sub-style — evasion and the ability to take hits.</td></tr>
+    <tr><td><b>Vitality</b> (hitpoints)</td><td>Passively, from all damage dealt — raises your max HP.</td></tr>
+    <tr><td><b>Marksmanship</b> (ranged)</td><td>Fighting with a bow/crossbow + ammunition.</td></tr>
+    <tr><td><b>Sorcery</b> (magic)</td><td>Fighting with a staff + runes.</td></tr>
+    <tr><td><b>Devotion</b> (prayer)</td><td>Burying bones; powers your <a href="#prayers">prayers</a>.</td></tr>
+    <tr><td><b>Huntsman</b> (slayer)</td><td>Completing Slayer-style assigned kills.</td></tr>
+    <tr><td><b>Blight</b> (corruption)</td><td>13 actions commuting with the Abyss for <code>abyssal_essence</code> — the one combat skill with its own action list; endgame/Abyssal material.</td></tr>
+  </table>
+
+  <h3>🌲 Gathering skills — produce raw materials</h3>
+  <table>
+    <tr><th>Skill</th><th class="n">Levels</th><th>What it gives you</th></tr>
+    <tr><td><b>Timbercraft</b> (woodcutting)</td><td class="n">1–110</td><td>Logs (Emberpine → Ironbark → Silverleaf → …). Feed Kilncraft, Cookery, Bowyering.</td></tr>
+    <tr><td><b>Angling</b> (fishing)</td><td class="n">1–115</td><td>Raw fish (Marsh Shrimp → Silverfin → Reedfish → …). Feed Cookery.</td></tr>
+    <tr><td><b>Delving</b> (mining)</td><td class="n">1–115</td><td>Ore &amp; coal &amp; gems (Copper/Tin → Iron → …). Feed Kilncraft/Forgecraft.</td></tr>
+    <tr><td><b>Larceny</b> (thieving)</td><td class="n">1–115</td><td>GP and items by pickpocketing targets (Man → Farmer → …). Failure can stun you.</td></tr>
+    <tr><td><b>Excavation</b> (archaeology)</td><td class="n">1–115</td><td>Artefacts from dig sites — donate to the museum for bonuses.</td></tr>
+    <tr><td><b>Prospecting</b> (harvesting)</td><td class="n">1–115</td><td><code>harvested_essence</code> from veins (Basic → Sturdy → Dense → …).</td></tr>
+    <tr><td><b>Lostfinding</b></td><td class="n">1–115</td><td>Investigation loop: accept a case → search for <code>trace_evidence</code> → resolve lost caches.</td></tr>
+  </table>
+
+  <h3>🔥 Processing skills — convert one material into another</h3>
+  <table>
+    <tr><th>Skill</th><th class="n">Levels</th><th>Turns…</th><th>…into</th></tr>
+    <tr><td><b>Kilncraft</b> (firemaking)</td><td class="n">1–110</td><td>Logs</td><td>Burns them for XP + lights that boost nearby skills.</td></tr>
+    <tr><td><b>Cookery</b> (cooking)</td><td class="n">1–115</td><td>Raw fish/meat</td><td>Food that heals in combat (watch the burn chance).</td></tr>
+    <tr><td><b>Runescribing</b> (alt-magic)</td><td class="n">1–110</td><td>Ore + runes, bones + runes</td><td>Instant bars (Superheat), bone offerings, utility casts.</td></tr>
+    <tr><td><b>Echo Keeping</b></td><td class="n">1–112</td><td>Skill "rhythms"</td><td><code>resonance_trace</code> — a support material from mimicking other skills.</td></tr>
+    <tr><td><b>Fermentation</b></td><td class="n">1–116</td><td>Captured weather</td><td><code>weather_starter</code> → brewed goods over real time.</td></tr>
+  </table>
+
+  <h3>🔨 Artisan skills — craft gear, consumables &amp; magic</h3>
+  <table>
+    <tr><th>Skill</th><th class="n">Levels</th><th>Produces</th></tr>
+    <tr><td><b>Forgecraft</b> (smithing)</td><td class="n">1–115</td><td>Bars → weapons &amp; armour (Bronze → Iron → Steel → … → Dragonite). 112 recipes — the biggest skill.</td></tr>
+    <tr><td><b>Bowyering</b> (fletching)</td><td class="n">1–115</td><td>Arrow shafts, arrows, and bows from logs + tips + feathers.</td></tr>
+    <tr><td><b>Artifice</b> (crafting)</td><td class="n">1–115</td><td>Leather armour, rings, amulets, staves and mage robes from leather, gems &amp; essence.</td></tr>
+    <tr><td><b>Glyphcraft</b> (runecrafting)</td><td class="n">1–115</td><td>Runes (Gale/Tide/Stone → …) from rune essence — the ammo for Sorcery.</td></tr>
+    <tr><td><b>Apothecary</b> (herblore)</td><td class="n">1–110</td><td>Potions (combat and skilling) from herbs — e.g. Warded Hide (DR) I→III→…</td></tr>
+    <tr><td><b>Scribing</b> (inscription) ✦</td><td class="n">1–120</td><td>Ink → paper → texts &amp; equippable tomes. <a href="#new">Signature skill.</a></td></tr>
+    <tr><td><b>Attunement</b> (enchanting) ✦</td><td class="n">1–115</td><td>Typed enchant essence → gear enchantments. <a href="#new">Signature skill.</a></td></tr>
+  </table>
+
+  <h3>🧭 Support, exploration &amp; world skills</h3>
+  <table>
+    <tr><th>Skill</th><th class="n">Levels</th><th>What it does</th></tr>
+    <tr><td><b>Wayfaring</b> (agility)</td><td class="n">1–115</td><td>Build an obstacle course (15 slots) that grants standing passive bonuses.</td></tr>
+    <tr><td><b>Beastbinding</b> (summoning)</td><td class="n">1–112</td><td>Craft familiar tablets from marks + shards; run up to 2 familiars.</td></tr>
+    <tr><td><b>Starreading</b> (astrology)</td><td class="n">1–110</td><td>Study constellations for <code>stardust</code>, then buy stars for permanent modifiers.</td></tr>
+    <tr><td><b>Surveying</b> (cartography)</td><td class="n">1–110</td><td>Survey a hex map, chart coasts/waters, uncover Points of Interest; upgrade ships.</td></tr>
+    <tr><td><b>Wayfolding</b></td><td class="n">1–110</td><td>Survey trade routes (<code>route_survey</code>) that open logistics bonuses.</td></tr>
+    <tr><td><b>Customcraft</b></td><td class="n">1–115</td><td>Propose &amp; provision "customs/festivals" (<code>custom_proposal → custom_provisions</code>) for community bonuses.</td></tr>
+    <tr><td><b>Settlement</b> (township)</td><td class="n">—</td><td>Managed on the Settlement screen, not an action list: buildings produce passively each hour.</td></tr>
+    <tr><td><b>Husbandry</b> (farming)</td><td class="n">1–115</td><td>Plant seeds in Farm plots that grow in real time → herbs &amp; crops (feed for Ranching, inputs for Apothecary/Cookery).</td></tr>
+    <tr><td><b>Husbandry</b> (ranching) ✦</td><td class="n">—</td><td>Animal pens &amp; produce. <a href="#new">Signature skill.</a></td></tr>
+    <tr><td><b>Engineering</b> ✦</td><td class="n">1–115</td><td>Clockwork parts → devices that auto-run other skills. <a href="#new">Signature skill.</a></td></tr>
+    <tr><td><b>Dreamwalking</b> ✦</td><td class="n">—</td><td>Offline dream allocation for Essence &amp; Bazaar rewards. <a href="#new">Signature skill.</a></td></tr>
+  </table>
+  <div class="callout"><b>Two "Husbandry" skills?</b> Yes — the farming skill (crops/seeds, worked on the <b>Farm</b> screen) and the ranching skill (animals) share the display name but are separate skills with separate levels. Ranching is the signature system in §11; farming is the real-time crop plots that feed it.</div>
+  <p style="color:var(--ink-faint);font-size:13px">✦ = a signature skill with its own full subsystem — see <a href="#new">§11</a>.</p>
+
+  <h3>How an action works</h3>
+  <p>Each action has a <b>level requirement</b>, a <b>base interval</b> (seconds per attempt), a <b>base XP</b>, and <b>outputs</b> (what you get). Start it and it repeats on that interval. Interval and output can be improved by modifiers (gear, mastery, potions…).</p>
+
+  <h3>Mastery — the per-action progression</h3>
+  <div class="card">
+    <p>On top of your <i>skill</i> level, every individual action builds its own <b>mastery</b>. Mastery brings faster actions, preservation (don't consume the material), and doubling. Each skill also has a shared <b>Mastery Pool</b> that fills as you train, with reward checkpoints at <b>10%, 25%, 50%, and 95%</b>. Spread training across a skill's actions and you'll bank pool checkpoints that buff the whole skill.</p>
+  </div>
+
+  <div class="callout tip"><b>Tip:</b> The Skills screen shows a live <b>≈ XP/hour</b> and mastery pool % so you can compare actions before committing.</div>
+</section>
+
+<!-- ============ GATHERING ============ -->
+<section id="gathering">
+  <h2><span class="num">5</span>Gathering Skills</h2>
+  <p class="lead">These feed everything else. Start one, walk away, collect a stockpile. (The full level ranges are in <a href="#skills">§4</a>; this is how they <i>play</i>.)</p>
+  <div class="grid">
+    <div class="mini"><h4>🪓 Timbercraft</h4><p>Chop trees for logs. Logs → Firemaking, Cooking fuel, Bowyering.</p></div>
+    <div class="mini"><h4>🎣 Angling</h4><p>Fish raw fish. Raw fish → Cookery → food that heals in combat.</p></div>
+    <div class="mini"><h4>⛏️ Delving</h4><p>Mine ore, coal &amp; gems. Ore → Kilncraft (smelt bars) → Forgecraft gear.</p></div>
+    <div class="mini"><h4>🗝️ Larceny</h4><p>Pickpocket for GP and items. Higher targets risk getting caught (stun).</p></div>
+    <div class="mini"><h4>🏺 Excavation</h4><p>Dig sites for artefacts to donate to the museum for bonuses.</p></div>
+    <div class="mini"><h4>🔭 Prospecting</h4><p>Work veins for <code>harvested_essence</code>, a support material.</p></div>
+    <div class="mini"><h4>🔎 Lostfinding</h4><p>Accept cases, gather <code>trace_evidence</code>, resolve lost caches for rewards.</p></div>
+  </div>
+  <div class="callout"><b>Nodes &amp; respawns:</b> gathering nodes have HP. Each success chips 1 HP (a <code>preservation</code> roll can skip it); at 0 the node respawns on a timer. You keep working — the game just rotates to the next available node.</div>
+</section>
+
+<!-- ============ ARTISAN ============ -->
+<section id="artisan">
+  <h2><span class="num">6</span>Crafting / Artisan Skills</h2>
+  <p class="lead">Processing skills consume what you gathered and produce something better. The payoff is both the <b>item</b> and the <b>XP</b>.</p>
+  <table>
+    <tr><th>Skill</th><th>Turns…</th><th>…into</th></tr>
+    <tr><td>Kilncraft</td><td>Ore</td><td>Metal bars</td></tr>
+    <tr><td>Forgecraft</td><td>Bars + coal</td><td>Weapons &amp; armour</td></tr>
+    <tr><td>Bowyering</td><td>Logs</td><td>Bows &amp; arrows</td></tr>
+    <tr><td>Artifice</td><td>Leather, gems, essence</td><td>Rings, bodywear, staves, robes</td></tr>
+    <tr><td>Runescribing</td><td>Rune essence</td><td>Runes for Sorcery</td></tr>
+    <tr><td>Apothecary</td><td>Herbs</td><td>Potions</td></tr>
+    <tr><td>Cookery</td><td>Raw fish/meat</td><td>Food that heals</td></tr>
+    <tr><td>Scribing</td><td>Ink + paper</td><td>Texts &amp; equippable tomes</td></tr>
+  </table>
+  <div class="callout warn"><b>Watch your success chance:</b> Cooking actions have a <code>success_chance</code> — a failed cook burns the food. Mastery and gear push that chance up.</div>
+</section>
+
+<!-- ============ COMBAT ============ -->
+<section id="combat">
+  <h2><span class="num">7</span>Combat &amp; Expeditions</h2>
+  <p class="lead">Combat is still idle — you pick a target and a style, and the fight auto-resolves tick by tick.</p>
+
+  <h3>Attack styles</h3>
+  <div class="grid">
+    <div class="mini"><h4>⚔️ Melee</h4><p>Trains Bladework / Might / Warding depending on sub-style. Needs melee weapons &amp; armour.</p></div>
+    <div class="mini"><h4>🏹 Ranged</h4><p>Trains Marksmanship. Needs a bow/crossbow + ammunition.</p></div>
+    <div class="mini"><h4>✨ Magic</h4><p>Trains Sorcery. Needs runes (from Runescribing) and a staff.</p></div>
+  </div>
+  <p>There's a <b>combat triangle</b>: each style is strong against one and weak against another. Pick the style your target is weak to. <b>Vitality</b> (hitpoints) and <b>Devotion</b> (prayer) level alongside whichever style you use.</p>
+
+  <h3>Areas vs. dungeons</h3>
+  <ul>
+    <li><b>Areas</b> are endless — you fight the same pool of monsters until you Flee or die. Good for farming XP and loot.</li>
+    <li><b>Dungeons</b> are fixed sequences ending in a boss, often gating a key reward (e.g. enchant catalysts from God Dungeons).</li>
+  </ul>
+
+  <h3>Staying alive</h3>
+  <div class="card">
+    <p>Equip <b>food</b> and it auto-eats when your HP drops. Watch <b>Damage Reduction (DR)</b>, <b>evasion</b>, and <b>max hit</b> in the readout. Some areas have <b>hazards</b> that are applied live during the fight. If a fight is a losing battle, hit <b>Flee</b> — or use the <b>Simulator</b> screen first to check your win chance using the real formulas before you commit.</p>
+  </div>
+  <div class="callout warn"><b>Death</b> is a setback, not a wipe — but you can lose your active run's progress. Simulate hard content first.</div>
+</section>
+
+<!-- ============ PRAYERS & POTIONS ============ -->
+<section id="prayers">
+  <h2><span class="num">8</span>Prayers &amp; Potions</h2>
+  <div class="grid">
+    <div class="mini"><h4>🙏 Prayers</h4><p>Up to <b>2 active</b> at once, drawing <b>Prayer Points</b> per minute. 60 prayers grouped by role (accuracy, defence, XP, drops…). When points hit 0 they switch off — the Prayers screen shows time-until-empty. Points come from burying bones (Devotion).</p></div>
+    <div class="mini"><h4>🧪 Potions</h4><p><b>One active potion</b> at a time, consumed by <b>charges</b> as its effect triggers. Brewed in Apothecary. Pick the potion that matches your current activity (combat potion for fights, a skilling potion for gathering).</p></div>
+  </div>
+</section>
+
+<!-- ============ GEAR & BANK ============ -->
+<section id="gear">
+  <h2><span class="num">9</span>Gear &amp; Your Bank</h2>
+  <h3>Equipment — 14 slots</h3>
+  <p>Weapon, shield/offhand, helmet, body, legs, boots, gloves, cape, amulet, ring, two rings of ammo/consumable, and more. Stats from all equipped items aggregate into your combat profile. Save multiple <b>loadout sets</b> and swap between a combat kit and a skilling kit (ownership is checked when you equip a set).</p>
+  <div class="callout"><b>Equipment slots</b> are indexed internally: <code>8 = weapon</code>, <code>9 = shield/offhand</code>, <code>7 = ring</code>. Equippable tomes from Scribing use the offhand slot.</div>
+
+  <h3>The Bank (Storage screen)</h3>
+  <p>Items stack and are stored automatically. From Storage you can <b>Search, Sort, Filter, Favourite, Protect</b> (so you don't sell it by accident), <b>Inspect</b>, and act: Sell&nbsp;1 / Sell&nbsp;All / Equip / Bury (bones → prayer points) / Use. Bank slots have a rising cost curve as you expand.</p>
+</section>
+
+<!-- ============ OFFLINE & QUEUE ============ -->
+<section id="offline">
+  <h2><span class="num">10</span>Offline Progression &amp; the Action Queue</h2>
+  <div class="card">
+    <h3>⏳ The game keeps playing while you're away</h3>
+    <p>When you load a save, Emberreach replays up to <b>24 hours</b> of elapsed time through the <i>same</i> code that runs live — so offline results match what you'd have earned at the desk. A <b>Welcome-back</b> summary shows what happened: XP gained, items made, levels earned. Your active activity (or queued actions) is what runs while you're gone, so <b>leave something productive running before you close.</b></p>
+  </div>
+  <h3>🧮 Action Queue</h3>
+  <p>Queue a sequence of skill actions with a policy (e.g. "do X until I have 100, then start Y"). The queue persists in your save and drives both live and offline time, so you don't waste offline hours stuck on a finished task.</p>
+  <div class="callout tip"><b>Tip:</b> Before a long time away, queue a chain that can't run dry — a gather step that keeps feeding a craft step.</div>
+</section>
+
+<!-- ============ NEW SKILLS ============ -->
+<section id="new">
+  <h2><span class="num">11</span>The Five Signature Skills</h2>
+  <p class="lead">Five non-combat skills have their own full systems — they don't use the plain action loop. Each has a pet, mastery-pool effects, a skillcape, potion support, and progression tasks at levels 10/50/99.</p>
+
+  <div class="card">
+    <h3>🐄 Husbandry (Ranching)</h3>
+    <p>Buy <b>pens</b> and <b>animals</b>, feed them with crops from Farming, and collect produce, meat, and manure. A pen holds <b>two matching animals</b>. Fed animals produce at full speed; hunger decays efficiency down to 25%. With a pair, enough happiness, and 6 hours elapsed, animals <b>breed</b>. Manure is applied before planting to boost one crop.</p>
+    <table>
+      <tr><th>Animal</th><th class="n">Level</th><th>Produce</th></tr>
+      <tr><td>Hen</td><td class="n">1</td><td>Egg</td></tr>
+      <tr><td>Cow</td><td class="n">15</td><td>Milk</td></tr>
+      <tr><td>Sheep</td><td class="n">30</td><td>Wool</td></tr>
+      <tr><td>Boar</td><td class="n">45</td><td>Tusk</td></tr>
+      <tr><td>Moonstag</td><td class="n">60</td><td>Antler</td></tr>
+      <tr><td>Griffin</td><td class="n">75</td><td>Plume</td></tr>
+      <tr><td>Wyvern</td><td class="n">90</td><td>Scale</td></tr>
+      <tr><td>Dragon → Celestial Dragon</td><td class="n">105 / 115</td><td>Ember / Star-scale</td></tr>
+    </table>
+    <p>Produce feeds Cookery, Artifice, Bowyering, Apothecary, and Starreading.</p>
+  </div>
+
+  <div class="card">
+    <h3>📜 Scribing (Inscription)</h3>
+    <p>Make <b>paper</b> and <b>ink</b>, <b>research</b> a recipe once (research is finite — it stops after one completion), then <b>scribe</b> texts and equippable <b>tomes</b>. Crafting rolls a quality: <b>Faded, Inked, or Illuminated</b>. Tomes equip in the <b>offhand</b> slot and give a fraction of their crafting XP as a steady supplement. Active glyph effects (haste, doubling, mastery) expire on a shared real-time clock. The skillcape lets you run a <b>second</b> active mastery glyph.</p>
+  </div>
+
+  <div class="card">
+    <h3>⚙️ Engineering</h3>
+    <p>Craft <b>parts</b> and <b>devices</b>, then install a device in a work slot and point it at an unlocked activity. You start with <b>2 slots</b>, rising to <b>6</b> via level/mastery/cape. Devices run on <b>fuel</b> (coal, later cosmic runes) paid an hour up front; unused prepaid time is saved. Workers use <i>base</i> rates (not your modifiers). The <b>Farmhand</b> auto-collects and replants real plots; a fuelled <b>Scavenger</b> recovers extra drops from monsters you defeat.</p>
+  </div>
+
+  <div class="card">
+    <h3>🔮 Attunement (Enchanting)</h3>
+    <p><b>Disenchant</b> spare gear (unequip it to Storage first; protected items are safe) into typed <b>essence</b> — martial, verdant, warding, arcane. Spend essence + runes + gems + boss catalysts to <b>enchant one gear piece</b>: Might (melee), Precision (accuracy), Fortune (doubling), Scholar (XP), Warding (DR). Replacing an enchant overwrites that piece's property — the skillcape allows <b>two</b>. Top-tier enchants need catalysts from <b>God Dungeon bosses</b>, and cleared signature weapons apply <b>Burn</b> or <b>Slow</b> in real combat.</p>
+  </div>
+
+  <div class="card">
+    <h3>💤 Dreamwalking</h3>
+    <p>Reserve <b>0–100%</b> of your capped offline time for dreams with a slider. On return you collect <b>Dream Essence</b>, resolve <b>event choices</b>, and spend essence in the <b>Dream Bazaar</b> (temporary XP/doubling buffs, settlement ticks, bundles of paper/coal/manure). Longer dreams gain <b>depth</b> for bigger rewards. <b>Nightmares</b> can nibble a little session essence; mastery mitigates them. A <b>Lucid Draught</b> supercharges one offline dream and is consumed once.</p>
+    <p>Dreamscapes run from <i>Starlit Meadow</i> (lvl 1) up to <i>Crown of Dreams</i> (lvl 115), each with higher XP and essence per hour.</p>
+  </div>
+</section>
+
+<!-- ============ ENDGAME ============ -->
+<section id="endgame">
+  <h2><span class="num">12</span>Endgame Content</h2>
+  <div class="grid">
+    <div class="mini"><h4>🐉 God Dungeons</h4><p>The hardest fixed dungeons. Their bosses drop the <b>catalysts</b> that gate top-tier Attunement enchants (Tidebound, Volcanic Infusion).</p></div>
+    <div class="mini"><h4>🏟️ Raid</h4><p>Wave-by-wave survival with a 3-choice reward pick after each wave. Bank <b>Raid Coins</b> for the Raid Shop.</p></div>
+    <div class="mini"><h4>🗡️ Blight (Slayer)</h4><p>Take assigned tasks, track kills, earn Slayer rewards, and spend in the Slayer Shop. Some gear is Slayer-locked.</p></div>
+    <div class="mini"><h4>🌑 Abyssal</h4><p>The deepest combat tier for fully-built characters.</p></div>
+  </div>
+</section>
+
+<!-- ============ SUPPORT ============ -->
+<section id="support">
+  <h2><span class="num">13</span>Support &amp; World Systems</h2>
+  <div class="grid">
+    <div class="mini"><h4>🏘️ Settlement (Township)</h4><p>Buildings that produce passively every hour and improve your other systems. Spend GP and materials to build and upgrade.</p></div>
+    <div class="mini"><h4>⭐ Starreading (Astrology)</h4><p>Buy stars in constellations with <b>Stardust</b> for permanent modifier bonuses.</p></div>
+    <div class="mini"><h4>🐾 Beastbinding (Summoning)</h4><p>Collect marks, craft tablets, run up to 2 familiars with charge-based synergies.</p></div>
+    <div class="mini"><h4>🗺️ Surveying (Cartography)</h4><p>Travel a hex map, survey tiles, and uncover Points of Interest; upgrade ships.</p></div>
+    <div class="mini"><h4>🏃 Wayfaring (Agility)</h4><p>Build an obstacle course across 15 slots for standing passive bonuses.</p></div>
+    <div class="mini"><h4>🐈 Pets</h4><p>Rare passive unlocks that drop while training — each gives a permanent small bonus.</p></div>
+    <div class="mini"><h4>✅ Tasks &amp; Milestones</h4><p>Quests with live objectives and one-time rewards; achievements for milestones; a Collection log of everything discovered.</p></div>
+    <div class="mini"><h4>🛒 Shops</h4><p>The Provisioner (restocking shelves) and General Store (one-time upgrade catalogue). Specialist shops: Slayer, Raid, Museum, Township.</p></div>
+  </div>
+</section>
+
+<!-- ============ PRESTIGE ============ -->
+<section id="prestige">
+  <h2><span class="num">14</span>Ascendancy (Prestige)</h2>
+  <div class="card">
+    <p>Once you've built up enough <b>lifetime XP</b>, the <b>Ascendancy</b> screen lets you <b>reset</b> for a permanent boost: <b>+5% XP and +5% GP per ascension</b> (additive, capped). The screen spells out exactly what resets and what survives before you commit. It's an optional long-term accelerator, not a requirement — only ascend when the reset buys back faster than the progress it costs.</p>
+  </div>
+  <div class="callout warn"><b>Before you ascend:</b> read the reset/survive list on the screen. Respecialisation isn't available yet, so plan the run you want.</div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <h2><span class="num">15</span>Quick FAQ</h2>
+  <div class="card">
+    <h3>I'm confused — what should I do <i>right now</i>?</h3>
+    <p>Pick a gathering skill, start its first action, and let it stockpile. Then process that material (smith/cook/craft) and equip or sell the result. Clear an easy area for GP. That's the loop — expand it as levels unlock more.</p>
+
+    <h3>My activity stopped on its own.</h3>
+    <p>You either ran out of input materials, a combat run ended, or a queued step completed. Check the Overview events feed, restock, and restart.</p>
+
+    <h3>Why is my XP so slow?</h3>
+    <p>Stack more modifiers: better gear, a matching potion, relevant prayers, mastery-pool checkpoints, astrology stars, and pets. Also check you're running the <i>highest unlocked</i> action, not the starter one.</p>
+
+    <h3>How do I not die in combat?</h3>
+    <p>Equip food (it auto-eats), raise Damage Reduction, pick the attack style the target is weak to, and run the <b>Simulator</b> before hard content.</p>
+
+    <h3>Can I leave for the night?</h3>
+    <p>Yes — queue a self-sustaining chain or set a Dreamwalking allocation, then close. Up to 24 h replays on load. The Welcome-back summary shows what you earned.</p>
+
+    <h3>What's the fastest way to power up a single weapon/armour piece?</h3>
+    <p>Level <b>Attunement</b>: disenchant spares for essence, then enchant the piece you actually use (Might/Precision for weapons, Warding for armour).</p>
+  </div>
+  <a class="back" href="#start">↑ Back to top</a>
+</section>
+
+<footer>
+  Emberreach — a data-driven, offline-capable idle RPG built in Godot 4.7 (GDScript).<br>
+  All content lives in <code>data/*.json</code>. This guide reflects the game's live systems; mechanics may be tuned over time.
+</footer>
+
+</div>
+</body>
+</html>

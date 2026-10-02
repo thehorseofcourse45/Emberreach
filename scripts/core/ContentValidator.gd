@@ -59,6 +59,7 @@ func validate_all() -> Array:
 	_check_game_modes()
 	_check_side_systems()
 	_check_new_skill_systems()
+	_check_ascendancy()
 	_check_audio()
 	_check_acquisition_coverage()
 	_check_output_demand()
@@ -1152,6 +1153,65 @@ func format_report(include_info: bool = true) -> String:
 		for i in group:
 			lines.append("  [%s] %s" % [i["code"], i["message"]])
 	return "\n".join(lines)
+
+func _check_ascendancy() -> void:
+	# The Ascendancy node tree: ids, positive cost/max_rank, finite modifier values, and a
+	# requires-graph that is acyclic with no dangling references. A broken tree would let a
+	# node be unbuyable forever or a point vanish into a cycle.
+	var tree: Dictionary = DataLoader.ascendancy
+	var node_ids: Dictionary = {}
+	for key in tree.keys():
+		if str(key) == "_comment":
+			continue
+		node_ids[str(key)] = true
+	for key in tree.keys():
+		var id: String = str(key)
+		if id == "_comment":
+			continue
+		var node: Variant = tree[key]
+		if not node is Dictionary:
+			_err("invalid_record", "ascendancy node '%s' is not an object" % id); continue
+		if str(node.get("id", "")) != id:
+			_err("invalid_record", "ascendancy node '%s' has a mismatched or missing id field" % id)
+		if str(node.get("name", "")) == "":
+			_err("invalid_record", "ascendancy node '%s' has no name" % id)
+		for field in ["cost", "max_rank"]:
+			var value: Variant = node.get(field, null)
+			if not _is_finite_number(value) or float(value) <= 0 or float(value) != floor(float(value)):
+				_err("invalid_number", "ascendancy.%s.%s must be a positive whole number" % [id, field])
+		var mods: Variant = node.get("modifiers", {})
+		if not mods is Dictionary or (mods as Dictionary).is_empty():
+			_err("invalid_record", "ascendancy node '%s' has no modifiers" % id)
+		else:
+			for mk in mods:
+				if not _is_finite_number(mods[mk]):
+					_err("invalid_number", "ascendancy.%s modifier %s is not finite" % [id, str(mk)])
+		var requires: Variant = node.get("requires", [])
+		if not requires is Array:
+			_err("invalid_record", "ascendancy.%s requires must be an array" % id)
+		else:
+			for req in requires:
+				if not node_ids.has(str(req)):
+					_err("missing_reference", "ascendancy.%s requires unknown node '%s'" % [id, str(req)])
+				elif str(req) == id:
+					_err("invalid_record", "ascendancy.%s requires itself" % id)
+	# Cycle detection over the requires graph (DFS with a visiting stack).
+	var state: Dictionary = {}   # id -> 0 unvisited, 1 visiting, 2 done
+	var detect := func(nid: String, detect_ref: Callable) -> bool:
+		if int(state.get(nid, 0)) == 1:
+			return true
+		if int(state.get(nid, 0)) == 2:
+			return false
+		state[nid] = 1
+		for req in (tree.get(nid, {}).get("requires", []) as Array):
+			if node_ids.has(str(req)) and detect_ref.call(str(req), detect_ref):
+				return true
+		state[nid] = 2
+		return false
+	for id in node_ids.keys():
+		if detect.call(str(id), detect):
+			_err("invalid_record", "ascendancy requires-graph has a cycle at '%s'" % str(id))
+			break
 
 func _check_new_skill_systems() -> void:
 	var data: Dictionary = DataLoader.new_skill_systems

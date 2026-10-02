@@ -2379,12 +2379,27 @@ func _test_prestige() -> void:
 	var result: Dictionary = PrestigeManager.ascend()
 	_ok(bool(result.get("ok", false)), "the ascension fires once the gate is met")
 	_eq(PrestigeManager.ascensions(), 1, "the ascension is counted")
-	# The bonus must be live in the simulation, not just recorded.
+	# Ascending grants a spendable point, not an automatic bonus.
+	_eq(PrestigeManager.points(), PrestigeManager.POINTS_PER_ASCENSION, "the ascension grants an Ascendancy Point")
+	_eq(PrestigeManager.points_earned(), PrestigeManager.POINTS_PER_ASCENSION, "the lifetime point tally is tracked")
+	# With no node bought, prestige contributes nothing to the simulation.
+	_ok(not ModifierManager.has_source("prestige"), "an unspent ascension registers no bonus")
+	# Spending a root node applies its modifier through the single 'prestige' source.
+	var root: Dictionary = DataLoader.ascendancy.get("ascendant_insight", {})
+	_ok(not root.is_empty(), "the ascendancy tree data loaded")
+	var xp_mod: float = float(root.get("modifiers", {}).get("global_skill_xp_percent", 0.0))
+	_ok(bool(PrestigeManager.spend("ascendant_insight")["ok"]), "a root node can be bought with a point")
+	_eq(PrestigeManager.points(), 0, "buying a node spends the point")
+	_eq(PrestigeManager.node_rank("ascendant_insight"), 1, "the bought node is at rank 1")
 	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT),
-		PrestigeManager.XP_PER_ASCENSION, 0.001, "the XP bonus reaches ModifierManager")
-	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT),
-		PrestigeManager.GP_PER_ASCENSION, 0.001, "the gold bonus reaches ModifierManager")
+		xp_mod, 0.001, "the bought node's bonus reaches ModifierManager")
 	_ok(ModifierManager.has_source("prestige"), "the bonus is a real registered source")
+	# A node gated behind a prerequisite is refused until the prerequisite is owned... and when broke.
+	_ok(not bool(PrestigeManager.spend("ascendant_bounty")["ok"]), "a node is refused with no points to spend")
+	# Refund returns the point and removes the bonus.
+	_ok(bool(PrestigeManager.refund_node("ascendant_insight")["ok"]), "a bought node can be refunded")
+	_eq(PrestigeManager.points(), PrestigeManager.POINTS_PER_ASCENSION, "the refund returns the point")
+	_ok(not ModifierManager.has_source("prestige"), "the refunded node's bonus is gone")
 	# The run is genuinely gone.
 	_ok(PlayerData.get_xp("woodcutting") < xp_before, "training is reset")
 	_eq(BankManager.get_count("chicken"), 0, "items are reset")
@@ -2394,19 +2409,24 @@ func _test_prestige() -> void:
 	_ok(PlayerData.completion_log["items"].has("chicken"), "the item collection log survives")
 	_ok(PlayerData.completion_log["monsters"].has("chicken"), "the monster log survives")
 	_ok(PlayerData.completion_log["dungeons"].has("chicken_coop"), "the expedition log survives")
-	# The bonus must also survive a save round-trip.
+	# Buy the node again, then confirm points, nodes AND the live bonus survive a save round-trip.
+	_ok(bool(PrestigeManager.spend("ascendant_insight")["ok"]), "re-buy the node before the round-trip")
 	var saved: Dictionary = SaveManager.build_save_data()
-	PlayerData.prestige = {"ascensions": 0, "total": 0, "history": {}, "lifetime_stats": {}}
+	PlayerData.prestige = {"ascensions": 0, "total": 0, "points": 0, "points_earned": 0, "nodes": {}, "history": {}, "lifetime_stats": {}}
+	ModifierManager.unregister("prestige")
 	PrestigeManager.deserialize(saved.get("prestige", {}))
 	_eq(PrestigeManager.ascensions(), 1, "ascensions survive a save round-trip")
+	_eq(PrestigeManager.node_rank("ascendant_insight"), 1, "bought nodes survive a save round-trip")
 	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT),
-		PrestigeManager.XP_PER_ASCENSION, 0.001, "and the bonus is re-applied on load")
-	# A second ascension stacks rather than replacing.
+		xp_mod, 0.001, "and the node bonus is re-applied on load")
+	# A second ascension adds a second point; buying a second rank stacks the bonus.
 	PlayerData.skills["woodcutting"] = {"xp": PrestigeManager.GATE_XP, "level": 1}
 	_ok(bool(PrestigeManager.ascend()["ok"]), "a second ascension is reachable")
 	_eq(PrestigeManager.ascensions(), 2, "ascensions stack")
+	_eq(PrestigeManager.points(), PrestigeManager.POINTS_PER_ASCENSION, "the second ascension grants another point")
+	_ok(bool(PrestigeManager.spend("ascendant_insight")["ok"]), "a second rank can be bought")
 	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT),
-		PrestigeManager.XP_PER_ASCENSION * 2.0, 0.001, "the bonus stacks additively")
+		xp_mod * 2.0, 0.001, "ranks stack additively")
 	# A save with no prestige key at all must load cleanly (every pre-ascension save).
 	PlayerData.deserialize({"skills": {}, "stats": {}})
 	_eq(PrestigeManager.ascensions(), 0, "a legacy save without prestige loads as zero")

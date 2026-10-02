@@ -178,6 +178,27 @@ func _rebuild_prep() -> void:
 		var mh: int = maxi(1, floori(float(summary.max_hit) * (1.0 + float(tri.damage_percent) / 100.0)))
 		var mn: int = CombatFormulas.min_hit(mh, ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0, ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT))
 		_prep_box.add_child(Widgets.key_value("Expected normal hit vs " + str(enemy.get("name", target)), "≈ %.1f damage · %.1f%% hit chance" % [float(mn + mh) * 0.5 * chance / 100.0 * (1.0 - float(enemy.get("damage_reduction", 0)) / 100.0), chance], UITokens.RED))
+		# Combat-triangle guidance: the relation is already computed above (`tri`), but the
+		# player never sees WHY their numbers are low. State it plainly so a disadvantage is a
+		# choice, not a surprise. melee>ranged>magic>melee.
+		var enemy_style: String = str(enemy.get("attack_type", "melee"))
+		var style_name := {"melee": "Melee", "ranged": "Ranged", "magic": "Magic"}
+		match str(tri.get("relation", "neutral")):
+			"disadvantage":
+				_prep_box.add_child(UIStyle.colored_label(
+					"⚠ Triangle disadvantage: your %s is weak against this %s enemy (−%d%% accuracy, −%d%% damage). %s would counter it." % [
+						style_name.get(str(summary.style), str(summary.style)), style_name.get(enemy_style, enemy_style),
+						int(absf(float(tri.accuracy_percent))), int(absf(float(tri.damage_percent))),
+						style_name.get({"melee": "magic", "ranged": "melee", "magic": "ranged"}.get(enemy_style, "Melee"), "Melee")],
+					UITokens.AMBER, UITokens.FONT_SMALL))
+			"advantage":
+				_prep_box.add_child(UIStyle.colored_label(
+					"✓ Triangle advantage: your %s counters this %s enemy (+%d%% accuracy, +%d%% damage)." % [
+						style_name.get(str(summary.style), str(summary.style)), style_name.get(enemy_style, enemy_style),
+						int(float(tri.accuracy_percent)), int(float(tri.damage_percent))],
+					UITokens.GREEN, UITokens.FONT_SMALL))
+			_:
+				pass
 	var food: int = _food_count()
 	# A count of 0 is not self-evidently a problem, so the glyph states it, not just the red.
 	_prep_box.add_child(Widgets.key_value("Food in storage", "%s %s" % [

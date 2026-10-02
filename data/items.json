@@ -7109,6 +7109,15 @@
     "equipment_stats": {},
     "level_requirements": {}
   },
+  "ranch_feast": {
+    "id": "ranch_feast",
+    "name": "Rancher's Feast",
+    "item_type": "food",
+    "sell_price": 42,
+    "is_stackable": true,
+    "heal_amount": 320,
+    "description": "Omelette, cheese and roast laid out together; the whole homestead on one plate."
+  },
   "ranch_omelette": {
     "id": "ranch_omelette",
     "name": "Ranch Omelette",
