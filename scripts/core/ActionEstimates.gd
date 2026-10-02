@@ -8,18 +8,24 @@ extends RefCounted
 ## UI can state what the projection ignores. Nothing here is presented as exact.
 
 ## Returns {} when the action does not exist.
-static func for_action(skill_id: String, action_id: String) -> Dictionary:
+static func for_action(skill_id: String, action_id: String, extra_mods: Dictionary = {}) -> Dictionary:
 	var action: Dictionary = DataLoader.get_action(skill_id, action_id)
 	if action.is_empty():
 		return {}
-	var interval: float = ModifierManager.get_interval(skill_id, float(action.get("base_interval", 3.0)),
-		float(action.get("interval_floor", 0.25)))
-	var actions_per_hour: float = 3600.0 / maxf(interval, 0.05)
-	var xp_mult: float = ModifierManager.get_skill_xp_multiplier(skill_id)
+	var replacements: Dictionary = {"mastery_item:" + skill_id: MasteryManager.item_effects(skill_id, action_id), "rate_preview": extra_mods}
+	var interval: float = maxf(float(action.get("interval_floor", 0.25)), float(action.get("base_interval", 3.0)) * (1.0 - (_mod(skill_id + "_interval_percent", replacements) + _mod("global_skill_interval_percent", replacements)) / 100.0) - _mod(skill_id + "_interval_flat", replacements))
+	var success: float = _success_chance(skill_id, action, replacements)
+	var node_overhead: float = 0.0
+	if int(action.get("node_hp", 0)) > 0:
+		node_overhead = maxf(0.25, float(action.get("respawn_seconds", 3.0)) * (1.0 - _mod(ModifierKeys.RESPWAN_TIME_PERCENT, replacements) / 100.0)) * (1.0 - clampf(_mod(skill_id + "_node_preservation_percent", replacements) / 100.0, 0, 1)) * success / float(action.node_hp)
+	var stun_overhead: float = (1.0 - success) * float(action.get("stun_seconds", 0.0))
+	var effective_interval: float = interval + node_overhead + stun_overhead
+	var actions_per_hour: float = 3600.0 / maxf(effective_interval, 0.05)
+	var xp_mult: float = (1.0 + (_mod("global_skill_xp_percent", replacements) + _mod(skill_id + "_skill_xp_percent", replacements)) / 100.0)
 	var xp_per_action: float = float(action.get("base_xp", 0.0)) * xp_mult
-	var doubling: float = ModifierManager.get_doubling_chance(skill_id) / 100.0
-	var flat_bonus: int = ModifierManager.get_resource_flat(skill_id)
-	var success: float = _success_chance(skill_id, action)
+	var doubling: float = clampf((_mod(skill_id + "_doubling_percent", replacements) + _mod("global_doubling_percent", replacements)) / 100.0, 0, 1)
+	var flat_bonus: int = int(_mod(skill_id + "_resource_flat", replacements))
+	var preservation: float = clampf(_mod(skill_id + "_preservation_percent", replacements) / 100.0, 0, 1)
 
 	# Output: base + flat bonus, each unit independently doubled with `doubling` chance.
 	var output: Dictionary = {}
@@ -35,14 +41,14 @@ static func for_action(skill_id: String, action_id: String) -> Dictionary:
 
 	var consumption: Dictionary = {}
 	for item_id in (action.get("input_items", {}) as Dictionary).keys():
-		consumption[str(item_id)] = float(action["input_items"][item_id]) * actions_per_hour * success
+		consumption[str(item_id)] = float(action["input_items"][item_id]) * actions_per_hour * (1.0 - success * preservation)
 
 	var level: int = PlayerData.get_level(skill_id)
 	var xp: float = PlayerData.get_xp(skill_id)
 	var xp_to_next: float = float(XPTable.xp_to_next_level(xp, level))
 	var hours_to_next: float = 0.0
 	if xp_per_action > 0.0 and actions_per_hour > 0.0:
-		hours_to_next = xp_to_next / (xp_per_action * actions_per_hour)
+		hours_to_next = xp_to_next / maxf(0.001, xp_per_action * actions_per_hour * success)
 
 	# Exhaustion: how long the current stock lasts at this rate.
 	var supply_hours: float = -1.0
@@ -50,10 +56,16 @@ static func for_action(skill_id: String, action_id: String) -> Dictionary:
 		var have: float = float(BankManager.get_count(str(item_id)))
 		var per_hour: float = maxf(0.001, float(consumption[item_id]))
 		var hours: float = have / per_hour
-		supply_hours = hours if supply_hours < 0.0 else minf(supply_hours, hours)
+		supply_hours = hours * 3600.0 if supply_hours < 0.0 else minf(supply_hours, hours * 3600.0)
 
 	return {
 		"interval": interval,
+		"effective_interval": effective_interval,
+		"node_overhead": node_overhead,
+		"stun_overhead": stun_overhead,
+		"preservation_chance": preservation,
+		"gp_per_hour": float(action.get("gp_reward", 0)) * (1.0 + _mod(ModifierKeys.GLOBAL_GP_PERCENT, replacements) / 100.0) * success * actions_per_hour,
+		"next_unlock": next_unlock(skill_id, xp_per_action * actions_per_hour * success),
 		"actions_per_hour": actions_per_hour,
 		"xp_per_action": xp_per_action,
 		"xp_per_hour": xp_per_action * actions_per_hour * success,
@@ -71,9 +83,9 @@ static func for_action(skill_id: String, action_id: String) -> Dictionary:
 		"assumptions": assumptions(skill_id, action),
 	}
 
-static func _success_chance(skill_id: String, action: Dictionary) -> float:
+static func _success_chance(skill_id: String, action: Dictionary, replacements: Dictionary = {}) -> float:
 	if action.has("perception"):
-		var stealth: float = 50.0 + ModifierManager.get_modifier(ModifierKeys.skill_key(skill_id, "stealth"))
+		var stealth: float = 50.0 + _mod(ModifierKeys.skill_key(skill_id, "stealth"), replacements)
 		return clampf(0.5 + (stealth - float(action["perception"])) / 300.0, 0.05, 0.95)
 	var c: float = float(action.get("success_chance", 1.0))
 	if action.has("success_chance_percent"):
@@ -84,7 +96,7 @@ static func _success_chance(skill_id: String, action: Dictionary) -> float:
 static func assumptions(skill_id: String, action: Dictionary) -> String:
 	var notes: Array[String] = ["assumes uninterrupted supplies"]
 	if int(action.get("node_hp", 0)) > 0:
-		notes.append("ignores node depletion and respawn (%.1fs)" % float(action.get("respawn_seconds", 3.0)))
+		notes.append("includes expected node depletion and respawn (%.1fs)" % float(action.get("respawn_seconds", 3.0)))
 	if not (action.get("secondary_outputs", []) as Array).is_empty():
 		notes.append("excludes rare drops")
 	var interval_floor: float = float(action.get("interval_floor", 0.25))
@@ -105,3 +117,36 @@ static func summary_line(skill_id: String, action_id: String) -> String:
 	if float(est.get("output_per_hour", 0.0)) > 0.0:
 		parts.append("≈ %s %s/h" % [UIStyle.fmt(float(est["output_per_hour"])), str(est.get("output_name", ""))])
 	return "  ·  ".join(parts)
+
+static func next_unlock(skill_id: String, xp_hour: float) -> Dictionary:
+	var next: Dictionary = {}
+	for action in DataLoader.get_skill_actions(skill_id):
+		var level: int = int(action.get("level_required", 1))
+		if level > PlayerData.get_level(skill_id) and level <= PlayerData.get_level_cap(skill_id) and (next.is_empty() or level < int(next.level)):
+			next = {"name": str(action.get("name", "")), "level": level, "seconds": (float(XPTable.xp_for_level(level)) - PlayerData.get_xp(skill_id)) / maxf(0.001, xp_hour) * 3600.0}
+	return next
+
+## Quantities count successful crafts, matching repeat_target. Failures still spend inputs.
+static func batch(skill_id: String, action_id: String, quantity: int) -> Dictionary:
+	var est: Dictionary = for_action(skill_id, action_id)
+	if est.is_empty(): return {}
+	quantity = maxi(1, quantity)
+	var success: float = maxf(0.001, float(est.success_chance))
+	var attempts: float = quantity / success
+	var seconds: float = attempts * float(est.effective_interval)
+	var inputs: Dictionary = {}
+	var outputs: Dictionary = {}
+	var bottleneck: String = ""
+	var worst_limit: int = 2147483647
+	for id in DataLoader.get_action(skill_id, action_id).get("input_items", {}):
+		var units: int = int(DataLoader.get_action(skill_id, action_id).input_items[id])
+		inputs[id] = float(units) * (attempts - quantity * float(est.preservation_chance))
+		var limit: int = BankManager.get_count(str(id)) / maxi(1, units)
+		if limit < worst_limit:
+			worst_limit = limit
+			bottleneck = str(DataLoader.get_item(str(id)).get("name", id))
+	for id in est.outputs_per_hour: outputs[id] = float(est.outputs_per_hour[id]) * seconds / 3600.0
+	return {"seconds": seconds, "inputs": inputs, "outputs": outputs, "bottleneck": bottleneck, "attempts": attempts, "worst_limit": worst_limit}
+
+static func _mod(key: String, replacements: Dictionary) -> float:
+	return ModifierManager.get_modifier(key) if replacements.is_empty() else ModifierManager.projected_modifier(key, replacements)

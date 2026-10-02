@@ -34,7 +34,7 @@ func _ready() -> void:
 	refresh()
 
 func detail_context() -> Dictionary:
-	var body: String = "Ascendancy needs %s lifetime XP. Every ascension adds a permanent bonus " % UIStyle.fmt(PrestigeManager.GATE_XP)
+	var body: String = "Ascendancy needs %s this run’s XP. Every ascension adds a permanent bonus " % UIStyle.fmt(PrestigeManager.GATE_XP)
 	body += "to skill XP and gold that no reset takes away."
 	return {"kind": "text", "title": "Ascendancy", "body": body}
 
@@ -55,13 +55,13 @@ func _rebuild_status() -> void:
 	var n: int = PrestigeManager.ascensions()
 	_status_box.add_child(Widgets.key_value("Ascensions taken", "%d" % n))
 	_status_box.add_child(Widgets.key_value("Permanent bonus", PrestigeManager.bonus_summary()))
-	_status_box.add_child(Widgets.key_value("Lifetime XP this run", UIStyle.fmt(PrestigeManager.lifetime_xp())))
-	_status_box.add_child(Widgets.key_value("Gate", "%s lifetime XP" % UIStyle.fmt(PrestigeManager.GATE_XP)))
+	_status_box.add_child(Widgets.key_value("This run’s XP", UIStyle.fmt(PrestigeManager.lifetime_xp())))
+	_status_box.add_child(Widgets.key_value("Gate", "%s this run’s XP" % UIStyle.fmt(PrestigeManager.GATE_XP)))
 	var progress: float = clampf(PrestigeManager.lifetime_xp() / PrestigeManager.GATE_XP, 0.0, 1.0)
 	_status_box.add_child(Widgets.progress_bar(PrestigeManager.lifetime_xp(),
 		PrestigeManager.GATE_XP, UITokens.TEAL,
 		"%s / %s" % [UIStyle.fmt(PrestigeManager.lifetime_xp()), UIStyle.fmt(PrestigeManager.GATE_XP)],
-		14, "Lifetime XP toward the ascension gate"))
+		14, "This run’s XP toward the ascension gate"))
 	if n <= 0:
 		_status_box.add_child(UIStyle.label(
 			"You have not ascended yet. The first ascension is the hardest — everything after it " +
@@ -78,6 +78,7 @@ func _rebuild_reward() -> void:
 	_reward_box.add_child(UIStyle.label(
 		"The bonus applies to everything, immediately and permanently, and stacks with every " +
 		"ascension you take.", true, UITokens.FONT_SMALL))
+	_reward_box.add_child(UIStyle.label("Resets: skills, mastery, Storage, equipment, farms, pens, workers, research, enchants, dreams, course, stars, quests and combat. Keeps: collection log, accumulated lifetime counters, Ascendancy bonuses, game mode and settings.", true, UITokens.FONT_SMALL))
 	var blocker: String = PrestigeManager.blocker()
 	var button := UIStyle.button("Ascend", "Reset this run and take the permanent bonus")
 	button.disabled = not PrestigeManager.can_ascend()

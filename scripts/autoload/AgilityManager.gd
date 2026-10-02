@@ -37,8 +37,10 @@ func build(slot: int, obstacle_id: String) -> bool:
     if PlayerData.get_level("agility") < int(o.get("level_required", 1)):
         return false
     var c: Dictionary = cost_for(obstacle_id)
+    if PlayerData.gp < float(c.gp) or not BankManager.can_afford(c.items): return false
     if not PlayerData.spend_gp(float(c["gp"])):
         return false
+    BankManager.consume_bundle(c.items)
     built[slot] = obstacle_id
     build_counts[obstacle_id] = int(build_counts.get(obstacle_id, 0)) + 1
     _reregister()
@@ -47,10 +49,11 @@ func build(slot: int, obstacle_id: String) -> bool:
 
 func build_pillar(pillar_id: String) -> bool:
     var o: Dictionary = get_obstacle(pillar_id)
-    if o.is_empty() or PlayerData.get_level("agility") < int(o.get("level_required", 1)):
+    if o.is_empty() or not str(o.get("type", "")) in ["pillar", "elite_pillar"] or PlayerData.get_level("agility") < int(o.get("level_required", 1)) or not BankManager.can_afford(o.get("cost_items", {})):
         return false
     if not PlayerData.spend_gp(float(o.get("cost_gp", 0))):
         return false
+    BankManager.consume_bundle(o.get("cost_items", {}))
     if o.get("type", "") == "elite_pillar":
         elite_pillar = pillar_id
     else:
@@ -64,14 +67,8 @@ func clear_slot(slot: int) -> void:
 
 ## Register the accumulated course bonuses (only consecutive filled slots from 1).
 func _reregister() -> void:
-    ModifierManager.unregister("%s:course" % CATEGORY)
-    var mods: Dictionary = {}
-    for slot in range(1, SLOTS + 1):
-        if not built.has(slot):
-            break   # later slots need all previous filled
-        var eff: Dictionary = get_obstacle(built[slot]).get("effect", {})
-        for k in eff.keys():
-            mods[k] = float(mods.get(k, 0.0)) + float(eff[k])
+    ModifierManager.clear_category(CATEGORY)
+    var mods: Dictionary = course_effects(built)
     if not mods.is_empty():
         ModifierManager.register("%s:course" % CATEGORY, mods, CATEGORY, "Agility course")
     if pillar != "":
@@ -87,7 +84,14 @@ func save_blueprint(blueprint_name: String) -> void:
 func load_blueprint(index: int) -> bool:
     if index < 0 or index >= blueprints.size():
         return false
-    built = _normalize_layout(blueprints[index]["layout"])
+    var plan: Dictionary = blueprint_preview(index)
+    if not bool(plan.ok): return false
+    PlayerData.spend_gp(float(plan.gp))
+    BankManager.consume_bundle(plan.items)
+    for slot in plan.layout:
+        var id: String = str(plan.layout[slot])
+        if str(built.get(slot, "")) != id: build_counts[id] = int(build_counts.get(id, 0)) + 1
+    built = plan.layout.duplicate()
     _reregister()
     return true
 
@@ -121,3 +125,25 @@ func _normalize_layout(source: Variant) -> Dictionary:
             continue
         out[int(as_text)] = str((source as Dictionary)[key])
     return out
+
+func course_effects(layout: Dictionary) -> Dictionary:
+    var mods: Dictionary = {}
+    for slot in range(1, SLOTS + 1):
+        if not layout.has(slot): break
+        for key in get_obstacle(str(layout[slot])).get("effect", {}): mods[key] = float(mods.get(key, 0)) + float(get_obstacle(str(layout[slot])).effect[key])
+    return mods
+
+func blueprint_preview(index: int) -> Dictionary:
+    if index < 0 or index >= blueprints.size(): return {"ok": false, "reason": "Unknown blueprint"}
+    var layout: Dictionary = _normalize_layout(blueprints[index].layout)
+    var gp: float = 0
+    var items: Dictionary = {}
+    for slot in layout:
+        var id: String = str(layout[slot])
+        var def: Dictionary = get_obstacle(id)
+        if def.is_empty() or int(def.get("slot", -1)) != int(slot) or PlayerData.get_level("agility") < int(def.get("level_required", 1)): return {"ok": false, "reason": "Invalid or locked obstacle"}
+        if str(built.get(slot, "")) == id: continue
+        var cost: Dictionary = cost_for(id)
+        gp += float(cost.gp)
+        for material in cost.items: items[material] = int(items.get(material, 0)) + int(cost.items[material])
+    return {"ok": PlayerData.gp >= gp and BankManager.can_afford(items), "reason": "Insufficient GP or materials" if PlayerData.gp < gp or not BankManager.can_afford(items) else "", "gp": gp, "items": items, "layout": layout, "effects": course_effects(layout)}

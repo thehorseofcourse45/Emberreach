@@ -3,8 +3,9 @@
 A data-driven, offline-capable idle RPG. All content lives in `res://data/*.json`; the code is
 generic and never hardcodes items, monsters, recipes, or skills.
 
-> **Engine:** written for **Godot 4.2** (GDScript 2.0). Validated end-to-end with the local
-> Godot 4.7.2 headless build — the project imports and runs with **zero script errors**.
+> **Engine:** Godot 4.7 (GDScript 2.0) — `project.godot` declares
+> `config/features=PackedStringArray("4.7")`. Validated end-to-end with the local Godot 4.7.2
+> headless build; the project imports and runs with **zero script errors**.
 
 ---
 
@@ -13,8 +14,9 @@ generic and never hardcodes items, monsters, recipes, or skills.
 ```bash
 # Open the folder in the Godot 4.x editor and press F5, or run headless checks:
 godot --headless --path . -- --smoke       # formula / data verification
-godot --headless --path . -- --tests       # full test suite (1,748 checks)
+godot --headless --path . -- --tests       # full test suite (prints its own check count)
 godot --headless --path . -- --selftest    # end-to-end gameplay self-test
+godot --headless --path . -- --docs        # README fact-block drift check (--fix rewrites it)
 ```
 
 ## 2. Project layout
@@ -23,20 +25,23 @@ godot --headless --path . -- --selftest    # end-to-end gameplay self-test
 Emberreach/
 ├── project.godot              # game autoloads + settings
 ├── data/                      # ALL content (JSON) — the "mod" surface
-│   ├── skills.json            # 34 skills; every skill has authored actions + a working system
+│   ├── skills.json            # every skill has authored actions + a working system
+│   ├── new_skill_systems.json # species / devices / enchants / dreams / bazaar
 │   ├── items.json  monsters.json  dungeons.json  areas.json  game_modes.json
-│   ├── quests.json  achievements.json  trader.json  raid_shop.json
-│   └── shop.json  shop_store.json  shop_township.json  prayers.json  special_attacks.json
-│       constellations.json  obstacles.json  familiars.json  pets.json  slayer_tasks.json
-│       cartography_hexes.json  archaeology_sites.json  harvesting_veins.json  audio.json
+│   ├── quests.json  rotating_tasks.json  achievements.json  tutorial.json
+│   ├── trader.json  raid_shop.json  shop.json  shop_store.json  shop_township.json
+│   ├── shop_museum.json  prayers.json  special_attacks.json  constellations.json
+│   ├── obstacles.json  familiars.json  pets.json  slayer_tasks.json  audio.json
+│   └── cartography_hexes.json  cartography_ships.json  archaeology_sites.json
+│       harvesting_veins.json
 ├── scripts/
-│   ├── autoload/              # 34 singletons (see §4)
+│   ├── autoload/              # singleton managers (see §4)
 │   ├── combat/                # CombatFormulas.gd, StatusEffect.gd, CombatSimulator.gd
 │   ├── core/                  # ContentValidator, BalanceReport, tests helpers
 │   ├── resources/             # typed Resource classes (ItemData, MonsterData, ...)
-│   ├── tests/                 # TestRunner (--tests, 1,748 checks)
+│   ├── tests/                 # TestRunner (--tests)
 │   └── ui/                    # MainUI shell, SidebarNav, StatusBar, DetailPanel,
-│                              #   Widgets, UIStyle/UITokens, ui/screens/* panels
+│                              #   Widgets, UIStyle/UITokens, ui/panels/* panel scripts
 ├── scenes/main.tscn           # entry scene
 └── assets/icons/icon.svg
 ```
@@ -71,6 +76,11 @@ replays elapsed time through the *same* code paths.
 | `PotionManager` | Active potion; registers its effect; charge-based consumption. |
 | `FarmingManager` | Timestamp crop growth. |
 | `TownshipManager` | Hourly passive production. |
+| `RanchingManager` | Pens, stock, feed, breeding, produce and manure. |
+| `InscriptionManager` | Research, scribing quality texts, equippable tomes, active glyphs. |
+| `EngineeringManager` | Device slots, installed workers, hourly fuel and prepaid time. |
+| `EnchantingManager` | Disenchant to typed essence; enchant individual gear pieces. |
+| `DreamwalkingManager` | Offline dream allocation, dream depth, events and the Dream Bazaar. |
 | `CombatManager` | Tick combat, endless areas, dungeons, loot, death, auto-eat. |
 | `SkillManager` | Generic action loop for all non-combat skills. |
 | `GameManager` | Main loop, pause/speed, new game, load → offline. |
@@ -87,6 +97,8 @@ replays elapsed time through the *same* code paths.
 | `Quests` | Data-driven tasks with event-driven objectives and exactly-once rewards. |
 | `Achievements` | Milestones with modest, exactly-once rewards. |
 | `ProgressTracker` | Lifetime counters feeding quests, milestones and the collection log. |
+| `PrestigeManager` | Ascendancy: the lifetime-XP gate, reset, and its additive bonuses. |
+| `TutorialManager` | Data-driven onboarding steps from `tutorial.json`. |
 | `ActionQueueManager` | Queued skill actions; policy and persistence for the queue screen. |
 | `LootFilterManager` | Loot filter policy for the combat simulator. |
 | `CombatSimulatorManager` | Win-chance simulation for an area/dungeon using the real formulas. |
@@ -95,9 +107,9 @@ replays elapsed time through the *same* code paths.
 
 ## 5. Playable UI
 
-The shell has **16 screens** (Overview, Skills, Combat, Expeditions, Storage, Tasks,
-Milestones, Collection, Settlement, Provisioner, General Store, Equipment, Action Queue,
-Combat Simulator, Settings, Save recovery); the sidebar also lists all 34 skills.
+The shell has one screen per sidebar route in `Screens.ORDER`, plus Save recovery, which takes
+over only when a save cannot load. The sidebar and the compact nav drawer read that same route
+table, so reachability is one list; it also lists every skill.
 
 ![Playable UI loop](assets/ui_flow.png)
 
@@ -106,10 +118,18 @@ Combat Simulator, Settings, Save recovery); the sidebar also lists all 34 skills
 | **Overview** | Dashboard: current activity, skill highlights, loadout readiness, goals, unlocks, events, suggestions — plus a sub-tab per skill. |
 | **Skills** | Pick any skill → action list (locked actions greyed), details, Start/Stop, live progress, mastery pool %, ≈ XP/hour, per-action mastery levels. |
 | **Combat / Expeditions** | Choose area (endless) or dungeon, attack style + sub-style, Start/ **Flee**, live HP bars, DR/attack-speed/crit readout, prayer toggles, area hazard readout. |
+| **Prayers** | The 60 prayers grouped by role, with points/minute and time until depletion. |
+| **Raid** | Wave-by-wave raid run, 3-choice wave rewards, banked coins and the Raid Shop. |
 | **Storage** | Search, sort, filters, favourites, protection, inspect, Sell 1 / Sell All / Equip / Bury / **Use**. |
 | **Provisioner / General Store** | Shelves you return to vs. a searchable catalogue of upgrades you exhaust. |
 | **Tasks / Milestones / Collection** | Quests with live objective progress, achievements, and the completion log. |
+| **Stats** | The lifetime record: counters that feed quests, milestones and the collection log. |
 | **Settlement** | Buildings with costs, upgrade path, and links to the systems they improve. |
+| **Farm** | Husbandry plots that grow in real time, planted and harvested by hand. |
+| **Equipment** | 14 slots, saved sets with ownership checks, aggregated stats. |
+| **Action Queue / Simulator** | Queued skill actions with policy and persistence; win-chance simulation on the real formulas. |
+| **Ascendancy** | The reset layer: lifetime-XP gate, what resets and what survives, additive bonuses. |
+| **Settings / Recovery** | Preferences and sound; Recovery takes over when a save cannot load. |
 | Right panel | Contextual detail pane: equipment by slot, stats, goal routing, screen help. |
 | Top bar | Currencies, combat level, Pause, Save, action/activity strip. |
 | Welcome-back | Offline-progression summary modal on load. |
@@ -192,16 +212,34 @@ or the named helpers. Registry: `scripts/resources/ModifierKeys.gd`.
 | XP to level 99 / 120 | 13,034,431 / 104,273,167 | ✅ exact |
 | Hit chance at equal ratings | 50 % | ✅ |
 | Fresh-character combat level | 1 | ✅ |
-| Skills / items / monsters / dungeons | 34 / 452 / 41 / 16 | ✅ |
-| Quests / achievements | 43 / 33 | ✅ |
 | Save version | 2 | ✅ |
 
+Loaded content. This block is generated from the live singletons — do not hand-edit it; run
+`--docs --fix` to rewrite it and `--docs` to fail when it has drifted:
+
+<!-- doc-facts:start -->
+| Check | Value |
+|---|---|
+| Skills | 39 (9 combat / 30 non-combat) |
+| Skill actions | 593 |
+| Items | 629 |
+| Monsters | 46 |
+| Areas | 14 |
+| Dungeons | 17 |
+| Prayers | 60 |
+| Autoload singletons | 42 |
+| Screens | 21 |
+<!-- doc-facts:end -->
+
 Formula depth beyond these (hit-chance curves, DR combination, level lookups, panel
-construction) is covered by `--tests` (**1,748 checks**).
+construction) is covered by `--tests`, which prints its own check count. `--docs` additionally
+fails when any autoload singleton or screen is missing from the tables above, since a systems
+list rots by omission long before its numbers do.
 
 ### 7.2 `--selftest` (end-to-end gameplay)
 
-22 checks, 0 failed. Progression trace observed:
+`--selftest` runs the closed gear loop end to end and prints its own check count. Progression
+trace observed:
 
 ```
   1. New journey started; gold 0, woodcutting level 1
@@ -243,7 +281,11 @@ the game runs before any art exists.
 
 ## 8. Extending the game
 
-- **Add a skill:** add an entry to `skills.json` with an `actions` array. No code changes.
+- **Add a skill:** add an entry to `skills.json` with an `actions` array. No code changes — as
+  long as the skill reuses the shared action loop. A skill with its own system (Ranching,
+  Engineering, Dreamwalking…) also needs a manager, a panel in `Screens.PANEL_SCRIPTS`, and the
+  sidebar icon cases; the `--docs` check will fail until the new manager and screen are at least
+  named in the tables above.
 - **Add an item/monster/dungeon:** add JSON; DataLoader picks it up.
 - **Add a bonus source:** `ModifierManager.register("<id>", {"<key>": value}, "<category>")`.
 - **Add a shop upgrade / prayer / potion:** add to `shop.json` / `prayers.json` / `items.json`
@@ -252,13 +294,20 @@ the game runs before any art exists.
 
 ## 9. Known gaps
 
-- All 34 skills, the Phase 9 endgame (God Dungeons, Raid, Abyssal) and the dark-fantasy UI
+- All 39 skills, the Phase 9 endgame (God Dungeons, Raid, Abyssal) and the dark-fantasy UI
   overhaul are implemented; area hazards **are** applied during combat (`_active_hazard()`).
-- Depth still light in places: Township tasks/education, Cartography ship upgrades, Archaeology
-  museum shop, Summoning tablet quantity scaling.
+- Depth still light in places: Township tasks/education, and Summoning tablet quantity scaling.
+  Cartography ship upgrades and the Archaeology museum shop were implemented after this list was
+  first written — `cartography_ships.json` and `shop_museum.json` each have a live manager
+  consumer now.
+- `data/harvesting_veins.json` is loaded and validated but read by **no** manager: harvesting node
+  stats come from `skills.json` actions (`node_hp` / `respawn_seconds`). Vestigial data, kept only
+  because `ContentValidator` still checks it.
 - Monster passives cover regeneration/thorns/enrage — most monsters still differ
   statistically, not mechanically.
-- ~250 long-tail item display names are still Melvor-derived (rename-only pass, stable IDs).
+- Long-tail item display names were renamed by `tools/long_tail_rename.py` (idempotent, re-runnable,
+  display names only — item ids are stable, so saves and icons are untouched). The verbatim-Melvor
+  names it targeted are gone from `items.json`; see `CHANGELOG.md` for the pass.
 - Audio is fully synthesized (no recorded assets): two generative music tracks and 16 SFX
   recipes rendered to PCM at load.
 - Ascendancy (prestige) is implemented — a lifetime-XP gate granting +5 % XP and +5 % gold per

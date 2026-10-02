@@ -10,6 +10,8 @@ extends Node
 ## closed game and an open game advance the settlement identically.
 
 const SECONDS_PER_TICK: float = 3600.0
+## Population is 4–24 in this town; each resident supplies hourly skill XP.
+const XP_PER_RESIDENT: float = 2500.0
 const CATEGORY: String = "township"
 const DEFAULT_MAX_LEVEL: int = 5
 
@@ -61,7 +63,8 @@ func _ready() -> void:
 	EventBus.game_loaded.connect(_reregister_modifiers)
 
 func _process(delta: float) -> void:
-	_tick_accumulator += delta
+	if GameManager.is_paused or OfflineProgression.is_running or SimulationMode.is_silent(): return
+	_tick_accumulator += delta / maxf(0.001, Engine.time_scale)
 	while _tick_accumulator >= SECONDS_PER_TICK:
 		_tick_accumulator -= SECONDS_PER_TICK
 		produce_tick()
@@ -153,6 +156,12 @@ func produce_tick() -> void:
 			resources[str(res)] = float(resources.get(str(res), 0.0)) \
 				+ float(production[res]) * float(level_of(str(building_id)))
 	population = int(productions_population())
+	var xp: float = xp_per_hour()
+	if xp > 0.0:
+		PlayerData.add_xp("township", xp)
+
+func xp_per_hour() -> float:
+	return float(productions_population()) * XP_PER_RESIDENT * ModifierManager.get_skill_xp_multiplier("township")
 
 func productions_population() -> int:
 	var pop: int = 0
@@ -266,7 +275,6 @@ func trade_offer(offer_id: String) -> Dictionary:
 	for item_id in (offer.get("grant_items", {}) as Dictionary).keys():
 		var qty: int = int(offer["grant_items"][item_id])
 		BankManager.add_item_guaranteed(str(item_id), qty)
-		ProgressTracker.record_item_gained(str(item_id), qty)
 		granted.append("%s ×%d" % [DataLoader.get_item(str(item_id)).get("name", item_id), qty])
 	for currency in (offer.get("grant_currency", {}) as Dictionary).keys():
 		var amount: float = float(offer["grant_currency"][currency])
@@ -336,3 +344,16 @@ func deserialize(d: Dictionary) -> void:
 	if worship != "":
 		set_worship(worship)
 	_reregister_modifiers()
+
+func build_preview(building_id: String) -> Dictionary:
+	var cost: Dictionary = scaled_cost(building_id)
+	var wait: float = 0
+	var bottleneck: String = "none"
+	var payoff: float = 0
+	var output: Dictionary = buildings_data().get(building_id, {}).get("production", {})
+	for id in cost:
+		var deficit: float = maxf(0.0, float(cost[id]) - float(resources.get(id, 0)))
+		var hours: float = deficit / production_per_hour(str(id)) if production_per_hour(str(id)) > 0 else (INF if deficit > 0 else 0.0)
+		if hours > wait: wait = hours; bottleneck = resource_name(str(id))
+		if float(output.get(id, 0)) > 0: payoff = maxf(payoff, float(cost[id]) / float(output[id]))
+	return {"wait_hours": wait, "bottleneck": bottleneck, "payoff_hours": payoff, "affordable": bool(can_build(building_id).ok)}

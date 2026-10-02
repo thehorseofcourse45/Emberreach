@@ -137,12 +137,17 @@ func show_goal(goal: Dictionary) -> void:
 	# --- Where materials come from --------------------------------------
 	var missing: Array = resolved.get("missing", [])
 	var sources: Array = resolved.get("sources", [])
+	if not missing.is_empty() and sources.is_empty():
+		# Say so rather than silently dropping the section: a goal card with no "where from"
+		# answer reads as a broken card, not as an honest dead end.
+		_body.add_child(UIStyle.section("Where to get them"))
+		_body.add_child(UIStyle.colored_label(
+			"No acquisition path is recorded for this yet — it may be unfinished content.",
+			UITokens.AMBER, UITokens.FONT_SMALL))
 	if not missing.is_empty() and not sources.is_empty():
 		_body.add_child(UIStyle.section("Where to get them"))
 		for src in sources:
-			var row := Widgets.key_value(str(src.get("label", "")), str(src.get("detail", "")),
-				UITokens.TEAL if bool(src.get("unlocked", true)) else UITokens.DISABLED)
-			_body.add_child(row)
+			_body.add_child(_source_row(src))
 			var route: Dictionary = src.get("route", {})
 			if not route.is_empty():
 				var go := UIStyle.mini_button("Go to this")
@@ -160,8 +165,16 @@ func show_goal(goal: Dictionary) -> void:
 			row.add_child(Widgets.badge("Lv %d" % int(r.get("level_required", 1)),
 				UITokens.GREEN if bool(r.get("unlocked", true)) else UITokens.AMBER,
 				"Level requirement for this recipe"))
-			var l := UIStyle.label(str(r.get("label", "")), false, UITokens.FONT_SMALL)
+			# A byproduct route needs its roll stated, or "×3334" reads as a typo instead of the
+			# honest consequence of a three per cent drop.
+			var sublabel: String = str(r.get("label", ""))
+			if bool(r.get("byproduct", false)):
+				sublabel += "  ·  %s side drop" % UIStyle.fmt_percent(float(r.get("chance", 0.0)))
+			var l := UIStyle.label(sublabel, false, UITokens.FONT_SMALL)
 			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			# Recipe names plus a run count plus a roll are wider than the pane: wrapping them is
+			# what keeps the "Open" button beside them on screen.
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			row.add_child(l)
 			var go2 := UIStyle.mini_button("Open")
 			var route2: Dictionary = {"screen": Screens.SKILLS, "skill_id": str(r.get("skill_id", "")),
@@ -188,6 +201,9 @@ func show_goal(goal: Dictionary) -> void:
 		for route in routes:
 			var b := UIStyle.button(str(route.get("label", "Open")))
 			b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			# These labels carry a whole activity name ("Go to Verdigris Sword at Forgecraft"), and a
+			# button that cannot wrap sets the width of the entire card.
+			b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			var r: Dictionary = route
 			b.pressed.connect(func(): navigated.emit(r))
 			_body.add_child(b)
@@ -206,26 +222,30 @@ func show_item(item_id: String) -> void:
 	_pin_button.visible = true
 	_pin_button.text = "Untrack" if Goals.is_pinned("item", item_id) else "Track this goal"
 
+	var held: int = BankManager.get_count(item_id)
+	# The face and the flavour text share a row; the numbers go underneath it at full width. Beside a
+	# 64px icon, the 132px key column of key_value() left the value column one pixel wide, which is
+	# how "500 GP" came to render as a ladder of single letters down the edge of the pane.
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", UITokens.SP_5)
 	head.add_child(Widgets.item_icon(item_id, UITokens.ICON_XL))
 	var col := UIStyle.vbox(UITokens.SP_2)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var held: int = BankManager.get_count(item_id)
-	col.add_child(Widgets.key_value("In storage", UIStyle.fmt_exact(float(held)), UITokens.TEXT_STRONG))
-	if BankManager.is_protected(item_id):
-		col.add_child(Widgets.key_value("Protected", "yes — cannot be sold", UITokens.GREEN))
-	if EquipmentManager.is_equipped(item_id):
-		col.add_child(Widgets.key_value("Equipped", "yes", UITokens.GOLD_BRIGHT))
-	if int(item.get("sell_price", 0)) > 0:
-		col.add_child(Widgets.key_value("Sell value", "%s GP" % UIStyle.fmt_exact(float(item["sell_price"]))))
-	head.add_child(col)
-	_body.add_child(head)
-
 	if str(item.get("description", "")) != "":
 		var d := UIStyle.label(str(item["description"]), true, UITokens.FONT_SMALL)
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		_body.add_child(d)
+		col.add_child(d)
+	if BankManager.is_protected(item_id):
+		col.add_child(UIStyle.colored_label("Protected — cannot be sold", UITokens.GREEN, UITokens.FONT_SMALL))
+	if EquipmentManager.is_equipped(item_id):
+		col.add_child(UIStyle.colored_label("Equipped", UITokens.GOLD_BRIGHT, UITokens.FONT_SMALL))
+	if col.get_child_count() > 0:
+		head.add_child(col)
+	_body.add_child(head)
+	_body.add_child(Widgets.key_value("In storage", UIStyle.fmt_exact(float(held)), UITokens.TEXT_STRONG))
+	if int(item.get("sell_price", 0)) > 0:
+		_body.add_child(Widgets.key_value("Sell value",
+			"%s GP" % UIStyle.fmt_exact(float(item["sell_price"]))))
 	if int(item.get("heal_amount", 0)) > 0:
 		_body.add_child(Widgets.key_value("Heals", "%d HP" % int(item["heal_amount"]), UITokens.TEAL))
 	var stats: Dictionary = item.get("equipment_stats", {})
@@ -248,8 +268,7 @@ func show_item(item_id: String) -> void:
 	if not sources.is_empty():
 		_body.add_child(UIStyle.section("How to obtain"))
 		for s in sources:
-			_body.add_child(Widgets.key_value(str(s.get("label", "")), str(s.get("detail", "")),
-				UITokens.TEAL if bool(s.get("unlocked", true)) else UITokens.DISABLED))
+			_body.add_child(_source_row(s))
 			var route: Dictionary = s.get("route", {})
 			if not route.is_empty():
 				var go := UIStyle.mini_button("Go")
@@ -268,6 +287,8 @@ func show_item(item_id: String) -> void:
 			row.add_theme_constant_override("separation", UITokens.SP_4)
 			var l := UIStyle.label(str(u["label"]), false, UITokens.FONT_SMALL)
 			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			# "Assemble Celestial Angler (Engineering)" is a 38-character label in a 260px pane.
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			row.add_child(l)
 			var go2 := UIStyle.mini_button("Open")
 			var route2: Dictionary = {"screen": Screens.SKILLS, "skill_id": str(u["skill_id"]), "action_id": str(u["action_id"])}
@@ -288,6 +309,14 @@ func show_recipe(skill_id: String, action_id: String) -> void:
 		return
 	var action: Dictionary = DataLoader.get_action(skill_id, action_id)
 	if action.is_empty():
+		# Never leave the previous card standing behind a failed lookup: a pane that still shows
+		# the last activity's numbers is worse than one that admits it has nothing to show.
+		_current_kind = ""
+		_current_payload = null
+		_clear()
+		_title.text = "Unavailable"
+		_subtitle.text = "No activity '%s' exists on %s." % [action_id, str(DataLoader.get_skill(skill_id).get("name", skill_id))]
+		_pin_button.visible = false
 		return
 	_current_kind = "recipe"
 	_current_payload = {"skill_id": skill_id, "action_id": action_id}
@@ -322,10 +351,22 @@ func show_recipe(skill_id: String, action_id: String) -> void:
 	if not inputs.is_empty():
 		_body.add_child(UIStyle.section("Consumes per action"))
 		for item_id in inputs.keys():
+			var have: int = BankManager.get_count(str(item_id))
+			var need: int = int(inputs[item_id])
+			# "What am I missing, and where do I get it?" is the question this pane exists to
+			# answer, so a row the player cannot fill carries its first real source and a route.
+			var hint: String = "you have %s" % UIStyle.fmt_exact(float(have))
+			var route: Dictionary = {}
+			if have < need:
+				var sources: Array = Goals.sources_for_item(str(item_id))
+				if not sources.is_empty():
+					var first: Dictionary = sources[0]
+					hint = "from %s — %s" % [str(first.get("label", "")), str(first.get("detail", ""))]
+					route = first.get("route", {})
+				else:
+					hint = "no known acquisition path yet"
 			_body.add_child(Widgets.requirement_row(str(DataLoader.get_item(str(item_id)).get("name", item_id)),
-				float(BankManager.get_count(str(item_id))), float(inputs[item_id]),
-				BankManager.get_count(str(item_id)) >= int(inputs[item_id]),
-				"you have %s" % UIStyle.fmt_exact(float(BankManager.get_count(str(item_id))))))
+				float(have), float(need), have >= need, hint, route))
 	var outputs: Dictionary = action.get("output_items", {})
 	if not outputs.is_empty():
 		_body.add_child(UIStyle.section("Produces per action"))
@@ -433,6 +474,40 @@ func show_region(area_id: String) -> void:
 	var go := UIStyle.button("Open in Expeditions" if expedition else "Open in Combat")
 	go.pressed.connect(func(): navigated.emit({"screen": Screens.EXPEDITIONS if expedition else Screens.COMBAT, "area_id": area_id}))
 	_body.add_child(go)
+
+## A source is two stacked, wrapping lines rather than a key/value row: these names are the longest
+## text in the pane ("Assemble Celestial Angler at Engineering"), and a single-line row wide enough
+## for one pushes the card past the 260px pane and clips the value beside it.
+func _source_row(src: Dictionary) -> Control:
+	var box := UIStyle.vbox(UITokens.SP_1)
+	var head := UIStyle.label(_source_label(src), false, UITokens.FONT_SMALL)
+	head.add_theme_color_override("font_color",
+		UITokens.TEAL if bool(src.get("unlocked", true)) else UITokens.TEXT_MUTED)
+	head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(head)
+	var detail := UIStyle.label(_source_detail(src), true, UITokens.FONT_MICRO)
+	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(detail)
+	return box
+
+## A source row for a goal with several missing materials names the material it resolves, so five
+## ore routes for one diamond cannot read as five separate answer.
+func _source_label(src: Dictionary) -> String:
+	var label: String = str(src.get("label", ""))
+	var for_item: String = str(src.get("for", ""))
+	return "%s · %s" % [for_item, label] if for_item != "" else label
+
+## The detail line, plus the reason a greyed-out route is greyed out: "locked" without the level
+## it needs is not an answer the player can act on.
+func _source_detail(src: Dictionary) -> String:
+	var detail: String = str(src.get("detail", ""))
+	if bool(src.get("unlocked", true)):
+		return detail
+	var skill_id: String = str((src.get("route", {}) as Dictionary).get("skill_id", ""))
+	var level: int = int(src.get("level_required", 0))
+	if skill_id != "" and level > 1:
+		detail += " · locked until %s %d" % [str(DataLoader.get_skill(skill_id).get("name", skill_id)), level]
+	return detail
 
 func _describe_reward(reward: Dictionary) -> String:
 	var parts: Array[String] = []

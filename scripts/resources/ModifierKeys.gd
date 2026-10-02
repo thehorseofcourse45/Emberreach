@@ -62,6 +62,25 @@ const HITPOINTS_REGEN_FLAT := "hitpoints_regen_flat"
 ## spelling, and a shop upgrade whose key nothing reads is a bug the test suite can catch.
 const RAID_WAVE_SKIP := "raid_wave_skip"
 
+# ---- Keys the five new systems and Thieving read directly ----
+## None of these is a SUFFIX key (they are read by name rather than composed from a skill id), so
+## without an entry here this file's promise — "no module typos a key" — did not hold for them, and
+## a typo in a modifier table would fail silently instead of being caught by the registry check.
+const THIEVING_STEALTH := "thieving_stealth"
+const RANCHING_FEED_REDUCTION_PERCENT := "ranching_feed_reduction_percent"
+const RANCHING_VARIANT_PERCENT := "ranching_variant_percent"
+const INSCRIPTION_QUALITY_PERCENT := "inscription_quality_percent"
+const INSCRIPTION_RESEARCH_XP_PERCENT := "inscription_research_xp_percent"
+const ENGINEERING_FUEL_REDUCTION_PERCENT := "engineering_fuel_reduction_percent"
+const ENGINEERING_DEVICE_SLOTS := "engineering_device_slots"
+const ENGINEERING_EFFICIENCY_PERCENT := "engineering_efficiency_percent"
+const ENCHANTING_ESSENCE_PERCENT := "enchanting_essence_percent"
+const ENCHANTING_RUNE_REDUCTION_PERCENT := "enchanting_rune_reduction_percent"
+const ENCHANTING_POTENCY_PERCENT := "enchanting_potency_percent"
+const DREAMWALKING_ESSENCE_PERCENT := "dreamwalking_essence_percent"
+const DREAMWALKING_NIGHTMARE_IMMUNITY := "dreamwalking_nightmare_immunity"
+const DREAMWALKING_EVENT_GUARANTEE := "dreamwalking_event_guarantee"
+
 ## Build a per-skill key, e.g. skill_key("woodcutting", ModifierKeys.SUFFIX_INTERVAL_PERCENT).
 static func skill_key(skill_id: String, suffix: String) -> String:
     return "%s_%s" % [skill_id, suffix]

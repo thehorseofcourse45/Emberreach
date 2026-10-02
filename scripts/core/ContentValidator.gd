@@ -58,8 +58,11 @@ func validate_all() -> Array:
 	_check_shop()
 	_check_game_modes()
 	_check_side_systems()
+	_check_new_skill_systems()
 	_check_audio()
 	_check_acquisition_coverage()
+	_check_output_demand()
+	_check_bottlenecks()
 	return issues
 
 # ---------------- helpers ----------------
@@ -155,6 +158,20 @@ func _check_items() -> void:
 			var stats: Variant = it.get("equipment_stats", {})
 			if typeof(stats) != TYPE_DICTIONARY:
 				_err("invalid_record", "item '%s' equipment_stats is not an object" % id)
+			if it.has("spell_max_hit"):
+				if not _is_finite_number(it["spell_max_hit"]):
+					_err("invalid_number", "item '%s' spell_max_hit is not a number" % id)
+				elif float(it["spell_max_hit"]) <= 0.0:
+					_err("negative_value", "item '%s' has a non-positive spell_max_hit" % id)
+			var cost: Variant = it.get("attack_cost_items", {})
+			if typeof(cost) != TYPE_DICTIONARY:
+				_err("invalid_record", "item '%s' attack_cost_items is not an object" % id)
+			else:
+				for cost_id in (cost as Dictionary).keys():
+					if not _has_item(str(cost_id)):
+						_err("missing_reference", "item '%s' attack_cost_items references unknown item '%s'" % [id, cost_id])
+					elif int((cost as Dictionary)[cost_id]) <= 0:
+						_err("negative_value", "item '%s' attack_cost_items spends a non-positive amount of '%s'" % [id, cost_id])
 		if type == "food" and int(it.get("heal_amount", 0)) < 0:
 			_err("negative_value", "food '%s' has negative heal_amount" % id)
 		if type == "seed":
@@ -249,7 +266,14 @@ func _check_action(skill_id: String, aid: String, a: Dictionary, max_level: int)
 		else:
 			_info("system_driven_action", "%s grants no items directly (its system owns the reward)" % label)
 	elif outputs.is_empty() and skill_type == "artisan":
-		_err("invalid_recipe", "%s is an artisan action with no output items" % label)
+		var research: String = str(a.get("research_unlock", ""))
+		var unlocks_recipe: bool = false
+		if skill_id == "inscription" and research != "":
+			for recipe in DataLoader.get_skill_actions(skill_id):
+				if str(recipe.get("requires_research", "")) == research:
+					unlocks_recipe = true
+		if not unlocks_recipe:
+			_err("invalid_recipe", "%s is an artisan action with no output items" % label)
 	if inputs.is_empty() and not outputs.is_empty() and skill_type == "artisan":
 		# Gathering actions are fine; work at a station with no materials is not.
 		_warn("free_recipe", "%s is an artisan action with no inputs" % label)
@@ -376,10 +400,22 @@ func _check_monsters() -> void:
 				_err("invalid_quantity", "%s loot '%s' quantity must be > 0" % [label, item_id])
 			if int(drop.get("min_quantity", 0)) < 0:
 				_err("negative_value", "%s loot '%s' min_quantity must be >= 0" % [label, item_id])
+	# A special attack no monster carries is content nobody can ever see. Three of the fourteen
+	# sat unused behind an authoring mistake; only an unused-attack check would have caught it.
+	var carried: Dictionary = {}
+	for id in DataLoader.monsters.keys():
+		for sa in (DataLoader.monsters[id] as Dictionary).get("special_attacks", []):
+			carried[str(sa)] = true
+	for sa_id in DataLoader.special_attacks.keys():
+		if not carried.has(str(sa_id)):
+			_warn("unused_special_attack", "special attack '%s' is not carried by any monster" % sa_id)
 
 # ---------------- regions ----------------
 
 func _check_regions() -> void:
+	# A monster outside every region cannot be fought at all: its drops, its slayer task and its
+	# flavour text are all unreachable, so an orphan is a content bug rather than a style choice.
+	var placed: Dictionary = {}
 	for id in DataLoader.areas.keys():
 		var a: Dictionary = DataLoader.areas[id]
 		if (a.get("monsters", []) as Array).is_empty():
@@ -387,6 +423,8 @@ func _check_regions() -> void:
 		for mid in a.get("monsters", []):
 			if not DataLoader.monsters.has(str(mid)):
 				_err("missing_reference", "area '%s' lists unknown monster '%s'" % [id, mid])
+			else:
+				placed[str(mid)] = true
 		_check_hazard("area '%s'" % id, a.get("hazard", {}))
 		_check_region_requirements("area", id, a)
 	for id in DataLoader.dungeons.keys():
@@ -396,7 +434,12 @@ func _check_regions() -> void:
 		for mid in d.get("monsters", []):
 			if not DataLoader.monsters.has(str(mid)):
 				_err("missing_reference", "dungeon '%s' lists unknown monster '%s'" % [id, mid])
+			else:
+				placed[str(mid)] = true
 		_check_region_requirements("dungeon", id, d)
+	for mid in DataLoader.monsters.keys():
+		if not placed.has(str(mid)):
+			_warn("orphan_monster", "monster '%s' appears in no area or dungeon, so it can never be fought" % mid)
 
 func _check_region_requirements(kind: String, id: String, row: Dictionary) -> void:
 	var reqs: Variant = row.get("requires", {})
@@ -615,20 +658,41 @@ func _check_side_systems() -> void:
 				_err("missing_reference", "familiar '%s' synergy references unknown familiar '%s'" % [id, partner])
 
 	# A pet is only ever unlocked by PetManager, which matches "source_skill" against a real skill
-	# id (or the literal "combat") or "source_dungeon" against a cleared expedition. Any other key
-	# or value is content that can never be unlocked, so it is an error, not a warning.
+	# id (or the literal "combat"), "source_dungeon" against a cleared expedition, or
+	# "source_item" against a container that is opened from Storage. Any other key or value is
+	# content that can never be unlocked, so it is an error, not a warning.
 	for id in DataLoader.pets.keys():
 		var p: Dictionary = DataLoader.pets[id]
 		if p.has("source"):
-			_err("invalid_record", "pet '%s' uses the key 'source'; PetManager reads 'source_skill' or 'source_dungeon'" % id)
+			_err("invalid_record", "pet '%s' uses the key 'source'; PetManager reads 'source_skill', 'source_dungeon' or 'source_item'" % id)
 		var src_skill: String = str(p.get("source_skill", ""))
 		var src_dungeon: String = str(p.get("source_dungeon", ""))
-		if src_skill == "" and src_dungeon == "":
-			_err("unreachable_unlock", "pet '%s' declares neither source_skill nor source_dungeon" % id)
+		var src_item: String = str(p.get("source_item", ""))
+		if src_skill == "" and src_dungeon == "" and src_item == "":
+			_err("unreachable_unlock", "pet '%s' declares no source_skill, source_dungeon or source_item" % id)
 		if src_skill != "" and src_skill != "combat" and not _has_skill(src_skill):
 			_err("missing_reference", "pet '%s' source_skill -> unknown skill '%s'" % [id, src_skill])
 		if src_dungeon != "" and not DataLoader.dungeons.has(src_dungeon):
 			_err("missing_reference", "pet '%s' source_dungeon -> unknown dungeon '%s'" % [id, src_dungeon])
+		if src_item != "" and not _has_item(src_item):
+			_err("missing_reference", "pet '%s' source_item -> unknown item '%s'" % [id, src_item])
+
+	# Containers are opened from Storage: the crate itself is spent and its contents are handed
+	# over through the guaranteed path. A dangling entry would spend the crate for nothing.
+	for id in DataLoader.items.keys():
+		var container: Dictionary = DataLoader.items[id]
+		var contents: Variant = container.get("container_items", {})
+		if typeof(contents) != TYPE_DICTIONARY:
+			_err("invalid_record", "item '%s' container_items is not an object" % id)
+		else:
+			for grant in (contents as Dictionary).keys():
+				if not _has_item(str(grant)):
+					_err("missing_reference", "item '%s' container_items -> unknown item '%s'" % [id, grant])
+				elif int((contents as Dictionary)[grant]) <= 0:
+					_err("invalid_quantity", "item '%s' container_items grants a non-positive amount of '%s'" % [id, grant])
+		var hatch: String = str(container.get("container_pet", ""))
+		if hatch != "" and not DataLoader.pets.has(hatch):
+			_err("missing_reference", "item '%s' container_pet -> unknown pet '%s'" % [id, hatch])
 
 	for id in DataLoader.prayers.keys():
 		var pr: Dictionary = DataLoader.prayers[id]
@@ -678,6 +742,10 @@ func _check_side_systems() -> void:
 				_err("missing_reference", "slayer tier '%s' pool references unknown monster '%s'" % [tier_id, mid])
 			elif float((DataLoader.monsters[mid] as Dictionary).get("slayer_xp", 0)) <= 0.0:
 				_err("invalid_record", "slayer tier '%s' pool monster '%s' has slayer_xp <= 0, so the task would pay nothing" % [tier_id, mid])
+		# A tier with one monster is not a choice: every assignment from it is the same fight,
+		# which is what left Master and Legendary as single-monster pools.
+		if (pool as Array).size() < 2:
+			_warn("thin_slayer_pool", "slayer tier '%s' offers only one monster to hunt" % tier_id)
 
 	# Museum stock: token costs must be positive and grants must be real items.
 	for entry_id in DataLoader.shop_museum.keys():
@@ -863,9 +931,30 @@ func _check_acquisition_coverage() -> void:
 	# Items the mastery stall sells are bought, not found.
 	for item_id in ShopManager.stall_item_ids():
 		sources[str(item_id)] = true
-	for id in DataLoader.shop.keys():
-		for item_id in (DataLoader.shop[id].get("grants_items", {}) as Dictionary).keys():
+	# The provisioner's shelves live in shop_store.json. This read `DataLoader.shop` — the GP
+	# upgrade catalogue — so all forty shelves stayed invisible even after the `item_id` form was
+	# taught to this check. `item_id` names a single item; only bundles use `grants_items`.
+	for id in DataLoader.shop_store.keys():
+		var shelf: Variant = DataLoader.shop_store[id]
+		if typeof(shelf) != TYPE_DICTIONARY:
+			continue
+		var shelf_item: String = str((shelf as Dictionary).get("item_id", ""))
+		if shelf_item != "":
+			sources[shelf_item] = true
+		for item_id in ((shelf as Dictionary).get("grants_items", {}) as Dictionary).keys():
 			sources[str(item_id)] = true
+	# The museum's curios are bought with tokens, and the Dream Bazaar with dream essence: both
+	# hand over real items, and neither was counted as a source of anything.
+	for curio_id in DataLoader.shop_museum.keys():
+		var curio: Variant = DataLoader.shop_museum[curio_id]
+		if typeof(curio) != TYPE_DICTIONARY:
+			continue
+		for item_id in ((curio as Dictionary).get("grant_items", {}) as Dictionary).keys():
+			sources[str(item_id)] = true
+	for offer in (DataLoader.new_skill_systems.get("bazaar", []) as Array):
+		if typeof(offer) == TYPE_DICTIONARY:
+			for item_id in ((offer as Dictionary).get("items", {}) as Dictionary).keys():
+				sources[str(item_id)] = true
 	# Farming: a harvested crop is defined by the SEED item's product_item.
 	for item_id in DataLoader.items.keys():
 		var seed_item: Dictionary = DataLoader.items[item_id]
@@ -873,6 +962,44 @@ func _check_acquisition_coverage() -> void:
 			var product: String = str(seed_item.get("product_item", ""))
 			if product != "":
 				sources[product] = true
+	# Ranching: the species table IS the source. A pen yields the stock it was raised from, its
+	# produce, its hide and its meat, and the system's own code adds feed (rendered from crops),
+	# manure (a per-cycle byproduct) and the two rare breeding variants.
+	for species_def in (DataLoader.new_skill_systems.get("species", []) as Array):
+		if typeof(species_def) != TYPE_DICTIONARY:
+			continue
+		var animal: Dictionary = species_def
+		for field in ["stock", "produce", "hide"]:
+			var granted: String = str(animal.get(field, ""))
+			if granted != "":
+				sources[granted] = true
+		if int(animal.get("meat", 0)) > 0:
+			sources["ranch_meat"] = true
+	for system_item in ["ranch_feed", "ranch_manure", "golden_hen_stock", "mooncalf_stock"]:
+		if DataLoader.items.has(system_item):
+			sources[system_item] = true
+	# Enchanting: recycling equipment yields one essence per enchant family, keyed by the `essence`
+	# field on the enchant definitions.
+	for enchant_def in (DataLoader.new_skill_systems.get("enchants", []) as Array):
+		if typeof(enchant_def) != TYPE_DICTIONARY:
+			continue
+		var essence: String = str((enchant_def as Dictionary).get("essence", ""))
+		if essence == "":
+			continue
+		var essence_item: String = "enchant_" + essence + "_essence"
+		if DataLoader.items.has(essence_item):
+			sources[essence_item] = true
+	# Inscription: a recipe with a `quality_product` ships three graded variants of it, picked by
+	# the roll in InscriptionManager.quality_outputs.
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(skill_id):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			var quality_product: String = str((action as Dictionary).get("quality_product", ""))
+			if quality_product == "":
+				continue
+			for quality in ["inked", "faded", "illuminated"]:
+				sources["%s_%s" % [quality_product, quality]] = true
 	# Slayer shop: any item with a slayer coin price is purchasable.
 	for item_id in DataLoader.items.keys():
 		if int(DataLoader.items[item_id].get("slayer_cost", 0)) > 0:
@@ -926,6 +1053,72 @@ func _check_acquisition_coverage() -> void:
 			_warn("no_acquisition_path", "item '%s' (%s) has no known acquisition source" % [item_id, str(it.get("name", ""))])
 	if orphaned > 0:
 		_info("coverage", "%d items have no acquisition path" % orphaned)
+	# This table is the superset; the detail pane is where the player actually asks "where do I get
+	# this?", and it reads Goals. Teaching one and not the other is how eighty obtainable items came
+	# to be described on their own card as unfinished content, so the two are compared here.
+	var unexplained: int = 0
+	for item_id in sources.keys():
+		var id: String = str(item_id)
+		if not DataLoader.items.has(id) or not Goals.sources_for_item(id).is_empty():
+			continue
+		unexplained += 1
+		_warn("unexplained_source", "item '%s' (%s) is obtainable but the detail pane cannot say where from" % [
+			id, str(DataLoader.get_item(id).get("name", ""))])
+	if unexplained > 0:
+		_info("coverage", "%d obtainable items have no route on their card" % unexplained)
+
+## Symmetry with _check_acquisition_coverage: that one asks how every item is OBTAINED, this
+## one asks what every item is for. An item that is handed to the player and then spent by
+## nothing is content that only exists to be sold, which is fine when it is declared (the
+## `terminal_reason` field on the item) and a gap when it is not.
+func _check_output_demand() -> void:
+	var demand: Dictionary = BalanceReport.dead_outputs()
+	for item_id in (demand["undeclared"] as Array):
+		_warn("dead_output", "item '%s' (%s) is obtainable but nothing consumes it" % [
+			str(item_id), str(DataLoader.get_item(str(item_id)).get("name", ""))])
+	for item_id in (demand["stale_declarations"] as Array):
+		_warn("stale_declaration", "item '%s' declares terminal_reason but content does consume it" % str(item_id))
+	# A channel that matches nothing means the field it reads was renamed or removed, which would
+	# silently excuse every dead item that channel used to catch.
+	var used: Dictionary = BalanceReport.consumed_item_ids()
+	var seen: Dictionary = {}
+	for reasons in used.values():
+		for reason in (reasons as Array):
+			seen[str(reason).split(":")[0]] = true
+	for channel in BalanceReport.DEMAND_CHANNELS:
+		if not seen.has(channel):
+			_err("dead_channel", "the '%s' demand channel matches no item — a field it reads was renamed" % channel)
+	# Demand is a claim that something spends an item. A key that is not an item means a channel is
+	# reading a namespace that only looks like items — the settlement trader's costs are township
+	# resources — and the report then prints a material with demand, no route and no existence.
+	var phantom: Array[String] = []
+	for item_id in used.keys():
+		if not DataLoader.items.has(str(item_id)):
+			phantom.append(str(item_id))
+	if not phantom.is_empty():
+		_err("phantom_demand", "demand names %d things that are not items (%s)" %
+			[phantom.size(), ", ".join(phantom)])
+	_info("coverage", "%d items are declared terminal: obtainable and consumed by nothing, on purpose" %
+		(demand["declared"] as Array).size())
+
+# Supply concentration: the report's risk list, declared in the data when it is meant to be that
+# way. A single source is not a bug — it is a decision — so the ones that are deliberate carry
+# `bottleneck_reason`, and every unexplained one warns. A declaration that a later change made
+# false warns too, so the list cannot rot into decoration.
+func _check_bottlenecks() -> void:
+	var concentrated: Dictionary = BalanceReport.concentrated_materials()
+	for entry in (concentrated["rows"] as Array):
+		var row: Dictionary = entry
+		if str(row["reason"]) != "":
+			continue
+		var supply: String = "nothing supplies it" if str(row["shape"]) == "no_source" else "one source (%s)" % str(row["routes"])
+		_warn("bottleneck_undeclared", "item '%s' (%s) is needed by %d recipes and has %s; declare bottleneck_reason if that is deliberate" % [
+			str(row["item_id"]), str(DataLoader.get_item(str(row["item_id"])).get("name", "")),
+			int(row["recipes"]), supply])
+	for item_id in (concentrated["stale_declarations"] as Array):
+		_warn("stale_bottleneck_declaration", "item '%s' declares bottleneck_reason but is no longer a supply bottleneck" % str(item_id))
+	_info("bottlenecks", "%d of %d concentrated materials are declared deliberate" % [
+		(concentrated["declared"] as Array).size(), (concentrated["rows"] as Array).size()])
 
 func _info(code: String, message: String) -> void:
 	_add("info", code, message)
@@ -959,3 +1152,47 @@ func format_report(include_info: bool = true) -> String:
 		for i in group:
 			lines.append("  [%s] %s" % [i["code"], i["message"]])
 	return "\n".join(lines)
+
+func _check_new_skill_systems() -> void:
+	var data: Dictionary = DataLoader.new_skill_systems
+	var item_fields: Dictionary = {"species": ["stock", "produce", "hide"], "devices": ["id", "fuel"], "enchants": [], "dreams": [], "bazaar": []}
+	var number_fields: Dictionary = {"species": ["level", "seconds", "feed", "xp", "meat"], "devices": ["level", "fuel_cost"], "enchants": ["level", "tier"], "dreams": ["level", "xp_hour", "essence_hour"], "bazaar": ["cost"]}
+	for group in item_fields:
+		var records: Variant = data.get(group, [])
+		if not records is Array: _err("invalid_record", "new_skill_systems.%s must be an array" % group); continue
+		var ids: Dictionary = {}
+		for record in records:
+			if not record is Dictionary: _err("invalid_record", "new_skill_systems.%s record must be an object" % group); continue
+			var id: String = str(record.get("id", ""))
+			if id == "" or ids.has(id): _err("duplicate_id", "%s has missing or duplicate id '%s'" % [group, id])
+			ids[id] = true
+			for field in item_fields[group]:
+				if not _has_item(str(record.get(field, ""))): _err("missing_reference", "%s.%s.%s references a missing item" % [group, id, field])
+			for field in number_fields[group]:
+				var value: Variant = record.get(field, null)
+				if not (value is int or value is float) or not is_finite(float(value)) or float(value) <= 0: _err("invalid_number", "%s.%s.%s must be a positive finite number" % [group, id, field])
+			if group == "devices" and not _has_skill(str(record.get("skill", ""))) and str(record.get("skill", "")) != "combat": _err("missing_reference", "device '%s' has unknown skill" % id)
+			if group == "enchants":
+				if str(record.get("scope", "")) not in ["weapon", "armor", "skilling"]: _err("invalid_record", "enchant '%s' has invalid scope" % id)
+				if str(record.get("essence", "")) not in ["martial", "warding", "arcane", "verdant"]: _err("invalid_record", "enchant '%s' has invalid Essence" % id)
+				if str(record.get("dungeon", "")) != "" and not DataLoader.dungeons.has(str(record.dungeon)): _err("missing_reference", "enchant '%s' has unknown dungeon" % id)
+			for numeric in ["seconds", "town_ticks"]:
+				if record.has(numeric) and (not _is_finite_number(record[numeric]) or float(record[numeric]) <= 0): _err("invalid_number", "%s.%s.%s must be positive and finite" % [group, id, numeric])
+			var mods: Variant = record.get("mods", {})
+			if not mods is Dictionary: _err("invalid_record", "%s.%s.mods must be an object" % [group, id])
+			else:
+				for key in mods:
+					if not _is_finite_number(mods[key]): _err("invalid_number", "%s.%s modifier %s is not finite" % [group, id, str(key)])
+			if record.has("status") and not StatusEffect.TABLE.has(str(record.status)): _err("missing_reference", "enchant %s has an unknown status" % id)
+			var rewards: Variant = record.get("items", {})
+			if not rewards is Dictionary: _err("invalid_record", "bazaar %s rewards must be an object" % id); continue
+			for item in rewards:
+				if not _has_item(str(item)) or int(record.items[item]) <= 0: _err("missing_reference", "bazaar '%s' has invalid reward" % id)
+	for action in DataLoader.get_skill_actions("inscription"):
+		if action.has("quality_product"):
+			for quality in ["faded", "inked", "illuminated"]:
+				if not _has_item(str(action.quality_product) + "_" + quality): _err("missing_reference", "scribe recipe '%s' lacks '%s' variant" % [action.id, quality])
+		if action.has("requires_research"):
+			var found: bool = false
+			for research in DataLoader.get_skill_actions("inscription"): found = found or str(research.get("research_unlock", "")) == str(action.requires_research)
+			if not found: _err("missing_reference", "scribe recipe '%s' has unknown research" % action.id)

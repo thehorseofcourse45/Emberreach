@@ -27,8 +27,16 @@ func _ready() -> void:
 	add_child(_column)
 	_column.set_anchors_preset(Control.PRESET_FULL_RECT)
 	EventBus.notification.connect(push)
+	EventBus.skill_level_up.connect(push_level_up)
+	EventBus.game_loaded.connect(clear)
 
-func push(text: String, kind: String = "info") -> void:
+func push_level_up(skill_id: String, level: int) -> void:
+	var skill: Dictionary = DataLoader.get_skill(skill_id)
+	if skill.is_empty():
+		return
+	push("Level up!\n%s reached level %d" % [str(skill.get("name", skill_id)), level], "level", skill_id)
+
+func push(text: String, kind: String = "info", skill_id: String = "") -> void:
 	if text.strip_edges() == "":
 		return
 	if SimulationMode.is_silent():
@@ -44,7 +52,7 @@ func push(text: String, kind: String = "info") -> void:
 			return
 	while _entries.size() >= MAX_VISIBLE:
 		_remove_entry(_entries[0])
-	var node := _build(text, kind)
+	var node := _build(text, kind, skill_id)
 	_column.add_child(node)
 	var entry: Dictionary = {"node": node, "timer": _lifetime_for(kind), "text": text,
 		"count": 1, "label": node.get_node("body/label"), "kind": kind}
@@ -53,16 +61,19 @@ func push(text: String, kind: String = "info") -> void:
 	if not UITokens_motion_reduced():
 		node.modulate.a = 0.0
 		var tween := create_tween()
+		tween.set_ignore_time_scale(true)
 		tween.tween_property(node, "modulate:a", 1.0, UITokens.DUR_NORMAL)
 
 func _lifetime_for(kind: String) -> float:
 	return LIFETIME_ERROR if kind == "error" or kind == "warn" else LIFETIME
 
-func _build(text: String, kind: String) -> Control:
+func _build(text: String, kind: String, skill_id: String = "") -> Control:
 	var panel := PanelContainer.new()
 	var accent: Color = UITokens.TEAL
 	var icon_id: String = "ok"
 	match kind:
+		"level":
+			accent = UITokens.GOLD_BRIGHT
 		"warn":
 			accent = UITokens.AMBER
 			icon_id = "warning"
@@ -77,18 +88,22 @@ func _build(text: String, kind: String) -> Control:
 	sb.border_color = accent
 	var row := HBoxContainer.new()
 	row.name = "body"
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", UITokens.SP_4)
 	panel.add_child(row)
 	var icon := TextureRect.new()
-	icon.texture = AssetRegistry.icon("status", icon_id)
+	icon.texture = AssetRegistry.skill_icon(skill_id) if kind == "level" else AssetRegistry.icon("status", icon_id)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.custom_minimum_size = Vector2(UITokens.ICON_SM, UITokens.ICON_SM)
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	row.add_child(icon)
 	var l := UIStyle.label(text, false, UITokens.FONT_SMALL)
 	l.name = "label"
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l.add_theme_color_override("font_color", accent if kind == "error" else UITokens.TEXT)
+	l.add_theme_color_override("font_color", accent if kind in ["error", "level"] else UITokens.TEXT)
 	row.add_child(l)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return panel
@@ -105,7 +120,7 @@ func _remove_entry(entry: Dictionary) -> void:
 func _process(delta: float) -> void:
 	var expired: Array = []
 	for entry in _entries:
-		entry["timer"] = float(entry["timer"]) - delta
+		entry["timer"] = float(entry["timer"]) - delta / maxf(Engine.time_scale, 0.01)
 		if float(entry["timer"]) <= 0.0:
 			expired.append(entry)
 	for entry in expired:

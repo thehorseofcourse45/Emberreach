@@ -11,11 +11,15 @@ extends VBoxContainer
 
 signal navigated(route: Dictionary)
 
+const NewSystems = preload("res://scripts/ui/panels/NewSkillSystems.gd")
+
 const HANDLED: Array[String] = [
+	"ranching", "inscription", "engineering", "enchanting", "dreamwalking",
 	"slayer", "summoning", "astrology", "agility", "cartography", "archaeology",
 ]
 
 var _skill_id: String = ""
+var _star_sort: int = 0
 
 func set_skill(skill_id: String) -> void:
 	_skill_id = skill_id
@@ -26,6 +30,11 @@ func rebuild() -> void:
 		remove_child(c)
 		c.queue_free()
 	if not visible or _skill_id == "":
+		return
+	if _skill_id in ["ranching", "inscription", "engineering", "enchanting", "dreamwalking"]:
+		var systems := NewSystems.new()
+		add_child(systems)
+		systems.set_skill(_skill_id)
 		return
 	match _skill_id:
 		"slayer": _build_slayer()
@@ -110,12 +119,14 @@ func _task_card() -> Control:
 		"%.2f" % float(task.get("coin_multiplier", 1.0))], UITokens.TEAL, UITokens.FONT_MICRO))
 	var actions := UIStyle.hbox(UITokens.SP_3)
 	var area_id := _place_for_monster(monster_id)
+	var place: Dictionary = DataLoader.get_dungeon(area_id) if DataLoader.dungeons.has(area_id) else DataLoader.areas.get(area_id, {})
+	col.add_child(UIStyle.label("Location: " + str(place.get("name", "Unknown")), true, UITokens.FONT_SMALL))
 	var track := UIStyle.button("Track")
 	track.disabled = area_id == ""
 	track.tooltip_text = "Open the place this monster lives" if area_id != "" else "This monster has no known area"
 	track.pressed.connect(func():
 		if area_id != "":
-			navigated.emit({"screen": Screens.COMBAT, "area_id": area_id}))
+			navigated.emit({"screen": Screens.EXPEDITIONS if CombatManager.is_expedition(area_id) else Screens.COMBAT, "area_id": area_id}))
 	actions.add_child(track)
 	var reroll := UIStyle.button("Reroll")
 	reroll.tooltip_text = "Swap this task for another monster of the same tier (keeps no progress)"
@@ -223,6 +234,14 @@ func _build_summoning() -> void:
 			if train_skill != "":
 				button_row.add_child(Widgets.badge(str(DataLoader.get_skill(train_skill).get("name", train_skill)),
 					UITokens.TEXT_MUTED, "Train this skill to raise the mark"))
+		var interval: float = float(CombatManager.player_combat_summary().attack_interval) if train_skill in PlayerData.COMBAT_SKILLS else (SkillManager.current_interval if SkillManager.running and SkillManager.active_skill == train_skill else 4.0)
+		col.add_child(UIStyle.label("Charge runway ≈ %s at %.2fs per action" % [UIStyle.fmt_duration(int(SummoningManager.charges.get(fid, 0)) * interval), interval], true, UITokens.FONT_MICRO))
+		for synergy in familiar.get("synergies", []):
+			col.add_child(UIStyle.label("Synergy with %s: mark %d required · %s" % [str(synergy.get("with", "")), int(synergy.get("mark_level", 1)), UIStyle.describe_modifier_table(synergy.get("effect", {}))], true, UITokens.FONT_MICRO))
+		var refill := UIStyle.mini_button("Refill from Storage (%d)" % BankManager.get_count(str(familiar.get("tablet_item", ""))))
+		refill.disabled = mark_level < 1 or BankManager.get_count(str(familiar.get("tablet_item", ""))) <= 0
+		refill.pressed.connect(func(): SummoningManager.refill(str(fid)); rebuild())
+		button_row.add_child(refill)
 		col.add_child(button_row)
 		box.add_child(card)
 
@@ -231,6 +250,7 @@ func _build_summoning() -> void:
 # ==========================================================================
 
 func _build_astrology() -> void:
+	_build_star_comparison()
 	var box := UIStyle.section("Constellations",
 		"Studying yields Stardust; spent stars are permanent bonuses. Every star is a modifier source.")
 	add_child(box)
@@ -296,8 +316,19 @@ func _build_agility() -> void:
 	var box := UIStyle.section("Course",
 		"A slot only contributes once every earlier slot is filled. Rebuilding an obstacle cuts its cost by 4% (max 40%).")
 	add_child(box)
+	box.add_child(UIStyle.label("Active course: " + UIStyle.describe_modifier_table(AgilityManager.course_effects(AgilityManager.built)), true, UITokens.FONT_SMALL))
+	var save := UIStyle.button("Save course blueprint")
+	save.pressed.connect(func(): AgilityManager.save_blueprint("Course %d" % (AgilityManager.blueprints.size() + 1)); rebuild())
+	box.add_child(save)
+	for index in range(AgilityManager.blueprints.size()):
+		var plan: Dictionary = AgilityManager.blueprint_preview(index)
+		var load_button := UIStyle.button("%s · %s GP" % [AgilityManager.blueprints[index].name, UIStyle.fmt(float(plan.get("gp", 0)))])
+		load_button.tooltip_text = str(plan.reason) + " " + UIStyle.describe_modifier_table(plan.get("effects", {}))
+		load_button.disabled = not bool(plan.ok)
+		load_button.pressed.connect(func(): AgilityManager.load_blueprint(index); rebuild())
+		box.add_child(load_button)
 	for slot in range(1, AgilityManager.SLOTS + 1):
-		var row := UIStyle.hbox(UITokens.SP_3)
+		var row := HFlowContainer.new()
 		var slot_label := UIStyle.label("Slot %d" % slot, false, UITokens.FONT_SMALL)
 		slot_label.custom_minimum_size = Vector2(64, 0)
 		row.add_child(slot_label)
@@ -331,6 +362,10 @@ func _build_agility() -> void:
 					("Requires Agility level %d" % int((option as Dictionary).get("level_required", 1)) if not level_ok \
 					else "Need %s GP" % UIStyle.fmt(gp_cost))
 				var target_id: String = opt_id
+				var proposed: Dictionary = AgilityManager.built.duplicate()
+				proposed[slot] = opt_id
+				build.tooltip_text += "\nComplete proposed course: " + UIStyle.describe_modifier_table(AgilityManager.course_effects(proposed))
+				build.disabled = build.disabled or not BankManager.can_afford(cost.items)
 				build.pressed.connect(func():
 					if AgilityManager.build(slot, target_id):
 						rebuild())
@@ -357,7 +392,7 @@ func _build_pillars(parent: VBoxContainer) -> void:
 		var level_needed := int((p as Dictionary).get("level_required", 99))
 		var have_level: bool = PlayerData.get_level("agility") >= level_needed
 		var gp_cost := float((p as Dictionary).get("cost_gp", 0))
-		var row := UIStyle.hbox(UITokens.SP_4)
+		var row := HFlowContainer.new()
 		var name_label := UIStyle.label(str((p as Dictionary).get("name", oid)), false, UITokens.FONT_SMALL)
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		name_label.tooltip_text = UIStyle.describe_modifier_table((p as Dictionary).get("effect", {}))
@@ -424,7 +459,7 @@ func _build_cartography() -> void:
 		ships_box.add_child(row)
 
 	var routes := UIStyle.section("Frontier hexes",
-		"Travel reveals a hex and pays survey XP; survey it afterwards to claim its Point of Interest once.")
+		"Travel pays discovery XP once; timed Surveying activities pay training XP. Survey a revealed hex afterwards to claim its Point of Interest once.")
 	add_child(routes)
 	for hex_id in DataLoader.cartography_hexes.keys():
 		var hex: Dictionary = DataLoader.cartography_hexes[hex_id]
@@ -432,7 +467,8 @@ func _build_cartography() -> void:
 			continue
 		var is_discovered: bool = CartographyManager.is_discovered(hex_id)
 		var is_surveyed: bool = CartographyManager.surveyed.has(hex_id)
-		var poi: Dictionary = (hex as Dictionary).get("poi", {})
+		var raw_poi: Variant = hex.get("poi", {})
+		var poi: Dictionary = raw_poi if raw_poi is Dictionary else {}
 		var base_cost := float((hex as Dictionary).get("travel_cost", 0))
 		var cost := base_cost * CartographyManager.travel_percent() / 100.0
 		var row := UIStyle.hbox(UITokens.SP_4)
@@ -440,7 +476,11 @@ func _build_cartography() -> void:
 			str((hex as Dictionary).get("q", "?")), str((hex as Dictionary).get("r", "?"))],
 			false, UITokens.FONT_SMALL)
 		where.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		where.tooltip_text = str((hex as Dictionary).get("id", hex_id))
+		where.tooltip_text = str(hex.get("id", hex_id))
+		if not poi.is_empty():
+			var reward: Dictionary = poi.get("reward", {})
+			where.text += " · " + ("Supplies" if not reward.get("items", {}).is_empty() else "Treasure" if reward.has("gp") else "Permanent bonus")
+			where.tooltip_text += " " + UIStyle.describe_modifier_table(poi.get("effect", {}))
 		row.add_child(where)
 		if is_surveyed:
 			row.add_child(Widgets.badge("✓ %s" % str(poi.get("name", "Surveyed")), UITokens.GREEN,
@@ -478,12 +518,17 @@ func _build_archaeology() -> void:
 	add_child(box)
 	box.add_child(Widgets.key_value("Museum Tokens", UIStyle.fmt(float(ArchaeologyManager.tokens)),
 		UITokens.GOLD, "Earned per donation, spent on the museum's stock"))
+	var unique: int = 0
+	for id in ArchaeologyManager.DONATE_GP:
+		if PlayerData.completion_log.get("items", {}).has(id): unique += 1
+	box.add_child(Widgets.key_value("Unique artefact rarities discovered", "%d / %d" % [unique, ArchaeologyManager.DONATE_GP.size()]))
+	box.add_child(Widgets.key_value("Duplicate donations", str(maxi(0, ArchaeologyManager.total_donated() - ArchaeologyManager.donated.size()))))
 	box.add_child(Widgets.key_value("Donated", str(ArchaeologyManager.total_donated()),
 		UITokens.TEAL, "Artefacts handed to the museum so far"))
 	for artefact_id in ArchaeologyManager.DONATE_GP.keys():
 		var item: Dictionary = DataLoader.get_item(artefact_id)
 		var have := BankManager.get_count(artefact_id)
-		var row := UIStyle.hbox(UITokens.SP_4)
+		var row := HFlowContainer.new()
 		row.add_child(Widgets.item_icon(artefact_id))
 		var name_label := UIStyle.label(str(item.get("name", artefact_id)), false, UITokens.FONT_SMALL)
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -512,7 +557,7 @@ func _build_archaeology() -> void:
 		var eid := str(entry.get("id", ""))
 		var cost := int(entry.get("cost", 0))
 		var affordable: bool = ArchaeologyManager.tokens >= cost
-		var row := UIStyle.hbox(UITokens.SP_4)
+		var row := HFlowContainer.new()
 		var name_label := UIStyle.label(str(entry.get("name", eid)), false, UITokens.FONT_SMALL)
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		name_label.tooltip_text = str(entry.get("description", ""))
@@ -539,3 +584,33 @@ func _museum_grants(entry: Dictionary) -> String:
 	if float(entry.get("gp", 0)) > 0.0:
 		parts.append("%s GP" % UIStyle.fmt(float(entry["gp"])))
 	return " · ".join(parts)
+
+func _build_star_comparison() -> void:
+	var box := UIStyle.section("Affordable stars · compare")
+	add_child(box)
+	box.add_child(Widgets.option_menu(["Lowest cost", "Constellation name"], func(i): _star_sort = i; rebuild(), _star_sort))
+	var stars: Array = []
+	for cid in DataLoader.constellations:
+		for star in DataLoader.constellations[cid].get("stars", []):
+			if bool(AstrologyManager.can_buy(str(cid), str(star.id)).ok): stars.append({"cid": str(cid), "star": star})
+	stars.sort_custom(func(a, b): return int(a.star.cost) < int(b.star.cost) if _star_sort == 0 else str(a.cid) < str(b.cid))
+	for entry in stars:
+		var star: Dictionary = entry.star
+		var effect: Dictionary = star.get("effect", {})
+		var text: String = "%s · %d dust · %s" % [DataLoader.constellations[entry.cid].get("name", entry.cid), int(star.cost), UIStyle.describe_modifier_table(effect)]
+		var downstream: Array[String] = []
+		for sid in DataLoader.get_skill_ids():
+			var best: Dictionary = {}
+			var best_id: String = ""
+			for action in DataLoader.get_skill_actions(str(sid)):
+				if int(action.get("level_required", 1)) <= PlayerData.get_level(str(sid)):
+					var rate: Dictionary = ActionEstimates.for_action(str(sid), str(action.id))
+					if best.is_empty() or float(rate.xp_per_hour) > float(best.xp_per_hour): best = rate; best_id = str(action.id)
+			if not best.is_empty():
+				var after: Dictionary = ActionEstimates.for_action(str(sid), best_id, effect)
+				if not is_equal_approx(float(after.xp_per_hour), float(best.xp_per_hour)) or not is_equal_approx(float(after.output_per_hour), float(best.output_per_hour)):
+					downstream.append("%s: XP/h %.0f → %.0f; output/h %.0f → %.0f" % [str(DataLoader.get_skill(str(sid)).name), float(best.xp_per_hour), float(after.xp_per_hour), float(best.output_per_hour), float(after.output_per_hour)])
+		var button := UIStyle.button("%s · %d dust" % [DataLoader.constellations[entry.cid].get("name", entry.cid), int(star.cost)], text + "\n" + "\n".join(downstream))
+		button.pressed.connect(func(): AstrologyManager.buy_star(str(entry.cid), str(star.id)); rebuild())
+		box.add_child(button)
+	if stars.is_empty(): box.add_child(UIStyle.label("No affordable stars. Train Starreading or gather more Stardust.", true, UITokens.FONT_SMALL))

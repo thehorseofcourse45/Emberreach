@@ -387,5 +387,95 @@
       "lostfinding": 50
     },
     "unit_price": 375
+  },
+  "store_ranch_hen": {
+    "id": "store_ranch_hen",
+    "name": "Hen Stock",
+    "item_id": "ranch_hen",
+    "cost": 250,
+    "quantity": 1,
+    "unit_price": 250,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_cow": {
+    "id": "store_ranch_cow",
+    "name": "Cow Stock",
+    "item_id": "ranch_cow",
+    "cost": 2000,
+    "quantity": 1,
+    "unit_price": 2000,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_sheep": {
+    "id": "store_ranch_sheep",
+    "name": "Sheep Stock",
+    "item_id": "ranch_sheep",
+    "cost": 6750,
+    "quantity": 1,
+    "unit_price": 6750,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_boar": {
+    "id": "store_ranch_boar",
+    "name": "Boar Stock",
+    "item_id": "ranch_boar",
+    "cost": 16000,
+    "quantity": 1,
+    "unit_price": 16000,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_moonstag": {
+    "id": "store_ranch_moonstag",
+    "name": "Moonstag Stock",
+    "item_id": "ranch_moonstag",
+    "cost": 31250,
+    "quantity": 1,
+    "unit_price": 31250,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_griffin": {
+    "id": "store_ranch_griffin",
+    "name": "Griffin Stock",
+    "item_id": "ranch_griffin",
+    "cost": 54000,
+    "quantity": 1,
+    "unit_price": 54000,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_wyvern": {
+    "id": "store_ranch_wyvern",
+    "name": "Wyvern Stock",
+    "item_id": "ranch_wyvern",
+    "cost": 85750,
+    "quantity": 1,
+    "unit_price": 85750,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_dragon": {
+    "id": "store_ranch_dragon",
+    "name": "Dragon Stock",
+    "item_id": "ranch_dragon",
+    "cost": 128000,
+    "quantity": 1,
+    "unit_price": 128000,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
+  },
+  "store_ranch_celestial_dragon": {
+    "id": "store_ranch_celestial_dragon",
+    "name": "Celestial Dragon Stock",
+    "item_id": "ranch_celestial_dragon",
+    "cost": 182250,
+    "quantity": 1,
+    "unit_price": 182250,
+    "description": "A living animal for Ranching.",
+    "subtitle": "Ranch stock"
   }
 }

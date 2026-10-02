@@ -81,6 +81,11 @@ func start_new_game(mode: String) -> void:
 	CombatSimulatorManager.invalidate()
 	FarmingManager.deserialize({})
 	TownshipManager.deserialize({})
+	RanchingManager.deserialize({})
+	InscriptionManager.deserialize({})
+	EngineeringManager.deserialize({})
+	EnchantingManager.deserialize({})
+	DreamwalkingManager.deserialize({})
 	SlayerManager.deserialize({})
 	AgilityManager.deserialize({})
 	SummoningManager.deserialize({})
@@ -122,7 +127,7 @@ func recover_with_new_game() -> void:
 func _process(delta: float) -> void:
 	if is_paused or boot_state == BootState.LOAD_FAILED:
 		return
-	var scaled: float = delta * game_speed
+	var scaled: float = delta / maxf(0.001, Engine.time_scale)
 	playtime_seconds += scaled
 	PlayerData.playtime_seconds = playtime_seconds
 

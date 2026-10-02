@@ -32,6 +32,8 @@ func _ready() -> void:
 	add_child(UIStyle.label(
 		"These options change how the simulation behaves. Anything that changes a rule says so in its tooltip.",
 		true, UITokens.FONT_SMALL))
+	var mode: Dictionary = DataLoader.game_modes.get(PlayerData.game_mode, {})
+	add_child(UIStyle.section("Mode rules · " + str(mode.get("name", PlayerData.game_mode)), str(mode.get("description", "")) + ". Defeat ends combat; no character or items are deleted. Passive timers use real seconds; active actions follow game speed."))
 	_build_offline()
 	_build_simulation()
 	_build_automation()

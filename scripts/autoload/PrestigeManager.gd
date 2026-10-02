@@ -16,7 +16,7 @@ extends Node
 ## The counters survive the reset (that is the whole point) and live in PlayerData.prestige,
 ## which is saved with the rest of the character.
 
-## Total lifetime XP across every skill decides whether Ascendancy is offered. One number so
+## Total this run’s XP across every skill decides whether Ascendancy is offered. One number so
 ## the gate is legible: a player either has the run behind them or does not.
 const GATE_XP: float = 50_000_000.0
 ## Flat bonus per ascension, on both the global XP and global GP keys. Additive within the
@@ -54,7 +54,7 @@ func blocker() -> String:
 	if ascensions() >= MAX_ASCENSIONS:
 		return "Ascendancy is at its cap"
 	var shortfall: float = maxf(0.0, GATE_XP - lifetime_xp())
-	return "Reach %s lifetime XP (%s to go)" % [UIStyle.fmt(GATE_XP), UIStyle.fmt(shortfall)]
+	return "Reach %s this run’s XP (%s to go)" % [UIStyle.fmt(GATE_XP), UIStyle.fmt(shortfall)]
 
 func can_ascend() -> bool:
 	if ascensions() >= MAX_ASCENSIONS:

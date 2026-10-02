@@ -76,3 +76,16 @@ func spend_for_attack() -> void:
     else:
         EventBus.notification.emit("Out of Prayer Points — prayers deactivated", "warn")
         deactivate_all()
+
+func role(prayer_id: String) -> String:
+    var prayer: Dictionary = get_prayer(prayer_id)
+    if str(prayer.get("type", "")).begins_with("protect"): return "Protection"
+    for key in prayer.get("effect", {}):
+        if "evasion" in str(key) or "damage_reduction" in str(key) or "hitpoints" in str(key): return "Defensive"
+    for key in prayer.get("effect", {}):
+        if "accuracy" in str(key) or "hit" in str(key) or "attack" in str(key): return "Offensive"
+    return "Utility"
+
+func runway() -> Dictionary:
+    var rate: float = maxf(0.0, cost_per_attack()) * 60.0 / maxf(0.25, float(CombatManager.player_combat_summary().attack_interval))
+    return {"per_minute": rate, "seconds": PlayerData.prayer_points / rate * 60.0 if rate > 0 else INF}

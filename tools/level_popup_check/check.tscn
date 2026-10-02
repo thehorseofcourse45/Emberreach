@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://tools/level_popup_check/Check.gd" id="1"]
+[node name="LevelPopupCheck" type="Control"]
+script = ExtResource("1")

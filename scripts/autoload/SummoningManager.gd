@@ -123,3 +123,13 @@ func deserialize(d: Dictionary) -> void:
     equipped = arr
     charges = d.get("charges", {})
     _reregister()
+
+func refill(familiar_id: String, quantity: int = 0) -> bool:
+    var tablet: String = str(DataLoader.familiars.get(familiar_id, {}).get("tablet_item", ""))
+    var available: int = BankManager.get_count(tablet)
+    var amount: int = available if quantity <= 0 else mini(quantity, available)
+    if get_mark_level(familiar_id) < 1 or amount <= 0 or not BankManager.remove_item(tablet, amount): return false
+    charges[familiar_id] = int(charges.get(familiar_id, 0)) + amount
+    _reregister()
+    EventBus.state_refreshed.emit()
+    return true

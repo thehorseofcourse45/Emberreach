@@ -96,7 +96,7 @@ func _occupy(index: int, seed_id: String, seed_data: Dictionary) -> void:
 	plot["grow_seconds"] = float(seed_data.get("grow_seconds", 3600))
 	plot["harvested"] = false
 	# Survival chance: base + 10% per compost, capped 100%.
-	var survival: float = clampf(float(seed_data.get("base_survival", 0.5)) + 0.1 * float(plot["compost"]), 0.0, 1.0)
+	var survival: float = clampf(float(seed_data.get("base_survival", 0.5)) + 0.1 * float(plot["compost"]) + (0.25 if bool(plot.get("manure", false)) else 0.0), 0.0, 1.0)
 	plot["alive"] = _rng.randf() <= survival
 
 ## First empty plot wins. Returns the plot index, or -1 when nothing was plantable.
@@ -108,9 +108,18 @@ func plant_first_free(seed_id: String, consume_from_bank: bool = true) -> int:
 			return -1
 	return -1
 
+func apply_manure(plot_index: int) -> bool:
+	if plot_index < 0 or plot_index >= plots.size() or str(plots[plot_index].seed_id) != "" or bool(plots[plot_index].get("manure", false)) or not BankManager.has_item("ranch_manure", 1):
+		return false
+	BankManager.remove_item("ranch_manure", 1)
+	plots[plot_index]["manure"] = true
+	plots_changed.emit()
+	return true
+
 func apply_compost(plot_index: int) -> bool:
 	if plot_index < 0 or plot_index >= plots.size():
 		return false
+	if str(plots[plot_index].seed_id) != "": return false
 	if not BankManager.has_item("compost", 1):
 		return false
 	BankManager.remove_item("compost", 1)
@@ -118,13 +127,13 @@ func apply_compost(plot_index: int) -> bool:
 	plots_changed.emit()
 	return true
 
-func is_ready(plot_index: int) -> bool:
+func is_ready(plot_index: int, at_time: float = 0.0) -> bool:
 	if plot_index < 0 or plot_index >= plots.size():
 		return false
 	var p: Dictionary = plots[plot_index]
 	if p["seed_id"] == "" or not p["alive"]:
 		return false
-	return float(Time.get_unix_time_from_system()) >= float(p["planted_unix"]) + float(p["grow_seconds"])
+	return (at_time if at_time > 0 else Time.get_unix_time_from_system()) >= float(p["planted_unix"]) + float(p["grow_seconds"])
 
 ## A crop that failed its survival roll stays on the plot until explicitly cleared.
 func clear_plot(plot_index: int) -> bool:
@@ -137,6 +146,7 @@ func clear_plot(plot_index: int) -> bool:
 	p["planted_unix"] = 0.0
 	p["grow_seconds"] = 0.0
 	p["compost"] = 0
+	p["manure"] = false
 	p["alive"] = true
 	p["harvested"] = false
 	plots_changed.emit()
@@ -156,14 +166,17 @@ func _crop_mastery_bonus(action_id: String) -> Dictionary:
 			flat += int(mods.get("farming_resource_flat", 0))
 	return {"doubling": doubling, "flat": flat}
 
-func harvest(plot_index: int) -> Dictionary:
-	if not is_ready(plot_index):
+func harvest(plot_index: int, player_modifiers: bool = true, at_time: float = 0.0) -> Dictionary:
+	if not is_ready(plot_index, at_time):
 		return {}
 	var p: Dictionary = plots[plot_index]
 	var seed_data: Dictionary = DataLoader.get_item(p["seed_id"])
 	var action_id: String = action_id_for_seed(str(p["seed_id"]))
-	var bonus: Dictionary = _crop_mastery_bonus(action_id)
+	var bonus: Dictionary = _crop_mastery_bonus(action_id) if player_modifiers else {"flat": 0, "doubling": 0.0}
 	var yield_qty: int = maxi(1, _rng.randi_range(int(seed_data.get("min_yield", 1)), int(seed_data.get("max_yield", 3))) + int(bonus["flat"]))
+	if bool(p.get("manure", false)):
+		var extra: float = float(yield_qty) * 0.1
+		yield_qty += floori(extra) + (1 if _rng.randf() < fmod(extra, 1.0) else 0)
 	# Per-unit doubling, mirroring SkillManager._produce_outputs.
 	var total: int = 0
 	for _i in range(yield_qty):
@@ -172,12 +185,13 @@ func harvest(plot_index: int) -> Dictionary:
 	if out_item != "" and total > 0:
 		BankManager.add_item(out_item, total)
 		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, out_item, float(total))
-	var xp: float = float(seed_data.get("harvest_xp", 0.0)) * ModifierManager.get_skill_xp_multiplier("farming")
+	var xp: float = float(seed_data.get("harvest_xp", 0.0)) * (ModifierManager.get_skill_xp_multiplier("farming") if player_modifiers else 1.0)
 	if xp > 0.0:
 		PlayerData.add_xp("farming", xp)
 	MasteryManager.add_mastery_xp("farming", action_id, float(p["grow_seconds"]) / 3600.0, 0.0)
 	p["seed_id"] = ""
 	p["harvested"] = true
+	p["manure"] = false
 	plots_changed.emit()
 	return {"item_id": out_item, "quantity": total, "xp": xp}
 
@@ -208,3 +222,15 @@ func deserialize(d: Dictionary) -> void:
 	plots = d.get("plots", [])
 	if plots.is_empty():
 		_build_plots()
+
+func planting_preview(plot_index: int, seed_id: String) -> Dictionary:
+	if plot_index < 0 or plot_index >= plots.size(): return {}
+	var seed: Dictionary = DataLoader.get_item(seed_id)
+	var plot: Dictionary = plots[plot_index]
+	return {"survival": clampf(float(seed.get("base_survival", 0.5)) + int(plot.compost) * 0.1 + (0.25 if bool(plot.get("manure", false)) else 0), 0, 1), "seconds": float(seed.get("grow_seconds", 3600)), "yield_bonus": 10 if bool(plot.get("manure", false)) else 0}
+
+func harvest_replant(plot_index: int) -> bool:
+	if not is_ready(plot_index): return false
+	var seed: String = str(plots[plot_index].seed_id)
+	if harvest(plot_index).is_empty(): return false
+	return plant(plot_index, seed)

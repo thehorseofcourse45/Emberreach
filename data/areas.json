@@ -126,17 +126,37 @@
     },
     "flavour": "A cut into the ridge that never closed. The stone it emptied still moves after dark."
   },
+  "saltmarch_basin": {
+    "id": "saltmarch_basin",
+    "name": "Saltmarch Basin",
+    "type": "area",
+    "level_range": [
+      58,
+      88
+    ],
+    "monsters": [
+      "brine_troll",
+      "tidewrack_hag"
+    ],
+    "hazard": {
+      "player_evasion_percent": -10.0,
+      "label": "Slick brine: −10% evasion"
+    },
+    "flavour": "The sea filled this basin once and never came back for it. Whatever settled in the water learned to keep it."
+  },
   "castle_of_kings": {
     "id": "castle_of_kings",
     "name": "Sunderhold Keep",
     "type": "area",
     "level_range": [
       12,
-      101
+      104
     ],
     "monsters": [
       "guard",
-      "rune_knight"
+      "rune_knight",
+      "sunderhold_centurion",
+      "sunderhold_ballistarius"
     ],
     "requires": {
       "slayer": 1
@@ -153,7 +173,8 @@
     ],
     "monsters": [
       "green_dragon",
-      "ash_drake"
+      "ash_drake",
+      "ashwyrm_seer"
     ],
     "requires": {
       "slayer": 60

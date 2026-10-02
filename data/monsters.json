@@ -36,6 +36,11 @@
         "currency_id": "gp",
         "quantity": 3,
         "chance": 1.0
+      },
+      {
+        "item_id": "ranch_hen",
+        "chance": 0.005,
+        "quantity": 1
       }
     ],
     "bone_type": "bones",
@@ -81,6 +86,11 @@
         "currency_id": "gp",
         "quantity": 5,
         "chance": 1.0
+      },
+      {
+        "item_id": "ranch_cow",
+        "chance": 0.005,
+        "quantity": 1
       }
     ],
     "bone_type": "bones",
@@ -350,6 +360,11 @@
         "currency_id": "gp",
         "quantity": 400,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "big_bones",
@@ -396,6 +411,11 @@
         "currency_id": "gp",
         "quantity": 1200,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "big_bones",
@@ -507,6 +527,16 @@
         "currency_id": "gp",
         "quantity": 9000,
         "chance": 1.0
+      },
+      {
+        "item_id": "ranch_dragon",
+        "chance": 0.005,
+        "quantity": 1
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -556,6 +586,11 @@
         "currency_id": "gp",
         "quantity": 250,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "bones",
@@ -648,6 +683,11 @@
         "currency_id": "gp",
         "quantity": 44000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -738,6 +778,11 @@
         "currency_id": "gp",
         "quantity": 48000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -828,6 +873,11 @@
         "currency_id": "gp",
         "quantity": 54000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -918,6 +968,11 @@
         "currency_id": "gp",
         "quantity": 60000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -1014,6 +1069,11 @@
         "currency_id": "gp",
         "quantity": 68000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -1060,6 +1120,11 @@
         "currency_id": "gp",
         "quantity": 76000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -1148,6 +1213,11 @@
         "currency_id": "gp",
         "quantity": 84000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -1330,6 +1400,11 @@
         "currency_id": "gp",
         "quantity": 152000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "dragon_bones",
@@ -1420,6 +1495,11 @@
         "currency_id": "gp",
         "quantity": 260,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "bones",
@@ -1556,6 +1636,11 @@
         "currency_id": "gp",
         "quantity": 1500,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "big_bones",
@@ -1909,6 +1994,11 @@
         "currency_id": "gp",
         "quantity": 1000,
         "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
       }
     ],
     "bone_type": "big_bones",
@@ -1918,5 +2008,337 @@
     "can_be_stunned": true,
     "is_immune_to_effects": false,
     "flavour": "Kiln-waste and old mortar, knitted into something with a temper."
+  },
+  "brine_troll": {
+    "id": "brine_troll",
+    "name": "Brine Troll",
+    "combat_level": 66,
+    "hitpoints": 250,
+    "attack_type": "melee",
+    "attack_speed": 2.5,
+    "max_hit": 30,
+    "accuracy_rating": 400,
+    "melee_evasion": 122,
+    "ranged_evasion": 112,
+    "magic_evasion": 100,
+    "damage_reduction": 26,
+    "special_attacks": [
+      "life_leach"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "coal",
+        "chance": 0.7,
+        "quantity": 4,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "chance": 0.25
+      },
+      {
+        "item_id": "adamantite_ore",
+        "chance": 0.3,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1800,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.1
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 250,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "It has been sitting in the same pool so long the salt grew over its back."
+  },
+  "tidewrack_hag": {
+    "id": "tidewrack_hag",
+    "name": "Tidewrack Hag",
+    "combat_level": 76,
+    "hitpoints": 400,
+    "attack_type": "magic",
+    "attack_speed": 2.6,
+    "max_hit": 35,
+    "accuracy_rating": 480,
+    "melee_evasion": 145,
+    "ranged_evasion": 140,
+    "magic_evasion": 150,
+    "damage_reduction": 32,
+    "special_attacks": [
+      "ocean_song"
+    ],
+    "passives": [
+      "thorns"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "blue_dragonhide",
+        "chance": 0.5,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "death_rune",
+        "chance": 0.5,
+        "quantity": 4,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "pure_essence",
+        "quantity": 1,
+        "chance": 0.4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 2600,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 310,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "She sings the tide back in. The tide has not come back. She keeps singing."
+  },
+  "sunderhold_centurion": {
+    "id": "sunderhold_centurion",
+    "name": "Sunderhold Centurion",
+    "combat_level": 88,
+    "hitpoints": 600,
+    "attack_type": "melee",
+    "attack_speed": 2.4,
+    "max_hit": 46,
+    "accuracy_rating": 660,
+    "melee_evasion": 220,
+    "ranged_evasion": 205,
+    "magic_evasion": 190,
+    "damage_reduction": 37,
+    "special_attacks": [
+      "stun_bash"
+    ],
+    "passives": [
+      "enrage"
+    ],
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.9,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 1,
+        "chance": 0.25
+      },
+      {
+        "item_id": "red_dragonhide",
+        "chance": 0.45,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 4200,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 470,
+    "is_boss": false,
+    "respawn_time": 6.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Outranks the sentries still standing their posts. Has not noticed they are dead."
+  },
+  "ashwyrm_seer": {
+    "id": "ashwyrm_seer",
+    "name": "Ashwyrm Seer",
+    "combat_level": 96,
+    "hitpoints": 660,
+    "attack_type": "magic",
+    "attack_speed": 2.9,
+    "max_hit": 56,
+    "accuracy_rating": 840,
+    "melee_evasion": 270,
+    "ranged_evasion": 258,
+    "magic_evasion": 272,
+    "damage_reduction": 40,
+    "special_attacks": [
+      "cloudburst_magic_ray"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 3,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 1,
+        "chance": 0.18
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 1,
+        "chance": 0.3
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 1,
+        "chance": 0.08
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 6000,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.2
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 600,
+    "is_boss": false,
+    "respawn_time": 6.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Reads the caldera the way a sailor reads weather, and has never once been wrong."
+  },
+  "sunderhold_ballistarius": {
+    "id": "sunderhold_ballistarius",
+    "name": "Sunderhold Ballistarius",
+    "combat_level": 102,
+    "hitpoints": 690,
+    "attack_type": "ranged",
+    "attack_speed": 2.3,
+    "max_hit": 58,
+    "accuracy_rating": 940,
+    "melee_evasion": 300,
+    "ranged_evasion": 315,
+    "magic_evasion": 285,
+    "damage_reduction": 41,
+    "special_attacks": [
+      "quick_strike"
+    ],
+    "passives": [
+      "enrage"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 3,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "steel_arrow",
+        "chance": 0.4,
+        "quantity": 25,
+        "min_quantity": 10
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 1,
+        "chance": 0.2
+      },
+      {
+        "item_id": "black_dragonhide",
+        "chance": 0.4,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 5000,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.2
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 700,
+    "is_boss": false,
+    "respawn_time": 6.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Sights the breach from the wall and never wastes a bolt on anything closer."
   }
 }

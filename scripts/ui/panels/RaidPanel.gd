@@ -20,6 +20,8 @@ func _ready() -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_built = true
 	add_child(UIStyle.title("Golbin Raid", UITokens.FONT_DISPLAY))
+	add_child(UIStyle.label("Rewards: Raid Coins, permanent combat upgrades and ALT equipment. First clear: complete wave 1, choose an upgrade, then bank your coins.", true))
+	add_child(Widgets.item_rewards(Dictionary(DataLoader.raid_shop.get("alt_items", []).reduce(func(out, id): out[id] = 1; return out, {}))))
 	_summary = UIStyle.label("", true, UITokens.FONT_SMALL)
 	add_child(_summary)
 	add_child(UIStyle.label(
@@ -44,6 +46,12 @@ func detail_context() -> Dictionary:
 func _rebuild() -> void:
 	if not _built:
 		return
+	for existing in get_children():
+		if existing is Control and existing.get_meta("raid_checklist", false): remove_child(existing); existing.queue_free()
+	for entry in [["Clear wave 1", PlayerData.stats.get("raid_waves_cleared", {}).has("1")], ["Choose an upgrade", int(PlayerData.stats.get("raid_choices_taken", 0)) > 0], ["Bank earned coins", float(PlayerData.stats.get("raid_coins_banked", 0)) > 0]]:
+		var row := Widgets.requirement_row(str(entry[0]), 1 if bool(entry[1]) else 0, 1, bool(entry[1]))
+		row.set_meta("raid_checklist", true)
+		add_child(row)
 	_summary.text = "Raid coins: %s · %s" % [UIStyle.fmt(PlayerData.raid_coins),
 		("in progress — wave %d (%s)" % [RaidManager.wave, RaidManager.difficulty]) if RaidManager.active
 			else "not started"]
@@ -102,6 +110,7 @@ func _active_run() -> Control:
 			var label: String = choice
 			if DataLoader.raid_shop.get("alt_items", []).has(choice):
 				label = str(DataLoader.get_item(choice).get("name", choice))
+				row.add_child(UIStyle.icon_texture("items", choice))
 			elif DataLoader.raid_shop.get("upgrades", {}).has(choice):
 				label = str(DataLoader.raid_shop["upgrades"][choice].get("name", choice))
 			var name_label := UIStyle.label(label, false, UITokens.FONT_BODY)

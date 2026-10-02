@@ -97,9 +97,13 @@ func _sig_combat_started(ctx: Dictionary) -> void:
 	if not SimulationMode.is_silent():
 		EventBus.combat_started.emit(ctx)
 
-func _sig_combat_ended(reason: String) -> void:
+func _sig_combat_ended(reason: String, completed: Dictionary = {}) -> void:
+	var payload: Dictionary = (context if completed.is_empty() else completed).duplicate(true)
+	payload["reason"] = reason
+	# Gameplay transitions must run during silent catch-up too.
+	RaidManager._on_combat_ended(payload)
 	if not SimulationMode.is_silent():
-		EventBus.combat_ended.emit({"reason": reason})
+		EventBus.combat_ended.emit(payload)
 
 func _sig_monster_spawned(monster_id: String, hp: int) -> void:
 	if not SimulationMode.is_silent():
@@ -213,6 +217,7 @@ func start_combat(ctx: Dictionary) -> bool:
 ## Retreat. Always available, never punished.
 func stop_combat(reason: String = "") -> void:
 	var was_active: bool = state != State.IDLE
+	var completed: Dictionary = context.duplicate(true)
 	state = State.IDLE
 	current_monster_id = ""
 	context = {}
@@ -220,7 +225,7 @@ func stop_combat(reason: String = "") -> void:
 	monster_effects.clear()
 	respawn_timer = 0.0
 	if was_active:
-		_sig_combat_ended("retreat" if reason == "" else reason)
+		_sig_combat_ended("retreat" if reason == "" else reason, completed)
 		EventBus.activity_changed.emit()
 
 func _monster_sequence() -> Array:
@@ -303,21 +308,19 @@ func tick(delta: float) -> void:
 			pass
 
 func _tick_fighting(delta: float) -> void:
-	if _is_player_stunned():
-		return
 	player_attack_interval = maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed()))
 	if _in_raid():
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
 	monster_attack_interval = maxf(0.25, float(DataLoader.get_monster(current_monster_id).get("attack_speed", 3.0)))
-	player_attack_timer += delta
-	monster_attack_timer += delta
+	if not _is_player_stunned(): player_attack_timer += delta
+	if not CombatSimulator._blocked(monster_effects): monster_attack_timer += delta
 	var guard: int = 0
-	while player_attack_timer >= player_attack_interval and state == State.FIGHTING and guard < 512:
+	while player_attack_timer >= player_attack_interval and state == State.FIGHTING and guard < 512 and not _is_player_stunned():
 		guard += 1
 		player_attack_timer -= player_attack_interval
 		_player_attack()
 	guard = 0
-	while monster_attack_timer >= monster_attack_interval and state == State.FIGHTING and guard < 512:
+	while monster_attack_timer >= monster_attack_interval and state == State.FIGHTING and guard < 512 and not CombatSimulator._blocked(monster_effects):
 		guard += 1
 		monster_attack_timer -= monster_attack_interval
 		_monster_attack()
@@ -403,10 +406,10 @@ func _begin_fight_clock() -> void:
 	_fight_dps_clock_start = _fight_clock
 	_fight_damage_start = session_damage_dealt
 
-func _player_accuracy(style: String) -> int:
+func _player_accuracy(style: String, selected_melee: String = "") -> int:
 	var attack_key: String = "stab"
 	if style == "melee":
-		attack_key = melee_style
+		attack_key = melee_style if selected_melee == "" else selected_melee
 	elif style == "ranged":
 		attack_key = "ranged_attack"
 	else:
@@ -422,10 +425,18 @@ func _player_accuracy(style: String) -> int:
 	return CombatFormulas.accuracy_rating(eff, EquipmentManager.get_attack_bonus(attack_key),
 		ModifierManager.get_accuracy_percent(style))
 
+## Every magic attack casts the spell of the equipped staff, and the spell's base max hit is what
+## makes a better staff hit harder. Weapons that declare no spell keep the old fixed base of 10.
+const DEFAULT_SPELL_MAX_HIT: float = 10.0
+
+func _spell_max_hit() -> float:
+	var weapon: Dictionary = DataLoader.get_item(EquipmentManager.get_equipped(ItemData.EquipmentSlot.WEAPON))
+	return float(weapon.get("spell_max_hit", DEFAULT_SPELL_MAX_HIT))
+
 func _player_max_hit(style: String) -> int:
 	if style == "magic":
 		var eff_magic: int = _player_effective("magic")
-		return CombatFormulas.max_hit_magic(10.0, float(EquipmentManager.get_strength_bonus("magic")),
+		return CombatFormulas.max_hit_magic(_spell_max_hit(), float(EquipmentManager.get_strength_bonus("magic")),
 			eff_magic, ModifierManager.get_max_hit_percent("magic"), ModifierManager.get_max_hit_flat("magic"))
 	var strength_skill: String = "strength" if style == "melee" else "ranged"
 	var eff: int = _player_effective(strength_skill)
@@ -452,16 +463,18 @@ func _player_evasion_for(monster_style: String) -> int:
 		ModifierManager.get_evasion_percent(monster_style))
 
 ## Public read-only summary so the UI can show stat comparisons without duplicating maths.
-func player_combat_summary() -> Dictionary:
+func player_combat_summary(style: String = "", selected_melee: String = "") -> Dictionary:
+	var use_style: String = attack_style if style == "" else style
+	var use_melee: String = melee_style if selected_melee == "" else selected_melee
 	return {
 		"max_hp": _compute_max_hp(),
 		"hp": player_hp,
-		"style": attack_style,
-		"melee_style": melee_style,
-		"accuracy": _player_accuracy(attack_style),
-		"max_hit": _player_max_hit(attack_style),
+		"style": use_style,
+		"melee_style": use_melee,
+		"accuracy": _player_accuracy(use_style, use_melee),
+		"max_hit": _player_max_hit(use_style),
 		"attack_interval": maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed())),
-		"damage_reduction": ModifierManager.get_damage_reduction(),
+		"damage_reduction": clampf(ModifierManager.get_damage_reduction() + EquipmentManager.get_damage_reduction(), 0.0, 90.0),
 		"evasion": {
 			"melee": _player_evasion_for("melee"),
 			"ranged": _player_evasion_for("ranged"),
@@ -496,6 +509,15 @@ func target_comparison() -> Dictionary:
 func _player_attack() -> void:
 	if state != State.FIGHTING:
 		return
+	# Arrows and runes are spent per swing, not per hit, so a miss still costs a shot. The
+	# Marksmanship skillcapes refund a share of them; CombatFormulas keeps this identical to the
+	# simulator's depletion model.
+	var weapon_cost: Dictionary = DataLoader.get_item(EquipmentManager.get_equipped(8)).get("attack_cost_items", {})
+	var attack_cost: Dictionary = CombatFormulas.ammo_cost(_rng, weapon_cost,
+		ModifierManager.get_modifier(ModifierKeys.AMMO_PRESERVATION_PERCENT))
+	if not bool(BankManager.consume_bundle(attack_cost).ok):
+		stop_combat("supplies exhausted")
+		return
 	PrayerManager.spend_for_attack()   # active prayers cost points per attack
 	PotionManager.consume_charge()
 	var m: Dictionary = DataLoader.get_monster(current_monster_id)
@@ -529,6 +551,7 @@ func _player_attack() -> void:
 		var heal_frac: float = float(sa.get("heal_fraction", 0.0))
 		if heal_frac > 0.0:
 			player_hp = minf(player_hp + float(dmg) * heal_frac, _compute_max_hp())
+	EnchantingManager.on_hit(dmg)
 	apply_damage_to_monster(dmg)
 	_sig_player_attacked(dmg, is_crit)
 	_record_damage(dmg)
@@ -684,6 +707,7 @@ func _on_monster_death() -> void:
 		respawn_timer = respawn
 
 func _grant_loot(m: Dictionary) -> void:
+	EngineeringManager.on_kill(m)
 	var gp_pct: float = 1.0 + ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) / 100.0
 	var dbl: float = ModifierManager.get_modifier(ModifierKeys.GLOBAL_DOUBLE_LOOT_PERCENT)
 	for drop in m.get("loot_table", []):
@@ -872,7 +896,7 @@ func _auto_eat() -> void:
 	var threshold: float = float(cfg["threshold"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT)
 	if pct > threshold:
 		return
-	var eff: float = (float(cfg["efficiency"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_EFFICIENCY_PERCENT)) / 100.0
+	var eff: float = float(cfg["efficiency"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_EFFICIENCY_PERCENT)
 	consume_food(find_food(), eff, "Auto-eat")
 
 ## Eat one food from the bank and heal. The single place food becomes health: auto-eat, the manual
@@ -977,6 +1001,10 @@ func serialize() -> Dictionary:
 		"state": state, "context": context, "monster_id": current_monster_id,
 		"monster_hp": monster_hp, "player_hp": player_hp, "attack_style": attack_style,
 		"melee_style": melee_style, "respawn_timer": respawn_timer,
+		"player_attack_timer": player_attack_timer, "monster_attack_timer": monster_attack_timer,
+		"monster_max_hp": monster_max_hp,
+		"player_effects": player_effects.map(func(effect): return effect.serialize()),
+		"monster_effects": monster_effects.map(func(effect): return effect.serialize()),
 	}
 
 func deserialize(d: Dictionary) -> void:
@@ -989,10 +1017,24 @@ func deserialize(d: Dictionary) -> void:
 	melee_style = str(d.get("melee_style", "stab"))
 	respawn_timer = maxf(0.0, float(d.get("respawn_timer", 0.0)))
 	player_max_hp = _compute_max_hp()
+	player_attack_timer = maxf(0.0, float(d.get("player_attack_timer", 0)))
+	monster_attack_timer = maxf(0.0, float(d.get("monster_attack_timer", 0)))
+	if not is_finite(player_attack_timer): player_attack_timer = 0
+	if not is_finite(monster_attack_timer): monster_attack_timer = 0
+	player_effects.clear()
+	monster_effects.clear()
+	for key in ["player_effects", "monster_effects"]:
+		var values: Variant = d.get(key, [])
+		if values is Array:
+			for value in values.slice(0, 64):
+				var effect: StatusEffect = StatusEffect.from_save(value)
+				if effect != null:
+					if key == "player_effects": player_effects.append(effect)
+					else: monster_effects.append(effect)
 	# A fight that cannot be reconstructed (content changed, or the save is older than the
 	# region) is dropped cleanly rather than resumed against a missing monster.
 	if not DataLoader.get_monster(current_monster_id).is_empty():
-		monster_max_hp = maxi(1, int(DataLoader.get_monster(current_monster_id).get("hitpoints", monster_hp)))
+		monster_max_hp = maxi(1, int(d.get("monster_max_hp", DataLoader.get_monster(current_monster_id).get("hitpoints", monster_hp))))
 	elif state != State.IDLE:
 		push_warning("CombatManager: dropping unreconstructable fight in '%s'" % str(context.get("id", "")))
 		state = State.IDLE

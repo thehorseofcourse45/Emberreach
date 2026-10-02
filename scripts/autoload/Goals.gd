@@ -207,7 +207,12 @@ func _resolve_recipe(recipe_key: String) -> Dictionary:
 					out["prerequisite_recipes"].append(r)
 			if not chain["cycle"].is_empty():
 				out["cycle"] = chain["cycle"]
-			out["sources"].append_array(sources_for_item(str(item_id)))
+			# Tagged with the material they resolve: a goal with two missing ingredients would
+			# otherwise present one undifferentiated list of routes.
+			for source in sources_for_item(str(item_id)):
+				var tagged: Dictionary = source
+				tagged["for"] = str(DataLoader.get_item(str(item_id)).get("name", item_id))
+				out["sources"].append(tagged)
 	var tool: String = str(action.get("required_tool", ""))
 	if tool != "":
 		var owned: bool = PlayerData.shop_upgrades.has(tool)
@@ -216,16 +221,19 @@ func _resolve_recipe(recipe_key: String) -> Dictionary:
 			"current": 1 if owned else 0, "required": 1, "satisfied": owned,
 			"hint": "Buy it in the Provisioner",
 		})
+	var ready: bool = level_ok and all_inputs_ok
 	var outputs: Dictionary = action.get("output_items", {})
 	if not outputs.is_empty():
 		var produced: int = int(outputs.values()[0])
 		out["produces"] = {"item_id": str(outputs.keys()[0]), "quantity": produced,
 			"name": DataLoader.get_item(str(outputs.keys()[0])).get("name", str(outputs.keys()[0]))}
 		var held: int = BankManager.get_count(str(outputs.keys()[0]))
-		out["progress_current"] = held
+		# A recipe goal is satisfied as soon as nothing blocks it, so the bar has to agree: reading
+		# "0 / 1" next to the word "complete" is what made this card look broken.
+		out["progress_current"] = produced if ready else mini(held, produced)
 		out["progress_required"] = produced
-		out["progress"] = 1.0
-		out["complete"] = level_ok and all_inputs_ok
+		out["progress"] = 1.0 if ready else clampf(float(held) / float(maxi(produced, 1)), 0.0, 1.0)
+		out["complete"] = ready
 	else:
 		out["complete"] = level_ok and all_inputs_ok
 		out["progress"] = 1.0 if out["complete"] else 0.0
@@ -343,8 +351,14 @@ func _material_chain(item_id: String, needed: int, visited_items: Dictionary, de
 		var skill_id: String = prod["skill_id"]
 		var action_id: String = prod["action_id"]
 		var action: Dictionary = prod["action"]
-		var yield_qty: int = maxi(1, int(action.get("output_items", {}).get(item_id, 1)))
-		var runs: int = int(ceil(float(needed) / float(yield_qty)))
+		var byproduct: bool = bool(prod.get("byproduct", false))
+		var chance: float = clampf(float(prod.get("chance", 1.0)), 0.0, 1.0)
+		var yield_qty: int = maxi(1, int(prod.get("max_qty", 1))) if byproduct \
+			else maxi(1, int(action.get("output_items", {}).get(item_id, 1)))
+		# A byproduct arrives by accident once in a while, so the runs it takes is scaled by its
+		# chance: one diamond at 3% is about thirty-four mining actions, not one.
+		var per_action: float = float(yield_qty) * (chance if byproduct else 1.0)
+		var runs: int = int(ceil(float(needed) / maxf(0.0001, per_action)))
 		out["recipes"].append({
 			"kind": "recipe", "id": "%s:%s" % [skill_id, action_id],
 			"label": "%s ×%d" % [action.get("name", action_id), runs],
@@ -352,6 +366,7 @@ func _material_chain(item_id: String, needed: int, visited_items: Dictionary, de
 			"level_required": int(action.get("level_required", 1)),
 			"unlocked": PlayerData.get_level(skill_id) >= int(action.get("level_required", 1)),
 			"per_craft": yield_qty, "runs_needed": runs,
+			"byproduct": byproduct, "chance": chance,
 		})
 		for input_id in (action.get("input_items", {}) as Dictionary).keys():
 			var per_run: int = int(action["input_items"][input_id])
@@ -380,9 +395,14 @@ func _material_chain(item_id: String, needed: int, visited_items: Dictionary, de
 		break   # explain the best (lowest-level) producer only, to keep the panel readable
 	return out
 
-## Did any action produce this item? (i.e. is it player-made rather than gathered directly)
+## Did any action produce this item as its main output? (i.e. is it player-made rather than
+## gathered directly). Byproducts are excluded on purpose: a gem is not crafted, it turns up while
+## something else is being made, so walking its inputs as if it were a recipe would invent a
+## dependency the player never needs.
 func _is_crafted(item_id: String) -> bool:
 	for prod in _producer_recipes(item_id):
+		if bool(prod.get("byproduct", false)):
+			continue
 		if not (prod["action"].get("input_items", {}) as Dictionary).is_empty():
 			return true
 	return false
@@ -393,15 +413,29 @@ func _has_entry(list: Array, entry: Dictionary) -> bool:
 			return true
 	return false
 
-## Every recipe that yields `item_id`, sorted so the lowest level requirement comes first.
+## Every recipe that yields `item_id` — as its main output, or as one of its secondary outputs —
+## sorted so the lowest level requirement comes first. Byproducts count as producers: gems come out
+## of ore, arrow tips out of a smelt, seeds out of a pocket, the archaeology shard out of any dig.
+## Leaving them out is what made the pane call eighty obtainable items unfinished content.
+## Each entry is {skill_id, action_id, action, byproduct, chance, max_qty}.
 func _producer_recipes(item_id: String) -> Array:
 	var out: Array = []
 	for skill_id in DataLoader.skills.keys():
 		for a in DataLoader.get_skill_actions(skill_id):
 			if typeof(a) != TYPE_DICTIONARY:
 				continue
-			if (a.get("output_items", {}) as Dictionary).has(item_id):
-				out.append({"skill_id": skill_id, "action_id": str(a.get("id", "")), "action": a})
+			var action: Dictionary = a
+			if (action.get("output_items", {}) as Dictionary).has(item_id):
+				out.append({"skill_id": skill_id, "action_id": str(action.get("id", "")), "action": action,
+					"byproduct": false, "chance": 1.0, "max_qty": 1})
+				continue
+			for sec in (action.get("secondary_outputs", []) as Array):
+				if typeof(sec) != TYPE_DICTIONARY or str((sec as Dictionary).get("item_id", "")) != item_id:
+					continue
+				out.append({"skill_id": skill_id, "action_id": str(action.get("id", "")), "action": action,
+					"byproduct": true,
+					"chance": clampf(float((sec as Dictionary).get("chance", 1.0)), 0.0, 1.0),
+					"max_qty": maxi(1, int((sec as Dictionary).get("max_qty", 1)))})
 	out.sort_custom(func(x, y):
 		return int(x["action"].get("level_required", 1)) < int(y["action"].get("level_required", 1)))
 	return out
@@ -413,8 +447,61 @@ func sources_for_item(item_id: String) -> Array:
 	var out: Array = []
 	if item_id == "" or not DataLoader.items.has(item_id):
 		return out
+	# Special systems use the same source card contract as recipes and drops.
+	for sid in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(str(sid)):
+			var prefix: String = str(action.get("quality_product", ""))
+			if prefix != "" and item_id.begins_with(prefix + "_"):
+				out.append({"kind": "craft", "label": str(action.name), "detail": "Scribe quality varies with mastery; research prerequisite: " + str(action.get("requires_research", "none")), "level_required": int(action.level_required), "unlocked": PlayerData.get_level(str(sid)) >= int(action.level_required), "route": {"screen": "skills", "skill_id": sid, "action_id": action.id}})
+	for animal in DataLoader.new_skill_systems.get("species", []):
+		# What a pen hands over: the produce you collect, the stock you breed, and the hide and
+		# meat that come off each collection. Only the first two used to be listed, so hides and
+		# meat read as unobtainable on the card even though RanchingManager grants both.
+		var harvested: Array[String] = [str(animal.stock), str(animal.produce), str(animal.get("hide", ""))]
+		if int(animal.get("meat", 0)) > 0:
+			harvested.append("ranch_meat")
+		if not harvested.has(item_id):
+			continue
+		out.append({"kind": "passive", "label": str(animal.name) + " ranch", "detail": "Collect produce, hide and meat; breed a happy pair every six hours for stock (rare hen/cow variants possible).", "level_required": int(animal.level), "unlocked": PlayerData.get_level("ranching") >= int(animal.level), "route": {"screen": "skills", "skill_id": "ranching"}})
+	# The ranching system's own consumables: feed is rendered from crops, manure falls out of the
+	# pen's cycle, and the two rare breeding variants are named by the tables that roll them.
+	for system_item in [["ranch_feed", "Rendered from crops at the ranch, ten bags per crop"],
+			["ranch_manure", "Cleaned out of a pen as its cycles complete"],
+			["golden_hen_stock", "The rare variant a hen pen can breed"],
+			["mooncalf_stock", "The rare variant a cow pen can breed"]]:
+		if item_id != str(system_item[0]) or not DataLoader.items.has(str(system_item[0])):
+			continue
+		out.append({"kind": "passive", "label": "Ranching", "detail": str(system_item[1]), "level_required": 1, "unlocked": true, "route": {"screen": "skills", "skill_id": "ranching"}})
+	if item_id.begins_with("enchant_") and item_id.ends_with("_essence"):
+		out.append({"kind": "recycle", "label": "Disenchant equipment", "detail": "Destroy one unprotected piece; scope determines Essence type. Higher-level gear grants more.", "level_required": 1, "unlocked": true, "route": {"screen": "skills", "skill_id": "enchanting"}})
+	if item_id.begins_with("enchanted__"):
+		out.append({"kind": "craft", "label": "Enchanting bench", "detail": "Enchant one owned piece using Essence, runes and tier catalysts.", "level_required": 1, "unlocked": true, "route": {"screen": "skills", "skill_id": "enchanting"}})
+	for offer in DataLoader.new_skill_systems.get("bazaar", []):
+		if offer.get("items", {}).has(item_id): out.append({"kind": "shop", "label": str(offer.name), "detail": "%d Dream Essence in the Dream Bazaar" % int(offer.cost), "level_required": 1, "unlocked": BankManager.get_count("dream_essence") >= int(offer.cost), "route": {"screen": "skills", "skill_id": "dreamwalking"}})
+	if item_id == "dream_essence": out.append({"kind": "passive", "label": "Dreamwalking", "detail": "Allocate offline time to a dreamscape, then collect Essence on your return.", "level_required": 1, "unlocked": true, "route": {"screen": "skills", "skill_id": "dreamwalking"}})
+	# A familiar's mark is awarded by that familiar's own skill while it is bonded and summoned.
+	# Twenty-six of them read as unfinished content because this one table was never consulted.
+	for familiar_id in DataLoader.familiars.keys():
+		var familiar: Dictionary = DataLoader.familiars[familiar_id]
+		if str(familiar.get("mark_item", "")) != item_id:
+			continue
+		var mark_skill: String = str(familiar.get("mark_skill", ""))
+		out.append({"kind": "passive", "label": "%s familiar" % str(familiar.get("name", familiar_id)),
+			"detail": "Bond it, summon it, then train %s to be awarded its mark" % str(DataLoader.get_skill(mark_skill).get("name", mark_skill)),
+			"level_required": 1, "unlocked": true,
+			"route": {"screen": "skills", "skill_id": "summoning" if mark_skill == "" else mark_skill}})
+	# A farmed crop is defined by the seed that grows it: `product_item` on the seed is the yield.
+	for seed_id in DataLoader.items.keys():
+		var seed_item: Dictionary = DataLoader.items[seed_id]
+		if str(seed_item.get("item_type", "")) != "seed" or str(seed_item.get("product_item", "")) != item_id:
+			continue
+		out.append({"kind": "passive", "label": "Harvest %s" % str(seed_item.get("name", seed_id)),
+			"detail": "Plant the seed in a farm plot and harvest the crop",
+			"level_required": 1, "unlocked": true, "route": {"screen": "farm"}})
 	# 1. Direct gathering (a recipe with no inputs).
 	for prod in _producer_recipes(item_id):
+		if bool(prod.get("byproduct", false)):
+			continue
 		var action: Dictionary = prod["action"]
 		if (action.get("input_items", {}) as Dictionary).is_empty():
 			out.append({
@@ -426,6 +513,8 @@ func sources_for_item(item_id: String) -> Array:
 			})
 	# 2. Crafting recipes.
 	for prod in _producer_recipes(item_id):
+		if bool(prod.get("byproduct", false)):
+			continue
 		var a2: Dictionary = prod["action"]
 		if not (a2.get("input_items", {}) as Dictionary).is_empty():
 			out.append({
@@ -436,6 +525,21 @@ func sources_for_item(item_id: String) -> Array:
 				"unlocked": PlayerData.get_level(prod["skill_id"]) >= int(a2.get("level_required", 1)),
 				"route": {"screen": "skill", "skill_id": prod["skill_id"], "action_id": prod["action_id"]},
 			})
+	# 3. Byproducts: the action's purpose is something else, but it hands this over on the side.
+	# Stating the roll matters — "mine adamantite" is not advice unless it says three per cent.
+	for prod in _producer_recipes(item_id):
+		if not bool(prod.get("byproduct", false)):
+			continue
+		var a3: Dictionary = prod["action"]
+		out.append({
+			"kind": "byproduct",
+			"label": "%s (%s)" % [str(a3.get("name", prod["action_id"])),
+				str(DataLoader.get_skill(prod["skill_id"]).get("name", prod["skill_id"]))],
+			"detail": "Side drop: %s per action while you train it" % UIStyle.fmt_percent(float(prod.get("chance", 0.0))),
+			"level_required": int(a3.get("level_required", 1)),
+			"unlocked": PlayerData.get_level(prod["skill_id"]) >= int(a3.get("level_required", 1)),
+			"route": {"screen": "skill", "skill_id": prod["skill_id"], "action_id": prod["action_id"]},
+		})
 	# 3. Monster drops.
 	for monster_id in DataLoader.monsters.keys():
 		var m: Dictionary = DataLoader.monsters[monster_id]
@@ -522,8 +626,88 @@ func sources_for_item(item_id: String) -> Array:
 			"level_required": 0,
 			"unlocked": building == "" or TownshipManager.level_of(building) > 0,
 			"route": {"screen": "settlement"}})
-	if out.size() > MAX_SOURCES_PER_ITEM + 2:
-		out = out.slice(0, MAX_SOURCES_PER_ITEM + 2)
+	# 8. Tasks and milestones hand items over on claim. Both were invisible here, so a reward item
+	# read as unobtainable even though the screen that grants it said otherwise.
+	for quest_id in Quests.all_quest_ids():
+		var quest_reward: Dictionary = Quests.get_quest(quest_id).get("reward", {})
+		if not ((quest_reward.get("items", {}) as Dictionary).has(item_id)
+				or (quest_reward.get("unlock_items", {}) as Dictionary).has(item_id)):
+			continue
+		out.append({"kind": "quest", "label": str(Quests.get_quest(quest_id).get("name", quest_id)),
+			"detail": "Task reward — claim it on the Tasks screen", "level_required": 0, "unlocked": true,
+			"route": {"screen": "quests", "quest_id": quest_id}})
+	for achievement_id in Achievements.all_ids():
+		var milestone: Dictionary = Achievements.get_record(achievement_id)
+		if not (((milestone.get("reward", {}) as Dictionary).get("items", {}) as Dictionary).has(item_id)):
+			continue
+		out.append({"kind": "milestone", "label": str(milestone.get("name", achievement_id)),
+			"detail": "Milestone reward — claim it on the Milestones screen", "level_required": 0,
+			"unlocked": true, "route": {"screen": "achievements"}})
+	# 9. The shops with their own currencies: Slayer Coins, Museum Tokens, and the raid pool you
+	# choose from after a clear. None of them is GP, so none of them was in the shop pass above.
+	var slayer_cost: int = int(DataLoader.get_item(item_id).get("slayer_cost", 0))
+	if slayer_cost > 0:
+		out.append({"kind": "shop", "label": "Slayer rewards",
+			"detail": "%d Slayer Coins, on the Huntsman screen" % slayer_cost, "level_required": 0,
+			"unlocked": PlayerData.slayer_coins >= slayer_cost,
+			"route": {"screen": "skills", "skill_id": "slayer"}})
+	for entry_id in DataLoader.shop_museum.keys():
+		var curio: Variant = DataLoader.shop_museum[entry_id]
+		if typeof(curio) != TYPE_DICTIONARY:
+			continue
+		if not ((curio as Dictionary).get("grant_items", {}) as Dictionary).has(item_id):
+			continue
+		var token_cost: int = int((curio as Dictionary).get("cost", 0))
+		out.append({"kind": "shop", "label": str((curio as Dictionary).get("name", entry_id)),
+			"detail": "Museum shop · %d Museum Tokens" % token_cost, "level_required": 0,
+			"unlocked": ArchaeologyManager.tokens >= token_cost,
+			"route": {"screen": "skills", "skill_id": "archaeology"}})
+	if (DataLoader.raid_shop.get("alt_items", []) as Array).has(item_id):
+		out.append({"kind": "reward", "label": "Raid reward pool",
+			"detail": "Chosen after a completed raid", "level_required": 0, "unlocked": true,
+			"route": {"screen": "raids"}})
+	# 10. The failure output of an action: burnt food is what Cookery hands over when it goes wrong.
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			if str((action as Dictionary).get("fail_output_item", "")) != item_id:
+				continue
+			out.append({"kind": "byproduct",
+				"label": "%s (%s)" % [str((action as Dictionary).get("name", "")),
+					str(DataLoader.get_skill(str(skill_id)).get("name", str(skill_id)))],
+				"detail": "Produced when the action burns instead of succeeding",
+				"level_required": int((action as Dictionary).get("level_required", 1)), "unlocked": true,
+				"route": {"screen": "skill", "skill_id": str(skill_id), "action_id": str((action as Dictionary).get("id", ""))}})
+	return _diversify(out, MAX_SOURCES_PER_ITEM + 2)
+
+## One row per route type before a type repeats, then truncated to `limit`. The pane is a summary,
+## and the item with the most routes is usually the item with eleven ways to do the same thing: ash
+## was showing six near-identical "burn a log" rows while the task that hands it over went unshown.
+func _diversify(entries: Array, limit: int) -> Array:
+	var buckets: Dictionary = {}
+	var order: Array[String] = []
+	for entry in entries:
+		var kind: String = str((entry as Dictionary).get("kind", ""))
+		if not buckets.has(kind):
+			buckets[kind] = []
+			order.append(kind)
+		(buckets[kind] as Array).append(entry)
+	var out: Array = []
+	var round_index: int = 0
+	while out.size() < limit:
+		var added: bool = false
+		for kind in order:
+			var bucket: Array = buckets[kind]
+			if round_index >= bucket.size():
+				continue
+			out.append(bucket[round_index])
+			added = true
+			if out.size() >= limit:
+				break
+		if not added:
+			break
+		round_index += 1
 	return out
 
 func routes_for_item(item_id: String) -> Array:

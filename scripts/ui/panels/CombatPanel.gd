@@ -162,6 +162,22 @@ func _rebuild_prep() -> void:
 	_prep_box.add_child(Widgets.key_value("Evasion vs melee / ranged / magic",
 		"%s / %s / %s" % [UIStyle.fmt(float(evasion["melee"])), UIStyle.fmt(float(evasion["ranged"])), UIStyle.fmt(float(evasion["magic"]))]))
 	_prep_box.add_child(Widgets.key_value("Damage reduction", UIStyle.fmt_percent(float(summary["damage_reduction"]) / 100.0), UITokens.TEAL))
+	var forecast: Dictionary = PrayerManager.runway()
+	_prep_box.add_child(Widgets.key_value("Prayer supply", "%.0f points · %.1f/min · %s" % [PlayerData.prayer_points, float(forecast.per_minute), "no drain" if is_inf(float(forecast.seconds)) else UIStyle.fmt_duration(float(forecast.seconds))]))
+	for id in EquipmentManager.food_slots:
+		if id != "": _prep_box.add_child(Widgets.key_value(str(DataLoader.get_item(id).get("name", id)), "%d portions · %d HP each (manual)" % [BankManager.get_count(id), int(float(DataLoader.get_item(id).get("heal_amount", 0)) * (1.0 + ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT) / 100.0))]))
+	var target: String = CombatManager.current_monster_id
+	if target == "" and _selected_area != "":
+		var place: Dictionary = DataLoader.get_dungeon(_selected_area) if DataLoader.dungeons.has(_selected_area) else DataLoader.areas.get(_selected_area, {})
+		if not place.get("monsters", []).is_empty(): target = str(place.monsters[0])
+	if target != "":
+		var enemy: Dictionary = DataLoader.get_monster(target)
+		var evasion_key: String = str(summary.style) + "_evasion"
+		var tri: Dictionary = CombatFormulas.triangle(str(summary.style), str(enemy.get("attack_type", "melee")), DataLoader.game_modes.get(PlayerData.game_mode, {}))
+		var chance: float = clampf(CombatFormulas.chance_to_hit(float(summary.accuracy), float(enemy.get(evasion_key, 10))) + float(tri.accuracy_percent) + float(CombatManager._active_hazard().get("player_accuracy_percent", 0)), 0, 100)
+		var mh: int = maxi(1, floori(float(summary.max_hit) * (1.0 + float(tri.damage_percent) / 100.0)))
+		var mn: int = CombatFormulas.min_hit(mh, ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0, ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT))
+		_prep_box.add_child(Widgets.key_value("Expected normal hit vs " + str(enemy.get("name", target)), "≈ %.1f damage · %.1f%% hit chance" % [float(mn + mh) * 0.5 * chance / 100.0 * (1.0 - float(enemy.get("damage_reduction", 0)) / 100.0), chance], UITokens.RED))
 	var food: int = _food_count()
 	# A count of 0 is not self-evidently a problem, so the glyph states it, not just the red.
 	_prep_box.add_child(Widgets.key_value("Food in storage", "%s %s" % [
@@ -398,6 +414,22 @@ func _rebuild_places() -> void:
 	var levels: Array = place.get("level_range", [])
 	if levels.size() == 2:
 		col.add_child(Widgets.key_value("Enemy levels", "%d – %d" % [int(levels[0]), int(levels[1])]))
+	var identity: Dictionary = {}
+	for monster_id in place.get("monsters", []):
+		for drop in DataLoader.get_monster(str(monster_id)).get("loot_table", []):
+			var id: String = str(drop.get("item_id", ""))
+			if id != "": identity[id] = 1
+	if not identity.is_empty():
+		col.add_child(UIStyle.label("Encounter rewards", true, UITokens.FONT_MICRO))
+		col.add_child(Widgets.item_rewards(identity))
+	if is_dungeon:
+		var cleared: bool = PlayerData.completion_log.get("dungeons", {}).has(_selected_area)
+		col.add_child(Widgets.requirement_row("First clear recorded", 1.0 if cleared else 0.0, 1.0, cleared))
+	if not is_dungeon:
+		var defeated: int = 0
+		for id in place.get("monsters", []):
+			if PlayerData.completion_log.get("monsters", {}).has(str(id)): defeated += 1
+		col.add_child(Widgets.requirement_row("First defeat checklist", defeated, place.get("monsters", []).size(), defeated == place.get("monsters", []).size()))
 	col.add_child(Widgets.key_value("Enemies in this zone", str((place.get("monsters", []) as Array).size())))
 	if not is_dungeon and typeof(place.get("hazard", {})) == TYPE_DICTIONARY and not (place.get("hazard", {}) as Dictionary).is_empty():
 		col.add_child(UIStyle.colored_label("Hazard — %s" % str((place["hazard"] as Dictionary).get("label", "hostile ground")),

@@ -57,6 +57,7 @@ func run_all(host: Node) -> void:
 	_test_unobtainable_content()
 	_test_raid_shop_upgrades_are_real()
 	_test_melee_tier_ladder()
+	_test_gear_ladder_gap()
 	_test_quest_coverage()
 	await _test_xp_updates_live(host)
 	await _test_cooking_failure_burns_materials(host)
@@ -67,6 +68,18 @@ func run_all(host: Node) -> void:
 	_test_general_store()
 	_test_endgame_crafting_chains()
 	_test_monster_passives()
+	_test_monster_ladder()
+	_test_dungeon_ladder()
+	_test_raw_fish_are_consumed()
+	_test_outputs_are_consumed()
+	_test_balance_report_builds()
+	_test_bottleneck_declarations()
+	_test_study_ramp_rises()
+	_test_action_xp_ladders()
+	_test_mastery_metadata()
+	await _test_detail_cards(host)
+	_test_attack_costs()
+	_test_magic_gear()
 	_test_dungeon_sequencing()
 	_test_session_meters()
 	_test_equipment_upgrade()
@@ -855,10 +868,10 @@ func _test_prayer_expansion(host: Node) -> void:
 	var list: VBoxContainer = panel.get("_list")
 	filter.select(0)
 	panel.call("_rebuild")
-	_ok(list.get_child_count() == 60, "the list previews every future prayer unlock")
+	_ok(_prayer_cards(list) == 60, "the list previews every future prayer unlock")
 	filter.select(1)
 	panel.call("_rebuild")
-	_ok(list.get_child_count() == 1, "Unlocked shows only the level-one prayer on a new save")
+	_ok(_prayer_cards(list) == 1, "Unlocked shows only the level-one prayer on a new save")
 	filter.select(0)
 	panel.call("_rebuild")
 	for screen in [Screens.ACTION_QUEUE, Screens.COMBAT_SIMULATOR, Screens.PRAYERS, Screens.RAIDS, Screens.SETTINGS]:
@@ -928,8 +941,8 @@ func _test_husbandry(host: Node) -> void:
 	# Compost.
 	_ok(not FarmingManager.apply_compost(2), "compost cannot be applied with none in storage")
 	BankManager.add_item("compost", 2)
-	_ok(FarmingManager.apply_compost(0), "compost applies to a plot")
-	_ok(int(FarmingManager.plots[0]["compost"]) == 1, "the plot records its compost")
+	_ok(not FarmingManager.apply_compost(0) and FarmingManager.apply_compost(3), "compost only applies before planting")
+	_ok(int(FarmingManager.plots[3]["compost"]) == 1, "the plot records its compost")
 	# Growth and harvest.
 	_ok(not FarmingManager.is_ready(0), "a fresh planting is not ready yet")
 	FarmingManager.plots[0]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
@@ -1930,6 +1943,264 @@ func _test_monster_passives() -> void:
 			_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(str(passive_id)),
 				"monster '%s' passive '%s' is implemented" % [monster_id, str(passive_id)])
 	_ok(with_passives >= 10, "a meaningful share of the roster carries a passive (%d)" % with_passives)
+
+## Combat skills level from fighting, so their content is the monster ladder. It has to rise
+## without a hole: a twenty-level stretch with nothing new to kill is dead progression for four
+## skills at once, which is what the 90-104 stretch was. Every monster also has to be reachable
+## and every special attack has to be carried by something.
+func _test_monster_ladder() -> void:
+	_heading("The monster ladder rises without a hole")
+	var by_level: Array = []
+	for monster_id in DataLoader.monsters.keys():
+		by_level.append({"id": str(monster_id), "level": int(DataLoader.get_monster(str(monster_id)).get("combat_level", 0))})
+	by_level.sort_custom(func(a, b): return int(a["level"]) < int(b["level"]))
+	_ok(by_level.size() >= 40, "the roster is populated (%d monsters)" % by_level.size())
+	var previous: int = -1
+	var worst_gap: int = 0
+	for row in by_level:
+		var level: int = int(row["level"])
+		if previous >= 0 and level <= 120:
+			worst_gap = max(worst_gap, level - previous)
+		previous = level
+	_ok(worst_gap <= 12, "no stretch of the ladder is empty for more than 12 levels (worst %d)" % worst_gap)
+	# Every ten-level band a player passes through has something to fight in it, so no band of the
+	# 1-120 climb is served by nothing.
+	var bands: Dictionary = {}
+	for row in by_level:
+		var level: int = int(row["level"])
+		if level > 120:
+			continue
+		var band: int = int(floor(float(level - 1) / 10.0))
+		bands[band] = int(bands.get(band, 0)) + 1
+	for band in range(0, 12):
+		_ok(int(bands.get(band, 0)) >= 1,
+			"the %d-%d band has a monster to fight (%d)" % [band * 10 + 1, band * 10 + 10, int(bands.get(band, 0))])
+	# Reachability: a monster in no area and no dungeon has no encounter, so its drops and its
+	# slayer assignments are unreachable. ContentValidator warns about the same thing.
+	var placed: Dictionary = {}
+	for area_id in DataLoader.areas.keys():
+		for mid in (DataLoader.areas[area_id] as Dictionary).get("monsters", []):
+			placed[str(mid)] = true
+	for dungeon_id in DataLoader.dungeons.keys():
+		for mid in (DataLoader.dungeons[dungeon_id] as Dictionary).get("monsters", []):
+			placed[str(mid)] = true
+	for monster_id in DataLoader.monsters.keys():
+		_ok(placed.has(str(monster_id)), "monster '%s' can be found somewhere" % monster_id)
+	# Special attacks are only shipped content if a monster carries them.
+	var carried: Dictionary = {}
+	for monster_id in DataLoader.monsters.keys():
+		for sa in (DataLoader.monsters[monster_id] as Dictionary).get("special_attacks", []):
+			carried[str(sa)] = true
+	for sa_id in DataLoader.special_attacks.keys():
+		_ok(carried.has(str(sa_id)), "special attack '%s' is carried by a monster" % sa_id)
+	# Slayer pools: a single-monster tier is not a choice, and the mid-game tiers are where the
+	# collapse happened.
+	var pools: Dictionary = DataLoader.slayer_tasks.get("_monsters", {})
+	for tier_id in pools.keys():
+		var pool: Array = pools[tier_id]
+		_ok(pool.size() >= 2, "slayer tier '%s' offers more than one monster (%d)" % [tier_id, pool.size()])
+		for monster_id in pool:
+			_ok(DataLoader.monsters.has(str(monster_id)), "slayer tier '%s' monster '%s' exists" % [tier_id, monster_id])
+			_ok(placed.has(str(monster_id)), "slayer tier '%s' monster '%s' has an encounter" % [tier_id, monster_id])
+	# The mid-game arrivals themselves: one per empty band, and each a real fight rather than a
+	# reskinned lowbie.
+	var midgame: Dictionary = {
+		"brine_troll": 66, "tidewrack_hag": 76, "sunderhold_centurion": 88,
+		"ashwyrm_seer": 96, "sunderhold_ballistarius": 102,
+	}
+	for monster_id in midgame.keys():
+		var m: Dictionary = DataLoader.get_monster(str(monster_id))
+		_ok(not m.is_empty(), "the mid-game monster '%s' exists" % monster_id)
+		if m.is_empty():
+			continue
+		_eq(int(m.get("combat_level", 0)), int(midgame[monster_id]), "'%s' sits at the intended level" % monster_id)
+		_ok(int(m.get("hitpoints", 0)) >= 240, "'%s' has the health of a mid-game fight" % monster_id)
+		_ok(placed.has(str(monster_id)), "'%s' has an encounter" % monster_id)
+		_ok((m.get("special_attacks", []) as Array).size() >= 1, "'%s' carries a special attack" % monster_id)
+
+## A dungeon ladder with a hole is a level with no expedition to run. The skill audit found that
+## the stretch from 71 to 109 had no dungeon at all, which blanked the mid-game's first-clear and
+## repeatable reward track; the walk below measures the hole between each dungeon and the highest
+## one that has already opened.
+func _test_dungeon_ladder() -> void:
+	_heading("The dungeon ladder covers the climb")
+	var tiers: Array = []
+	for dungeon_id in DataLoader.dungeons.keys():
+		var d: Dictionary = DataLoader.get_dungeon(str(dungeon_id))
+		var span: Array = d.get("level_range", [])
+		_ok(span.size() == 2, "'%s' declares a level range" % dungeon_id)
+		if span.size() != 2:
+			continue
+		var low: int = int(span[0])
+		var high: int = int(span[1])
+		_ok(low > 0 and high >= low, "'%s' has an ordered level range (%d-%d)" % [dungeon_id, low, high])
+		var encounters: Array = d.get("monsters", [])
+		_ok(encounters.size() >= 1, "'%s' has at least one encounter" % dungeon_id)
+		for mid in encounters:
+			_ok(DataLoader.monsters.has(str(mid)), "'%s' encounter '%s' exists" % [dungeon_id, mid])
+		_ok(int((d.get("completion_reward", {}) as Dictionary).get("gp", 0)) > 0,
+			"'%s' pays something on a clear" % dungeon_id)
+		tiers.append({"id": str(dungeon_id), "low": low, "high": high})
+	tiers.sort_custom(func(a, b): return int(a["low"]) < int(b["low"]))
+	var reached: int = 0
+	var worst: int = 0
+	var worst_at: String = ""
+	for tier in tiers:
+		var gap: int = int(tier["low"]) - reached
+		if gap > worst:
+			worst = gap
+			worst_at = str(tier["id"])
+		reached = max(reached, int(tier["high"]))
+	_ok(worst <= 25, "no stretch of levels has no dungeon to run (worst %d, before '%s')" % [worst, worst_at])
+	# The arrival itself, pinned so the hole cannot quietly reopen.
+	var undercroft: Dictionary = DataLoader.get_dungeon("sunderhold_undercroft")
+	_ok(not undercroft.is_empty(), "the mid-game dungeon exists")
+	if not undercroft.is_empty():
+		var u_span: Array = undercroft.get("level_range", [])
+		_eq(int(u_span[0]), 71, "the mid-game dungeon starts where the last one stops")
+		_ok(int(u_span[1]) >= 105, "the mid-game dungeon reaches the god line's doorstep")
+		_ok((undercroft.get("monsters", []) as Array).size() >= 3, "the mid-game dungeon is a sequence")
+		_ok(not (undercroft.get("rewards_first_clear", {}) as Dictionary).is_empty(),
+			"the mid-game dungeon pays a first clear")
+
+## Arrows and runes are only a real supply loop if an attack actually spends them, and the
+## Marksmanship skillcapes only mean anything if preservation is applied to that spend. Both
+## combat paths call CombatFormulas.ammo_cost, so the maths is pinned once here.
+func _test_attack_costs() -> void:
+	_heading("Attack costs (ammunition and runes)")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20260930
+	_eq(int(CombatFormulas.ammo_cost(rng, {"bronze_arrow": 4}, 0.0).get("bronze_arrow", 0)), 4,
+		"with no preservation an attack spends the whole authored cost")
+	_ok(CombatFormulas.ammo_cost(rng, {"bronze_arrow": 4}, 100.0).is_empty(),
+		"a superior Marksmanship cape makes every shot free")
+	_ok(CombatFormulas.ammo_cost(rng, {}, 0.0).is_empty(),
+		"a weapon with no authored cost spends nothing")
+	# 50% preservation refunds roughly half of a large volley, rolled unit by unit.
+	var drawn: int = 0
+	for _i in range(400):
+		drawn += int(CombatFormulas.ammo_cost(rng, {"bronze_arrow": 10}, 50.0).get("bronze_arrow", 0))
+	_ok(drawn > 1800 and drawn < 2200,
+		"a 50%% cape refunds about half of 4000 shots (%d spent)" % drawn)
+	# Content: every weapon that fires or casts declares its cost, so the ranged and magic ladders
+	# cannot be added without wiring them to a supply.
+	var shooters: Array = []
+	for id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.get_item(str(id))
+		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8:
+			continue
+		var req: Dictionary = it.get("level_requirements", {})
+		var style: String = "ranged" if req.has("ranged") else ("magic" if req.has("magic") else "")
+		if style == "":
+			continue
+		_ok(not (it.get("attack_cost_items", {}) as Dictionary).is_empty(),
+			"%s (%s) declares what one attack spends" % [str(id), style])
+		shooters.append(str(id))
+	_ok(shooters.size() >= 20, "the ranged and magic ladders are covered (%d weapons)" % shooters.size())
+	# No ammunition may be craftable and then never spent — that is what left the arrows and the
+	# four elemental runes inert while the mechanic sat unused.
+	var spent_ids: Dictionary = {}
+	for id in DataLoader.items.keys():
+		for spent_id in (DataLoader.get_item(str(id)).get("attack_cost_items", {}) as Dictionary).keys():
+			spent_ids[str(spent_id)] = true
+	for ammo_id in ["bronze_arrow", "iron_arrow", "steel_arrow", "air_rune", "water_rune", "earth_rune", "fire_rune"]:
+		_ok(spent_ids.has(ammo_id), "craftable '%s' has a weapon that spends it" % ammo_id)
+	# The preservation content must feed the same key the combat code reads.
+	_eq(ModifierKeys.AMMO_PRESERVATION_PERCENT, "ammo_preservation_percent",
+		"the preservation constant matches the key content authors")
+	for cape_id in ["ranged_cape", "ranged_cape_superior"]:
+		var cape: Dictionary = DataLoader.get_item(cape_id)
+		_ok(float((cape.get("passive_modifiers", {}) as Dictionary).get(ModifierKeys.AMMO_PRESERVATION_PERCENT, 0.0)) > 0.0,
+			"%s refunds ammunition" % cape_id)
+
+## Magic used to stop at level 30: four staves, all casting the same fixed base-10 spell, so the
+## style could not progress for another 90 levels and eight runes had no caster. These checks pin
+## the ladder that replaced it: one staff per rune, a rising spell tier, and damage that scales
+## without overtaking the bow line.
+func _test_magic_gear() -> void:
+	_heading("The magic gear line")
+	var by_level: Dictionary = {}
+	for id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.get_item(str(id))
+		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8:
+			continue
+		var req: Dictionary = it.get("level_requirements", {})
+		if not req.has("magic"):
+			continue
+		by_level[int(req["magic"])] = it
+	var levels: Array = by_level.keys()
+	levels.sort()
+	_ok(levels.size() >= 13, "the staff ladder covers the whole skill (%d tiers)" % levels.size())
+	var cast_runes: Dictionary = {}
+	var prev_spell: float = 0.0
+	var prev_hit: int = 0
+	for level in levels:
+		var it: Dictionary = by_level[level]
+		var spell: float = float(it.get("spell_max_hit", 0.0))
+		_ok(spell > prev_spell, "the L%d staff casts a higher spell tier than the last (%.0f)" % [int(level), spell])
+		var costs: Dictionary = it.get("attack_cost_items", {})
+		_eq(costs.size(), 1, "%s casts exactly one rune per attack" % str(it.get("id", "")))
+		for rune_id in costs.keys():
+			cast_runes[str(rune_id)] = true
+		var dmg: float = float((it.get("equipment_stats", {}) as Dictionary).get("magic_damage_percent", 0))
+		var hit: int = CombatFormulas.max_hit_magic(spell, dmg, int(level), 0.0, 0.0)
+		_ok(hit > prev_hit, "the L%d staff hits harder than the last (%d max hit)" % [int(level), hit])
+		prev_spell = spell
+		prev_hit = hit
+	# A rune that no staff casts is a rune a player crafts and never spends.
+	for rune_id in ["air_rune", "water_rune", "earth_rune", "fire_rune", "mind_rune", "cosmic_rune",
+			"chaos_rune", "nature_rune", "law_rune", "death_rune", "blood_rune", "soul_rune", "umbral_rune"]:
+		_ok(cast_runes.has(rune_id), "craftable '%s' has a staff that casts it" % rune_id)
+	# The top of the staff line should be comparable to the top bow, not better: a staff pays runes
+	# instead of arrows and needs no offhand.
+	var top_spell: float = float((by_level[levels[levels.size() - 1]] as Dictionary).get("spell_max_hit", 0.0))
+	var top_dmg: float = float(((by_level[levels[levels.size() - 1]] as Dictionary).get("equipment_stats", {}) as Dictionary).get("magic_damage_percent", 0))
+	var best_staff_hit: int = CombatFormulas.max_hit_magic(top_spell, top_dmg, int(levels[levels.size() - 1]), 0.0, 0.0)
+	var best_bow_hit: int = CombatFormulas.max_hit_melee_ranged("standard", 110, 75.0, 0.0, 0.0)
+	_ok(best_staff_hit >= int(0.6 * float(best_bow_hit)),
+		"the best staff is a real alternative to the best bow (%d vs %d)" % [best_staff_hit, best_bow_hit])
+	_ok(best_staff_hit <= best_bow_hit, "the best staff does not out-hit the best bow (%d vs %d)" % [best_staff_hit, best_bow_hit])
+	# Robes: cloth armour for the style, four tiers of four pieces, defence rising by tier.
+	var tiers: Dictionary = {}
+	for id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.get_item(str(id))
+		if it.is_empty():
+			continue
+		var req: Dictionary = it.get("level_requirements", {})
+		if not req.has("magic") or int(it.get("equipment_slot", -1)) == 8:
+			continue
+		tiers[int(req["magic"])] = int(tiers.get(int(req["magic"]), 0)) + 1
+	var robe_levels: Array = tiers.keys()
+	robe_levels.sort()
+	_ok(robe_levels.size() >= 4, "robes ship in %d tiers" % robe_levels.size())
+	var prev_def: int = 0
+	for level in robe_levels:
+		_eq(int(tiers[level]), 4, "the Magic-%d robe tier has four pieces" % int(level))
+		var total: int = 0
+		for id in DataLoader.items.keys():
+			var it: Dictionary = DataLoader.get_item(str(id))
+			if it.is_empty() or int(it.get("equipment_slot", -1)) == 8:
+				continue
+			if int((it.get("level_requirements", {}) as Dictionary).get("magic", -1)) != int(level):
+				continue
+			total += int((it.get("equipment_stats", {}) as Dictionary).get("magic_defence", 0))
+		_ok(total > prev_def, "the Magic-%d robe tier wards more than the last (%d total)" % [int(level), total])
+		prev_def = total
+	# Every new piece must be craftable, or the ladder is unobtainable content.
+	var craftable: Dictionary = {}
+	for skill_id in ["runecrafting", "crafting"]:
+		for action in DataLoader.get_skill_actions(skill_id):
+			for out_id in (action.get("output_items", {}) as Dictionary).keys():
+				craftable[str(out_id)] = true
+	for level in levels:
+		var staff_id: String = str((by_level[level] as Dictionary).get("id", ""))
+		_ok(craftable.has(staff_id), "%s has a recipe" % staff_id)
+	for id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.get_item(str(id))
+		if it.is_empty() or int(it.get("equipment_slot", -1)) == 8:
+			continue
+		if (it.get("level_requirements", {}) as Dictionary).has("magic"):
+			_ok(craftable.has(str(id)), "%s has a recipe" % str(id))
 	# The live fight loop has to actually act on them. These two monsters exist for the purpose:
 	# the Mossbound Colossus thorns, the Verdant Wyrm enrages. HP lives on CombatManager, which
 	# owns the fight; PlayerData is the character sheet.
@@ -2400,12 +2671,14 @@ func _test_unobtainable_content() -> void:
 	var unsourceable: Array[String] = []
 	var skill_sources: Array[String] = []
 	var dungeon_sources: Array[String] = []
+	var item_sources: Array[String] = []
 	for pet_id in DataLoader.pets.keys():
 		var p: Dictionary = DataLoader.pets[pet_id]
 		if p.has("source"):
 			stray.append(str(pet_id))
 		var src_skill: String = str(p.get("source_skill", ""))
 		var src_dungeon: String = str(p.get("source_dungeon", ""))
+		var src_item: String = str(p.get("source_item", ""))
 		# The two roll functions match source_skill against a skill id or the literal "combat";
 		# nothing else can ever be drawn into a pool.
 		if src_skill != "":
@@ -2417,6 +2690,13 @@ func _test_unobtainable_content() -> void:
 			dungeon_sources.append(str(pet_id))
 		elif src_dungeon != "":
 			unsourceable.append("%s(%s)" % [str(pet_id), src_dungeon])
+		# The third route is a container: the item must open into *this* pet from Storage, which
+		# is what BankManager.open_container reads. A source_item pointing anywhere else is dead
+		# weight the player would never be able to hatch.
+		elif src_item != "" and str((DataLoader.items.get(src_item, {}) as Dictionary).get("container_pet", "")) == str(pet_id):
+			item_sources.append(str(pet_id))
+		elif src_item != "":
+			unsourceable.append("%s(%s)" % [str(pet_id), src_item])
 		else:
 			unsourceable.append("%s(no source)" % str(pet_id))
 	_ok(stray.is_empty(), "no pet uses the unread key 'source'%s"
@@ -2424,8 +2704,8 @@ func _test_unobtainable_content() -> void:
 	_ok(unsourceable.is_empty(), "every pet names a source PetManager can roll%s"
 		% ("" if unsourceable.is_empty() else " (bad: %s)" % ", ".join(unsourceable)))
 	_ok(skill_sources.size() > 0 and dungeon_sources.size() > 0,
-		"both acquisition routes exist (%d skill-sourced, %d dungeon-sourced)"
-		% [skill_sources.size(), dungeon_sources.size()])
+		"all three acquisition routes stay alive (%d skill-sourced, %d dungeon-sourced, %d item-sourced)"
+		% [skill_sources.size(), dungeon_sources.size(), item_sources.size()])
 
 	# --- the two dungeon companions unlock by actually clearing their expedition -------------
 	GameManager.start_new_game("standard")
@@ -2836,28 +3116,107 @@ func _test_reachable_systems() -> void:
 
 ## A weapon that beats the previous tier is required: a flat ladder means no combat progression.
 ## Melee is the reference style here; ranged and magic have their own ladders.
+## Every item id a skill action produces: the crafted set. Raid-shop rewards, dungeon drops and
+## monster loot are absent on purpose. They are a parallel reward track with their own strength
+## curve, deliberately ahead of the crafted tier at the same level, so folding them into a single
+## rising ladder compares two different things.
+func _crafted_item_ids() -> Dictionary:
+	var out: Dictionary = {}
+	for skill_id in DataLoader.skills.keys():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			for item_id in (action.get("output_items", {}) as Dictionary).keys():
+				out[str(item_id)] = true
+	return out
+
 func _test_melee_tier_ladder() -> void:
 	_heading("The melee weapon ladder rises at every tier")
+	var crafted: Dictionary = _crafted_item_ids()
 	var best: Dictionary = {}
 	for id in DataLoader.items.keys():
 		var it: Dictionary = DataLoader.get_item(str(id))
 		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8:
 			continue
+		if not crafted.has(str(id)):
+			continue
 		var st: Dictionary = it.get("equipment_stats", {})
-		if not st.has("slash"):
+		if not st.has("melee_strength"):
 			continue
 		var lvl: int = int((it.get("level_requirements", {}) as Dictionary).get("attack", 0))
-		if not best.has(lvl) or int(st.get("slash", 0)) > int(best[lvl]):
-			best[lvl] = int(st.get("slash", 0))
+		if not best.has(lvl) or int(st.get("melee_strength", 0)) > int(best[lvl]):
+			best[lvl] = int(st.get("melee_strength", 0))
 	var levels: Array = best.keys()
 	levels.sort()
-	_ok(levels.size() >= 5, "the melee ladder has several tiers (%d)" % levels.size())
+	_ok(levels.size() >= 5, "the crafted melee ladder has several tiers (%d)" % levels.size())
 	for i in range(1, levels.size()):
 		var prev_lvl: int = int(levels[i - 1])
 		var lvl: int = int(levels[i])
 		_ok(int(best[lvl]) > int(best[prev_lvl]),
-			"melee damage rises from L%d (%d slash) to L%d (%d slash)" % [
+			"crafted melee damage rises from L%d (%d strength) to L%d (%d strength)" % [
 				prev_lvl, int(best[prev_lvl]), lvl, int(best[lvl])])
+
+## The audit found melee and armour jumping straight from the level-50 Skyiron tier to the level-95
+## god sets, with runite ore and bars mined, smelted and then spent on nothing. These checks pin the
+## two tiers that closed it.
+func _test_gear_ladder_gap() -> void:
+	_heading("The mid-game melee and armour tiers")
+	var crafted: Dictionary = _crafted_item_ids()
+	# Weapons: a crafted tier must exist between the Skyiron and god tiers.
+	var weapon_levels: Array = []
+	var best_strength: Dictionary = {}
+	for id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.get_item(str(id))
+		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8 or not crafted.has(str(id)):
+			continue
+		var st: Dictionary = it.get("equipment_stats", {})
+		if not st.has("melee_strength"):
+			continue
+		var lvl: int = int((it.get("level_requirements", {}) as Dictionary).get("attack", 0))
+		if not best_strength.has(lvl):
+			weapon_levels.append(lvl)
+		best_strength[lvl] = maxi(int(best_strength.get(lvl, 0)), int(st["melee_strength"]))
+	var between: Array = []
+	for lvl in weapon_levels:
+		if int(lvl) > 50 and int(lvl) < 95:
+			between.append(int(lvl))
+	between.sort()
+	_ok(between.size() >= 2, "crafted melee weapons fill 50-95 (%s)" % str(between))
+	# Armour: the same stretch, measured on the defence the player actually gains.
+	var armour_levels: Array = []
+	var best_defence: Dictionary = {}
+	for id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.get_item(str(id))
+		if it.is_empty() or int(it.get("equipment_slot", -1)) == 8 or not crafted.has(str(id)):
+			continue
+		var st: Dictionary = it.get("equipment_stats", {})
+		if not st.has("melee_defence"):
+			continue
+		var lvl: int = int((it.get("level_requirements", {}) as Dictionary).get("defence", 0))
+		if lvl <= 0:
+			continue
+		if not best_defence.has(lvl):
+			armour_levels.append(lvl)
+		best_defence[lvl] = maxi(int(best_defence.get(lvl, 0)), int(st["melee_defence"]))
+	armour_levels.sort()
+	var crafted_armour: Array = []
+	for lvl in armour_levels:
+		if int(lvl) > 50 and int(lvl) < 95:
+			crafted_armour.append(int(lvl))
+	_ok(crafted_armour.size() >= 2, "crafted armour fills 50-95 (%s)" % str(crafted_armour))
+	# Both bars the audit found dead must now be consumed by recipes the game ships.
+	var consumed: Dictionary = {}
+	for skill_id in ["smithing", "crafting", "fletching"]:
+		for action in DataLoader.get_skill_actions(skill_id):
+			for in_id in (action.get("input_items", {}) as Dictionary).keys():
+				consumed[str(in_id)] = true
+	for bar_id in ["runite_bar", "dragonite_bar"]:
+		_ok(consumed.has(bar_id), "%s is spent by a shipped recipe" % bar_id)
+	# Every new piece must be obtainable, or closing the gap just moves it.
+	for tier in ["runite", "dragonite"]:
+		for suffix in ["sword", "scimitar", "dagger", "battleaxe", "2h_sword", "helmet", "platebody",
+				"platelegs", "boots", "gloves", "shield"]:
+			var item_id: String = "%s_%s" % [tier, suffix]
+			_ok(DataLoader.get_item(item_id) != {}, "%s ships" % item_id)
+			_ok(crafted.has(item_id), "%s has a smithing recipe" % item_id)
 
 ## Every skill a player can raise needs at least one quest objective pointing at it, or it is
 ## invisible content. The combat skills were the gap: 238 quests and not one mentioned them.
@@ -3005,6 +3364,714 @@ func _test_cooking_failure_burns_materials(host: Node) -> void:
 	_ok(burnt_item.get("item_type", "") == "resource",
 		"burnt food is a resource, not food, so no cooking recipe can target it")
 	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+
+## A fish the player catches and cannot use is a dead end: raw_crab and raw_cave_fish were landed by
+## Fishing and consumed by nothing, and Cookery's unlock ladder had a hole at exactly those two
+## levels. The check is general, so a new Fishing action cannot quietly reintroduce one.
+func _test_raw_fish_are_consumed() -> void:
+	_heading("Every raw fish is consumed by something")
+	var consumed: Dictionary = {}
+	for skill_id in DataLoader.skills.keys():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			for item_id in (action.get("input_items", {}) as Dictionary).keys():
+				consumed[str(item_id)] = true
+	var landed: Array[String] = []
+	for action in DataLoader.get_skill_actions("fishing"):
+		for item_id in (action.get("output_items", {}) as Dictionary).keys():
+			var fish: String = str(item_id)
+			if fish.begins_with("raw_") and DataLoader.items.has(fish):
+				landed.append(fish)
+	_ok(landed.size() >= 10, "fishing lands a range of raw fish (%d)" % landed.size())
+	for fish in landed:
+		_ok(consumed.has(fish), "'%s' is consumed by a recipe" % fish)
+	# The two arrivals, pinned at the levels that closed the 50 -> 70 and 70 -> 85 holes.
+	var cook_by_id: Dictionary = {}
+	for action in DataLoader.get_skill_actions("cooking"):
+		cook_by_id[str(action.get("id", ""))] = action
+	for pair in [["cook_crab", 60], ["cook_cave_fish", 75]]:
+		var recipe: Dictionary = cook_by_id.get(str(pair[0]), {})
+		_ok(not recipe.is_empty(), "the '%s' recipe exists" % pair[0])
+		if recipe.is_empty():
+			continue
+		_eq(int(recipe.get("level_required", 0)), int(pair[1]), "'%s' sits at level %d" % [pair[0], pair[1]])
+		for out_id in (recipe.get("output_items", {}) as Dictionary).keys():
+			_ok(int(DataLoader.get_item(str(out_id)).get("heal_amount", 0)) > 0,
+				"'%s' cooks into food that heals" % pair[0])
+	# And the ladder is still ordered: a higher-level cook never pays less than a lower one.
+	var cooks: Array = DataLoader.get_skill_actions("cooking").duplicate()
+	cooks.sort_custom(func(a, b): return int(a["level_required"]) < int(b["level_required"]))
+	var previous_cook: Dictionary = {}
+	for cook in cooks:
+		if str(cook.get("id", "")) == "roast_ranch_meat":
+			continue
+		if not previous_cook.is_empty():
+			_ok(float(cook["base_xp"]) >= float(previous_cook["base_xp"]),
+				"the level-%d cook pays at least the level-%d one" % [int(cook["level_required"]), int(previous_cook["level_required"])])
+		previous_cook = cook
+
+## The balance report listed 126 "materials nothing consumes" because it only knew about recipes.
+## Real demand is scattered: weapons burn ammunition, summoning eats tablets, a pen eats stock,
+## Engineering eats devices, Inscription eats texts, Enchanting eats essences, Prayer eats bones
+## and the museum eats artefacts. With every channel modelled, a dead output is either declared
+## (`terminal_reason` in items.json) or a bug — and this suite is what makes that stick.
+func _test_outputs_are_consumed() -> void:
+	_heading("Every output is consumed, or declared terminal")
+	var demand: Dictionary = BalanceReport.dead_outputs()
+	var undeclared: Array[String] = []
+	for item_id in (demand["undeclared"] as Array):
+		undeclared.append(str(item_id))
+	_ok(undeclared.is_empty(),
+		"no obtainable item is left without a consumer%s" % _trouble(undeclared, " — "))
+
+	var declared: Array = demand["declared"]
+	_ok(declared.size() >= 10, "intentional dead ends are declared in the data (%d)" % declared.size())
+	var unexplained: Array[String] = []
+	for item_id in declared:
+		if str(DataLoader.get_item(str(item_id)).get("terminal_reason", "")).strip_edges() == "":
+			unexplained.append(str(item_id))
+	_ok(unexplained.is_empty(), "every terminal declaration says why%s" % _trouble(unexplained, " — "))
+	var stale: Array[String] = []
+	for item_id in (demand["stale_declarations"] as Array):
+		stale.append(str(item_id))
+	_ok(stale.is_empty(), "no declaration is stale — nothing consumed is also marked terminal%s" %
+		_trouble(stale, " — "))
+
+	# A channel that matches nothing means the field it reads was renamed, and it would then
+	# excuse every dead item it used to catch. That is the failure this suite exists to prevent.
+	var used: Dictionary = BalanceReport.consumed_item_ids()
+	var seen: Dictionary = {}
+	for reasons in used.values():
+		for reason in (reasons as Array):
+			seen[str(reason).split(":")[0]] = true
+	var silent: Array[String] = []
+	for channel in BalanceReport.DEMAND_CHANNELS:
+		if not seen.has(channel):
+			silent.append(channel)
+	_ok(silent.is_empty(), "all %d demand channels match content%s" %
+		[BalanceReport.DEMAND_CHANNELS.size(), _trouble(silent, " — ")])
+	_ok(used.size() >= 290, "demand covers the whole economy (%d items are spent)" % used.size())
+
+	# The specific dead ends this pass closed, pinned by shape so they cannot come back.
+	for pair in [["bronze_arrow", "a bow spends it"], ["iron_arrow", "a bow spends it"],
+			["steel_arrow", "a bow spends it"], ["big_bones", "prayer buries it"],
+			["dragon_bones", "prayer buries it"], ["topaz", "two recipes spend it"],
+			["harvested_essence", "Prospecting's only output feeds Herblore"],
+			["artefact_common", "the museum takes it"], ["artefact_unique", "the museum takes it"]]:
+		_ok(used.has(str(pair[0])), "'%s' is spent by content (%s)" % [pair[0], pair[1]])
+
+	# Every farmed crop and every pen produce is a material: if a new one lands without a use,
+	# the skill that raises it produces nothing. Both are read from the tables, not listed here.
+	var crops: Array[String] = []
+	for item_id in DataLoader.items.keys():
+		var seed_item: Dictionary = DataLoader.items[item_id]
+		if str(seed_item.get("item_type", "")) != "seed":
+			continue
+		var product: String = str(seed_item.get("product_item", ""))
+		if product != "":
+			crops.append(product)
+	_ok(crops.size() >= 10, "the seed table yields %d crops" % crops.size())
+	var unspent_crops: Array[String] = []
+	for crop in crops:
+		if not used.has(crop):
+			unspent_crops.append(crop)
+	_ok(unspent_crops.is_empty(), "every farmed crop is spent by a recipe%s" % _trouble(unspent_crops, " — "))
+
+	var produce: Array[String] = []
+	for species_def in (DataLoader.new_skill_systems.get("species", []) as Array):
+		if typeof(species_def) != TYPE_DICTIONARY:
+			continue
+		var raised: String = str((species_def as Dictionary).get("produce", ""))
+		if raised != "":
+			produce.append(raised)
+	_ok(produce.size() >= 9, "the species table yields %d ranch produce" % produce.size())
+	var unspent_produce: Array[String] = []
+	for raised in produce:
+		if not used.has(raised):
+			unspent_produce.append(raised)
+	_ok(unspent_produce.is_empty(), "every ranch produce is spent by a recipe%s" % _trouble(unspent_produce, " — "))
+
+	# The two special Beastbinding tablets now spend the mark their familiar awards, like the 25
+	# tier-one tablets already did — before this, those two marks accumulated with no use.
+	for familiar_id in ["border_collie", "sandman"]:
+		var familiar: Dictionary = DataLoader.familiars.get(familiar_id, {})
+		var mark: String = str(familiar.get("mark_item", ""))
+		_ok(mark != "" and used.has(mark), "'%s' spends the mark it awards" % familiar_id)
+
+	# Containers and eggs are opened from Storage: the wrapper is spent and the contents arrive.
+	for item_id in DataLoader.items.keys():
+		var container: Dictionary = DataLoader.items[item_id]
+		var contents: Dictionary = container.get("container_items", {})
+		var pet_id: String = str(container.get("container_pet", ""))
+		if contents.is_empty() and pet_id == "":
+			continue
+		_ok(used.has(str(item_id)), "container '%s' is spendable" % item_id)
+		for grant in contents.keys():
+			_ok(DataLoader.items.has(str(grant)), "container '%s' hands over a real item ('%s')" % [item_id, grant])
+
+	var bank_before: Dictionary = BankManager.serialize()
+	var pets_before: Array[String] = PlayerData.unlocked_pets.duplicate()
+	var boxes_before: int = BankManager.get_count("wood_box")
+	var logs_before: int = BankManager.get_count("normal_log")
+	BankManager.add_item_guaranteed("wood_box", 2)
+	var opened: Dictionary = BankManager.open_container("wood_box", 1)
+	_ok(bool(opened["ok"]), "a crate can be opened from Storage")
+	_eq(int(opened["opened"]), 1, "opening one crate spends exactly one")
+	_eq(BankManager.get_count("wood_box") - boxes_before, 1, "the rest of the stack is left alone")
+	_ok(int(opened["items"].get("normal_log", 0)) > 0, "opening really hands over the contents")
+	_eq(BankManager.get_count("normal_log") - logs_before, int(opened["items"].get("normal_log", 0)),
+		"the contents land in Storage")
+	PlayerData.unlocked_pets.erase("sunderling")
+	BankManager.add_item_guaranteed("raid_pet_egg", 2)
+	var hatched: Dictionary = BankManager.open_container("raid_pet_egg", 2)
+	_ok(bool(hatched["ok"]), "a raid egg can be hatched from Storage")
+	_eq(str(hatched["pet"]), "sunderling", "the egg hatches its own pet")
+	_ok(PetManager.is_unlocked("sunderling"), "hatching unlocks the pet")
+	_eq(int(hatched["opened"]), 1, "hatching one egg leaves the rest of the stack alone")
+	_ok(not bool(BankManager.open_container("raid_pet_egg", 1)["ok"]),
+		"an already hatched egg is not spent again")
+	BankManager.deserialize(bank_before)
+	PlayerData.unlocked_pets = pets_before
+	ModifierManager.clear_category(PetManager.CATEGORY)
+	PetManager.deserialize({})
+
+## The report is content too. A shape change in _bottlenecks() without a matching change in
+## format_text() crashed the whole balance report at runtime, and no suite had ever built it, so
+## the run looked clean. Build it here and pin the keys the printer reads.
+func _test_balance_report_builds() -> void:
+	_heading("The balance report builds every section")
+	var report: Dictionary = BalanceReport.build()
+	var missing: Array[String] = []
+	for section in ["rates", "bottlenecks", "combat", "economy", "unused"]:
+		if not report.has(section):
+			missing.append(section)
+	_ok(missing.is_empty(), "the report builds every section%s" % _trouble(missing, " — "))
+
+	var bottlenecks: Dictionary = report["bottlenecks"]
+	var bad_rows: Array[String] = []
+	for entry in (bottlenecks.get("top", []) as Array):
+		for key in ["item_id", "recipes", "producers", "sources", "routes", "has_source"]:
+			if not (entry as Dictionary).has(key):
+				bad_rows.append("%s has no '%s'" % [str((entry as Dictionary).get("item_id", "?")), key])
+	_ok(bad_rows.is_empty(), "every bottleneck row carries what the printer reads%s" %
+		_trouble(bad_rows, " — "))
+	_ok(typeof(bottlenecks.get("warnings", null)) == TYPE_ARRAY,
+		"the bottleneck warnings are a list the printer can iterate")
+
+	# The same dead-output answer the guard above asserts on, so report and suite cannot drift.
+	_ok(str(report["unused"]) == str(BalanceReport.dead_outputs()),
+		"the report prints the same dead outputs the guard checks")
+	var lines: Array[String] = BalanceReport.format_text()
+	_ok(lines.size() > 20 and str(lines[0]).begins_with("=== balance report"),
+		"the report formats end to end (%d lines)" % lines.size())
+
+## Supply concentration is a design decision, not automatically a bug: a material can be meant to
+## come from one place. `bottleneck_reason` is how the data says so, and this suite keeps the two
+## apart — an undeclared hub, or a declaration the content outgrew, fails here.
+func _test_bottleneck_declarations() -> void:
+	_heading("Supply concentration is declared, not assumed")
+	var concentrated: Dictionary = BalanceReport.concentrated_materials()
+	var rows: Array = concentrated["rows"]
+	var declared: Array = concentrated["declared"]
+	_ok(rows.size() >= 2, "the economy has single-source hubs worth watching (%d)" % rows.size())
+	_ok(declared.size() >= 2, "the deliberate ones are declared in the data (%d)" % declared.size())
+
+	var unexplained: Array[String] = []
+	var over_supplied: Array[String] = []
+	for entry in rows:
+		var row: Dictionary = entry
+		var item_id: String = str(row["item_id"])
+		if int(row["sources"]) > 1:
+			over_supplied.append("%s has %d sources" % [item_id, int(row["sources"])])
+		if str(row["reason"]) == "":
+			unexplained.append("%s (%d recipes, %s)" % [item_id, int(row["recipes"]), str(row["routes"])])
+	_ok(unexplained.is_empty(),
+		"every flagged hub is declared deliberate%s" % _trouble(unexplained, " — "))
+	_ok(over_supplied.is_empty(),
+		"a concentration really means one source%s" % _trouble(over_supplied, " — "))
+	var stale: Array[String] = []
+	for item_id in (concentrated["stale_declarations"] as Array):
+		stale.append(str(item_id))
+	_ok(stale.is_empty(), "no declaration outlived its concentration%s" % _trouble(stale, " — "))
+	var thin: Array[String] = []
+	for item_id in declared:
+		if str(DataLoader.get_item(str(item_id)).get("bottleneck_reason", "")).strip_edges().length() < 15:
+			thin.append(str(item_id))
+	_ok(thin.is_empty(), "every declaration explains itself%s" % _trouble(thin, " — "))
+
+	# The hubs that are meant to be one source, pinned by shape: the azure press and the sheep pen.
+	# Deleting a reason puts the warning straight back.
+	for pair in [["scribe_blue_ink", "the level-25 press"], ["ranch_wool", "the sheep pen"]]:
+		_ok(declared.has(str(pair[0])), "'%s' is declared one source on purpose (%s)" % pair)
+
+	# The measurement that stopped two false alarms: raw essence is made by three recipes and the
+	# catalyst drops from twenty enemies. Counting kinds instead of sources called both single
+	# points of failure, which is exactly how a warning list stops being read.
+	var sources: Dictionary = {}
+	for entry in BalanceReport.demand_rows():
+		sources[str((entry as Dictionary)["item_id"])] = int((entry as Dictionary)["sources"])
+	_ok(int(sources.get("rune_essence", 0)) >= 2,
+		"raw glyph essence has %d sources" % int(sources.get("rune_essence", 0)))
+	_ok(int(sources.get("enchant_catalyst", 0)) >= 10,
+		"the enchant catalyst has %d sources, not one" % int(sources.get("enchant_catalyst", 0)))
+	# Scribe Paper was declared one source, and that was wrong: the Dream Bazaar sells fifty sheets
+	# for forty dream essence. It is the first declaration this data ever carried, and the only
+	# reason the mistake surfaced is that the source model was told where the bazaar is. Each row
+	# below is one acquisition path that used to be invisible, so the model cannot quietly lose it
+	# again — the same trick as the demand channels, on the supply side.
+	for probe in [["scribe_paper", 2, "the mill plus the Dream Bazaar's paper bundle"],
+			["pure_essence", 1, "the museum's glyph curio"], ["artefact_common", 1, "a dig site"],
+			["coal", 3, "crafted, dropped, bought and awarded"], ["dream_essence", 1, "dream journeys"],
+			["burnt_food", 1, "a failed cook"], ["border_collie_mark", 1, "the familiar that awards it"]]:
+		_ok(int(sources.get(str(probe[0]), 0)) >= int(probe[1]),
+			"'%s' has %d sources (%s)" % [probe[0], int(sources.get(str(probe[0]), 0)), probe[2]])
+	var stall_items: Array[String] = ShopManager.stall_item_ids()
+	_ok(not stall_items.is_empty() and int(sources.get(stall_items[0], 0)) >= 1,
+		"the mastery stall stocks a source of its own (%s)" % (stall_items[0] if not stall_items.is_empty() else "none"))
+
+	# The report has to print the reason, or the declaration is invisible where it is needed.
+	var report_text: String = "\n".join(BalanceReport.format_text())
+	var unprinted: Array[String] = []
+	for item_id in declared:
+		var reason: String = str(DataLoader.get_item(str(item_id)).get("bottleneck_reason", ""))
+		if not report_text.contains(reason):
+			unprinted.append(str(item_id))
+	_ok(unprinted.is_empty(), "the report prints every declaration%s" % _trouble(unprinted, " — "))
+
+## The skill audit found the Attunement studies were not a ramp: study_3 (level 60) paid exactly
+## what study_2 paid, and study_4 (level 90) paid less than both, so a player was better off staying
+## on the older action. Each study must beat the one below it.
+func _test_study_ramp_rises() -> void:
+	_heading("The Attunement studies rise")
+	var studies: Array = []
+	for action in DataLoader.get_skill_actions("enchanting"):
+		var id: String = str(action.get("id", ""))
+		if id.begins_with("study_") and id.substr(6).is_valid_int():
+			studies.append(action)
+	_ok(studies.size() == 6, "the six Attunement studies are present (%d)" % studies.size())
+	studies.sort_custom(func(a, b): return int(a["level_required"]) < int(b["level_required"]))
+	var previous: Dictionary = {}
+	for study in studies:
+		if not previous.is_empty():
+			_ok(float(study["base_xp"]) > float(previous["base_xp"]),
+				"the level-%d study pays more than the level-%d one (%d > %d)" % [
+					int(study["level_required"]), int(previous["level_required"]),
+					int(study["base_xp"]), int(previous["base_xp"])])
+		previous = study
+
+## The skill audit flagged seven "a higher level pays less" pairs. Comparing any two actions is a
+## heuristic — a no-input listener against a chain step, or a bar against a finished ring, are not the
+## same job — but grouping each skill's actions by their EXACT inputs and interval isolates the real
+## thing: identical work that pays less for being higher level. Three such regressions existed, all
+## in Inscription, where the scribe ladder sat flat at 189 and then fell to 188 and 186 while the
+## level-40 recipe out-paid the level-90 one. This check is that rule.
+func _test_action_xp_ladders() -> void:
+	_heading("Identical work pays more at a higher level")
+	var rungs: int = 0
+	var regressions: int = 0
+	for skill_id in DataLoader.get_skill_ids():
+		var groups: Dictionary = {}
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			var key: String = "%s|%s" % [str(action.get("base_interval", 0.0)), _input_signature(action)]
+			if not groups.has(key):
+				groups[key] = []
+			(groups[key] as Array).append(action)
+		for key in groups.keys():
+			var group: Array = groups[key]
+			if group.size() < 2:
+				continue
+			# The best payer at each level: several recipes can share one level and differ in reward,
+			# which is flavour rather than a ladder.
+			var best_by_level: Dictionary = {}
+			for action in group:
+				var level: int = int(action["level_required"])
+				var xp: float = float(action.get("base_xp", 0.0))
+				if xp > float(best_by_level.get(level, -1.0)):
+					best_by_level[level] = xp
+			var levels: Array = best_by_level.keys()
+			levels.sort()
+			var paid_best: float = -1.0
+			var paid_at: int = 0
+			for level in levels:
+				rungs += 1
+				var here: float = float(best_by_level[level])
+				if here < paid_best:
+					regressions += 1
+				_ok(here >= paid_best,
+					"%s: the same work at L%d pays at least the L%d rate (%.0f vs %.0f)" % [
+						skill_id, int(level), paid_at, here, maxf(paid_best, 0.0)])
+				if here > paid_best:
+					paid_best = here
+					paid_at = int(level)
+	_ok(rungs > 0, "there are comparable ladders to check (%d rungs)" % rungs)
+	_ok(regressions == 0, "no identical job regresses at a higher level (%d)" % regressions)
+
+## An action's inputs as a stable signature, so two recipes that eat the same things compare.
+func _input_signature(action: Dictionary) -> String:
+	var inputs: Dictionary = action.get("input_items", {})
+	var ids: Array = inputs.keys()
+	ids.sort()
+	var parts: Array[String] = []
+	for item_id in ids:
+		parts.append("%s=%d" % [str(item_id), int(inputs[item_id])])
+	return ",".join(parts)
+
+## Mastery metadata is authored, not derived, so it drifts silently. ModifierKeys.gd promises "no
+## module typos a key" — fourteen keys the new systems read by name were absent from it, so a typo in
+## a mastery table failed silently instead of being caught. This is what makes the promise hold, and
+## it pins the two shapes the skill audit called inconsistent: a pool checkpoint may sit only on the
+## four documented marks, and an authored success chance must be a real probability.
+func _test_mastery_metadata() -> void:
+	_heading("Mastery metadata is spelled and shaped correctly")
+	var constants: Dictionary = ModifierKeys.new().get_script().get_script_constant_map()
+	var registered: Dictionary = {}
+	var suffixes: Array[String] = []
+	for name in constants.keys():
+		registered[str(constants[name])] = true
+		if str(name).begins_with("SUFFIX_"):
+			suffixes.append(str(constants[name]))
+	_ok(suffixes.size() >= 5, "the per-skill suffix convention is registered (%d suffixes)" % suffixes.size())
+	var no_unlocks: Array[String] = []
+	var unspelled: Array[String] = []
+	var off_mark: Array[String] = []
+	var empty_tables: Array[String] = []
+	var skill_count: int = 0
+	var checkpoint_skills: int = 0
+	for skill_id in DataLoader.get_skill_ids():
+		var skill: Dictionary = DataLoader.get_skill(str(skill_id))
+		skill_count += 1
+		if not DataLoader.get_skill_actions(str(skill_id)).is_empty() and not skill.has("mastery_unlocks"):
+			no_unlocks.append(str(skill_id))
+		if skill.has("pool_checkpoints"):
+			checkpoint_skills += 1
+		for table_name in ["mastery_unlocks", "pool_checkpoints"]:
+			var table: Dictionary = skill.get(table_name, {})
+			for threshold in table.keys():
+				if table_name == "pool_checkpoints" and not (int(threshold) in [10, 25, 50, 95]):
+					off_mark.append("%s@%s" % [skill_id, threshold])
+				var mods: Dictionary = table[threshold]
+				if mods.is_empty():
+					empty_tables.append("%s %s %s" % [skill_id, table_name, threshold])
+				for key in mods.keys():
+					var spelled: String = str(key)
+					if registered.has(spelled) or suffixes.has(spelled.trim_prefix("%s_" % str(skill_id))):
+						continue
+					unspelled.append("%s %s -> %s" % [skill_id, table_name, spelled])
+	_ok(skill_count >= 39, "every skill was inspected (%d)" % skill_count)
+	_ok(no_unlocks.is_empty(), "every skill with actions declares mastery unlocks%s" % _trouble(no_unlocks, " — missing: "))
+	_ok(unspelled.is_empty(), "every authored modifier key is registered%s" % _trouble(unspelled, " — unspelled: "))
+	_ok(off_mark.is_empty(), "pool checkpoints sit on the four documented marks%s" % _trouble(off_mark, " — off-mark: "))
+	_ok(empty_tables.is_empty(), "no mastery table is empty%s" % _trouble(empty_tables, " — empty: "))
+	_ok(checkpoint_skills >= 5, "the newest systems carry pool checkpoints (%d skills)" % checkpoint_skills)
+	# An absent success chance runs at the guaranteed default, which is why smithing and crafting never
+	# burn materials; an authored one has to be a real roll.
+	var authored: int = 0
+	var defaulted: int = 0
+	var bad_chance: Array[String] = []
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			if not (action as Dictionary).has("success_chance"):
+				defaulted += 1
+				continue
+			authored += 1
+			var chance: float = float((action as Dictionary)["success_chance"])
+			if chance <= 0.0 or chance > 1.0:
+				bad_chance.append("%s/%s" % [skill_id, str((action as Dictionary).get("id", ""))])
+	_ok(authored > 20, "skills author real success chances (%d)" % authored)
+	_ok(defaulted > 0, "some actions rely on the guaranteed default (%d)" % defaulted)
+	_ok(bad_chance.is_empty(), "every authored success chance is a probability%s" % _trouble(bad_chance, " — invalid: "))
+
+## The detail pane is the answer to "what do I need, and where do I get it?" for whatever the player
+## last touched, and it is the pane they read most. Rendering is also where a missing key surfaces:
+## a dictionary read with [] raises instead of returning null, so a card can stop halfway through
+## with no visible error. This sweeps the whole content table rather than a sample: every item and
+## every recipe has to produce a titled card with substance in it, and the two live tap paths
+## (the Overview's goal card, the Skills screen's activity row) have to hand the pane a context it
+## can actually render.
+func _test_detail_cards(host: Node) -> void:
+	_heading("Every goal and recipe opens a complete card")
+	GameManager.start_new_game("standard")
+	var panel: Control = load("res://scripts/ui/DetailPanel.gd").new()
+	host.add_child(panel)
+	var title: Label = panel.get("_title")
+	var subtitle: Label = panel.get("_subtitle")
+	var body: VBoxContainer = panel.get("_body")
+
+	var mislabeled: Array[String] = []
+	var hollow: Array[String] = []
+	var placeholder: Array[String] = []
+	var unsourced: Array[String] = []
+	var shapeless: Array[String] = []
+	var unroutable: Array[String] = []
+	var too_wide: Array[String] = []
+	for item_id in DataLoader.items.keys():
+		var id: String = str(item_id)
+		panel.call("show_item", id)
+		# The pane is 260px wide on desktop. A card that needs more is clipped, not scrolled, so
+		# the value beside a long label silently disappears.
+		if panel.get_combined_minimum_size().x > UITokens.W_DETAIL - 8:
+			too_wide.append(id)
+		if title.text != str(DataLoader.get_item(id).get("name", id)):
+			mislabeled.append(id)
+		if body.get_child_count() < 2:
+			hollow.append(id)
+		var text: String = _card_text(body)
+		if text.contains("<null>") or text.contains("Unknown ") or text.contains("Unavailable"):
+			placeholder.append(id)
+		if text.contains("No known acquisition path"):
+			unsourced.append(id)
+		# The card is the player-facing copy of the acquisition model, so every row on it has to be
+		# readable on its own and every route has to name a screen the shell can actually open.
+		for source in Goals.sources_for_item(id):
+			var entry: Dictionary = source
+			if str(entry.get("label", "")) == "" or str(entry.get("detail", "")) == "":
+				shapeless.append(id)
+			var route: Dictionary = entry.get("route", {})
+			if not route.is_empty() and not _known_screen(str(route.get("screen", ""))):
+				unroutable.append("%s -> %s" % [id, str(route.get("screen", ""))])
+	_ok(mislabeled.is_empty(), "every item card is titled with the item's name%s" % _trouble(mislabeled, " — wrong: "))
+	_ok(hollow.is_empty(), "every item card renders more than its title%s" % _trouble(hollow, " — thin: "))
+	_ok(unsourced.is_empty(), "every item card answers where it comes from%s" % _trouble(unsourced, " — unsourced: "))
+	_ok(placeholder.is_empty(), "no item card shows placeholder text%s" % _trouble(placeholder, " — broken: "))
+	_ok(shapeless.is_empty(), "every source row carries a label and an explanation%s" % _trouble(shapeless, " — bare: "))
+	_ok(unroutable.is_empty(), "every source route names a screen that exists%s" % _trouble(unroutable, " — dead: "))
+	_ok(too_wide.is_empty(), "every item card fits the pane it renders in%s" % _trouble(too_wide, " — clipped: "))
+
+	var bad_recipe: Array[String] = []
+	var thin_recipe: Array[String] = []
+	var statusless: Array[String] = []
+	var wide_recipes: Array[String] = []
+	var recipes: int = 0
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			var a: Dictionary = action
+			var action_id: String = str(a.get("id", ""))
+			var key: String = "%s:%s" % [skill_id, action_id]
+			recipes += 1
+			panel.call("show_recipe", str(skill_id), action_id)
+			if title.text != str(a.get("name", action_id)) or not subtitle.text.contains("recipe"):
+				bad_recipe.append(key)
+			if body.get_child_count() < 2:
+				thin_recipe.append(key)
+			if not _card_text(body).contains("Can start now"):
+				statusless.append(key)
+			if panel.get_combined_minimum_size().x > UITokens.W_DETAIL - 8:
+				wide_recipes.append(key)
+	_ok(recipes >= 580, "every authored recipe was rendered (%d)" % recipes)
+	_ok(bad_recipe.is_empty(), "every recipe card is titled and labelled as a recipe%s" % _trouble(bad_recipe, " — wrong: "))
+	_ok(thin_recipe.is_empty(), "every recipe card renders more than its title%s" % _trouble(thin_recipe, " — thin: "))
+	_ok(statusless.is_empty(), "every recipe card states whether it can start%s" % _trouble(statusless, " — silent: "))
+	_ok(wide_recipes.is_empty(), "every recipe card fits the pane it renders in%s" % _trouble(wide_recipes, " — clipped: "))
+
+	# The channels the card was blind to until now. Each one is a real way the game hands an item
+	# over that the pane called unfinished content: a byproduct, a familiar's mark, a burnt dish, a
+	# harvest, a ranch byproduct, a Slayer shop line and a raid reward.
+	var channel_items: Dictionary = {
+		"byproduct": "diamond",
+		"familiar mark": "ent_mark",
+		"failure output": "burnt_food",
+		"farm harvest": "duskroot",
+		"ranch byproduct": "ranch_feed",
+		"slayer shop": "slayer_armour_basic",
+		"raid reward": "raid_pet_egg",
+	}
+	var silent: Array[String] = []
+	for channel in channel_items.keys():
+		var id: String = str(channel_items[channel])
+		if Goals.sources_for_item(id).is_empty():
+			silent.append("%s (%s)" % [channel, id])
+	_ok(silent.is_empty(), "every acquisition channel answers on its item card%s" % _trouble(silent, " — silent: "))
+
+	# Task rewards were invisible here too, so a reward item read as unobtainable on the one screen
+	# that answers "where do I get this?".
+	var quest_items: Array[String] = []
+	for quest_id in Quests.all_quest_ids():
+		for item_id in ((Quests.get_quest(quest_id).get("reward", {}) as Dictionary).get("items", {}) as Dictionary).keys():
+			if not quest_items.has(str(item_id)):
+				quest_items.append(str(item_id))
+	var unnamed: Array[String] = []
+	for item_id in quest_items.slice(0, 8):
+		var named: bool = false
+		for source in Goals.sources_for_item(item_id):
+			if str((source as Dictionary).get("route", {}).get("screen", "")) == Screens.QUESTS:
+				named = true
+		if not named:
+			unnamed.append(item_id)
+	_ok(not quest_items.is_empty() and unnamed.is_empty(),
+		"a task reward item points at the Tasks screen%s" % _trouble(unnamed, " — missing: "))
+
+	# A recipe the player cannot run says where the missing material comes from, not only that it is
+	# missing: that is the question the pane exists to answer.
+	panel.call("show_recipe", "crafting", "craft_diamond_ring")
+	var blocked: String = _card_text(body)
+	_ok(blocked.contains("Diamond") and blocked.contains("Delving"),
+		"a blocked recipe names the action that supplies its missing material")
+	# An unknown activity must say so rather than leave the previous card standing.
+	panel.call("show_recipe", "crafting", "no_such_action_id")
+	_ok(title.text == "Unavailable", "an unknown activity replaces the card instead of leaving it stale")
+
+	# Every goal kind the game can pin, resolved and rendered through the same call the screens use.
+	var kinds: Array[Dictionary] = [
+		{"kind": "item", "id": "normal_log"},
+		{"kind": "recipe", "id": "woodcutting:normal_tree"},
+		{"kind": "skill", "id": "woodcutting", "level": 10},
+		{"kind": "quest", "id": str(Quests.all_quest_ids()[0])},
+		{"kind": "building", "id": str(DataLoader.township_buildings.keys()[0])},
+		{"kind": "upgrade", "id": str(DataLoader.shop.keys()[0])},
+	]
+	var unresolved: Array[String] = []
+	var unrendered: Array[String] = []
+	var wide_goals: Array[String] = []
+	for goal in kinds:
+		var resolved: Dictionary = Goals.resolve(goal)
+		if not bool(resolved.get("ok", false)):
+			unresolved.append("%s (%s)" % [str(goal["kind"]), str(resolved.get("problem", ""))])
+			continue
+		panel.call("set_inline_context", {"kind": "goal", "goal": goal})
+		if title.text != str(resolved.get("label", "")) or body.get_child_count() < 2:
+			unrendered.append("%s -> '%s'" % [str(goal["kind"]), title.text])
+		if panel.get_combined_minimum_size().x > UITokens.W_DETAIL - 8:
+			wide_goals.append(str(goal["kind"]))
+	_ok(unresolved.is_empty(), "every goal kind resolves%s" % _trouble(unresolved, " — unresolved: "))
+	_ok(unrendered.is_empty(), "tapping any goal opens its card%s" % _trouble(unrendered, " — blank: "))
+	_ok(wide_goals.is_empty(), "every goal card fits the pane it renders in%s" % _trouble(wide_goals, " — clipped: "))
+
+	# A goal card that cannot answer "where from" must say so rather than silently drop the section,
+	# and a recipe goal must agree with its own progress bar (it used to read "complete" next to
+	# "0 / 1", which is the mismatch that made this card look broken).
+	var unreachable: Dictionary = Goals.resolve({"kind": "item", "id": "__not_an_item__"})
+	_ok(not bool(unreachable.get("ok", false)), "an impossible goal resolves to a refusal, not a lie")
+	var goal_edges: Array[String] = []
+	for goal in kinds:
+		var resolved_goal: Dictionary = Goals.resolve(goal)
+		if not bool(resolved_goal.get("ok", false)):
+			continue
+		var bar_full: bool = float(resolved_goal.get("progress_current", 0)) >= float(resolved_goal.get("progress_required", 1))
+		if bar_full != bool(resolved_goal.get("complete", false)):
+			goal_edges.append("%s:%s" % [str(goal.get("kind", "")), str(goal.get("id", ""))])
+	_ok(goal_edges.is_empty(), "every goal's progress bar agrees with its verdict%s" % _trouble(goal_edges, " — split: "))
+
+	# The Overview's Explain button on a tracked goal: the exact tap the player makes.
+	Goals.clear()
+	Goals.pin("item", "normal_log")
+	var overview: Control = load("res://scripts/ui/panels/OverviewPanel.gd").new()
+	host.add_child(overview)
+	var explain: Button = _find_button(overview.get("_goals_box"), "Explain")
+	_ok(explain != null, "a tracked goal offers an Explain button")
+	if explain != null:
+		var contexts: Array[Dictionary] = []
+		overview.connect("context_changed", func(ctx): contexts.append(ctx))
+		explain.pressed.emit()
+		_ok(contexts.size() == 1 and str((contexts[0] as Dictionary).get("kind", "")) == "goal",
+			"Explain asks the detail pane for that goal")
+		if contexts.size() == 1:
+			var ctx: Dictionary = contexts[0]
+			_ok(bool(Goals.resolve(ctx.get("goal", {})).get("ok", false)), "the emitted goal context resolves")
+
+	# The Skills screen selects an activity and emits the recipe context the pane consumes.
+	var skills: Control = load("res://scripts/ui/panels/SkillsPanel.gd").new()
+	host.add_child(skills)
+	var emitted: Array[Dictionary] = []
+	skills.connect("context_changed", func(ctx): emitted.append(ctx))
+	skills.call("_select_skill", "woodcutting")
+	skills.call("_select_action", "normal_tree")
+	_ok(emitted.size() == 1 and str((emitted[0] as Dictionary).get("action_id", "")) == "normal_tree",
+		"selecting an activity asks the detail pane for its recipe")
+	if emitted.size() == 1:
+		panel.call("set_inline_context", emitted[0])
+		_ok(title.text == "Emberpine Tree" and _card_text(body).contains("Can start now"),
+			"the recipe that screen hands over renders as a card")
+	skills.call("_select_action", "")
+
+	# Structure can be right while the layout starves it: the 132px key column of a key/value row
+	# sitting beside a 64px icon left the value column one pixel wide, and "500 GP" rendered as a
+	# ladder of single letters down the edge of the pane. This measures a card that has been laid
+	# out at the pane's real width, which is the only way to see a squeeze.
+	var frame := Control.new()
+	frame.size = Vector2(UITokens.W_DETAIL, 640)
+	host.add_child(frame)
+	frame.add_child(panel)
+	# A plain Control does not size its children, and a VBox would otherwise collapse to its own
+	# minimum: the pane has to be told how wide it is for this to measure anything.
+	panel.size = frame.size
+	var starved: Array[String] = []
+	var cases: Array[Dictionary] = [
+		{"label": "diamond", "call": func(): panel.call("show_item", "diamond")},
+		{"label": "bronze_sword", "call": func(): panel.call("show_item", "bronze_sword")},
+		{"label": "shrimp", "call": func(): panel.call("show_item", "shrimp")},
+		{"label": "raid_pet_egg", "call": func(): panel.call("show_item", "raid_pet_egg")},
+		{"label": "enchanting_skillcape", "call": func(): panel.call("show_item", "enchanting_skillcape")},
+		{"label": "goal:diamond", "call": func(): panel.call("set_inline_context", {"kind": "goal", "goal": {"kind": "item", "id": "diamond", "level": 100}})},
+		{"label": "recipe:craft_diamond_ring", "call": func(): panel.call("show_recipe", "crafting", "craft_diamond_ring")},
+	]
+	for case in cases:
+		(case["call"] as Callable).call()
+		# A card's labels report a 1px width until the containers have sorted them, and a card that
+		# was never laid out would look squeezed for a reason that is not the card's fault.
+		await _layouts_settled(panel)
+		var squeezed: Array[String] = []
+		_collect_starved(panel, squeezed)
+		if not squeezed.is_empty():
+			starved.append("%s (pane %.0fpx: %s)" % [str(case["label"]), panel.size.x,
+				", ".join(squeezed.slice(0, 3))])
+	_ok(starved.is_empty(), "no card squeezes a label below reading width%s" % _trouble(starved, " — starved: "))
+
+	Goals.clear()
+	panel.queue_free()
+	overview.queue_free()
+	skills.queue_free()
+
+## Waits for the pane to be laid out at its real width. Returns false (which the caller reports as a
+## squeeze) when that never happens, so a layout that simply did not run cannot pass as a healthy
+## card.
+func _layouts_settled(panel: Control) -> bool:
+	for _i in 4:
+		await panel.get_tree().process_frame
+		var body: Control = panel.get("_body")
+		if panel.size.x > 100.0 and body != null and body.size.x > 60.0:
+			return true
+	return false
+
+## A label laid out narrower than this with real text in it is either clipped or wrapped one
+## character per line: the value column of a starved key/value row. The text is carried out so a
+## failure names the row that squeezed, not just the card.
+func _collect_starved(root: Node, into: Array[String]) -> void:
+	for child in root.get_children():
+		if child is Label and (child as Label).text.length() > 5 and (child as Control).size.x < 20.0:
+			into.append((child as Label).text.substr(0, 28))
+		_collect_starved(child, into)
+
+## A route the pane offers has to name a screen the shell can actually open. "skill" is the
+## singular form Goals has always used; MainUI.navigate resolves it to the Skills screen.
+func _known_screen(screen: String) -> bool:
+	if screen == "skill" or screen == Screens.RECOVERY:
+		return true
+	return screen in Screens.ORDER
+
+## Every visible string in a rendered control tree, for asserting on a card as the player reads it.
+func _card_text(root: Node) -> String:
+	var parts: Array[String] = []
+	_card_text_into(root, parts)
+	return " | ".join(parts)
+
+func _card_text_into(node: Node, parts: Array[String]) -> void:
+	if node is Label:
+		parts.append((node as Label).text)
+	elif node is Button:
+		parts.append((node as Button).text)
+	for child in node.get_children():
+		_card_text_into(child, parts)
+
+## A short tail for an assertion label, or "" when there is nothing to report.
+func _trouble(entries: Array[String], lead: String) -> String:
+	if entries.is_empty():
+		return ""
+	return "%s%s" % [lead, ", ".join(entries.slice(0, 6))]
 
 ## Food is a combat resource: the player must be able to eat it deliberately, mid-fight, to heal.
 ## Auto-eat existed but was off by default and shop-gated, so a new player had no way to heal.
@@ -3587,3 +4654,8 @@ func _walk(node: Node) -> Array:
 	for c in node.get_children():
 		out.append_array(_walk(c))
 	return out
+
+func _prayer_cards(node: Node) -> int:
+	var count: int = 1 if node is Button and node.text in ["Activate", "Deactivate", "Locked"] else 0
+	for child in node.get_children(): count += _prayer_cards(child)
+	return count
