@@ -1,5 +1,5 @@
 {
-  "_comment": "Slayer task tiers. A task requires killing N of a monster for Slayer XP + Slayer Coins.",
+  "_comment": "Slayer task tiers. A task requires killing N of a monster for Slayer XP + Slayer Coins. '_dungeons' lists expeditions a tier can assign instead of a monster: clear it min_clears..max_clears times.",
   "easy": {
     "id": "easy",
     "name": "Easy",
@@ -70,7 +70,9 @@
     "min_kills": 30,
     "max_kills": 60,
     "slayer_coin_multiplier": 8.0,
-    "level_required": 117
+    "level_required": 117,
+    "min_clears": 2,
+    "max_clears": 4
   },
   "herald": {
     "id": "herald",
@@ -78,7 +80,9 @@
     "min_kills": 25,
     "max_kills": 50,
     "slayer_coin_multiplier": 10.0,
-    "level_required": 120
+    "level_required": 120,
+    "min_clears": 1,
+    "max_clears": 3
   },
   "_monsters": {
     "easy": [
@@ -89,8 +93,7 @@
     "normal": [
       "zombie_hand",
       "skeleton",
-      "spider",
-      "golbin_chief"
+      "spider"
     ],
     "hard": [
       "bandit",
@@ -103,8 +106,7 @@
       "slag_golem",
       "guard",
       "brine_troll",
-      "tidewrack_hag",
-      "mist_wraith"
+      "tidewrack_hag"
     ],
     "master": [
       "rune_knight",
@@ -123,22 +125,33 @@
     "abyssal": [
       "earth_elemental",
       "fire_elemental",
-      "drowned_sailor"
+      "drowned_sailor",
+      "tidebound_revenant",
+      "stormglass_warden"
     ],
     "godslayer": [
-      "air_god",
-      "water_god",
-      "earth_god",
-      "fire_god"
+      "cinder_colossus",
+      "herald_zealot"
     ],
     "herald": [
-      "the_mist",
-      "dark_herald",
-      "underwater_king",
       "abyssal_imp",
       "abyssal_fiend",
-      "abyssal_lord",
-      "the_herald"
+      "umbral_harbinger",
+      "abyssal_lord"
+    ]
+  },
+  "_dungeons": {
+    "godslayer": [
+      "air_god_dungeon",
+      "water_god_dungeon",
+      "earth_god_dungeon",
+      "fire_god_dungeon"
+    ],
+    "herald": [
+      "into_the_mist",
+      "impending_darkness",
+      "underwater_city",
+      "throne_of_the_herald"
     ]
   }
 }

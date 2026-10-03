@@ -3156,6 +3156,20 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "smith_adamantite_shield",
+        "name": "Skyiron Shield",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 360,
+        "input_items": {
+          "adamantite_bar": 4
+        },
+        "output_items": {
+          "adamantite_shield": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
         "id": "smelt_mithril_bar",
         "name": "Ghoststeel Bar",
         "level_required": 55,
@@ -3171,6 +3185,20 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "smith_mithril_arrowtips",
+        "name": "Ghoststeel Arrowtips",
+        "level_required": 55,
+        "base_interval": 1.7,
+        "base_xp": 65,
+        "input_items": {
+          "mithril_bar": 1
+        },
+        "output_items": {
+          "mithril_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "smelt_adamantite_bar",
         "name": "Skyiron Bar",
         "level_required": 70,
@@ -3182,6 +3210,20 @@
         },
         "output_items": {
           "adamantite_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "smith_adamantite_arrowtips",
+        "name": "Skyiron Arrowtips",
+        "level_required": 70,
+        "base_interval": 1.7,
+        "base_xp": 115,
+        "input_items": {
+          "adamantite_bar": 1
+        },
+        "output_items": {
+          "adamantite_arrowtips": 15
         },
         "mastery_action_time": 1.7
       },
@@ -3358,6 +3400,20 @@
           "runite_shield": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_runite_arrowtips",
+        "name": "Starforge Arrowtips",
+        "level_required": 85,
+        "base_interval": 1.7,
+        "base_xp": 125,
+        "input_items": {
+          "runite_bar": 1
+        },
+        "output_items": {
+          "runite_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "smelt_dragonite_bar",
@@ -3600,6 +3656,20 @@
           "dragonite_shield": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_arrowtips",
+        "name": "Wyrmsteel Arrowtips",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 160,
+        "input_items": {
+          "dragonite_bar": 1
+        },
+        "output_items": {
+          "dragonite_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "forge_air_god_boots",
@@ -3874,6 +3944,21 @@
         "mastery_action_time": 24.0
       },
       {
+        "id": "smith_warden_aegis",
+        "name": "Wardens' Aegis",
+        "level_required": 100,
+        "base_interval": 1.9,
+        "base_xp": 600,
+        "input_items": {
+          "dragonite_bar": 4,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "warden_aegis": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
         "id": "smelt_umbral_bar",
         "name": "Umbral Bar",
         "level_required": 105,
@@ -3971,6 +4056,35 @@
           "herald_platebody": 1
         },
         "mastery_action_time": 28.0
+      },
+      {
+        "id": "smith_herald_bulwark",
+        "name": "Herald's Bulwark",
+        "level_required": 115,
+        "base_interval": 1.9,
+        "base_xp": 760,
+        "input_items": {
+          "herald_bar": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "herald_bulwark": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_herald_arrowtips",
+        "name": "Herald Arrowtips",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 230,
+        "input_items": {
+          "herald_bar": 1
+        },
+        "output_items": {
+          "herald_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "smelt_herald_bar",
@@ -4167,6 +4281,22 @@
         "mastery_action_time": 1.3
       },
       {
+        "id": "fletch_mithril_arrow",
+        "name": "Ghoststeel Arrow",
+        "level_required": 45,
+        "base_interval": 1.3,
+        "base_xp": 60,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "mithril_arrowtips": 1
+        },
+        "output_items": {
+          "mithril_arrow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
         "id": "fletch_yew_shortbow",
         "name": "Gravewood Shortbow",
         "level_required": 55,
@@ -4197,6 +4327,22 @@
         "mastery_action_time": 1.3
       },
       {
+        "id": "fletch_adamantite_arrow",
+        "name": "Skyiron Arrow",
+        "level_required": 60,
+        "base_interval": 1.3,
+        "base_xp": 85,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "adamantite_arrowtips": 1
+        },
+        "output_items": {
+          "adamantite_arrow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
         "id": "fletch_magic_shortbow",
         "name": "Witchpine Shortbow",
         "level_required": 75,
@@ -4208,6 +4354,22 @@
         },
         "output_items": {
           "magic_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_runite_arrow",
+        "name": "Starforge Arrow",
+        "level_required": 75,
+        "base_interval": 1.3,
+        "base_xp": 115,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "runite_arrowtips": 1
+        },
+        "output_items": {
+          "runite_arrow": 1
         },
         "mastery_action_time": 1.3
       },
@@ -4238,6 +4400,22 @@
         },
         "output_items": {
           "redwood_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_dragonite_arrow",
+        "name": "Wyrmsteel Arrow",
+        "level_required": 90,
+        "base_interval": 1.3,
+        "base_xp": 150,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "dragonite_arrowtips": 1
+        },
+        "output_items": {
+          "dragonite_arrow": 1
         },
         "mastery_action_time": 1.3
       },
@@ -4283,6 +4461,22 @@
         },
         "output_items": {
           "cinderbark_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_herald_arrow",
+        "name": "Herald Arrow",
+        "level_required": 105,
+        "base_interval": 1.3,
+        "base_xp": 190,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "herald_arrowtips": 1
+        },
+        "output_items": {
+          "herald_arrow": 1
         },
         "mastery_action_time": 1.3
       },
@@ -4398,6 +4592,20 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_leather_cape",
+        "name": "Leather Cape",
+        "level_required": 3,
+        "base_interval": 1.65,
+        "base_xp": 14,
+        "input_items": {
+          "leather": 2
+        },
+        "output_items": {
+          "leather_cape": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_gold_ring",
         "name": "Gold Ring",
         "level_required": 5,
@@ -4440,6 +4648,21 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_topaz_amulet",
+        "name": "Topaz Amulet",
+        "level_required": 15,
+        "base_interval": 1.65,
+        "base_xp": 30,
+        "input_items": {
+          "gold_bar": 1,
+          "topaz": 1
+        },
+        "output_items": {
+          "topaz_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_sapphire_ring",
         "name": "Sapphire Ring",
         "level_required": 20,
@@ -4465,6 +4688,35 @@
         },
         "output_items": {
           "rune_essence": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_sapphire_amulet",
+        "name": "Sapphire Amulet",
+        "level_required": 25,
+        "base_interval": 1.65,
+        "base_xp": 50,
+        "input_items": {
+          "gold_bar": 1,
+          "sapphire": 1
+        },
+        "output_items": {
+          "sapphire_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_woollen_cloak",
+        "name": "Woollen Cloak",
+        "level_required": 25,
+        "base_interval": 1.7,
+        "base_xp": 55,
+        "input_items": {
+          "ranch_wool": 3
+        },
+        "output_items": {
+          "woollen_cloak": 1
         },
         "mastery_action_time": 1.7
       },
@@ -4548,6 +4800,22 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "craft_apprentice_boots",
+        "name": "Apprentice Boots",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "rune_essence": 2,
+          "air_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "apprentice_boots": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_ruby_ring",
         "name": "Ruby Ring",
         "level_required": 34,
@@ -4559,6 +4827,21 @@
         },
         "output_items": {
           "ruby_ring": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_emerald_amulet",
+        "name": "Emerald Amulet",
+        "level_required": 35,
+        "base_interval": 1.65,
+        "base_xp": 72,
+        "input_items": {
+          "gold_bar": 1,
+          "emerald": 1
+        },
+        "output_items": {
+          "emerald_amulet": 1
         },
         "mastery_action_time": 1.65
       },
@@ -4619,6 +4902,20 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_green_dhide_boots",
+        "name": "Verdant Wyrmhide Boots",
+        "level_required": 40,
+        "base_interval": 1.65,
+        "base_xp": 60,
+        "input_items": {
+          "green_dragonhide": 2
+        },
+        "output_items": {
+          "green_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "set_topaz_ring",
         "name": "Topaz Ring",
         "level_required": 42,
@@ -4661,6 +4958,20 @@
           "rune_essence": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_verdant_cloak",
+        "name": "Verdant Wyrmhide Cloak",
+        "level_required": 45,
+        "base_interval": 1.65,
+        "base_xp": 70,
+        "input_items": {
+          "green_dragonhide": 3
+        },
+        "output_items": {
+          "verdant_cloak": 1
+        },
+        "mastery_action_time": 1.65
       },
       {
         "id": "craft_blue_dhide_body",
@@ -4731,6 +5042,35 @@
           "rune_essence": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_ruby_amulet",
+        "name": "Ruby Amulet",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 110,
+        "input_items": {
+          "gold_bar": 2,
+          "ruby": 1
+        },
+        "output_items": {
+          "ruby_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_blue_dhide_boots",
+        "name": "Azure Wyrmhide Boots",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 80,
+        "input_items": {
+          "blue_dragonhide": 2
+        },
+        "output_items": {
+          "blue_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
       },
       {
         "id": "work_ranch_antler",
@@ -4895,6 +5235,36 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "craft_red_dhide_boots",
+        "name": "Crimson Wyrmhide Boots",
+        "level_required": 60,
+        "base_interval": 1.65,
+        "base_xp": 105,
+        "input_items": {
+          "red_dragonhide": 2
+        },
+        "output_items": {
+          "red_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_adept_boots",
+        "name": "Adept Boots",
+        "level_required": 60,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "rune_essence": 3,
+          "chaos_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "adept_boots": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "work_ranch_plume",
         "name": "Ranch Plume Fittings",
         "level_required": 65,
@@ -4907,6 +5277,35 @@
           "rune_essence": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_diamond_amulet",
+        "name": "Diamond Amulet",
+        "level_required": 65,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "gold_bar": 2,
+          "diamond": 1
+        },
+        "output_items": {
+          "diamond_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_crimson_cloak",
+        "name": "Crimson Wyrmhide Cloak",
+        "level_required": 65,
+        "base_interval": 1.65,
+        "base_xp": 115,
+        "input_items": {
+          "red_dragonhide": 3
+        },
+        "output_items": {
+          "crimson_cloak": 1
+        },
+        "mastery_action_time": 1.65
       },
       {
         "id": "craft_black_dhide_body",
@@ -4994,6 +5393,20 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "craft_black_dhide_boots",
+        "name": "Blighted Wyrmhide Boots",
+        "level_required": 70,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "black_dragonhide": 2
+        },
+        "output_items": {
+          "black_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "fit_clockwork_frame",
         "name": "Clockwork Fitting",
         "level_required": 80,
@@ -5006,6 +5419,35 @@
           "rune_essence": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_wyrmforged_torc",
+        "name": "Wyrmforged Torc",
+        "level_required": 80,
+        "base_interval": 1.9,
+        "base_xp": 180,
+        "input_items": {
+          "dragonite_bar": 2,
+          "diamond": 1
+        },
+        "output_items": {
+          "wyrmforged_torc": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_blighted_cloak",
+        "name": "Blighted Wyrmhide Cloak",
+        "level_required": 80,
+        "base_interval": 1.65,
+        "base_xp": 160,
+        "input_items": {
+          "black_dragonhide": 3
+        },
+        "output_items": {
+          "blighted_cloak": 1
+        },
+        "mastery_action_time": 1.65
       },
       {
         "id": "craft_reinforced_dhide_body",
@@ -5114,6 +5556,22 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "craft_archmage_boots",
+        "name": "Archmage Boots",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 180,
+        "input_items": {
+          "rune_essence": 4,
+          "blood_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "archmage_boots": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_reinforced_dhide_chaps",
         "name": "Reinforced Wyrmhide Chaps",
         "level_required": 95,
@@ -5125,6 +5583,37 @@
         },
         "output_items": {
           "reinforced_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_umbral_pendant",
+        "name": "Umbral Pendant",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 250,
+        "input_items": {
+          "umbral_bar": 2,
+          "diamond": 1,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "umbral_pendant": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_umbral_shroud",
+        "name": "Umbral Shroud",
+        "level_required": 95,
+        "base_interval": 1.65,
+        "base_xp": 250,
+        "input_items": {
+          "black_dragonhide": 3,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "umbral_shroud": 1
         },
         "mastery_action_time": 1.65
       },
@@ -5142,6 +5631,68 @@
           "reinforced_dhide_coif": 1
         },
         "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_reinforced_dhide_boots",
+        "name": "Reinforced Wyrmhide Boots",
+        "level_required": 105,
+        "base_interval": 1.65,
+        "base_xp": 320,
+        "input_items": {
+          "black_dragonhide": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "reinforced_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_heralds_sigil",
+        "name": "Herald's Sigil",
+        "level_required": 110,
+        "base_interval": 1.9,
+        "base_xp": 330,
+        "input_items": {
+          "herald_bar": 2,
+          "diamond": 2,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "heralds_sigil": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_herald_mantle",
+        "name": "Herald's Mantle",
+        "level_required": 110,
+        "base_interval": 1.65,
+        "base_xp": 330,
+        "input_items": {
+          "black_dragonhide": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "herald_mantle": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_herald_boots",
+        "name": "Herald Boots",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 280,
+        "input_items": {
+          "rune_essence": 6,
+          "umbral_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "herald_boots": 1
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "craft_umbral_dhide_vambraces",

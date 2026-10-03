@@ -512,14 +512,14 @@ func _player_attack() -> void:
 	# Arrows and runes are spent per swing, not per hit, so a miss still costs a shot. The
 	# Marksmanship skillcapes refund a share of them; CombatFormulas keeps this identical to the
 	# simulator's depletion model.
-	var weapon_cost: Dictionary = DataLoader.get_item(EquipmentManager.get_equipped(8)).get("attack_cost_items", {})
+	var weapon_cost: Dictionary = EquipmentManager.get_attack_cost()
 	var attack_cost: Dictionary = CombatFormulas.ammo_cost(_rng, weapon_cost,
 		ModifierManager.get_modifier(ModifierKeys.AMMO_PRESERVATION_PERCENT))
 	if not bool(BankManager.consume_bundle(attack_cost).ok):
 		stop_combat("supplies exhausted")
 		return
 	PrayerManager.spend_for_attack()   # active prayers cost points per attack
-	PotionManager.consume_charge()
+	PotionManager.consume_charge("combat")
 	var m: Dictionary = DataLoader.get_monster(current_monster_id)
 	var m_style: String = str(m.get("attack_type", "melee"))
 	var acc: int = _player_accuracy(attack_style)
@@ -815,6 +815,7 @@ func _complete_combat() -> void:
 		# A direct call, not the EventBus signal: _sig_dungeon_completed is muted during a silent
 		# offline simulation, and an offline expedition clear must still grant its pet.
 		PetManager.on_dungeon_cleared(dungeon_id)
+		SlayerManager.on_dungeon_cleared(dungeon_id)
 		_sig_dungeon_completed(dungeon_id)
 		if not SimulationMode.is_silent():
 			EventBus.notify("Expedition complete: %s" % d.get("name", dungeon_id), "success")

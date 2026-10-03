@@ -173,6 +173,18 @@ func _check_items() -> void:
 						_err("missing_reference", "item '%s' attack_cost_items references unknown item '%s'" % [id, cost_id])
 					elif int((cost as Dictionary)[cost_id]) <= 0:
 						_err("negative_value", "item '%s' attack_cost_items spends a non-positive amount of '%s'" % [id, cost_id])
+				# A tiered bow's default arrow is the best it can loose; a cap with no arrow at that
+				# tier, or a default of a different tier, would make the cap and the cost disagree.
+				var cap: int = int(it.get("ammo_tier_max", 0))
+				if cap > 0:
+					var tiers: Array = []
+					for cost_id in (cost as Dictionary).keys():
+						if _has_item(str(cost_id)) and str(DataLoader.get_item(str(cost_id)).get("item_type", "")) == "ammo":
+							tiers.append(int(DataLoader.get_item(str(cost_id)).get("ammo_tier", 0)))
+					if tiers != [cap]:
+						_err("invalid_record", "item '%s' has ammo_tier_max %d but its default arrow is tier %s" % [id, cap, str(tiers)])
+		if type == "ammo" and it.has("ammo_tier") and int(it.get("ammo_tier", 0)) <= 0:
+			_err("negative_value", "ammo '%s' has a non-positive ammo_tier" % id)
 		if type == "food" and int(it.get("heal_amount", 0)) < 0:
 			_err("negative_value", "food '%s' has negative heal_amount" % id)
 		if type == "seed":
@@ -736,7 +748,7 @@ func _check_side_systems() -> void:
 	# multiplier, so a pool monster with no slayer_xp pays nothing for a whole task.
 	var pools: Dictionary = DataLoader.slayer_tasks.get("_monsters", {})
 	for tier_id in DataLoader.slayer_tasks.keys():
-		if tier_id == "_monsters":
+		if str(tier_id).begins_with("_"):
 			continue
 		var tier: Variant = DataLoader.slayer_tasks[tier_id]
 		if typeof(tier) != TYPE_DICTIONARY:
@@ -765,6 +777,16 @@ func _check_side_systems() -> void:
 		# which is what left Master and Legendary as single-monster pools.
 		if (pool as Array).size() < 2:
 			_warn("thin_slayer_pool", "slayer tier '%s' offers only one monster to hunt" % tier_id)
+		# Expedition tasks: the dungeon must exist and the clears range must be sane.
+		var dpool: Variant = (DataLoader.slayer_tasks.get("_dungeons", {}) as Dictionary).get(tier_id, [])
+		if typeof(dpool) == TYPE_ARRAY and not (dpool as Array).is_empty():
+			var min_clears: int = int((tier as Dictionary).get("min_clears", 1))
+			var max_clears: int = int((tier as Dictionary).get("max_clears", 3))
+			if min_clears < 1 or max_clears < min_clears:
+				_err("invalid_record", "slayer tier '%s' has clears range %d..%d" % [tier_id, min_clears, max_clears])
+			for dungeon_id in (dpool as Array):
+				if not DataLoader.dungeons.has(str(dungeon_id)):
+					_err("missing_reference", "slayer tier '%s' lists unknown expedition '%s'" % [tier_id, dungeon_id])
 
 	# Museum stock: token costs must be positive and grants must be real items.
 	for entry_id in DataLoader.shop_museum.keys():

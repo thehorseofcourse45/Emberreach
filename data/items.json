@@ -411,6 +411,10 @@
     "id": "bronze_arrow",
     "name": "Bronze Arrow",
     "item_type": "ammo",
+    "ammo_tier": 1,
+    "ammo_stats": {
+      "ranged_strength": 1
+    },
     "sell_price": 2,
     "is_stackable": true
   },
@@ -1361,6 +1365,23 @@
       "defence": 30
     }
   },
+  "adamantite_shield": {
+    "id": "adamantite_shield",
+    "name": "Skyiron Shield",
+    "item_type": "equipment",
+    "sell_price": 281,
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 24,
+      "ranged_defence": 24,
+      "magic_defence": 24
+    },
+    "level_requirements": {
+      "defence": 50
+    },
+    "icon_id": "bronze_shield",
+    "description": "Skyiron beaten thin and wide. Light for its size."
+  },
   "mithril_sword": {
     "id": "mithril_sword",
     "name": "Ghoststeel Sword",
@@ -1464,6 +1485,10 @@
     "id": "iron_arrow",
     "name": "Iron Arrow",
     "item_type": "ammo",
+    "ammo_tier": 2,
+    "ammo_stats": {
+      "ranged_strength": 3
+    },
     "sell_price": 4,
     "is_stackable": true
   },
@@ -1471,8 +1496,112 @@
     "id": "steel_arrow",
     "name": "Steel Arrow",
     "item_type": "ammo",
+    "ammo_tier": 3,
+    "ammo_stats": {
+      "ranged_strength": 6
+    },
     "sell_price": 7,
     "is_stackable": true
+  },
+  "mithril_arrowtips": {
+    "id": "mithril_arrowtips",
+    "name": "Ghoststeel Arrowtips",
+    "item_type": "resource",
+    "sell_price": 3,
+    "is_stackable": true,
+    "icon_id": "steel_arrowtips"
+  },
+  "mithril_arrow": {
+    "id": "mithril_arrow",
+    "name": "Ghoststeel Arrow",
+    "item_type": "ammo",
+    "ammo_tier": 4,
+    "ammo_stats": {
+      "ranged_strength": 9
+    },
+    "sell_price": 6,
+    "is_stackable": true,
+    "icon_id": "steel_arrow"
+  },
+  "adamantite_arrowtips": {
+    "id": "adamantite_arrowtips",
+    "name": "Skyiron Arrowtips",
+    "item_type": "resource",
+    "sell_price": 4,
+    "is_stackable": true,
+    "icon_id": "steel_arrowtips"
+  },
+  "adamantite_arrow": {
+    "id": "adamantite_arrow",
+    "name": "Skyiron Arrow",
+    "item_type": "ammo",
+    "ammo_tier": 5,
+    "ammo_stats": {
+      "ranged_strength": 13
+    },
+    "sell_price": 7,
+    "is_stackable": true,
+    "icon_id": "steel_arrow"
+  },
+  "runite_arrowtips": {
+    "id": "runite_arrowtips",
+    "name": "Starforge Arrowtips",
+    "item_type": "resource",
+    "sell_price": 6,
+    "is_stackable": true,
+    "icon_id": "steel_arrowtips"
+  },
+  "runite_arrow": {
+    "id": "runite_arrow",
+    "name": "Starforge Arrow",
+    "item_type": "ammo",
+    "ammo_tier": 6,
+    "ammo_stats": {
+      "ranged_strength": 17
+    },
+    "sell_price": 9,
+    "is_stackable": true,
+    "icon_id": "steel_arrow"
+  },
+  "dragonite_arrowtips": {
+    "id": "dragonite_arrowtips",
+    "name": "Wyrmsteel Arrowtips",
+    "item_type": "resource",
+    "sell_price": 8,
+    "is_stackable": true,
+    "icon_id": "steel_arrowtips"
+  },
+  "dragonite_arrow": {
+    "id": "dragonite_arrow",
+    "name": "Wyrmsteel Arrow",
+    "item_type": "ammo",
+    "ammo_tier": 7,
+    "ammo_stats": {
+      "ranged_strength": 22
+    },
+    "sell_price": 11,
+    "is_stackable": true,
+    "icon_id": "steel_arrow"
+  },
+  "herald_arrowtips": {
+    "id": "herald_arrowtips",
+    "name": "Herald Arrowtips",
+    "item_type": "resource",
+    "sell_price": 18,
+    "is_stackable": true,
+    "icon_id": "steel_arrowtips"
+  },
+  "herald_arrow": {
+    "id": "herald_arrow",
+    "name": "Herald Arrow",
+    "item_type": "ammo",
+    "ammo_tier": 8,
+    "ammo_stats": {
+      "ranged_strength": 28
+    },
+    "sell_price": 21,
+    "is_stackable": true,
+    "icon_id": "steel_arrow"
   },
   "normal_shortbow": {
     "id": "normal_shortbow",
@@ -1488,6 +1617,7 @@
     "level_requirements": {
       "ranged": 1
     },
+    "ammo_tier_max": 1,
     "attack_cost_items": {
       "bronze_arrow": 1
     }
@@ -1506,6 +1636,7 @@
     "level_requirements": {
       "ranged": 1
     },
+    "ammo_tier_max": 1,
     "attack_cost_items": {
       "bronze_arrow": 1
     }
@@ -1524,8 +1655,9 @@
     "level_requirements": {
       "ranged": 20
     },
+    "ammo_tier_max": 2,
     "attack_cost_items": {
-      "bronze_arrow": 1
+      "iron_arrow": 1
     }
   },
   "oak_longbow": {
@@ -1542,8 +1674,9 @@
     "level_requirements": {
       "ranged": 20
     },
+    "ammo_tier_max": 2,
     "attack_cost_items": {
-      "bronze_arrow": 1
+      "iron_arrow": 1
     }
   },
   "willow_shortbow": {
@@ -1560,8 +1693,9 @@
     "level_requirements": {
       "ranged": 35
     },
+    "ammo_tier_max": 3,
     "attack_cost_items": {
-      "iron_arrow": 1
+      "steel_arrow": 1
     }
   },
   "willow_longbow": {
@@ -1578,8 +1712,9 @@
     "level_requirements": {
       "ranged": 35
     },
+    "ammo_tier_max": 3,
     "attack_cost_items": {
-      "iron_arrow": 1
+      "steel_arrow": 1
     }
   },
   "yew_shortbow": {
@@ -1596,8 +1731,9 @@
     "level_requirements": {
       "ranged": 55
     },
+    "ammo_tier_max": 4,
     "attack_cost_items": {
-      "iron_arrow": 1
+      "mithril_arrow": 1
     }
   },
   "yew_longbow": {
@@ -1614,8 +1750,9 @@
     "level_requirements": {
       "ranged": 55
     },
+    "ammo_tier_max": 4,
     "attack_cost_items": {
-      "iron_arrow": 1
+      "mithril_arrow": 1
     }
   },
   "magic_shortbow": {
@@ -1632,8 +1769,9 @@
     "level_requirements": {
       "ranged": 75
     },
+    "ammo_tier_max": 5,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "adamantite_arrow": 1
     }
   },
   "magic_longbow": {
@@ -1650,8 +1788,9 @@
     "level_requirements": {
       "ranged": 75
     },
+    "ammo_tier_max": 5,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "adamantite_arrow": 1
     }
   },
   "redwood_shortbow": {
@@ -1668,8 +1807,9 @@
     "level_requirements": {
       "ranged": 90
     },
+    "ammo_tier_max": 6,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "runite_arrow": 1
     }
   },
   "redwood_longbow": {
@@ -1686,8 +1826,9 @@
     "level_requirements": {
       "ranged": 90
     },
+    "ammo_tier_max": 6,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "runite_arrow": 1
     }
   },
   "cinderbark_shortbow": {
@@ -1704,8 +1845,9 @@
     "level_requirements": {
       "ranged": 100
     },
+    "ammo_tier_max": 7,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "dragonite_arrow": 1
     }
   },
   "cinderbark_longbow": {
@@ -1722,8 +1864,9 @@
     "level_requirements": {
       "ranged": 100
     },
+    "ammo_tier_max": 7,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "dragonite_arrow": 1
     }
   },
   "voidwood_shortbow": {
@@ -1740,8 +1883,9 @@
     "level_requirements": {
       "ranged": 110
     },
+    "ammo_tier_max": 8,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "herald_arrow": 1
     }
   },
   "voidwood_longbow": {
@@ -1758,8 +1902,9 @@
     "level_requirements": {
       "ranged": 110
     },
+    "ammo_tier_max": 8,
     "attack_cost_items": {
-      "steel_arrow": 1
+      "herald_arrow": 1
     }
   },
   "topaz": {
@@ -1830,13 +1975,135 @@
     },
     "level_requirements": {}
   },
+  "leather_cape": {
+    "id": "leather_cape",
+    "name": "Leather Cape",
+    "item_type": "equipment",
+    "sell_price": 11,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 1,
+      "ranged_defence": 1,
+      "magic_defence": 1
+    },
+    "level_requirements": {},
+    "icon_id": "cape_of_completion",
+    "description": "A plain traveller's cape. It keeps the ash off."
+  },
+  "woollen_cloak": {
+    "id": "woollen_cloak",
+    "name": "Woollen Cloak",
+    "item_type": "equipment",
+    "sell_price": 31,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 3,
+      "ranged_defence": 3,
+      "magic_defence": 3
+    },
+    "level_requirements": {
+      "hitpoints": 20
+    },
+    "icon_id": "cape_of_completion",
+    "description": "Thick ranch wool, dyed the colour of the frontier."
+  },
+  "verdant_cloak": {
+    "id": "verdant_cloak",
+    "name": "Verdant Wyrmhide Cloak",
+    "item_type": "equipment",
+    "sell_price": 181,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 5,
+      "ranged_defence": 5,
+      "magic_defence": 5
+    },
+    "level_requirements": {
+      "hitpoints": 40
+    },
+    "icon_id": "cape_of_completion",
+    "description": "Wyrmhide cut long. Moss still grows in the seams."
+  },
+  "crimson_cloak": {
+    "id": "crimson_cloak",
+    "name": "Crimson Wyrmhide Cloak",
+    "item_type": "equipment",
+    "sell_price": 181,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 7,
+      "ranged_defence": 7,
+      "magic_defence": 7
+    },
+    "level_requirements": {
+      "hitpoints": 60
+    },
+    "icon_id": "cape_of_completion",
+    "description": "Red hide that turns a blade aside as often as a gust."
+  },
+  "blighted_cloak": {
+    "id": "blighted_cloak",
+    "name": "Blighted Wyrmhide Cloak",
+    "item_type": "equipment",
+    "sell_price": 181,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 9,
+      "ranged_defence": 9,
+      "magic_defence": 9
+    },
+    "level_requirements": {
+      "hitpoints": 75
+    },
+    "icon_id": "cape_of_completion",
+    "description": "Black hide from the blight, heavy and silent."
+  },
+  "umbral_shroud": {
+    "id": "umbral_shroud",
+    "name": "Umbral Shroud",
+    "item_type": "equipment",
+    "sell_price": 401,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 11,
+      "ranged_defence": 11,
+      "magic_defence": 11
+    },
+    "level_requirements": {
+      "hitpoints": 90
+    },
+    "icon_id": "cape_of_completion",
+    "description": "A cloak of the Deep's own dark. Light slides off it."
+  },
+  "herald_mantle": {
+    "id": "herald_mantle",
+    "name": "Herald's Mantle",
+    "item_type": "equipment",
+    "sell_price": 561,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 13,
+      "ranged_defence": 13,
+      "magic_defence": 13,
+      "damage_reduction": 1
+    },
+    "level_requirements": {
+      "hitpoints": 105
+    },
+    "icon_id": "cape_of_completion",
+    "description": "Worn by those who reach the throne. It remembers the ones who did not."
+  },
   "gold_amulet": {
     "id": "gold_amulet",
     "name": "Gold Amulet",
     "item_type": "equipment",
     "sell_price": 40,
     "equipment_slot": 6,
-    "equipment_stats": {},
+    "equipment_stats": {
+      "melee_defence": 3,
+      "ranged_defence": 3,
+      "magic_defence": 3
+    },
     "level_requirements": {}
   },
   "gold_necklace": {
@@ -1845,8 +2112,215 @@
     "item_type": "equipment",
     "sell_price": 44,
     "equipment_slot": 6,
-    "equipment_stats": {},
+    "equipment_stats": {
+      "melee_strength": 2,
+      "ranged_strength": 2,
+      "magic_damage_percent": 1
+    },
     "level_requirements": {}
+  },
+  "topaz_amulet": {
+    "id": "topaz_amulet",
+    "name": "Topaz Amulet",
+    "item_type": "equipment",
+    "sell_price": 89,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 4,
+      "slash": 4,
+      "block": 4,
+      "ranged_attack": 4,
+      "magic_attack": 4,
+      "melee_defence": 2,
+      "ranged_defence": 2,
+      "magic_defence": 2
+    },
+    "level_requirements": {
+      "hitpoints": 10
+    },
+    "icon_id": "gold_amulet",
+    "description": "A hawk's-eye stone on a plain chain. Steadies every kind of aim a little."
+  },
+  "sapphire_amulet": {
+    "id": "sapphire_amulet",
+    "name": "Sapphire Amulet",
+    "item_type": "equipment",
+    "sell_price": 122,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 6,
+      "slash": 6,
+      "block": 6,
+      "ranged_attack": 6,
+      "magic_attack": 6,
+      "melee_strength": 3,
+      "ranged_strength": 3,
+      "magic_damage_percent": 2,
+      "melee_defence": 4,
+      "ranged_defence": 4,
+      "magic_defence": 4
+    },
+    "level_requirements": {
+      "hitpoints": 20
+    },
+    "icon_id": "gold_amulet",
+    "description": "Cool blue stone that keeps the hand calm and the guard up."
+  },
+  "emerald_amulet": {
+    "id": "emerald_amulet",
+    "name": "Emerald Amulet",
+    "item_type": "equipment",
+    "sell_price": 197,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 8,
+      "slash": 8,
+      "block": 8,
+      "ranged_attack": 8,
+      "magic_attack": 8,
+      "melee_strength": 5,
+      "ranged_strength": 5,
+      "magic_damage_percent": 3,
+      "melee_defence": 6,
+      "ranged_defence": 6,
+      "magic_defence": 6
+    },
+    "level_requirements": {
+      "hitpoints": 30
+    },
+    "icon_id": "gold_amulet",
+    "description": "Green fire set in gold. Hits land a little truer, a little harder."
+  },
+  "ruby_amulet": {
+    "id": "ruby_amulet",
+    "name": "Ruby Amulet",
+    "item_type": "equipment",
+    "sell_price": 397,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 11,
+      "slash": 11,
+      "block": 11,
+      "ranged_attack": 11,
+      "magic_attack": 11,
+      "melee_strength": 7,
+      "ranged_strength": 7,
+      "magic_damage_percent": 4,
+      "melee_defence": 8,
+      "ranged_defence": 8,
+      "magic_defence": 8
+    },
+    "level_requirements": {
+      "hitpoints": 45
+    },
+    "icon_id": "gold_amulet",
+    "description": "A heavy ruby that runs warm against the skin in a fight."
+  },
+  "diamond_amulet": {
+    "id": "diamond_amulet",
+    "name": "Diamond Amulet",
+    "item_type": "equipment",
+    "sell_price": 663,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 14,
+      "slash": 14,
+      "block": 14,
+      "ranged_attack": 14,
+      "magic_attack": 14,
+      "melee_strength": 9,
+      "ranged_strength": 9,
+      "magic_damage_percent": 5,
+      "melee_defence": 10,
+      "ranged_defence": 10,
+      "magic_defence": 10
+    },
+    "level_requirements": {
+      "hitpoints": 60
+    },
+    "icon_id": "gold_amulet",
+    "description": "Clear as frost and as hard. The best a goldsmith alone can make."
+  },
+  "wyrmforged_torc": {
+    "id": "wyrmforged_torc",
+    "name": "Wyrmforged Torc",
+    "item_type": "equipment",
+    "sell_price": 830,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 18,
+      "slash": 18,
+      "block": 18,
+      "ranged_attack": 18,
+      "magic_attack": 18,
+      "melee_strength": 12,
+      "ranged_strength": 12,
+      "magic_damage_percent": 6,
+      "melee_defence": 13,
+      "ranged_defence": 13,
+      "magic_defence": 13
+    },
+    "level_requirements": {
+      "hitpoints": 75
+    },
+    "icon_id": "gold_amulet",
+    "description": "A dragonite collar set with a diamond. Wyrm-metal remembers how to bite."
+  },
+  "umbral_pendant": {
+    "id": "umbral_pendant",
+    "name": "Umbral Pendant",
+    "item_type": "equipment",
+    "sell_price": 1208,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 22,
+      "slash": 22,
+      "block": 22,
+      "ranged_attack": 22,
+      "magic_attack": 22,
+      "melee_strength": 15,
+      "ranged_strength": 15,
+      "magic_damage_percent": 8,
+      "melee_defence": 16,
+      "ranged_defence": 16,
+      "magic_defence": 16
+    },
+    "passive_modifiers": {
+      "damage_to_monsters_percent": 1
+    },
+    "level_requirements": {
+      "hitpoints": 90
+    },
+    "icon_id": "gold_amulet",
+    "description": "A shard of the Deep caged in umbral silver. It drinks a little of every wound."
+  },
+  "heralds_sigil": {
+    "id": "heralds_sigil",
+    "name": "Herald's Sigil",
+    "item_type": "equipment",
+    "sell_price": 2085,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 27,
+      "slash": 27,
+      "block": 27,
+      "ranged_attack": 27,
+      "magic_attack": 27,
+      "melee_strength": 19,
+      "ranged_strength": 19,
+      "magic_damage_percent": 10,
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20
+    },
+    "passive_modifiers": {
+      "damage_to_monsters_percent": 2
+    },
+    "level_requirements": {
+      "hitpoints": 105
+    },
+    "icon_id": "gold_amulet",
+    "description": "The mark the Herald's own guard wore. It does not care which weapon you hold."
   },
   "sapphire_ring": {
     "id": "sapphire_ring",
@@ -1936,6 +2410,23 @@
       "ranged": 40
     }
   },
+  "green_dhide_boots": {
+    "id": "green_dhide_boots",
+    "name": "Verdant Wyrmhide Boots",
+    "item_type": "equipment",
+    "sell_price": 139,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 10,
+      "ranged_defence": 12,
+      "magic_defence": 10
+    },
+    "level_requirements": {
+      "ranged": 40
+    },
+    "icon_id": "bronze_boots",
+    "description": "Wyrmhide boots that keep a hunter quiet."
+  },
   "green_dhide_coif": {
     "id": "green_dhide_coif",
     "name": "Verdant Wyrmhide Coif",
@@ -2002,6 +2493,23 @@
     "level_requirements": {
       "ranged": 50
     }
+  },
+  "blue_dhide_boots": {
+    "id": "blue_dhide_boots",
+    "name": "Azure Wyrmhide Boots",
+    "item_type": "equipment",
+    "sell_price": 147,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 13,
+      "ranged_defence": 16,
+      "magic_defence": 13
+    },
+    "level_requirements": {
+      "ranged": 50
+    },
+    "icon_id": "bronze_boots",
+    "description": "Blue hide, double-stitched at the heel."
   },
   "blue_dhide_coif": {
     "id": "blue_dhide_coif",
@@ -2070,6 +2578,23 @@
       "ranged": 60
     }
   },
+  "red_dhide_boots": {
+    "id": "red_dhide_boots",
+    "name": "Crimson Wyrmhide Boots",
+    "item_type": "equipment",
+    "sell_price": 157,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 17,
+      "ranged_defence": 21,
+      "magic_defence": 17
+    },
+    "level_requirements": {
+      "ranged": 60
+    },
+    "icon_id": "bronze_boots",
+    "description": "Crimson hide that has walked through fire before."
+  },
   "red_dhide_coif": {
     "id": "red_dhide_coif",
     "name": "Crimson Wyrmhide Coif",
@@ -2137,6 +2662,23 @@
       "ranged": 70
     }
   },
+  "black_dhide_boots": {
+    "id": "black_dhide_boots",
+    "name": "Blighted Wyrmhide Boots",
+    "item_type": "equipment",
+    "sell_price": 171,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 22,
+      "ranged_defence": 26,
+      "magic_defence": 22
+    },
+    "level_requirements": {
+      "ranged": 70
+    },
+    "icon_id": "bronze_boots",
+    "description": "Black hide from the blight. It does not crease."
+  },
   "apprentice_hat": {
     "id": "apprentice_hat",
     "name": "Apprentice Hat",
@@ -2196,6 +2738,23 @@
     "level_requirements": {
       "magic": 30
     }
+  },
+  "apprentice_boots": {
+    "id": "apprentice_boots",
+    "name": "Apprentice Boots",
+    "item_type": "equipment",
+    "sell_price": 67,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 5,
+      "ranged_defence": 5,
+      "magic_defence": 6
+    },
+    "level_requirements": {
+      "magic": 30
+    },
+    "icon_id": "bronze_boots",
+    "description": "Soft-soled boots stitched with a little air."
   },
   "adept_hat": {
     "id": "adept_hat",
@@ -2257,6 +2816,23 @@
       "magic": 60
     }
   },
+  "adept_boots": {
+    "id": "adept_boots",
+    "name": "Adept Boots",
+    "item_type": "equipment",
+    "sell_price": 171,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 6,
+      "ranged_defence": 6,
+      "magic_defence": 10
+    },
+    "level_requirements": {
+      "magic": 60
+    },
+    "icon_id": "bronze_boots",
+    "description": "Chaos-thread runs through the soles. Your footing never quite slips."
+  },
   "archmage_hat": {
     "id": "archmage_hat",
     "name": "Archmage Hat",
@@ -2317,6 +2893,23 @@
       "magic": 90
     }
   },
+  "archmage_boots": {
+    "id": "archmage_boots",
+    "name": "Archmage Boots",
+    "item_type": "equipment",
+    "sell_price": 382,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 10,
+      "ranged_defence": 10,
+      "magic_defence": 14
+    },
+    "level_requirements": {
+      "magic": 90
+    },
+    "icon_id": "bronze_boots",
+    "description": "Blood-runed boots that carry the caster a half-step out of harm."
+  },
   "herald_hat": {
     "id": "herald_hat",
     "name": "Herald Hat",
@@ -2376,6 +2969,23 @@
     "level_requirements": {
       "magic": 115
     }
+  },
+  "herald_boots": {
+    "id": "herald_boots",
+    "name": "Herald Boots",
+    "item_type": "equipment",
+    "sell_price": 830,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 13,
+      "ranged_defence": 13,
+      "magic_defence": 18
+    },
+    "level_requirements": {
+      "magic": 115
+    },
+    "icon_id": "bronze_boots",
+    "description": "The Herald's own colours. The dark steps aside for them."
   },
   "black_dhide_coif": {
     "id": "black_dhide_coif",
@@ -5185,11 +5795,14 @@
   "master_echo_loop": {
     "id": "master_echo_loop",
     "name": "Master Loop",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 595,
     "is_stackable": true,
-    "description": "A sequence that completes cleanly and cheaply enough to keep running all night.",
-    "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
+    "description": "A sequence that completes cleanly and cheaply enough to keep running all night. Play it from storage: for 40 actions all mastery XP is 6% higher.",
+    "charges": 40,
+    "potion_effect": {
+      "global_mastery_xp_percent": 6
+    }
   },
   "route_survey": {
     "id": "route_survey",
@@ -5350,11 +5963,14 @@
   "finders_fee": {
     "id": "finders_fee",
     "name": "Finder's Fee",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 125,
     "is_stackable": true,
-    "description": "An honest reward, and the object back where it belongs.",
-    "terminal_reason": "sell-for-GP product of Lostfinding; the skill's output is gold, not a reagent"
+    "description": "An honest reward, and the object back where it belongs. Spend it from storage: for 50 actions or attacks you earn 10% more gold.",
+    "charges": 50,
+    "potion_effect": {
+      "global_gp_percent": 10
+    }
   },
   "echo_keeping_cape": {
     "id": "echo_keeping_cape",
@@ -5450,11 +6066,14 @@
   "flawless_echo": {
     "id": "flawless_echo",
     "name": "Flawless Echo",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 1050,
     "is_stackable": true,
-    "description": "A loop with no seam. Play it once and the room remembers.",
-    "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
+    "description": "A loop with no seam. Play it once and the room remembers. Play it from storage: for 40 actions all skill XP is 8% higher.",
+    "charges": 40,
+    "potion_effect": {
+      "global_skill_xp_percent": 8
+    }
   },
   "herald_echo": {
     "id": "herald_echo",
@@ -5467,11 +6086,14 @@
   "grand_confluence": {
     "id": "grand_confluence",
     "name": "Grand Confluence",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 2804,
     "is_stackable": true,
-    "description": "Every road in the survey arriving at once, politely.",
-    "terminal_reason": "sell-for-GP product of Wayfolding; the skill's output is gold, not a reagent"
+    "description": "Every road in the survey arriving at once, politely. Walk it from storage: for 30 actions every skill has a 5% chance to double its output.",
+    "charges": 30,
+    "potion_effect": {
+      "global_doubling_percent": 5
+    }
   },
   "herald_gate": {
     "id": "herald_gate",
@@ -5493,11 +6115,15 @@
   "herald_craft": {
     "id": "herald_craft",
     "name": "Herald Craft",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 4009,
     "is_stackable": true,
-    "description": "Made the way it will be remembered, which is to say perfectly.",
-    "terminal_reason": "sell-for-GP product of Customcraft; the skill's output is gold, not a reagent"
+    "description": "Made the way it will be remembered, which is to say perfectly. Carry it from storage: for 300 attacks Huntsman tasks pay 15% more coins.",
+    "charges": 300,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_slayer_coins_percent": 15
+    }
   },
   "cold_trail": {
     "id": "cold_trail",
@@ -5510,11 +6136,15 @@
   "herald_case": {
     "id": "herald_case",
     "name": "Herald Case",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 2886,
     "is_stackable": true,
-    "description": "Closed. The label is in your handwriting and you have never seen it before.",
-    "terminal_reason": "sell-for-GP product of Lostfinding; the skill's output is gold, not a reagent"
+    "description": "Closed. The label is in your handwriting and you have never seen it before. Open it from storage: for 300 attacks every kill has a 5% chance to drop double loot.",
+    "charges": 300,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_double_loot_percent": 5
+    }
   },
   "adamantite_sword": {
     "id": "adamantite_sword",
@@ -5982,6 +6612,42 @@
     "level_requirements": {
       "defence": 85
     }
+  },
+  "warden_aegis": {
+    "id": "warden_aegis",
+    "name": "Wardens' Aegis",
+    "item_type": "equipment",
+    "sell_price": 801,
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 44,
+      "ranged_defence": 44,
+      "magic_defence": 44,
+      "damage_reduction": 2
+    },
+    "level_requirements": {
+      "defence": 100
+    },
+    "icon_id": "bronze_shield",
+    "description": "Wyrmforged plate set with the four wardens' light. Made to outlast them."
+  },
+  "herald_bulwark": {
+    "id": "herald_bulwark",
+    "name": "Herald's Bulwark",
+    "item_type": "equipment",
+    "sell_price": 1441,
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 52,
+      "ranged_defence": 52,
+      "magic_defence": 52,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "defence": 115
+    },
+    "icon_id": "bronze_shield",
+    "description": "A slab of herald steel with the throne's mark burned into it."
   },
   "burnt_food": {
     "id": "burnt_food",
@@ -7325,6 +7991,23 @@
       "ranged": 105
     },
     "icon_id": "black_dhide_coif"
+  },
+  "reinforced_dhide_boots": {
+    "id": "reinforced_dhide_boots",
+    "name": "Reinforced Wyrmhide Boots",
+    "item_type": "equipment",
+    "sell_price": 712,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 31,
+      "ranged_defence": 38,
+      "magic_defence": 31
+    },
+    "level_requirements": {
+      "ranged": 105
+    },
+    "icon_id": "bronze_boots",
+    "description": "Blighted hide plated with herald essence at the toe and heel."
   },
   "umbral_dhide_vambraces": {
     "id": "umbral_dhide_vambraces",

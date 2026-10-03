@@ -79,10 +79,16 @@ func run_all(host: Node) -> void:
 	_test_action_xp_ladders()
 	_test_activity_names_unique()
 	_test_late_skills_pace()
+	_test_open_world_coverage()
+	_test_monster_style_mix()
+	_test_neck_slot_ladder()
+	_test_armour_slot_ladders()
 	_test_gold_is_bounded()
 	_test_mastery_metadata()
 	await _test_detail_cards(host)
 	_test_attack_costs()
+	_test_arrow_tiers()
+	_test_late_products_are_usable()
 	_test_magic_gear()
 	_test_dungeon_sequencing()
 	_test_session_meters()
@@ -2084,6 +2090,91 @@ func _test_dungeon_ladder() -> void:
 ## Arrows and runes are only a real supply loop if an attack actually spends them, and the
 ## Marksmanship skillcapes only mean anything if preservation is applied to that spend. Both
 ## combat paths call CombatFormulas.ammo_cost, so the maths is pinned once here.
+## The top products of Echo Keeping, Lostfinding, Wayfolding and Customcraft were sell-only, so
+## those skills fed nothing else in the game. They are now potions whose effect keys the game
+## actually reads, and the two combat ones only spend charges while fighting.
+func _test_late_products_are_usable() -> void:
+	_heading("Late skill products do something")
+	var live_keys: Array = ["global_mastery_xp_percent", "global_skill_xp_percent", "global_gp_percent",
+		"global_double_loot_percent", "global_doubling_percent", "global_slayer_coins_percent"]
+	for item_id in ["master_echo_loop", "flawless_echo", "finders_fee", "herald_case", "grand_confluence", "herald_craft"]:
+		var it: Dictionary = DataLoader.get_item(item_id)
+		_eq(str(it.get("item_type", "")), "potion", "%s can be used from storage" % item_id)
+		_ok(int(it.get("charges", 0)) > 0, "%s lasts a number of charges" % item_id)
+		for key in (it.get("potion_effect", {}) as Dictionary).keys():
+			_ok(live_keys.has(str(key)), "%s's effect '%s' is read by the game" % [item_id, key])
+		_ok(not it.has("terminal_reason"), "%s no longer declares itself sell-only" % item_id)
+	var potion_before: String = PlayerData.active_potion
+	var charges_before: int = PlayerData.potion_charges
+	BankManager.add_item_guaranteed("herald_case", 1)
+	_ok(PotionManager.use_potion("herald_case"), "a Herald Case can be opened")
+	var full: int = PlayerData.potion_charges
+	PotionManager.consume_charge("mining")
+	_eq(PlayerData.potion_charges, full, "a combat potion does not drain while skilling")
+	PotionManager.consume_charge("combat")
+	_eq(PlayerData.potion_charges, full - 1, "a combat potion drains per attack")
+	_approx(ModifierManager.get_modifier("global_double_loot_percent"), 5.0, 0.001, "the case's double-loot bonus is active")
+	PotionManager.clear()
+	# damage_to_monsters_percent sat on rings and amulets but nothing read it.
+	var base: float = ModifierManager.get_max_hit_percent("ranged")
+	ModifierManager.register("test:dtm", {"damage_to_monsters_percent": 3.0}, "test", "test")
+	_approx(ModifierManager.get_max_hit_percent("ranged") - base, 3.0, 0.001, "damage_to_monsters_percent raises max hit")
+	ModifierManager.unregister("test:dtm")
+	if potion_before != "":
+		PlayerData.active_potion = potion_before
+		PlayerData.potion_charges = charges_before
+		PotionManager._reapply()
+
+## Arrows stopped at steel and carried no stats, so every bow from L75 up fired the same 7 gp
+## arrow and the ammo tier changed nothing. Arrows now run eight tiers with rising strength, and a
+## bow looses the best arrow in storage up to its cap.
+func _test_arrow_tiers() -> void:
+	_heading("Arrow tiers")
+	var fletched: Dictionary = {}
+	for action in DataLoader.get_skill_actions("fletching"):
+		for out_id in (action.get("output_items", {}) as Dictionary).keys():
+			fletched[str(out_id)] = true
+	var by_tier: Dictionary = {}
+	for id in DataLoader.items.keys():
+		var it: Variant = DataLoader.items[id]
+		if typeof(it) == TYPE_DICTIONARY and int((it as Dictionary).get("ammo_tier", 0)) > 0:
+			by_tier[int((it as Dictionary)["ammo_tier"])] = str(id)
+	_eq(by_tier.size(), 8, "eight arrow tiers exist")
+	var prev: int = 0
+	for tier in range(1, 9):
+		var arrow: String = str(by_tier.get(tier, ""))
+		_ok(fletched.has(arrow), "tier %d arrow '%s' is fletched" % [tier, arrow])
+		var st: int = int((DataLoader.get_item(arrow).get("ammo_stats", {}) as Dictionary).get("ranged_strength", 0))
+		_ok(st > prev, "tier %d arrow is stronger than the tier below (%d)" % [tier, st])
+		prev = st
+	# Behaviour: the bow takes the best arrow it may, and falls back to its own default otherwise.
+	var weapon_before: String = EquipmentManager.get_equipped(8)
+	var stock: Dictionary = {}
+	for arrow in by_tier.values():
+		stock[arrow] = BankManager.get_count(str(arrow))
+		if int(stock[arrow]) > 0:
+			BankManager.remove_item(str(arrow), int(stock[arrow]))
+	EquipmentManager.slots[8] = "voidwood_longbow"
+	var base_str: int = EquipmentManager.get_strength_bonus("ranged")
+	_eq(EquipmentManager.active_ammo(), "", "with no arrows stored nothing is chosen")
+	_eq(EquipmentManager.get_attack_cost().keys(), ["herald_arrow"], "an empty quiver falls back to the bow's own arrow")
+	BankManager.add_item_guaranteed("bronze_arrow", 5)
+	_eq(EquipmentManager.active_ammo(), "bronze_arrow", "a high bow still looses a low arrow")
+	_eq(EquipmentManager.get_attack_cost().keys(), ["bronze_arrow"], "the attack spends the arrow it looses")
+	_eq(EquipmentManager.get_strength_bonus("ranged"), base_str + 1, "the arrow's strength is added")
+	BankManager.add_item_guaranteed("herald_arrow", 5)
+	_eq(EquipmentManager.active_ammo(), "herald_arrow", "the best arrow in storage is preferred")
+	_eq(EquipmentManager.get_strength_bonus("ranged"), base_str + 28, "a herald arrow adds +28 strength")
+	EquipmentManager.slots[8] = "normal_shortbow"
+	_eq(EquipmentManager.active_ammo(), "bronze_arrow", "a tier-1 bow cannot loose a herald arrow")
+	BankManager.remove_item("bronze_arrow", 5)
+	_eq(EquipmentManager.active_ammo(), "", "a tier-1 bow with only herald arrows has nothing to fire")
+	BankManager.remove_item("herald_arrow", 5)
+	for arrow in stock.keys():
+		if int(stock[arrow]) > 0:
+			BankManager.add_item_guaranteed(str(arrow), int(stock[arrow]))
+	EquipmentManager.slots[8] = weapon_before
+
 func _test_attack_costs() -> void:
 	_heading("Attack costs (ammunition and runes)")
 	var rng := RandomNumberGenerator.new()
@@ -2178,7 +2269,8 @@ func _test_magic_gear() -> void:
 	_ok(best_staff_hit >= int(0.6 * float(best_bow_hit)),
 		"the best staff is a real alternative to the best bow (%d vs %d)" % [best_staff_hit, best_bow_hit])
 	_ok(best_staff_hit <= best_bow_hit, "the best staff does not out-hit the best bow (%d vs %d)" % [best_staff_hit, best_bow_hit])
-	# Robes: cloth armour for the style, four tiers of four pieces, defence rising by tier.
+	# Robes: cloth armour for the style, four tiers of five pieces (boots joined the hat, robe, legs
+	# and gloves), defence rising by tier.
 	var tiers: Dictionary = {}
 	for id in DataLoader.items.keys():
 		var it: Dictionary = DataLoader.get_item(str(id))
@@ -2193,7 +2285,7 @@ func _test_magic_gear() -> void:
 	_ok(robe_levels.size() >= 4, "robes ship in %d tiers" % robe_levels.size())
 	var prev_def: int = 0
 	for level in robe_levels:
-		_eq(int(tiers[level]), 4, "the Magic-%d robe tier has four pieces" % int(level))
+		_eq(int(tiers[level]), 5, "the Magic-%d robe tier has five pieces" % int(level))
 		var total: int = 0
 		for id in DataLoader.items.keys():
 			var it: Dictionary = DataLoader.get_item(str(id))
@@ -2722,6 +2814,63 @@ func _test_slayer_task_flow() -> void:
 	_ok(not SlayerManager.has_task(), "the task completes once its kills are done")
 	_ok(PlayerData.slayer_coins > coins_before, "a completed task pays Slayer Coins")
 	SlayerManager.deserialize({})
+	_test_slayer_pools_are_huntable()
+	_test_slayer_expedition_task()
+
+## Mythical..Herald pointed at monsters that only spawned inside expeditions, and Godslayer and
+## Herald asked for 25-60 kills of a final boss that appears once per run. Every pool monster must
+## now spawn in an open area, and the boss tiers hunt whole expeditions instead.
+func _test_slayer_pools_are_huntable() -> void:
+	_heading("Every Slayer task can actually be hunted")
+	var open: Dictionary = {}
+	for area_id in DataLoader.areas.keys():
+		var row: Variant = DataLoader.areas[area_id]
+		if typeof(row) == TYPE_DICTIONARY:
+			for mid in (row as Dictionary).get("monsters", []):
+				open[str(mid)] = true
+	var stuck: Array[String] = []
+	var pools: Dictionary = DataLoader.slayer_tasks.get("_monsters", {})
+	for tier_id in pools.keys():
+		for mid in pools[tier_id]:
+			if not open.has(str(mid)):
+				stuck.append("%s:%s" % [tier_id, mid])
+	_ok(stuck.is_empty(), "every Slayer pool monster spawns in an open area%s" % _trouble(stuck, " — "))
+	for tier_id in ["godslayer", "herald"]:
+		var dpool: Array = (DataLoader.slayer_tasks.get("_dungeons", {}) as Dictionary).get(tier_id, [])
+		_ok(not dpool.is_empty(), "the %s tier can assign expeditions" % tier_id)
+		_ok(int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("max_clears", 0)) <= 5,
+			"a %s expedition task asks for at most 5 clears" % tier_id)
+
+func _test_slayer_expedition_task() -> void:
+	var coins_before: float = PlayerData.slayer_coins
+	var level_before: int = PlayerData.get_level("slayer")
+	PlayerData.set_level("slayer", 120)
+	var got_dungeon := false
+	for _i in range(200):
+		SlayerManager.deserialize({})
+		SlayerManager.assign_task("godslayer")
+		if SlayerManager.is_dungeon_task():
+			got_dungeon = true
+			break
+	_ok(got_dungeon, "the Godslayer tier hands out expedition tasks")
+	if got_dungeon:
+		var dungeon_id := str(PlayerData.slayer_task.get("dungeon_id", ""))
+		var required := int(PlayerData.slayer_task.get("kills_required", 0))
+		_ok(required >= 2 and required <= 4, "a Godslayer expedition task asks for 2-4 clears (%d)" % required)
+		var fights: Array = DataLoader.get_dungeon(dungeon_id).get("monsters", [])
+		_ok(str(PlayerData.slayer_task.get("monster_id", "")) == str(fights[-1]),
+			"the task's monster is the expedition's final boss, so it earns the on-task bonus")
+		SlayerManager._on_kill(str(fights[-1]))
+		_ok(int(PlayerData.slayer_task.get("kills_done", -1)) == 0, "a boss kill alone does not count as a clear")
+		SlayerManager.on_dungeon_cleared("chicken_coop")
+		_ok(int(PlayerData.slayer_task.get("kills_done", -1)) == 0, "clearing a different expedition does not count")
+		for _c in range(required):
+			SlayerManager.on_dungeon_cleared(dungeon_id)
+		_ok(not SlayerManager.has_task(), "the task completes after its clears")
+		_ok(PlayerData.slayer_coins > coins_before, "an expedition task pays Slayer Coins")
+	SlayerManager.deserialize({})
+	PlayerData.set_level("slayer", level_before)
+	PlayerData.slayer_coins = coins_before
 
 func _test_museum_flow() -> void:
 	var before: Dictionary = ArchaeologyManager.serialize()
@@ -2879,7 +3028,7 @@ func _test_unobtainable_content() -> void:
 	var too_high: Array[String] = []
 	var ordered: Array[int] = []
 	for tier_id in DataLoader.slayer_tasks.keys():
-		if tier_id == "_monsters":
+		if str(tier_id).begins_with("_"):
 			continue
 		ordered.append(int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)))
 		if int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)) > slayer_cap:
@@ -2901,7 +3050,7 @@ func _test_unobtainable_content() -> void:
 	PlayerData.set_level("slayer", slayer_cap)
 	var top_tier: String = ""
 	for tier_id in DataLoader.slayer_tasks.keys():
-		if tier_id == "_monsters":
+		if str(tier_id).begins_with("_"):
 			continue
 		if int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)) == slayer_cap:
 			top_tier = str(tier_id)
@@ -3573,7 +3722,9 @@ func _test_outputs_are_consumed() -> void:
 		"no obtainable item is left without a consumer%s" % _trouble(undeclared, " — "))
 
 	var declared: Array = demand["declared"]
-	_ok(declared.size() >= 10, "intentional dead ends are declared in the data (%d)" % declared.size())
+	# The floor only proves the declaration path is still in use: turning the late skills'
+	# sell-only products into potions cut the list from 11 to 5, which is the point.
+	_ok(declared.size() >= 1, "intentional dead ends are declared in the data (%d)" % declared.size())
 	var unexplained: Array[String] = []
 	for item_id in declared:
 		if str(DataLoader.get_item(str(item_id)).get("terminal_reason", "")).strip_edges() == "":
@@ -3890,6 +4041,149 @@ func _test_activity_names_unique() -> void:
 
 func equipment_output(item_id: String) -> bool:
 	return str(DataLoader.get_item(item_id).get("item_type", "")) == "equipment"
+
+## Boots stopped at the metal line (no ranged or magic boots, and holes at 40/60/90/105/115),
+## shields skipped 50 and everything past 85, and nothing could be worn as a cape before a
+## level-99 skillcape. Each armour slot must now have a craftable piece within every 20 levels
+## up to L105, and boots must exist for all three styles.
+func _test_armour_slot_ladders() -> void:
+	_heading("Every armour slot has a craftable ladder")
+	var crafted: Dictionary = {}
+	for skill_id in DataLoader.skills.keys():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			for out_id in (action.get("output_items", {}) as Dictionary).keys():
+				crafted[str(out_id)] = true
+	var names: Dictionary = {0: "helmet", 1: "body", 2: "legs", 3: "boots", 4: "gloves", 5: "cape", 9: "shield"}
+	var boot_styles: Dictionary = {}
+	for slot in names.keys():
+		var levels: Dictionary = {}
+		for item_id in crafted.keys():
+			var it: Dictionary = DataLoader.get_item(str(item_id))
+			if int(it.get("equipment_slot", -1)) != int(slot):
+				continue
+			var wear: int = 0
+			for skill in (it.get("level_requirements", {}) as Dictionary).keys():
+				wear = maxi(wear, int(it["level_requirements"][skill]))
+				if int(slot) == 3:
+					boot_styles[str(skill)] = true
+			levels[wear] = true
+		var sorted_levels: Array = levels.keys()
+		sorted_levels.sort()
+		var holes: Array[String] = []
+		for i in range(1, sorted_levels.size()):
+			if int(sorted_levels[i - 1]) < 105 and int(sorted_levels[i]) - int(sorted_levels[i - 1]) > 20:
+				holes.append("L%d -> L%d" % [int(sorted_levels[i - 1]), int(sorted_levels[i])])
+		_ok(holes.is_empty(), "%s: a craftable piece within every 20 levels%s" % [names[slot], _trouble(holes, " — ")])
+		_ok(not sorted_levels.is_empty() and int(sorted_levels[-1]) >= 105,
+			"%s: the craftable ladder reaches L105" % names[slot])
+		_ok(not sorted_levels.is_empty() and int(sorted_levels[0]) <= 1, "%s: something craftable at L1" % names[slot])
+	for style in ["defence", "ranged", "magic"]:
+		_ok(boot_styles.has(style), "boots exist for %s gear" % style)
+
+## The neck slot held two gold pieces with no stats at all, so a whole equipment slot never
+## progressed. Every neck item must now do something, a craftable upgrade must exist within 20
+## levels all the way to L105, and each step up must be at least as strong as the one below it.
+func _test_neck_slot_ladder() -> void:
+	_heading("The neck slot has a real upgrade ladder")
+	var crafted: Dictionary = {}
+	for action in DataLoader.get_skill_actions("crafting"):
+		for out_id in (action.get("output_items", {}) as Dictionary).keys():
+			crafted[str(out_id)] = true
+	var ladder: Array = []
+	var empty: Array[String] = []
+	for item_id in DataLoader.items.keys():
+		var it: Variant = DataLoader.items[item_id]
+		if typeof(it) != TYPE_DICTIONARY or int((it as Dictionary).get("equipment_slot", -1)) != 6:
+			continue
+		var power: int = 0
+		for v in ((it as Dictionary).get("equipment_stats", {}) as Dictionary).values():
+			power += int(v)
+		if power <= 0 and ((it as Dictionary).get("passive_modifiers", {}) as Dictionary).is_empty():
+			empty.append(str(item_id))
+		var wear: int = 0
+		for lv in ((it as Dictionary).get("level_requirements", {}) as Dictionary).values():
+			wear = maxi(wear, int(lv))
+		if crafted.has(str(item_id)):
+			ladder.append({"id": str(item_id), "wear": wear, "power": power})
+	_ok(empty.is_empty(), "every neck item grants a stat or a bonus%s" % _trouble(empty, " — "))
+	ladder.sort_custom(func(a, b): return int(a["wear"]) < int(b["wear"]) or (int(a["wear"]) == int(b["wear"]) and int(a["power"]) < int(b["power"])))
+	var holes: Array[String] = []
+	var weaker: Array[String] = []
+	for i in range(1, ladder.size()):
+		if int(ladder[i]["wear"]) - int(ladder[i - 1]["wear"]) > 20:
+			holes.append("L%d -> L%d" % [int(ladder[i - 1]["wear"]), int(ladder[i]["wear"])])
+		if int(ladder[i]["power"]) < int(ladder[i - 1]["power"]):
+			weaker.append("%s < %s" % [ladder[i]["id"], ladder[i - 1]["id"]])
+	_ok(holes.is_empty(), "a craftable neck upgrade exists within every 20 levels%s" % _trouble(holes, " — "))
+	_ok(weaker.is_empty(), "each neck upgrade is at least as strong as the last%s" % _trouble(weaker, " — "))
+	_ok(not ladder.is_empty() and int(ladder[-1]["wear"]) >= 105, "the neck ladder reaches L105")
+
+## 25 of 46 enemies attacked with melee and only 8 with ranged, so the style that beats melee in
+## the triangle (magic) was the right answer almost everywhere. Keep the three styles within reach
+## of each other, present in every 50-level band, and mixed in every multi-monster open area.
+func _test_monster_style_mix() -> void:
+	_heading("Enemy attack styles are mixed")
+	var counts: Dictionary = {"melee": 0, "ranged": 0, "magic": 0}
+	var bands: Dictionary = {}
+	for mid in DataLoader.monsters.keys():
+		var m: Variant = DataLoader.monsters[mid]
+		if typeof(m) != TYPE_DICTIONARY:
+			continue
+		var style: String = str((m as Dictionary).get("attack_type", ""))
+		counts[style] = int(counts.get(style, 0)) + 1
+		var band: int = mini(int((m as Dictionary).get("combat_level", 1)) / 50, 5)
+		if not bands.has(band):
+			bands[band] = {}
+		(bands[band] as Dictionary)[style] = true
+	var total: int = int(counts["melee"]) + int(counts["ranged"]) + int(counts["magic"])
+	for style in ["melee", "ranged", "magic"]:
+		_ok(float(counts[style]) >= float(total) * 0.25,
+			"%s is at least a quarter of all enemies (%d of %d)" % [style, int(counts[style]), total])
+	var thin: Array[String] = []
+	for band in bands.keys():
+		if (bands[band] as Dictionary).size() < 3:
+			thin.append("L%d-%d" % [int(band) * 50, int(band) * 50 + 49])
+	_ok(thin.is_empty(), "every 50-level band has enemies of all three styles%s" % _trouble(thin, " — "))
+	var samey: Array[String] = []
+	for area_id in DataLoader.areas.keys():
+		var row: Variant = DataLoader.areas[area_id]
+		if typeof(row) != TYPE_DICTIONARY:
+			continue
+		var pool: Array = (row as Dictionary).get("monsters", [])
+		var styles: Dictionary = {}
+		var top: int = 0
+		for mid in pool:
+			var m: Dictionary = DataLoader.get_monster(str(mid))
+			styles[str(m.get("attack_type", ""))] = true
+			top = maxi(top, int(m.get("combat_level", 0)))
+		if pool.size() >= 3 and top >= 30 and styles.size() < 2:
+			samey.append(str(area_id))
+	_ok(samey.is_empty(), "every open area of 3+ enemies past L30 mixes styles%s" % _trouble(samey, " — "))
+
+## Open areas stopped at Ashwyrm Hollow (L120) and resumed at the Umbral Deep (L230): every
+## monster in between lived only inside a dungeon, so nothing in that band could be farmed.
+## Walk the non-boss monsters that open areas spawn and fail on any level jump over 15 up to L230.
+func _test_open_world_coverage() -> void:
+	_heading("Open areas cover every level band up to the Umbral Deep")
+	var levels: Dictionary = {}
+	for area_id in DataLoader.areas.keys():
+		var row: Variant = DataLoader.areas[area_id]
+		if typeof(row) != TYPE_DICTIONARY or str((row as Dictionary).get("type", "area")) != "area":
+			continue
+		for mid in (row as Dictionary).get("monsters", []):
+			var m: Dictionary = DataLoader.get_monster(str(mid))
+			if not m.is_empty() and not bool(m.get("is_boss", false)):
+				levels[int(m.get("combat_level", 0))] = true
+	var sorted_levels: Array = levels.keys()
+	sorted_levels.sort()
+	var holes: Array[String] = []
+	for i in range(1, sorted_levels.size()):
+		var lo: int = int(sorted_levels[i - 1])
+		var hi: int = int(sorted_levels[i])
+		if lo < 230 and hi - lo > 15:
+			holes.append("L%d -> L%d" % [lo, hi])
+	_ok(holes.is_empty(), "no open-area level gap over 15 below L230%s" % _trouble(holes, " — "))
+	_ok(levels.has(230), "the open-world ladder reaches the Umbral Deep (L230)")
 
 ## The five late-added skills shipped with 20-25 level dry spells and a top rate of 41-66k XP/h
 ## when their peers paid 150-190k. These checks keep the re-paced ladders from sliding back.

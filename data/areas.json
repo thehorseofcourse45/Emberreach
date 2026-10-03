@@ -185,6 +185,76 @@
     },
     "flavour": "A caldera of warm grey slopes where the old wyrms nest in the cooling rock."
   },
+  "sundered_reaches": {
+    "id": "sundered_reaches",
+    "name": "The Sundered Reaches",
+    "type": "area",
+    "level_range": [
+      105,
+      145
+    ],
+    "monsters": [
+      "air_elemental",
+      "water_elemental",
+      "earth_elemental",
+      "fire_elemental"
+    ],
+    "requires": {
+      "slayer": 70
+    },
+    "hazard": {
+      "enemy_damage_percent": 10.0,
+      "player_accuracy_percent": -3.0,
+      "label": "Wild elements: enemies +10% damage, \u22123 accuracy"
+    },
+    "flavour": "Where the four god-shrines leak, the land never settled on one element. The wisps they shed wander free."
+  },
+  "drowned_reach": {
+    "id": "drowned_reach",
+    "name": "The Drowned Reach",
+    "type": "area",
+    "level_range": [
+      145,
+      190
+    ],
+    "monsters": [
+      "drowned_sailor",
+      "tidebound_revenant",
+      "stormglass_warden"
+    ],
+    "requires": {
+      "slayer": 85
+    },
+    "hazard": {
+      "enemy_damage_percent": 10.0,
+      "player_evasion_percent": -10.0,
+      "label": "Storm surf: enemies +10% damage, \u221210% evasion"
+    },
+    "flavour": "The old causeway runs on under the sea. At low tide you can walk it, and the crew that drowned there walks it with you."
+  },
+  "heralds_march": {
+    "id": "heralds_march",
+    "name": "The Herald's March",
+    "type": "area",
+    "level_range": [
+      190,
+      230
+    ],
+    "monsters": [
+      "cinder_colossus",
+      "herald_zealot",
+      "umbral_harbinger"
+    ],
+    "requires": {
+      "slayer": 100
+    },
+    "hazard": {
+      "enemy_damage_percent": 15.0,
+      "player_accuracy_percent": -3.0,
+      "label": "Ash wind: enemies +15% damage, \u22123 accuracy"
+    },
+    "flavour": "The road to the Herald's throne, kept by the things that serve it. Nobody built it. It was burned flat."
+  },
   "spider_slayer_area": {
     "id": "spider_slayer_area",
     "name": "Broodweb Fen",
