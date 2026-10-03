@@ -4,6 +4,7 @@ const TestSupport = preload("res://scripts/tests/TestSupport.gd")
 const ActionQueueTests = preload("res://scripts/tests/ActionQueueTests.gd")
 const LootFilterTests = preload("res://scripts/tests/LootFilterTests.gd")
 const CombatSimulatorTests = preload("res://scripts/tests/CombatSimulatorTests.gd")
+const RuneWards = preload("res://scripts/core/RuneWards.gd")
 ## TestRunner — the project's automated verification, wired to `--tests` and `--selftest`.
 ##
 ## Two suites:
@@ -84,6 +85,7 @@ func run_all(host: Node) -> void:
 	_test_session_meters()
 	_test_equipment_upgrade()
 	_test_prestige()
+	_test_runescribing()
 	_test_tutorial()
 	_test_responsive_layouts(host)
 	# After the layout suite, which is what assembles the shell the tests share: a screen test run
@@ -2359,6 +2361,117 @@ func _test_equipment_upgrade() -> void:
 ## Ascendancy. The reset is the destructive path in the whole game, so the checks are about
 ## what survives it: the bonus must apply, and the collection log and lifetime counters must
 ## not be wiped by a run the player already completed.
+## Runescribing (alt_magic) is a rune sink with five schools. Before the overhaul its spells were
+## out of level order, its "enchants" destroyed value and Transmute Herald paid 13x its inputs.
+## These checks pin the shape that replaced it: a steady unlock ladder, every rune spent, fair
+## conversions, enchants that really improve jewelry, and wards that stack, cap and expire.
+func _test_runescribing() -> void:
+	_heading("Runescribing")
+	GameManager.start_new_game("standard")
+	var actions: Array = DataLoader.get_skill_actions("alt_magic")
+	_ok(actions.size() >= 30, "Runescribing has a full spellbook (%d spells)" % actions.size())
+	# 1. A steady ladder: listed in level order, no long dry spell, a capstone near 120.
+	var last_level: int = 0
+	var worst_gap: int = 0
+	var ordered: bool = true
+	for action in actions:
+		var lvl: int = int(action.get("level_required", 1))
+		if lvl < last_level:
+			ordered = false
+		worst_gap = maxi(worst_gap, lvl - last_level)
+		last_level = lvl
+	_ok(ordered, "spells are listed in level order")
+	_ok(worst_gap <= 8, "a new spell unlocks at least every 8 levels (largest gap %d)" % worst_gap)
+	_ok(last_level >= 115, "the ladder reaches the late game (last unlock at %d)" % last_level)
+	# 2. Every rune Glyphcraft makes has a use here.
+	var used_runes: Dictionary = {}
+	for action in actions:
+		for item_id in (action.get("input_items", {}) as Dictionary).keys():
+			if str(DataLoader.get_item(str(item_id)).get("item_type", "")) == "rune":
+				used_runes[str(item_id)] = true
+	var unused: Array[String] = []
+	for item_id in DataLoader.items.keys():
+		if str(DataLoader.items[item_id].get("item_type", "")) == "rune" and not used_runes.has(str(item_id)):
+			unused.append(str(item_id))
+	_ok(unused.is_empty(), "every rune is spent by some spell%s" % _trouble(unused, " — "))
+	# 3. Fair value: no spell prints gold or items far beyond what it consumes.
+	var unfair: Array[String] = []
+	for action in actions:
+		var paid: float = 0.0
+		for item_id in (action.get("input_items", {}) as Dictionary).keys():
+			paid += float(DataLoader.get_item(str(item_id)).get("sell_price", 0)) * int(action.input_items[item_id])
+		var got: float = float(action.get("gp_reward", 0))
+		for item_id in (action.get("output_items", {}) as Dictionary).keys():
+			got += float(DataLoader.get_item(str(item_id)).get("sell_price", 0)) * int(action.output_items[item_id])
+		if got <= 0.0:
+			continue   # offerings and wards are XP / effect sinks
+		var ratio: float = got / maxf(paid, 1.0)
+		if ratio > 2.5 or ratio < 0.6:
+			unfair.append("%s %.2fx" % [str(action.id), ratio])
+	_ok(unfair.is_empty(), "every conversion returns 0.6x-2.5x its inputs%s" % _trouble(unfair, " — "))
+	# 4. Quest-linked spells keep their ids.
+	for id in ["superheat_item", "bone_offering", "enchanted_sapphire"]:
+		_ok(not DataLoader.get_action("alt_magic", id).is_empty(), "quest spell '%s' still exists" % id)
+	# 5. Enchanting turns a plain ring into a better, wearable one.
+	var enchants: int = 0
+	for action in actions:
+		var inputs: Dictionary = action.get("input_items", {})
+		for out_id in (action.get("output_items", {}) as Dictionary).keys():
+			var out: Dictionary = DataLoader.get_item(str(out_id))
+			if int(out.get("equipment_slot", -1)) != 7:
+				continue
+			enchants += 1
+			var ring_in: String = ""
+			for in_id in inputs.keys():
+				if int(DataLoader.get_item(str(in_id)).get("equipment_slot", -1)) == 7:
+					ring_in = str(in_id)
+			_ok(ring_in != "" and not (out.get("passive_modifiers", {}) as Dictionary).is_empty()
+				and float(out.get("sell_price", 0)) > float(DataLoader.get_item(ring_in).get("sell_price", 0)),
+				"%s enchants %s into a stronger, pricier ring" % [str(action.id), ring_in])
+	_ok(enchants >= 6, "there is an enchant for every gem ring (%d)" % enchants)
+
+	# 6. Wards: cast through the real skill loop, stack to a cap, respect the attunement limit,
+	# reach ModifierManager, survive a save round trip and fade.
+	var insight: Dictionary = DataLoader.get_action("alt_magic", "ward_of_insight")
+	_ok(RuneWards.is_ward(insight), "Ward of Insight is a ward")
+	var xp_mod: float = float(insight.ward.mods.get("global_skill_xp_percent", 0.0))
+	PlayerData.set_level("alt_magic", 120)
+	BankManager.add_item_guaranteed("mind_rune", 500)
+	BankManager.add_item_guaranteed("cosmic_rune", 100)
+	var base_xp_mod: float = ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT)
+	_ok(SkillManager.start_action("alt_magic", "ward_of_insight", 1), "a ward can be cast")
+	SimulationMode.begin()
+	SkillManager.simulate_elapsed(10.0)
+	SimulationMode.end()
+	_approx(RuneWards.remaining(insight), float(insight.ward.seconds), 15.0, "one cast charges one step of the ward")
+	# Global skill XP compounds with other sources (ModifierManager.MULTIPLICATIVE_KEYS).
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT),
+		((1.0 + base_xp_mod / 100.0) * (1.0 + xp_mod / 100.0) - 1.0) * 100.0, 0.001,
+		"the ward's bonus reaches ModifierManager")
+	var runes_before: int = BankManager.get_count("mind_rune")
+	for _i in range(20):
+		RuneWards.cast(insight)
+	_approx(RuneWards.remaining(insight), RuneWards.max_seconds(insight), 0.01, "repeated casts stop at the cap")
+	_ok(RuneWards.blocker(insight) != "", "a capped ward explains why it cannot be cast")
+	_ok(not bool(SkillManager.check_action("alt_magic", "ward_of_insight")["ok"]), "the skill refuses to start a capped ward")
+	_ok(not SkillManager.start_action("alt_magic", "ward_of_insight", 0), "a capped ward does not start")
+	_eq(BankManager.get_count("mind_rune"), runes_before, "no runes are burnt into a capped ward")
+	SkillManager.stop_action()
+	var fortune: Dictionary = DataLoader.get_action("alt_magic", "ward_of_fortune")
+	var vigor: Dictionary = DataLoader.get_action("alt_magic", "ward_of_vigor")
+	RuneWards.cast(fortune)
+	_eq(RuneWards.active_ids().size(), 2, "a second ward can be held")
+	_ok(RuneWards.blocker(vigor) != "", "a third ward is refused while two hold a charge")
+	var saved: Dictionary = InscriptionManager.serialize()
+	InscriptionManager.deserialize({})
+	_ok(RuneWards.active_ids().is_empty(), "clearing the buff clock clears wards")
+	InscriptionManager.deserialize(saved)
+	_eq(RuneWards.active_ids().size(), 2, "wards survive a save round trip")
+	InscriptionManager.advance(RuneWards.max_seconds(insight) + 1.0)
+	_ok(RuneWards.active_ids().is_empty(), "wards fade when their charge runs out")
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT), base_xp_mod, 0.001,
+		"a faded ward's bonus is gone")
+
 func _test_prestige() -> void:
 	_heading("Ascendancy")
 	GameManager.start_new_game("standard")

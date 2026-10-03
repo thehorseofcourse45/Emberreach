@@ -6773,7 +6773,7 @@
         "name": "Superheat Iron",
         "level_required": 1,
         "base_interval": 1.7,
-        "base_xp": 35,
+        "base_xp": 30,
         "input_items": {
           "iron_ore": 1,
           "air_rune": 2
@@ -6781,14 +6781,286 @@
         "output_items": {
           "iron_bar": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Melt iron ore straight into a bar with a breath of air magic."
+      },
+      {
+        "id": "ward_of_vigor",
+        "name": "Ward of Vigor",
+        "level_required": 5,
+        "base_interval": 3.0,
+        "base_xp": 22,
+        "input_items": {
+          "mind_rune": 3,
+          "water_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "food_healing_percent": 10
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that makes food heal for more."
+      },
+      {
+        "id": "bone_offering",
+        "name": "Bone Offering",
+        "level_required": 10,
+        "base_interval": 1.7,
+        "base_xp": 28,
+        "input_items": {
+          "bones": 1,
+          "earth_rune": 2
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "pure_essence",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ],
+        "mastery_action_time": 1.7,
+        "description": "Offer bones to the earth for insight; sometimes the ground gives back pure essence."
+      },
+      {
+        "id": "enchant_gold_ring",
+        "name": "Enchant Gold Ring",
+        "level_required": 10,
+        "base_interval": 1.7,
+        "base_xp": 32,
+        "input_items": {
+          "gold_ring": 1,
+          "air_rune": 3
+        },
+        "output_items": {
+          "charmed_gold_ring": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Charm a plain gold ring into a Ring of Prospecting."
+      },
+      {
+        "id": "conjure_coal",
+        "name": "Conjure Coal",
+        "level_required": 15,
+        "base_interval": 1.7,
+        "base_xp": 36,
+        "input_items": {
+          "earth_rune": 1,
+          "fire_rune": 1
+        },
+        "output_items": {
+          "coal": 2
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Press earth and fire together into coal for the forge."
+      },
+      {
+        "id": "superheat_steel",
+        "name": "Superheat Steel",
+        "level_required": 20,
+        "base_interval": 1.7,
+        "base_xp": 40,
+        "input_items": {
+          "iron_ore": 1,
+          "fire_rune": 1,
+          "air_rune": 1
+        },
+        "output_items": {
+          "steel_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Fold carbon into iron with fire instead of coal."
+      },
+      {
+        "id": "item_alchemy",
+        "name": "Low Alchemy",
+        "level_required": 20,
+        "base_interval": 1.7,
+        "base_xp": 42,
+        "input_items": {
+          "gold_ring": 1,
+          "fire_rune": 2
+        },
+        "output_items": {},
+        "gp_reward": 80,
+        "mastery_action_time": 1.7,
+        "description": "Turn a gold ring into coin."
+      },
+      {
+        "id": "enchanted_sapphire",
+        "name": "Enchant Sapphire Ring",
+        "level_required": 25,
+        "base_interval": 1.7,
+        "base_xp": 48,
+        "input_items": {
+          "sapphire_ring": 1,
+          "water_rune": 5,
+          "cosmic_rune": 1
+        },
+        "output_items": {
+          "sapphire_ring_of_focus": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind water magic into a sapphire ring, sharpening mastery."
+      },
+      {
+        "id": "ward_of_insight",
+        "name": "Ward of Insight",
+        "level_required": 28,
+        "base_interval": 3.0,
+        "base_xp": 45,
+        "input_items": {
+          "mind_rune": 5,
+          "cosmic_rune": 1
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "global_skill_xp_percent": 3
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that quickens all skill learning."
+      },
+      {
+        "id": "superheat_silver",
+        "name": "Superheat Silver",
+        "level_required": 32,
+        "base_interval": 1.7,
+        "base_xp": 52,
+        "input_items": {
+          "silver_ore": 1,
+          "fire_rune": 1
+        },
+        "output_items": {
+          "silver_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt silver ore into a bar."
+      },
+      {
+        "id": "superheat_gold",
+        "name": "Superheat Gold",
+        "level_required": 36,
+        "base_interval": 1.7,
+        "base_xp": 56,
+        "input_items": {
+          "gold_ore": 1,
+          "fire_rune": 2
+        },
+        "output_items": {
+          "gold_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt gold ore into a bar, ready for jewelry."
+      },
+      {
+        "id": "transmute_sapphire",
+        "name": "Transmute Sapphire",
+        "level_required": 40,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "topaz": 2,
+          "chaos_rune": 1
+        },
+        "output_items": {
+          "sapphire": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Recolour two topazes into one sapphire."
+      },
+      {
+        "id": "enchant_emerald",
+        "name": "Enchant Emerald Ring",
+        "level_required": 44,
+        "base_interval": 1.7,
+        "base_xp": 66,
+        "input_items": {
+          "emerald_ring": 1,
+          "earth_rune": 5,
+          "nature_rune": 1
+        },
+        "output_items": {
+          "emerald_ring_of_study": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind nature magic into an emerald ring, quickening every skill."
+      },
+      {
+        "id": "big_bone_offering",
+        "name": "Big Bone Offering",
+        "level_required": 45,
+        "base_interval": 1.7,
+        "base_xp": 70,
+        "input_items": {
+          "big_bones": 1,
+          "earth_rune": 3,
+          "nature_rune": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "prismatic_essence",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 1.7,
+        "description": "A heavier offering; the earth occasionally answers with prismatic essence."
+      },
+      {
+        "id": "high_alchemy",
+        "name": "High Alchemy",
+        "level_required": 48,
+        "base_interval": 1.7,
+        "base_xp": 72,
+        "input_items": {
+          "sapphire_ring": 1,
+          "nature_rune": 1
+        },
+        "output_items": {},
+        "gp_reward": 140,
+        "mastery_action_time": 1.7,
+        "description": "Turn a sapphire ring into coin."
+      },
+      {
+        "id": "ward_of_fortune",
+        "name": "Ward of Fortune",
+        "level_required": 52,
+        "base_interval": 3.0,
+        "base_xp": 70,
+        "input_items": {
+          "nature_rune": 2,
+          "law_rune": 1
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "global_gp_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that draws more gold to you."
       },
       {
         "id": "superheat_mithril",
         "name": "Superheat Mithril",
         "level_required": 55,
         "base_interval": 1.7,
-        "base_xp": 70,
+        "base_xp": 80,
         "input_items": {
           "mithril_ore": 1,
           "fire_rune": 3
@@ -6796,112 +7068,357 @@
         "output_items": {
           "mithril_bar": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Melt mithril ore into a bar without coal."
       },
       {
-        "id": "bone_offering",
-        "name": "Bone Offering",
-        "level_required": 10,
+        "id": "enchant_topaz",
+        "name": "Enchant Topaz Ring",
+        "level_required": 58,
         "base_interval": 1.7,
-        "base_xp": 25,
+        "base_xp": 84,
         "input_items": {
-          "bones": 1,
-          "earth_rune": 2
-        },
-        "output_items": {},
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "item_alchemy",
-        "name": "Item Alchemy",
-        "level_required": 20,
-        "base_interval": 1.7,
-        "base_xp": 30,
-        "input_items": {
-          "gold_bar": 1,
-          "fire_rune": 2
-        },
-        "output_items": {},
-        "gp_reward": 100,
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "enchanted_sapphire",
-        "name": "Enchant Sapphire",
-        "level_required": 30,
-        "base_interval": 1.7,
-        "base_xp": 40,
-        "input_items": {
-          "sapphire": 1,
-          "water_rune": 2
+          "topaz_ring": 1,
+          "chaos_rune": 3,
+          "law_rune": 1
         },
         "output_items": {
-          "gold_ring": 1
+          "topaz_ring_of_the_hawk": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Bind a hawk's eye into a topaz ring for archers."
+      },
+      {
+        "id": "ward_of_stone",
+        "name": "Ward of Stone",
+        "level_required": 62,
+        "base_interval": 3.0,
+        "base_xp": 85,
+        "input_items": {
+          "earth_rune": 6,
+          "law_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "damage_reduction_percent": 4
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that blunts every blow you take."
+      },
+      {
+        "id": "superheat_adamantite",
+        "name": "Superheat Adamantite",
+        "level_required": 65,
+        "base_interval": 1.7,
+        "base_xp": 92,
+        "input_items": {
+          "adamantite_ore": 1,
+          "fire_rune": 3,
+          "chaos_rune": 1
+        },
+        "output_items": {
+          "adamantite_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt adamantite ore into a bar without coal."
+      },
+      {
+        "id": "enchant_ruby",
+        "name": "Enchant Ruby Ring",
+        "level_required": 68,
+        "base_interval": 1.7,
+        "base_xp": 98,
+        "input_items": {
+          "ruby_ring": 1,
+          "fire_rune": 10,
+          "law_rune": 2
+        },
+        "output_items": {
+          "ruby_ring_of_fury": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind fire into a ruby ring for fighters."
+      },
+      {
+        "id": "transmute_ruby",
+        "name": "Transmute Ruby",
+        "level_required": 70,
+        "base_interval": 1.7,
+        "base_xp": 100,
+        "input_items": {
+          "emerald": 2,
+          "law_rune": 2
+        },
+        "output_items": {
+          "ruby": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Fuse two emeralds into one ruby."
+      },
+      {
+        "id": "grand_alchemy",
+        "name": "Grand Alchemy",
+        "level_required": 72,
+        "base_interval": 1.7,
+        "base_xp": 104,
+        "input_items": {
+          "ruby_ring": 1,
+          "nature_rune": 2
+        },
+        "output_items": {},
+        "gp_reward": 330,
+        "mastery_action_time": 1.7,
+        "description": "Turn a ruby ring into coin."
+      },
+      {
+        "id": "dragon_bone_offering",
+        "name": "Dragon Bone Offering",
+        "level_required": 75,
+        "base_interval": 1.7,
+        "base_xp": 130,
+        "input_items": {
+          "dragon_bones": 1,
+          "death_rune": 2,
+          "blood_rune": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "umbral_essence",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 1.7,
+        "description": "A dragon's bones carry old power; now and then they leave umbral essence behind."
+      },
+      {
+        "id": "ward_of_fury",
+        "name": "Ward of Fury",
+        "level_required": 78,
+        "base_interval": 3.0,
+        "base_xp": 120,
+        "input_items": {
+          "chaos_rune": 4,
+          "death_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "melee_max_hit_percent": 5,
+            "ranged_max_hit_percent": 5,
+            "magic_max_hit_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that makes every style hit harder."
+      },
+      {
+        "id": "enchanted_diamond",
+        "name": "Enchant Diamond Ring",
+        "level_required": 80,
+        "base_interval": 1.7,
+        "base_xp": 125,
+        "input_items": {
+          "diamond_ring": 1,
+          "cosmic_rune": 5,
+          "death_rune": 3
+        },
+        "output_items": {
+          "diamond_ring_of_warding": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind a protective ward permanently into a diamond ring."
+      },
+      {
+        "id": "superheat_runite",
+        "name": "Superheat Runite",
+        "level_required": 85,
+        "base_interval": 1.7,
+        "base_xp": 135,
+        "input_items": {
+          "runite_ore": 1,
+          "fire_rune": 4,
+          "death_rune": 1
+        },
+        "output_items": {
+          "runite_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt runite ore into a bar without coal."
+      },
+      {
+        "id": "transmute_diamond",
+        "name": "Transmute Diamond",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 145,
+        "input_items": {
+          "ruby": 2,
+          "death_rune": 3
+        },
+        "output_items": {
+          "diamond": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Crush two rubies into one diamond."
+      },
+      {
+        "id": "ward_of_plenty",
+        "name": "Ward of Plenty",
+        "level_required": 92,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "input_items": {
+          "nature_rune": 4,
+          "blood_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "global_double_loot_percent": 3
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that sometimes doubles monster drops."
+      },
+      {
+        "id": "superheat_dragonite",
+        "name": "Superheat Dragonite",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 160,
+        "input_items": {
+          "dragonite_ore": 1,
+          "fire_rune": 5,
+          "blood_rune": 1
+        },
+        "output_items": {
+          "dragonite_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt dragonite ore into a bar without coal."
+      },
+      {
+        "id": "arcane_alchemy",
+        "name": "Arcane Alchemy",
+        "level_required": 100,
+        "base_interval": 1.7,
+        "base_xp": 170,
+        "input_items": {
+          "diamond_ring": 1,
+          "nature_rune": 2,
+          "blood_rune": 1
+        },
+        "output_items": {},
+        "gp_reward": 600,
+        "mastery_action_time": 1.7,
+        "description": "Turn a diamond ring into coin."
+      },
+      {
+        "id": "bind_riven_signet",
+        "name": "Bind the Riven Signet",
+        "level_required": 103,
+        "base_interval": 1.7,
+        "base_xp": 185,
+        "input_items": {
+          "diamond_ring_of_warding": 1,
+          "soul_rune": 6,
+          "blood_rune": 4
+        },
+        "output_items": {
+          "riven_signet": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Rework a warded diamond ring into the frontier's finest signet."
       },
       {
         "id": "superheat_umbral",
         "name": "Superheat Umbral",
-        "level_required": 75,
+        "level_required": 105,
         "base_interval": 1.7,
-        "base_xp": 100,
+        "base_xp": 190,
         "input_items": {
           "umbral_ore": 1,
-          "fire_rune": 4
+          "fire_rune": 5,
+          "soul_rune": 1
         },
         "output_items": {
           "umbral_bar": 1
         },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "enchanted_diamond",
-        "name": "Enchant Diamond",
-        "level_required": 85,
-        "base_interval": 1.7,
-        "base_xp": 120,
-        "input_items": {
-          "diamond": 1,
-          "cosmic_rune": 3
-        },
-        "output_items": {
-          "diamond_ring": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "superheat_herald",
-        "name": "Superheat Herald",
-        "level_required": 100,
-        "base_interval": 1.7,
-        "base_xp": 150,
-        "input_items": {
-          "herald_ore": 1,
-          "fire_rune": 5
-        },
-        "output_items": {
-          "herald_bar": 1
-        },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Melt umbral ore into a bar without coal."
       },
       {
         "id": "transmute_herald",
         "name": "Transmute Herald",
         "level_required": 110,
         "base_interval": 1.7,
-        "base_xp": 180,
+        "base_xp": 200,
         "input_items": {
           "umbral_bar": 1,
-          "soul_rune": 5
+          "soul_rune": 3
+        },
+        "output_items": {
+          "herald_bar": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Raise an umbral bar into a herald bar."
+      },
+      {
+        "id": "superheat_herald",
+        "name": "Superheat Herald",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 215,
+        "input_items": {
+          "herald_ore": 1,
+          "fire_rune": 6,
+          "umbral_rune": 1
+        },
+        "output_items": {
+          "herald_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt herald ore into a bar without coal."
+      },
+      {
+        "id": "ward_of_ascendance",
+        "name": "Ward of Ascendance",
+        "level_required": 120,
+        "base_interval": 3.0,
+        "base_xp": 240,
+        "input_items": {
+          "soul_rune": 4,
+          "umbral_rune": 2
         },
         "output_items": {},
-        "gp_reward": 5000,
-        "mastery_action_time": 1.7
+        "ward": {
+          "mods": {
+            "global_skill_xp_percent": 6,
+            "global_mastery_xp_percent": 6
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "The capstone ward: faster skill and mastery learning everywhere."
       }
     ],
     "order": 25,
-    "description": "Alternative magic — alchemy, item enchanting and superheating."
+    "description": "Cast spells with runes: superheat ore, enchant jewelry, transmute materials, alchemize rings into coin and weave timed wards."
   },
   "township": {
     "id": "township",
