@@ -475,7 +475,7 @@
     "id": "potion_dr_1",
     "name": "Warded Hide I",
     "item_type": "potion",
-    "sell_price": 25,
+    "sell_price": 20,
     "is_stackable": true,
     "charges": 10,
     "potion_effect": {
@@ -500,7 +500,7 @@
     "id": "ent_tablet",
     "name": "Oldroot Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "stardust": {
@@ -522,14 +522,14 @@
     "id": "harvested_essence",
     "name": "Harvested Essence",
     "item_type": "resource",
-    "sell_price": 30,
+    "sell_price": 28,
     "is_stackable": true
   },
   "bronze_sword": {
     "id": "bronze_sword",
     "name": "Verdigris Sword",
     "item_type": "equipment",
-    "sell_price": 20,
+    "sell_price": 18,
     "equipment_slot": 8,
     "attack_speed": 2.4,
     "equipment_stats": {
@@ -545,7 +545,7 @@
     "id": "bronze_scimitar",
     "name": "Verdigris Scimitar",
     "item_type": "equipment",
-    "sell_price": 25,
+    "sell_price": 24,
     "equipment_slot": 8,
     "attack_speed": 2.4,
     "equipment_stats": {
@@ -561,7 +561,7 @@
     "id": "iron_scimitar",
     "name": "Wrought Scimitar",
     "item_type": "equipment",
-    "sell_price": 60,
+    "sell_price": 46,
     "equipment_slot": 8,
     "attack_speed": 2.4,
     "equipment_stats": {
@@ -673,7 +673,7 @@
     "id": "leather_body",
     "name": "Leather Body",
     "item_type": "equipment",
-    "sell_price": 25,
+    "sell_price": 16,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 2,
@@ -711,7 +711,7 @@
     "id": "firemaking_cape",
     "name": "Kilncraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "passive_modifiers": {
       "global_skill_xp_percent": 5
@@ -823,7 +823,7 @@
     "id": "herald_platebody",
     "name": "Herald Platebody",
     "item_type": "equipment",
-    "sell_price": 75000,
+    "sell_price": 7748,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 40,
@@ -839,7 +839,7 @@
     "id": "herald_godsword",
     "name": "Herald Godsword",
     "item_type": "equipment",
-    "sell_price": 350000,
+    "sell_price": 12177,
     "equipment_slot": 8,
     "attack_speed": 3.2,
     "equipment_stats": {
@@ -862,7 +862,7 @@
     "id": "bronze_platelegs",
     "name": "Verdigris Platelegs",
     "item_type": "equipment",
-    "sell_price": 108,
+    "sell_price": 30,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 4,
@@ -877,7 +877,7 @@
     "id": "bronze_boots",
     "name": "Verdigris Boots",
     "item_type": "equipment",
-    "sell_price": 72,
+    "sell_price": 24,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 2,
@@ -892,7 +892,7 @@
     "id": "bronze_gloves",
     "name": "Verdigris Gloves",
     "item_type": "equipment",
-    "sell_price": 36,
+    "sell_price": 18,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 1,
@@ -907,7 +907,7 @@
     "id": "bronze_dagger",
     "name": "Verdigris Dagger",
     "item_type": "equipment",
-    "sell_price": 36,
+    "sell_price": 18,
     "equipment_slot": 8,
     "equipment_stats": {
       "stab": 9,
@@ -922,7 +922,7 @@
     "id": "bronze_battleaxe",
     "name": "Verdigris Battleaxe",
     "item_type": "equipment",
-    "sell_price": 72,
+    "sell_price": 24,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 8,
@@ -938,7 +938,7 @@
     "id": "bronze_2h_sword",
     "name": "Verdigris 2H Sword",
     "item_type": "equipment",
-    "sell_price": 108,
+    "sell_price": 30,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 9,
@@ -954,7 +954,7 @@
     "id": "iron_helmet",
     "name": "Wrought Helmet",
     "item_type": "equipment",
-    "sell_price": 150,
+    "sell_price": 46,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 4,
@@ -969,7 +969,7 @@
     "id": "iron_platebody",
     "name": "Wrought Platebody",
     "item_type": "equipment",
-    "sell_price": 375,
+    "sell_price": 91,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 10,
@@ -984,7 +984,7 @@
     "id": "iron_platelegs",
     "name": "Wrought Platelegs",
     "item_type": "equipment",
-    "sell_price": 225,
+    "sell_price": 61,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 7,
@@ -999,7 +999,7 @@
     "id": "iron_boots",
     "name": "Wrought Boots",
     "item_type": "equipment",
-    "sell_price": 150,
+    "sell_price": 46,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 3,
@@ -1014,7 +1014,7 @@
     "id": "iron_gloves",
     "name": "Wrought Gloves",
     "item_type": "equipment",
-    "sell_price": 75,
+    "sell_price": 31,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 2,
@@ -1029,7 +1029,7 @@
     "id": "iron_shield",
     "name": "Wrought Shield",
     "item_type": "equipment",
-    "sell_price": 150,
+    "sell_price": 46,
     "equipment_slot": 9,
     "equipment_stats": {
       "melee_defence": 6,
@@ -1044,7 +1044,7 @@
     "id": "iron_sword",
     "name": "Wrought Sword",
     "item_type": "equipment",
-    "sell_price": 75,
+    "sell_price": 31,
     "equipment_slot": 8,
     "equipment_stats": {
       "stab": 11,
@@ -1060,7 +1060,7 @@
     "id": "iron_dagger",
     "name": "Wrought Dagger",
     "item_type": "equipment",
-    "sell_price": 75,
+    "sell_price": 31,
     "equipment_slot": 8,
     "equipment_stats": {
       "stab": 13,
@@ -1075,7 +1075,7 @@
     "id": "iron_battleaxe",
     "name": "Wrought Battleaxe",
     "item_type": "equipment",
-    "sell_price": 150,
+    "sell_price": 46,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 12,
@@ -1091,7 +1091,7 @@
     "id": "iron_2h_sword",
     "name": "Wrought 2H Sword",
     "item_type": "equipment",
-    "sell_price": 225,
+    "sell_price": 61,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 13,
@@ -1107,7 +1107,7 @@
     "id": "steel_helmet",
     "name": "Crucible Helmet",
     "item_type": "equipment",
-    "sell_price": 270,
+    "sell_price": 82,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 7,
@@ -1122,7 +1122,7 @@
     "id": "steel_platebody",
     "name": "Crucible Platebody",
     "item_type": "equipment",
-    "sell_price": 675,
+    "sell_price": 172,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 18,
@@ -1137,7 +1137,7 @@
     "id": "steel_platelegs",
     "name": "Crucible Platelegs",
     "item_type": "equipment",
-    "sell_price": 405,
+    "sell_price": 112,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 13,
@@ -1152,7 +1152,7 @@
     "id": "steel_boots",
     "name": "Crucible Boots",
     "item_type": "equipment",
-    "sell_price": 270,
+    "sell_price": 82,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 6,
@@ -1167,7 +1167,7 @@
     "id": "steel_gloves",
     "name": "Crucible Gloves",
     "item_type": "equipment",
-    "sell_price": 135,
+    "sell_price": 52,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 4,
@@ -1182,7 +1182,7 @@
     "id": "steel_shield",
     "name": "Crucible Shield",
     "item_type": "equipment",
-    "sell_price": 270,
+    "sell_price": 82,
     "equipment_slot": 9,
     "equipment_stats": {
       "melee_defence": 10,
@@ -1197,7 +1197,7 @@
     "id": "steel_sword",
     "name": "Crucible Sword",
     "item_type": "equipment",
-    "sell_price": 135,
+    "sell_price": 52,
     "equipment_slot": 8,
     "equipment_stats": {
       "stab": 18,
@@ -1213,7 +1213,7 @@
     "id": "steel_scimitar",
     "name": "Crucible Scimitar",
     "item_type": "equipment",
-    "sell_price": 270,
+    "sell_price": 82,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 18,
@@ -1228,7 +1228,7 @@
     "id": "steel_dagger",
     "name": "Crucible Dagger",
     "item_type": "equipment",
-    "sell_price": 135,
+    "sell_price": 52,
     "equipment_slot": 8,
     "equipment_stats": {
       "stab": 20,
@@ -1243,7 +1243,7 @@
     "id": "steel_battleaxe",
     "name": "Crucible Battleaxe",
     "item_type": "equipment",
-    "sell_price": 270,
+    "sell_price": 82,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 19,
@@ -1259,7 +1259,7 @@
     "id": "steel_2h_sword",
     "name": "Crucible 2H Sword",
     "item_type": "equipment",
-    "sell_price": 405,
+    "sell_price": 112,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 20,
@@ -1275,7 +1275,7 @@
     "id": "mithril_helmet",
     "name": "Ghoststeel Helmet",
     "item_type": "equipment",
-    "sell_price": 420,
+    "sell_price": 130,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 11,
@@ -1290,7 +1290,7 @@
     "id": "mithril_platebody",
     "name": "Ghoststeel Platebody",
     "item_type": "equipment",
-    "sell_price": 1050,
+    "sell_price": 280,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 29,
@@ -1305,7 +1305,7 @@
     "id": "mithril_platelegs",
     "name": "Ghoststeel Platelegs",
     "item_type": "equipment",
-    "sell_price": 630,
+    "sell_price": 180,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 20,
@@ -1320,7 +1320,7 @@
     "id": "mithril_boots",
     "name": "Ghoststeel Boots",
     "item_type": "equipment",
-    "sell_price": 420,
+    "sell_price": 130,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 9,
@@ -1335,7 +1335,7 @@
     "id": "mithril_gloves",
     "name": "Ghoststeel Gloves",
     "item_type": "equipment",
-    "sell_price": 210,
+    "sell_price": 80,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 7,
@@ -1350,7 +1350,7 @@
     "id": "mithril_shield",
     "name": "Ghoststeel Shield",
     "item_type": "equipment",
-    "sell_price": 420,
+    "sell_price": 130,
     "equipment_slot": 9,
     "equipment_stats": {
       "melee_defence": 15,
@@ -1365,7 +1365,7 @@
     "id": "mithril_sword",
     "name": "Ghoststeel Sword",
     "item_type": "equipment",
-    "sell_price": 210,
+    "sell_price": 80,
     "equipment_slot": 8,
     "equipment_stats": {
       "stab": 27,
@@ -1381,7 +1381,7 @@
     "id": "mithril_scimitar",
     "name": "Ghoststeel Scimitar",
     "item_type": "equipment",
-    "sell_price": 420,
+    "sell_price": 130,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 27,
@@ -1396,7 +1396,7 @@
     "id": "mithril_dagger",
     "name": "Ghoststeel Dagger",
     "item_type": "equipment",
-    "sell_price": 210,
+    "sell_price": 80,
     "equipment_slot": 8,
     "equipment_stats": {
       "stab": 29,
@@ -1411,7 +1411,7 @@
     "id": "mithril_battleaxe",
     "name": "Ghoststeel Battleaxe",
     "item_type": "equipment",
-    "sell_price": 420,
+    "sell_price": 130,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 28,
@@ -1427,7 +1427,7 @@
     "id": "mithril_2h_sword",
     "name": "Ghoststeel 2H Sword",
     "item_type": "equipment",
-    "sell_price": 630,
+    "sell_price": 180,
     "equipment_slot": 8,
     "equipment_stats": {
       "slash": 29,
@@ -1496,7 +1496,7 @@
     "id": "normal_longbow",
     "name": "Emberpine Longbow",
     "item_type": "equipment",
-    "sell_price": 21,
+    "sell_price": 20,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1532,7 +1532,7 @@
     "id": "oak_longbow",
     "name": "Ironbark Longbow",
     "item_type": "equipment",
-    "sell_price": 42,
+    "sell_price": 30,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1550,7 +1550,7 @@
     "id": "willow_shortbow",
     "name": "Silverleaf Shortbow",
     "item_type": "equipment",
-    "sell_price": 50,
+    "sell_price": 45,
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
@@ -1568,7 +1568,7 @@
     "id": "willow_longbow",
     "name": "Silverleaf Longbow",
     "item_type": "equipment",
-    "sell_price": 70,
+    "sell_price": 45,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1586,7 +1586,7 @@
     "id": "yew_shortbow",
     "name": "Gravewood Shortbow",
     "item_type": "equipment",
-    "sell_price": 110,
+    "sell_price": 100,
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
@@ -1604,7 +1604,7 @@
     "id": "yew_longbow",
     "name": "Gravewood Longbow",
     "item_type": "equipment",
-    "sell_price": 150,
+    "sell_price": 108,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1622,7 +1622,7 @@
     "id": "magic_shortbow",
     "name": "Witchpine Shortbow",
     "item_type": "equipment",
-    "sell_price": 220,
+    "sell_price": 184,
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
@@ -1640,7 +1640,7 @@
     "id": "magic_longbow",
     "name": "Witchpine Longbow",
     "item_type": "equipment",
-    "sell_price": 300,
+    "sell_price": 199,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1658,7 +1658,7 @@
     "id": "redwood_shortbow",
     "name": "Bloodwood Shortbow",
     "item_type": "equipment",
-    "sell_price": 420,
+    "sell_price": 280,
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
@@ -1676,7 +1676,7 @@
     "id": "redwood_longbow",
     "name": "Bloodwood Longbow",
     "item_type": "equipment",
-    "sell_price": 560,
+    "sell_price": 305,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1694,7 +1694,7 @@
     "id": "cinderbark_shortbow",
     "name": "Cinderbark Shortbow",
     "item_type": "equipment",
-    "sell_price": 750,
+    "sell_price": 415,
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
@@ -1712,7 +1712,7 @@
     "id": "cinderbark_longbow",
     "name": "Cinderbark Longbow",
     "item_type": "equipment",
-    "sell_price": 1000,
+    "sell_price": 450,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1730,7 +1730,7 @@
     "id": "voidwood_shortbow",
     "name": "Voidwood Shortbow",
     "item_type": "equipment",
-    "sell_price": 1400,
+    "sell_price": 610,
     "equipment_slot": 8,
     "attack_speed": 2.6,
     "equipment_stats": {
@@ -1748,7 +1748,7 @@
     "id": "voidwood_longbow",
     "name": "Voidwood Longbow",
     "item_type": "equipment",
-    "sell_price": 1800,
+    "sell_price": 658,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -1801,7 +1801,7 @@
     "id": "leather_chaps",
     "name": "Leather Chaps",
     "item_type": "equipment",
-    "sell_price": 30,
+    "sell_price": 16,
     "equipment_slot": 2,
     "equipment_stats": {
       "ranged_defence": 3
@@ -1812,7 +1812,7 @@
     "id": "leather_vambraces",
     "name": "Leather Vambraces",
     "item_type": "equipment",
-    "sell_price": 24,
+    "sell_price": 16,
     "equipment_slot": 4,
     "equipment_stats": {
       "ranged_defence": 1
@@ -1823,7 +1823,7 @@
     "id": "leather_coif",
     "name": "Leather Coif",
     "item_type": "equipment",
-    "sell_price": 24,
+    "sell_price": 16,
     "equipment_slot": 0,
     "equipment_stats": {
       "ranged_defence": 1
@@ -1895,7 +1895,7 @@
     "id": "green_dhide_body",
     "name": "Verdant Wyrmhide Body",
     "item_type": "equipment",
-    "sell_price": 180,
+    "sell_price": 159,
     "equipment_slot": 1,
     "equipment_stats": {
       "ranged_defence": 15,
@@ -1910,7 +1910,7 @@
     "id": "green_dhide_chaps",
     "name": "Verdant Wyrmhide Chaps",
     "item_type": "equipment",
-    "sell_price": 180,
+    "sell_price": 159,
     "equipment_slot": 2,
     "equipment_stats": {
       "ranged_defence": 15,
@@ -1925,7 +1925,7 @@
     "id": "green_dhide_vambraces",
     "name": "Verdant Wyrmhide Vambraces",
     "item_type": "equipment",
-    "sell_price": 180,
+    "sell_price": 159,
     "equipment_slot": 4,
     "equipment_stats": {
       "ranged_defence": 15,
@@ -1940,7 +1940,7 @@
     "id": "green_dhide_coif",
     "name": "Verdant Wyrmhide Coif",
     "item_type": "equipment",
-    "sell_price": 180,
+    "sell_price": 159,
     "equipment_slot": 0,
     "equipment_stats": {
       "ranged_defence": 15,
@@ -1962,7 +1962,7 @@
     "id": "blue_dhide_body",
     "name": "Azure Wyrmhide Body",
     "item_type": "equipment",
-    "sell_price": 240,
+    "sell_price": 174,
     "equipment_slot": 1,
     "equipment_stats": {
       "ranged_defence": 20,
@@ -1977,7 +1977,7 @@
     "id": "blue_dhide_chaps",
     "name": "Azure Wyrmhide Chaps",
     "item_type": "equipment",
-    "sell_price": 240,
+    "sell_price": 174,
     "equipment_slot": 2,
     "equipment_stats": {
       "ranged_defence": 20,
@@ -1992,7 +1992,7 @@
     "id": "blue_dhide_vambraces",
     "name": "Azure Wyrmhide Vambraces",
     "item_type": "equipment",
-    "sell_price": 240,
+    "sell_price": 174,
     "equipment_slot": 4,
     "equipment_stats": {
       "ranged_defence": 20,
@@ -2007,7 +2007,7 @@
     "id": "blue_dhide_coif",
     "name": "Azure Wyrmhide Coif",
     "item_type": "equipment",
-    "sell_price": 240,
+    "sell_price": 174,
     "equipment_slot": 0,
     "equipment_stats": {
       "ranged_defence": 20,
@@ -2029,7 +2029,7 @@
     "id": "red_dhide_body",
     "name": "Crimson Wyrmhide Body",
     "item_type": "equipment",
-    "sell_price": 315,
+    "sell_price": 194,
     "equipment_slot": 1,
     "equipment_stats": {
       "ranged_defence": 26,
@@ -2044,7 +2044,7 @@
     "id": "red_dhide_chaps",
     "name": "Crimson Wyrmhide Chaps",
     "item_type": "equipment",
-    "sell_price": 315,
+    "sell_price": 194,
     "equipment_slot": 2,
     "equipment_stats": {
       "ranged_defence": 26,
@@ -2059,7 +2059,7 @@
     "id": "red_dhide_vambraces",
     "name": "Crimson Wyrmhide Vambraces",
     "item_type": "equipment",
-    "sell_price": 315,
+    "sell_price": 194,
     "equipment_slot": 4,
     "equipment_stats": {
       "ranged_defence": 26,
@@ -2074,7 +2074,7 @@
     "id": "red_dhide_coif",
     "name": "Crimson Wyrmhide Coif",
     "item_type": "equipment",
-    "sell_price": 315,
+    "sell_price": 194,
     "equipment_slot": 0,
     "equipment_stats": {
       "ranged_defence": 26,
@@ -2096,7 +2096,7 @@
     "id": "black_dhide_body",
     "name": "Blighted Wyrmhide Body",
     "item_type": "equipment",
-    "sell_price": 405,
+    "sell_price": 222,
     "equipment_slot": 1,
     "equipment_stats": {
       "ranged_defence": 33,
@@ -2111,7 +2111,7 @@
     "id": "black_dhide_chaps",
     "name": "Blighted Wyrmhide Chaps",
     "item_type": "equipment",
-    "sell_price": 405,
+    "sell_price": 222,
     "equipment_slot": 2,
     "equipment_stats": {
       "ranged_defence": 33,
@@ -2126,7 +2126,7 @@
     "id": "black_dhide_vambraces",
     "name": "Blighted Wyrmhide Vambraces",
     "item_type": "equipment",
-    "sell_price": 405,
+    "sell_price": 222,
     "equipment_slot": 4,
     "equipment_stats": {
       "ranged_defence": 33,
@@ -2141,7 +2141,7 @@
     "id": "apprentice_hat",
     "name": "Apprentice Hat",
     "item_type": "equipment",
-    "sell_price": 600,
+    "sell_price": 82,
     "equipment_slot": 0,
     "equipment_stats": {
       "magic_defence": 8,
@@ -2156,7 +2156,7 @@
     "id": "apprentice_robe",
     "name": "Apprentice Robe",
     "item_type": "equipment",
-    "sell_price": 1200,
+    "sell_price": 82,
     "equipment_slot": 1,
     "equipment_stats": {
       "magic_defence": 20,
@@ -2171,7 +2171,7 @@
     "id": "apprentice_legs",
     "name": "Apprentice Legs",
     "item_type": "equipment",
-    "sell_price": 960,
+    "sell_price": 82,
     "equipment_slot": 2,
     "equipment_stats": {
       "magic_defence": 14,
@@ -2186,7 +2186,7 @@
     "id": "apprentice_gloves",
     "name": "Apprentice Gloves",
     "item_type": "equipment",
-    "sell_price": 480,
+    "sell_price": 82,
     "equipment_slot": 4,
     "equipment_stats": {
       "magic_defence": 5,
@@ -2201,7 +2201,7 @@
     "id": "adept_hat",
     "name": "Adept Hat",
     "item_type": "equipment",
-    "sell_price": 1440,
+    "sell_price": 209,
     "equipment_slot": 0,
     "equipment_stats": {
       "magic_defence": 12,
@@ -2216,7 +2216,7 @@
     "id": "adept_robe",
     "name": "Adept Robe",
     "item_type": "equipment",
-    "sell_price": 2880,
+    "sell_price": 209,
     "equipment_slot": 1,
     "equipment_stats": {
       "magic_defence": 30,
@@ -2231,7 +2231,7 @@
     "id": "adept_legs",
     "name": "Adept Legs",
     "item_type": "equipment",
-    "sell_price": 2304,
+    "sell_price": 209,
     "equipment_slot": 2,
     "equipment_stats": {
       "magic_defence": 21,
@@ -2246,7 +2246,7 @@
     "id": "adept_gloves",
     "name": "Adept Gloves",
     "item_type": "equipment",
-    "sell_price": 1152,
+    "sell_price": 209,
     "equipment_slot": 4,
     "equipment_stats": {
       "magic_defence": 7,
@@ -2261,7 +2261,7 @@
     "id": "archmage_hat",
     "name": "Archmage Hat",
     "item_type": "equipment",
-    "sell_price": 3000,
+    "sell_price": 480,
     "equipment_slot": 0,
     "equipment_stats": {
       "magic_defence": 18,
@@ -2276,7 +2276,7 @@
     "id": "archmage_robe",
     "name": "Archmage Robe",
     "item_type": "equipment",
-    "sell_price": 6000,
+    "sell_price": 480,
     "equipment_slot": 1,
     "equipment_stats": {
       "magic_defence": 45,
@@ -2291,7 +2291,7 @@
     "id": "archmage_legs",
     "name": "Archmage Legs",
     "item_type": "equipment",
-    "sell_price": 4800,
+    "sell_price": 480,
     "equipment_slot": 2,
     "equipment_stats": {
       "magic_defence": 32,
@@ -2306,7 +2306,7 @@
     "id": "archmage_gloves",
     "name": "Archmage Gloves",
     "item_type": "equipment",
-    "sell_price": 2400,
+    "sell_price": 480,
     "equipment_slot": 4,
     "equipment_stats": {
       "magic_defence": 11,
@@ -2321,7 +2321,7 @@
     "id": "herald_hat",
     "name": "Herald Hat",
     "item_type": "equipment",
-    "sell_price": 5100,
+    "sell_price": 1045,
     "equipment_slot": 0,
     "equipment_stats": {
       "magic_defence": 23,
@@ -2336,7 +2336,7 @@
     "id": "herald_robe",
     "name": "Herald Robe",
     "item_type": "equipment",
-    "sell_price": 10200,
+    "sell_price": 1045,
     "equipment_slot": 1,
     "equipment_stats": {
       "magic_defence": 58,
@@ -2351,7 +2351,7 @@
     "id": "herald_legs",
     "name": "Herald Legs",
     "item_type": "equipment",
-    "sell_price": 8160,
+    "sell_price": 1045,
     "equipment_slot": 2,
     "equipment_stats": {
       "magic_defence": 40,
@@ -2366,7 +2366,7 @@
     "id": "herald_gloves",
     "name": "Herald Gloves",
     "item_type": "equipment",
-    "sell_price": 4080,
+    "sell_price": 1045,
     "equipment_slot": 4,
     "equipment_stats": {
       "magic_defence": 14,
@@ -2381,7 +2381,7 @@
     "id": "black_dhide_coif",
     "name": "Blighted Wyrmhide Coif",
     "item_type": "equipment",
-    "sell_price": 405,
+    "sell_price": 222,
     "equipment_slot": 0,
     "equipment_stats": {
       "ranged_defence": 33,
@@ -2473,7 +2473,7 @@
     "id": "air_staff",
     "name": "Gale Staff",
     "item_type": "equipment",
-    "sell_price": 500,
+    "sell_price": 56,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "equipment_stats": {
@@ -2492,7 +2492,7 @@
     "id": "water_staff",
     "name": "Tide Staff",
     "item_type": "equipment",
-    "sell_price": 800,
+    "sell_price": 60,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "equipment_stats": {
@@ -2511,7 +2511,7 @@
     "id": "earth_staff",
     "name": "Stone Staff",
     "item_type": "equipment",
-    "sell_price": 1200,
+    "sell_price": 86,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "equipment_stats": {
@@ -2530,7 +2530,7 @@
     "id": "fire_staff",
     "name": "Ember Staff",
     "item_type": "equipment",
-    "sell_price": 1800,
+    "sell_price": 134,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "equipment_stats": {
@@ -2549,7 +2549,7 @@
     "id": "mind_staff",
     "name": "Whisper Staff",
     "item_type": "equipment",
-    "sell_price": 2600,
+    "sell_price": 116,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 38,
@@ -2568,7 +2568,7 @@
     "id": "cosmic_staff",
     "name": "Astral Staff",
     "item_type": "equipment",
-    "sell_price": 3800,
+    "sell_price": 236,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 46,
@@ -2587,7 +2587,7 @@
     "id": "chaos_staff",
     "name": "Rift Staff",
     "item_type": "equipment",
-    "sell_price": 5400,
+    "sell_price": 287,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 53,
@@ -2606,7 +2606,7 @@
     "id": "nature_staff",
     "name": "Thornwake Staff",
     "item_type": "equipment",
-    "sell_price": 7400,
+    "sell_price": 360,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 60,
@@ -2625,7 +2625,7 @@
     "id": "law_staff",
     "name": "Judgment Staff",
     "item_type": "equipment",
-    "sell_price": 10200,
+    "sell_price": 429,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 66,
@@ -2644,7 +2644,7 @@
     "id": "death_staff",
     "name": "Gravebind Staff",
     "item_type": "equipment",
-    "sell_price": 14000,
+    "sell_price": 527,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 74,
@@ -2663,7 +2663,7 @@
     "id": "blood_staff",
     "name": "Bloodtithe Staff",
     "item_type": "equipment",
-    "sell_price": 19000,
+    "sell_price": 705,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 83,
@@ -2682,7 +2682,7 @@
     "id": "soul_staff",
     "name": "Soulharvest Staff",
     "item_type": "equipment",
-    "sell_price": 25500,
+    "sell_price": 999,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 93,
@@ -2701,7 +2701,7 @@
     "id": "umbral_staff",
     "name": "Umbral Staff",
     "item_type": "equipment",
-    "sell_price": 34000,
+    "sell_price": 1435,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "spell_max_hit": 100,
@@ -2853,7 +2853,7 @@
     "id": "potion_dr_2",
     "name": "Warded Hide II",
     "item_type": "potion",
-    "sell_price": 40,
+    "sell_price": 38,
     "is_stackable": true,
     "charges": 15,
     "potion_effect": {
@@ -3108,7 +3108,7 @@
     "id": "mole_tablet",
     "name": "Ashmole Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "octopus_mark": {
@@ -3122,7 +3122,7 @@
     "id": "octopus_tablet",
     "name": "Tidegrasp Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "pig_mark": {
@@ -3136,7 +3136,7 @@
     "id": "pig_tablet",
     "name": "Sootsow Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "crow_mark": {
@@ -3150,7 +3150,7 @@
     "id": "crow_tablet",
     "name": "Cindercrow Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "leprechaun_mark": {
@@ -3164,7 +3164,7 @@
     "id": "leprechaun_tablet",
     "name": "Glimmerkin Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "monkey_mark": {
@@ -3178,7 +3178,7 @@
     "id": "monkey_tablet",
     "name": "Riftmonkey Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "salamander_mark": {
@@ -3192,7 +3192,7 @@
     "id": "salamander_tablet",
     "name": "Cinderling Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "bear_mark": {
@@ -3206,7 +3206,7 @@
     "id": "bear_tablet",
     "name": "Ashbear Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "devil_mark": {
@@ -3220,7 +3220,7 @@
     "id": "devil_tablet",
     "name": "Ashfiend Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "eagle_mark": {
@@ -3234,7 +3234,7 @@
     "id": "eagle_tablet",
     "name": "Galecrest Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "owl_mark": {
@@ -3248,7 +3248,7 @@
     "id": "owl_tablet",
     "name": "Duskwing Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "beaver_mark": {
@@ -3262,7 +3262,7 @@
     "id": "beaver_tablet",
     "name": "Muddam Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "fox_mark": {
@@ -3276,7 +3276,7 @@
     "id": "fox_tablet",
     "name": "Ashfox Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "golbin_thief_mark": {
@@ -3290,7 +3290,7 @@
     "id": "golbin_thief_tablet",
     "name": "Cinderkin Thief Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "occultist_mark": {
@@ -3304,7 +3304,7 @@
     "id": "occultist_tablet",
     "name": "Ashcaller Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "wolf_mark": {
@@ -3318,7 +3318,7 @@
     "id": "wolf_tablet",
     "name": "Dustwolf Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "minotaur_mark": {
@@ -3332,7 +3332,7 @@
     "id": "minotaur_tablet",
     "name": "Sunderhorn Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "centaur_mark": {
@@ -3346,7 +3346,7 @@
     "id": "centaur_tablet",
     "name": "Windhoof Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "witch_mark": {
@@ -3360,7 +3360,7 @@
     "id": "witch_tablet",
     "name": "Hexweaver Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "cyclops_mark": {
@@ -3374,7 +3374,7 @@
     "id": "cyclops_tablet",
     "name": "Stonegaze Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "yak_mark": {
@@ -3388,7 +3388,7 @@
     "id": "yak_tablet",
     "name": "Rimeyak Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "unicorn_mark": {
@@ -3402,7 +3402,7 @@
     "id": "unicorn_tablet",
     "name": "Starfoil Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "dragon_mark": {
@@ -3416,7 +3416,7 @@
     "id": "dragon_tablet",
     "name": "Ashwyrm Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "tortoise_mark": {
@@ -3430,7 +3430,7 @@
     "id": "tortoise_tablet",
     "name": "Mossback Tablet",
     "item_type": "tablet",
-    "sell_price": 5,
+    "sell_price": 1,
     "is_stackable": true
   },
   "summoning_shard_crimson": {
@@ -3725,7 +3725,7 @@
     "id": "firemaking_cape_superior",
     "name": "Superior Kilncraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3740,7 +3740,7 @@
     "id": "woodcutting_cape",
     "name": "Timbercraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3755,7 +3755,7 @@
     "id": "woodcutting_cape_superior",
     "name": "Superior Timbercraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3770,7 +3770,7 @@
     "id": "cooking_cape",
     "name": "Cookery Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3785,7 +3785,7 @@
     "id": "cooking_cape_superior",
     "name": "Superior Cookery Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3800,7 +3800,7 @@
     "id": "fishing_cape",
     "name": "Angling Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3815,7 +3815,7 @@
     "id": "fishing_cape_superior",
     "name": "Superior Angling Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3830,7 +3830,7 @@
     "id": "mining_cape",
     "name": "Delving Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3845,7 +3845,7 @@
     "id": "mining_cape_superior",
     "name": "Superior Delving Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3860,7 +3860,7 @@
     "id": "smithing_cape",
     "name": "Forgecraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3875,7 +3875,7 @@
     "id": "smithing_cape_superior",
     "name": "Superior Forgecraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3890,7 +3890,7 @@
     "id": "fletching_cape",
     "name": "Bowyering Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3905,7 +3905,7 @@
     "id": "fletching_cape_superior",
     "name": "Superior Bowyering Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3920,7 +3920,7 @@
     "id": "crafting_cape",
     "name": "Artifice Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3935,7 +3935,7 @@
     "id": "crafting_cape_superior",
     "name": "Superior Artifice Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3950,7 +3950,7 @@
     "id": "runecrafting_cape",
     "name": "Glyphcraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3965,7 +3965,7 @@
     "id": "runecrafting_cape_superior",
     "name": "Superior Glyphcraft Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3980,7 +3980,7 @@
     "id": "herblore_cape",
     "name": "Apothecary Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -3995,7 +3995,7 @@
     "id": "herblore_cape_superior",
     "name": "Superior Apothecary Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4010,7 +4010,7 @@
     "id": "thieving_cape",
     "name": "Larceny Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4026,7 +4026,7 @@
     "id": "thieving_cape_superior",
     "name": "Superior Larceny Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4042,7 +4042,7 @@
     "id": "agility_cape",
     "name": "Wayfaring Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4057,7 +4057,7 @@
     "id": "agility_cape_superior",
     "name": "Superior Wayfaring Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4072,7 +4072,7 @@
     "id": "summoning_cape",
     "name": "Beastbinding Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4087,7 +4087,7 @@
     "id": "summoning_cape_superior",
     "name": "Superior Beastbinding Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4102,7 +4102,7 @@
     "id": "astrology_cape",
     "name": "Starreading Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4117,7 +4117,7 @@
     "id": "astrology_cape_superior",
     "name": "Superior Starreading Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4132,7 +4132,7 @@
     "id": "prayer_cape",
     "name": "Devotion Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4147,7 +4147,7 @@
     "id": "prayer_cape_superior",
     "name": "Superior Devotion Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4162,7 +4162,7 @@
     "id": "slayer_cape",
     "name": "Huntsman Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4177,7 +4177,7 @@
     "id": "slayer_cape_superior",
     "name": "Superior Huntsman Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4192,7 +4192,7 @@
     "id": "attack_cape",
     "name": "Bladework Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4207,7 +4207,7 @@
     "id": "attack_cape_superior",
     "name": "Superior Bladework Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4222,7 +4222,7 @@
     "id": "defence_cape",
     "name": "Warding Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4237,7 +4237,7 @@
     "id": "defence_cape_superior",
     "name": "Superior Warding Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4252,7 +4252,7 @@
     "id": "hitpoints_cape",
     "name": "Vitality Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4267,7 +4267,7 @@
     "id": "hitpoints_cape_superior",
     "name": "Superior Vitality Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4282,7 +4282,7 @@
     "id": "strength_cape",
     "name": "Might Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4297,7 +4297,7 @@
     "id": "strength_cape_superior",
     "name": "Superior Might Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4312,7 +4312,7 @@
     "id": "ranged_cape",
     "name": "Marksmanship Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4327,7 +4327,7 @@
     "id": "ranged_cape_superior",
     "name": "Superior Marksmanship Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4342,7 +4342,7 @@
     "id": "magic_cape",
     "name": "Sorcery Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4357,7 +4357,7 @@
     "id": "magic_cape_superior",
     "name": "Superior Sorcery Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4372,7 +4372,7 @@
     "id": "farming_cape",
     "name": "Husbandry Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4387,7 +4387,7 @@
     "id": "farming_cape_superior",
     "name": "Superior Husbandry Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4402,7 +4402,7 @@
     "id": "township_cape",
     "name": "Settlement Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4417,7 +4417,7 @@
     "id": "township_cape_superior",
     "name": "Superior Settlement Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4432,7 +4432,7 @@
     "id": "cartography_cape",
     "name": "Surveying Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4447,7 +4447,7 @@
     "id": "cartography_cape_superior",
     "name": "Superior Surveying Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4462,7 +4462,7 @@
     "id": "archaeology_cape",
     "name": "Excavation Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4477,7 +4477,7 @@
     "id": "archaeology_cape_superior",
     "name": "Superior Excavation Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4492,7 +4492,7 @@
     "id": "harvesting_cape",
     "name": "Prospecting Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4507,7 +4507,7 @@
     "id": "harvesting_cape_superior",
     "name": "Superior Prospecting Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4522,7 +4522,7 @@
     "id": "alt_magic_cape",
     "name": "Runescribing Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4537,7 +4537,7 @@
     "id": "alt_magic_cape_superior",
     "name": "Superior Alt Sorcery Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4552,7 +4552,7 @@
     "id": "corruption_cape",
     "name": "Blight Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4567,7 +4567,7 @@
     "id": "corruption_cape_superior",
     "name": "Superior Blight Skillcape",
     "item_type": "equipment",
-    "sell_price": 10000000,
+    "sell_price": 1500000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4582,7 +4582,7 @@
     "id": "max_skillcape",
     "name": "Frontier Cape",
     "item_type": "equipment",
-    "sell_price": 23000000,
+    "sell_price": 5000000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4594,7 +4594,7 @@
     "id": "cape_of_completion",
     "name": "Frontier Laurel",
     "item_type": "equipment",
-    "sell_price": 200000000,
+    "sell_price": 25000000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -4615,7 +4615,7 @@
     "id": "air_god_helmet",
     "name": "Aeris Helmet",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 4388,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 14,
@@ -4631,7 +4631,7 @@
     "id": "air_god_platebody",
     "name": "Aeris Platebody",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 6663,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 34,
@@ -4647,7 +4647,7 @@
     "id": "air_god_platelegs",
     "name": "Aeris Platelegs",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 5861,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 24,
@@ -4663,7 +4663,7 @@
     "id": "air_god_boots",
     "name": "Aeris Boots",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 10,
@@ -4679,7 +4679,7 @@
     "id": "air_god_gloves",
     "name": "Aeris Gloves",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 8,
@@ -4695,7 +4695,7 @@
     "id": "air_godsword",
     "name": "Aeris Godsword",
     "item_type": "equipment",
-    "sell_price": 250000,
+    "sell_price": 9973,
     "equipment_slot": 8,
     "attack_speed": 3.2,
     "equipment_stats": {
@@ -4719,7 +4719,7 @@
     "id": "water_god_helmet",
     "name": "Glacia Helmet",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 4388,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 14,
@@ -4735,7 +4735,7 @@
     "id": "water_god_platebody",
     "name": "Glacia Platebody",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 6663,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 34,
@@ -4751,7 +4751,7 @@
     "id": "water_god_platelegs",
     "name": "Glacia Platelegs",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 5861,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 24,
@@ -4767,7 +4767,7 @@
     "id": "water_god_boots",
     "name": "Glacia Boots",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 10,
@@ -4783,7 +4783,7 @@
     "id": "water_god_gloves",
     "name": "Glacia Gloves",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 8,
@@ -4799,7 +4799,7 @@
     "id": "water_godsword",
     "name": "Glacia Godsword",
     "item_type": "equipment",
-    "sell_price": 250000,
+    "sell_price": 9973,
     "equipment_slot": 8,
     "attack_speed": 3.2,
     "equipment_stats": {
@@ -4823,7 +4823,7 @@
     "id": "earth_god_helmet",
     "name": "Terran Helmet",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 4388,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 14,
@@ -4839,7 +4839,7 @@
     "id": "earth_god_platebody",
     "name": "Terran Platebody",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 6663,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 34,
@@ -4855,7 +4855,7 @@
     "id": "earth_god_platelegs",
     "name": "Terran Platelegs",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 5861,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 24,
@@ -4871,7 +4871,7 @@
     "id": "earth_god_boots",
     "name": "Terran Boots",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 10,
@@ -4887,7 +4887,7 @@
     "id": "earth_god_gloves",
     "name": "Terran Gloves",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 8,
@@ -4903,7 +4903,7 @@
     "id": "earth_godsword",
     "name": "Terran Godsword",
     "item_type": "equipment",
-    "sell_price": 250000,
+    "sell_price": 9973,
     "equipment_slot": 8,
     "attack_speed": 3.2,
     "equipment_stats": {
@@ -4927,7 +4927,7 @@
     "id": "fire_god_helmet",
     "name": "Ragnar Helmet",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 4388,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 14,
@@ -4943,7 +4943,7 @@
     "id": "fire_god_platebody",
     "name": "Ragnar Platebody",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 6663,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 34,
@@ -4959,7 +4959,7 @@
     "id": "fire_god_platelegs",
     "name": "Ragnar Platelegs",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 5861,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 24,
@@ -4975,7 +4975,7 @@
     "id": "fire_god_boots",
     "name": "Ragnar Boots",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 10,
@@ -4991,7 +4991,7 @@
     "id": "fire_god_gloves",
     "name": "Ragnar Gloves",
     "item_type": "equipment",
-    "sell_price": 50000,
+    "sell_price": 3420,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 8,
@@ -5007,7 +5007,7 @@
     "id": "fire_godsword",
     "name": "Ragnar Godsword",
     "item_type": "equipment",
-    "sell_price": 250000,
+    "sell_price": 9973,
     "equipment_slot": 8,
     "attack_speed": 3.2,
     "equipment_stats": {
@@ -5024,7 +5024,7 @@
     "id": "abyssal_essence",
     "name": "Umbral Essence",
     "item_type": "resource",
-    "sell_price": 800,
+    "sell_price": 35,
     "is_stackable": true,
     "equipment_slot": -1,
     "attack_speed": 0.0,
@@ -5161,7 +5161,7 @@
     "id": "echo_arrangement",
     "name": "Played Arrangement",
     "item_type": "resource",
-    "sell_price": 60,
+    "sell_price": 45,
     "is_stackable": true,
     "description": "A short repeating program of traces, threaded onto a rack in a deliberate order."
   },
@@ -5169,7 +5169,7 @@
     "id": "echo_charge",
     "name": "Resonance Charge",
     "item_type": "resource",
-    "sell_price": 260,
+    "sell_price": 28,
     "is_stackable": true,
     "description": "Stored resonance, ready to be spent alongside another activity."
   },
@@ -5177,7 +5177,7 @@
     "id": "echo_inscription",
     "name": "Echoed Inscription",
     "item_type": "resource",
-    "sell_price": 520,
+    "sell_price": 277,
     "is_stackable": true,
     "description": "A working of careful craft carrying a captured rhythm inside it.",
     "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
@@ -5186,7 +5186,7 @@
     "id": "master_echo_loop",
     "name": "Master Loop",
     "item_type": "resource",
-    "sell_price": 4200,
+    "sell_price": 595,
     "is_stackable": true,
     "description": "A sequence that completes cleanly and cheaply enough to keep running all night.",
     "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
@@ -5203,7 +5203,7 @@
     "id": "fold_anchor",
     "name": "Fold Anchor",
     "item_type": "resource",
-    "sell_price": 70,
+    "sell_price": 31,
     "is_stackable": true,
     "description": "A fixed point a passage may be drawn from. Worthless alone; everything needs two."
   },
@@ -5211,7 +5211,7 @@
     "id": "wayfold_link",
     "name": "Wayfold Link",
     "item_type": "resource",
-    "sell_price": 340,
+    "sell_price": 76,
     "is_stackable": true,
     "description": "A stitched shortcut between two anchored places."
   },
@@ -5219,7 +5219,7 @@
     "id": "freight_manifest",
     "name": "Freight Manifest",
     "item_type": "resource",
-    "sell_price": 180,
+    "sell_price": 119,
     "is_stackable": true,
     "description": "A record of what a completed delivery actually moved, and who signed for it."
   },
@@ -5227,7 +5227,7 @@
     "id": "condensed_route",
     "name": "Condensed Route",
     "item_type": "resource",
-    "sell_price": 5200,
+    "sell_price": 1758,
     "is_stackable": true,
     "description": "A whole supply line folded into an afternoon."
   },
@@ -5243,7 +5243,7 @@
     "id": "charged_vessel",
     "name": "Charged Vessel",
     "item_type": "resource",
-    "sell_price": 80,
+    "sell_price": 33,
     "is_stackable": true,
     "description": "A vessel pressurised around a starter, ready to be fed."
   },
@@ -5251,7 +5251,7 @@
     "id": "matured_culture",
     "name": "Matured Culture",
     "item_type": "resource",
-    "sell_price": 380,
+    "sell_price": 58,
     "is_stackable": true,
     "description": "A lineage of weather that has been fed toward one particular temperament."
   },
@@ -5259,18 +5259,21 @@
     "id": "weather_charge",
     "name": "Weather Charge",
     "item_type": "resource",
-    "sell_price": 300,
+    "sell_price": 53,
     "is_stackable": true,
     "description": "A released local climate: drizzle, crosswind, fog, warmth or frost."
   },
   "blended_weather": {
     "id": "blended_weather",
     "name": "Blended Weather",
-    "item_type": "resource",
-    "sell_price": 6400,
+    "item_type": "potion",
+    "sell_price": 636,
     "is_stackable": true,
-    "description": "Two climates trained to succeed one another, released as a short programme.",
-    "terminal_reason": "sell-for-GP product of Fermentation; the skill's output is gold, not a reagent"
+    "description": "A brew of three weathers. Drink it from storage: for 25 actions every skill has a 4% chance to double its output. Still sells well.",
+    "charges": 25,
+    "potion_effect": {
+      "global_doubling_percent": 4
+    }
   },
   "custom_proposal": {
     "id": "custom_proposal",
@@ -5284,7 +5287,7 @@
     "id": "custom_provisions",
     "name": "Custom Provisions",
     "item_type": "resource",
-    "sell_price": 75,
+    "sell_price": 30,
     "is_stackable": true,
     "description": "Materials brought to a first practice, before anyone is really attending."
   },
@@ -5292,7 +5295,7 @@
     "id": "tradition_progress",
     "name": "Tradition Progress",
     "item_type": "resource",
-    "sell_price": 200,
+    "sell_price": 45,
     "is_stackable": true,
     "description": "Participation earned the hard way, by showing up repeatedly."
   },
@@ -5300,7 +5303,7 @@
     "id": "paired_tradition",
     "name": "Paired Tradition",
     "item_type": "resource",
-    "sell_price": 420,
+    "sell_price": 350,
     "is_stackable": true,
     "description": "Two customs that feed each other, and the settlement that keeps both."
   },
@@ -5308,7 +5311,7 @@
     "id": "established_tradition",
     "name": "Established Tradition",
     "item_type": "resource",
-    "sell_price": 2600,
+    "sell_price": 263,
     "is_stackable": true,
     "description": "A routine the settlement now runs on its own."
   },
@@ -5324,7 +5327,7 @@
     "id": "trace_evidence",
     "name": "Trace Evidence",
     "item_type": "resource",
-    "sell_price": 95,
+    "sell_price": 35,
     "is_stackable": true,
     "description": "One eliminated possibility. Small, but progress that never regresses."
   },
@@ -5332,7 +5335,7 @@
     "id": "witness_timeline",
     "name": "Witness Timeline",
     "item_type": "resource",
-    "sell_price": 340,
+    "sell_price": 59,
     "is_stackable": true,
     "description": "A narrow, defensible window of time in which the object moved."
   },
@@ -5348,7 +5351,7 @@
     "id": "finders_fee",
     "name": "Finder's Fee",
     "item_type": "resource",
-    "sell_price": 2400,
+    "sell_price": 125,
     "is_stackable": true,
     "description": "An honest reward, and the object back where it belongs.",
     "terminal_reason": "sell-for-GP product of Lostfinding; the skill's output is gold, not a reagent"
@@ -5357,7 +5360,7 @@
     "id": "echo_keeping_cape",
     "name": "Echo-Keeper's Cape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -5372,7 +5375,7 @@
     "id": "wayfolding_cape",
     "name": "Wayfolder's Cape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -5387,7 +5390,7 @@
     "id": "fermentation_cape",
     "name": "Fermenter's Cape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -5402,7 +5405,7 @@
     "id": "customcraft_cape",
     "name": "Custom-Maker's Cape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -5417,7 +5420,7 @@
     "id": "lostfinding_cape",
     "name": "Lostfinder's Cape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "equipment_slot": 5,
     "equipment_stats": {},
     "passive_modifiers": {
@@ -5432,7 +5435,7 @@
     "id": "grand_vintage",
     "name": "Grand Vintage",
     "item_type": "resource",
-    "sell_price": 5200,
+    "sell_price": 2061,
     "is_stackable": true,
     "description": "A weather kept a decade too long. It pours like a decision."
   },
@@ -5440,7 +5443,7 @@
     "id": "herald_cask",
     "name": "Herald Cask",
     "item_type": "resource",
-    "sell_price": 9400,
+    "sell_price": 6688,
     "is_stackable": true,
     "description": "Sealed against the ashfall. Whatever is inside has finished becoming."
   },
@@ -5448,7 +5451,7 @@
     "id": "flawless_echo",
     "name": "Flawless Echo",
     "item_type": "resource",
-    "sell_price": 5600,
+    "sell_price": 1050,
     "is_stackable": true,
     "description": "A loop with no seam. Play it once and the room remembers.",
     "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
@@ -5457,7 +5460,7 @@
     "id": "herald_echo",
     "name": "Herald Echo",
     "item_type": "resource",
-    "sell_price": 9800,
+    "sell_price": 1802,
     "is_stackable": true,
     "description": "The sound the ashfall made, kept. Nobody plays it twice."
   },
@@ -5465,7 +5468,7 @@
     "id": "grand_confluence",
     "name": "Grand Confluence",
     "item_type": "resource",
-    "sell_price": 4800,
+    "sell_price": 2804,
     "is_stackable": true,
     "description": "Every road in the survey arriving at once, politely.",
     "terminal_reason": "sell-for-GP product of Wayfolding; the skill's output is gold, not a reagent"
@@ -5483,7 +5486,7 @@
     "id": "living_legend",
     "name": "Living Legend",
     "item_type": "resource",
-    "sell_price": 5400,
+    "sell_price": 2124,
     "is_stackable": true,
     "description": "A tradition still being told by the person it happened to."
   },
@@ -5491,7 +5494,7 @@
     "id": "herald_craft",
     "name": "Herald Craft",
     "item_type": "resource",
-    "sell_price": 9200,
+    "sell_price": 4009,
     "is_stackable": true,
     "description": "Made the way it will be remembered, which is to say perfectly.",
     "terminal_reason": "sell-for-GP product of Customcraft; the skill's output is gold, not a reagent"
@@ -5500,7 +5503,7 @@
     "id": "cold_trail",
     "name": "Cold Trail",
     "item_type": "resource",
-    "sell_price": 4600,
+    "sell_price": 1069,
     "is_stackable": true,
     "description": "Years old and still warm at the edges. Follow it quietly."
   },
@@ -5508,7 +5511,7 @@
     "id": "herald_case",
     "name": "Herald Case",
     "item_type": "resource",
-    "sell_price": 8400,
+    "sell_price": 2886,
     "is_stackable": true,
     "description": "Closed. The label is in your handwriting and you have never seen it before.",
     "terminal_reason": "sell-for-GP product of Lostfinding; the skill's output is gold, not a reagent"
@@ -5517,7 +5520,7 @@
     "id": "adamantite_sword",
     "name": "Skyiron Sword",
     "item_type": "equipment",
-    "sell_price": 900,
+    "sell_price": 229,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "equipment_stats": {
@@ -5532,7 +5535,7 @@
     "id": "adamantite_scimitar",
     "name": "Skyiron Scimitar",
     "item_type": "equipment",
-    "sell_price": 900,
+    "sell_price": 229,
     "equipment_slot": 8,
     "attack_speed": 2.8,
     "equipment_stats": {
@@ -5547,7 +5550,7 @@
     "id": "adamantite_battleaxe",
     "name": "Skyiron Battleaxe",
     "item_type": "equipment",
-    "sell_price": 900,
+    "sell_price": 229,
     "equipment_slot": 8,
     "attack_speed": 3.4,
     "equipment_stats": {
@@ -5562,7 +5565,7 @@
     "id": "adamantite_2h_sword",
     "name": "Skyiron 2H Sword",
     "item_type": "equipment",
-    "sell_price": 900,
+    "sell_price": 229,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -5577,7 +5580,7 @@
     "id": "adamantite_helmet",
     "name": "Skyiron Helm",
     "item_type": "equipment",
-    "sell_price": 760,
+    "sell_price": 202,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 17,
@@ -5592,7 +5595,7 @@
     "id": "adamantite_platebody",
     "name": "Skyiron Platebody",
     "item_type": "equipment",
-    "sell_price": 1900,
+    "sell_price": 412,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 44,
@@ -5607,7 +5610,7 @@
     "id": "adamantite_platelegs",
     "name": "Skyiron Platelegs",
     "item_type": "equipment",
-    "sell_price": 1140,
+    "sell_price": 272,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 31,
@@ -5622,7 +5625,7 @@
     "id": "adamantite_boots",
     "name": "Skyiron Boots",
     "item_type": "equipment",
-    "sell_price": 760,
+    "sell_price": 202,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 14,
@@ -5637,7 +5640,7 @@
     "id": "adamantite_gloves",
     "name": "Skyiron Gauntlets",
     "item_type": "equipment",
-    "sell_price": 380,
+    "sell_price": 132,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 11,
@@ -5652,7 +5655,7 @@
     "id": "runite_sword",
     "name": "Stormsteel Sword",
     "item_type": "equipment",
-    "sell_price": 11000,
+    "sell_price": 471,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "equipment_stats": {
@@ -5667,7 +5670,7 @@
     "id": "runite_scimitar",
     "name": "Stormsteel Scimitar",
     "item_type": "equipment",
-    "sell_price": 11000,
+    "sell_price": 471,
     "equipment_slot": 8,
     "attack_speed": 2.8,
     "equipment_stats": {
@@ -5682,7 +5685,7 @@
     "id": "runite_dagger",
     "name": "Stormsteel Dagger",
     "item_type": "equipment",
-    "sell_price": 9000,
+    "sell_price": 471,
     "equipment_slot": 8,
     "attack_speed": 2.2,
     "equipment_stats": {
@@ -5697,7 +5700,7 @@
     "id": "runite_battleaxe",
     "name": "Stormsteel Battleaxe",
     "item_type": "equipment",
-    "sell_price": 12000,
+    "sell_price": 471,
     "equipment_slot": 8,
     "attack_speed": 3.4,
     "equipment_stats": {
@@ -5713,7 +5716,7 @@
     "id": "runite_2h_sword",
     "name": "Stormsteel 2H Sword",
     "item_type": "equipment",
-    "sell_price": 13000,
+    "sell_price": 471,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -5728,7 +5731,7 @@
     "id": "runite_helmet",
     "name": "Stormsteel Helmet",
     "item_type": "equipment",
-    "sell_price": 6000,
+    "sell_price": 377,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 22,
@@ -5743,7 +5746,7 @@
     "id": "runite_platebody",
     "name": "Stormsteel Platebody",
     "item_type": "equipment",
-    "sell_price": 14000,
+    "sell_price": 662,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 50,
@@ -5758,7 +5761,7 @@
     "id": "runite_platelegs",
     "name": "Stormsteel Platelegs",
     "item_type": "equipment",
-    "sell_price": 10000,
+    "sell_price": 472,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 35,
@@ -5773,7 +5776,7 @@
     "id": "runite_boots",
     "name": "Stormsteel Boots",
     "item_type": "equipment",
-    "sell_price": 4500,
+    "sell_price": 377,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 16,
@@ -5788,7 +5791,7 @@
     "id": "runite_gloves",
     "name": "Stormsteel Gloves",
     "item_type": "equipment",
-    "sell_price": 3500,
+    "sell_price": 282,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 12,
@@ -5803,7 +5806,7 @@
     "id": "runite_shield",
     "name": "Stormsteel Shield",
     "item_type": "equipment",
-    "sell_price": 8000,
+    "sell_price": 567,
     "equipment_slot": 9,
     "equipment_stats": {
       "melee_defence": 30,
@@ -5818,7 +5821,7 @@
     "id": "dragonite_sword",
     "name": "Wyrmforged Sword",
     "item_type": "equipment",
-    "sell_price": 24000,
+    "sell_price": 630,
     "equipment_slot": 8,
     "attack_speed": 3.0,
     "equipment_stats": {
@@ -5833,7 +5836,7 @@
     "id": "dragonite_scimitar",
     "name": "Wyrmforged Scimitar",
     "item_type": "equipment",
-    "sell_price": 24000,
+    "sell_price": 630,
     "equipment_slot": 8,
     "attack_speed": 2.8,
     "equipment_stats": {
@@ -5848,7 +5851,7 @@
     "id": "dragonite_dagger",
     "name": "Wyrmforged Dagger",
     "item_type": "equipment",
-    "sell_price": 20000,
+    "sell_price": 630,
     "equipment_slot": 8,
     "attack_speed": 2.2,
     "equipment_stats": {
@@ -5863,7 +5866,7 @@
     "id": "dragonite_battleaxe",
     "name": "Wyrmforged Battleaxe",
     "item_type": "equipment",
-    "sell_price": 26000,
+    "sell_price": 630,
     "equipment_slot": 8,
     "attack_speed": 3.4,
     "equipment_stats": {
@@ -5879,7 +5882,7 @@
     "id": "dragonite_2h_sword",
     "name": "Wyrmforged 2H Sword",
     "item_type": "equipment",
-    "sell_price": 28000,
+    "sell_price": 630,
     "equipment_slot": 8,
     "attack_speed": 3.6,
     "equipment_stats": {
@@ -5894,7 +5897,7 @@
     "id": "dragonite_helmet",
     "name": "Wyrmforged Helmet",
     "item_type": "equipment",
-    "sell_price": 13000,
+    "sell_price": 506,
     "equipment_slot": 0,
     "equipment_stats": {
       "melee_defence": 27,
@@ -5909,7 +5912,7 @@
     "id": "dragonite_platebody",
     "name": "Wyrmforged Platebody",
     "item_type": "equipment",
-    "sell_price": 30000,
+    "sell_price": 881,
     "equipment_slot": 1,
     "equipment_stats": {
       "melee_defence": 61,
@@ -5924,7 +5927,7 @@
     "id": "dragonite_platelegs",
     "name": "Wyrmforged Platelegs",
     "item_type": "equipment",
-    "sell_price": 21000,
+    "sell_price": 631,
     "equipment_slot": 2,
     "equipment_stats": {
       "melee_defence": 43,
@@ -5939,7 +5942,7 @@
     "id": "dragonite_boots",
     "name": "Wyrmforged Boots",
     "item_type": "equipment",
-    "sell_price": 9500,
+    "sell_price": 506,
     "equipment_slot": 3,
     "equipment_stats": {
       "melee_defence": 20,
@@ -5954,7 +5957,7 @@
     "id": "dragonite_gloves",
     "name": "Wyrmforged Gloves",
     "item_type": "equipment",
-    "sell_price": 7500,
+    "sell_price": 381,
     "equipment_slot": 4,
     "equipment_stats": {
       "melee_defence": 15,
@@ -5969,7 +5972,7 @@
     "id": "dragonite_shield",
     "name": "Wyrmforged Shield",
     "item_type": "equipment",
-    "sell_price": 17000,
+    "sell_price": 756,
     "equipment_slot": 9,
     "equipment_stats": {
       "melee_defence": 37,
@@ -6233,14 +6236,14 @@
     "id": "scribe_paper",
     "name": "Scribe Paper",
     "item_type": "resource",
-    "sell_price": 10,
+    "sell_price": 8,
     "is_stackable": true
   },
   "scribe_ink": {
     "id": "scribe_ink",
     "name": "Crude Ink",
     "item_type": "resource",
-    "sell_price": 10,
+    "sell_price": 7,
     "is_stackable": true
   },
   "scribe_blue_ink": {
@@ -6917,7 +6920,7 @@
     "id": "ranching_skillcape",
     "name": "Ranching Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "is_stackable": true,
     "equipment_slot": 5,
     "requires_level": {
@@ -6949,7 +6952,7 @@
     "id": "inscription_skillcape",
     "name": "Inscription Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "is_stackable": true,
     "equipment_slot": 5,
     "requires_level": {
@@ -6981,7 +6984,7 @@
     "id": "engineering_skillcape",
     "name": "Engineering Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "is_stackable": true,
     "equipment_slot": 5,
     "requires_level": {
@@ -7013,7 +7016,7 @@
     "id": "enchanting_skillcape",
     "name": "Enchanting Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "is_stackable": true,
     "equipment_slot": 5,
     "requires_level": {
@@ -7045,7 +7048,7 @@
     "id": "dreamwalking_skillcape",
     "name": "Dreamwalking Skillcape",
     "item_type": "equipment",
-    "sell_price": 1000000,
+    "sell_price": 250000,
     "is_stackable": true,
     "equipment_slot": 5,
     "requires_level": {
@@ -7077,7 +7080,7 @@
     "id": "border_collie_tablet",
     "name": "Border Collie Tablet",
     "item_type": "tablet",
-    "sell_price": 10,
+    "sell_price": 2,
     "is_stackable": true
   },
   "border_collie_mark": {
@@ -7091,7 +7094,7 @@
     "id": "sandman_tablet",
     "name": "Sandman Tablet",
     "item_type": "tablet",
-    "sell_price": 10,
+    "sell_price": 2,
     "is_stackable": true
   },
   "sandman_mark": {
@@ -7188,7 +7191,7 @@
     "id": "sapphire_ring_of_focus",
     "name": "Sapphire Ring of Focus",
     "item_type": "equipment",
-    "sell_price": 130,
+    "sell_price": 125,
     "equipment_slot": 7,
     "equipment_stats": {},
     "passive_modifiers": {
