@@ -300,8 +300,17 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var preview := UIStyle.icon_texture("skills", skill_id)
 	if skill_id == "inscription" and action.has("research_unlock"):
 		preview.texture = AssetRegistry.item_icon("scribe_" + str(action.research_unlock) + "_inked")
+	elif action.get("icon_activity", false):
+		preview.texture = AssetRegistry.icon(skill_id, action_id)
+	elif action.has("icon_item"):
+		preview.texture = AssetRegistry.item_icon(str(action.icon_item))
 	elif not outputs.is_empty():
 		preview.texture = AssetRegistry.item_icon(str(outputs.keys()[0]))
+	if action.has("icon_tint"):
+		var material := ShaderMaterial.new()
+		material.shader = preload("res://assets/shaders/stardust_tint.gdshader")
+		material.set_shader_parameter("dust_color", Color(str(action.icon_tint)))
+		preview.material = material
 	preview.custom_minimum_size = Vector2(40, 40)
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	preview.modulate.a = 1.0 if unlocked else 0.4
