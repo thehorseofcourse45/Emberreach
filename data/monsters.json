@@ -191,7 +191,7 @@
     "name": "Barrowbones",
     "combat_level": 12,
     "hitpoints": 30,
-    "attack_type": "melee",
+    "attack_type": "ranged",
     "attack_speed": 2.4,
     "max_hit": 5,
     "accuracy_rating": 30,
@@ -380,7 +380,7 @@
     "name": "Sunderhold Sentry",
     "combat_level": 60,
     "hitpoints": 220,
-    "attack_type": "melee",
+    "attack_type": "ranged",
     "attack_speed": 2.4,
     "max_hit": 24,
     "accuracy_rating": 320,
@@ -893,7 +893,7 @@
     "name": "Ember Wisp",
     "combat_level": 140,
     "hitpoints": 1150,
-    "attack_type": "melee",
+    "attack_type": "magic",
     "attack_speed": 3.0,
     "max_hit": 105,
     "accuracy_rating": 1550,
@@ -937,7 +937,7 @@
     "name": "Warden of Embers, Pyrra",
     "combat_level": 190,
     "hitpoints": 2700,
-    "attack_type": "melee",
+    "attack_type": "magic",
     "attack_speed": 3.2,
     "max_hit": 150,
     "accuracy_rating": 2100,
@@ -1233,7 +1233,7 @@
     "name": "Umbral Imp",
     "combat_level": 230,
     "hitpoints": 2600,
-    "attack_type": "melee",
+    "attack_type": "ranged",
     "attack_speed": 3.0,
     "max_hit": 180,
     "accuracy_rating": 3200,
@@ -1656,7 +1656,7 @@
     "name": "Ash Drake",
     "combat_level": 115,
     "hitpoints": 840,
-    "attack_type": "magic",
+    "attack_type": "ranged",
     "attack_speed": 3.0,
     "max_hit": 68,
     "accuracy_rating": 1150,
@@ -1753,7 +1753,7 @@
     "name": "Rift Weaver",
     "combat_level": 300,
     "hitpoints": 6800,
-    "attack_type": "magic",
+    "attack_type": "ranged",
     "attack_speed": 3.3,
     "max_hit": 290,
     "accuracy_rating": 4900,
@@ -1807,7 +1807,7 @@
     "name": "Greyharrow Husk",
     "combat_level": 45,
     "hitpoints": 140,
-    "attack_type": "melee",
+    "attack_type": "magic",
     "attack_speed": 2.8,
     "max_hit": 17,
     "accuracy_rating": 175,
@@ -2340,5 +2340,225 @@
     "can_be_stunned": true,
     "is_immune_to_effects": false,
     "flavour": "Sights the breach from the wall and never wastes a bolt on anything closer."
+  },
+  "tidebound_revenant": {
+    "id": "tidebound_revenant",
+    "name": "Tidebound Revenant",
+    "combat_level": 165,
+    "hitpoints": 1550,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 123,
+    "accuracy_rating": 2000,
+    "melee_evasion": 540,
+    "ranged_evasion": 540,
+    "magic_evasion": 540,
+    "damage_reduction": 58,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 4,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 24410,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1500,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "A drowned harpooner who never let go of the line. It still throws."
+  },
+  "stormglass_warden": {
+    "id": "stormglass_warden",
+    "name": "Stormglass Warden",
+    "combat_level": 180,
+    "hitpoints": 1800,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 136,
+    "accuracy_rating": 2250,
+    "melee_evasion": 600,
+    "ranged_evasion": 600,
+    "magic_evasion": 600,
+    "damage_reduction": 61,
+    "special_attacks": [
+      "cloudburst_magic_ray"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 4,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 30600,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1550,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Lightning that struck the same sand twice and cooled into a sentry."
+  },
+  "cinder_colossus": {
+    "id": "cinder_colossus",
+    "name": "Cinder Colossus",
+    "combat_level": 195,
+    "hitpoints": 2050,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 149,
+    "accuracy_rating": 2550,
+    "melee_evasion": 660,
+    "ranged_evasion": 660,
+    "magic_evasion": 660,
+    "damage_reduction": 63,
+    "special_attacks": [
+      "stun_bash"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 5,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 37410,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1600,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "A forge-heap the Herald taught to walk. Each step leaves a glowing print."
+  },
+  "herald_zealot": {
+    "id": "herald_zealot",
+    "name": "Herald's Zealot",
+    "combat_level": 210,
+    "hitpoints": 2300,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 162,
+    "accuracy_rating": 2800,
+    "melee_evasion": 720,
+    "ranged_evasion": 720,
+    "magic_evasion": 720,
+    "damage_reduction": 66,
+    "special_attacks": [
+      "guaranteed_hit"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 5,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 44850,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1700,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Sworn to the throne beyond the march, and patient with a crossbow."
+  },
+  "umbral_harbinger": {
+    "id": "umbral_harbinger",
+    "name": "Umbral Harbinger",
+    "combat_level": 222,
+    "hitpoints": 2450,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 173,
+    "accuracy_rating": 3050,
+    "melee_evasion": 770,
+    "ranged_evasion": 770,
+    "magic_evasion": 770,
+    "damage_reduction": 68,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 5,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 50220,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 1750,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "The first shadow the Deep sends up. Where it stands, the light thins."
   }
 }

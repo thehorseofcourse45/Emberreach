@@ -135,7 +135,9 @@ func get_evasion_percent(style: String) -> float:
     return get_modifier("%s_evasion_percent" % style)
 
 func get_max_hit_percent(style: String) -> float:
-    return get_modifier("%s_max_hit_percent" % style)
+    # damage_to_monsters_percent is authored on rings and amulets as "more damage with any style";
+    # nothing read it before, so it was a dead stat.
+    return get_modifier("%s_max_hit_percent" % style) + get_modifier("damage_to_monsters_percent")
 
 func get_max_hit_flat(style: String) -> float:
     return get_modifier("%s_max_hit_flat" % style)

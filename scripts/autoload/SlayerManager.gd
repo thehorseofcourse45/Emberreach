@@ -23,16 +23,46 @@ func assign_task(tier_id: String) -> bool:
     if t.is_empty() or PlayerData.get_level("slayer") < int(t.get("level_required", 1)):
         return false
     var pool: Array = DataLoader.slayer_tasks.get("_monsters", {}).get(tier_id, [])
-    if pool.is_empty():
+    # Boss tiers can also assign a whole expedition: their final bosses spawn once per run, so
+    # "kill 30 of them" meant 30 full runs. A dungeon task counts clears instead.
+    var dungeons: Array = DataLoader.slayer_tasks.get("_dungeons", {}).get(tier_id, [])
+    if pool.is_empty() and dungeons.is_empty():
         return false
-    var monster: String = pool[_rng.randi_range(0, pool.size() - 1)]
+    var pick: int = _rng.randi_range(0, pool.size() + dungeons.size() - 1)
+    var coin_multiplier: float = float(t.get("slayer_coin_multiplier", 1.0))
+    if pick >= pool.size():
+        var dungeon_id: String = str(dungeons[pick - pool.size()])
+        var fights: Array = DataLoader.get_dungeon(dungeon_id).get("monsters", [])
+        PlayerData.slayer_task = {
+            "tier": tier_id, "kind": "dungeon", "dungeon_id": dungeon_id,
+            # The final boss: it earns the on-task Slayer XP bonus and sets the coin reward.
+            "monster_id": str(fights[-1]) if not fights.is_empty() else "",
+            "kills_required": _rng.randi_range(int(t.get("min_clears", 1)), int(t.get("max_clears", 3))),
+            "kills_done": 0, "coin_multiplier": coin_multiplier,
+        }
+        EventBus.notification.emit("Slayer task: clear %s %d×" % [
+            DataLoader.get_dungeon(dungeon_id).get("name", dungeon_id), PlayerData.slayer_task["kills_required"]], "info")
+        return true
+    var monster: String = pool[pick]
     PlayerData.slayer_task = {
         "tier": tier_id, "monster_id": monster,
         "kills_required": _rng.randi_range(int(t.get("min_kills", 10)), int(t.get("max_kills", 25))),
-        "kills_done": 0, "coin_multiplier": float(t.get("slayer_coin_multiplier", 1.0)),
+        "kills_done": 0, "coin_multiplier": coin_multiplier,
     }
     EventBus.notification.emit("Slayer task: kill %s× %s" % [PlayerData.slayer_task["kills_required"], monster], "info")
     return true
+
+## True when the active task counts expedition clears rather than kills.
+func is_dungeon_task() -> bool:
+    return str(PlayerData.slayer_task.get("kind", "")) == "dungeon"
+
+## Called by CombatManager on every expedition clear, including silent offline ones.
+func on_dungeon_cleared(dungeon_id: String) -> void:
+    if not has_task() or not is_dungeon_task() or str(PlayerData.slayer_task.get("dungeon_id", "")) != dungeon_id:
+        return
+    PlayerData.slayer_task["kills_done"] = int(PlayerData.slayer_task["kills_done"]) + 1
+    if int(PlayerData.slayer_task["kills_done"]) >= int(PlayerData.slayer_task["kills_required"]):
+        _complete_task()
 
 func reroll(cost_coins: float = 0.0) -> bool:
     if cost_coins > 0.0:
@@ -51,7 +81,7 @@ func extend(extra: int, cost_coins: float) -> bool:
     return true
 
 func _on_kill(monster_id: String) -> void:
-    if not has_task() or PlayerData.slayer_task.get("monster_id", "") != monster_id:
+    if not has_task() or is_dungeon_task() or PlayerData.slayer_task.get("monster_id", "") != monster_id:
         return
     PlayerData.slayer_task["kills_done"] = int(PlayerData.slayer_task["kills_done"]) + 1
     if int(PlayerData.slayer_task["kills_done"]) >= int(PlayerData.slayer_task["kills_required"]):
