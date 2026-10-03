@@ -443,6 +443,17 @@
         "mastery_action_time": 3.0
       },
       {
+        "id": "fish_pond_perch",
+        "name": "Pond Perch",
+        "level_required": 3,
+        "base_interval": 3.5,
+        "base_xp": 15,
+        "output_items": {
+          "raw_pond_perch": 1
+        },
+        "mastery_action_time": 3.5
+      },
+      {
         "id": "sardine",
         "name": "Silverfin",
         "level_required": 5,
@@ -465,6 +476,17 @@
         "mastery_action_time": 4.0
       },
       {
+        "id": "fish_willow_roach",
+        "name": "Willow Roach",
+        "level_required": 12,
+        "base_interval": 4.5,
+        "base_xp": 35,
+        "output_items": {
+          "raw_willow_roach": 1
+        },
+        "mastery_action_time": 4.5
+      },
+      {
         "id": "trout",
         "name": "Speckled Trout",
         "level_required": 20,
@@ -474,6 +496,17 @@
           "raw_trout": 1
         },
         "mastery_action_time": 5.0
+      },
+      {
+        "id": "fish_bronze_carp",
+        "name": "Bronze Carp",
+        "level_required": 25,
+        "base_interval": 5,
+        "base_xp": 60,
+        "output_items": {
+          "raw_bronze_carp": 1
+        },
+        "mastery_action_time": 5
       },
       {
         "id": "salmon",
@@ -487,6 +520,17 @@
         "mastery_action_time": 5.0
       },
       {
+        "id": "fish_dusk_bass",
+        "name": "Dusk Bass",
+        "level_required": 35,
+        "base_interval": 5.5,
+        "base_xp": 80,
+        "output_items": {
+          "raw_dusk_bass": 1
+        },
+        "mastery_action_time": 5.5
+      },
+      {
         "id": "lobster",
         "name": "Fen Lobster",
         "level_required": 40,
@@ -496,6 +540,17 @@
           "raw_lobster": 1
         },
         "mastery_action_time": 6.0
+      },
+      {
+        "id": "fish_moon_eel",
+        "name": "Moon Eel",
+        "level_required": 45,
+        "base_interval": 6.5,
+        "base_xp": 100,
+        "output_items": {
+          "raw_moon_eel": 1
+        },
+        "mastery_action_time": 6.5
       },
       {
         "id": "fish_squid",
@@ -520,6 +575,17 @@
         "mastery_action_time": 7.0
       },
       {
+        "id": "fish_coral_bream",
+        "name": "Coral Bream",
+        "level_required": 55,
+        "base_interval": 7.5,
+        "base_xp": 125,
+        "output_items": {
+          "raw_coral_bream": 1
+        },
+        "mastery_action_time": 7.5
+      },
+      {
         "id": "crab",
         "name": "Mudcrab",
         "level_required": 60,
@@ -529,6 +595,17 @@
           "raw_crab": 1
         },
         "mastery_action_time": 8.0
+      },
+      {
+        "id": "fish_storm_tuna",
+        "name": "Storm Tuna",
+        "level_required": 65,
+        "base_interval": 8.5,
+        "base_xp": 160,
+        "output_items": {
+          "raw_storm_tuna": 1
+        },
+        "mastery_action_time": 8.5
       },
       {
         "id": "shark",
@@ -553,6 +630,17 @@
         "mastery_action_time": 10.0
       },
       {
+        "id": "fish_frost_pike",
+        "name": "Frost Pike",
+        "level_required": 80,
+        "base_interval": 11,
+        "base_xp": 230,
+        "output_items": {
+          "raw_frost_pike": 1
+        },
+        "mastery_action_time": 11
+      },
+      {
         "id": "manta_ray",
         "name": "Void Ray",
         "level_required": 85,
@@ -562,6 +650,17 @@
           "raw_manta_ray": 1
         },
         "mastery_action_time": 12.0
+      },
+      {
+        "id": "fish_sunscale_koi",
+        "name": "Sunscale Koi",
+        "level_required": 90,
+        "base_interval": 13,
+        "base_xp": 300,
+        "output_items": {
+          "raw_sunscale_koi": 1
+        },
+        "mastery_action_time": 13
       },
       {
         "id": "whale",
@@ -575,6 +674,17 @@
         "mastery_action_time": 15.0
       },
       {
+        "id": "fish_obsidian_sturgeon",
+        "name": "Obsidian Sturgeon",
+        "level_required": 100,
+        "base_interval": 16,
+        "base_xp": 380,
+        "output_items": {
+          "raw_obsidian_sturgeon": 1
+        },
+        "mastery_action_time": 16
+      },
+      {
         "id": "dreadfin",
         "name": "Dreadfin",
         "level_required": 105,
@@ -586,6 +696,17 @@
         "mastery_action_time": 17.0
       },
       {
+        "id": "fish_aurora_lionfish",
+        "name": "Aurora Lionfish",
+        "level_required": 110,
+        "base_interval": 18,
+        "base_xp": 470,
+        "output_items": {
+          "raw_aurora_lionfish": 1
+        },
+        "mastery_action_time": 18
+      },
+      {
         "id": "abyssal_eel",
         "name": "Abyssal Eel",
         "level_required": 115,
@@ -595,6 +716,17 @@
           "raw_abyssal_eel": 1
         },
         "mastery_action_time": 19.0
+      },
+      {
+        "id": "fish_celestial_marlin",
+        "name": "Celestial Marlin",
+        "level_required": 120,
+        "base_interval": 20,
+        "base_xp": 580,
+        "output_items": {
+          "raw_celestial_marlin": 1
+        },
+        "mastery_action_time": 20
       }
     ],
     "order": 11,
@@ -1380,6 +1512,23 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_pond_perch",
+        "name": "Grilled Pond Perch",
+        "level_required": 3,
+        "base_interval": 4,
+        "base_xp": 15,
+        "success_chance": 0.55,
+        "input_items": {
+          "raw_pond_perch": 1
+        },
+        "output_items": {
+          "pond_perch": 1
+        },
+        "mastery_action_time": 3.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_sardine",
         "name": "Silverfin",
         "level_required": 5,
@@ -1393,6 +1542,24 @@
           "sardine": 1
         },
         "mastery_action_time": 3.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_emberleaf_shrimp_bowl",
+        "name": "Emberleaf Shrimp Bowl",
+        "level_required": 8,
+        "base_interval": 5,
+        "base_xp": 25,
+        "success_chance": 0.6,
+        "input_items": {
+          "raw_shrimp": 2,
+          "garum_herb": 1
+        },
+        "output_items": {
+          "emberleaf_shrimp_bowl": 1
+        },
+        "mastery_action_time": 4.25,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1414,6 +1581,42 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_willow_roach",
+        "name": "Grilled Willow Roach",
+        "level_required": 12,
+        "base_interval": 5,
+        "base_xp": 35,
+        "success_chance": 0.6,
+        "input_items": {
+          "raw_willow_roach": 1
+        },
+        "output_items": {
+          "willow_roach": 1
+        },
+        "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_marsh_chowder",
+        "name": "Marsh Chowder",
+        "level_required": 18,
+        "base_interval": 6,
+        "base_xp": 42,
+        "success_chance": 0.7,
+        "input_items": {
+          "raw_pond_perch": 2,
+          "raw_shrimp": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "marsh_chowder": 1
+        },
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_trout",
         "name": "Speckled Trout",
         "level_required": 20,
@@ -1427,6 +1630,41 @@
           "trout": 1
         },
         "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_silverfin_egg_bites",
+        "name": "Silverfin Egg Bites",
+        "level_required": 22,
+        "base_interval": 6,
+        "base_xp": 55,
+        "success_chance": 0.68,
+        "input_items": {
+          "raw_sardine": 2,
+          "ranch_egg": 1
+        },
+        "output_items": {
+          "silverfin_egg_bites": 1
+        },
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_bronze_carp",
+        "name": "Grilled Bronze Carp",
+        "level_required": 25,
+        "base_interval": 5.5,
+        "base_xp": 60,
+        "success_chance": 0.68,
+        "input_items": {
+          "raw_bronze_carp": 1
+        },
+        "output_items": {
+          "bronze_carp": 1
+        },
+        "mastery_action_time": 4.675,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1466,6 +1704,41 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_dusk_bass",
+        "name": "Grilled Dusk Bass",
+        "level_required": 35,
+        "base_interval": 6.5,
+        "base_xp": 80,
+        "success_chance": 0.72,
+        "input_items": {
+          "raw_dusk_bass": 1
+        },
+        "output_items": {
+          "dusk_bass": 1
+        },
+        "mastery_action_time": 5.525,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_emberleaf_skewers",
+        "name": "Emberleaf Fish Skewers",
+        "level_required": 38,
+        "base_interval": 7,
+        "base_xp": 82,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_dusk_bass": 1,
+          "garum_herb": 1
+        },
+        "output_items": {
+          "emberleaf_skewers": 1
+        },
+        "mastery_action_time": 5.95,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_lobster",
         "name": "Fen Lobster",
         "level_required": 40,
@@ -1483,6 +1756,24 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_goldpetal_salmon",
+        "name": "Goldpetal Salmon",
+        "level_required": 42,
+        "base_interval": 7,
+        "base_xp": 95,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_salmon": 1,
+          "lemontyle": 1
+        },
+        "output_items": {
+          "goldpetal_salmon": 1
+        },
+        "mastery_action_time": 5.95,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_ranch_cheese",
         "name": "Ranch Cheese",
         "level_required": 45,
@@ -1496,6 +1787,23 @@
           "ranch_cheese": 1
         },
         "mastery_action_time": 5.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_moon_eel",
+        "name": "Grilled Moon Eel",
+        "level_required": 45,
+        "base_interval": 7,
+        "base_xp": 100,
+        "success_chance": 0.77,
+        "input_items": {
+          "raw_moon_eel": 1
+        },
+        "output_items": {
+          "moon_eel": 1
+        },
+        "mastery_action_time": 5.95,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1551,6 +1859,41 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_coral_bream",
+        "name": "Grilled Coral Bream",
+        "level_required": 55,
+        "base_interval": 8,
+        "base_xp": 125,
+        "success_chance": 0.79,
+        "input_items": {
+          "raw_coral_bream": 1
+        },
+        "output_items": {
+          "coral_bream": 1
+        },
+        "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_coral_bisque",
+        "name": "Coral Bisque",
+        "level_required": 58,
+        "base_interval": 8.5,
+        "base_xp": 135,
+        "success_chance": 0.8,
+        "input_items": {
+          "raw_coral_bream": 2,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "coral_bisque": 1
+        },
+        "mastery_action_time": 7.225,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_crab",
         "name": "Crab",
         "level_required": 60,
@@ -1564,6 +1907,42 @@
           "crab": 1
         },
         "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_fen_lobster_gratin",
+        "name": "Fen Lobster Gratin",
+        "level_required": 62,
+        "base_interval": 9,
+        "base_xp": 150,
+        "success_chance": 0.8,
+        "input_items": {
+          "raw_lobster": 1,
+          "ranch_cheese": 1,
+          "oxilyme": 1
+        },
+        "output_items": {
+          "fen_lobster_gratin": 1
+        },
+        "mastery_action_time": 7.65,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_storm_tuna",
+        "name": "Grilled Storm Tuna",
+        "level_required": 65,
+        "base_interval": 9,
+        "base_xp": 160,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_storm_tuna": 1
+        },
+        "output_items": {
+          "storm_tuna": 1
+        },
+        "mastery_action_time": 7.65,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1585,6 +1964,25 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_ashcap_shark_stew",
+        "name": "Ashcap Shark Stew",
+        "level_required": 74,
+        "base_interval": 10,
+        "base_xp": 195,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_shark": 1,
+          "poraxx": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "ashcap_shark_stew": 1
+        },
+        "mastery_action_time": 8.5,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_cave_fish",
         "name": "Cave Fish",
         "level_required": 75,
@@ -1598,6 +1996,25 @@
           "cave_fish": 1
         },
         "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_stormfish_pie",
+        "name": "Stormfish Pie",
+        "level_required": 78,
+        "base_interval": 10,
+        "base_xp": 225,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_storm_tuna": 1,
+          "ranch_egg": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "stormfish_pie": 1
+        },
+        "mastery_action_time": 8.5,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1621,6 +2038,23 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_frost_pike",
+        "name": "Grilled Frost Pike",
+        "level_required": 80,
+        "base_interval": 10,
+        "base_xp": 230,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_frost_pike": 1
+        },
+        "output_items": {
+          "frost_pike": 1
+        },
+        "mastery_action_time": 8.5,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_manta_ray",
         "name": "Glidefin Manta",
         "level_required": 85,
@@ -1634,6 +2068,42 @@
           "manta_ray": 1
         },
         "mastery_action_time": 8.5,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_gravemoss_surf_and_turf",
+        "name": "Gravemoss Surf and Turf",
+        "level_required": 88,
+        "base_interval": 12,
+        "base_xp": 280,
+        "success_chance": 0.81,
+        "input_items": {
+          "raw_manta_ray": 1,
+          "ranch_meat": 1,
+          "barrentoe": 1
+        },
+        "output_items": {
+          "gravemoss_surf_and_turf": 1
+        },
+        "mastery_action_time": 10.2,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_sunscale_koi",
+        "name": "Grilled Sunscale Koi",
+        "level_required": 90,
+        "base_interval": 11,
+        "base_xp": 295,
+        "success_chance": 0.81,
+        "input_items": {
+          "raw_sunscale_koi": 1
+        },
+        "output_items": {
+          "sunscale_koi": 1
+        },
+        "mastery_action_time": 9.35,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1655,6 +2125,42 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_royal_anglers_platter",
+        "name": "Royal Angler's Platter",
+        "level_required": 98,
+        "base_interval": 13,
+        "base_xp": 360,
+        "success_chance": 0.8,
+        "input_items": {
+          "raw_sunscale_koi": 1,
+          "raw_frost_pike": 1,
+          "lemontyle": 1
+        },
+        "output_items": {
+          "royal_anglers_platter": 1
+        },
+        "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_obsidian_sturgeon",
+        "name": "Grilled Obsidian Sturgeon",
+        "level_required": 100,
+        "base_interval": 12,
+        "base_xp": 380,
+        "success_chance": 0.79,
+        "input_items": {
+          "raw_obsidian_sturgeon": 1
+        },
+        "output_items": {
+          "obsidian_sturgeon": 1
+        },
+        "mastery_action_time": 10.2,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_dreadfin",
         "name": "Dreadfin Fillet",
         "level_required": 105,
@@ -1672,6 +2178,42 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_herald_leviathan_roast",
+        "name": "Herald Leviathan Roast",
+        "level_required": 106,
+        "base_interval": 14,
+        "base_xp": 425,
+        "success_chance": 0.79,
+        "input_items": {
+          "raw_whale": 1,
+          "herald_bloom": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "herald_leviathan_roast": 1
+        },
+        "mastery_action_time": 11.9,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_aurora_lionfish",
+        "name": "Grilled Aurora Lionfish",
+        "level_required": 110,
+        "base_interval": 13,
+        "base_xp": 470,
+        "success_chance": 0.77,
+        "input_items": {
+          "raw_aurora_lionfish": 1
+        },
+        "output_items": {
+          "aurora_lionfish": 1
+        },
+        "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_abyssal_eel",
         "name": "Abyssal Eel Roll",
         "level_required": 115,
@@ -1685,6 +2227,61 @@
           "abyssal_eel": 1
         },
         "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_aurora_seafood_feast",
+        "name": "Aurora Seafood Feast",
+        "level_required": 118,
+        "base_interval": 16,
+        "base_xp": 560,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_aurora_lionfish": 2,
+          "raw_obsidian_sturgeon": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "aurora_seafood_feast": 1
+        },
+        "mastery_action_time": 13.6,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_celestial_marlin",
+        "name": "Grilled Celestial Marlin",
+        "level_required": 120,
+        "base_interval": 14,
+        "base_xp": 580,
+        "success_chance": 0.75,
+        "input_items": {
+          "raw_celestial_marlin": 1
+        },
+        "output_items": {
+          "celestial_marlin": 1
+        },
+        "mastery_action_time": 11.9,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_emberbloom_abyssal_hotpot",
+        "name": "Emberbloom Abyssal Hotpot",
+        "level_required": 120,
+        "base_interval": 17,
+        "base_xp": 580,
+        "success_chance": 0.76,
+        "input_items": {
+          "raw_abyssal_eel": 2,
+          "emberbloom": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "emberbloom_abyssal_hotpot": 1
+        },
+        "mastery_action_time": 14.45,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       }

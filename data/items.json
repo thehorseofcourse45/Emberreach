@@ -7341,5 +7341,323 @@
       "ranged": 115
     },
     "icon_id": "black_dhide_vambraces"
+  },
+  "raw_pond_perch": {
+    "id": "raw_pond_perch",
+    "name": "Raw Pond Perch",
+    "item_type": "resource",
+    "sell_price": 2,
+    "is_stackable": true
+  },
+  "pond_perch": {
+    "id": "pond_perch",
+    "name": "Grilled Pond Perch",
+    "item_type": "food",
+    "sell_price": 3,
+    "is_stackable": true,
+    "heal_amount": 35,
+    "description": "Heals 35 HP."
+  },
+  "raw_willow_roach": {
+    "id": "raw_willow_roach",
+    "name": "Raw Willow Roach",
+    "item_type": "resource",
+    "sell_price": 4,
+    "is_stackable": true
+  },
+  "willow_roach": {
+    "id": "willow_roach",
+    "name": "Grilled Willow Roach",
+    "item_type": "food",
+    "sell_price": 6,
+    "is_stackable": true,
+    "heal_amount": 55,
+    "description": "Heals 55 HP."
+  },
+  "raw_bronze_carp": {
+    "id": "raw_bronze_carp",
+    "name": "Raw Bronze Carp",
+    "item_type": "resource",
+    "sell_price": 7,
+    "is_stackable": true
+  },
+  "bronze_carp": {
+    "id": "bronze_carp",
+    "name": "Grilled Bronze Carp",
+    "item_type": "food",
+    "sell_price": 11,
+    "is_stackable": true,
+    "heal_amount": 80,
+    "description": "Heals 80 HP."
+  },
+  "raw_dusk_bass": {
+    "id": "raw_dusk_bass",
+    "name": "Raw Dusk Bass",
+    "item_type": "resource",
+    "sell_price": 10,
+    "is_stackable": true
+  },
+  "dusk_bass": {
+    "id": "dusk_bass",
+    "name": "Grilled Dusk Bass",
+    "item_type": "food",
+    "sell_price": 15,
+    "is_stackable": true,
+    "heal_amount": 105,
+    "description": "Heals 105 HP."
+  },
+  "raw_moon_eel": {
+    "id": "raw_moon_eel",
+    "name": "Raw Moon Eel",
+    "item_type": "resource",
+    "sell_price": 15,
+    "is_stackable": true
+  },
+  "moon_eel": {
+    "id": "moon_eel",
+    "name": "Grilled Moon Eel",
+    "item_type": "food",
+    "sell_price": 22,
+    "is_stackable": true,
+    "heal_amount": 135,
+    "description": "Heals 135 HP."
+  },
+  "raw_coral_bream": {
+    "id": "raw_coral_bream",
+    "name": "Raw Coral Bream",
+    "item_type": "resource",
+    "sell_price": 23,
+    "is_stackable": true
+  },
+  "coral_bream": {
+    "id": "coral_bream",
+    "name": "Grilled Coral Bream",
+    "item_type": "food",
+    "sell_price": 29,
+    "is_stackable": true,
+    "heal_amount": 160,
+    "description": "Heals 160 HP."
+  },
+  "raw_storm_tuna": {
+    "id": "raw_storm_tuna",
+    "name": "Raw Storm Tuna",
+    "item_type": "resource",
+    "sell_price": 30,
+    "is_stackable": true
+  },
+  "storm_tuna": {
+    "id": "storm_tuna",
+    "name": "Grilled Storm Tuna",
+    "item_type": "food",
+    "sell_price": 36,
+    "is_stackable": true,
+    "heal_amount": 190,
+    "description": "Heals 190 HP."
+  },
+  "raw_frost_pike": {
+    "id": "raw_frost_pike",
+    "name": "Raw Frost Pike",
+    "item_type": "resource",
+    "sell_price": 48,
+    "is_stackable": true
+  },
+  "frost_pike": {
+    "id": "frost_pike",
+    "name": "Grilled Frost Pike",
+    "item_type": "food",
+    "sell_price": 55,
+    "is_stackable": true,
+    "heal_amount": 225,
+    "description": "Heals 225 HP."
+  },
+  "raw_sunscale_koi": {
+    "id": "raw_sunscale_koi",
+    "name": "Raw Sunscale Koi",
+    "item_type": "resource",
+    "sell_price": 65,
+    "is_stackable": true
+  },
+  "sunscale_koi": {
+    "id": "sunscale_koi",
+    "name": "Grilled Sunscale Koi",
+    "item_type": "food",
+    "sell_price": 75,
+    "is_stackable": true,
+    "heal_amount": 270,
+    "description": "Heals 270 HP."
+  },
+  "raw_obsidian_sturgeon": {
+    "id": "raw_obsidian_sturgeon",
+    "name": "Raw Obsidian Sturgeon",
+    "item_type": "resource",
+    "sell_price": 105,
+    "is_stackable": true
+  },
+  "obsidian_sturgeon": {
+    "id": "obsidian_sturgeon",
+    "name": "Grilled Obsidian Sturgeon",
+    "item_type": "food",
+    "sell_price": 125,
+    "is_stackable": true,
+    "heal_amount": 340,
+    "description": "Heals 340 HP."
+  },
+  "raw_aurora_lionfish": {
+    "id": "raw_aurora_lionfish",
+    "name": "Raw Aurora Lionfish",
+    "item_type": "resource",
+    "sell_price": 185,
+    "is_stackable": true
+  },
+  "aurora_lionfish": {
+    "id": "aurora_lionfish",
+    "name": "Grilled Aurora Lionfish",
+    "item_type": "food",
+    "sell_price": 205,
+    "is_stackable": true,
+    "heal_amount": 415,
+    "description": "Heals 415 HP."
+  },
+  "raw_celestial_marlin": {
+    "id": "raw_celestial_marlin",
+    "name": "Raw Celestial Marlin",
+    "item_type": "resource",
+    "sell_price": 280,
+    "is_stackable": true
+  },
+  "celestial_marlin": {
+    "id": "celestial_marlin",
+    "name": "Grilled Celestial Marlin",
+    "item_type": "food",
+    "sell_price": 310,
+    "is_stackable": true,
+    "heal_amount": 490,
+    "description": "Heals 490 HP."
+  },
+  "marsh_chowder": {
+    "id": "marsh_chowder",
+    "name": "Marsh Chowder",
+    "item_type": "food",
+    "sell_price": 10,
+    "is_stackable": true,
+    "heal_amount": 100,
+    "description": "Heals 100 HP."
+  },
+  "emberleaf_skewers": {
+    "id": "emberleaf_skewers",
+    "name": "Emberleaf Fish Skewers",
+    "item_type": "food",
+    "sell_price": 18,
+    "is_stackable": true,
+    "heal_amount": 120,
+    "description": "Heals 120 HP."
+  },
+  "coral_bisque": {
+    "id": "coral_bisque",
+    "name": "Coral Bisque",
+    "item_type": "food",
+    "sell_price": 32,
+    "is_stackable": true,
+    "heal_amount": 220,
+    "description": "Heals 220 HP."
+  },
+  "stormfish_pie": {
+    "id": "stormfish_pie",
+    "name": "Stormfish Pie",
+    "item_type": "food",
+    "sell_price": 56,
+    "is_stackable": true,
+    "heal_amount": 290,
+    "description": "Heals 290 HP."
+  },
+  "royal_anglers_platter": {
+    "id": "royal_anglers_platter",
+    "name": "Royal Angler's Platter",
+    "item_type": "food",
+    "sell_price": 120,
+    "is_stackable": true,
+    "heal_amount": 430,
+    "description": "Heals 430 HP."
+  },
+  "aurora_seafood_feast": {
+    "id": "aurora_seafood_feast",
+    "name": "Aurora Seafood Feast",
+    "item_type": "food",
+    "sell_price": 300,
+    "is_stackable": true,
+    "heal_amount": 630,
+    "description": "Heals 630 HP."
+  },
+  "emberleaf_shrimp_bowl": {
+    "id": "emberleaf_shrimp_bowl",
+    "name": "Emberleaf Shrimp Bowl",
+    "item_type": "food",
+    "sell_price": 7,
+    "is_stackable": true,
+    "heal_amount": 65,
+    "description": "Heals 65 HP."
+  },
+  "silverfin_egg_bites": {
+    "id": "silverfin_egg_bites",
+    "name": "Silverfin Egg Bites",
+    "item_type": "food",
+    "sell_price": 12,
+    "is_stackable": true,
+    "heal_amount": 100,
+    "description": "Heals 100 HP."
+  },
+  "goldpetal_salmon": {
+    "id": "goldpetal_salmon",
+    "name": "Goldpetal Salmon",
+    "item_type": "food",
+    "sell_price": 24,
+    "is_stackable": true,
+    "heal_amount": 155,
+    "description": "Heals 155 HP."
+  },
+  "fen_lobster_gratin": {
+    "id": "fen_lobster_gratin",
+    "name": "Fen Lobster Gratin",
+    "item_type": "food",
+    "sell_price": 42,
+    "is_stackable": true,
+    "heal_amount": 240,
+    "description": "Heals 240 HP."
+  },
+  "ashcap_shark_stew": {
+    "id": "ashcap_shark_stew",
+    "name": "Ashcap Shark Stew",
+    "item_type": "food",
+    "sell_price": 60,
+    "is_stackable": true,
+    "heal_amount": 300,
+    "description": "Heals 300 HP."
+  },
+  "gravemoss_surf_and_turf": {
+    "id": "gravemoss_surf_and_turf",
+    "name": "Gravemoss Surf and Turf",
+    "item_type": "food",
+    "sell_price": 100,
+    "is_stackable": true,
+    "heal_amount": 390,
+    "description": "Heals 390 HP."
+  },
+  "herald_leviathan_roast": {
+    "id": "herald_leviathan_roast",
+    "name": "Herald Leviathan Roast",
+    "item_type": "food",
+    "sell_price": 185,
+    "is_stackable": true,
+    "heal_amount": 510,
+    "description": "Heals 510 HP."
+  },
+  "emberbloom_abyssal_hotpot": {
+    "id": "emberbloom_abyssal_hotpot",
+    "name": "Emberbloom Abyssal Hotpot",
+    "item_type": "food",
+    "sell_price": 310,
+    "is_stackable": true,
+    "heal_amount": 650,
+    "description": "Heals 650 HP."
   }
 }
