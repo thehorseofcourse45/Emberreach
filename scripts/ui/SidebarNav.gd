@@ -63,7 +63,7 @@ static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 
 	var drawer := PanelContainer.new()
 	drawer.visible = false
-	drawer.add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
+	drawer.add_theme_stylebox_override("panel", UIStyle.surface_box("overlay"))
 	drawer.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	drawer.offset_left = UITokens.SP_5
 	drawer.offset_top = 96

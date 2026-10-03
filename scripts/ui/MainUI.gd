@@ -82,6 +82,7 @@ func _build() -> void:
 	_shell_built = true
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	theme = UIStyle.build_theme()
+	add_child(_build_backdrop())
 	_root = UIStyle.vbox(UITokens.SP_3)
 	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_root)
@@ -135,6 +136,44 @@ func _build() -> void:
 	# entry right away. The is_connected guard keeps a rebuilt shell from double-connecting.
 	if not EventBus.skill_level_up.is_connected(_on_skill_level_up):
 		EventBus.skill_level_up.connect(_on_skill_level_up)
+
+## The night sky the glass panels float over: a radial violet light top-left fading to near-black,
+## plus a faint magenta glow bottom-right. Purely decorative and click-through.
+func _build_backdrop() -> Control:
+	var layer := Control.new()
+	layer.name = "Backdrop"
+	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var base := ColorRect.new()
+	base.color = UITokens.BG_DEEP
+	base.set_anchors_preset(Control.PRESET_FULL_RECT)
+	base.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(base)
+	layer.add_child(_radial_glow(Vector2(0.22, 0.0), Vector2(1.05, 0.95),
+		[UITokens.BG_GLOW_A, UITokens.BG_GLOW_B, Color(UITokens.BG_DEEP, 0.0)], [0.0, 0.45, 1.0]))
+	var pink := UITokens.ACCENT_PINK
+	layer.add_child(_radial_glow(Vector2(0.95, 1.0), Vector2(0.45, 0.45),
+		[Color(pink, 0.16), Color(pink, 0.0)], [0.0, 1.0]))
+	return layer
+
+func _radial_glow(from: Vector2, to: Vector2, colors: Array, offsets: Array) -> TextureRect:
+	var grad := Gradient.new()
+	grad.colors = PackedColorArray(colors)
+	grad.offsets = PackedFloat32Array(offsets)
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = from
+	tex.fill_to = to
+	tex.width = 512
+	tex.height = 512
+	var rect := TextureRect.new()
+	rect.texture = tex
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_SCALE
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return rect
 
 
 
@@ -291,10 +330,10 @@ func _refresh_nav() -> void:
 		var selected: bool = screen == _screen
 		if selected:
 			b.add_theme_stylebox_override("normal", UIStyle.surface_box("raised", true))
-			b.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
+			b.add_theme_color_override("font_color", UITokens.TEXT_STRONG)
 		else:
-			b.add_theme_stylebox_override("normal", UIStyle.surface_box("row"))
-			b.add_theme_color_override("font_color", UITokens.TEXT)
+			b.add_theme_stylebox_override("normal", UIStyle.surface_box("flat"))
+			b.add_theme_color_override("font_color", UITokens.TEXT_MUTED)
 	var selected_skill: String = str(_context.get("skill_id", ""))
 	if selected_skill == "" and _panels.has(Screens.SKILLS) and is_instance_valid(_panels[Screens.SKILLS]):
 		selected_skill = str((_panels[Screens.SKILLS] as Control).get("_skill_id"))
@@ -302,8 +341,8 @@ func _refresh_nav() -> void:
 		var button: Button = _skill_nav_buttons[skill_id]
 		button.text = SidebarNav.skill_nav_text(skill_id)
 		var selected: bool = (_screen == Screens.SKILLS and skill_id == selected_skill) or (_screen == Screens.PRAYERS and skill_id == "prayer")
-		button.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "row", selected))
-		button.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT if selected else UITokens.TEXT)
+		button.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "flat", selected))
+		button.add_theme_color_override("font_color", UITokens.TEXT_STRONG if selected else UITokens.TEXT_MUTED)
 
 ## Sidebar skill labels carry levels, so the one button whose skill just leveled is relabelled
 ## on the spot instead of rebuilding the whole navigation.

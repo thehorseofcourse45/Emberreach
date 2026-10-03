@@ -77,7 +77,7 @@ static func progress_bar(value: float, maximum: float, color: Color, text := "",
 	bar.value = clampf(value, 0.0, maxf(1.0, maximum))
 	bar.show_percentage = false
 	bar.custom_minimum_size = Vector2(0, maxi(height, 18) if text != "" else height)
-	bar.add_theme_stylebox_override("fill", UIStyle._solid(color, UITokens.R_SM))
+	bar.add_theme_stylebox_override("fill", UIStyle.glow_fill(color))
 	bar.tooltip_text = tooltip if tooltip != "" else text
 	if text != "":
 		var overlay := Label.new()
