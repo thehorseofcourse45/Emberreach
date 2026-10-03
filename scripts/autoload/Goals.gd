@@ -516,6 +516,10 @@ func sources_for_item(item_id: String) -> Array:
 		if bool(prod.get("byproduct", false)):
 			continue
 		var a2: Dictionary = prod["action"]
+		# A conversion (Runescribing's transmutes) is a real source, but it turns one form of the
+		# material into another; it is listed after the material's own gathering routes below.
+		if bool(a2.get("conversion", false)):
+			continue
 		if not (a2.get("input_items", {}) as Dictionary).is_empty():
 			out.append({
 				"kind": "craft",
@@ -538,6 +542,19 @@ func sources_for_item(item_id: String) -> Array:
 			"detail": "Side drop: %s per action while you train it" % UIStyle.fmt_percent(float(prod.get("chance", 0.0))),
 			"level_required": int(a3.get("level_required", 1)),
 			"unlocked": PlayerData.get_level(prod["skill_id"]) >= int(a3.get("level_required", 1)),
+			"route": {"screen": "skill", "skill_id": prod["skill_id"], "action_id": prod["action_id"]},
+		})
+	# 3b. Conversions, after the routes that make the material from scratch.
+	for prod in _producer_recipes(item_id):
+		if bool(prod.get("byproduct", false)) or not bool(prod["action"].get("conversion", false)):
+			continue
+		var a4: Dictionary = prod["action"]
+		out.append({
+			"kind": "craft",
+			"label": "%s at %s" % [str(a4.get("name", prod["action_id"])), str(DataLoader.get_skill(prod["skill_id"]).get("name", prod["skill_id"]))],
+			"detail": _input_summary(a4.get("input_items", {})),
+			"level_required": int(a4.get("level_required", 1)),
+			"unlocked": PlayerData.get_level(prod["skill_id"]) >= int(a4.get("level_required", 1)),
 			"route": {"screen": "skill", "skill_id": prod["skill_id"], "action_id": prod["action_id"]},
 		})
 	# 3. Monster drops.

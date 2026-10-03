@@ -347,6 +347,14 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 					DataLoader.get_item(str(sec.get("item_id", ""))).get("name", "?"),
 					float(sec.get("chance", 0.0)) * 100.0])
 		tips.append("Rare: " + ", ".join(sec_parts))
+	if typeof(action.get("ward", null)) == TYPE_DICTIONARY:
+		var ward: Dictionary = action["ward"]
+		tips.append("Ward: %s · each cast adds %s, holds up to %s" % [
+			UIStyle.describe_modifier_table(ward.get("mods", {})),
+			UIStyle.fmt_duration(float(ward.get("seconds", 0))),
+			UIStyle.fmt_duration(float(ward.get("max_seconds", 0)))])
+	if float(action.get("gp_reward", 0)) > 0:
+		tips.append("Pays %s gold per cast" % UIStyle.fmt(float(action["gp_reward"])))
 	if not unlocked:
 		tips.append("LOCKED — requires %s %d" % [DataLoader.get_skill(skill_id).get("name", skill_id), req])
 	row.tooltip_text = "\n".join(tips)

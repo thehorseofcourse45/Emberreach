@@ -290,6 +290,24 @@ func _check_action(skill_id: String, aid: String, a: Dictionary, max_level: int)
 			_err("invalid_probability", "%s secondary_output '%s' chance %f is outside 0..1" % [label, sid, chance])
 		if int(sec.get("min_qty", 1)) > int(sec.get("max_qty", 1)):
 			_err("invalid_quantity", "%s secondary_output '%s' min_qty > max_qty" % [label, sid])
+	if a.has("ward"):
+		var ward: Variant = a["ward"]
+		if typeof(ward) != TYPE_DICTIONARY:
+			_err("invalid_record", "%s ward is not an object" % label)
+		elif skill_id != "alt_magic":
+			_err("invalid_record", "%s carries a ward, but only Runescribing casts wards" % label)
+		else:
+			var mods: Variant = (ward as Dictionary).get("mods", {})
+			if typeof(mods) != TYPE_DICTIONARY or (mods as Dictionary).is_empty():
+				_err("invalid_record", "%s ward has no modifiers" % label)
+			else:
+				for key in (mods as Dictionary).keys():
+					if not _is_finite_number((mods as Dictionary)[key]):
+						_err("invalid_number", "%s ward modifier '%s' is not a number" % [label, key])
+			var seconds: float = float((ward as Dictionary).get("seconds", 0.0))
+			var cap: float = float((ward as Dictionary).get("max_seconds", 0.0))
+			if seconds <= 0.0 or cap < seconds:
+				_err("invalid_duration", "%s ward needs seconds > 0 and max_seconds >= seconds" % label)
 	var tool: String = str(a.get("required_tool", ""))
 	if tool != "" and not DataLoader.shop.has(tool):
 		_err("unreachable_unlock", "%s requires tool '%s' which is not a shop upgrade" % [label, tool])
