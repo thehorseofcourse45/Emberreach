@@ -635,7 +635,7 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 28000,
+        "quantity": 7820,
         "chance": 1.0
       }
     ],
@@ -730,7 +730,7 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 32000,
+        "quantity": 10200,
         "chance": 1.0
       }
     ],
@@ -825,7 +825,7 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 38000,
+        "quantity": 12830,
         "chance": 1.0
       }
     ],
@@ -920,7 +920,7 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 42000,
+        "quantity": 15720,
         "chance": 1.0
       }
     ],
@@ -1021,7 +1021,7 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 22000,
+        "quantity": 4720,
         "chance": 1.0
       }
     ],
@@ -1165,7 +1165,7 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 44000,
+        "quantity": 18850,
         "chance": 1.0
       }
     ],
@@ -1260,7 +1260,7 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 72000,
+        "quantity": 55030,
         "chance": 1.0
       }
     ],

@@ -78,6 +78,8 @@ func run_all(host: Node) -> void:
 	_test_study_ramp_rises()
 	_test_action_xp_ladders()
 	_test_activity_names_unique()
+	_test_late_skills_pace()
+	_test_gold_is_bounded()
 	_test_mastery_metadata()
 	await _test_detail_cards(host)
 	_test_attack_costs()
@@ -152,6 +154,19 @@ func _test_mastery_stall() -> void:
 	_ok(absf(PlayerData.gp - (gp_before - cost)) < 0.5, "exactly the listed cost was charged")
 	_ok(EquipmentManager.equip(cape_id), "an earned cape can be equipped")
 	EquipmentManager.unequip(int(DataLoader.get_item(cape_id).get("equipment_slot", 5)))
+
+	# Capes are priced against the activity gold ceiling (25k * e^(level/32) gp/h): a single-skill
+	# cape must cost at most 3 hours of the best gold available at its gate level, or a gold
+	# rebalance silently turns the stall into a wall.
+	var overpriced: Array = []
+	for offer in offers:
+		var o: Dictionary = offer as Dictionary
+		if ShopManager.STALL_ALL_SKILLS.has(str(o["item_id"])):
+			continue
+		var hourly: float = 25000.0 * exp(float(o["required"]) / 32.0)
+		if float(o["cost"]) > 3.0 * hourly:
+			overpriced.append(str(o["item_id"]))
+	_ok(overpriced.is_empty(), "every skillcape costs at most 3h of top gold at its level %s" % str(overpriced))
 
 ## The general store is the one place gold turns directly into materials, so two things have to
 ## hold: a locked line refuses the purchase without charging, and no line is cheaper than making
@@ -3875,6 +3890,74 @@ func _test_activity_names_unique() -> void:
 
 func equipment_output(item_id: String) -> bool:
 	return str(DataLoader.get_item(item_id).get("item_type", "")) == "equipment"
+
+## The five late-added skills shipped with 20-25 level dry spells and a top rate of 41-66k XP/h
+## when their peers paid 150-190k. These checks keep the re-paced ladders from sliding back.
+func _test_late_skills_pace() -> void:
+	_heading("The late-added skills, Beastbinding and Attunement keep pace")
+	for skill_id in ["echo_keeping", "wayfolding", "fermentation", "customcraft", "lostfinding", "summoning", "enchanting"]:
+		var last: int = 0
+		var gap: int = 0
+		var top_rate: float = 0.0
+		var top_level: int = 0
+		for action in DataLoader.get_skill_actions(skill_id):
+			var lvl: int = int(action.get("level_required", 1))
+			gap = maxi(gap, lvl - last)
+			last = lvl
+			var rate: float = float(action.get("base_xp", 0)) / maxf(float(action.get("base_interval", 1.0)), 0.1) \
+				* float(action.get("success_chance", 1.0)) * 3600.0
+			if lvl > top_level:
+				top_level = lvl
+				top_rate = rate
+			elif lvl == top_level:
+				top_rate = maxf(top_rate, rate)
+		_ok(gap <= 10, "%s unlocks something at least every 10 levels (largest gap %d)" % [skill_id, gap])
+		_ok(top_rate >= 120000.0, "%s pays at least 120k raw XP/h at its top unlock (%.0f)" % [skill_id, top_rate])
+	var brew: Dictionary = DataLoader.get_item("blended_weather")
+	_ok(str(brew.get("item_type", "")) == "potion" and not (brew.get("potion_effect", {}) as Dictionary).is_empty(),
+		"Fermentation's Blended Weather is a brew you can drink, not only sell")
+
+## Selling crafted gear once paid 20-60M gold an hour (a Wyrmforged Platebody sold for 48x its
+## bars) while gathering paid 40-130k. Gold an activity adds by selling what it makes is now
+## bounded by its level: 25k * e^(L/32) an hour, ~26k at L1 and ~0.9M at L115. Kills are bounded
+## the same way by hitpoints, so no mid-tier monster out-earns the bosses beside it.
+func _test_gold_is_bounded() -> void:
+	_heading("No activity prints gold")
+	var printers: Array[String] = []
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY or float(action.get("gp_reward", 0)) > 0:
+				continue
+			var outs: Dictionary = action.get("output_items", {})
+			if outs.size() != 1:
+				continue
+			var paid: float = 0.0
+			for id in (action.get("input_items", {}) as Dictionary).keys():
+				paid += float(DataLoader.get_item(str(id)).get("sell_price", 0)) * int(action.input_items[id])
+			var got: float = 0.0
+			for id in outs.keys():
+				got += float(DataLoader.get_item(str(id)).get("sell_price", 0)) * int(outs[id])
+			for sec in (action.get("secondary_outputs", []) as Array):
+				got += float(DataLoader.get_item(str(sec.get("item_id", ""))).get("sell_price", 0)) \
+					* float(sec.get("chance", 0.0)) * (int(sec.get("min_qty", 1)) + int(sec.get("max_qty", 1))) / 2.0
+			var per_hour: float = (got * float(action.get("success_chance", 1.0)) - paid) \
+				/ maxf(float(action.get("base_interval", 1.0)), 0.1) * 3600.0
+			var cap: float = 25000.0 * exp(float(action.get("level_required", 1)) / 32.0)
+			if per_hour > cap * 1.05:
+				printers.append("%s:%s %.0f/h (cap %.0f)" % [skill_id, str(action.id), per_hour, cap])
+	_ok(printers.is_empty(), "selling what an activity makes stays within its level's gold rate%s" % _trouble(printers, " — "))
+	var rich: Array[String] = []
+	for monster_id in DataLoader.monsters.keys():
+		var m: Dictionary = DataLoader.monsters[monster_id]
+		var gp: float = 0.0
+		for drop in (m.get("loot_table", []) as Array):
+			if typeof(drop) == TYPE_DICTIONARY and bool(drop.get("is_currency", false)) and str(drop.get("currency_id", "gp")) == "gp":
+				gp += float(drop.get("quantity", 0)) * float(drop.get("chance", 1.0))
+		var target: float = float(m.get("hitpoints", 1)) * (2.0 + float(m.get("combat_level", 1)) / 12.0) \
+			* (1.5 if bool(m.get("is_boss", false)) else 1.0)
+		if gp > target * 1.3:
+			rich.append("%s %.0f gp (target %.0f)" % [monster_id, gp, target])
+	_ok(rich.is_empty(), "no monster pays far more gold than its hitpoints and level warrant%s" % _trouble(rich, " — "))
 
 ## An action's inputs as a stable signature, so two recipes that eat the same things compare.
 func _input_signature(action: Dictionary) -> String:
