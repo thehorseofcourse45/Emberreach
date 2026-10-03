@@ -1690,7 +1690,7 @@
         "name": "Ranch Omelette",
         "level_required": 35,
         "base_interval": 6.0,
-        "base_xp": 75,
+        "base_xp": 80,
         "success_chance": 0.9,
         "input_items": {
           "ranch_egg": 2,
@@ -1863,7 +1863,7 @@
         "name": "Grilled Coral Bream",
         "level_required": 55,
         "base_interval": 8,
-        "base_xp": 125,
+        "base_xp": 130,
         "success_chance": 0.79,
         "input_items": {
           "raw_coral_bream": 1
@@ -2042,7 +2042,7 @@
         "name": "Grilled Frost Pike",
         "level_required": 80,
         "base_interval": 10,
-        "base_xp": 230,
+        "base_xp": 240,
         "success_chance": 0.82,
         "input_items": {
           "raw_frost_pike": 1
