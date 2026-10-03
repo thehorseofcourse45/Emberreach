@@ -942,7 +942,8 @@
         "input_items": {
           "garum_herb_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_sourweed",
@@ -953,7 +954,8 @@
         "input_items": {
           "sourweed_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_mantalyme",
@@ -964,7 +966,8 @@
         "input_items": {
           "mantalyme_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_lemontyle",
@@ -975,7 +978,8 @@
         "input_items": {
           "lemontyle_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_oxilyme",
@@ -986,7 +990,8 @@
         "input_items": {
           "oxilyme_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_poraxx",
@@ -997,7 +1002,8 @@
         "input_items": {
           "poraxx_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_barrentoe",
@@ -1008,7 +1014,8 @@
         "input_items": {
           "barrentoe_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_duskroot",
@@ -1019,7 +1026,8 @@
         "input_items": {
           "duskroot_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_herald_bloom",
@@ -1030,7 +1038,8 @@
         "input_items": {
           "herald_bloom_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_emberbloom",
@@ -1041,7 +1050,8 @@
         "input_items": {
           "emberbloom_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       }
     ],
     "order": 13,
@@ -1091,7 +1101,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_oak_log",
@@ -1113,7 +1124,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_willow_log",
@@ -1135,7 +1147,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_teak_log",
@@ -1157,7 +1170,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_maple_log",
@@ -1179,7 +1193,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_mahogany_log",
@@ -1201,7 +1216,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_yew_log",
@@ -1223,7 +1239,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_magic_log",
@@ -1245,7 +1262,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_redwood_log",
@@ -1267,7 +1285,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_cinderbark_log",
@@ -1289,7 +1308,8 @@
             "chance": 0.45
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_voidwood_log",
@@ -1311,7 +1331,8 @@
             "chance": 0.5
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       }
     ],
     "order": 14,
@@ -4391,7 +4412,7 @@
       },
       {
         "id": "craft_reinforced_dhide_body",
-        "name": "Blighted Wyrmhide Body",
+        "name": "Reinforced Wyrmhide Body",
         "level_required": 85,
         "base_interval": 1.65,
         "base_xp": 190,
@@ -4399,7 +4420,7 @@
           "black_dragonhide": 3
         },
         "output_items": {
-          "black_dhide_body": 1
+          "reinforced_dhide_body": 1
         },
         "mastery_action_time": 1.65
       },
@@ -4497,7 +4518,7 @@
       },
       {
         "id": "craft_reinforced_dhide_chaps",
-        "name": "Blighted Wyrmhide Chaps",
+        "name": "Reinforced Wyrmhide Chaps",
         "level_required": 95,
         "base_interval": 1.65,
         "base_xp": 250,
@@ -4506,13 +4527,13 @@
           "umbral_essence": 1
         },
         "output_items": {
-          "black_dhide_chaps": 1
+          "reinforced_dhide_chaps": 1
         },
         "mastery_action_time": 1.65
       },
       {
         "id": "craft_reinforced_dhide_coif",
-        "name": "Blighted Wyrmhide Coif",
+        "name": "Reinforced Wyrmhide Coif",
         "level_required": 105,
         "base_interval": 1.65,
         "base_xp": 320,
@@ -4521,13 +4542,13 @@
           "herald_essence": 1
         },
         "output_items": {
-          "black_dhide_coif": 1
+          "reinforced_dhide_coif": 1
         },
         "mastery_action_time": 1.65
       },
       {
         "id": "craft_umbral_dhide_vambraces",
-        "name": "Blighted Wyrmhide Vambraces",
+        "name": "Umbral Wyrmhide Vambraces",
         "level_required": 115,
         "base_interval": 1.65,
         "base_xp": 400,
@@ -4536,7 +4557,7 @@
           "umbral_essence": 2
         },
         "output_items": {
-          "black_dhide_vambraces": 1
+          "umbral_dhide_vambraces": 1
         },
         "mastery_action_time": 1.65
       },

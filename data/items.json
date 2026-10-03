@@ -7274,5 +7274,69 @@
     },
     "icon_id": "ring_of_power",
     "description": "The frontier's finest signet, bound by a master Runescriber."
+  },
+  "reinforced_dhide_body": {
+    "id": "reinforced_dhide_body",
+    "name": "Reinforced Wyrmhide Body",
+    "item_type": "equipment",
+    "sell_price": 540,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "ranged_defence": 40,
+      "melee_defence": 33,
+      "magic_defence": 33
+    },
+    "level_requirements": {
+      "ranged": 85
+    },
+    "icon_id": "black_dhide_body"
+  },
+  "reinforced_dhide_chaps": {
+    "id": "reinforced_dhide_chaps",
+    "name": "Reinforced Wyrmhide Chaps",
+    "item_type": "equipment",
+    "sell_price": 650,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "ranged_defence": 44,
+      "melee_defence": 36,
+      "magic_defence": 36
+    },
+    "level_requirements": {
+      "ranged": 95
+    },
+    "icon_id": "black_dhide_chaps"
+  },
+  "reinforced_dhide_coif": {
+    "id": "reinforced_dhide_coif",
+    "name": "Reinforced Wyrmhide Coif",
+    "item_type": "equipment",
+    "sell_price": 800,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "ranged_defence": 48,
+      "melee_defence": 39,
+      "magic_defence": 39
+    },
+    "level_requirements": {
+      "ranged": 105
+    },
+    "icon_id": "black_dhide_coif"
+  },
+  "umbral_dhide_vambraces": {
+    "id": "umbral_dhide_vambraces",
+    "name": "Umbral Wyrmhide Vambraces",
+    "item_type": "equipment",
+    "sell_price": 950,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "ranged_defence": 52,
+      "melee_defence": 42,
+      "magic_defence": 42
+    },
+    "level_requirements": {
+      "ranged": 115
+    },
+    "icon_id": "black_dhide_vambraces"
   }
 }

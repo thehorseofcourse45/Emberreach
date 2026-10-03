@@ -77,6 +77,7 @@ func run_all(host: Node) -> void:
 	_test_bottleneck_declarations()
 	_test_study_ramp_rises()
 	_test_action_xp_ladders()
+	_test_activity_names_unique()
 	_test_mastery_metadata()
 	await _test_detail_cards(host)
 	_test_attack_costs()
@@ -3839,6 +3840,41 @@ func _test_action_xp_ladders() -> void:
 					paid_at = int(level)
 	_ok(rungs > 0, "there are comparable ladders to check (%d rungs)" % rungs)
 	_ok(regressions == 0, "no identical job regresses at a higher level (%d)" % regressions)
+
+## Artifice once had four L85-115 wyrmhide recipes that reused the L70 names AND produced the L70
+## items: dearer inputs, identical gear. Two rows with one name are how that hid in the list.
+func _test_activity_names_unique() -> void:
+	_heading("Every activity in a skill has its own name and purpose")
+	var dupes: Array[String] = []
+	var same_output_climbs: Array[String] = []
+	for skill_id in DataLoader.get_skill_ids():
+		var seen: Dictionary = {}
+		var first_level_for_output: Dictionary = {}
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			var name: String = str(action.get("name", ""))
+			if seen.has(name):
+				dupes.append("%s: %s" % [skill_id, name])
+			seen[name] = true
+			var outs: Dictionary = action.get("output_items", {})
+			if outs.size() == 1 and equipment_output(str(outs.keys()[0])):
+				var out_id: String = str(outs.keys()[0])
+				var lvl: int = int(action.get("level_required", 1))
+				if first_level_for_output.has(out_id) and lvl - int(first_level_for_output[out_id]) >= 10:
+					same_output_climbs.append("%s: %s at L%d and L%d" % [skill_id, out_id, int(first_level_for_output[out_id]), lvl])
+				elif not first_level_for_output.has(out_id):
+					first_level_for_output[out_id] = lvl
+	_ok(dupes.is_empty(), "no skill lists two activities under one name%s" % _trouble(dupes, " — "))
+	_ok(same_output_climbs.is_empty(),
+		"no higher-level recipe makes the same gear as a much lower one%s" % _trouble(same_output_climbs, " — "))
+	var body: Dictionary = DataLoader.get_item("reinforced_dhide_body")
+	var base: Dictionary = DataLoader.get_item("black_dhide_body")
+	_ok(int(body.get("equipment_stats", {}).get("ranged_defence", 0)) > int(base.get("equipment_stats", {}).get("ranged_defence", 0)),
+		"Reinforced Wyrmhide out-defends the Blighted tier it upgrades")
+
+func equipment_output(item_id: String) -> bool:
+	return str(DataLoader.get_item(item_id).get("item_type", "")) == "equipment"
 
 ## An action's inputs as a stable signature, so two recipes that eat the same things compare.
 func _input_signature(action: Dictionary) -> String:

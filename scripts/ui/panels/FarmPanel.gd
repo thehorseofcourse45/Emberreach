@@ -132,6 +132,9 @@ func _plot_card(index: int, name_text: String) -> Control:
 	card.add_child(col)
 	var top := UIStyle.hbox(UITokens.SP_2)
 	col.add_child(top)
+	var crop_seed: String = str(FarmingManager.plots[index]["seed_id"])
+	if crop_seed != "":
+		top.add_child(UIStyle.icon_texture("farming", FarmingManager.action_id_for_seed(crop_seed)))
 	var name_label := UIStyle.label(name_text, false, UITokens.FONT_BODY)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name_label)
@@ -294,7 +297,7 @@ func _fill_planter(button: MenuButton, plot_index: int = 0) -> void:
 			label = "%s — none in storage" % str(o["name"])
 		var preview: Dictionary = FarmingManager.planting_preview(plot_index, str(o.id))
 		label += " · %.0f%% survival · +%d%% yield · %s" % [float(preview.survival) * 100, int(preview.yield_bonus), UIStyle.fmt_duration(float(preview.seconds))]
-		popup.add_item(label, index)
+		popup.add_icon_item(AssetRegistry.icon("farming", FarmingManager.action_id_for_seed(str(o.id))), label, index)
 		popup.set_item_disabled(index, not bool(o["unlocked"]) or int(o["count"]) <= 0)
 		_popup_seeds.append(str(o["id"]))
 
