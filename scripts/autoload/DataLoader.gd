@@ -39,6 +39,8 @@ var shop_museum: Dictionary = {}
 var cartography_ships: Dictionary = {}
 ## Audio: synthesized SFX recipes, music tracks and event-to-sound mappings.
 var new_skill_systems: Dictionary = {}
+## Ascendancy node tree: ranked, point-bought prestige nodes (see PrestigeManager).
+var ascendancy: Dictionary = {}
 var audio: Dictionary = {}
 
 # Derived indexes
@@ -52,6 +54,7 @@ func _ready() -> void:
 func _load_all() -> void:
     skills = _load_file("skills.json")
     new_skill_systems = _load_file("new_skill_systems.json")
+    ascendancy = _load_file("ascendancy.json")
     items = _load_file("items.json")
     monsters = _load_file("monsters.json")
     dungeons = _load_file("dungeons.json")

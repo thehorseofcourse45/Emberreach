@@ -431,5 +431,95 @@
       "gp": 2000,
       "xp": {}
     }
+  },
+  "dairy_dawn": {
+    "id": "dairy_dawn",
+    "name": "Dairy at Dawn",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "The homestead wakes hungry. Milk the herd and get the pans going.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 40,
+        "label": "Collect 40 Fresh Milk",
+        "item_id": "ranch_milk",
+        "route": {
+          "screen": "skill",
+          "skill_id": "ranching",
+          "action_id": ""
+        }
+      },
+      {
+        "kind": "craft_item",
+        "required": 20,
+        "label": "Press 20 Ranch Cheese",
+        "item_id": "ranch_cheese",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_ranch_cheese"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1100,
+      "xp": {
+        "ranching": 400,
+        "cooking": 300
+      }
+    }
+  },
+  "ink_and_quill": {
+    "id": "ink_and_quill",
+    "name": "Ink and Quill",
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "The scriptorium's shelves are bare. Mill the paper and keep the presses inked.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 60,
+        "label": "Produce 60 Scribe Paper",
+        "item_id": "scribe_paper",
+        "route": {
+          "screen": "skill",
+          "skill_id": "inscription",
+          "action_id": ""
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1200,
+      "xp": {
+        "inscription": 500
+      }
+    }
+  },
+  "spinner_cull": {
+    "id": "spinner_cull",
+    "name": "Spinner Cull",
+    "difficulty": "hard",
+    "region": "wet_forest",
+    "description": "The deep webs have spread into the trade road. Clear the nest end to end.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear the Spider Nest twice",
+        "dungeon_id": "spider_forest",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1800,
+      "xp": {
+        "ranged": 700,
+        "hitpoints": 400
+      }
+    }
   }
 }
