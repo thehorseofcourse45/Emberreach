@@ -31,11 +31,13 @@ const ENEMY_THORNS_FRACTION: float = 0.10
 const ENRAGE_HP_FRACTION: float = 0.25
 const ENRAGE_MULTIPLIER: float = 1.5
 ## Monster passive ids the engine understands (data may list more only after engine support).
-const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage", "venomous", "lifedrain", "armored"]
+const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage"] + MonsterMechanics.NEW_PASSIVES
 
 var state: int = State.IDLE
 var context: Dictionary = {}          # {type, id, monsters:[...], index, endless, attack_style}
 var current_monster_id: String = ""
+## How many of the current monster's phases have fired (phases fire once, in order).
+var monster_phases_fired: int = 0
 var monster_hp: int = 0
 var monster_max_hp: int = 0
 var player_max_hp: float = 100.0
@@ -136,6 +138,15 @@ func _sig_player_died(payload: Dictionary) -> void:
 func _sig_dungeon_completed(dungeon_id: String) -> void:
 	if not SimulationMode.is_silent():
 		EventBus.dungeon_completed.emit(dungeon_id)
+
+func _sig_monster_phase(monster_id: String, phase_name: String) -> void:
+	if not SimulationMode.is_silent():
+		EventBus.monster_phase_entered.emit(monster_id, phase_name)
+
+## The monster as it fights right now: the base record with every fired phase applied. Use
+## DataLoader.get_monster() instead where the unmodified record is meant (loot, slayer, death).
+func current_monster() -> Dictionary:
+	return MonsterMechanics.effective(DataLoader.get_monster(current_monster_id), monster_phases_fired)
 
 func _sig_status(target: String, effect_id: String, applied: bool) -> void:
 	if SimulationMode.is_silent():
@@ -253,6 +264,7 @@ func _spawn_monster(monster_id: String) -> void:
 		_complete_combat()
 		return
 	current_monster_id = monster_id
+	monster_phases_fired = 0
 	var m: Dictionary = DataLoader.get_monster(monster_id)
 	monster_max_hp = maxi(1, int(m.get("hitpoints", 10)))
 	# A raid difficulty's hp_mult makes its golbins actually tankier. Every raid enemy is spawned
@@ -311,7 +323,7 @@ func _tick_fighting(delta: float) -> void:
 	player_attack_interval = maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed()))
 	if _in_raid():
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
-	monster_attack_interval = maxf(0.25, float(DataLoader.get_monster(current_monster_id).get("attack_speed", 3.0)))
+	monster_attack_interval = maxf(0.25, float(current_monster().get("attack_speed", 3.0)))
 	if not _is_player_stunned(): player_attack_timer += delta
 	if not CombatSimulator._blocked(monster_effects): monster_attack_timer += delta
 	var guard: int = 0
@@ -487,7 +499,7 @@ func player_combat_summary(style: String = "", selected_melee: String = "") -> D
 func target_comparison() -> Dictionary:
 	if current_monster_id == "":
 		return {}
-	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	var m: Dictionary = current_monster()
 	var m_style: String = str(m.get("attack_type", "melee"))
 	var player_acc: int = _player_accuracy(attack_style)
 	var player_ev: int = _player_evasion_for(m_style)
@@ -521,7 +533,7 @@ func _player_attack() -> void:
 		return
 	PrayerManager.spend_for_attack()   # active prayers cost points per attack
 	PotionManager.consume_charge("combat")
-	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	var m: Dictionary = current_monster()
 	var m_style: String = str(m.get("attack_type", "melee"))
 	var acc: int = _player_accuracy(attack_style)
 	var eva: int = _monster_evasion_for(attack_style)
@@ -552,6 +564,9 @@ func _player_attack() -> void:
 		var heal_frac: float = float(sa.get("heal_fraction", 0.0))
 		if heal_frac > 0.0:
 			player_hp = minf(player_hp + float(dmg) * heal_frac, _compute_max_hp())
+	# Monster style affinity and armor apply once, to the final hit (specials included).
+	dmg = maxi(1, int(floor(float(dmg) * MonsterMechanics.affinity_multiplier(m, attack_style))))
+	dmg = MonsterMechanics.armored_reduce(m, dmg)
 	EnchantingManager.on_hit(dmg)
 	apply_damage_to_monster(dmg)
 	_sig_player_attacked(dmg, is_crit)
@@ -565,7 +580,7 @@ func _player_attack() -> void:
 func _monster_attack() -> void:
 	if state != State.FIGHTING:
 		return
-	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	var m: Dictionary = current_monster()
 	var m_style: String = str(m.get("attack_type", "melee"))
 	var acc: float = float(m.get("accuracy_rating", 10))
 	var eva: int = _player_evasion_for(m_style)
@@ -603,8 +618,16 @@ func _monster_attack() -> void:
 	player_hp -= float(dmg)
 	_record_damage_taken(float(dmg))
 	_sig_monster_attacked(dmg)
+	var passives: Array = m.get("passives", [])
+	# Venom: a landed hit may poison the player (the status is applied to the player only).
+	if dmg > 0 and passives.has("venomous") and _rng.randf() < MonsterMechanics.VENOM_CHANCE:
+		var venom: Dictionary = MonsterMechanics.venom_status(int(m.get("max_hit", 1)))
+		apply_status("player", str(venom["id"]), float(venom["duration"]), float(venom["damage_per_tick"]))
+	# Lifedrain: the monster heals a share of the damage it dealt, capped at its max HP.
+	if dmg > 0 and monster_hp > 0 and passives.has("lifedrain"):
+		monster_hp = mini(monster_max_hp, monster_hp + MonsterMechanics.lifedrain_heal(dmg))
 	# Regenerating monsters knit wounds on every own attack while still standing.
-	if monster_hp > 0 and (m.get("passives", []) as Array).has("regeneration"):
+	if monster_hp > 0 and passives.has("regeneration"):
 		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(monster_max_hp) * ENEMY_REGEN_FRACTION)))
 	if player_hp <= 0.0:
 		_player_death(m.get("name", current_monster_id))
@@ -639,9 +662,10 @@ func apply_damage_to_monster(dmg: int) -> void:
 		monster_hp = 0
 		_on_monster_death()
 		return
+	_fire_due_phases()
 	# Thorns: a spiny creature pays back a fraction of what it was dealt while it still
 	# stands. Reflected damage is not an attack, so DR and prayers do not apply to it.
-	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	var m: Dictionary = current_monster()
 	if (m.get("passives", []) as Array).has("thorns"):
 		var reflect: int = CombatFormulas.thorns_reflect(dmg, ENEMY_THORNS_FRACTION)
 		if reflect > 0:
@@ -650,6 +674,24 @@ func apply_damage_to_monster(dmg: int) -> void:
 			_sig_monster_attacked(reflect)
 			if player_hp <= 0.0:
 				_player_death(str(m.get("name", current_monster_id)))
+
+## Fire every boss phase whose HP threshold is now crossed (HP fraction of the possibly
+## raid-scaled pool), once each and in order. A phase status goes straight to the player
+## through apply_status; the monster's own effect immunity never gates it.
+func _fire_due_phases() -> void:
+	var phases: Array = DataLoader.get_monster(current_monster_id).get("phases", [])
+	if phases.is_empty():
+		return
+	var due: int = MonsterMechanics.phases_due(phases, monster_phases_fired,
+		float(monster_hp) / float(maxi(1, monster_max_hp)))
+	while monster_phases_fired < due:
+		var phase: Dictionary = phases[monster_phases_fired]
+		monster_phases_fired += 1
+		var status: Dictionary = (phase.get("effects", {}) as Dictionary).get("apply_status", {})
+		if not status.is_empty():
+			apply_status("player", str(status.get("id", "")), float(status.get("duration", 3.0)),
+				float(status.get("damage_per_tick", 0.0)))
+		_sig_monster_phase(current_monster_id, str(phase.get("name", "")))
 
 func _grant_combat_xp(damage: int) -> void:
 	PlayerData.add_xp("hitpoints", CombatFormulas.hitpoints_xp(float(damage)))
@@ -1011,7 +1053,7 @@ func serialize() -> Dictionary:
 		"monster_hp": monster_hp, "player_hp": player_hp, "attack_style": attack_style,
 		"melee_style": melee_style, "respawn_timer": respawn_timer,
 		"player_attack_timer": player_attack_timer, "monster_attack_timer": monster_attack_timer,
-		"monster_max_hp": monster_max_hp,
+		"monster_max_hp": monster_max_hp, "phases_fired": monster_phases_fired,
 		"player_effects": player_effects.map(func(effect): return effect.serialize()),
 		"monster_effects": monster_effects.map(func(effect): return effect.serialize()),
 	}
@@ -1042,8 +1084,11 @@ func deserialize(d: Dictionary) -> void:
 					else: monster_effects.append(effect)
 	# A fight that cannot be reconstructed (content changed, or the save is older than the
 	# region) is dropped cleanly rather than resumed against a missing monster.
+	monster_phases_fired = 0
 	if not DataLoader.get_monster(current_monster_id).is_empty():
 		monster_max_hp = maxi(1, int(d.get("monster_max_hp", DataLoader.get_monster(current_monster_id).get("hitpoints", monster_hp))))
+		var phase_count: int = (DataLoader.get_monster(current_monster_id).get("phases", []) as Array).size()
+		monster_phases_fired = clampi(int(d.get("phases_fired", 0)), 0, phase_count)
 	elif state != State.IDLE:
 		push_warning("CombatManager: dropping unreconstructable fight in '%s'" % str(context.get("id", "")))
 		state = State.IDLE

@@ -125,6 +125,9 @@ func run_all(host: Node) -> void:
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
+	# Last on purpose: it consumes the seeded combat RNG, and earlier suites (enrage sampling)
+	# depend on the stream position they were tuned against.
+	_test_monster_mechanics_live()
 	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 
@@ -2005,6 +2008,208 @@ func _test_monster_mechanics_validation() -> void:
 			"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": 3.0}}}]}
 	_eq(v.call(good).size(), 0, "a valid two-phase boss has no errors")
 	_eq(v.call({}).size(), 0, "a monster without the new fields has no errors")
+
+## An in-test monster record: tiny evasion and huge accuracy so both sides land reliably.
+func _mm_record(id: String, overrides: Dictionary = {}) -> Dictionary:
+	var m := {"id": id, "name": id, "combat_level": 1, "hitpoints": 1000, "attack_type": "melee",
+		"attack_speed": 3.0, "max_hit": 20, "accuracy_rating": 1000000, "melee_evasion": 1,
+		"ranged_evasion": 1, "magic_evasion": 1, "damage_reduction": 0, "loot_table": [],
+		"passives": [], "respawn_time": 1.0}
+	for key in overrides.keys():
+		m[key] = overrides[key]
+	return m
+
+## Begin a live fight against an injected monster with a huge player HP pool; the monster's
+## HP pool is padded too so nothing dies unless a test says so.
+func _mm_fight(monster_id: String, kind: String = "area") -> void:
+	if CombatManager.state != CombatManager.State.IDLE:
+		CombatManager.stop_combat("test")
+	CombatManager.start_combat({"type": kind, "id": "farmlands", "monsters": [monster_id],
+		"endless": true, "attack_style": "melee", "melee_style": "slash"})
+	CombatManager.player_max_hp = 100000.0
+	CombatManager.player_hp = 100000.0
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
+
+func _mm_player_damage(seed_value: int) -> int:
+	CombatManager.monster_max_hp = 100000
+	CombatManager.monster_hp = 100000
+	CombatManager.seed_rng(seed_value)
+	CombatManager._player_attack()
+	return 100000 - CombatManager.monster_hp
+
+## Live combat wiring for affinities, the three new passives and boss phases.
+func _test_monster_mechanics_live() -> void:
+	_heading("Monster mechanics in live combat")
+	for passive_id in MonsterMechanics.NEW_PASSIVES:
+		_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(passive_id),
+			"MonsterMechanics passive '%s' is a known monster passive" % passive_id)
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("attack", 60)
+	PlayerData.set_level("strength", 60)
+	var added: Array[String] = []
+	var records := {
+		"mm_neutral": _mm_record("mm_neutral", {"hitpoints": 60}),
+		"mm_weak": _mm_record("mm_weak", {"hitpoints": 60, "weak_to": ["melee"]}),
+		"mm_resist": _mm_record("mm_resist", {"hitpoints": 60, "resists": ["melee"]}),
+		"mm_armored": _mm_record("mm_armored", {"hitpoints": 60, "passives": ["armored"]}),
+		"mm_lifedrain": _mm_record("mm_lifedrain", {"passives": ["lifedrain"]}),
+		"mm_venom": _mm_record("mm_venom", {"passives": ["venomous"]}),
+		"mm_plain": _mm_record("mm_plain"),
+		"mm_boss": _mm_record("mm_boss", {"max_hit": 20, "phases": [
+			{"at_hp_percent": 75, "name": "Wrath", "effects": {"attack_type": "magic"}},
+			{"at_hp_percent": 40, "name": "Fury", "effects": {"max_hit_multiplier": 2.0}}]}),
+		"mm_immune": _mm_record("mm_immune", {"is_immune_to_effects": true, "can_be_stunned": false,
+			"phases": [{"at_hp_percent": 50, "name": "Rot", "effects": {
+				"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": 2.0}}}]}),
+		"mm_half": _mm_record("mm_half", {"hitpoints": 100, "phases": [
+			{"at_hp_percent": 50, "name": "Half", "effects": {"attack_type": "ranged"}}]}),
+	}
+	for id in records.keys():
+		DataLoader.monsters[id] = records[id]
+		added.append(str(id))
+	# (a) affinity multiplier against the same seed's neutral hit.
+	_mm_fight("mm_neutral")
+	var seed_used: int = -1
+	var neutral_dmg: int = 0
+	for s in range(1, 200):
+		neutral_dmg = _mm_player_damage(s)
+		if neutral_dmg >= 4:
+			seed_used = s
+			break
+	_ok(seed_used > 0, "found a seed where the neutral hit lands for 4+ (seed %d, dmg %d)" % [seed_used, neutral_dmg])
+	_mm_fight("mm_weak")
+	_eq(_mm_player_damage(seed_used), int(floor(float(neutral_dmg) * 1.25)), "a weak_to style hits for 1.25x the neutral damage")
+	_mm_fight("mm_resist")
+	_eq(_mm_player_damage(seed_used), maxi(1, int(floor(float(neutral_dmg) * 0.75))), "a resisted style hits for 0.75x the neutral damage")
+	# (b) armored: 60 HP -> flat 4, never below 1.
+	_mm_fight("mm_armored")
+	_eq(_mm_player_damage(seed_used), maxi(1, neutral_dmg - 4), "armored removes its flat share of a landed hit")
+	var min_seen: int = 1000
+	var landed: int = 0
+	for s in range(1, 120):
+		var d: int = _mm_player_damage(s)
+		if d > 0:
+			landed += 1
+			min_seen = mini(min_seen, d)
+	_ok(landed > 0 and min_seen >= 1, "armored never reduces a landed hit below 1 (%d hits, min %d)" % [landed, min_seen])
+	# (c) lifedrain heals the monster off what it dealt, capped at max HP.
+	_mm_fight("mm_lifedrain")
+	var healed_ok: bool = false
+	for s in range(1, 60):
+		CombatManager.seed_rng(s)
+		CombatManager.monster_max_hp = 1000
+		CombatManager.monster_hp = 500
+		CombatManager.player_hp = 100000.0
+		CombatManager._monster_attack()
+		var dealt: int = int(100000.0 - CombatManager.player_hp)
+		if dealt > 0:
+			healed_ok = CombatManager.monster_hp == 500 + MonsterMechanics.lifedrain_heal(dealt)
+			break
+	_ok(healed_ok, "lifedrain heals 30% of the damage dealt to the player")
+	CombatManager.seed_rng(7)
+	CombatManager.monster_hp = 999
+	CombatManager.player_hp = 100000.0
+	for _i in range(20):
+		CombatManager._monster_attack()
+	_ok(CombatManager.monster_hp <= CombatManager.monster_max_hp, "lifedrain never heals past max HP")
+	# (d) venomous: applies poison on some hits, never on a plain monster.
+	_mm_fight("mm_venom")
+	CombatManager.seed_rng(11)
+	var venom_hits: int = 0
+	var venom_applied: int = 0
+	var venom_tick_ok: bool = true
+	for _i in range(200):
+		CombatManager.player_effects.clear()
+		CombatManager.player_hp = 100000.0
+		CombatManager._monster_attack()
+		if CombatManager.player_hp < 100000.0:
+			venom_hits += 1
+			for e in CombatManager.player_effects:
+				if e.id == "poison":
+					venom_applied += 1
+					venom_tick_ok = venom_tick_ok and is_equal_approx(e.damage_per_tick, 1.0) and is_equal_approx(e.duration, 6.0)
+	_ok(venom_applied > 0 and venom_applied < venom_hits,
+		"venomous poisons on some but not all hits (%d of %d)" % [venom_applied, venom_hits])
+	_ok(venom_tick_ok, "venom poison is 6s at 5% of max hit (min 1) per tick")
+	_mm_fight("mm_plain")
+	CombatManager.seed_rng(11)
+	var plain_poison: int = 0
+	for _i in range(100):
+		CombatManager.player_effects.clear()
+		CombatManager.player_hp = 100000.0
+		CombatManager._monster_attack()
+		for e in CombatManager.player_effects:
+			if e.id == "poison":
+				plain_poison += 1
+	_eq(plain_poison, 0, "a monster without venomous never poisons")
+	# (e) one hit through two thresholds fires both phases once, in order.
+	var phase_names: Array = []
+	var on_phase := func(mid: String, pname: String): phase_names.append("%s:%s" % [mid, pname])
+	EventBus.monster_phase_entered.connect(on_phase)
+	_mm_fight("mm_boss")
+	_eq(CombatManager.monster_phases_fired, 0, "a fresh boss has fired no phases")
+	_eq(int(CombatManager.current_monster().get("max_hit")), 20, "no phase overrides before a threshold")
+	CombatManager.apply_damage_to_monster(700)
+	_eq(CombatManager.monster_phases_fired, 2, "one hit from 100% to 30% fires both phases")
+	_eq(phase_names, ["mm_boss:Wrath", "mm_boss:Fury"], "both phase signals fire once, in order")
+	_eq(str(CombatManager.current_monster().get("attack_type")), "magic", "an attack_type phase changes the live attack type")
+	_eq(int(CombatManager.current_monster().get("max_hit")), 40, "a max_hit_multiplier phase changes the live max hit")
+	CombatManager.apply_damage_to_monster(50)
+	_eq(CombatManager.monster_phases_fired, 2, "a fired phase never fires again")
+	_eq(phase_names.size(), 2, "no extra phase signals after the last threshold")
+	_eq(int(DataLoader.get_monster("mm_boss").get("max_hit")), 20, "phases never mutate the base record")
+	# (f) a phase status lands on the player even when the boss is immune.
+	_mm_fight("mm_immune")
+	CombatManager.apply_damage_to_monster(600)
+	var poisoned: bool = false
+	for e in CombatManager.player_effects:
+		if e.id == "poison":
+			poisoned = true
+	_ok(poisoned, "a phase apply_status lands on the player of an immune boss")
+	_ok(CombatManager.monster_effects.is_empty(), "the immune boss itself carries no status")
+	CombatManager.apply_status("monster", "stun", 3.0)
+	_ok(CombatManager.monster_effects.is_empty(), "boss immunity to stun is unchanged")
+	# (g) save round trip.
+	_mm_fight("mm_boss")
+	CombatManager.apply_damage_to_monster(700)
+	var saved: Dictionary = CombatManager.serialize()
+	_eq(int(saved.get("phases_fired", -1)), 2, "serialize records phases_fired")
+	CombatManager.monster_phases_fired = 0
+	CombatManager.deserialize(saved)
+	_eq(CombatManager.monster_phases_fired, 2, "deserialize restores phases_fired")
+	_eq(int(CombatManager.current_monster().get("max_hit")), 40, "reload mid-phase restores the phase overrides")
+	var old_save: Dictionary = saved.duplicate(true)
+	old_save.erase("phases_fired")
+	CombatManager.deserialize(old_save)
+	_eq(CombatManager.monster_phases_fired, 0, "a save without phases_fired loads as 0")
+	var wild: Dictionary = saved.duplicate(true)
+	wild["phases_fired"] = 9
+	CombatManager.deserialize(wild)
+	_eq(CombatManager.monster_phases_fired, 2, "phases_fired clamps to the phase count")
+	wild["phases_fired"] = -3
+	CombatManager.deserialize(wild)
+	_eq(CombatManager.monster_phases_fired, 0, "negative phases_fired clamps to 0")
+	# (h) raid hp_mult 2.0: threshold is a fraction of the scaled HP pool.
+	var raid_shop_before: Dictionary = DataLoader.raid_shop.duplicate(true)
+	var raid_diff_before: String = RaidManager.difficulty
+	(DataLoader.raid_shop["difficulties"] as Dictionary)["mm_double"] = {"coin_mult": 1.0, "hp_mult": 2.0}
+	RaidManager.difficulty = "mm_double"
+	_mm_fight("mm_half", "raid")
+	_eq(CombatManager.monster_max_hp, 200, "raid hp_mult doubles the spawned HP pool")
+	CombatManager.apply_damage_to_monster(99)
+	_eq(CombatManager.monster_phases_fired, 0, "101/200 HP is above the 50% phase")
+	CombatManager.apply_damage_to_monster(1)
+	_eq(CombatManager.monster_phases_fired, 1, "the 50% phase fires at half the scaled HP")
+	EventBus.monster_phase_entered.disconnect(on_phase)
+	CombatManager.stop_combat("test")
+	RaidManager.difficulty = raid_diff_before
+	DataLoader.raid_shop = raid_shop_before
+	for id in added:
+		DataLoader.monsters.erase(id)
+	PlayerData.set_level("attack", 1)
+	PlayerData.set_level("strength", 1)
+	CombatManager.monster_phases_fired = 0
 
 ## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
 ## understands, the pure maths each passive uses, and content that actually carries them.
