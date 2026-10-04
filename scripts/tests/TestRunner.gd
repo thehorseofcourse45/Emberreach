@@ -129,6 +129,7 @@ func run_all(host: Node) -> void:
 	# depend on the stream position they were tuned against.
 	_test_monster_mechanics_live()
 	_test_player_status_resistance()
+	_test_simulator_monster_mechanics()
 	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 
@@ -2293,6 +2294,203 @@ func _test_player_status_resistance() -> void:
 	DataLoader.monsters.erase("sr_plain")
 	DataLoader.items.erase("sr_charm")
 	EquipmentManager.slots.erase(ItemData.EquipmentSlot.AMULET)
+
+## Parity bound, the one the online/offline consistency suite uses for a seeded comparison
+## (_test_online_offline_consistency_with_timers): 10%. Mean fight length is compared
+## relatively, the death rate (a proportion) absolutely.
+const MMP_SEED: int = 20261004
+const MMP_TOLERANCE: float = 0.10
+const MMP_SIM_TRIALS: int = 1000
+const MMP_AREA: String = "mmp_area"
+
+## The offline simulator mirrors the live monster mechanics: the same player and monster
+## fought in CombatManager (seeded, fight after fight) and in CombatSimulator.simulate must
+## agree on mean fight length and death rate within the parity bounds above.
+func _test_simulator_monster_mechanics() -> void:
+	_heading("Simulator mirrors monster mechanics")
+	# The simulator must read every mechanic number from MonsterMechanics, never a copy.
+	var source: String = FileAccess.get_file_as_string("res://scripts/combat/CombatSimulator.gd")
+	var copies := RegEx.create_from_string("const\\s+(WEAK|RESIST|VENOM|LIFEDRAIN|ARMORED|RESISTANCE)_")
+	_ok(copies.search(source) == null, "the simulator declares no copy of a MonsterMechanics constant")
+	for value in [MonsterMechanics.WEAK_MULTIPLIER, MonsterMechanics.RESIST_MULTIPLIER,
+			MonsterMechanics.VENOM_DURATION, MonsterMechanics.VENOM_TICK_FRACTION,
+			MonsterMechanics.LIFEDRAIN_FRACTION, MonsterMechanics.ARMORED_FRACTION,
+			MonsterMechanics.RESISTANCE_CAP]:
+		var literal: String = str(float(value))
+		_ok(source.find(literal) < 0, "the simulator has no literal %s (a MonsterMechanics value)" % literal)
+	for family_id in ["\"toxin\"", "\"deadly_poison\"", "\"frostburn\"", "\"crystallize\""]:
+		_ok(source.find(family_id) < 0, "the simulator does not restate the status families (%s)" % family_id)
+	for call in ["MonsterMechanics.affinity_multiplier", "MonsterMechanics.armored_reduce",
+			"MonsterMechanics.lifedrain_heal", "MonsterMechanics.venom_status", "MonsterMechanics.VENOM_CHANCE",
+			"MonsterMechanics.phases_due", "MonsterMechanics.effective", "MonsterMechanics.status_family",
+			"MonsterMechanics.resisted_duration"]:
+		_ok(source.find(call) >= 0, "the simulator uses %s" % call)
+
+	GameManager.start_new_game("standard")
+	for skill_id in ["attack", "strength", "defence", "hitpoints"]:
+		PlayerData.set_level(skill_id, 70)
+	# Snapshot plumbing: the flattened monster carries the new fields, the player its resistance.
+	var boss_phases: Array = [
+		{"at_hp_percent": 70, "name": "Shift", "effects": {"attack_type": "magic"}},
+		{"at_hp_percent": 35, "name": "Frenzy", "effects": {"attack_speed_multiplier": 2.0, "max_hit_multiplier": 2.0}}]
+	DataLoader.monsters["mmp_boss"] = _mm_record("mmp_boss", {"hitpoints": 800, "max_hit": 60,
+		"accuracy_rating": 2000, "weak_to": ["ranged"], "resists": ["magic"], "phases": boss_phases})
+	DataLoader.areas[MMP_AREA] = {"id": MMP_AREA, "name": MMP_AREA, "type": "area", "monsters": ["mmp_boss"]}
+	var snap: Dictionary = CombatSimulatorManager.build_snapshot("area", MMP_AREA, "melee", "slash")
+	var flat: Dictionary = (snap.get("monsters", [{}]) as Array)[0]
+	_eq(flat.get("weak_to", []), ["ranged"], "the simulator snapshot carries weak_to")
+	_eq(flat.get("resists", []), ["magic"], "the simulator snapshot carries resists")
+	_eq((flat.get("phases", []) as Array).size(), 2, "the simulator snapshot carries the phases")
+	var resistance: Dictionary = snap.get("status_resistance", {})
+	_ok(resistance.has("poison") and resistance.has("burn") and resistance.has("stun"),
+		"the simulator snapshot carries the player's status resistance per family")
+
+	# A DoT tick that crosses a threshold fires the phase even when no direct hit ever does:
+	# the player's hits deal 1, their burn does the rest and kills before the next swing.
+	var dot_snap: Dictionary = _mmp_dot_phase_snapshot()
+	var dot_fight: Dictionary = CombatSimulator._run_fight(dot_snap, dot_snap["player"],
+		dot_snap["monsters"][0], 1000.0, 1000.0, _mmp_rng(), {})
+	_eq(int(dot_fight.get("kills", 0)), 1, "the DoT-phase boss dies to its burn")
+	_eq(int(dot_fight.get("phases_fired", -1)), 1, "a burn tick across the threshold fires the phase in the simulator")
+	# A killing blow fires nothing: the same boss, one-shot from full HP.
+	var one_shot: Dictionary = dot_snap.duplicate(true)
+	one_shot["player"]["max_hit"] = 5000
+	one_shot["player"]["min_hit_percent"] = 1.0
+	var shot_fight: Dictionary = CombatSimulator._run_fight(one_shot, one_shot["player"],
+		one_shot["monsters"][0], 1000.0, 1000.0, _mmp_rng(), {})
+	_eq(int(shot_fight.get("phases_fired", -1)), 0, "a killing blow fires no phase in the simulator")
+
+	# Live vs simulator, one mechanic at a time.
+	var weapon_slot: int = ItemData.EquipmentSlot.WEAPON
+	var amulet_slot: int = ItemData.EquipmentSlot.AMULET
+	DataLoader.special_attacks["mmp_burn_strike"] = {"id": "mmp_burn_strike", "trigger_chance": 100.0,
+		"damage_multiplier": 0.01, "applies_status": "burn", "status_chance": 100.0,
+		"status_duration": 30.0, "status_damage_per_tick": 10.0}
+	DataLoader.special_attacks["mmp_burn_bite"] = {"id": "mmp_burn_bite", "trigger_chance": 100.0,
+		"damage_multiplier": 1.0, "applies_status": "burn", "status_chance": 100.0,
+		"status_duration": 10.0, "status_damage_per_tick": 10.0}
+	DataLoader.items["mmp_blade"] = {"id": "mmp_blade", "name": "mmp_blade", "item_type": "equipment",
+		"equipment_slot": weapon_slot, "attack_speed": 3.0, "special_attack": "mmp_burn_strike", "equipment_stats": {}}
+	DataLoader.items["mmp_charm"] = {"id": "mmp_charm", "name": "mmp_charm", "item_type": "equipment",
+		"equipment_slot": amulet_slot, "equipment_stats": {"burn_resistance": 50}}
+	var cases: Array = [
+		{"label": "weak_to", "fights": 40, "monster": {"hitpoints": 600, "max_hit": 1, "weak_to": ["melee"]}},
+		{"label": "resists", "fights": 40, "monster": {"hitpoints": 600, "max_hit": 1, "resists": ["melee"]}},
+		{"label": "armored", "fights": 40, "monster": {"hitpoints": 400, "max_hit": 1, "passives": ["armored"]}},
+		{"label": "lifedrain", "fights": 40, "monster": {"hitpoints": 600, "max_hit": 40, "attack_speed": 2.0,
+			"passives": ["lifedrain"]}},
+		{"label": "venomous", "fights": 30, "monster": {"hitpoints": 2000, "max_hit": 1, "attack_speed": 0.25,
+			"passives": ["venomous"]}},
+		{"label": "two-phase boss", "fights": 150, "monster": {"hitpoints": 800, "max_hit": 60,
+			"accuracy_rating": 2000, "phases": boss_phases}},
+		{"label": "DoT-driven phase", "fights": 120, "weapon": "mmp_blade", "monster": {"hitpoints": 1000,
+			"max_hit": 100, "phases": [{"at_hp_percent": 60, "name": "Scorched",
+				"effects": {"max_hit_multiplier": 1.5, "attack_speed_multiplier": 2.0}}]}},
+		{"label": "burn resistance", "fights": 60, "amulet": "mmp_charm", "monster": {"hitpoints": 300,
+			"max_hit": 1, "attack_speed": 1.0, "special_attacks": ["mmp_burn_bite"]}},
+	]
+	for case in cases:
+		var monster_id: String = "mmp_%s" % str(case["label"]).replace(" ", "_").replace("-", "_")
+		DataLoader.monsters[monster_id] = _mm_record(monster_id, case["monster"])
+		DataLoader.areas[MMP_AREA]["monsters"] = [monster_id]
+		EquipmentManager.slots.erase(weapon_slot)
+		EquipmentManager.slots.erase(amulet_slot)
+		if case.has("weapon"):
+			EquipmentManager.slots[weapon_slot] = str(case["weapon"])
+		if case.has("amulet"):
+			EquipmentManager.slots[amulet_slot] = str(case["amulet"])
+		var sim_snap: Dictionary = CombatSimulatorManager.build_snapshot("area", MMP_AREA, "melee", "slash")
+		var sim: Dictionary = CombatSimulator.simulate(sim_snap, MMP_SIM_TRIALS, MMP_SEED)
+		var live: Dictionary = _mmp_live(monster_id, int(case["fights"]))
+		var sim_seconds: float = float(sim["average_fight_seconds"])
+		var live_seconds: float = float(live["mean_seconds"])
+		var sim_death: float = float(sim["death_chance"])
+		var live_death: float = float(live["death_rate"])
+		_ok(absf(sim_seconds - live_seconds) <= live_seconds * MMP_TOLERANCE,
+			"%s: simulator mean fight %.1fs matches live %.1fs" % [case["label"], sim_seconds, live_seconds])
+		_ok(absf(sim_death - live_death) <= MMP_TOLERANCE,
+			"%s: simulator death rate %.2f matches live %.2f" % [case["label"], sim_death, live_death])
+		DataLoader.monsters.erase(monster_id)
+	EquipmentManager.slots.erase(weapon_slot)
+	EquipmentManager.slots.erase(amulet_slot)
+	for id in ["mmp_burn_strike", "mmp_burn_bite"]:
+		DataLoader.special_attacks.erase(id)
+	for id in ["mmp_blade", "mmp_charm"]:
+		DataLoader.items.erase(id)
+	DataLoader.monsters.erase("mmp_boss")
+	DataLoader.areas.erase(MMP_AREA)
+	CombatManager.monster_phases_fired = 0
+
+func _mmp_rng() -> RandomNumberGenerator:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = MMP_SEED
+	return rng
+
+## A pure-simulator boss whose 50% phase only a burn tick can cross: hits deal 1 every 4s, the
+## burn (334 per second) takes it 999 -> 665 -> 331 (phase) -> dead before the second swing.
+func _mmp_dot_phase_snapshot() -> Dictionary:
+	return {
+		"player": {"style": "melee", "max_hp": 1000.0, "accuracy": 1000000, "max_hit": 1,
+			"min_hit_percent": 0.0, "min_hit_flat": 0.0, "attack_interval": 4.0, "damage_reduction": 0.0,
+			"evasion": {"melee": 1000000, "ranged": 1000000, "magic": 1000000},
+			"crit_chance": 0.0, "crit_multiplier": 50.0, "life_steal": 0.0, "hybrid": false},
+		"player_special": {"id": "mmp_dot", "trigger_chance": 100.0, "damage_multiplier": 1.0,
+			"applies_status": "burn", "status_chance": 100.0, "status_duration": 100.0,
+			"status_damage_per_tick": 334.0},
+		"monsters": [{"id": "mmp_dot_boss", "name": "mmp_dot_boss", "hitpoints": 1000, "max_hit": 1,
+			"accuracy_rating": 1, "attack_speed": 3.0, "attack_type": "melee", "damage_reduction": 0.0,
+			"melee_evasion": 1, "ranged_evasion": 1, "magic_evasion": 1, "passives": [],
+			"phases": [{"at_hp_percent": 50, "name": "Cinders", "effects": {"attack_type": "magic"}}]}],
+		"mode_config": {}, "food": {}, "auto_eat_tier": 0, "prayer_points": 0.0,
+		"status_resistance": {"poison": 0.0, "burn": 0.0, "stun": 0.0},
+	}
+
+## Fight the area's monster live, seeded, until `fights` fights have ended (a kill, a death
+## or the simulator's stalemate ceiling). Like the simulator, every fight starts at full HP
+## with no status carried over, and in the same gear: a defeat's dropped item is put back.
+func _mmp_live(monster_id: String, fights: int) -> Dictionary:
+	var worn: Dictionary = EquipmentManager.slots.duplicate()
+	CombatManager.seed_rng(MMP_SEED)
+	SimulationMode.begin()
+	_mmp_start(monster_id)
+	var kills_seen: int = CombatManager.kills_this_session
+	var done: int = 0
+	var deaths: int = 0
+	var total: float = 0.0
+	var clock: float = 0.0
+	var guard: int = 0
+	while done < fights and guard < 5000000:
+		guard += 1
+		CombatManager.tick(CombatSimulator.STEP_SECONDS)
+		clock += CombatSimulator.STEP_SECONDS
+		if CombatManager.kills_this_session != kills_seen:
+			kills_seen = CombatManager.kills_this_session
+			done += 1
+			total += clock
+			clock = 0.0
+			CombatManager.player_hp = CombatManager.player_max_hp
+			CombatManager.player_effects.clear()
+		elif CombatManager.state != CombatManager.State.FIGHTING or clock >= CombatSimulator.FIGHT_SECONDS_CEILING:
+			deaths += 1
+			done += 1
+			total += clock
+			clock = 0.0
+			EquipmentManager.slots = worn.duplicate()
+			_mmp_start(monster_id)
+			kills_seen = CombatManager.kills_this_session
+	SimulationMode.end()
+	CombatManager.stop_combat("test")
+	return {"fights": done, "deaths": deaths, "death_rate": float(deaths) / float(maxi(1, done)),
+		"mean_seconds": total / float(maxi(1, done))}
+
+func _mmp_start(monster_id: String) -> void:
+	if CombatManager.state != CombatManager.State.IDLE:
+		CombatManager.stop_combat("test")
+	CombatManager.player_hp = 0.0
+	CombatManager.start_combat({"type": "area", "id": MMP_AREA, "monsters": [monster_id],
+		"endless": true, "attack_style": "melee", "melee_style": "slash"})
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
 
 ## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
 ## understands, the pure maths each passive uses, and content that actually carries them.

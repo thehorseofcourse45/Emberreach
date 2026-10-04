@@ -154,31 +154,23 @@ static func _fights_so_far(monsters: Array, monster: Dictionary) -> int:
 	return maxi(1, index)
 
 ## The fight loop. Player-first, simultaneous within a step, exactly like CombatManager.
+## Monster mechanics (affinities, armored / lifedrain / venomous, boss phases, player status
+## resistance) come from MonsterMechanics, the rule set the live loop uses.
 static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictionary,
 		max_hp: float, hp_start: float, rng: RandomNumberGenerator, xp: Dictionary) -> Dictionary:
 	var style: String = str(player.get("style", "melee"))
-	var monster_style: String = str(monster.get("attack_type", "melee"))
-	var mode_config: Dictionary = snapshot.get("mode_config", {})
-	var triangle: Dictionary = CombatFormulas.triangle(style, monster_style, mode_config)
-	var hazard: Dictionary = snapshot.get("hazard", {})
+	# Everything a boss phase can change (style, speed, max hit, passives) lives in the view and is
+	# re-derived whenever a phase fires.
+	var view: Dictionary = _monster_view(snapshot, player, monster, 0)
 	var accuracy: float = float(player.get("accuracy", 10))
-	# Flat hit-chance points, exactly like the live loop (not rating points).
-	var player_hit_bonus: float = float(hazard.get("player_accuracy_percent", 0.0)) + float(triangle.accuracy_percent)
-	var max_hit: int = maxi(1, floori(float(player.get("max_hit", 1)) * (1.0 + float(triangle.damage_percent) / 100.0)))
-	var min_hit: int = CombatFormulas.min_hit(max_hit, float(player.get("min_hit_percent", 0.0)),
-		float(player.get("min_hit_flat", 0.0)))
-	var player_interval: float = maxf(0.1, float(player.get("attack_interval", 3.0)))
-	var monster_interval: float = maxf(0.1, float(monster.get("attack_speed", 3.0)))
-	var monster_max_hit: int = maxi(1, int(monster.get("max_hit", 1)))
-	var monster_min_hit: int = CombatFormulas.min_hit(monster_max_hit,
-		float(monster.get("min_hit_percent", 0.0)), float(monster.get("min_hit_flat", 0.0)))
 	var monster_accuracy: float = float(monster.get("accuracy_rating", 10))
 	var monster_dr: float = float(monster.get("damage_reduction", 0.0))
 	var monster_hp_max: float = maxf(1.0, float(monster.get("hitpoints", 10)))
 	var monster_hp: float = monster_hp_max
 	var evasion: int = _evasion_for(monster, style)
 	var player_dr: float = float(player.get("damage_reduction", 0.0))
-	var player_evasion: int = maxi(0, int(float(_player_evasion(player, monster_style)) * (1.0 + float(hazard.get("player_evasion_percent", 0.0)) / 100.0)))
+	var hazard: Dictionary = snapshot.get("hazard", {})
+	var resistance: Dictionary = snapshot.get("status_resistance", {})
 	var crit_chance: float = float(player.get("crit_chance", 0.0))
 	var crit_mult: float = float(player.get("crit_multiplier", 50.0))
 	var life_steal: float = float(player.get("life_steal", 0.0))
@@ -198,7 +190,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 		steps += 1
 		if steps > MAX_STEPS_PER_FIGHT or seconds >= FIGHT_SECONDS_CEILING:
 			return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage,
-				"kills": kills, "player_died": false, "timed_out": true}
+				"kills": kills, "player_died": false, "timed_out": true, "phases_fired": int(view["fired"])}
 		hp -= _tick_statuses(player_effects, STEP_SECONDS)
 		monster_hp -= _tick_statuses(monster_effects, STEP_SECONDS)
 		if hp <= 0: break
@@ -206,12 +198,14 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			kills = 1
 			_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max, bool(player.get("on_slayer_task", false)), bool(snapshot.get("in_slayer_area", false))))
 			break
+		# Damage over time crosses boss thresholds too, exactly like the live status tick.
+		view = _fire_phases(snapshot, player, monster, view, monster_hp / monster_hp_max, player_effects, rng)
 		if not _blocked(player_effects): player_timer += STEP_SECONDS
 		if not _blocked(monster_effects): monster_timer += STEP_SECONDS
 		# Player first: the live loop resolves player attacks before monster attacks in the same
 		# tick, so a monster that would have died this step never gets its swing.
-		if player_timer >= player_interval and not _blocked(player_effects):
-			player_timer -= player_interval
+		if player_timer >= float(view["player_interval"]) and not _blocked(player_effects):
+			player_timer -= float(view["player_interval"])
 			if bool(snapshot.get("finite_supplies", false)):
 				# Roll the shot once, then both test and spend it: the live loop and the simulator must
 				# charge the same ammunition for the same attack.
@@ -219,23 +213,30 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					float(snapshot.get("ammo_preservation", 0.0)))
 				var affordable: bool = float(snapshot.get("prayer_balance", 0)) >= float(snapshot.get("prayer_points", 0))
 				for id in shot: affordable = affordable and int(snapshot.attack_stock.get(id, 0)) >= int(shot[id])
-				if not affordable: return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage, "kills": kills, "player_died": false, "timed_out": true}
+				if not affordable: return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage, "kills": kills, "player_died": false, "timed_out": true, "phases_fired": int(view["fired"])}
 				snapshot.prayer_balance = float(snapshot.get("prayer_balance", 0)) - float(snapshot.get("prayer_points", 0))
 				for id in shot: snapshot.attack_stock[id] -= int(shot[id])
-			var roll: Dictionary = CombatFormulas.roll_damage(rng, min_hit, max_hit, monster_dr,
+			var roll: Dictionary = CombatFormulas.roll_damage(rng, int(view["min_hit"]), int(view["max_hit"]), monster_dr,
 				crit_chance, crit_mult, "normal")
-			if clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + player_hit_bonus, 0.0, 100.0) > rng.randf() * 100.0:
+			if clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + float(view["player_hit_bonus"]), 0.0, 100.0) > rng.randf() * 100.0:
 				var dealt: float = float(roll["damage"])
 				var special: Dictionary = _special([snapshot.get("player_special", {})], rng)
 				if not special.is_empty():
 					dealt = maxi(1, floori(dealt * float(special.get("damage_multiplier", 1))))
 					hp = minf(max_hp, hp + dealt * float(special.get("heal_fraction", 0)))
 					_add_special_status(monster_effects, special, rng, monster)
+				# Style affinity and armor apply once, to the final landed hit (specials included).
+				var current: Dictionary = view["monster"]
+				dealt = float(MonsterMechanics.armored_reduce(current,
+					maxi(1, floori(dealt * MonsterMechanics.affinity_multiplier(current, style)))))
 				for status in snapshot.get("enchant_statuses", []):
 					if rng.randf() < 0.2 and not bool(monster.get("is_immune_to_effects", false)): monster_effects.append(StatusEffect.create(str(status), 4.0, maxf(1, dealt * 0.1) if str(status) == "burn" else 0))
 				dealt = maxf(0.0, dealt)
 				monster_hp -= dealt
 				damage += dealt
+				# Phases fire after the hit lands and before thorns, as in apply_damage_to_monster().
+				if monster_hp > 0.0:
+					view = _fire_phases(snapshot, player, monster, view, monster_hp / monster_hp_max, player_effects, rng)
 				# XP follows the live formulas, on damage actually dealt.
 				_xp(xp, "hitpoints", CombatFormulas.hitpoints_xp(dealt))
 				_xp(xp, str(style), CombatFormulas.style_xp(dealt, bool(player.get("hybrid", false))))
@@ -245,7 +246,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					hp = minf(max_hp, hp + dealt * life_steal / 100.0)
 				# Thorns: a spiny creature pays back a fraction of what it was dealt while it
 				# still stands (the live loop reflects before the monster gets to swing).
-				if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("thorns"):
+				if monster_hp > 0.0 and (view["passives"] as Array).has("thorns"):
 					hp -= float(CombatFormulas.thorns_reflect(int(dealt), ENEMY_THORNS_FRACTION))
 			# Mirrors CombatManager._regen_after_attack(): every own attack, hit or miss.
 			if regen_per_attack > 0.0 and hp > 0.0:
@@ -255,16 +256,19 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max,
 				bool(player.get("on_slayer_task", false)), bool(snapshot.get("in_slayer_area", false))))
 			break
-		if monster_timer >= monster_interval and not _blocked(monster_effects):
-			monster_timer -= monster_interval
-			var their_roll: Dictionary = CombatFormulas.roll_damage(rng, monster_min_hit, monster_max_hit,
-				0.0, 0.0, 0.0, "normal")
-			if clampf(CombatFormulas.chance_to_hit(monster_accuracy, float(player_evasion)) + float(CombatFormulas.triangle(monster_style, style, mode_config).accuracy_percent), 0, 100) > rng.randf() * 100.0 and (not snapshot.get("protection_styles", []).has(monster_style) or rng.randf() >= 0.8):
+		if monster_timer >= float(view["monster_interval"]) and not _blocked(monster_effects):
+			monster_timer -= float(view["monster_interval"])
+			var monster_style: String = str(view["monster_style"])
+			var against: Dictionary = view["monster_triangle"]
+			var passives: Array = view["passives"]
+			var their_roll: Dictionary = CombatFormulas.roll_damage(rng, int(view["monster_min_hit"]),
+				int(view["monster_max_hit"]), 0.0, 0.0, 0.0, "normal")
+			if clampf(CombatFormulas.chance_to_hit(monster_accuracy, float(view["player_evasion"])) + float(against.accuracy_percent), 0, 100) > rng.randf() * 100.0 and (not snapshot.get("protection_styles", []).has(monster_style) or rng.randf() >= 0.8):
 				# A raging monster hits harder as it nears death (applied before DR, like the live
 				# loop) — gated on the passive, exactly as CombatManager gates it.
-				var raw_taken: float = float(their_roll["damage"]) * (1.0 + float(CombatFormulas.triangle(monster_style, style, mode_config).damage_percent) / 100.0)
-				if (monster.get("passives", []) as Array).has("enrage"):
-					raw_taken *= CombatFormulas.enrage_multiplier( 						monster_hp / monster_hp_max, ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
+				var raw_taken: float = float(their_roll["damage"]) * (1.0 + float(against.damage_percent) / 100.0)
+				if passives.has("enrage"):
+					raw_taken *= CombatFormulas.enrage_multiplier(monster_hp / monster_hp_max, ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
 				# Clamped for the same reason as the live loop: an unbounded reduction would make
 				# the multiplier negative and every hit a heal.
 				var taken: float = raw_taken * (1.0 - clampf(player_dr, 0.0, 90.0) / 100.0)
@@ -272,9 +276,18 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				var special: Dictionary = _special(monster.get("specials", []), rng)
 				if not special.is_empty():
 					taken = maxi(1, floori(taken * float(special.get("damage_multiplier", 1))))
-					_add_special_status(player_effects, special, rng, {})
-				hp -= maxf(0.0, floorf(taken))
-				if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("regeneration"):
+					_add_special_status(player_effects, special, rng, {}, resistance, true)
+				var landed: float = maxf(0.0, floorf(taken))
+				hp -= landed
+				# Venom: a hit that deals damage may poison the player, through their resistance.
+				if landed > 0.0 and passives.has("venomous") and rng.randf() < MonsterMechanics.VENOM_CHANCE:
+					var venom: Dictionary = MonsterMechanics.venom_status(int((view["monster"] as Dictionary).get("max_hit", 1)))
+					_apply_player_status(player_effects, str(venom["id"]), float(venom["duration"]),
+						float(venom["damage_per_tick"]), rng, resistance)
+				# Lifedrain: the monster heals a share of what it dealt, capped at its max HP.
+				if landed > 0.0 and monster_hp > 0.0 and passives.has("lifedrain"):
+					monster_hp = minf(monster_hp_max, monster_hp + float(MonsterMechanics.lifedrain_heal(int(landed))))
+				if monster_hp > 0.0 and passives.has("regeneration"):
 					monster_hp = minf(monster_hp_max, monster_hp + maxf(1.0, monster_hp_max * ENEMY_REGEN_FRACTION))
 		# Auto Eat is evaluated after attacks, like the live loop.
 		var meal: Dictionary = _auto_eat(snapshot, hp, max_hp)
@@ -283,7 +296,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			hp = minf(max_hp, hp + float(meal["heal"]))
 		seconds += STEP_SECONDS
 	return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage,
-		"kills": kills, "player_died": hp <= 0.0, "timed_out": false}
+		"kills": kills, "player_died": hp <= 0.0, "timed_out": false, "phases_fired": int(view["fired"])}
 
 ## The live Auto Eat thresholds and efficiencies, mirrored here so the simulator does not read
 ## CombatManager from a worker thread.
@@ -363,12 +376,85 @@ static func _special(definitions: Array, rng: RandomNumberGenerator) -> Dictiona
 		if definition is Dictionary and not definition.is_empty() and rng.randf() * 100.0 <= float(definition.get("trigger_chance", 10)): return definition
 	return {}
 
-static func _add_special_status(effects: Array, special: Dictionary, rng: RandomNumberGenerator, target: Dictionary) -> void:
+## A special attack's status. Player-targeted ones go through the player's status resistance
+## (as CombatManager.apply_status does); monster-targeted ones respect the monster's immunity.
+static func _add_special_status(effects: Array, special: Dictionary, rng: RandomNumberGenerator, target: Dictionary,
+		resistance: Dictionary = {}, to_player: bool = false) -> void:
 	var id: String = str(special.get("applies_status", ""))
 	if id == "" or bool(target.get("is_immune_to_effects", false)) or rng.randf() * 100.0 > float(special.get("status_chance", 100)): return
-	var effect: StatusEffect = StatusEffect.create(id, float(special.get("status_duration", 3)), float(special.get("status_damage_per_tick", 0)))
+	var duration: float = float(special.get("status_duration", 3))
+	var per_tick: float = float(special.get("status_damage_per_tick", 0))
+	if to_player:
+		_apply_player_status(effects, id, duration, per_tick, rng, resistance)
+		return
+	var effect: StatusEffect = StatusEffect.create(id, duration, per_tick)
 	if effect.blocks_attack() and not bool(target.get("can_be_stunned", true)): return
 	effects.append(effect)
+
+## A status landing on the player: a poison/burn/stun-family status is shortened, or resisted
+## outright, by the snapshot's resistance for that family. Like the live loop, the roll is
+## consumed only when that resistance is above zero.
+static func _apply_player_status(effects: Array, id: String, duration: float, per_tick: float,
+		rng: RandomNumberGenerator, resistance: Dictionary) -> void:
+	var family: String = MonsterMechanics.status_family(id)
+	if family != "":
+		var percent: float = float(resistance.get(family, 0.0))
+		if percent > 0.0:
+			duration = MonsterMechanics.resisted_duration(id, duration, percent, rng.randf())
+			if duration <= 0.0:
+				return
+	effects.append(StatusEffect.create(id, duration, per_tick))
+
+## The monster as it fights after `fired` phases, plus every fight number derived from it: the
+## triangle both ways (it depends on the monster's style), the player's evasion against that
+## style, the monster's interval and hit range, and its passives.
+static func _monster_view(snapshot: Dictionary, player: Dictionary, monster: Dictionary, fired: int) -> Dictionary:
+	var current: Dictionary = MonsterMechanics.effective(monster, fired) if fired > 0 else monster
+	var style: String = str(player.get("style", "melee"))
+	var monster_style: String = str(current.get("attack_type", "melee"))
+	var mode_config: Dictionary = snapshot.get("mode_config", {})
+	var hazard: Dictionary = snapshot.get("hazard", {})
+	var triangle: Dictionary = CombatFormulas.triangle(style, monster_style, mode_config)
+	var max_hit: int = maxi(1, floori(float(player.get("max_hit", 1)) * (1.0 + float(triangle.damage_percent) / 100.0)))
+	var monster_max_hit: int = maxi(1, int(current.get("max_hit", 1)))
+	return {
+		"fired": fired,
+		"monster": current,
+		"passives": current.get("passives", []),
+		"monster_style": monster_style,
+		# Flat hit-chance points, exactly like the live loop (not rating points).
+		"player_hit_bonus": float(hazard.get("player_accuracy_percent", 0.0)) + float(triangle.accuracy_percent),
+		"max_hit": max_hit,
+		"min_hit": CombatFormulas.min_hit(max_hit, float(player.get("min_hit_percent", 0.0)),
+			float(player.get("min_hit_flat", 0.0))),
+		"player_interval": maxf(0.1, float(player.get("attack_interval", 3.0))),
+		"monster_interval": maxf(0.1, float(current.get("attack_speed", 3.0))),
+		"monster_max_hit": monster_max_hit,
+		"monster_min_hit": CombatFormulas.min_hit(monster_max_hit,
+			float(current.get("min_hit_percent", 0.0)), float(current.get("min_hit_flat", 0.0))),
+		"player_evasion": maxi(0, int(float(_player_evasion(player, monster_style)) * (1.0 + float(hazard.get("player_evasion_percent", 0.0)) / 100.0))),
+		"monster_triangle": CombatFormulas.triangle(monster_style, style, mode_config),
+	}
+
+## Fire every boss phase now due at this HP fraction, once each and in order, as
+## CombatManager._fire_due_phases() does. A phase status goes to the player through their
+## resistance; the monster's own immunity never gates it. Returns the (possibly new) view.
+static func _fire_phases(snapshot: Dictionary, player: Dictionary, monster: Dictionary, view: Dictionary,
+		hp_fraction: float, player_effects: Array, rng: RandomNumberGenerator) -> Dictionary:
+	var phases: Array = monster.get("phases", [])
+	if phases.is_empty():
+		return view
+	var fired: int = int(view["fired"])
+	var due: int = MonsterMechanics.phases_due(phases, fired, hp_fraction)
+	if due == fired:
+		return view
+	while fired < due:
+		var status: Dictionary = ((phases[fired] as Dictionary).get("effects", {}) as Dictionary).get("apply_status", {})
+		fired += 1
+		if not status.is_empty():
+			_apply_player_status(player_effects, str(status.get("id", "")), float(status.get("duration", 3.0)),
+				float(status.get("damage_per_tick", 0.0)), rng, snapshot.get("status_resistance", {}))
+	return _monster_view(snapshot, player, monster, fired)
 
 static func _blocked(effects: Array) -> bool:
 	for effect in effects: if effect.blocks_attack(): return true

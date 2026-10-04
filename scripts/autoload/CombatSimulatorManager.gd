@@ -86,6 +86,11 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	snapshot.player.min_hit_percent = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0
 	snapshot.player.min_hit_flat = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT)
 	snapshot.player.hp_regen_per_attack = ModifierManager.get_hp_regen_per_attack()
+	# Status resistance per family, read from the same live path apply_status uses.
+	var resistance: Dictionary = {}
+	for family in MonsterMechanics.STATUS_FAMILIES:
+		resistance[str(family)] = CombatManager.player_status_resistance(str(family))
+	snapshot["status_resistance"] = resistance
 	for id in PlayerData.active_prayers:
 		var prayer: Dictionary = PrayerManager.get_prayer(id)
 		if str(prayer.get("type", "")) == "protect": snapshot.protection_styles.append(str(prayer.get("style", "")))
@@ -123,6 +128,9 @@ func _monster_record(monster_id: String) -> Dictionary:
 	return {
 		"id": monster_id,
 		"passives": m.get("passives", []).duplicate(),
+		"weak_to": m.get("weak_to", []).duplicate(),
+		"resists": m.get("resists", []).duplicate(),
+		"phases": m.get("phases", []).duplicate(true),
 		"specials": m.get("special_attacks", []).map(func(id): return DataLoader.get_special_attack(str(id)).duplicate(true)),
 		"is_immune_to_effects": bool(m.get("is_immune_to_effects", false)),
 		"can_be_stunned": bool(m.get("can_be_stunned", true)),
