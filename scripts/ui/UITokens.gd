@@ -6,49 +6,61 @@ extends RefCounted
 ## changes it everywhere, which is what makes a large game feel like one product instead of a
 ## collection of unrelated panels.
 ##
-## Direction: restrained dark fantasy. Deep blue-black ground, slightly raised surfaces,
-## parchment text, muted gold reserved for milestones and primary actions, teal for gathering
-## and recovery, blue for crafting and the arcane, amber/red for danger.
+## Direction: Arcane Glass. A deep violet night behind everything (painted by MainUI as a radial
+## gradient), frosted translucent panels floating over it, soft coloured glows instead of hard
+## borders, and a violet→magenta accent reserved for primary actions and milestones. Cyan marks
+## gathering/recovery, rose marks danger. The legacy token NAMES are kept (GOLD = "the primary
+## accent", BORDER_GOLD = "the accent edge") so every panel inherits the look with no edits.
 
 # ---------------------------------------------------------------- colour: ground & surface
-const BG_DEEP := Color("#081321")        ## app background, behind everything
-const BG := Color("#0d1a2a")             ## workspace background
-const SURFACE := Color("#122236")        ## raised panel
-const SURFACE_2 := Color("#1a2d43")      ## raised row / input
-const SURFACE_3 := Color("#253c56")      ## hover / selected row
-const SURFACE_SUNKEN := Color("#0a1726") ## wells, logs, code-like blocks
-const BORDER := Color("#2d4965")
-const BORDER_STRONG := Color("#476783")
-const BORDER_GOLD := Color("#9d7833")
+const BG_DEEP := Color("#07071a")        ## app background, behind everything
+const BG := Color("#0c0b24")             ## workspace background
+## Surfaces are translucent on purpose: the gradient behind them shows through, which is what
+## makes the panels read as glass rather than flat cards.
+const SURFACE := Color("#1a1842c4")      ## raised panel (glass)
+const SURFACE_2 := Color("#ffffff0f")    ## raised row / input, layered on a panel
+const SURFACE_3 := Color("#8b5cf633")    ## hover / selected row (violet tint)
+const SURFACE_SUNKEN := Color("#0000004d") ## wells, logs, code-like blocks
+const BORDER := Color("#ffffff1c")
+const BORDER_STRONG := Color("#ffffff3d")
+const BORDER_GOLD := Color("#a78bfa")    ## accent edge (violet)
 
 # ---------------------------------------------------------------- colour: text
-const TEXT := Color("#e1eaf3")
-const TEXT_STRONG := Color("#f7f9fc")
-const TEXT_MUTED := Color("#a7b8c9")
-const TEXT_DIM := Color("#74899e")
-const TEXT_ON_GOLD := Color("#1a1508")
+const TEXT := Color("#e4e2f5")
+const TEXT_STRONG := Color("#ffffff")
+const TEXT_MUTED := Color("#b9b6d6")
+const TEXT_DIM := Color("#8b88b0")
+const TEXT_ON_GOLD := Color("#ffffff")   ## text on a filled primary button
 
 # ---------------------------------------------------------------- colour: semantics
-const GOLD := Color("#d5a640")           ## milestones, primary actions, tracked goals
-const GOLD_BRIGHT := Color("#f1cb70")
-const TEAL := Color("#4fb3a1")           ## gathering, recovery, positive passive
-const BLUE := Color("#5f93d8")           ## crafting, arcane
-const AMBER := Color("#dc9a3a")          ## caution / blocked
-const RED := Color("#c9553f")            ## danger, combat, destructive
-const GREEN := Color("#6fbf73")          ## success, satisfied requirement
-const PURPLE := Color("#9a77c9")         ## rare / mastery
-const DISABLED := Color("#5a5c60")
+const GOLD := Color("#a78bfa")           ## primary accent: milestones, primary actions, goals
+const GOLD_BRIGHT := Color("#d8ccff")    ## headings and highlighted values
+const TEAL := Color("#22d3ee")           ## gathering, recovery, positive passive
+const BLUE := Color("#60a5fa")           ## crafting, arcane
+const AMBER := Color("#fbbf24")          ## caution / blocked
+const RED := Color("#fb5a7a")            ## danger, combat, destructive
+const GREEN := Color("#34d399")          ## success, satisfied requirement
+const PURPLE := Color("#e879f9")         ## rare / mastery
+const DISABLED := Color("#5d5a7d")
+
+# ---------------------------------------------------------------- colour: glass extras
+const ACCENT_VIOLET := Color("#7c3aed")  ## filled primary button
+const ACCENT_PINK := Color("#db2777")    ## the far end of the accent gradient
+const GLOW := Color("#8b5cf6")           ## shadow colour that makes panels glow
+const BG_GLOW_A := Color("#2b1d6e")      ## background gradient: light source
+const BG_GLOW_B := Color("#120f35")      ## background gradient: mid
+const CURRENCY := Color("#fcd34d")       ## real gold, for coin values and legendary loot
 
 # ---------------------------------------------------------------- rarity (presentation only)
 ## Rarity is a presentation layer derived from data we already have (explicit tier, then sell
 ## value band). It is documented here so nobody mistakes it for a gameplay stat.
 const RARITY: Dictionary = {
-	"common": {"label": "Common", "color": BORDER_STRONG},
+	"common": {"label": "Common", "color": Color("#8b88b0")},
 	"uncommon": {"label": "Uncommon", "color": TEAL},
 	"rare": {"label": "Rare", "color": BLUE},
 	"epic": {"label": "Epic", "color": PURPLE},
-	"legendary": {"label": "Legendary", "color": GOLD},
-	"relic": {"label": "Relic", "color": GOLD_BRIGHT},
+	"legendary": {"label": "Legendary", "color": Color("#fbbf24")},
+	"relic": {"label": "Relic", "color": CURRENCY},
 }
 
 # ---------------------------------------------------------------- spacing
@@ -62,9 +74,9 @@ const SP_7 := 26
 const SP_8 := 34
 
 # ---------------------------------------------------------------- radius
-const R_SM := 4
-const R_MD := 8
-const R_LG := 12
+const R_SM := 5
+const R_MD := 10
+const R_LG := 14
 const R_PILL := 999
 
 # ---------------------------------------------------------------- type

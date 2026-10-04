@@ -383,7 +383,8 @@
     "name": "Ember Rune",
     "item_type": "rune",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "bottleneck_reason": "Ember runes are the superheat school's fuel and the fire spells' ammunition; Glyphcraft makes them from essence at level 14, so one cheap, early supply feeding many recipes is intended"
   },
   "feather": {
     "id": "feather",
@@ -7109,6 +7110,15 @@
     "equipment_stats": {},
     "level_requirements": {}
   },
+  "ranch_feast": {
+    "id": "ranch_feast",
+    "name": "Rancher's Feast",
+    "item_type": "food",
+    "sell_price": 42,
+    "is_stackable": true,
+    "heal_amount": 320,
+    "description": "Omelette, cheese and roast laid out together; the whole homestead on one plate."
+  },
   "ranch_omelette": {
     "id": "ranch_omelette",
     "name": "Ranch Omelette",
@@ -7159,5 +7169,110 @@
     "potion_effect": {
       "crit_chance_percent": 8
     }
+  },
+  "charmed_gold_ring": {
+    "id": "charmed_gold_ring",
+    "name": "Ring of Prospecting",
+    "item_type": "equipment",
+    "sell_price": 60,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_gp_percent": 3
+    },
+    "level_requirements": {},
+    "icon_id": "gold_ring",
+    "description": "A gold ring charmed by Runescribing. Coin finds its way to the wearer."
+  },
+  "sapphire_ring_of_focus": {
+    "id": "sapphire_ring_of_focus",
+    "name": "Sapphire Ring of Focus",
+    "item_type": "equipment",
+    "sell_price": 130,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_mastery_xp_percent": 3
+    },
+    "level_requirements": {},
+    "icon_id": "sapphire_ring",
+    "description": "Water magic bound into sapphire keeps the mind on the task."
+  },
+  "emerald_ring_of_study": {
+    "id": "emerald_ring_of_study",
+    "name": "Emerald Ring of Study",
+    "item_type": "equipment",
+    "sell_price": 180,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_skill_xp_percent": 2
+    },
+    "level_requirements": {},
+    "icon_id": "emerald_ring",
+    "description": "Nature magic bound into emerald quickens every skill."
+  },
+  "topaz_ring_of_the_hawk": {
+    "id": "topaz_ring_of_the_hawk",
+    "name": "Topaz Ring of the Hawk",
+    "item_type": "equipment",
+    "sell_price": 130,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 8,
+      "ranged_max_hit_percent": 3
+    },
+    "level_requirements": {},
+    "icon_id": "topaz_ring",
+    "description": "A hawk's eye bound into topaz, for archers."
+  },
+  "ruby_ring_of_fury": {
+    "id": "ruby_ring_of_fury",
+    "name": "Ruby Ring of Fury",
+    "item_type": "equipment",
+    "sell_price": 340,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "melee_accuracy_percent": 6,
+      "melee_max_hit_percent": 4
+    },
+    "level_requirements": {},
+    "icon_id": "ruby_ring",
+    "description": "Fire bound into ruby, for those who fight up close."
+  },
+  "diamond_ring_of_warding": {
+    "id": "diamond_ring_of_warding",
+    "name": "Diamond Ring of Warding",
+    "item_type": "equipment",
+    "sell_price": 420,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "damage_reduction_percent": 3,
+      "magic_max_hit_percent": 4
+    },
+    "level_requirements": {},
+    "icon_id": "diamond_ring",
+    "description": "A permanent ward bound into diamond."
+  },
+  "riven_signet": {
+    "id": "riven_signet",
+    "name": "Riven Signet",
+    "item_type": "equipment",
+    "sell_price": 900,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_skill_xp_percent": 3,
+      "global_gp_percent": 3,
+      "damage_to_monsters_percent": 3
+    },
+    "level_requirements": {
+      "alt_magic": 100
+    },
+    "icon_id": "ring_of_power",
+    "description": "The frontier's finest signet, bound by a master Runescriber."
   }
 }

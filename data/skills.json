@@ -498,6 +498,17 @@
         "mastery_action_time": 6.0
       },
       {
+        "id": "fish_squid",
+        "name": "Ink Squid",
+        "level_required": 48,
+        "base_interval": 4.5,
+        "base_xp": 95,
+        "output_items": {
+          "raw_squid": 1
+        },
+        "mastery_action_time": 4.5
+      },
+      {
         "id": "swordfish",
         "name": "Bladefin",
         "level_required": 50,
@@ -584,17 +595,6 @@
           "raw_abyssal_eel": 1
         },
         "mastery_action_time": 19.0
-      },
-      {
-        "id": "fish_squid",
-        "name": "Ink Squid",
-        "level_required": 48,
-        "base_interval": 4.5,
-        "base_xp": 95,
-        "output_items": {
-          "raw_squid": 1
-        },
-        "mastery_action_time": 4.5
       }
     ],
     "order": 11,
@@ -651,6 +651,19 @@
         "mastery_action_time": 3.9
       },
       {
+        "id": "rune_essence",
+        "name": "Raw Glyph Essence",
+        "level_required": 1,
+        "base_interval": 2.0,
+        "base_xp": 5,
+        "output_items": {
+          "rune_essence": 1
+        },
+        "node_hp": 4,
+        "respawn_seconds": 2,
+        "mastery_action_time": 2.0
+      },
+      {
         "id": "iron_ore",
         "name": "Iron Ore",
         "level_required": 15,
@@ -683,6 +696,19 @@
         "node_hp": 10,
         "respawn_seconds": 6,
         "mastery_action_time": 4.5
+      },
+      {
+        "id": "pure_essence",
+        "name": "Refined Glyph Essence",
+        "level_required": 30,
+        "base_interval": 3.0,
+        "base_xp": 12,
+        "output_items": {
+          "pure_essence": 1
+        },
+        "node_hp": 6,
+        "respawn_seconds": 4,
+        "mastery_action_time": 3.0
       },
       {
         "id": "silver_ore",
@@ -875,32 +901,6 @@
             "max_qty": 3
           }
         ]
-      },
-      {
-        "id": "rune_essence",
-        "name": "Raw Glyph Essence",
-        "level_required": 1,
-        "base_interval": 2.0,
-        "base_xp": 5,
-        "output_items": {
-          "rune_essence": 1
-        },
-        "node_hp": 4,
-        "respawn_seconds": 2,
-        "mastery_action_time": 2.0
-      },
-      {
-        "id": "pure_essence",
-        "name": "Refined Glyph Essence",
-        "level_required": 30,
-        "base_interval": 3.0,
-        "base_xp": 12,
-        "output_items": {
-          "pure_essence": 1
-        },
-        "node_hp": 6,
-        "respawn_seconds": 4,
-        "mastery_action_time": 3.0
       }
     ],
     "order": 12,
@@ -1427,6 +1427,24 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_ranch_omelette",
+        "name": "Ranch Omelette",
+        "level_required": 35,
+        "base_interval": 6.0,
+        "base_xp": 75,
+        "success_chance": 0.9,
+        "input_items": {
+          "ranch_egg": 2,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "ranch_omelette": 1
+        },
+        "mastery_action_time": 5.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_lobster",
         "name": "Fen Lobster",
         "level_required": 40,
@@ -1440,6 +1458,40 @@
           "lobster": 1
         },
         "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_ranch_cheese",
+        "name": "Ranch Cheese",
+        "level_required": 45,
+        "base_interval": 6.0,
+        "base_xp": 100,
+        "success_chance": 0.9,
+        "input_items": {
+          "ranch_milk": 2
+        },
+        "output_items": {
+          "ranch_cheese": 1
+        },
+        "mastery_action_time": 5.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "press_squid_ink",
+        "name": "Press Ink Squid",
+        "level_required": 48,
+        "base_interval": 6.0,
+        "base_xp": 105,
+        "success_chance": 0.9,
+        "input_items": {
+          "raw_squid": 1
+        },
+        "output_items": {
+          "scribe_ink": 2
+        },
+        "mastery_action_time": 5.4,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1461,6 +1513,40 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_ranch_meat",
+        "name": "Roasted Ranch Meat",
+        "level_required": 55,
+        "base_interval": 7.0,
+        "base_xp": 130,
+        "success_chance": 0.9,
+        "input_items": {
+          "ranch_meat": 1
+        },
+        "output_items": {
+          "ranch_cooked_meat": 1
+        },
+        "mastery_action_time": 6.3,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_crab",
+        "name": "Crab",
+        "level_required": 60,
+        "base_interval": 8.0,
+        "base_xp": 140,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_crab": 1
+        },
+        "output_items": {
+          "crab": 1
+        },
+        "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_shark",
         "name": "Gale Shark",
         "level_required": 70,
@@ -1474,6 +1560,42 @@
           "shark": 1
         },
         "mastery_action_time": 7.65,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_cave_fish",
+        "name": "Cave Fish",
+        "level_required": 75,
+        "base_interval": 8.0,
+        "base_xp": 200,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_cave_fish": 1
+        },
+        "output_items": {
+          "cave_fish": 1
+        },
+        "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_ranch_feast",
+        "name": "Rancher's Feast",
+        "level_required": 80,
+        "base_interval": 9.0,
+        "base_xp": 240,
+        "success_chance": 0.9,
+        "input_items": {
+          "ranch_omelette": 1,
+          "ranch_cheese": 1,
+          "ranch_cooked_meat": 1
+        },
+        "output_items": {
+          "ranch_feast": 1
+        },
+        "mastery_action_time": 8.1,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1544,109 +1666,6 @@
         "mastery_action_time": 11.05,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
-      },
-      {
-        "id": "cook_crab",
-        "name": "Crab",
-        "level_required": 60,
-        "base_interval": 8.0,
-        "base_xp": 140,
-        "success_chance": 0.78,
-        "input_items": {
-          "raw_crab": 1
-        },
-        "output_items": {
-          "crab": 1
-        },
-        "mastery_action_time": 6.8,
-        "fail_output_item": "burnt_food",
-        "fail_output_qty": 1
-      },
-      {
-        "id": "cook_cave_fish",
-        "name": "Cave Fish",
-        "level_required": 75,
-        "base_interval": 8.0,
-        "base_xp": 200,
-        "success_chance": 0.82,
-        "input_items": {
-          "raw_cave_fish": 1
-        },
-        "output_items": {
-          "cave_fish": 1
-        },
-        "mastery_action_time": 6.8,
-        "fail_output_item": "burnt_food",
-        "fail_output_qty": 1
-      },
-      {
-        "id": "cook_ranch_omelette",
-        "name": "Ranch Omelette",
-        "level_required": 35,
-        "base_interval": 6.0,
-        "base_xp": 75,
-        "success_chance": 0.9,
-        "input_items": {
-          "ranch_egg": 2,
-          "ranch_milk": 1
-        },
-        "output_items": {
-          "ranch_omelette": 1
-        },
-        "mastery_action_time": 5.4,
-        "fail_output_item": "burnt_food",
-        "fail_output_qty": 1
-      },
-      {
-        "id": "cook_ranch_cheese",
-        "name": "Ranch Cheese",
-        "level_required": 45,
-        "base_interval": 6.0,
-        "base_xp": 100,
-        "success_chance": 0.9,
-        "input_items": {
-          "ranch_milk": 2
-        },
-        "output_items": {
-          "ranch_cheese": 1
-        },
-        "mastery_action_time": 5.4,
-        "fail_output_item": "burnt_food",
-        "fail_output_qty": 1
-      },
-      {
-        "id": "cook_ranch_meat",
-        "name": "Roasted Ranch Meat",
-        "level_required": 55,
-        "base_interval": 7.0,
-        "base_xp": 130,
-        "success_chance": 0.9,
-        "input_items": {
-          "ranch_meat": 1
-        },
-        "output_items": {
-          "ranch_cooked_meat": 1
-        },
-        "mastery_action_time": 6.3,
-        "fail_output_item": "burnt_food",
-        "fail_output_qty": 1
-      },
-      {
-        "id": "press_squid_ink",
-        "name": "Press Ink Squid",
-        "level_required": 48,
-        "base_interval": 6.0,
-        "base_xp": 105,
-        "success_chance": 0.9,
-        "input_items": {
-          "raw_squid": 1
-        },
-        "output_items": {
-          "scribe_ink": 2
-        },
-        "mastery_action_time": 5.4,
-        "fail_output_item": "burnt_food",
-        "fail_output_qty": 1
       }
     ],
     "order": 15,
@@ -1698,169 +1717,6 @@
             "max_qty": 3
           }
         ]
-      },
-      {
-        "id": "smelt_iron_bar",
-        "name": "Iron Bar",
-        "level_required": 15,
-        "base_interval": 1.7,
-        "base_xp": 12,
-        "input_items": {
-          "iron_ore": 1
-        },
-        "output_items": {
-          "iron_bar": 1
-        },
-        "mastery_action_time": 1.7,
-        "secondary_outputs": [
-          {
-            "item_id": "iron_arrowtips",
-            "chance": 0.35,
-            "min_qty": 1,
-            "max_qty": 3
-          }
-        ]
-      },
-      {
-        "id": "smelt_steel_bar",
-        "name": "Steel Bar",
-        "level_required": 30,
-        "base_interval": 1.7,
-        "base_xp": 20,
-        "input_items": {
-          "iron_ore": 1,
-          "coal": 2
-        },
-        "output_items": {
-          "steel_bar": 1
-        },
-        "mastery_action_time": 1.7,
-        "secondary_outputs": [
-          {
-            "item_id": "steel_arrowtips",
-            "chance": 0.35,
-            "min_qty": 1,
-            "max_qty": 3
-          }
-        ]
-      },
-      {
-        "id": "smelt_silver_bar",
-        "name": "Silver Bar",
-        "level_required": 40,
-        "base_interval": 1.7,
-        "base_xp": 25,
-        "input_items": {
-          "silver_ore": 1
-        },
-        "output_items": {
-          "silver_bar": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "smelt_gold_bar",
-        "name": "Gold Bar",
-        "level_required": 50,
-        "base_interval": 1.7,
-        "base_xp": 35,
-        "input_items": {
-          "gold_ore": 1
-        },
-        "output_items": {
-          "gold_bar": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "smelt_mithril_bar",
-        "name": "Ghoststeel Bar",
-        "level_required": 55,
-        "base_interval": 1.7,
-        "base_xp": 45,
-        "input_items": {
-          "mithril_ore": 1,
-          "coal": 4
-        },
-        "output_items": {
-          "mithril_bar": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "smelt_adamantite_bar",
-        "name": "Skyiron Bar",
-        "level_required": 70,
-        "base_interval": 1.7,
-        "base_xp": 65,
-        "input_items": {
-          "adamantite_ore": 1,
-          "coal": 6
-        },
-        "output_items": {
-          "adamantite_bar": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "smelt_runite_bar",
-        "name": "Starforge Bar",
-        "level_required": 85,
-        "base_interval": 1.7,
-        "base_xp": 90,
-        "input_items": {
-          "runite_ore": 1,
-          "coal": 8
-        },
-        "output_items": {
-          "runite_bar": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "smelt_dragonite_bar",
-        "name": "Wyrmsteel Bar",
-        "level_required": 95,
-        "base_interval": 1.7,
-        "base_xp": 120,
-        "input_items": {
-          "dragonite_ore": 1,
-          "coal": 10
-        },
-        "output_items": {
-          "dragonite_bar": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "smelt_umbral_bar",
-        "name": "Umbral Bar",
-        "level_required": 105,
-        "base_interval": 1.7,
-        "base_xp": 160,
-        "input_items": {
-          "umbral_ore": 1,
-          "coal": 12
-        },
-        "output_items": {
-          "umbral_bar": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "smelt_herald_bar",
-        "name": "Herald Bar",
-        "level_required": 115,
-        "base_interval": 1.7,
-        "base_xp": 210,
-        "input_items": {
-          "herald_ore": 1,
-          "coal": 15
-        },
-        "output_items": {
-          "herald_bar": 1
-        },
-        "mastery_action_time": 1.7
       },
       {
         "id": "smith_bronze_helmet",
@@ -2171,6 +2027,28 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "smelt_iron_bar",
+        "name": "Iron Bar",
+        "level_required": 15,
+        "base_interval": 1.7,
+        "base_xp": 12,
+        "input_items": {
+          "iron_ore": 1
+        },
+        "output_items": {
+          "iron_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "secondary_outputs": [
+          {
+            "item_id": "iron_arrowtips",
+            "chance": 0.35,
+            "min_qty": 1,
+            "max_qty": 3
+          }
+        ]
+      },
+      {
         "id": "smith_steel_helmet",
         "name": "Crucible Helmet",
         "level_required": 20,
@@ -2323,6 +2201,29 @@
           "steel_2h_sword": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "smelt_steel_bar",
+        "name": "Steel Bar",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 20,
+        "input_items": {
+          "iron_ore": 1,
+          "coal": 2
+        },
+        "output_items": {
+          "steel_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "secondary_outputs": [
+          {
+            "item_id": "steel_arrowtips",
+            "chance": 0.35,
+            "min_qty": 1,
+            "max_qty": 3
+          }
+        ]
       },
       {
         "id": "smith_mithril_helmet",
@@ -2479,6 +2380,34 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "smelt_silver_bar",
+        "name": "Silver Bar",
+        "level_required": 40,
+        "base_interval": 1.7,
+        "base_xp": 25,
+        "input_items": {
+          "silver_ore": 1
+        },
+        "output_items": {
+          "silver_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "smelt_gold_bar",
+        "name": "Gold Bar",
+        "level_required": 50,
+        "base_interval": 1.7,
+        "base_xp": 35,
+        "input_items": {
+          "gold_ore": 1
+        },
+        "output_items": {
+          "gold_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "smith_adamantite_sword",
         "name": "Skyiron Sword",
         "level_required": 50,
@@ -2609,444 +2538,49 @@
         "mastery_action_time": 1.9
       },
       {
-        "id": "forge_air_god_helmet",
-        "name": "Aeris Helmet",
-        "level_required": 95,
-        "base_interval": 20.0,
-        "base_xp": 600,
+        "id": "smelt_mithril_bar",
+        "name": "Ghoststeel Bar",
+        "level_required": 55,
+        "base_interval": 1.7,
+        "base_xp": 45,
         "input_items": {
-          "shard_air": 2,
-          "summoning_shard_crimson": 1,
-          "dragonite_bar": 3,
-          "prismatic_essence": 2
+          "mithril_ore": 1,
+          "coal": 4
         },
         "output_items": {
-          "air_god_helmet": 1
+          "mithril_bar": 1
         },
-        "mastery_action_time": 20.0
+        "mastery_action_time": 1.7
       },
       {
-        "id": "forge_air_god_platelegs",
-        "name": "Aeris Platelegs",
-        "level_required": 98,
-        "base_interval": 22.0,
-        "base_xp": 1000,
+        "id": "smelt_adamantite_bar",
+        "name": "Skyiron Bar",
+        "level_required": 70,
+        "base_interval": 1.7,
+        "base_xp": 65,
         "input_items": {
-          "shard_air": 3,
-          "summoning_shard_crimson": 2,
-          "dragonite_bar": 5,
-          "prismatic_essence": 3
+          "adamantite_ore": 1,
+          "coal": 6
         },
         "output_items": {
-          "air_god_platelegs": 1
+          "adamantite_bar": 1
         },
-        "mastery_action_time": 22.0
+        "mastery_action_time": 1.7
       },
       {
-        "id": "forge_air_god_platebody",
-        "name": "Aeris Platebody",
-        "level_required": 100,
-        "base_interval": 24.0,
-        "base_xp": 1200,
+        "id": "smelt_runite_bar",
+        "name": "Starforge Bar",
+        "level_required": 85,
+        "base_interval": 1.7,
+        "base_xp": 90,
         "input_items": {
-          "shard_air": 3,
-          "summoning_shard_crimson": 2,
-          "dragonite_bar": 6,
-          "prismatic_essence": 4
+          "runite_ore": 1,
+          "coal": 8
         },
         "output_items": {
-          "air_god_platebody": 1
+          "runite_bar": 1
         },
-        "mastery_action_time": 24.0
-      },
-      {
-        "id": "forge_air_god_boots",
-        "name": "Aeris Boots",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_air": 1,
-          "summoning_shard_crimson": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "air_god_boots": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_air_god_gloves",
-        "name": "Aeris Gloves",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_air": 1,
-          "summoning_shard_crimson": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "air_god_gloves": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_air_godsword",
-        "name": "Aeris Godsword",
-        "level_required": 105,
-        "base_interval": 30.0,
-        "base_xp": 2500,
-        "input_items": {
-          "shard_air": 5,
-          "summoning_shard_gold": 3,
-          "dragonite_bar": 8,
-          "prismatic_essence": 6
-        },
-        "output_items": {
-          "air_godsword": 1
-        },
-        "mastery_action_time": 30.0
-      },
-      {
-        "id": "forge_water_god_helmet",
-        "name": "Glacia Helmet",
-        "level_required": 95,
-        "base_interval": 20.0,
-        "base_xp": 600,
-        "input_items": {
-          "shard_water": 2,
-          "summoning_shard_blue": 1,
-          "dragonite_bar": 3,
-          "prismatic_essence": 2
-        },
-        "output_items": {
-          "water_god_helmet": 1
-        },
-        "mastery_action_time": 20.0
-      },
-      {
-        "id": "forge_water_god_platelegs",
-        "name": "Glacia Platelegs",
-        "level_required": 98,
-        "base_interval": 22.0,
-        "base_xp": 1000,
-        "input_items": {
-          "shard_water": 3,
-          "summoning_shard_blue": 2,
-          "dragonite_bar": 5,
-          "prismatic_essence": 3
-        },
-        "output_items": {
-          "water_god_platelegs": 1
-        },
-        "mastery_action_time": 22.0
-      },
-      {
-        "id": "forge_water_god_platebody",
-        "name": "Glacia Platebody",
-        "level_required": 100,
-        "base_interval": 24.0,
-        "base_xp": 1200,
-        "input_items": {
-          "shard_water": 3,
-          "summoning_shard_blue": 2,
-          "dragonite_bar": 6,
-          "prismatic_essence": 4
-        },
-        "output_items": {
-          "water_god_platebody": 1
-        },
-        "mastery_action_time": 24.0
-      },
-      {
-        "id": "forge_water_god_boots",
-        "name": "Glacia Boots",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_water": 1,
-          "summoning_shard_blue": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "water_god_boots": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_water_god_gloves",
-        "name": "Glacia Gloves",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_water": 1,
-          "summoning_shard_blue": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "water_god_gloves": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_water_godsword",
-        "name": "Glacia Godsword",
-        "level_required": 105,
-        "base_interval": 30.0,
-        "base_xp": 2500,
-        "input_items": {
-          "shard_water": 5,
-          "summoning_shard_gold": 3,
-          "dragonite_bar": 8,
-          "prismatic_essence": 6
-        },
-        "output_items": {
-          "water_godsword": 1
-        },
-        "mastery_action_time": 30.0
-      },
-      {
-        "id": "forge_earth_god_helmet",
-        "name": "Terran Helmet",
-        "level_required": 95,
-        "base_interval": 20.0,
-        "base_xp": 600,
-        "input_items": {
-          "shard_earth": 2,
-          "summoning_shard_silver": 1,
-          "dragonite_bar": 3,
-          "prismatic_essence": 2
-        },
-        "output_items": {
-          "earth_god_helmet": 1
-        },
-        "mastery_action_time": 20.0
-      },
-      {
-        "id": "forge_earth_god_platelegs",
-        "name": "Terran Platelegs",
-        "level_required": 98,
-        "base_interval": 22.0,
-        "base_xp": 1000,
-        "input_items": {
-          "shard_earth": 3,
-          "summoning_shard_silver": 2,
-          "dragonite_bar": 5,
-          "prismatic_essence": 3
-        },
-        "output_items": {
-          "earth_god_platelegs": 1
-        },
-        "mastery_action_time": 22.0
-      },
-      {
-        "id": "forge_earth_god_platebody",
-        "name": "Terran Platebody",
-        "level_required": 100,
-        "base_interval": 24.0,
-        "base_xp": 1200,
-        "input_items": {
-          "shard_earth": 3,
-          "summoning_shard_silver": 2,
-          "dragonite_bar": 6,
-          "prismatic_essence": 4
-        },
-        "output_items": {
-          "earth_god_platebody": 1
-        },
-        "mastery_action_time": 24.0
-      },
-      {
-        "id": "forge_earth_god_boots",
-        "name": "Terran Boots",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_earth": 1,
-          "summoning_shard_silver": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "earth_god_boots": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_earth_god_gloves",
-        "name": "Terran Gloves",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_earth": 1,
-          "summoning_shard_silver": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "earth_god_gloves": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_earth_godsword",
-        "name": "Terran Godsword",
-        "level_required": 105,
-        "base_interval": 30.0,
-        "base_xp": 2500,
-        "input_items": {
-          "shard_earth": 5,
-          "summoning_shard_gold": 3,
-          "dragonite_bar": 8,
-          "prismatic_essence": 6
-        },
-        "output_items": {
-          "earth_godsword": 1
-        },
-        "mastery_action_time": 30.0
-      },
-      {
-        "id": "forge_fire_god_helmet",
-        "name": "Ragnar Helmet",
-        "level_required": 95,
-        "base_interval": 20.0,
-        "base_xp": 600,
-        "input_items": {
-          "shard_fire": 2,
-          "summoning_shard_black": 1,
-          "dragonite_bar": 3,
-          "prismatic_essence": 2
-        },
-        "output_items": {
-          "fire_god_helmet": 1
-        },
-        "mastery_action_time": 20.0
-      },
-      {
-        "id": "forge_fire_god_platelegs",
-        "name": "Ragnar Platelegs",
-        "level_required": 98,
-        "base_interval": 22.0,
-        "base_xp": 1000,
-        "input_items": {
-          "shard_fire": 3,
-          "summoning_shard_black": 2,
-          "dragonite_bar": 5,
-          "prismatic_essence": 3
-        },
-        "output_items": {
-          "fire_god_platelegs": 1
-        },
-        "mastery_action_time": 22.0
-      },
-      {
-        "id": "forge_fire_god_platebody",
-        "name": "Ragnar Platebody",
-        "level_required": 100,
-        "base_interval": 24.0,
-        "base_xp": 1200,
-        "input_items": {
-          "shard_fire": 3,
-          "summoning_shard_black": 2,
-          "dragonite_bar": 6,
-          "prismatic_essence": 4
-        },
-        "output_items": {
-          "fire_god_platebody": 1
-        },
-        "mastery_action_time": 24.0
-      },
-      {
-        "id": "forge_fire_god_boots",
-        "name": "Ragnar Boots",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_fire": 1,
-          "summoning_shard_black": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "fire_god_boots": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_fire_god_gloves",
-        "name": "Ragnar Gloves",
-        "level_required": 96,
-        "base_interval": 18.0,
-        "base_xp": 400,
-        "input_items": {
-          "shard_fire": 1,
-          "summoning_shard_black": 1,
-          "dragonite_bar": 2,
-          "prismatic_essence": 1
-        },
-        "output_items": {
-          "fire_god_gloves": 1
-        },
-        "mastery_action_time": 18.0
-      },
-      {
-        "id": "forge_fire_godsword",
-        "name": "Ragnar Godsword",
-        "level_required": 105,
-        "base_interval": 30.0,
-        "base_xp": 2500,
-        "input_items": {
-          "shard_fire": 5,
-          "summoning_shard_gold": 3,
-          "dragonite_bar": 8,
-          "prismatic_essence": 6
-        },
-        "output_items": {
-          "fire_godsword": 1
-        },
-        "mastery_action_time": 30.0
-      },
-      {
-        "id": "forge_herald_platebody",
-        "name": "Herald Platebody",
-        "level_required": 110,
-        "base_interval": 28.0,
-        "base_xp": 1800,
-        "input_items": {
-          "umbral_bar": 6,
-          "summoning_shard_gold": 2,
-          "prismatic_essence": 4
-        },
-        "output_items": {
-          "herald_platebody": 1
-        },
-        "mastery_action_time": 28.0
-      },
-      {
-        "id": "forge_herald_godsword",
-        "name": "Herald Godsword",
-        "level_required": 115,
-        "base_interval": 34.0,
-        "base_xp": 3200,
-        "input_items": {
-          "herald_bar": 8,
-          "summoning_shard_gold": 3,
-          "umbral_essence": 6
-        },
-        "output_items": {
-          "herald_godsword": 1
-        },
-        "mastery_action_time": 34.0
+        "mastery_action_time": 1.7
       },
       {
         "id": "smith_runite_sword",
@@ -3208,6 +2742,89 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "smelt_dragonite_bar",
+        "name": "Wyrmsteel Bar",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 120,
+        "input_items": {
+          "dragonite_ore": 1,
+          "coal": 10
+        },
+        "output_items": {
+          "dragonite_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "forge_air_god_helmet",
+        "name": "Aeris Helmet",
+        "level_required": 95,
+        "base_interval": 20.0,
+        "base_xp": 600,
+        "input_items": {
+          "shard_air": 2,
+          "summoning_shard_crimson": 1,
+          "dragonite_bar": 3,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "air_god_helmet": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_water_god_helmet",
+        "name": "Glacia Helmet",
+        "level_required": 95,
+        "base_interval": 20.0,
+        "base_xp": 600,
+        "input_items": {
+          "shard_water": 2,
+          "summoning_shard_blue": 1,
+          "dragonite_bar": 3,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "water_god_helmet": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_earth_god_helmet",
+        "name": "Terran Helmet",
+        "level_required": 95,
+        "base_interval": 20.0,
+        "base_xp": 600,
+        "input_items": {
+          "shard_earth": 2,
+          "summoning_shard_silver": 1,
+          "dragonite_bar": 3,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "earth_god_helmet": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_fire_god_helmet",
+        "name": "Ragnar Helmet",
+        "level_required": 95,
+        "base_interval": 20.0,
+        "base_xp": 600,
+        "input_items": {
+          "shard_fire": 2,
+          "summoning_shard_black": 1,
+          "dragonite_bar": 3,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "fire_god_helmet": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
         "id": "smith_dragonite_sword",
         "name": "Dragonite Sword",
         "level_required": 95,
@@ -3365,6 +2982,408 @@
           "dragonite_shield": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "forge_air_god_boots",
+        "name": "Aeris Boots",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_air": 1,
+          "summoning_shard_crimson": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "air_god_boots": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_air_god_gloves",
+        "name": "Aeris Gloves",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_air": 1,
+          "summoning_shard_crimson": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "air_god_gloves": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_water_god_boots",
+        "name": "Glacia Boots",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_water": 1,
+          "summoning_shard_blue": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "water_god_boots": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_water_god_gloves",
+        "name": "Glacia Gloves",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_water": 1,
+          "summoning_shard_blue": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "water_god_gloves": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_earth_god_boots",
+        "name": "Terran Boots",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_earth": 1,
+          "summoning_shard_silver": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "earth_god_boots": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_earth_god_gloves",
+        "name": "Terran Gloves",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_earth": 1,
+          "summoning_shard_silver": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "earth_god_gloves": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_fire_god_boots",
+        "name": "Ragnar Boots",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_fire": 1,
+          "summoning_shard_black": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "fire_god_boots": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_fire_god_gloves",
+        "name": "Ragnar Gloves",
+        "level_required": 96,
+        "base_interval": 18.0,
+        "base_xp": 400,
+        "input_items": {
+          "shard_fire": 1,
+          "summoning_shard_black": 1,
+          "dragonite_bar": 2,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "fire_god_gloves": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_air_god_platelegs",
+        "name": "Aeris Platelegs",
+        "level_required": 98,
+        "base_interval": 22.0,
+        "base_xp": 1000,
+        "input_items": {
+          "shard_air": 3,
+          "summoning_shard_crimson": 2,
+          "dragonite_bar": 5,
+          "prismatic_essence": 3
+        },
+        "output_items": {
+          "air_god_platelegs": 1
+        },
+        "mastery_action_time": 22.0
+      },
+      {
+        "id": "forge_water_god_platelegs",
+        "name": "Glacia Platelegs",
+        "level_required": 98,
+        "base_interval": 22.0,
+        "base_xp": 1000,
+        "input_items": {
+          "shard_water": 3,
+          "summoning_shard_blue": 2,
+          "dragonite_bar": 5,
+          "prismatic_essence": 3
+        },
+        "output_items": {
+          "water_god_platelegs": 1
+        },
+        "mastery_action_time": 22.0
+      },
+      {
+        "id": "forge_earth_god_platelegs",
+        "name": "Terran Platelegs",
+        "level_required": 98,
+        "base_interval": 22.0,
+        "base_xp": 1000,
+        "input_items": {
+          "shard_earth": 3,
+          "summoning_shard_silver": 2,
+          "dragonite_bar": 5,
+          "prismatic_essence": 3
+        },
+        "output_items": {
+          "earth_god_platelegs": 1
+        },
+        "mastery_action_time": 22.0
+      },
+      {
+        "id": "forge_fire_god_platelegs",
+        "name": "Ragnar Platelegs",
+        "level_required": 98,
+        "base_interval": 22.0,
+        "base_xp": 1000,
+        "input_items": {
+          "shard_fire": 3,
+          "summoning_shard_black": 2,
+          "dragonite_bar": 5,
+          "prismatic_essence": 3
+        },
+        "output_items": {
+          "fire_god_platelegs": 1
+        },
+        "mastery_action_time": 22.0
+      },
+      {
+        "id": "forge_air_god_platebody",
+        "name": "Aeris Platebody",
+        "level_required": 100,
+        "base_interval": 24.0,
+        "base_xp": 1200,
+        "input_items": {
+          "shard_air": 3,
+          "summoning_shard_crimson": 2,
+          "dragonite_bar": 6,
+          "prismatic_essence": 4
+        },
+        "output_items": {
+          "air_god_platebody": 1
+        },
+        "mastery_action_time": 24.0
+      },
+      {
+        "id": "forge_water_god_platebody",
+        "name": "Glacia Platebody",
+        "level_required": 100,
+        "base_interval": 24.0,
+        "base_xp": 1200,
+        "input_items": {
+          "shard_water": 3,
+          "summoning_shard_blue": 2,
+          "dragonite_bar": 6,
+          "prismatic_essence": 4
+        },
+        "output_items": {
+          "water_god_platebody": 1
+        },
+        "mastery_action_time": 24.0
+      },
+      {
+        "id": "forge_earth_god_platebody",
+        "name": "Terran Platebody",
+        "level_required": 100,
+        "base_interval": 24.0,
+        "base_xp": 1200,
+        "input_items": {
+          "shard_earth": 3,
+          "summoning_shard_silver": 2,
+          "dragonite_bar": 6,
+          "prismatic_essence": 4
+        },
+        "output_items": {
+          "earth_god_platebody": 1
+        },
+        "mastery_action_time": 24.0
+      },
+      {
+        "id": "forge_fire_god_platebody",
+        "name": "Ragnar Platebody",
+        "level_required": 100,
+        "base_interval": 24.0,
+        "base_xp": 1200,
+        "input_items": {
+          "shard_fire": 3,
+          "summoning_shard_black": 2,
+          "dragonite_bar": 6,
+          "prismatic_essence": 4
+        },
+        "output_items": {
+          "fire_god_platebody": 1
+        },
+        "mastery_action_time": 24.0
+      },
+      {
+        "id": "smelt_umbral_bar",
+        "name": "Umbral Bar",
+        "level_required": 105,
+        "base_interval": 1.7,
+        "base_xp": 160,
+        "input_items": {
+          "umbral_ore": 1,
+          "coal": 12
+        },
+        "output_items": {
+          "umbral_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "forge_air_godsword",
+        "name": "Aeris Godsword",
+        "level_required": 105,
+        "base_interval": 30.0,
+        "base_xp": 2500,
+        "input_items": {
+          "shard_air": 5,
+          "summoning_shard_gold": 3,
+          "dragonite_bar": 8,
+          "prismatic_essence": 6
+        },
+        "output_items": {
+          "air_godsword": 1
+        },
+        "mastery_action_time": 30.0
+      },
+      {
+        "id": "forge_water_godsword",
+        "name": "Glacia Godsword",
+        "level_required": 105,
+        "base_interval": 30.0,
+        "base_xp": 2500,
+        "input_items": {
+          "shard_water": 5,
+          "summoning_shard_gold": 3,
+          "dragonite_bar": 8,
+          "prismatic_essence": 6
+        },
+        "output_items": {
+          "water_godsword": 1
+        },
+        "mastery_action_time": 30.0
+      },
+      {
+        "id": "forge_earth_godsword",
+        "name": "Terran Godsword",
+        "level_required": 105,
+        "base_interval": 30.0,
+        "base_xp": 2500,
+        "input_items": {
+          "shard_earth": 5,
+          "summoning_shard_gold": 3,
+          "dragonite_bar": 8,
+          "prismatic_essence": 6
+        },
+        "output_items": {
+          "earth_godsword": 1
+        },
+        "mastery_action_time": 30.0
+      },
+      {
+        "id": "forge_fire_godsword",
+        "name": "Ragnar Godsword",
+        "level_required": 105,
+        "base_interval": 30.0,
+        "base_xp": 2500,
+        "input_items": {
+          "shard_fire": 5,
+          "summoning_shard_gold": 3,
+          "dragonite_bar": 8,
+          "prismatic_essence": 6
+        },
+        "output_items": {
+          "fire_godsword": 1
+        },
+        "mastery_action_time": 30.0
+      },
+      {
+        "id": "forge_herald_platebody",
+        "name": "Herald Platebody",
+        "level_required": 110,
+        "base_interval": 28.0,
+        "base_xp": 1800,
+        "input_items": {
+          "umbral_bar": 6,
+          "summoning_shard_gold": 2,
+          "prismatic_essence": 4
+        },
+        "output_items": {
+          "herald_platebody": 1
+        },
+        "mastery_action_time": 28.0
+      },
+      {
+        "id": "smelt_herald_bar",
+        "name": "Herald Bar",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 210,
+        "input_items": {
+          "herald_ore": 1,
+          "coal": 15
+        },
+        "output_items": {
+          "herald_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "forge_herald_godsword",
+        "name": "Herald Godsword",
+        "level_required": 115,
+        "base_interval": 34.0,
+        "base_xp": 3200,
+        "input_items": {
+          "herald_bar": 8,
+          "summoning_shard_gold": 3,
+          "umbral_essence": 6
+        },
+        "output_items": {
+          "herald_godsword": 1
+        },
+        "mastery_action_time": 34.0
       }
     ],
     "order": 16,
@@ -3408,38 +3427,6 @@
         "mastery_action_time": 1.3
       },
       {
-        "id": "fletch_iron_arrow",
-        "name": "Iron Arrow",
-        "level_required": 15,
-        "base_interval": 1.3,
-        "base_xp": 20,
-        "input_items": {
-          "arrow_shaft": 1,
-          "feather": 1,
-          "iron_arrowtips": 1
-        },
-        "output_items": {
-          "iron_arrow": 1
-        },
-        "mastery_action_time": 1.3
-      },
-      {
-        "id": "fletch_steel_arrow",
-        "name": "Steel Arrow",
-        "level_required": 30,
-        "base_interval": 1.3,
-        "base_xp": 40,
-        "input_items": {
-          "arrow_shaft": 1,
-          "feather": 1,
-          "steel_arrowtips": 1
-        },
-        "output_items": {
-          "steel_arrow": 1
-        },
-        "mastery_action_time": 1.3
-      },
-      {
         "id": "fletch_normal_shortbow",
         "name": "Emberpine Shortbow",
         "level_required": 1,
@@ -3470,6 +3457,22 @@
         "mastery_action_time": 1.3
       },
       {
+        "id": "fletch_iron_arrow",
+        "name": "Iron Arrow",
+        "level_required": 15,
+        "base_interval": 1.3,
+        "base_xp": 20,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "iron_arrowtips": 1
+        },
+        "output_items": {
+          "iron_arrow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
         "id": "fletch_oak_shortbow",
         "name": "Ironbark Shortbow",
         "level_required": 20,
@@ -3496,6 +3499,22 @@
         },
         "output_items": {
           "oak_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_steel_arrow",
+        "name": "Steel Arrow",
+        "level_required": 30,
+        "base_interval": 1.3,
+        "base_xp": 40,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "steel_arrowtips": 1
+        },
+        "output_items": {
+          "steel_arrow": 1
         },
         "mastery_action_time": 1.3
       },
@@ -3818,6 +3837,20 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "work_ranch_wool",
+        "name": "Ranch Wool Fittings",
+        "level_required": 25,
+        "base_interval": 1.7,
+        "base_xp": 55,
+        "input_items": {
+          "ranch_wool": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_emerald_ring",
         "name": "Emerald Ring",
         "level_required": 27,
@@ -3829,319 +3862,6 @@
         },
         "output_items": {
           "emerald_ring": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_ruby_ring",
-        "name": "Ruby Ring",
-        "level_required": 34,
-        "base_interval": 1.65,
-        "base_xp": 70,
-        "input_items": {
-          "gold_bar": 1,
-          "ruby": 1
-        },
-        "output_items": {
-          "ruby_ring": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_diamond_ring",
-        "name": "Diamond Ring",
-        "level_required": 43,
-        "base_interval": 1.65,
-        "base_xp": 100,
-        "input_items": {
-          "gold_bar": 1,
-          "diamond": 1
-        },
-        "output_items": {
-          "diamond_ring": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_green_dhide_body",
-        "name": "Verdant Wyrmhide Body",
-        "level_required": 40,
-        "base_interval": 1.65,
-        "base_xp": 60,
-        "input_items": {
-          "green_dragonhide": 2
-        },
-        "output_items": {
-          "green_dhide_body": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_green_dhide_chaps",
-        "name": "Verdant Wyrmhide Chaps",
-        "level_required": 40,
-        "base_interval": 1.65,
-        "base_xp": 60,
-        "input_items": {
-          "green_dragonhide": 2
-        },
-        "output_items": {
-          "green_dhide_chaps": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_green_dhide_vambraces",
-        "name": "Verdant Wyrmhide Vambraces",
-        "level_required": 40,
-        "base_interval": 1.65,
-        "base_xp": 60,
-        "input_items": {
-          "green_dragonhide": 2
-        },
-        "output_items": {
-          "green_dhide_vambraces": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_green_dhide_coif",
-        "name": "Verdant Wyrmhide Coif",
-        "level_required": 40,
-        "base_interval": 1.65,
-        "base_xp": 60,
-        "input_items": {
-          "green_dragonhide": 2
-        },
-        "output_items": {
-          "green_dhide_coif": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_blue_dhide_body",
-        "name": "Azure Wyrmhide Body",
-        "level_required": 50,
-        "base_interval": 1.65,
-        "base_xp": 80,
-        "input_items": {
-          "blue_dragonhide": 2
-        },
-        "output_items": {
-          "blue_dhide_body": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_blue_dhide_chaps",
-        "name": "Azure Wyrmhide Chaps",
-        "level_required": 50,
-        "base_interval": 1.65,
-        "base_xp": 80,
-        "input_items": {
-          "blue_dragonhide": 2
-        },
-        "output_items": {
-          "blue_dhide_chaps": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_blue_dhide_vambraces",
-        "name": "Azure Wyrmhide Vambraces",
-        "level_required": 50,
-        "base_interval": 1.65,
-        "base_xp": 80,
-        "input_items": {
-          "blue_dragonhide": 2
-        },
-        "output_items": {
-          "blue_dhide_vambraces": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_blue_dhide_coif",
-        "name": "Azure Wyrmhide Coif",
-        "level_required": 50,
-        "base_interval": 1.65,
-        "base_xp": 80,
-        "input_items": {
-          "blue_dragonhide": 2
-        },
-        "output_items": {
-          "blue_dhide_coif": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_red_dhide_body",
-        "name": "Crimson Wyrmhide Body",
-        "level_required": 60,
-        "base_interval": 1.65,
-        "base_xp": 105,
-        "input_items": {
-          "red_dragonhide": 2
-        },
-        "output_items": {
-          "red_dhide_body": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_red_dhide_chaps",
-        "name": "Crimson Wyrmhide Chaps",
-        "level_required": 60,
-        "base_interval": 1.65,
-        "base_xp": 105,
-        "input_items": {
-          "red_dragonhide": 2
-        },
-        "output_items": {
-          "red_dhide_chaps": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_red_dhide_vambraces",
-        "name": "Crimson Wyrmhide Vambraces",
-        "level_required": 60,
-        "base_interval": 1.65,
-        "base_xp": 105,
-        "input_items": {
-          "red_dragonhide": 2
-        },
-        "output_items": {
-          "red_dhide_vambraces": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_red_dhide_coif",
-        "name": "Crimson Wyrmhide Coif",
-        "level_required": 60,
-        "base_interval": 1.65,
-        "base_xp": 105,
-        "input_items": {
-          "red_dragonhide": 2
-        },
-        "output_items": {
-          "red_dhide_coif": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_black_dhide_body",
-        "name": "Blighted Wyrmhide Body",
-        "level_required": 70,
-        "base_interval": 1.65,
-        "base_xp": 135,
-        "input_items": {
-          "black_dragonhide": 2
-        },
-        "output_items": {
-          "black_dhide_body": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_black_dhide_chaps",
-        "name": "Blighted Wyrmhide Chaps",
-        "level_required": 70,
-        "base_interval": 1.65,
-        "base_xp": 135,
-        "input_items": {
-          "black_dragonhide": 2
-        },
-        "output_items": {
-          "black_dhide_chaps": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_black_dhide_vambraces",
-        "name": "Blighted Wyrmhide Vambraces",
-        "level_required": 70,
-        "base_interval": 1.65,
-        "base_xp": 135,
-        "input_items": {
-          "black_dragonhide": 2
-        },
-        "output_items": {
-          "black_dhide_vambraces": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_black_dhide_coif",
-        "name": "Blighted Wyrmhide Coif",
-        "level_required": 70,
-        "base_interval": 1.65,
-        "base_xp": 135,
-        "input_items": {
-          "black_dragonhide": 2
-        },
-        "output_items": {
-          "black_dhide_coif": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_reinforced_dhide_body",
-        "name": "Blighted Wyrmhide Body",
-        "level_required": 85,
-        "base_interval": 1.65,
-        "base_xp": 190,
-        "input_items": {
-          "black_dragonhide": 3
-        },
-        "output_items": {
-          "black_dhide_body": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_reinforced_dhide_chaps",
-        "name": "Blighted Wyrmhide Chaps",
-        "level_required": 95,
-        "base_interval": 1.65,
-        "base_xp": 250,
-        "input_items": {
-          "black_dragonhide": 3,
-          "umbral_essence": 1
-        },
-        "output_items": {
-          "black_dhide_chaps": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_umbral_dhide_vambraces",
-        "name": "Blighted Wyrmhide Vambraces",
-        "level_required": 115,
-        "base_interval": 1.65,
-        "base_xp": 400,
-        "input_items": {
-          "black_dragonhide": 4,
-          "umbral_essence": 2
-        },
-        "output_items": {
-          "black_dhide_vambraces": 1
-        },
-        "mastery_action_time": 1.65
-      },
-      {
-        "id": "craft_reinforced_dhide_coif",
-        "name": "Blighted Wyrmhide Coif",
-        "level_required": 105,
-        "base_interval": 1.65,
-        "base_xp": 320,
-        "input_items": {
-          "black_dragonhide": 4,
-          "herald_essence": 1
-        },
-        "output_items": {
-          "black_dhide_coif": 1
         },
         "mastery_action_time": 1.65
       },
@@ -4210,6 +3930,275 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "craft_ruby_ring",
+        "name": "Ruby Ring",
+        "level_required": 34,
+        "base_interval": 1.65,
+        "base_xp": 70,
+        "input_items": {
+          "gold_bar": 1,
+          "ruby": 1
+        },
+        "output_items": {
+          "ruby_ring": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_green_dhide_body",
+        "name": "Verdant Wyrmhide Body",
+        "level_required": 40,
+        "base_interval": 1.65,
+        "base_xp": 60,
+        "input_items": {
+          "green_dragonhide": 2
+        },
+        "output_items": {
+          "green_dhide_body": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_green_dhide_chaps",
+        "name": "Verdant Wyrmhide Chaps",
+        "level_required": 40,
+        "base_interval": 1.65,
+        "base_xp": 60,
+        "input_items": {
+          "green_dragonhide": 2
+        },
+        "output_items": {
+          "green_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_green_dhide_vambraces",
+        "name": "Verdant Wyrmhide Vambraces",
+        "level_required": 40,
+        "base_interval": 1.65,
+        "base_xp": 60,
+        "input_items": {
+          "green_dragonhide": 2
+        },
+        "output_items": {
+          "green_dhide_vambraces": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_green_dhide_coif",
+        "name": "Verdant Wyrmhide Coif",
+        "level_required": 40,
+        "base_interval": 1.65,
+        "base_xp": 60,
+        "input_items": {
+          "green_dragonhide": 2
+        },
+        "output_items": {
+          "green_dhide_coif": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "set_topaz_ring",
+        "name": "Topaz Ring",
+        "level_required": 42,
+        "base_interval": 1.9,
+        "base_xp": 90,
+        "input_items": {
+          "topaz": 1,
+          "gold_bar": 1
+        },
+        "output_items": {
+          "topaz_ring": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_diamond_ring",
+        "name": "Diamond Ring",
+        "level_required": 43,
+        "base_interval": 1.65,
+        "base_xp": 100,
+        "input_items": {
+          "gold_bar": 1,
+          "diamond": 1
+        },
+        "output_items": {
+          "diamond_ring": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "work_ranch_tusk",
+        "name": "Ranch Tusk Fittings",
+        "level_required": 45,
+        "base_interval": 1.7,
+        "base_xp": 90,
+        "input_items": {
+          "ranch_tusk": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_blue_dhide_body",
+        "name": "Azure Wyrmhide Body",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 80,
+        "input_items": {
+          "blue_dragonhide": 2
+        },
+        "output_items": {
+          "blue_dhide_body": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_blue_dhide_chaps",
+        "name": "Azure Wyrmhide Chaps",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 80,
+        "input_items": {
+          "blue_dragonhide": 2
+        },
+        "output_items": {
+          "blue_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_blue_dhide_vambraces",
+        "name": "Azure Wyrmhide Vambraces",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 80,
+        "input_items": {
+          "blue_dragonhide": 2
+        },
+        "output_items": {
+          "blue_dhide_vambraces": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_blue_dhide_coif",
+        "name": "Azure Wyrmhide Coif",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 80,
+        "input_items": {
+          "blue_dragonhide": 2
+        },
+        "output_items": {
+          "blue_dhide_coif": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "refine_harvested_essence",
+        "name": "Refine Harvested Essence",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 110,
+        "input_items": {
+          "harvested_essence": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "work_ranch_antler",
+        "name": "Ranch Antler Fittings",
+        "level_required": 55,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "ranch_antler": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "enchant_stardust_lens",
+        "name": "Stardust Lens",
+        "level_required": 55,
+        "base_interval": 1.9,
+        "base_xp": 115,
+        "input_items": {
+          "stardust": 3
+        },
+        "output_items": {
+          "topaz": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_red_dhide_body",
+        "name": "Crimson Wyrmhide Body",
+        "level_required": 60,
+        "base_interval": 1.65,
+        "base_xp": 105,
+        "input_items": {
+          "red_dragonhide": 2
+        },
+        "output_items": {
+          "red_dhide_body": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_red_dhide_chaps",
+        "name": "Crimson Wyrmhide Chaps",
+        "level_required": 60,
+        "base_interval": 1.65,
+        "base_xp": 105,
+        "input_items": {
+          "red_dragonhide": 2
+        },
+        "output_items": {
+          "red_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_red_dhide_vambraces",
+        "name": "Crimson Wyrmhide Vambraces",
+        "level_required": 60,
+        "base_interval": 1.65,
+        "base_xp": 105,
+        "input_items": {
+          "red_dragonhide": 2
+        },
+        "output_items": {
+          "red_dhide_vambraces": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_red_dhide_coif",
+        "name": "Crimson Wyrmhide Coif",
+        "level_required": 60,
+        "base_interval": 1.65,
+        "base_xp": 105,
+        "input_items": {
+          "red_dragonhide": 2
+        },
+        "output_items": {
+          "red_dhide_coif": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_adept_hat",
         "name": "Adept Hat",
         "level_required": 60,
@@ -4272,6 +4261,161 @@
           "adept_gloves": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "grind_golden_stardust",
+        "name": "Grind Golden Stardust",
+        "level_required": 60,
+        "base_interval": 1.9,
+        "base_xp": 120,
+        "input_items": {
+          "golden_stardust": 1
+        },
+        "output_items": {
+          "rune_essence": 2
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "work_ranch_plume",
+        "name": "Ranch Plume Fittings",
+        "level_required": 65,
+        "base_interval": 1.7,
+        "base_xp": 130,
+        "input_items": {
+          "ranch_plume": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_black_dhide_body",
+        "name": "Blighted Wyrmhide Body",
+        "level_required": 70,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "black_dragonhide": 2
+        },
+        "output_items": {
+          "black_dhide_body": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_black_dhide_chaps",
+        "name": "Blighted Wyrmhide Chaps",
+        "level_required": 70,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "black_dragonhide": 2
+        },
+        "output_items": {
+          "black_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_black_dhide_vambraces",
+        "name": "Blighted Wyrmhide Vambraces",
+        "level_required": 70,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "black_dragonhide": 2
+        },
+        "output_items": {
+          "black_dhide_vambraces": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_black_dhide_coif",
+        "name": "Blighted Wyrmhide Coif",
+        "level_required": 70,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "black_dragonhide": 2
+        },
+        "output_items": {
+          "black_dhide_coif": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "assemble_clockwork_core",
+        "name": "Clockwork Core",
+        "level_required": 70,
+        "base_interval": 2.2,
+        "base_xp": 150,
+        "input_items": {
+          "clockwork_gear": 2,
+          "clockwork_spring": 2
+        },
+        "output_items": {
+          "clockwork_frame": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "work_ranch_scale",
+        "name": "Wyvern Scale Plating",
+        "level_required": 70,
+        "base_interval": 1.9,
+        "base_xp": 150,
+        "input_items": {
+          "ranch_scale": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "fit_clockwork_frame",
+        "name": "Clockwork Fitting",
+        "level_required": 80,
+        "base_interval": 1.9,
+        "base_xp": 180,
+        "input_items": {
+          "clockwork_frame": 1
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_reinforced_dhide_body",
+        "name": "Blighted Wyrmhide Body",
+        "level_required": 85,
+        "base_interval": 1.65,
+        "base_xp": 190,
+        "input_items": {
+          "black_dragonhide": 3
+        },
+        "output_items": {
+          "black_dhide_body": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "work_ranch_star_scale",
+        "name": "Star Scale Plating",
+        "level_required": 85,
+        "base_interval": 1.9,
+        "base_xp": 185,
+        "input_items": {
+          "ranch_star_scale": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.9
       },
       {
         "id": "craft_archmage_hat",
@@ -4338,6 +4482,65 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "temper_ranch_ember",
+        "name": "Dragon Ember Temper",
+        "level_required": 90,
+        "base_interval": 1.9,
+        "base_xp": 200,
+        "input_items": {
+          "ranch_ember": 2
+        },
+        "output_items": {
+          "rune_essence": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_reinforced_dhide_chaps",
+        "name": "Blighted Wyrmhide Chaps",
+        "level_required": 95,
+        "base_interval": 1.65,
+        "base_xp": 250,
+        "input_items": {
+          "black_dragonhide": 3,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "black_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_reinforced_dhide_coif",
+        "name": "Blighted Wyrmhide Coif",
+        "level_required": 105,
+        "base_interval": 1.65,
+        "base_xp": 320,
+        "input_items": {
+          "black_dragonhide": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "black_dhide_coif": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_umbral_dhide_vambraces",
+        "name": "Blighted Wyrmhide Vambraces",
+        "level_required": 115,
+        "base_interval": 1.65,
+        "base_xp": 400,
+        "input_items": {
+          "black_dragonhide": 4,
+          "umbral_essence": 2
+        },
+        "output_items": {
+          "black_dhide_vambraces": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_herald_hat",
         "name": "Herald Hat",
         "level_required": 115,
@@ -4400,190 +4603,6 @@
           "herald_gloves": 1
         },
         "mastery_action_time": 1.7
-      },
-      {
-        "id": "work_ranch_wool",
-        "name": "Ranch Wool Fittings",
-        "level_required": 25,
-        "base_interval": 1.7,
-        "base_xp": 55,
-        "input_items": {
-          "ranch_wool": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "work_ranch_tusk",
-        "name": "Ranch Tusk Fittings",
-        "level_required": 45,
-        "base_interval": 1.7,
-        "base_xp": 90,
-        "input_items": {
-          "ranch_tusk": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "work_ranch_antler",
-        "name": "Ranch Antler Fittings",
-        "level_required": 55,
-        "base_interval": 1.7,
-        "base_xp": 110,
-        "input_items": {
-          "ranch_antler": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "work_ranch_plume",
-        "name": "Ranch Plume Fittings",
-        "level_required": 65,
-        "base_interval": 1.7,
-        "base_xp": 130,
-        "input_items": {
-          "ranch_plume": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "assemble_clockwork_core",
-        "name": "Clockwork Core",
-        "level_required": 70,
-        "base_interval": 2.2,
-        "base_xp": 150,
-        "input_items": {
-          "clockwork_gear": 2,
-          "clockwork_spring": 2
-        },
-        "output_items": {
-          "clockwork_frame": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "set_topaz_ring",
-        "name": "Topaz Ring",
-        "level_required": 42,
-        "base_interval": 1.9,
-        "base_xp": 90,
-        "input_items": {
-          "topaz": 1,
-          "gold_bar": 1
-        },
-        "output_items": {
-          "topaz_ring": 1
-        },
-        "mastery_action_time": 1.9
-      },
-      {
-        "id": "work_ranch_scale",
-        "name": "Wyvern Scale Plating",
-        "level_required": 70,
-        "base_interval": 1.9,
-        "base_xp": 150,
-        "input_items": {
-          "ranch_scale": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.9
-      },
-      {
-        "id": "work_ranch_star_scale",
-        "name": "Star Scale Plating",
-        "level_required": 85,
-        "base_interval": 1.9,
-        "base_xp": 185,
-        "input_items": {
-          "ranch_star_scale": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.9
-      },
-      {
-        "id": "temper_ranch_ember",
-        "name": "Dragon Ember Temper",
-        "level_required": 90,
-        "base_interval": 1.9,
-        "base_xp": 200,
-        "input_items": {
-          "ranch_ember": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.9
-      },
-      {
-        "id": "grind_golden_stardust",
-        "name": "Grind Golden Stardust",
-        "level_required": 60,
-        "base_interval": 1.9,
-        "base_xp": 120,
-        "input_items": {
-          "golden_stardust": 1
-        },
-        "output_items": {
-          "rune_essence": 2
-        },
-        "mastery_action_time": 1.9
-      },
-      {
-        "id": "refine_harvested_essence",
-        "name": "Refine Harvested Essence",
-        "level_required": 50,
-        "base_interval": 1.9,
-        "base_xp": 110,
-        "input_items": {
-          "harvested_essence": 2
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.9
-      },
-      {
-        "id": "fit_clockwork_frame",
-        "name": "Clockwork Fitting",
-        "level_required": 80,
-        "base_interval": 1.9,
-        "base_xp": 180,
-        "input_items": {
-          "clockwork_frame": 1
-        },
-        "output_items": {
-          "rune_essence": 1
-        },
-        "mastery_action_time": 1.9
-      },
-      {
-        "id": "enchant_stardust_lens",
-        "name": "Stardust Lens",
-        "level_required": 55,
-        "base_interval": 1.9,
-        "base_xp": 115,
-        "input_items": {
-          "stardust": 3
-        },
-        "output_items": {
-          "topaz": 1
-        },
-        "mastery_action_time": 1.9
       }
     ],
     "mastery_unlocks": {
@@ -4625,6 +4644,35 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "craft_air_staff",
+        "name": "Gale Staff",
+        "level_required": 1,
+        "base_interval": 1.7,
+        "base_xp": 31,
+        "input_items": {
+          "air_rune": 10,
+          "oak_log": 1
+        },
+        "output_items": {
+          "air_staff": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "mind_rune",
+        "name": "Waking Rune",
+        "level_required": 2,
+        "base_interval": 1.7,
+        "base_xp": 6,
+        "input_items": {
+          "rune_essence": 1
+        },
+        "output_items": {
+          "mind_rune": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "water_rune",
         "name": "Tide Rune",
         "level_required": 5,
@@ -4653,133 +4701,6 @@
         "mastery_action_time": 1.7
       },
       {
-        "id": "fire_rune",
-        "name": "Ember Rune",
-        "level_required": 14,
-        "base_interval": 1.7,
-        "base_xp": 16,
-        "input_items": {
-          "rune_essence": 1
-        },
-        "output_items": {
-          "fire_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "mind_rune",
-        "name": "Waking Rune",
-        "level_required": 2,
-        "base_interval": 1.7,
-        "base_xp": 6,
-        "input_items": {
-          "rune_essence": 1
-        },
-        "output_items": {
-          "mind_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "chaos_rune",
-        "name": "Discord Rune",
-        "level_required": 35,
-        "base_interval": 1.7,
-        "base_xp": 25,
-        "input_items": {
-          "rune_essence": 1
-        },
-        "output_items": {
-          "chaos_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "death_rune",
-        "name": "Mourning Rune",
-        "level_required": 65,
-        "base_interval": 1.7,
-        "base_xp": 40,
-        "input_items": {
-          "pure_essence": 1
-        },
-        "output_items": {
-          "death_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "blood_rune",
-        "name": "Vital Rune",
-        "level_required": 77,
-        "base_interval": 1.7,
-        "base_xp": 55,
-        "input_items": {
-          "pure_essence": 1
-        },
-        "output_items": {
-          "blood_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "nature_rune",
-        "name": "Verdant Rune",
-        "level_required": 44,
-        "base_interval": 1.7,
-        "base_xp": 30,
-        "input_items": {
-          "rune_essence": 1
-        },
-        "output_items": {
-          "nature_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "law_rune",
-        "name": "Bond Rune",
-        "level_required": 54,
-        "base_interval": 1.7,
-        "base_xp": 35,
-        "input_items": {
-          "rune_essence": 1
-        },
-        "output_items": {
-          "law_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "cosmic_rune",
-        "name": "Astral Rune",
-        "level_required": 27,
-        "base_interval": 1.7,
-        "base_xp": 20,
-        "input_items": {
-          "rune_essence": 1
-        },
-        "output_items": {
-          "cosmic_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "craft_air_staff",
-        "name": "Gale Staff",
-        "level_required": 1,
-        "base_interval": 1.7,
-        "base_xp": 31,
-        "input_items": {
-          "air_rune": 10,
-          "oak_log": 1
-        },
-        "output_items": {
-          "air_staff": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
         "id": "craft_water_staff",
         "name": "Tide Staff",
         "level_required": 10,
@@ -4791,6 +4712,20 @@
         },
         "output_items": {
           "water_staff": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "fire_rune",
+        "name": "Ember Rune",
+        "level_required": 14,
+        "base_interval": 1.7,
+        "base_xp": 16,
+        "input_items": {
+          "rune_essence": 1
+        },
+        "output_items": {
+          "fire_rune": 1
         },
         "mastery_action_time": 1.7
       },
@@ -4810,6 +4745,20 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "cosmic_rune",
+        "name": "Astral Rune",
+        "level_required": 27,
+        "base_interval": 1.7,
+        "base_xp": 20,
+        "input_items": {
+          "rune_essence": 1
+        },
+        "output_items": {
+          "cosmic_rune": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_fire_staff",
         "name": "Ember Staff",
         "level_required": 30,
@@ -4825,31 +4774,16 @@
         "mastery_action_time": 1.7
       },
       {
-        "id": "soul_rune",
-        "name": "Soul Rune",
-        "level_required": 95,
+        "id": "chaos_rune",
+        "name": "Discord Rune",
+        "level_required": 35,
         "base_interval": 1.7,
-        "base_xp": 80,
+        "base_xp": 25,
         "input_items": {
-          "pure_essence": 1
+          "rune_essence": 1
         },
         "output_items": {
-          "soul_rune": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "umbral_rune",
-        "name": "Umbral Rune",
-        "level_required": 110,
-        "base_interval": 1.7,
-        "base_xp": 110,
-        "input_items": {
-          "pure_essence": 1,
-          "umbral_essence": 1
-        },
-        "output_items": {
-          "umbral_rune": 2
+          "chaos_rune": 1
         },
         "mastery_action_time": 1.7
       },
@@ -4869,6 +4803,20 @@
         "mastery_action_time": 2.0
       },
       {
+        "id": "nature_rune",
+        "name": "Verdant Rune",
+        "level_required": 44,
+        "base_interval": 1.7,
+        "base_xp": 30,
+        "input_items": {
+          "rune_essence": 1
+        },
+        "output_items": {
+          "nature_rune": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_cosmic_staff",
         "name": "Cosmic Staff",
         "level_required": 45,
@@ -4884,6 +4832,20 @@
         "mastery_action_time": 2.0
       },
       {
+        "id": "law_rune",
+        "name": "Bond Rune",
+        "level_required": 54,
+        "base_interval": 1.7,
+        "base_xp": 35,
+        "input_items": {
+          "rune_essence": 1
+        },
+        "output_items": {
+          "law_rune": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_chaos_staff",
         "name": "Chaos Staff",
         "level_required": 55,
@@ -4897,6 +4859,20 @@
           "chaos_staff": 1
         },
         "mastery_action_time": 2.0
+      },
+      {
+        "id": "death_rune",
+        "name": "Mourning Rune",
+        "level_required": 65,
+        "base_interval": 1.7,
+        "base_xp": 40,
+        "input_items": {
+          "pure_essence": 1
+        },
+        "output_items": {
+          "death_rune": 1
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "craft_nature_staff",
@@ -4929,6 +4905,20 @@
         "mastery_action_time": 2.0
       },
       {
+        "id": "blood_rune",
+        "name": "Vital Rune",
+        "level_required": 77,
+        "base_interval": 1.7,
+        "base_xp": 55,
+        "input_items": {
+          "pure_essence": 1
+        },
+        "output_items": {
+          "blood_rune": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_death_staff",
         "name": "Death Staff",
         "level_required": 85,
@@ -4942,6 +4932,20 @@
           "death_staff": 1
         },
         "mastery_action_time": 2.0
+      },
+      {
+        "id": "soul_rune",
+        "name": "Soul Rune",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 80,
+        "input_items": {
+          "pure_essence": 1
+        },
+        "output_items": {
+          "soul_rune": 1
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "craft_blood_staff",
@@ -4972,6 +4976,21 @@
           "soul_staff": 1
         },
         "mastery_action_time": 2.0
+      },
+      {
+        "id": "umbral_rune",
+        "name": "Umbral Rune",
+        "level_required": 110,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "pure_essence": 1,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "umbral_rune": 2
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "craft_umbral_staff",
@@ -5028,48 +5047,6 @@
         "mastery_action_time": 1.7
       },
       {
-        "id": "potion_dr_2",
-        "name": "Warded Hide II",
-        "level_required": 21,
-        "base_interval": 1.7,
-        "base_xp": 40,
-        "input_items": {
-          "garum_herb": 2
-        },
-        "output_items": {
-          "potion_dr_2": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "potion_dr_3",
-        "name": "Warded Hide III",
-        "level_required": 41,
-        "base_interval": 1.7,
-        "base_xp": 60,
-        "input_items": {
-          "garum_herb": 3
-        },
-        "output_items": {
-          "potion_dr_3": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "potion_dr_4",
-        "name": "Warded Hide IV",
-        "level_required": 61,
-        "base_interval": 1.7,
-        "base_xp": 80,
-        "input_items": {
-          "garum_herb": 4
-        },
-        "output_items": {
-          "potion_dr_4": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
         "id": "potion_mining_1",
         "name": "True Strike I",
         "level_required": 1,
@@ -5080,48 +5057,6 @@
         },
         "output_items": {
           "potion_mining_1": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "potion_mining_2",
-        "name": "True Strike II",
-        "level_required": 21,
-        "base_interval": 1.7,
-        "base_xp": 40,
-        "input_items": {
-          "sourweed": 2
-        },
-        "output_items": {
-          "potion_mining_2": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "potion_mining_3",
-        "name": "True Strike III",
-        "level_required": 41,
-        "base_interval": 1.7,
-        "base_xp": 60,
-        "input_items": {
-          "sourweed": 3
-        },
-        "output_items": {
-          "potion_mining_3": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "potion_mining_4",
-        "name": "True Strike IV",
-        "level_required": 61,
-        "base_interval": 1.7,
-        "base_xp": 80,
-        "input_items": {
-          "sourweed": 4
-        },
-        "output_items": {
-          "potion_mining_4": 1
         },
         "mastery_action_time": 1.7
       },
@@ -5140,48 +5075,6 @@
         "mastery_action_time": 1.7
       },
       {
-        "id": "potion_skilling_2",
-        "name": "Insight II",
-        "level_required": 21,
-        "base_interval": 1.7,
-        "base_xp": 40,
-        "input_items": {
-          "mantalyme": 2
-        },
-        "output_items": {
-          "potion_skilling_2": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "potion_skilling_3",
-        "name": "Insight III",
-        "level_required": 41,
-        "base_interval": 1.7,
-        "base_xp": 60,
-        "input_items": {
-          "mantalyme": 3
-        },
-        "output_items": {
-          "potion_skilling_3": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "potion_skilling_4",
-        "name": "Insight IV",
-        "level_required": 61,
-        "base_interval": 1.7,
-        "base_xp": 80,
-        "input_items": {
-          "mantalyme": 4
-        },
-        "output_items": {
-          "potion_skilling_4": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
         "id": "potion_firemaking_1",
         "name": "Banked Coals I",
         "level_required": 1,
@@ -5192,6 +5085,48 @@
         },
         "output_items": {
           "potion_firemaking_1": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_dr_2",
+        "name": "Warded Hide II",
+        "level_required": 21,
+        "base_interval": 1.7,
+        "base_xp": 40,
+        "input_items": {
+          "garum_herb": 2
+        },
+        "output_items": {
+          "potion_dr_2": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_mining_2",
+        "name": "True Strike II",
+        "level_required": 21,
+        "base_interval": 1.7,
+        "base_xp": 40,
+        "input_items": {
+          "sourweed": 2
+        },
+        "output_items": {
+          "potion_mining_2": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_skilling_2",
+        "name": "Insight II",
+        "level_required": 21,
+        "base_interval": 1.7,
+        "base_xp": 40,
+        "input_items": {
+          "mantalyme": 2
+        },
+        "output_items": {
+          "potion_skilling_2": 1
         },
         "mastery_action_time": 1.7
       },
@@ -5210,6 +5145,90 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "brew_potion_ranching",
+        "name": "Ranching Potion",
+        "level_required": 25,
+        "base_interval": 1.8,
+        "base_xp": 65,
+        "input_items": {
+          "garum_herb": 2
+        },
+        "output_items": {
+          "potion_ranching": 1
+        },
+        "mastery_action_time": 1.8
+      },
+      {
+        "id": "brew_duskroot",
+        "name": "Duskroot Draught",
+        "level_required": 35,
+        "base_interval": 2.0,
+        "base_xp": 60,
+        "input_items": {
+          "duskroot": 2
+        },
+        "output_items": {
+          "potion_hushroot": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "brew_potion_inscription",
+        "name": "Inscription Potion",
+        "level_required": 35,
+        "base_interval": 1.8,
+        "base_xp": 75,
+        "input_items": {
+          "garum_herb": 2
+        },
+        "output_items": {
+          "potion_inscription": 1
+        },
+        "mastery_action_time": 1.8
+      },
+      {
+        "id": "potion_dr_3",
+        "name": "Warded Hide III",
+        "level_required": 41,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "garum_herb": 3
+        },
+        "output_items": {
+          "potion_dr_3": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_mining_3",
+        "name": "True Strike III",
+        "level_required": 41,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "sourweed": 3
+        },
+        "output_items": {
+          "potion_mining_3": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_skilling_3",
+        "name": "Insight III",
+        "level_required": 41,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "mantalyme": 3
+        },
+        "output_items": {
+          "potion_skilling_3": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "potion_firemaking_3",
         "name": "Banked Coals III",
         "level_required": 41,
@@ -5220,6 +5239,76 @@
         },
         "output_items": {
           "potion_firemaking_3": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "brew_potion_engineering",
+        "name": "Engineering Potion",
+        "level_required": 45,
+        "base_interval": 1.8,
+        "base_xp": 85,
+        "input_items": {
+          "garum_herb": 2
+        },
+        "output_items": {
+          "potion_engineering": 1
+        },
+        "mastery_action_time": 1.8
+      },
+      {
+        "id": "brew_potion_enchanting",
+        "name": "Enchanting Potion",
+        "level_required": 55,
+        "base_interval": 1.8,
+        "base_xp": 95,
+        "input_items": {
+          "garum_herb": 2
+        },
+        "output_items": {
+          "potion_enchanting": 1
+        },
+        "mastery_action_time": 1.8
+      },
+      {
+        "id": "potion_dr_4",
+        "name": "Warded Hide IV",
+        "level_required": 61,
+        "base_interval": 1.7,
+        "base_xp": 80,
+        "input_items": {
+          "garum_herb": 4
+        },
+        "output_items": {
+          "potion_dr_4": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_mining_4",
+        "name": "True Strike IV",
+        "level_required": 61,
+        "base_interval": 1.7,
+        "base_xp": 80,
+        "input_items": {
+          "sourweed": 4
+        },
+        "output_items": {
+          "potion_mining_4": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "potion_skilling_4",
+        "name": "Insight IV",
+        "level_required": 61,
+        "base_interval": 1.7,
+        "base_xp": 80,
+        "input_items": {
+          "mantalyme": 4
+        },
+        "output_items": {
+          "potion_skilling_4": 1
         },
         "mastery_action_time": 1.7
       },
@@ -5236,6 +5325,34 @@
           "potion_firemaking_4": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "brew_emberbloom",
+        "name": "Emberbloom Draught",
+        "level_required": 65,
+        "base_interval": 2.0,
+        "base_xp": 110,
+        "input_items": {
+          "emberbloom": 2
+        },
+        "output_items": {
+          "potion_emberbloom": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "brew_potion_dreamwalking",
+        "name": "Dreamwalking Potion",
+        "level_required": 65,
+        "base_interval": 1.8,
+        "base_xp": 105,
+        "input_items": {
+          "garum_herb": 2
+        },
+        "output_items": {
+          "potion_dreamwalking": 1
+        },
+        "mastery_action_time": 1.8
       },
       {
         "id": "potion_dr_5",
@@ -5280,6 +5397,20 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "brew_herald_bloom",
+        "name": "Herald Bloom Draught",
+        "level_required": 95,
+        "base_interval": 2.0,
+        "base_xp": 170,
+        "input_items": {
+          "herald_bloom": 2
+        },
+        "output_items": {
+          "potion_herald_bloom": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
         "id": "potion_firemaking_5",
         "name": "Banked Coals V",
         "level_required": 100,
@@ -5306,118 +5437,6 @@
           "potion_dr_6": 1
         },
         "mastery_action_time": 1.7
-      },
-      {
-        "id": "brew_duskroot",
-        "name": "Duskroot Draught",
-        "level_required": 35,
-        "base_interval": 2.0,
-        "base_xp": 60,
-        "input_items": {
-          "duskroot": 2
-        },
-        "output_items": {
-          "potion_hushroot": 1
-        },
-        "mastery_action_time": 2.0
-      },
-      {
-        "id": "brew_emberbloom",
-        "name": "Emberbloom Draught",
-        "level_required": 65,
-        "base_interval": 2.0,
-        "base_xp": 110,
-        "input_items": {
-          "emberbloom": 2
-        },
-        "output_items": {
-          "potion_emberbloom": 1
-        },
-        "mastery_action_time": 2.0
-      },
-      {
-        "id": "brew_herald_bloom",
-        "name": "Herald Bloom Draught",
-        "level_required": 95,
-        "base_interval": 2.0,
-        "base_xp": 170,
-        "input_items": {
-          "herald_bloom": 2
-        },
-        "output_items": {
-          "potion_herald_bloom": 1
-        },
-        "mastery_action_time": 2.0
-      },
-      {
-        "id": "brew_potion_ranching",
-        "name": "Ranching Potion",
-        "level_required": 25,
-        "base_interval": 1.8,
-        "base_xp": 65,
-        "input_items": {
-          "garum_herb": 2
-        },
-        "output_items": {
-          "potion_ranching": 1
-        },
-        "mastery_action_time": 1.8
-      },
-      {
-        "id": "brew_potion_inscription",
-        "name": "Inscription Potion",
-        "level_required": 35,
-        "base_interval": 1.8,
-        "base_xp": 75,
-        "input_items": {
-          "garum_herb": 2
-        },
-        "output_items": {
-          "potion_inscription": 1
-        },
-        "mastery_action_time": 1.8
-      },
-      {
-        "id": "brew_potion_engineering",
-        "name": "Engineering Potion",
-        "level_required": 45,
-        "base_interval": 1.8,
-        "base_xp": 85,
-        "input_items": {
-          "garum_herb": 2
-        },
-        "output_items": {
-          "potion_engineering": 1
-        },
-        "mastery_action_time": 1.8
-      },
-      {
-        "id": "brew_potion_enchanting",
-        "name": "Enchanting Potion",
-        "level_required": 55,
-        "base_interval": 1.8,
-        "base_xp": 95,
-        "input_items": {
-          "garum_herb": 2
-        },
-        "output_items": {
-          "potion_enchanting": 1
-        },
-        "mastery_action_time": 1.8
-      },
-      {
-        "id": "brew_potion_dreamwalking",
-        "name": "Dreamwalking Potion",
-        "level_required": 65,
-        "base_interval": 1.8,
-        "base_xp": 105,
-        "input_items": {
-          "garum_herb": 2
-        },
-        "output_items": {
-          "potion_dreamwalking": 1
-        },
-        "mastery_action_time": 1.8
       }
     ],
     "mastery_unlocks": {
@@ -5464,7 +5483,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "golbin",
@@ -5486,7 +5506,8 @@
             "min_qty": 1,
             "max_qty": 3
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "farmer",
@@ -5508,7 +5529,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "fisherman",
@@ -5522,7 +5544,8 @@
         "fail_damage": 3,
         "gp_reward": 45,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_activity": true
       },
       {
         "id": "marauder",
@@ -5544,7 +5567,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "chef",
@@ -5566,7 +5590,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "lumberjack",
@@ -5580,7 +5605,8 @@
         "fail_damage": 6,
         "gp_reward": 160,
         "output_items": {},
-        "mastery_action_time": 3.2
+        "mastery_action_time": 3.2,
+        "icon_activity": true
       },
       {
         "id": "knight",
@@ -5594,7 +5620,8 @@
         "fail_damage": 8,
         "gp_reward": 220,
         "output_items": {},
-        "mastery_action_time": 3.4
+        "mastery_action_time": 3.4,
+        "icon_activity": true
       },
       {
         "id": "merchant",
@@ -5616,7 +5643,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "master_farmer",
@@ -5630,7 +5658,8 @@
         "fail_damage": 10,
         "gp_reward": 380,
         "output_items": {},
-        "mastery_action_time": 3.4
+        "mastery_action_time": 3.4,
+        "icon_activity": true
       },
       {
         "id": "bandit",
@@ -5644,7 +5673,8 @@
         "fail_damage": 12,
         "gp_reward": 470,
         "output_items": {},
-        "mastery_action_time": 3.6
+        "mastery_action_time": 3.6,
+        "icon_activity": true
       },
       {
         "id": "guard",
@@ -5666,7 +5696,8 @@
             "min_qty": 1,
             "max_qty": 1
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "thief",
@@ -5688,7 +5719,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "rune_knight",
@@ -5710,7 +5742,8 @@
             "min_qty": 1,
             "max_qty": 1
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "princess",
@@ -5732,7 +5765,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "king",
@@ -5760,7 +5794,8 @@
             "min_qty": 1,
             "max_qty": 1
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "high_priest",
@@ -5788,7 +5823,8 @@
             "min_qty": 1,
             "max_qty": 1
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "herald_mark",
@@ -5816,7 +5852,8 @@
             "min_qty": 1,
             "max_qty": 1
           }
-        ]
+        ],
+        "icon_activity": true
       }
     ],
     "mastery_unlocks": {
@@ -6316,6 +6353,36 @@
         "mastery_action_time": 4.85
       },
       {
+        "id": "border_collie_tablet",
+        "name": "Border Collie Tablet",
+        "level_required": 1,
+        "base_interval": 5.0,
+        "base_xp": 15,
+        "input_items": {
+          "border_collie_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "border_collie_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "sandman_tablet",
+        "name": "Sandman Tablet",
+        "level_required": 1,
+        "base_interval": 5.0,
+        "base_xp": 15,
+        "input_items": {
+          "sandman_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "sandman_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
         "id": "tortoise_tablet",
         "name": "Mossback Tablet",
         "level_required": 2,
@@ -6404,36 +6471,6 @@
           "summoning_shard_gold": 1
         },
         "mastery_action_time": 6.0
-      },
-      {
-        "id": "border_collie_tablet",
-        "name": "Border Collie Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "border_collie_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "border_collie_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "sandman_tablet",
-        "name": "Sandman Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "sandman_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "sandman_tablet": 25
-        },
-        "mastery_action_time": 4.85
       }
     ],
     "mastery_unlocks": {
@@ -6489,7 +6526,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Dusk violet",
+        "icon_tint": "#a98bfa"
       },
       {
         "id": "study_iridan",
@@ -6500,7 +6540,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Iridescent cyan",
+        "icon_tint": "#67e8ec"
       },
       {
         "id": "study_ameria",
@@ -6511,7 +6554,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Radiant gold",
+        "icon_tint": "#ffd25e"
       },
       {
         "id": "study_terra",
@@ -6522,7 +6568,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Earth green",
+        "icon_tint": "#8cbb63"
       },
       {
         "id": "study_vale",
@@ -6533,7 +6582,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Amethyst",
+        "icon_tint": "#b96de9"
       },
       {
         "id": "study_syllia",
@@ -6544,7 +6596,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Silver blue",
+        "icon_tint": "#b9d9ef"
       },
       {
         "id": "study_arachi",
@@ -6555,7 +6610,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Arcane indigo",
+        "icon_tint": "#7b88fa"
       },
       {
         "id": "study_ko",
@@ -6566,7 +6624,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Warm amber",
+        "icon_tint": "#e9ae62"
       },
       {
         "id": "study_tellus",
@@ -6577,7 +6638,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Stone silver",
+        "icon_tint": "#bbc6bb"
       },
       {
         "id": "study_qimican",
@@ -6588,7 +6652,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Jade",
+        "icon_tint": "#44d89d"
       },
       {
         "id": "study_roshaniya",
@@ -6599,7 +6666,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Rose",
+        "icon_tint": "#ef8fba"
       },
       {
         "id": "study_ashtar",
@@ -6610,7 +6680,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Ember orange",
+        "icon_tint": "#ff924c"
       },
       {
         "id": "study_variel",
@@ -6621,7 +6694,10 @@
         "output_items": {
           "stardust": 1
         },
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_item": "stardust",
+        "icon_color_name": "Storm teal",
+        "icon_tint": "#4cbdbd"
       },
       {
         "id": "study_nysa",
@@ -6640,7 +6716,10 @@
             "min_qty": 1,
             "max_qty": 1
           }
-        ]
+        ],
+        "icon_item": "stardust",
+        "icon_color_name": "Midnight blue",
+        "icon_tint": "#587be0"
       },
       {
         "id": "study_haemir",
@@ -6659,7 +6738,10 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_item": "stardust",
+        "icon_color_name": "Blood crimson",
+        "icon_tint": "#ed5272"
       },
       {
         "id": "study_orison",
@@ -6678,7 +6760,10 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_item": "stardust",
+        "icon_color_name": "Holy ivory",
+        "icon_tint": "#f7e7b1"
       },
       {
         "id": "study_vex",
@@ -6697,7 +6782,10 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_item": "stardust",
+        "icon_color_name": "Void magenta",
+        "icon_tint": "#d86ff4"
       },
       {
         "id": "study_halcyon",
@@ -6716,7 +6804,10 @@
             "min_qty": 2,
             "max_qty": 3
           }
-        ]
+        ],
+        "icon_item": "stardust",
+        "icon_color_name": "Clear sky",
+        "icon_tint": "#73c6f5"
       }
     ],
     "order": 24,
@@ -6754,7 +6845,7 @@
         "name": "Superheat Iron",
         "level_required": 1,
         "base_interval": 1.7,
-        "base_xp": 35,
+        "base_xp": 30,
         "input_items": {
           "iron_ore": 1,
           "air_rune": 2
@@ -6762,14 +6853,286 @@
         "output_items": {
           "iron_bar": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Melt iron ore straight into a bar with a breath of air magic."
+      },
+      {
+        "id": "ward_of_vigor",
+        "name": "Ward of Vigor",
+        "level_required": 5,
+        "base_interval": 3.0,
+        "base_xp": 22,
+        "input_items": {
+          "mind_rune": 3,
+          "water_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "food_healing_percent": 10
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that makes food heal for more."
+      },
+      {
+        "id": "bone_offering",
+        "name": "Bone Offering",
+        "level_required": 10,
+        "base_interval": 1.7,
+        "base_xp": 28,
+        "input_items": {
+          "bones": 1,
+          "earth_rune": 2
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "pure_essence",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ],
+        "mastery_action_time": 1.7,
+        "description": "Offer bones to the earth for insight; sometimes the ground gives back pure essence."
+      },
+      {
+        "id": "enchant_gold_ring",
+        "name": "Enchant Gold Ring",
+        "level_required": 10,
+        "base_interval": 1.7,
+        "base_xp": 32,
+        "input_items": {
+          "gold_ring": 1,
+          "air_rune": 3
+        },
+        "output_items": {
+          "charmed_gold_ring": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Charm a plain gold ring into a Ring of Prospecting."
+      },
+      {
+        "id": "conjure_coal",
+        "name": "Conjure Coal",
+        "level_required": 15,
+        "base_interval": 1.7,
+        "base_xp": 36,
+        "input_items": {
+          "earth_rune": 1,
+          "fire_rune": 1
+        },
+        "output_items": {
+          "coal": 2
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Press earth and fire together into coal for the forge."
+      },
+      {
+        "id": "superheat_steel",
+        "name": "Superheat Steel",
+        "level_required": 20,
+        "base_interval": 1.7,
+        "base_xp": 40,
+        "input_items": {
+          "iron_ore": 1,
+          "fire_rune": 1,
+          "air_rune": 1
+        },
+        "output_items": {
+          "steel_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Fold carbon into iron with fire instead of coal."
+      },
+      {
+        "id": "item_alchemy",
+        "name": "Low Alchemy",
+        "level_required": 20,
+        "base_interval": 1.7,
+        "base_xp": 42,
+        "input_items": {
+          "gold_ring": 1,
+          "fire_rune": 2
+        },
+        "output_items": {},
+        "gp_reward": 80,
+        "mastery_action_time": 1.7,
+        "description": "Turn a gold ring into coin."
+      },
+      {
+        "id": "enchanted_sapphire",
+        "name": "Enchant Sapphire Ring",
+        "level_required": 25,
+        "base_interval": 1.7,
+        "base_xp": 48,
+        "input_items": {
+          "sapphire_ring": 1,
+          "water_rune": 5,
+          "cosmic_rune": 1
+        },
+        "output_items": {
+          "sapphire_ring_of_focus": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind water magic into a sapphire ring, sharpening mastery."
+      },
+      {
+        "id": "ward_of_insight",
+        "name": "Ward of Insight",
+        "level_required": 28,
+        "base_interval": 3.0,
+        "base_xp": 45,
+        "input_items": {
+          "mind_rune": 5,
+          "cosmic_rune": 1
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "global_skill_xp_percent": 3
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that quickens all skill learning."
+      },
+      {
+        "id": "superheat_silver",
+        "name": "Superheat Silver",
+        "level_required": 32,
+        "base_interval": 1.7,
+        "base_xp": 52,
+        "input_items": {
+          "silver_ore": 1,
+          "fire_rune": 1
+        },
+        "output_items": {
+          "silver_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt silver ore into a bar."
+      },
+      {
+        "id": "superheat_gold",
+        "name": "Superheat Gold",
+        "level_required": 36,
+        "base_interval": 1.7,
+        "base_xp": 56,
+        "input_items": {
+          "gold_ore": 1,
+          "fire_rune": 2
+        },
+        "output_items": {
+          "gold_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt gold ore into a bar, ready for jewelry."
+      },
+      {
+        "id": "transmute_sapphire",
+        "name": "Transmute Sapphire",
+        "level_required": 40,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "topaz": 2,
+          "chaos_rune": 1
+        },
+        "output_items": {
+          "sapphire": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Recolour two topazes into one sapphire."
+      },
+      {
+        "id": "enchant_emerald",
+        "name": "Enchant Emerald Ring",
+        "level_required": 44,
+        "base_interval": 1.7,
+        "base_xp": 66,
+        "input_items": {
+          "emerald_ring": 1,
+          "earth_rune": 5,
+          "nature_rune": 1
+        },
+        "output_items": {
+          "emerald_ring_of_study": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind nature magic into an emerald ring, quickening every skill."
+      },
+      {
+        "id": "big_bone_offering",
+        "name": "Big Bone Offering",
+        "level_required": 45,
+        "base_interval": 1.7,
+        "base_xp": 70,
+        "input_items": {
+          "big_bones": 1,
+          "earth_rune": 3,
+          "nature_rune": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "prismatic_essence",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 1.7,
+        "description": "A heavier offering; the earth occasionally answers with prismatic essence."
+      },
+      {
+        "id": "high_alchemy",
+        "name": "High Alchemy",
+        "level_required": 48,
+        "base_interval": 1.7,
+        "base_xp": 72,
+        "input_items": {
+          "sapphire_ring": 1,
+          "nature_rune": 1
+        },
+        "output_items": {},
+        "gp_reward": 140,
+        "mastery_action_time": 1.7,
+        "description": "Turn a sapphire ring into coin."
+      },
+      {
+        "id": "ward_of_fortune",
+        "name": "Ward of Fortune",
+        "level_required": 52,
+        "base_interval": 3.0,
+        "base_xp": 70,
+        "input_items": {
+          "nature_rune": 2,
+          "law_rune": 1
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "global_gp_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that draws more gold to you."
       },
       {
         "id": "superheat_mithril",
         "name": "Superheat Mithril",
         "level_required": 55,
         "base_interval": 1.7,
-        "base_xp": 70,
+        "base_xp": 80,
         "input_items": {
           "mithril_ore": 1,
           "fire_rune": 3
@@ -6777,112 +7140,357 @@
         "output_items": {
           "mithril_bar": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Melt mithril ore into a bar without coal."
       },
       {
-        "id": "bone_offering",
-        "name": "Bone Offering",
-        "level_required": 10,
+        "id": "enchant_topaz",
+        "name": "Enchant Topaz Ring",
+        "level_required": 58,
         "base_interval": 1.7,
-        "base_xp": 25,
+        "base_xp": 84,
         "input_items": {
-          "bones": 1,
-          "earth_rune": 2
-        },
-        "output_items": {},
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "item_alchemy",
-        "name": "Item Alchemy",
-        "level_required": 20,
-        "base_interval": 1.7,
-        "base_xp": 30,
-        "input_items": {
-          "gold_bar": 1,
-          "fire_rune": 2
-        },
-        "output_items": {},
-        "gp_reward": 100,
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "enchanted_sapphire",
-        "name": "Enchant Sapphire",
-        "level_required": 30,
-        "base_interval": 1.7,
-        "base_xp": 40,
-        "input_items": {
-          "sapphire": 1,
-          "water_rune": 2
+          "topaz_ring": 1,
+          "chaos_rune": 3,
+          "law_rune": 1
         },
         "output_items": {
-          "gold_ring": 1
+          "topaz_ring_of_the_hawk": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Bind a hawk's eye into a topaz ring for archers."
+      },
+      {
+        "id": "ward_of_stone",
+        "name": "Ward of Stone",
+        "level_required": 62,
+        "base_interval": 3.0,
+        "base_xp": 85,
+        "input_items": {
+          "earth_rune": 6,
+          "law_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "damage_reduction_percent": 4
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that blunts every blow you take."
+      },
+      {
+        "id": "superheat_adamantite",
+        "name": "Superheat Adamantite",
+        "level_required": 65,
+        "base_interval": 1.7,
+        "base_xp": 92,
+        "input_items": {
+          "adamantite_ore": 1,
+          "fire_rune": 3,
+          "chaos_rune": 1
+        },
+        "output_items": {
+          "adamantite_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt adamantite ore into a bar without coal."
+      },
+      {
+        "id": "enchant_ruby",
+        "name": "Enchant Ruby Ring",
+        "level_required": 68,
+        "base_interval": 1.7,
+        "base_xp": 98,
+        "input_items": {
+          "ruby_ring": 1,
+          "fire_rune": 10,
+          "law_rune": 2
+        },
+        "output_items": {
+          "ruby_ring_of_fury": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind fire into a ruby ring for fighters."
+      },
+      {
+        "id": "transmute_ruby",
+        "name": "Transmute Ruby",
+        "level_required": 70,
+        "base_interval": 1.7,
+        "base_xp": 100,
+        "input_items": {
+          "emerald": 2,
+          "law_rune": 2
+        },
+        "output_items": {
+          "ruby": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Fuse two emeralds into one ruby."
+      },
+      {
+        "id": "grand_alchemy",
+        "name": "Grand Alchemy",
+        "level_required": 72,
+        "base_interval": 1.7,
+        "base_xp": 104,
+        "input_items": {
+          "ruby_ring": 1,
+          "nature_rune": 2
+        },
+        "output_items": {},
+        "gp_reward": 330,
+        "mastery_action_time": 1.7,
+        "description": "Turn a ruby ring into coin."
+      },
+      {
+        "id": "dragon_bone_offering",
+        "name": "Dragon Bone Offering",
+        "level_required": 75,
+        "base_interval": 1.7,
+        "base_xp": 130,
+        "input_items": {
+          "dragon_bones": 1,
+          "death_rune": 2,
+          "blood_rune": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "umbral_essence",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 1.7,
+        "description": "A dragon's bones carry old power; now and then they leave umbral essence behind."
+      },
+      {
+        "id": "ward_of_fury",
+        "name": "Ward of Fury",
+        "level_required": 78,
+        "base_interval": 3.0,
+        "base_xp": 120,
+        "input_items": {
+          "chaos_rune": 4,
+          "death_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "melee_max_hit_percent": 5,
+            "ranged_max_hit_percent": 5,
+            "magic_max_hit_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that makes every style hit harder."
+      },
+      {
+        "id": "enchanted_diamond",
+        "name": "Enchant Diamond Ring",
+        "level_required": 80,
+        "base_interval": 1.7,
+        "base_xp": 125,
+        "input_items": {
+          "diamond_ring": 1,
+          "cosmic_rune": 5,
+          "death_rune": 3
+        },
+        "output_items": {
+          "diamond_ring_of_warding": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind a protective ward permanently into a diamond ring."
+      },
+      {
+        "id": "superheat_runite",
+        "name": "Superheat Runite",
+        "level_required": 85,
+        "base_interval": 1.7,
+        "base_xp": 135,
+        "input_items": {
+          "runite_ore": 1,
+          "fire_rune": 4,
+          "death_rune": 1
+        },
+        "output_items": {
+          "runite_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt runite ore into a bar without coal."
+      },
+      {
+        "id": "transmute_diamond",
+        "name": "Transmute Diamond",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 145,
+        "input_items": {
+          "ruby": 2,
+          "death_rune": 3
+        },
+        "output_items": {
+          "diamond": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Crush two rubies into one diamond."
+      },
+      {
+        "id": "ward_of_plenty",
+        "name": "Ward of Plenty",
+        "level_required": 92,
+        "base_interval": 3.0,
+        "base_xp": 150,
+        "input_items": {
+          "nature_rune": 4,
+          "blood_rune": 2
+        },
+        "output_items": {},
+        "ward": {
+          "mods": {
+            "global_double_loot_percent": 3
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "Weave a ward that sometimes doubles monster drops."
+      },
+      {
+        "id": "superheat_dragonite",
+        "name": "Superheat Dragonite",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 160,
+        "input_items": {
+          "dragonite_ore": 1,
+          "fire_rune": 5,
+          "blood_rune": 1
+        },
+        "output_items": {
+          "dragonite_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt dragonite ore into a bar without coal."
+      },
+      {
+        "id": "arcane_alchemy",
+        "name": "Arcane Alchemy",
+        "level_required": 100,
+        "base_interval": 1.7,
+        "base_xp": 170,
+        "input_items": {
+          "diamond_ring": 1,
+          "nature_rune": 2,
+          "blood_rune": 1
+        },
+        "output_items": {},
+        "gp_reward": 600,
+        "mastery_action_time": 1.7,
+        "description": "Turn a diamond ring into coin."
+      },
+      {
+        "id": "bind_riven_signet",
+        "name": "Bind the Riven Signet",
+        "level_required": 103,
+        "base_interval": 1.7,
+        "base_xp": 185,
+        "input_items": {
+          "diamond_ring_of_warding": 1,
+          "soul_rune": 6,
+          "blood_rune": 4
+        },
+        "output_items": {
+          "riven_signet": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Rework a warded diamond ring into the frontier's finest signet."
       },
       {
         "id": "superheat_umbral",
         "name": "Superheat Umbral",
-        "level_required": 75,
+        "level_required": 105,
         "base_interval": 1.7,
-        "base_xp": 100,
+        "base_xp": 190,
         "input_items": {
           "umbral_ore": 1,
-          "fire_rune": 4
+          "fire_rune": 5,
+          "soul_rune": 1
         },
         "output_items": {
           "umbral_bar": 1
         },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "enchanted_diamond",
-        "name": "Enchant Diamond",
-        "level_required": 85,
-        "base_interval": 1.7,
-        "base_xp": 120,
-        "input_items": {
-          "diamond": 1,
-          "cosmic_rune": 3
-        },
-        "output_items": {
-          "diamond_ring": 1
-        },
-        "mastery_action_time": 1.7
-      },
-      {
-        "id": "superheat_herald",
-        "name": "Superheat Herald",
-        "level_required": 100,
-        "base_interval": 1.7,
-        "base_xp": 150,
-        "input_items": {
-          "herald_ore": 1,
-          "fire_rune": 5
-        },
-        "output_items": {
-          "herald_bar": 1
-        },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "description": "Melt umbral ore into a bar without coal."
       },
       {
         "id": "transmute_herald",
         "name": "Transmute Herald",
         "level_required": 110,
         "base_interval": 1.7,
-        "base_xp": 180,
+        "base_xp": 200,
         "input_items": {
           "umbral_bar": 1,
-          "soul_rune": 5
+          "soul_rune": 3
+        },
+        "output_items": {
+          "herald_bar": 1
+        },
+        "conversion": true,
+        "mastery_action_time": 1.7,
+        "description": "Raise an umbral bar into a herald bar."
+      },
+      {
+        "id": "superheat_herald",
+        "name": "Superheat Herald",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 215,
+        "input_items": {
+          "herald_ore": 1,
+          "fire_rune": 6,
+          "umbral_rune": 1
+        },
+        "output_items": {
+          "herald_bar": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Melt herald ore into a bar without coal."
+      },
+      {
+        "id": "ward_of_ascendance",
+        "name": "Ward of Ascendance",
+        "level_required": 120,
+        "base_interval": 3.0,
+        "base_xp": 240,
+        "input_items": {
+          "soul_rune": 4,
+          "umbral_rune": 2
         },
         "output_items": {},
-        "gp_reward": 5000,
-        "mastery_action_time": 1.7
+        "ward": {
+          "mods": {
+            "global_skill_xp_percent": 6,
+            "global_mastery_xp_percent": 6
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "mastery_action_time": 3.0,
+        "description": "The capstone ward: faster skill and mastery learning everywhere."
       }
     ],
     "order": 25,
-    "description": "Alternative magic — alchemy, item enchanting and superheating."
+    "description": "Cast spells with runes: superheat ore, enchant jewelry, transmute materials, alchemize rings into coin and weave timed wards."
   },
   "township": {
     "id": "township",
@@ -7060,7 +7668,8 @@
             "max_qty": 2
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "shallow",
@@ -7089,7 +7698,8 @@
             "max_qty": 2
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "medium",
@@ -7112,7 +7722,8 @@
             "chance": 0.08
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "weathered",
@@ -7141,7 +7752,8 @@
             "max_qty": 2
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "large",
@@ -7164,7 +7776,8 @@
             "chance": 0.08
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "sunken",
@@ -7193,7 +7806,8 @@
             "max_qty": 3
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "ancient",
@@ -7222,7 +7836,8 @@
             "max_qty": 3
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "primeval",
@@ -7255,7 +7870,8 @@
             "max_qty": 3
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "reliquary",
@@ -7288,7 +7904,8 @@
             "max_qty": 4
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "heraldic",
@@ -7317,7 +7934,8 @@
             "max_qty": 4
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       },
       {
         "id": "throne",
@@ -7342,7 +7960,8 @@
             "max_qty": 5
           }
         ],
-        "mastery_action_time": 6.0
+        "mastery_action_time": 6.0,
+        "icon_activity": true
       }
     ],
     "order": 28,
@@ -7386,7 +8005,8 @@
         },
         "node_hp": 6,
         "respawn_seconds": 4,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "copper_ore"
       },
       {
         "id": "sturdy",
@@ -7399,7 +8019,8 @@
         },
         "node_hp": 7,
         "respawn_seconds": 4,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "iron_ore"
       },
       {
         "id": "dense",
@@ -7412,7 +8033,8 @@
         },
         "node_hp": 8,
         "respawn_seconds": 5,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "silver_ore"
       },
       {
         "id": "rich",
@@ -7425,7 +8047,8 @@
         },
         "node_hp": 10,
         "respawn_seconds": 6,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "gold_ore"
       },
       {
         "id": "deep",
@@ -7438,7 +8061,8 @@
         },
         "node_hp": 12,
         "respawn_seconds": 7,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "mithril_ore"
       },
       {
         "id": "radiant",
@@ -7451,7 +8075,8 @@
         },
         "node_hp": 13,
         "respawn_seconds": 7,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "runite_ore"
       },
       {
         "id": "prismatic",
@@ -7464,7 +8089,8 @@
         },
         "node_hp": 15,
         "respawn_seconds": 8,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "adamantite_ore"
       },
       {
         "id": "voidtouched",
@@ -7477,7 +8103,8 @@
         },
         "node_hp": 18,
         "respawn_seconds": 9,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "dragonite_ore"
       },
       {
         "id": "umbral_vein",
@@ -7490,7 +8117,8 @@
         },
         "node_hp": 20,
         "respawn_seconds": 10,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "umbral_ore"
       },
       {
         "id": "herald_vein",
@@ -7503,7 +8131,8 @@
         },
         "node_hp": 22,
         "respawn_seconds": 11,
-        "mastery_action_time": 4.0
+        "mastery_action_time": 4.0,
+        "icon_item": "herald_ore"
       }
     ],
     "order": 29,
@@ -7546,6 +8175,37 @@
         }
       },
       {
+        "id": "thread_rack",
+        "name": "Thread the Rack",
+        "level_required": 1,
+        "base_interval": 5.0,
+        "base_xp": 20,
+        "description": "Push captured traces into a rack in a chosen order. The order is the skill — the sequence is what repeats, not the bonus.",
+        "mastery_action_time": 5.0,
+        "input_items": {
+          "resonance_trace": 3
+        },
+        "output_items": {
+          "echo_arrangement": 1
+        }
+      },
+      {
+        "id": "replay_rack",
+        "name": "Replay the Rack",
+        "level_required": 10,
+        "base_interval": 8.0,
+        "base_xp": 60,
+        "description": "Run the whole sequence again from the top. A rack with no reset eventually stops working at all.",
+        "mastery_action_time": 8.0,
+        "input_items": {
+          "echo_arrangement": 1,
+          "resonance_trace": 1
+        },
+        "output_items": {
+          "echo_charge": 3
+        }
+      },
+      {
         "id": "listen_dock",
         "name": "Dock Rhythm",
         "level_required": 15,
@@ -7564,33 +8224,6 @@
             "max_qty": 2
           }
         ]
-      },
-      {
-        "id": "listen_orchard",
-        "name": "Orchard Rhythm",
-        "level_required": 30,
-        "base_interval": 6.0,
-        "base_xp": 55,
-        "description": "A hundred harvests leave a patient layer: slower to read, but it plays back for far longer.",
-        "mastery_action_time": 6.0,
-        "output_items": {
-          "resonance_trace": 2
-        }
-      },
-      {
-        "id": "thread_rack",
-        "name": "Thread the Rack",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 20,
-        "description": "Push captured traces into a rack in a chosen order. The order is the skill — the sequence is what repeats, not the bonus.",
-        "mastery_action_time": 5.0,
-        "input_items": {
-          "resonance_trace": 3
-        },
-        "output_items": {
-          "echo_arrangement": 1
-        }
       },
       {
         "id": "set_preparation",
@@ -7625,6 +8258,18 @@
         }
       },
       {
+        "id": "listen_orchard",
+        "name": "Orchard Rhythm",
+        "level_required": 30,
+        "base_interval": 6.0,
+        "base_xp": 55,
+        "description": "A hundred harvests leave a patient layer: slower to read, but it plays back for far longer.",
+        "mastery_action_time": 6.0,
+        "output_items": {
+          "resonance_trace": 2
+        }
+      },
+      {
         "id": "set_interruption",
         "name": "Set Interruption",
         "level_required": 35,
@@ -7654,22 +8299,6 @@
         },
         "output_items": {
           "echo_charge": 2
-        }
-      },
-      {
-        "id": "replay_rack",
-        "name": "Replay the Rack",
-        "level_required": 10,
-        "base_interval": 8.0,
-        "base_xp": 60,
-        "description": "Run the whole sequence again from the top. A rack with no reset eventually stops working at all.",
-        "mastery_action_time": 8.0,
-        "input_items": {
-          "echo_arrangement": 1,
-          "resonance_trace": 1
-        },
-        "output_items": {
-          "echo_charge": 3
         }
       },
       {
@@ -7801,6 +8430,37 @@
         }
       },
       {
+        "id": "place_anchor",
+        "name": "Place an Anchor",
+        "level_required": 1,
+        "base_interval": 5.0,
+        "base_xp": 25,
+        "description": "Set a fixed point where a passage may begin. One anchor is only a marker; it takes two to make a door.",
+        "mastery_action_time": 5.0,
+        "input_items": {
+          "route_survey": 1
+        },
+        "output_items": {
+          "fold_anchor": 1
+        }
+      },
+      {
+        "id": "join_anchors",
+        "name": "Join Two Anchors",
+        "level_required": 15,
+        "base_interval": 9.0,
+        "base_xp": 70,
+        "description": "Draw a passage between two anchored places. Long chains strain; a junction costs a slot but buys flexibility.",
+        "mastery_action_time": 9.0,
+        "input_items": {
+          "fold_anchor": 2,
+          "route_survey": 1
+        },
+        "output_items": {
+          "wayfold_link": 1
+        }
+      },
+      {
         "id": "survey_branch",
         "name": "Survey a Branch",
         "level_required": 20,
@@ -7821,31 +8481,19 @@
         ]
       },
       {
-        "id": "survey_cargo",
-        "name": "Survey the Cargo",
-        "level_required": 40,
-        "base_interval": 7.0,
-        "base_xp": 80,
-        "description": "Ask what a load actually weighs this month. The answer changes with the season.",
-        "mastery_action_time": 7.0,
-        "output_items": {
-          "route_survey": 1
-        },
-        "success_chance": 0.85
-      },
-      {
-        "id": "place_anchor",
-        "name": "Place an Anchor",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 25,
-        "description": "Set a fixed point where a passage may begin. One anchor is only a marker; it takes two to make a door.",
-        "mastery_action_time": 5.0,
+        "id": "run_manifest",
+        "name": "Run a Manifest",
+        "level_required": 20,
+        "base_interval": 10.0,
+        "base_xp": 100,
+        "description": "Operate the network for one cycle. Deliveries pay; a branch whose supplies ran dry simply pauses.",
+        "mastery_action_time": 10.0,
         "input_items": {
-          "route_survey": 1
+          "wayfold_link": 1,
+          "fold_anchor": 2
         },
         "output_items": {
-          "fold_anchor": 1
+          "freight_manifest": 1
         }
       },
       {
@@ -7861,22 +8509,6 @@
         },
         "output_items": {
           "fold_anchor": 2
-        }
-      },
-      {
-        "id": "join_anchors",
-        "name": "Join Two Anchors",
-        "level_required": 15,
-        "base_interval": 9.0,
-        "base_xp": 70,
-        "description": "Draw a passage between two anchored places. Long chains strain; a junction costs a slot but buys flexibility.",
-        "mastery_action_time": 9.0,
-        "input_items": {
-          "fold_anchor": 2,
-          "route_survey": 1
-        },
-        "output_items": {
-          "wayfold_link": 1
         }
       },
       {
@@ -7896,6 +8528,19 @@
         }
       },
       {
+        "id": "survey_cargo",
+        "name": "Survey the Cargo",
+        "level_required": 40,
+        "base_interval": 7.0,
+        "base_xp": 80,
+        "description": "Ask what a load actually weighs this month. The answer changes with the season.",
+        "mastery_action_time": 7.0,
+        "output_items": {
+          "route_survey": 1
+        },
+        "success_chance": 0.85
+      },
+      {
         "id": "tie_return",
         "name": "Tie a Return",
         "level_required": 40,
@@ -7909,39 +8554,6 @@
         },
         "output_items": {
           "wayfold_link": 2
-        }
-      },
-      {
-        "id": "conditional_link",
-        "name": "Conditional Link",
-        "level_required": 65,
-        "base_interval": 12.0,
-        "base_xp": 190,
-        "description": "Let the cargo choose the direction: light out, heavy back, or only while a branch sits idle.",
-        "mastery_action_time": 12.0,
-        "input_items": {
-          "fold_anchor": 3,
-          "route_survey": 3
-        },
-        "output_items": {
-          "wayfold_link": 3
-        },
-        "success_chance": 0.75
-      },
-      {
-        "id": "run_manifest",
-        "name": "Run a Manifest",
-        "level_required": 20,
-        "base_interval": 10.0,
-        "base_xp": 100,
-        "description": "Operate the network for one cycle. Deliveries pay; a branch whose supplies ran dry simply pauses.",
-        "mastery_action_time": 10.0,
-        "input_items": {
-          "wayfold_link": 1,
-          "fold_anchor": 2
-        },
-        "output_items": {
-          "freight_manifest": 1
         }
       },
       {
@@ -7960,6 +8572,23 @@
           "freight_manifest": 3
         },
         "success_chance": 0.8
+      },
+      {
+        "id": "conditional_link",
+        "name": "Conditional Link",
+        "level_required": 65,
+        "base_interval": 12.0,
+        "base_xp": 190,
+        "description": "Let the cargo choose the direction: light out, heavy back, or only while a branch sits idle.",
+        "mastery_action_time": 12.0,
+        "input_items": {
+          "fold_anchor": 3,
+          "route_survey": 3
+        },
+        "output_items": {
+          "wayfold_link": 3
+        },
+        "success_chance": 0.75
       },
       {
         "id": "condense_line",
@@ -8059,6 +8688,36 @@
         }
       },
       {
+        "id": "charge_vessel",
+        "name": "Charge a Vessel",
+        "level_required": 1,
+        "base_interval": 5.0,
+        "base_xp": 22,
+        "description": "Insulate, pressurise and damp a vessel around one starter. The vessel decides what the culture may become.",
+        "mastery_action_time": 5.0,
+        "input_items": {
+          "weather_starter": 1
+        },
+        "output_items": {
+          "charged_vessel": 1
+        }
+      },
+      {
+        "id": "feed_culture",
+        "name": "Feed the Culture",
+        "level_required": 5,
+        "base_interval": 6.0,
+        "base_xp": 30,
+        "description": "Materials from other skills push the culture toward a known range. Feeding the same thing twice is not the same as feeding it well.",
+        "mastery_action_time": 6.0,
+        "input_items": {
+          "charged_vessel": 1
+        },
+        "output_items": {
+          "matured_culture": 1
+        }
+      },
+      {
         "id": "catch_hillside_wind",
         "name": "Catch Hillside Wind",
         "level_required": 15,
@@ -8079,33 +8738,6 @@
         ]
       },
       {
-        "id": "catch_greenhouse_warmth",
-        "name": "Catch Greenhouse Warmth",
-        "level_required": 30,
-        "base_interval": 7.0,
-        "base_xp": 60,
-        "description": "Borrowed heat, held against glass: persistent, gentle, and slow to change its mind.",
-        "mastery_action_time": 7.0,
-        "output_items": {
-          "weather_starter": 2
-        }
-      },
-      {
-        "id": "charge_vessel",
-        "name": "Charge a Vessel",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 22,
-        "description": "Insulate, pressurise and damp a vessel around one starter. The vessel decides what the culture may become.",
-        "mastery_action_time": 5.0,
-        "input_items": {
-          "weather_starter": 1
-        },
-        "output_items": {
-          "charged_vessel": 1
-        }
-      },
-      {
         "id": "charge_vessel_pair",
         "name": "Charge a Vessel Pair",
         "level_required": 20,
@@ -8119,38 +8751,6 @@
         "output_items": {
           "charged_vessel": 2
         }
-      },
-      {
-        "id": "feed_culture",
-        "name": "Feed the Culture",
-        "level_required": 5,
-        "base_interval": 6.0,
-        "base_xp": 30,
-        "description": "Materials from other skills push the culture toward a known range. Feeding the same thing twice is not the same as feeding it well.",
-        "mastery_action_time": 6.0,
-        "input_items": {
-          "charged_vessel": 1
-        },
-        "output_items": {
-          "matured_culture": 1
-        }
-      },
-      {
-        "id": "feed_dry",
-        "name": "Feed Toward Dry",
-        "level_required": 30,
-        "base_interval": 6.0,
-        "base_xp": 70,
-        "description": "Strip the humidity out: harder conditions, shorter-lived results, and far better for processing.",
-        "mastery_action_time": 6.0,
-        "input_items": {
-          "charged_vessel": 1,
-          "weather_starter": 1
-        },
-        "output_items": {
-          "matured_culture": 2
-        },
-        "success_chance": 0.8
       },
       {
         "id": "schedule_mature",
@@ -8181,6 +8781,35 @@
         "output_items": {
           "weather_charge": 2
         }
+      },
+      {
+        "id": "catch_greenhouse_warmth",
+        "name": "Catch Greenhouse Warmth",
+        "level_required": 30,
+        "base_interval": 7.0,
+        "base_xp": 60,
+        "description": "Borrowed heat, held against glass: persistent, gentle, and slow to change its mind.",
+        "mastery_action_time": 7.0,
+        "output_items": {
+          "weather_starter": 2
+        }
+      },
+      {
+        "id": "feed_dry",
+        "name": "Feed Toward Dry",
+        "level_required": 30,
+        "base_interval": 6.0,
+        "base_xp": 70,
+        "description": "Strip the humidity out: harder conditions, shorter-lived results, and far better for processing.",
+        "mastery_action_time": 6.0,
+        "input_items": {
+          "charged_vessel": 1,
+          "weather_starter": 1
+        },
+        "output_items": {
+          "matured_culture": 2
+        },
+        "success_chance": 0.8
       },
       {
         "id": "retain_culture",
@@ -8328,19 +8957,6 @@
         }
       },
       {
-        "id": "propose_festival",
-        "name": "Propose a Festival",
-        "level_required": 30,
-        "base_interval": 5.0,
-        "base_xp": 60,
-        "description": "A bigger interruption than a habit. Once established it divides attention rather than stacking with rivals.",
-        "mastery_action_time": 5.0,
-        "output_items": {
-          "custom_proposal": 2
-        },
-        "success_chance": 0.85
-      },
-      {
         "id": "provision_custom",
         "name": "Provision the Practice",
         "level_required": 1,
@@ -8369,6 +8985,37 @@
         "output_items": {
           "tradition_progress": 1
         }
+      },
+      {
+        "id": "archive_custom",
+        "name": "Archive a Custom",
+        "level_required": 25,
+        "base_interval": 6.0,
+        "base_xp": 70,
+        "description": "Retire a custom at a modest fee and fold what it taught into a standing record. A bad habit should cost a detour, not a playthrough.",
+        "mastery_action_time": 6.0,
+        "input_items": {
+          "established_tradition": 1,
+          "custom_provisions": 1
+        },
+        "output_items": {
+          "paired_tradition": 1
+        },
+        "success_chance": 0.95,
+        "fail_output_item": ""
+      },
+      {
+        "id": "propose_festival",
+        "name": "Propose a Festival",
+        "level_required": 30,
+        "base_interval": 5.0,
+        "base_xp": 60,
+        "description": "A bigger interruption than a habit. Once established it divides attention rather than stacking with rivals.",
+        "mastery_action_time": 5.0,
+        "output_items": {
+          "custom_proposal": 2
+        },
+        "success_chance": 0.85
       },
       {
         "id": "invite_neighbours",
@@ -8421,24 +9068,6 @@
           "paired_tradition": 1
         },
         "success_chance": 0.75,
-        "fail_output_item": ""
-      },
-      {
-        "id": "archive_custom",
-        "name": "Archive a Custom",
-        "level_required": 25,
-        "base_interval": 6.0,
-        "base_xp": 70,
-        "description": "Retire a custom at a modest fee and fold what it taught into a standing record. A bad habit should cost a detour, not a playthrough.",
-        "mastery_action_time": 6.0,
-        "input_items": {
-          "established_tradition": 1,
-          "custom_provisions": 1
-        },
-        "output_items": {
-          "paired_tradition": 1
-        },
-        "success_chance": 0.95,
         "fail_output_item": ""
       },
       {
@@ -8557,19 +9186,6 @@
         }
       },
       {
-        "id": "accept_urgent",
-        "name": "Accept an Urgent Case",
-        "level_required": 40,
-        "base_interval": 4.0,
-        "base_xp": 45,
-        "description": "Better pay, worse odds, a shorter window. The stated range is honest about the risk.",
-        "mastery_action_time": 4.0,
-        "output_items": {
-          "case_file": 2
-        },
-        "success_chance": 0.9
-      },
-      {
         "id": "broad_search",
         "name": "Broad Search",
         "level_required": 1,
@@ -8584,22 +9200,6 @@
           "trace_evidence": 1
         },
         "success_chance": 0.8
-      },
-      {
-        "id": "targeted_search",
-        "name": "Targeted Search",
-        "level_required": 25,
-        "base_interval": 9.0,
-        "base_xp": 55,
-        "description": "Spend the time and the materials to look in exactly one place. Fewer possibilities, far better odds.",
-        "mastery_action_time": 9.0,
-        "input_items": {
-          "case_file": 2
-        },
-        "output_items": {
-          "trace_evidence": 2
-        },
-        "success_chance": 0.95
       },
       {
         "id": "interview_witness",
@@ -8618,6 +9218,38 @@
         "success_chance": 0.85
       },
       {
+        "id": "recover_object",
+        "name": "Recover the Object",
+        "level_required": 20,
+        "base_interval": 11.0,
+        "base_xp": 120,
+        "description": "Follow the chain home. Confidence decides how cleanly this ends more than the dice do.",
+        "mastery_action_time": 11.0,
+        "input_items": {
+          "witness_timeline": 1
+        },
+        "output_items": {
+          "finders_fee": 1
+        },
+        "success_chance": 0.7
+      },
+      {
+        "id": "targeted_search",
+        "name": "Targeted Search",
+        "level_required": 25,
+        "base_interval": 9.0,
+        "base_xp": 55,
+        "description": "Spend the time and the materials to look in exactly one place. Fewer possibilities, far better odds.",
+        "mastery_action_time": 9.0,
+        "input_items": {
+          "case_file": 2
+        },
+        "output_items": {
+          "trace_evidence": 2
+        },
+        "success_chance": 0.95
+      },
+      {
         "id": "inspect_cargo_records",
         "name": "Inspect Cargo Records",
         "level_required": 25,
@@ -8632,6 +9264,36 @@
           "trace_evidence": 2
         },
         "success_chance": 0.85
+      },
+      {
+        "id": "accept_urgent",
+        "name": "Accept an Urgent Case",
+        "level_required": 40,
+        "base_interval": 4.0,
+        "base_xp": 45,
+        "description": "Better pay, worse odds, a shorter window. The stated range is honest about the risk.",
+        "mastery_action_time": 4.0,
+        "output_items": {
+          "case_file": 2
+        },
+        "success_chance": 0.9
+      },
+      {
+        "id": "close_file",
+        "name": "Close the File",
+        "level_required": 40,
+        "base_interval": 8.0,
+        "base_xp": 150,
+        "description": "Tie off the whole chain and file the record; solving one disappearance explains the next.",
+        "mastery_action_time": 8.0,
+        "input_items": {
+          "restored_label": 1,
+          "trace_evidence": 1
+        },
+        "output_items": {
+          "finders_fee": 2
+        },
+        "success_chance": 0.8
       },
       {
         "id": "press_label",
@@ -8651,39 +9313,6 @@
         "success_chance": 0.8
       },
       {
-        "id": "echo_lens",
-        "name": "Echo Lens",
-        "level_required": 65,
-        "base_interval": 12.0,
-        "base_xp": 200,
-        "description": "See repeated handling: which hands, how many, in what order. The newest instrument in the trade.",
-        "mastery_action_time": 12.0,
-        "input_items": {
-          "witness_timeline": 1,
-          "trace_evidence": 2
-        },
-        "output_items": {
-          "restored_label": 2
-        },
-        "success_chance": 0.75
-      },
-      {
-        "id": "recover_object",
-        "name": "Recover the Object",
-        "level_required": 20,
-        "base_interval": 11.0,
-        "base_xp": 120,
-        "description": "Follow the chain home. Confidence decides how cleanly this ends more than the dice do.",
-        "mastery_action_time": 11.0,
-        "input_items": {
-          "witness_timeline": 1
-        },
-        "output_items": {
-          "finders_fee": 1
-        },
-        "success_chance": 0.7
-      },
-      {
         "id": "return_heirloom",
         "name": "Return an Heirloom",
         "level_required": 55,
@@ -8701,21 +9330,21 @@
         "success_chance": 0.6
       },
       {
-        "id": "close_file",
-        "name": "Close the File",
-        "level_required": 40,
-        "base_interval": 8.0,
-        "base_xp": 150,
-        "description": "Tie off the whole chain and file the record; solving one disappearance explains the next.",
-        "mastery_action_time": 8.0,
+        "id": "echo_lens",
+        "name": "Echo Lens",
+        "level_required": 65,
+        "base_interval": 12.0,
+        "base_xp": 200,
+        "description": "See repeated handling: which hands, how many, in what order. The newest instrument in the trade.",
+        "mastery_action_time": 12.0,
         "input_items": {
-          "restored_label": 1,
-          "trace_evidence": 1
+          "witness_timeline": 1,
+          "trace_evidence": 2
         },
         "output_items": {
-          "finders_fee": 2
+          "restored_label": 2
         },
-        "success_chance": 0.8
+        "success_chance": 0.75
       },
       {
         "id": "cold_trail",
@@ -8861,34 +9490,6 @@
         "mastery_action_time": 2.0
       },
       {
-        "id": "make_blue_ink",
-        "name": "Azure Ink",
-        "level_required": 25,
-        "base_interval": 2.0,
-        "base_xp": 55,
-        "input_items": {
-          "scribe_ink": 2
-        },
-        "output_items": {
-          "scribe_blue_ink": 1
-        },
-        "mastery_action_time": 2.0
-      },
-      {
-        "id": "make_celestial_ink",
-        "name": "Celestial Ink",
-        "level_required": 90,
-        "base_interval": 2.0,
-        "base_xp": 160,
-        "input_items": {
-          "scribe_blue_ink": 2
-        },
-        "output_items": {
-          "scribe_celestial_ink": 1
-        },
-        "mastery_action_time": 2.0
-      },
-      {
         "id": "make_paper",
         "name": "Scribe Paper",
         "level_required": 1,
@@ -8901,186 +9502,6 @@
           "scribe_paper": 5
         },
         "mastery_action_time": 1.5
-      },
-      {
-        "id": "scribe_apprentice_faded",
-        "name": "Apprentice Faded",
-        "level_required": 40,
-        "base_interval": 2.2,
-        "base_xp": 80,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_apprentice_faded": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_apprentice_inked",
-        "name": "Apprentice Inked",
-        "level_required": 45,
-        "base_interval": 2.2,
-        "base_xp": 90,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_apprentice_inked": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_apprentice_illuminated",
-        "name": "Apprentice Illuminated",
-        "level_required": 50,
-        "base_interval": 2.2,
-        "base_xp": 105,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_celestial_ink": 1
-        },
-        "output_items": {
-          "scribe_apprentice_illuminated": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_scholar_faded",
-        "name": "Scholar Faded",
-        "level_required": 60,
-        "base_interval": 2.2,
-        "base_xp": 100,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_scholar_faded": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_scholar_inked",
-        "name": "Scholar Inked",
-        "level_required": 65,
-        "base_interval": 2.2,
-        "base_xp": 110,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_scholar_inked": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_scholar_illuminated",
-        "name": "Scholar Illuminated",
-        "level_required": 70,
-        "base_interval": 2.2,
-        "base_xp": 125,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_celestial_ink": 1
-        },
-        "output_items": {
-          "scribe_scholar_illuminated": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_sage_faded",
-        "name": "Sage Faded",
-        "level_required": 90,
-        "base_interval": 2.2,
-        "base_xp": 130,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_sage_faded": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_sage_inked",
-        "name": "Sage Inked",
-        "level_required": 95,
-        "base_interval": 2.2,
-        "base_xp": 140,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_sage_inked": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_sage_illuminated",
-        "name": "Sage Illuminated",
-        "level_required": 100,
-        "base_interval": 2.2,
-        "base_xp": 155,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_celestial_ink": 1
-        },
-        "output_items": {
-          "scribe_sage_illuminated": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_grand_tome_faded",
-        "name": "Grand Tome Faded",
-        "level_required": 115,
-        "base_interval": 2.2,
-        "base_xp": 155,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_grand_tome_faded": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_grand_tome_inked",
-        "name": "Grand Tome Inked",
-        "level_required": 120,
-        "base_interval": 2.2,
-        "base_xp": 165,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_grand_tome_inked": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_grand_tome_illuminated",
-        "name": "Grand Tome Illuminated",
-        "level_required": 120,
-        "base_interval": 2.2,
-        "base_xp": 180,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_celestial_ink": 1
-        },
-        "output_items": {
-          "scribe_grand_tome_illuminated": 1
-        },
-        "mastery_action_time": 2.2
       },
       {
         "id": "scribe_xp_tome_1_faded",
@@ -9096,6 +9517,20 @@
           "scribe_xp_tome_1_faded": 1
         },
         "mastery_action_time": 2.2
+      },
+      {
+        "id": "make_blue_ink",
+        "name": "Azure Ink",
+        "level_required": 25,
+        "base_interval": 2.0,
+        "base_xp": 55,
+        "input_items": {
+          "scribe_ink": 2
+        },
+        "output_items": {
+          "scribe_blue_ink": 1
+        },
+        "mastery_action_time": 2.0
       },
       {
         "id": "scribe_xp_tome_1_inked",
@@ -9128,9 +9563,84 @@
         "mastery_action_time": 2.2
       },
       {
-        "id": "scribe_xp_tome_2_faded",
-        "name": "Xp Tome 2 Faded",
-        "level_required": 50,
+        "id": "scribe_minor_haste_faded",
+        "name": "Minor Haste Faded",
+        "level_required": 30,
+        "base_interval": 2.2,
+        "base_xp": 70,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_minor_haste_faded": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_minor_haste_inked",
+        "name": "Minor Haste Inked",
+        "level_required": 35,
+        "base_interval": 2.2,
+        "base_xp": 80,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_minor_haste_inked": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_apprentice_faded",
+        "name": "Apprentice Faded",
+        "level_required": 40,
+        "base_interval": 2.2,
+        "base_xp": 80,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_apprentice_faded": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_minor_haste_illuminated",
+        "name": "Minor Haste Illuminated",
+        "level_required": 40,
+        "base_interval": 2.2,
+        "base_xp": 95,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_celestial_ink": 1
+        },
+        "output_items": {
+          "scribe_minor_haste_illuminated": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "bind_apprentice_faded",
+        "name": "Apprentice Faded Tome",
+        "level_required": 40,
+        "base_interval": 2.5,
+        "base_xp": 100,
+        "input_items": {
+          "scribe_apprentice_faded": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_apprentice_faded": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "scribe_apprentice_inked",
+        "name": "Apprentice Inked",
+        "level_required": 45,
         "base_interval": 2.2,
         "base_xp": 90,
         "input_items": {
@@ -9138,37 +9648,7 @@
           "scribe_blue_ink": 1
         },
         "output_items": {
-          "scribe_xp_tome_2_faded": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_xp_tome_2_inked",
-        "name": "Xp Tome 2 Inked",
-        "level_required": 55,
-        "base_interval": 2.2,
-        "base_xp": 100,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_xp_tome_2_inked": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_xp_tome_2_illuminated",
-        "name": "Xp Tome 2 Illuminated",
-        "level_required": 60,
-        "base_interval": 2.2,
-        "base_xp": 115,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_celestial_ink": 1
-        },
-        "output_items": {
-          "scribe_xp_tome_2_illuminated": 1
+          "scribe_apprentice_inked": 1
         },
         "mastery_action_time": 2.2
       },
@@ -9188,6 +9668,66 @@
         "mastery_action_time": 2.2
       },
       {
+        "id": "bind_apprentice_inked",
+        "name": "Apprentice Inked Tome",
+        "level_required": 45,
+        "base_interval": 2.5,
+        "base_xp": 100,
+        "input_items": {
+          "scribe_apprentice_inked": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_apprentice_inked": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "bind_apprentice_illuminated",
+        "name": "Apprentice Illuminated Tome",
+        "level_required": 45,
+        "base_interval": 2.5,
+        "base_xp": 100,
+        "input_items": {
+          "scribe_apprentice_illuminated": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_apprentice_illuminated": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "scribe_apprentice_illuminated",
+        "name": "Apprentice Illuminated",
+        "level_required": 50,
+        "base_interval": 2.2,
+        "base_xp": 105,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_celestial_ink": 1
+        },
+        "output_items": {
+          "scribe_apprentice_illuminated": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_xp_tome_2_faded",
+        "name": "Xp Tome 2 Faded",
+        "level_required": 50,
+        "base_interval": 2.2,
+        "base_xp": 90,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_xp_tome_2_faded": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
         "id": "scribe_doubling_inked",
         "name": "Doubling Inked",
         "level_required": 50,
@@ -9203,6 +9743,21 @@
         "mastery_action_time": 2.2
       },
       {
+        "id": "scribe_xp_tome_2_inked",
+        "name": "Xp Tome 2 Inked",
+        "level_required": 55,
+        "base_interval": 2.2,
+        "base_xp": 100,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_xp_tome_2_inked": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
         "id": "scribe_doubling_illuminated",
         "name": "Doubling Illuminated",
         "level_required": 55,
@@ -9214,6 +9769,111 @@
         },
         "output_items": {
           "scribe_doubling_illuminated": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_scholar_faded",
+        "name": "Scholar Faded",
+        "level_required": 60,
+        "base_interval": 2.2,
+        "base_xp": 100,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_scholar_faded": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_xp_tome_2_illuminated",
+        "name": "Xp Tome 2 Illuminated",
+        "level_required": 60,
+        "base_interval": 2.2,
+        "base_xp": 115,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_celestial_ink": 1
+        },
+        "output_items": {
+          "scribe_xp_tome_2_illuminated": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "bind_scholar_faded",
+        "name": "Scholar Faded Tome",
+        "level_required": 60,
+        "base_interval": 2.5,
+        "base_xp": 120,
+        "input_items": {
+          "scribe_scholar_faded": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_scholar_faded": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "scribe_scholar_inked",
+        "name": "Scholar Inked",
+        "level_required": 65,
+        "base_interval": 2.2,
+        "base_xp": 110,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_scholar_inked": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "bind_scholar_inked",
+        "name": "Scholar Inked Tome",
+        "level_required": 65,
+        "base_interval": 2.5,
+        "base_xp": 120,
+        "input_items": {
+          "scribe_scholar_inked": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_scholar_inked": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "bind_scholar_illuminated",
+        "name": "Scholar Illuminated Tome",
+        "level_required": 65,
+        "base_interval": 2.5,
+        "base_xp": 120,
+        "input_items": {
+          "scribe_scholar_illuminated": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_scholar_illuminated": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "scribe_scholar_illuminated",
+        "name": "Scholar Illuminated",
+        "level_required": 70,
+        "base_interval": 2.2,
+        "base_xp": 125,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_celestial_ink": 1
+        },
+        "output_items": {
+          "scribe_scholar_illuminated": 1
         },
         "mastery_action_time": 2.2
       },
@@ -9263,47 +9923,151 @@
         "mastery_action_time": 2.2
       },
       {
-        "id": "scribe_minor_haste_faded",
-        "name": "Minor Haste Faded",
-        "level_required": 30,
+        "id": "scribe_time_faded",
+        "name": "Time Faded",
+        "level_required": 80,
         "base_interval": 2.2,
-        "base_xp": 70,
+        "base_xp": 120,
         "input_items": {
           "scribe_paper": 1,
           "scribe_blue_ink": 1
         },
         "output_items": {
-          "scribe_minor_haste_faded": 1
+          "scribe_time_faded": 1
         },
         "mastery_action_time": 2.2
       },
       {
-        "id": "scribe_minor_haste_inked",
-        "name": "Minor Haste Inked",
-        "level_required": 35,
+        "id": "scribe_time_inked",
+        "name": "Time Inked",
+        "level_required": 85,
         "base_interval": 2.2,
-        "base_xp": 80,
+        "base_xp": 130,
         "input_items": {
           "scribe_paper": 1,
           "scribe_blue_ink": 1
         },
         "output_items": {
-          "scribe_minor_haste_inked": 1
+          "scribe_time_inked": 1
         },
         "mastery_action_time": 2.2
       },
       {
-        "id": "scribe_minor_haste_illuminated",
-        "name": "Minor Haste Illuminated",
-        "level_required": 40,
+        "id": "make_celestial_ink",
+        "name": "Celestial Ink",
+        "level_required": 90,
+        "base_interval": 2.0,
+        "base_xp": 160,
+        "input_items": {
+          "scribe_blue_ink": 2
+        },
+        "output_items": {
+          "scribe_celestial_ink": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "scribe_sage_faded",
+        "name": "Sage Faded",
+        "level_required": 90,
         "base_interval": 2.2,
-        "base_xp": 95,
+        "base_xp": 130,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_sage_faded": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_time_illuminated",
+        "name": "Time Illuminated",
+        "level_required": 90,
+        "base_interval": 2.2,
+        "base_xp": 145,
         "input_items": {
           "scribe_paper": 1,
           "scribe_celestial_ink": 1
         },
         "output_items": {
-          "scribe_minor_haste_illuminated": 1
+          "scribe_time_illuminated": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "bind_sage_faded",
+        "name": "Sage Faded Tome",
+        "level_required": 90,
+        "base_interval": 2.5,
+        "base_xp": 150,
+        "input_items": {
+          "scribe_sage_faded": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_sage_faded": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "scribe_sage_inked",
+        "name": "Sage Inked",
+        "level_required": 95,
+        "base_interval": 2.2,
+        "base_xp": 140,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_sage_inked": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "bind_sage_inked",
+        "name": "Sage Inked Tome",
+        "level_required": 95,
+        "base_interval": 2.5,
+        "base_xp": 150,
+        "input_items": {
+          "scribe_sage_inked": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_sage_inked": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "bind_sage_illuminated",
+        "name": "Sage Illuminated Tome",
+        "level_required": 95,
+        "base_interval": 2.5,
+        "base_xp": 150,
+        "input_items": {
+          "scribe_sage_illuminated": 1,
+          "scribe_paper": 2
+        },
+        "output_items": {
+          "equipped_tome_sage_illuminated": 1
+        },
+        "mastery_action_time": 2.5
+      },
+      {
+        "id": "scribe_sage_illuminated",
+        "name": "Sage Illuminated",
+        "level_required": 100,
+        "base_interval": 2.2,
+        "base_xp": 155,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_celestial_ink": 1
+        },
+        "output_items": {
+          "scribe_sage_illuminated": 1
         },
         "mastery_action_time": 2.2
       },
@@ -9353,184 +10117,19 @@
         "mastery_action_time": 2.2
       },
       {
-        "id": "scribe_time_faded",
-        "name": "Time Faded",
-        "level_required": 80,
+        "id": "scribe_grand_tome_faded",
+        "name": "Grand Tome Faded",
+        "level_required": 115,
         "base_interval": 2.2,
-        "base_xp": 120,
+        "base_xp": 155,
         "input_items": {
           "scribe_paper": 1,
           "scribe_blue_ink": 1
         },
         "output_items": {
-          "scribe_time_faded": 1
+          "scribe_grand_tome_faded": 1
         },
         "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_time_inked",
-        "name": "Time Inked",
-        "level_required": 85,
-        "base_interval": 2.2,
-        "base_xp": 130,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_blue_ink": 1
-        },
-        "output_items": {
-          "scribe_time_inked": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "scribe_time_illuminated",
-        "name": "Time Illuminated",
-        "level_required": 90,
-        "base_interval": 2.2,
-        "base_xp": 145,
-        "input_items": {
-          "scribe_paper": 1,
-          "scribe_celestial_ink": 1
-        },
-        "output_items": {
-          "scribe_time_illuminated": 1
-        },
-        "mastery_action_time": 2.2
-      },
-      {
-        "id": "bind_apprentice_faded",
-        "name": "Apprentice Faded Tome",
-        "level_required": 40,
-        "base_interval": 2.5,
-        "base_xp": 100,
-        "input_items": {
-          "scribe_apprentice_faded": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_apprentice_faded": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_apprentice_inked",
-        "name": "Apprentice Inked Tome",
-        "level_required": 45,
-        "base_interval": 2.5,
-        "base_xp": 100,
-        "input_items": {
-          "scribe_apprentice_inked": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_apprentice_inked": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_apprentice_illuminated",
-        "name": "Apprentice Illuminated Tome",
-        "level_required": 45,
-        "base_interval": 2.5,
-        "base_xp": 100,
-        "input_items": {
-          "scribe_apprentice_illuminated": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_apprentice_illuminated": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_scholar_faded",
-        "name": "Scholar Faded Tome",
-        "level_required": 60,
-        "base_interval": 2.5,
-        "base_xp": 120,
-        "input_items": {
-          "scribe_scholar_faded": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_scholar_faded": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_scholar_inked",
-        "name": "Scholar Inked Tome",
-        "level_required": 65,
-        "base_interval": 2.5,
-        "base_xp": 120,
-        "input_items": {
-          "scribe_scholar_inked": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_scholar_inked": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_scholar_illuminated",
-        "name": "Scholar Illuminated Tome",
-        "level_required": 65,
-        "base_interval": 2.5,
-        "base_xp": 120,
-        "input_items": {
-          "scribe_scholar_illuminated": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_scholar_illuminated": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_sage_faded",
-        "name": "Sage Faded Tome",
-        "level_required": 90,
-        "base_interval": 2.5,
-        "base_xp": 150,
-        "input_items": {
-          "scribe_sage_faded": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_sage_faded": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_sage_inked",
-        "name": "Sage Inked Tome",
-        "level_required": 95,
-        "base_interval": 2.5,
-        "base_xp": 150,
-        "input_items": {
-          "scribe_sage_inked": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_sage_inked": 1
-        },
-        "mastery_action_time": 2.5
-      },
-      {
-        "id": "bind_sage_illuminated",
-        "name": "Sage Illuminated Tome",
-        "level_required": 95,
-        "base_interval": 2.5,
-        "base_xp": 150,
-        "input_items": {
-          "scribe_sage_illuminated": 1,
-          "scribe_paper": 2
-        },
-        "output_items": {
-          "equipped_tome_sage_illuminated": 1
-        },
-        "mastery_action_time": 2.5
       },
       {
         "id": "bind_grand_tome_faded",
@@ -9546,6 +10145,36 @@
           "equipped_tome_grand_tome_faded": 1
         },
         "mastery_action_time": 2.5
+      },
+      {
+        "id": "scribe_grand_tome_inked",
+        "name": "Grand Tome Inked",
+        "level_required": 120,
+        "base_interval": 2.2,
+        "base_xp": 165,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_blue_ink": 1
+        },
+        "output_items": {
+          "scribe_grand_tome_inked": 1
+        },
+        "mastery_action_time": 2.2
+      },
+      {
+        "id": "scribe_grand_tome_illuminated",
+        "name": "Grand Tome Illuminated",
+        "level_required": 120,
+        "base_interval": 2.2,
+        "base_xp": 180,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_celestial_ink": 1
+        },
+        "output_items": {
+          "scribe_grand_tome_illuminated": 1
+        },
+        "mastery_action_time": 2.2
       },
       {
         "id": "bind_grand_tome_inked",
@@ -9628,34 +10257,6 @@
         "mastery_action_time": 2.0
       },
       {
-        "id": "forge_clockwork_spring",
-        "name": "Clockwork Spring",
-        "level_required": 25,
-        "base_interval": 2.0,
-        "base_xp": 55,
-        "input_items": {
-          "mithril_bar": 2
-        },
-        "output_items": {
-          "clockwork_spring": 1
-        },
-        "mastery_action_time": 2.0
-      },
-      {
-        "id": "forge_clockwork_frame",
-        "name": "Clockwork Frame",
-        "level_required": 50,
-        "base_interval": 2.0,
-        "base_xp": 110,
-        "input_items": {
-          "adamantite_bar": 2
-        },
-        "output_items": {
-          "clockwork_frame": 1
-        },
-        "mastery_action_time": 2.0
-      },
-      {
         "id": "assemble_device_lumberjack",
         "name": "Assemble Lumberjack",
         "level_required": 1,
@@ -9688,6 +10289,20 @@
         "mastery_action_time": 3.0
       },
       {
+        "id": "forge_clockwork_spring",
+        "name": "Clockwork Spring",
+        "level_required": 25,
+        "base_interval": 2.0,
+        "base_xp": 55,
+        "input_items": {
+          "mithril_bar": 2
+        },
+        "output_items": {
+          "clockwork_spring": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
         "id": "assemble_device_angler",
         "name": "Assemble Angler",
         "level_required": 30,
@@ -9718,6 +10333,20 @@
           "device_stoker": 1
         },
         "mastery_action_time": 3.0
+      },
+      {
+        "id": "forge_clockwork_frame",
+        "name": "Clockwork Frame",
+        "level_required": 50,
+        "base_interval": 2.0,
+        "base_xp": 110,
+        "input_items": {
+          "adamantite_bar": 2
+        },
+        "output_items": {
+          "clockwork_frame": 1
+        },
+        "mastery_action_time": 2.0
       },
       {
         "id": "assemble_device_cook",

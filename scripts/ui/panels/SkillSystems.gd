@@ -16,7 +16,10 @@ const NewSystems = preload("res://scripts/ui/panels/NewSkillSystems.gd")
 const HANDLED: Array[String] = [
 	"ranching", "inscription", "engineering", "enchanting", "dreamwalking",
 	"slayer", "summoning", "astrology", "agility", "cartography", "archaeology",
+	"alt_magic",
 ]
+
+const RuneWards = preload("res://scripts/core/RuneWards.gd")
 
 var _skill_id: String = ""
 var _star_sort: int = 0
@@ -43,6 +46,34 @@ func rebuild() -> void:
 		"agility": _build_agility()
 		"cartography": _build_cartography()
 		"archaeology": _build_archaeology()
+		"alt_magic": _build_runescribing()
+
+# ==========================================================================
+#  Runescribing (alt_magic): timed wards
+# ==========================================================================
+
+func _build_runescribing() -> void:
+	var active: Array[String] = RuneWards.active_ids()
+	var box := UIStyle.section("Wards",
+		"Cast a ward to charge it. Each cast adds time up to its cap, and the charge keeps running while you train anything else or fight. %d wards can hold a charge at once." % RuneWards.MAX_ACTIVE)
+	add_child(box)
+	box.add_child(Widgets.key_value("Wards holding a charge", "%d / %d" % [active.size(), RuneWards.MAX_ACTIVE],
+		UITokens.GREEN if active.size() < RuneWards.MAX_ACTIVE else UITokens.AMBER))
+	var level: int = PlayerData.get_level(RuneWards.SKILL_ID)
+	for action in RuneWards.ward_actions():
+		var left: float = RuneWards.remaining(action)
+		var effect: String = UIStyle.describe_modifier_table(action.ward.get("mods", {}))
+		var value: String
+		var color: Color = UITokens.TEXT_DIM
+		if left > 0.0:
+			value = "%s left of %s" % [UIStyle.fmt_duration(left), UIStyle.fmt_duration(RuneWards.max_seconds(action))]
+			color = UITokens.GREEN
+		elif level < int(action.get("level_required", 1)):
+			value = "Lv %d" % int(action.get("level_required", 1))
+			color = UITokens.DISABLED
+		else:
+			value = "not charged"
+		box.add_child(Widgets.key_value("%s · %s" % [str(action.get("name", "")), effect], value, color))
 
 # ==========================================================================
 #  Huntsman (slayer): tasks, kill tracking, and the Slayer shop

@@ -30,6 +30,8 @@ enum StopReason {
 	OFFLINE_LIMIT,       ## the bounded offline simulation ran out of budget
 }
 
+const RuneWards = preload("res://scripts/core/RuneWards.gd")
+
 const SIM_SLICE: float = 60.0
 const MAX_SIM_ACTIONS: int = 200_000
 const DEFAULT_INTERVAL: float = 3.0
@@ -71,6 +73,10 @@ func check_action(skill_id: String, action_id: String) -> Dictionary:
 		var blocked: String = InscriptionManager.blocker(data)
 		if blocked != "":
 			return {"ok": false, "reason": "research", "detail": blocked}
+	if skill_id == RuneWards.SKILL_ID:
+		var ward_blocked: String = RuneWards.blocker(data)
+		if ward_blocked != "":
+			return {"ok": false, "reason": "ward", "detail": ward_blocked}
 	if data.is_empty():
 		return {"ok": false, "reason": "unknown_action", "detail": "Unknown action"}
 	if PlayerData.get_level(skill_id) < int(data.get("level_required", 1)):
@@ -265,6 +271,14 @@ func perform_action() -> Dictionary:
 			stop_action(StopReason.TOOL_LOST, blocked)
 			return {"success": false, "stop": "research"}
 
+	# A ward that is fully charged (or would exceed the attunement limit) ends the loop before
+	# any runes are spent, so an idle player never burns runes into a capped ward.
+	if active_skill == RuneWards.SKILL_ID:
+		var ward_blocked: String = RuneWards.blocker(data)
+		if ward_blocked != "":
+			stop_action(StopReason.TARGET_REACHED, ward_blocked)
+			return {"success": false, "stop": "ward_full"}
+
 	# 1) Success roll. Thieving uses stealth vs perception; others use success_chance.
 	if _rng.randf() > _success_chance(data):
 		var waste: Dictionary = _on_action_failure(data)
@@ -419,6 +433,8 @@ func _produce_outputs(data: Dictionary) -> Dictionary:
 func _post_action(data: Dictionary, action_time: float) -> void:
 	if active_skill == "inscription":
 		InscriptionManager.finish_research(data)
+	if active_skill == RuneWards.SKILL_ID and RuneWards.is_ward(data):
+		RuneWards.cast(data)
 	var gp: float = float(data.get("gp_reward", 0.0))
 	if gp > 0.0:
 		PlayerData.add_gp(gp * (1.0 + ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) / 100.0))

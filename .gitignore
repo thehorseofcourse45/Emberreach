@@ -1,3 +1,13 @@
+# Root-level files stay local, except the README. Folders are not affected (the trailing-slash
+# rule re-includes every directory). project.godot and .gitignore are kept because the repo
+# cannot be opened in Godot, or keep these rules, without them.
+/*
+!/*/
+!/README.md
+!/project.godot
+!/.gitignore
+
+
 .godot/
 .superpowers/
 .worktrees/
@@ -57,3 +67,9 @@ ui_kit_contact_sheet.png*
 tab_check.png*
 assets/architecture.png*
 
+
+
+# Notes and logs anywhere in the tree, except the README.
+*.md
+!/README.md
+*.log

@@ -110,13 +110,13 @@ func refresh() -> void:
 			_icon.texture = AssetRegistry.skill_icon(str(activity.get("id", "")))
 			_bar.max_value = 100.0
 			_bar.value = float(activity.get("progress", 0.0)) * 100.0
-			_bar.add_theme_stylebox_override("fill", UIStyle._solid(UITokens.TEAL, UITokens.R_SM))
+			_bar.add_theme_stylebox_override("fill", UIStyle.glow_fill(UITokens.TEAL))
 			_estimates.text = _join(detail, _skill_estimates(str(activity.get("id", "")), str(activity.get("action_id", ""))))
 		"combat":
 			_icon.texture = AssetRegistry.monster_sprite(CombatManager.current_monster_id)
 			_bar.max_value = 100.0
 			_bar.value = float(activity.get("progress", 0.0)) * 100.0
-			_bar.add_theme_stylebox_override("fill", UIStyle._solid(UITokens.RED, UITokens.R_SM))
+			_bar.add_theme_stylebox_override("fill", UIStyle.glow_fill(UITokens.RED))
 			_refresh_combat_readout()
 		"stopped":
 			_icon.texture = AssetRegistry.icon("status", "warning")

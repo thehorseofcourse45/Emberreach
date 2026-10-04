@@ -77,7 +77,7 @@ static func progress_bar(value: float, maximum: float, color: Color, text := "",
 	bar.value = clampf(value, 0.0, maxf(1.0, maximum))
 	bar.show_percentage = false
 	bar.custom_minimum_size = Vector2(0, maxi(height, 18) if text != "" else height)
-	bar.add_theme_stylebox_override("fill", UIStyle._solid(color, UITokens.R_SM))
+	bar.add_theme_stylebox_override("fill", UIStyle.glow_fill(color))
 	bar.tooltip_text = tooltip if tooltip != "" else text
 	if text != "":
 		var overlay := Label.new()
@@ -300,8 +300,17 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var preview := UIStyle.icon_texture("skills", skill_id)
 	if skill_id == "inscription" and action.has("research_unlock"):
 		preview.texture = AssetRegistry.item_icon("scribe_" + str(action.research_unlock) + "_inked")
+	elif action.get("icon_activity", false):
+		preview.texture = AssetRegistry.icon(skill_id, action_id)
+	elif action.has("icon_item"):
+		preview.texture = AssetRegistry.item_icon(str(action.icon_item))
 	elif not outputs.is_empty():
 		preview.texture = AssetRegistry.item_icon(str(outputs.keys()[0]))
+	if action.has("icon_tint"):
+		var material := ShaderMaterial.new()
+		material.shader = preload("res://assets/shaders/stardust_tint.gdshader")
+		material.set_shader_parameter("dust_color", Color(str(action.icon_tint)))
+		preview.material = material
 	preview.custom_minimum_size = Vector2(40, 40)
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	preview.modulate.a = 1.0 if unlocked else 0.4
@@ -347,6 +356,14 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 					DataLoader.get_item(str(sec.get("item_id", ""))).get("name", "?"),
 					float(sec.get("chance", 0.0)) * 100.0])
 		tips.append("Rare: " + ", ".join(sec_parts))
+	if typeof(action.get("ward", null)) == TYPE_DICTIONARY:
+		var ward: Dictionary = action["ward"]
+		tips.append("Ward: %s · each cast adds %s, holds up to %s" % [
+			UIStyle.describe_modifier_table(ward.get("mods", {})),
+			UIStyle.fmt_duration(float(ward.get("seconds", 0))),
+			UIStyle.fmt_duration(float(ward.get("max_seconds", 0)))])
+	if float(action.get("gp_reward", 0)) > 0:
+		tips.append("Pays %s gold per cast" % UIStyle.fmt(float(action["gp_reward"])))
 	if not unlocked:
 		tips.append("LOCKED — requires %s %d" % [DataLoader.get_skill(skill_id).get("name", skill_id), req])
 	row.tooltip_text = "\n".join(tips)

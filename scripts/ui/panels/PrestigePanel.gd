@@ -11,8 +11,10 @@ signal context_changed(ctx: Dictionary)
 
 var _status_box: VBoxContainer
 var _reward_box: VBoxContainer
+var _tree_box: VBoxContainer
 var _history_box: VBoxContainer
 var _built: bool = false
+var _tree_window: Window
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
@@ -27,6 +29,8 @@ func _ready() -> void:
 	add_child(_status_box)
 	_reward_box = UIStyle.section("What the next ascension pays", "")
 	add_child(_reward_box)
+	_tree_box = UIStyle.section("Ascendancy tree", "spend points on permanent, stacking nodes")
+	add_child(_tree_box)
 	_history_box = UIStyle.section("Record", "past ascensions and the run behind them")
 	add_child(_history_box)
 	EventBus.state_refreshed.connect(refresh)
@@ -43,6 +47,7 @@ func refresh() -> void:
 		return
 	_rebuild_status()
 	_rebuild_reward()
+	_rebuild_tree()
 	_rebuild_history()
 
 func _clear(box: VBoxContainer) -> void:
@@ -54,7 +59,8 @@ func _rebuild_status() -> void:
 	_clear(_status_box)
 	var n: int = PrestigeManager.ascensions()
 	_status_box.add_child(Widgets.key_value("Ascensions taken", "%d" % n))
-	_status_box.add_child(Widgets.key_value("Permanent bonus", PrestigeManager.bonus_summary()))
+	_status_box.add_child(Widgets.key_value("Ascendancy Points", "%d available · %d earned" % [PrestigeManager.points(), PrestigeManager.points_earned()]))
+	_status_box.add_child(Widgets.key_value("Active bonus", PrestigeManager.bonus_summary()))
 	_status_box.add_child(Widgets.key_value("This run’s XP", UIStyle.fmt(PrestigeManager.lifetime_xp())))
 	_status_box.add_child(Widgets.key_value("Gate", "%s this run’s XP" % UIStyle.fmt(PrestigeManager.GATE_XP)))
 	var progress: float = clampf(PrestigeManager.lifetime_xp() / PrestigeManager.GATE_XP, 0.0, 1.0)
@@ -70,20 +76,17 @@ func _rebuild_status() -> void:
 func _rebuild_reward() -> void:
 	_clear(_reward_box)
 	var reward: Dictionary = PrestigeManager.next_reward()
-	if bool(reward.get("capped", false)):
-		_reward_box.add_child(UIStyle.colored_label("Ascendancy is at its cap.", UITokens.AMBER, UITokens.FONT_SMALL))
-		return
-	_reward_box.add_child(Widgets.key_value("Ascension %d pays" % int(reward["ascension"]),
-		"+%d%% skill XP, +%d%% gold" % [int(reward["xp_percent"]), int(reward["gp_percent"])]))
+	_reward_box.add_child(Widgets.key_value("Ascension %d grants" % int(reward["ascension"]),
+		"+%d Ascendancy Point" % int(reward["points"])))
 	_reward_box.add_child(UIStyle.label(
-		"The bonus applies to everything, immediately and permanently, and stacks with every " +
-		"ascension you take.", true, UITokens.FONT_SMALL))
-	_reward_box.add_child(UIStyle.label("Resets: skills, mastery, Storage, equipment, farms, pens, workers, research, enchants, dreams, course, stars, quests and combat. Keeps: collection log, accumulated lifetime counters, Ascendancy bonuses, game mode and settings.", true, UITokens.FONT_SMALL))
+		"Each ascension gives a point to spend in the Ascendancy tree below. Points and bought " +
+		"nodes are permanent and survive every future reset. There is no ascension limit; every upgrade can eventually be maxed.", true, UITokens.FONT_SMALL))
+	_reward_box.add_child(UIStyle.label("Resets: skills, mastery, Storage, equipment, farms, pens, workers, research, enchants, dreams, course, stars, quests and combat. Keeps: collection log, accumulated lifetime counters, Ascendancy points and nodes, game mode and settings.", true, UITokens.FONT_SMALL))
 	var blocker: String = PrestigeManager.blocker()
 	var button := UIStyle.button("Ascend", "Reset this run and take the permanent bonus")
 	button.disabled = not PrestigeManager.can_ascend()
 	if button.disabled:
-		button.tooltip_text = blocker if blocker != "" else "Ascendancy is at its cap"
+		button.tooltip_text = blocker
 	button.pressed.connect(_confirm_ascend)
 	_reward_box.add_child(button)
 	if not blocker.is_empty():
@@ -96,14 +99,37 @@ func _confirm_ascend() -> void:
 	var body: String = "Ascend to level %d?\n\n" % n
 	body += "LOST: every skill level, your gold, items, equipment, unlocks, quest and milestone " \
 		+ "progress, the settlement, and everything bought in this run.\n\n"
-	body += "KEPT: your collection log, your lifetime record, and a permanent +%d%% skill XP / +%d%% gold bonus." % [
-		int(PrestigeManager.XP_PER_ASCENSION * float(n)),
-		int(PrestigeManager.GP_PER_ASCENSION * float(n))]
+	body += "KEPT: your collection log, your lifetime record, your Ascendancy points and nodes, and +%d Ascendancy Point to spend." % PrestigeManager.POINTS_PER_ASCENSION
 	ConfirmDialog.ask(self, "Ascend?", body, "Ascend", func():
 		var result: Dictionary = PrestigeManager.ascend()
 		if not bool(result.get("ok", false)):
 			EventBus.notify(str(result.get("reason", "Could not ascend")), "warn")
 		refresh(), true)
+
+func _rebuild_tree() -> void:
+	_clear(_tree_box)
+	var available: int = PrestigeManager.points()
+	_tree_box.add_child(Widgets.key_value("Points to spend", "%d" % available,
+		UITokens.GREEN if available > 0 else UITokens.TEXT_MUTED))
+	_tree_box.add_child(UIStyle.label("Explore permanent upgrades and their prerequisite paths. Bought ranks survive every ascension.", true, UITokens.FONT_SMALL))
+	var open_tree := UIStyle.button("Open upgrade tree", "Explore, pan and zoom the connected upgrade tree")
+	open_tree.pressed.connect(_open_tree)
+	_tree_box.add_child(open_tree)
+	if PrestigeManager.points_spent() > 0:
+		var respec := UIStyle.button("Respec all", "Return every spent point and clear all nodes")
+		respec.pressed.connect(func():
+			ConfirmDialog.ask(self, "Respec Ascendancy?",
+				"Return all %d spent point(s) and clear every node? Your point total is unchanged; you simply re-choose." % PrestigeManager.points_spent(),
+				"Respec", func():
+					PrestigeManager.respec()
+					refresh(), false))
+		_tree_box.add_child(respec)
+
+func _open_tree() -> void:
+	if not is_instance_valid(_tree_window):
+		_tree_window = load("res://scripts/ui/AscendancyTree.gd").new()
+		add_child(_tree_window)
+	_tree_window.open()
 
 func _rebuild_history() -> void:
 	_clear(_history_box)

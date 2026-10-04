@@ -1,0 +1,902 @@
+{
+  "_comment": "Ascendancy node tree. Each ascension grants 1 Ascendancy Point (PrestigeManager). Points are spent here on ranked nodes; every purchased rank's `modifiers` dict is summed and registered through ModifierManager under the single source 'prestige', so the simulation never special-cases Ascendancy. `requires` lists node ids that must have at least one rank before this node unlocks. Keys must exist in ModifierKeys.gd. Reference checks: the test suite validates ids, costs, ranks, requires-graph (acyclic, no dangling) and modifier keys.",
+  "ascendant_insight": {
+    "id": "ascendant_insight",
+    "name": "Ascendant Insight",
+    "description": "All skill XP gained is increased. The foundation of every ascension.",
+    "cost": 1,
+    "max_rank": 5,
+    "requires": [],
+    "modifiers": {
+      "global_skill_xp_percent": 5
+    },
+    "branch": "Wisdom",
+    "tree_position": [
+      0,
+      1
+    ]
+  },
+  "ascendant_fortune": {
+    "id": "ascendant_fortune",
+    "name": "Ascendant Fortune",
+    "description": "All gold earned is increased.",
+    "cost": 1,
+    "max_rank": 5,
+    "requires": [],
+    "modifiers": {
+      "global_gp_percent": 5
+    },
+    "branch": "Prosperity",
+    "tree_position": [
+      0,
+      5
+    ]
+  },
+  "ascendant_bounty": {
+    "id": "ascendant_bounty",
+    "name": "Ascendant Bounty",
+    "description": "A chance for gathering and artisan actions to yield double resources.",
+    "cost": 2,
+    "max_rank": 3,
+    "requires": [
+      "ascendant_insight"
+    ],
+    "modifiers": {
+      "global_doubling_percent": 3
+    },
+    "branch": "Prosperity",
+    "tree_position": [
+      1,
+      4
+    ]
+  },
+  "ascendant_mastery": {
+    "id": "ascendant_mastery",
+    "name": "Ascendant Mastery",
+    "description": "Mastery XP gained is increased, so each new run masters its skills faster.",
+    "cost": 2,
+    "max_rank": 3,
+    "requires": [
+      "ascendant_insight"
+    ],
+    "modifiers": {
+      "global_mastery_xp_percent": 5
+    },
+    "branch": "Wisdom",
+    "tree_position": [
+      1,
+      1
+    ]
+  },
+  "ascendant_vigor": {
+    "id": "ascendant_vigor",
+    "name": "Ascendant Vigor",
+    "description": "Food heals for more, carrying a run further on the same supplies.",
+    "cost": 2,
+    "max_rank": 3,
+    "requires": [
+      "ascendant_fortune"
+    ],
+    "modifiers": {
+      "food_healing_percent": 5
+    },
+    "branch": "Survival",
+    "tree_position": [
+      1,
+      9
+    ]
+  },
+  "ascendant_bulwark": {
+    "id": "ascendant_bulwark",
+    "name": "Ascendant Bulwark",
+    "description": "Flat damage reduction against every enemy.",
+    "cost": 3,
+    "max_rank": 3,
+    "requires": [
+      "ascendant_vigor"
+    ],
+    "modifiers": {
+      "damage_reduction_percent": 1
+    },
+    "branch": "Survival",
+    "tree_position": [
+      2,
+      8
+    ]
+  },
+  "ascendant_hoard": {
+    "id": "ascendant_hoard",
+    "name": "Ascendant Hoard",
+    "description": "A chance for any monster drop to be doubled.",
+    "cost": 3,
+    "max_rank": 3,
+    "requires": [
+      "ascendant_bounty"
+    ],
+    "modifiers": {
+      "global_double_loot_percent": 4
+    },
+    "branch": "Prosperity",
+    "tree_position": [
+      2,
+      4
+    ]
+  },
+  "ascendant_apotheosis": {
+    "id": "ascendant_apotheosis",
+    "name": "Ascendant Apotheosis",
+    "description": "The capstone. A large, permanent boost to all skill XP and gold at once.",
+    "cost": 5,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_mastery",
+      "ascendant_hoard"
+    ],
+    "modifiers": {
+      "global_skill_xp_percent": 15,
+      "global_gp_percent": 15
+    },
+    "branch": "Wisdom",
+    "tree_position": [
+      3,
+      1
+    ]
+  },
+  "ascendant_memory": {
+    "id": "ascendant_memory",
+    "name": "Enduring Memory",
+    "description": "Gain 3% more mastery XP per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_insight"
+    ],
+    "modifiers": {
+      "global_mastery_xp_percent": 3
+    },
+    "branch": "Wisdom",
+    "tree_position": [
+      1,
+      0
+    ]
+  },
+  "ascendant_scholarship": {
+    "id": "ascendant_scholarship",
+    "name": "Lifelong Scholar",
+    "description": "Gain 4% more skill XP per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_insight"
+    ],
+    "modifiers": {
+      "global_skill_xp_percent": 4
+    },
+    "branch": "Wisdom",
+    "tree_position": [
+      1,
+      2
+    ]
+  },
+  "ascendant_legacy": {
+    "id": "ascendant_legacy",
+    "name": "Eternal Legacy",
+    "description": "Gain 5% more skill and mastery XP per rank.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_apotheosis",
+      "ascendant_memory",
+      "ascendant_scholarship"
+    ],
+    "modifiers": {
+      "global_skill_xp_percent": 5,
+      "global_mastery_xp_percent": 5
+    },
+    "branch": "Wisdom",
+    "tree_position": [
+      4,
+      1
+    ]
+  },
+  "ascendant_trade": {
+    "id": "ascendant_trade",
+    "name": "Golden Contracts",
+    "description": "Earn 5% more gold per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_fortune"
+    ],
+    "modifiers": {
+      "global_gp_percent": 5
+    },
+    "branch": "Prosperity",
+    "tree_position": [
+      1,
+      5
+    ]
+  },
+  "ascendant_appraisal": {
+    "id": "ascendant_appraisal",
+    "name": "Hunter's Dividend",
+    "description": "Earn 8% more Huntsman coins per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_fortune"
+    ],
+    "modifiers": {
+      "global_slayer_coins_percent": 8
+    },
+    "branch": "Prosperity",
+    "tree_position": [
+      1,
+      6
+    ]
+  },
+  "ascendant_windfall": {
+    "id": "ascendant_windfall",
+    "name": "Sovereign Windfall",
+    "description": "Earn 10% more gold and gain 3% loot doubling.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_hoard",
+      "ascendant_trade",
+      "ascendant_appraisal"
+    ],
+    "modifiers": {
+      "global_gp_percent": 10,
+      "global_double_loot_percent": 3
+    },
+    "branch": "Prosperity",
+    "tree_position": [
+      3,
+      5
+    ]
+  },
+  "ascendant_trailblazer": {
+    "id": "ascendant_trailblazer",
+    "name": "Trailblazer",
+    "description": "Woodcutting, mining and fishing gain 4% more XP per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [],
+    "modifiers": {
+      "woodcutting_skill_xp_percent": 4,
+      "mining_skill_xp_percent": 4,
+      "fishing_skill_xp_percent": 4
+    },
+    "branch": "Harvest",
+    "tree_position": [
+      0,
+      13
+    ]
+  },
+  "ascendant_lumber": {
+    "id": "ascendant_lumber",
+    "name": "Evergreen Hands",
+    "description": "Woodcutting is 3% faster with 3% more doubling per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_trailblazer"
+    ],
+    "modifiers": {
+      "woodcutting_interval_percent": 3,
+      "woodcutting_doubling_percent": 3
+    },
+    "branch": "Harvest",
+    "tree_position": [
+      1,
+      12
+    ]
+  },
+  "ascendant_prospector": {
+    "id": "ascendant_prospector",
+    "name": "Deep Prospector",
+    "description": "Mining is 3% faster; 5% chance to preserve node health per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_trailblazer"
+    ],
+    "modifiers": {
+      "mining_interval_percent": 3,
+      "mining_node_preservation_percent": 5
+    },
+    "branch": "Harvest",
+    "tree_position": [
+      1,
+      13
+    ]
+  },
+  "ascendant_angler": {
+    "id": "ascendant_angler",
+    "name": "Tidecaller",
+    "description": "Fishing is 3% faster with 3% more doubling per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_trailblazer"
+    ],
+    "modifiers": {
+      "fishing_interval_percent": 3,
+      "fishing_doubling_percent": 3
+    },
+    "branch": "Harvest",
+    "tree_position": [
+      1,
+      14
+    ]
+  },
+  "ascendant_cultivator": {
+    "id": "ascendant_cultivator",
+    "name": "Patient Cultivator",
+    "description": "Farming and harvesting gain 5% more XP per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_prospector",
+      "ascendant_angler"
+    ],
+    "modifiers": {
+      "farming_skill_xp_percent": 5,
+      "harvesting_skill_xp_percent": 5
+    },
+    "branch": "Harvest",
+    "tree_position": [
+      2,
+      14
+    ]
+  },
+  "ascendant_wilds": {
+    "id": "ascendant_wilds",
+    "name": "Lord of the Wilds",
+    "description": "Woodcutting, mining and fishing gain 8% more doubling.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_lumber",
+      "ascendant_cultivator"
+    ],
+    "modifiers": {
+      "woodcutting_doubling_percent": 8,
+      "mining_doubling_percent": 8,
+      "fishing_doubling_percent": 8
+    },
+    "branch": "Harvest",
+    "tree_position": [
+      3,
+      13
+    ]
+  },
+  "ascendant_craftsmanship": {
+    "id": "ascendant_craftsmanship",
+    "name": "Craftsman's Calling",
+    "description": "Smithing, crafting and cooking gain 5% more mastery XP per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [],
+    "modifiers": {
+      "smithing_mastery_xp_percent": 5,
+      "crafting_mastery_xp_percent": 5,
+      "cooking_mastery_xp_percent": 5
+    },
+    "branch": "Artisan",
+    "tree_position": [
+      0,
+      17
+    ]
+  },
+  "ascendant_forge": {
+    "id": "ascendant_forge",
+    "name": "Undying Forge",
+    "description": "Smithing is 3% faster and preserves 5% more inputs per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_craftsmanship"
+    ],
+    "modifiers": {
+      "smithing_interval_percent": 3,
+      "smithing_preservation_percent": 5
+    },
+    "branch": "Artisan",
+    "tree_position": [
+      1,
+      16
+    ]
+  },
+  "ascendant_atelier": {
+    "id": "ascendant_atelier",
+    "name": "Eternal Atelier",
+    "description": "Crafting and fletching preserve 5% more inputs per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_craftsmanship"
+    ],
+    "modifiers": {
+      "crafting_preservation_percent": 5,
+      "fletching_preservation_percent": 5
+    },
+    "branch": "Artisan",
+    "tree_position": [
+      1,
+      17
+    ]
+  },
+  "ascendant_kitchen": {
+    "id": "ascendant_kitchen",
+    "name": "Golden Kitchen",
+    "description": "Cooking is 3% faster with 5% more input preservation per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_craftsmanship"
+    ],
+    "modifiers": {
+      "cooking_interval_percent": 3,
+      "cooking_preservation_percent": 5
+    },
+    "branch": "Artisan",
+    "tree_position": [
+      1,
+      18
+    ]
+  },
+  "ascendant_alchemist": {
+    "id": "ascendant_alchemist",
+    "name": "Timeless Alchemist",
+    "description": "Herblore and fermentation gain 6% more mastery XP per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_atelier",
+      "ascendant_kitchen"
+    ],
+    "modifiers": {
+      "herblore_mastery_xp_percent": 6,
+      "fermentation_mastery_xp_percent": 6
+    },
+    "branch": "Artisan",
+    "tree_position": [
+      2,
+      18
+    ]
+  },
+  "ascendant_grand_artisan": {
+    "id": "ascendant_grand_artisan",
+    "name": "Grand Artisan",
+    "description": "Smithing, crafting and cooking act 5% faster.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_forge",
+      "ascendant_alchemist"
+    ],
+    "modifiers": {
+      "smithing_interval_percent": 5,
+      "crafting_interval_percent": 5,
+      "cooking_interval_percent": 5
+    },
+    "branch": "Artisan",
+    "tree_position": [
+      3,
+      17
+    ]
+  },
+  "ascendant_valor": {
+    "id": "ascendant_valor",
+    "name": "Ascendant Valor",
+    "description": "All combat styles gain 4% accuracy per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [],
+    "modifiers": {
+      "global_accuracy_percent": 4
+    },
+    "branch": "Warfare",
+    "tree_position": [
+      0,
+      21
+    ]
+  },
+  "ascendant_blade": {
+    "id": "ascendant_blade",
+    "name": "Sovereign Blade",
+    "description": "Melee gains 4% accuracy and maximum hit per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_valor"
+    ],
+    "modifiers": {
+      "melee_accuracy_percent": 4,
+      "melee_max_hit_percent": 4
+    },
+    "branch": "Warfare",
+    "tree_position": [
+      1,
+      20
+    ]
+  },
+  "ascendant_bow": {
+    "id": "ascendant_bow",
+    "name": "Unerring Arrow",
+    "description": "Ranged gains 4% maximum hit and 5% ammo preservation per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_valor"
+    ],
+    "modifiers": {
+      "ranged_max_hit_percent": 4,
+      "ammo_preservation_percent": 5
+    },
+    "branch": "Warfare",
+    "tree_position": [
+      1,
+      21
+    ]
+  },
+  "ascendant_spell": {
+    "id": "ascendant_spell",
+    "name": "Runic Wrath",
+    "description": "Magic gains 4% maximum hit and 5% rune preservation per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_valor"
+    ],
+    "modifiers": {
+      "magic_max_hit_percent": 4,
+      "rune_preservation_percent": 5
+    },
+    "branch": "Warfare",
+    "tree_position": [
+      1,
+      22
+    ]
+  },
+  "ascendant_hunter": {
+    "id": "ascendant_hunter",
+    "name": "Relentless Hunter",
+    "description": "Earn 5% more Huntsman coins and gain 2% critical chance per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_bow",
+      "ascendant_spell"
+    ],
+    "modifiers": {
+      "global_slayer_coins_percent": 5,
+      "crit_chance_percent": 2
+    },
+    "branch": "Warfare",
+    "tree_position": [
+      2,
+      22
+    ]
+  },
+  "ascendant_warlord": {
+    "id": "ascendant_warlord",
+    "name": "Eternal Warlord",
+    "description": "Attack 5% faster with 10% more critical damage.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_blade",
+      "ascendant_hunter"
+    ],
+    "modifiers": {
+      "attack_interval_percent": 5,
+      "crit_multiplier_percent": 10
+    },
+    "branch": "Warfare",
+    "tree_position": [
+      3,
+      21
+    ]
+  },
+  "ascendant_resolve": {
+    "id": "ascendant_resolve",
+    "name": "Unbroken Resolve",
+    "description": "Gain 4% evasion against every combat style per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [],
+    "modifiers": {
+      "melee_evasion_percent": 4,
+      "ranged_evasion_percent": 4,
+      "magic_evasion_percent": 4
+    },
+    "branch": "Survival",
+    "tree_position": [
+      0,
+      9
+    ]
+  },
+  "ascendant_rations": {
+    "id": "ascendant_rations",
+    "name": "Endless Rations",
+    "description": "Auto-eat heals 5% more efficiently per rank; requires auto-eat.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_vigor"
+    ],
+    "modifiers": {
+      "auto_eat_efficiency_percent": 5
+    },
+    "branch": "Survival",
+    "tree_position": [
+      2,
+      9
+    ]
+  },
+  "ascendant_shelter": {
+    "id": "ascendant_shelter",
+    "name": "Sanctuary",
+    "description": "Auto-eat triggers 2 percentage points earlier per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_resolve"
+    ],
+    "modifiers": {
+      "auto_eat_threshold_percent": 2
+    },
+    "branch": "Survival",
+    "tree_position": [
+      1,
+      10
+    ]
+  },
+  "ascendant_immortal": {
+    "id": "ascendant_immortal",
+    "name": "Deathless Bastion",
+    "description": "Gain 1% damage reduction and 10% stronger food healing.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_bulwark",
+      "ascendant_rations",
+      "ascendant_shelter"
+    ],
+    "modifiers": {
+      "damage_reduction_percent": 1,
+      "food_healing_percent": 10
+    },
+    "branch": "Survival",
+    "tree_position": [
+      3,
+      9
+    ]
+  },
+  "ascendant_ingenuity": {
+    "id": "ascendant_ingenuity",
+    "name": "Inherited Ingenuity",
+    "description": "Ranching, inscription and engineering gain 4% more XP per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [],
+    "modifiers": {
+      "ranching_skill_xp_percent": 4,
+      "inscription_skill_xp_percent": 4,
+      "engineering_skill_xp_percent": 4
+    },
+    "branch": "Industry",
+    "tree_position": [
+      0,
+      25
+    ]
+  },
+  "ascendant_ranch": {
+    "id": "ascendant_ranch",
+    "name": "Everlasting Ranch",
+    "description": "Animals consume 5% less feed per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_ingenuity"
+    ],
+    "modifiers": {
+      "ranching_feed_reduction_percent": 5
+    },
+    "branch": "Industry",
+    "tree_position": [
+      1,
+      24
+    ]
+  },
+  "ascendant_scribe": {
+    "id": "ascendant_scribe",
+    "name": "Illuminated Chronicle",
+    "description": "Inscriptions gain 2% quality chance and 5% research XP per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_ingenuity"
+    ],
+    "modifiers": {
+      "inscription_quality_percent": 2,
+      "inscription_research_xp_percent": 5
+    },
+    "branch": "Industry",
+    "tree_position": [
+      1,
+      25
+    ]
+  },
+  "ascendant_machine": {
+    "id": "ascendant_machine",
+    "name": "Perpetual Motion",
+    "description": "Devices consume 5% less fuel per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_ingenuity"
+    ],
+    "modifiers": {
+      "engineering_fuel_reduction_percent": 5
+    },
+    "branch": "Industry",
+    "tree_position": [
+      1,
+      26
+    ]
+  },
+  "ascendant_breeder": {
+    "id": "ascendant_breeder",
+    "name": "Primal Bloodline",
+    "description": "Gain 2% more rare animal variant chance per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_ranch",
+      "ascendant_scribe"
+    ],
+    "modifiers": {
+      "ranching_variant_percent": 2
+    },
+    "branch": "Industry",
+    "tree_position": [
+      2,
+      24
+    ]
+  },
+  "ascendant_architect": {
+    "id": "ascendant_architect",
+    "name": "Eternal Architect",
+    "description": "Gain one device slot and 5% device efficiency.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_breeder",
+      "ascendant_machine"
+    ],
+    "modifiers": {
+      "engineering_device_slots": 1,
+      "engineering_efficiency_percent": 5
+    },
+    "branch": "Industry",
+    "tree_position": [
+      3,
+      25
+    ]
+  },
+  "ascendant_attunement": {
+    "id": "ascendant_attunement",
+    "name": "Astral Attunement",
+    "description": "Enchanting and dreamwalking gain 5% more XP per rank.",
+    "cost": 1,
+    "max_rank": 2,
+    "requires": [],
+    "modifiers": {
+      "enchanting_skill_xp_percent": 5,
+      "dreamwalking_skill_xp_percent": 5
+    },
+    "branch": "Arcana",
+    "tree_position": [
+      0,
+      29
+    ]
+  },
+  "ascendant_essence": {
+    "id": "ascendant_essence",
+    "name": "Essence Conduit",
+    "description": "Disenchanting yields 8% more essence per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_attunement"
+    ],
+    "modifiers": {
+      "enchanting_essence_percent": 8
+    },
+    "branch": "Arcana",
+    "tree_position": [
+      1,
+      28
+    ]
+  },
+  "ascendant_dream": {
+    "id": "ascendant_dream",
+    "name": "Lucid Voyager",
+    "description": "Dreams yield 8% more essence per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_attunement"
+    ],
+    "modifiers": {
+      "dreamwalking_essence_percent": 8
+    },
+    "branch": "Arcana",
+    "tree_position": [
+      1,
+      29
+    ]
+  },
+  "ascendant_devotion": {
+    "id": "ascendant_devotion",
+    "name": "Undying Devotion",
+    "description": "Prayers cost 5% fewer points per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_attunement"
+    ],
+    "modifiers": {
+      "prayer_cost_reduction_percent": 5
+    },
+    "branch": "Arcana",
+    "tree_position": [
+      1,
+      30
+    ]
+  },
+  "ascendant_runes": {
+    "id": "ascendant_runes",
+    "name": "Runic Memory",
+    "description": "Runecrafting preserves 5% more inputs; enchants use 5% fewer runes per rank.",
+    "cost": 2,
+    "max_rank": 2,
+    "requires": [
+      "ascendant_essence",
+      "ascendant_devotion"
+    ],
+    "modifiers": {
+      "runecrafting_preservation_percent": 5,
+      "enchanting_rune_reduction_percent": 5
+    },
+    "branch": "Arcana",
+    "tree_position": [
+      2,
+      28
+    ]
+  },
+  "ascendant_transcendence": {
+    "id": "ascendant_transcendence",
+    "name": "Astral Transcendence",
+    "description": "Enchantments gain 5% potency; dreams yield 10% more essence.",
+    "cost": 4,
+    "max_rank": 1,
+    "requires": [
+      "ascendant_runes",
+      "ascendant_dream"
+    ],
+    "modifiers": {
+      "enchanting_potency_percent": 5,
+      "dreamwalking_essence_percent": 10
+    },
+    "branch": "Arcana",
+    "tree_position": [
+      3,
+      29
+    ]
+  }
+}

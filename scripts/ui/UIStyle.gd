@@ -25,29 +25,45 @@ const DANGER := UITokens.RED
 
 static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
+	sb.border_color = UITokens.BORDER
+	sb.set_border_width_all(1)
 	match kind:
 		"sunken":
 			sb.bg_color = UITokens.SURFACE_SUNKEN
+			sb.border_color = Color(1, 1, 1, 0.05)
 		"row":
 			sb.bg_color = UITokens.SURFACE_2
 		"raised":
 			sb.bg_color = UITokens.SURFACE_3
+			sb.border_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.35)
+		"flat":
+			# Borderless and transparent: list entries (the sidebar) read as a menu, not a wall
+			# of boxes. Hover still comes from the theme's Button hover box.
+			sb.bg_color = Color(0, 0, 0, 0)
+			sb.set_border_width_all(0)
+		"overlay":
+			# Anything that floats OVER content (drawer, popup, tooltip, dialog) must be opaque,
+			# or the screen underneath bleeds through the glass and the text becomes unreadable.
+			sb.bg_color = Color("#17143a")
+			sb.border_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.45)
+			sb.shadow_color = Color(0, 0, 0, 0.6)
+			sb.shadow_size = 16
 		_:
 			sb.bg_color = UITokens.SURFACE
+	# Accent is a soft violet edge and glow now, not a hard gold frame: it marks the few cards
+	# that matter without boxing everything in.
 	if accent:
-		sb.border_color = UITokens.GOLD
+		sb.border_color = Color(UITokens.BORDER_GOLD.r, UITokens.BORDER_GOLD.g, UITokens.BORDER_GOLD.b, 0.55)
 		sb.set_border_width_all(1)
-	else:
-		sb.border_color = UITokens.BORDER
-		sb.set_border_width_all(1)
-	if accent:
-		sb.border_width_left = 3
-	sb.set_corner_radius_all(UITokens.R_LG)
+		sb.shadow_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.28)
+		sb.shadow_size = 10
+	sb.set_corner_radius_all(UITokens.R_LG if kind == "panel" else UITokens.R_MD)
+	sb.anti_aliasing = true
 	_inset(sb, UITokens.SP_5, UITokens.SP_5, UITokens.SP_4, UITokens.SP_4)
-	if kind == "panel":
-		sb.shadow_color = Color(0, 0, 0, 0.35)
-		sb.shadow_size = 3
-		sb.shadow_offset = Vector2(0, 1)
+	if kind == "panel" and not accent:
+		sb.shadow_color = Color(0.02, 0.0, 0.10, 0.55)
+		sb.shadow_size = 12
+		sb.shadow_offset = Vector2(0, 3)
 	return sb
 
 static func _inset(sb: StyleBoxFlat, left: int, right: int, top: int, bottom: int) -> void:
@@ -79,24 +95,25 @@ static func build_theme() -> Theme:
 	th.set_stylebox("panel", "PanelContainer", surface_box("panel"))
 	th.set_stylebox("panel", "Panel", surface_box("panel"))
 	th.set_stylebox("panel", "ItemList", surface_box("sunken"))
-	th.set_stylebox("panel", "PopupMenu", surface_box("raised"))
-	th.set_stylebox("panel", "PopupPanel", surface_box("raised"))
-	th.set_stylebox("panel", "TooltipPanel", surface_box("raised"))
-	th.set_stylebox("panel", "AcceptDialog", surface_box("panel"))
+	th.set_stylebox("panel", "PopupMenu", surface_box("overlay"))
+	th.set_stylebox("panel", "PopupPanel", surface_box("overlay"))
+	th.set_stylebox("panel", "TooltipPanel", surface_box("overlay"))
+	th.set_stylebox("panel", "AcceptDialog", surface_box("overlay"))
 	th.set_stylebox("panel", "TabContainer", surface_box("panel"))
-	th.set_stylebox("panel_info", "AcceptDialog", surface_box("panel"))
-	th.set_stylebox("panel", "Window", surface_box("panel"))
+	th.set_stylebox("panel_info", "AcceptDialog", surface_box("overlay"))
+	th.set_stylebox("panel", "Window", surface_box("overlay"))
 
 	# --- buttons ----------------------------------------------------------
 	var b_normal := _button_box(UITokens.SURFACE_2, UITokens.BORDER)
-	var b_hover := _button_box(UITokens.SURFACE_3, UITokens.BORDER_STRONG)
+	var b_hover := _button_box(Color(1, 1, 1, 0.10), Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.6))
 	var b_pressed := _button_box(UITokens.SURFACE_3, UITokens.GOLD)
+	b_pressed.shadow_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.35)
+	b_pressed.shadow_size = 6
 	# A visible focus ring is mandatory: keyboard navigation must be legible, and the ring uses
 	# a border *and* a bright colour so it does not rely on hue alone.
 	var b_focus := _button_box(UITokens.SURFACE_3, UITokens.GOLD_BRIGHT)
 	b_focus.set_border_width_all(2)
-	var b_disabled := _button_box(UITokens.SURFACE, UITokens.BORDER)
-	b_disabled.bg_color = Color(UITokens.SURFACE.r, UITokens.SURFACE.g, UITokens.SURFACE.b, 0.55)
+	var b_disabled := _button_box(Color(1, 1, 1, 0.03), Color(1, 1, 1, 0.06))
 
 	th.set_stylebox("normal", "Button", b_normal)
 	th.set_stylebox("hover", "Button", b_hover)
@@ -124,13 +141,13 @@ static func build_theme() -> Theme:
 
 	for cls2 in ["HScrollBar", "VScrollBar"]:
 		var grab := StyleBoxFlat.new()
-		grab.bg_color = UITokens.BORDER_STRONG
-		grab.set_corner_radius_all(UITokens.R_SM)
+		grab.bg_color = Color(1, 1, 1, 0.18)
+		grab.set_corner_radius_all(UITokens.R_PILL)
 		_inset(grab, 0, 0, 0, 0)
 		th.set_stylebox("grabber", cls2, grab)
-		th.set_stylebox("grabber_highlight", cls2, _solid(UITokens.GOLD, UITokens.R_SM))
-		th.set_stylebox("grabber_pressed", cls2, _solid(UITokens.GOLD_BRIGHT, UITokens.R_SM))
-		th.set_stylebox("scroll", cls2, _solid(UITokens.SURFACE_SUNKEN, UITokens.R_SM))
+		th.set_stylebox("grabber_highlight", cls2, _solid(UITokens.GOLD, UITokens.R_PILL))
+		th.set_stylebox("grabber_pressed", cls2, _solid(UITokens.GOLD_BRIGHT, UITokens.R_PILL))
+		th.set_stylebox("scroll", cls2, _solid(Color(0, 0, 0, 0.18), UITokens.R_PILL))
 
 	# --- text inputs ------------------------------------------------------
 	var le_normal := surface_box("sunken")
@@ -161,8 +178,8 @@ static func build_theme() -> Theme:
 	th.set_font_size("font_size", "TooltipLabel", UITokens.FONT_SMALL)
 
 	# --- progress ---------------------------------------------------------
-	th.set_stylebox("background", "ProgressBar", _solid(UITokens.SURFACE_SUNKEN, UITokens.R_SM))
-	th.set_stylebox("fill", "ProgressBar", _solid(UITokens.TEAL, UITokens.R_SM))
+	th.set_stylebox("background", "ProgressBar", _solid(Color(0, 0, 0, 0.35), UITokens.R_PILL))
+	th.set_stylebox("fill", "ProgressBar", glow_fill(UITokens.TEAL))
 	th.set_color("font_color", "ProgressBar", UITokens.TEXT)
 	th.set_font_size("font_size", "ProgressBar", UITokens.FONT_MICRO)
 
@@ -183,7 +200,7 @@ static func build_theme() -> Theme:
 
 	# --- tabs -------------------------------------------------------------
 	th.set_stylebox("tab_selected", "TabContainer", _solid(UITokens.SURFACE_3, UITokens.R_MD))
-	th.set_stylebox("tab_unselected", "TabContainer", _solid(UITokens.SURFACE, UITokens.R_MD))
+	th.set_stylebox("tab_unselected", "TabContainer", _solid(Color(0, 0, 0, 0), UITokens.R_MD))
 	th.set_stylebox("tab_hovered", "TabContainer", _solid(UITokens.SURFACE_2, UITokens.R_MD))
 	th.set_color("font_selected_color", "TabContainer", UITokens.GOLD_BRIGHT)
 	th.set_color("font_unselected_color", "TabContainer", UITokens.TEXT_MUTED)
@@ -203,6 +220,15 @@ static func _solid(color: Color, radius: int) -> StyleBoxFlat:
 	sb.bg_color = color
 	sb.set_corner_radius_all(radius)
 	_inset(sb, UITokens.SP_2, UITokens.SP_2, UITokens.SP_1, UITokens.SP_1)
+	return sb
+
+## A progress fill that glows in its own colour — the signature "arcane" touch on every bar.
+static func glow_fill(color: Color) -> StyleBoxFlat:
+	var sb := _solid(color, UITokens.R_PILL)
+	sb.shadow_color = Color(color.r, color.g, color.b, 0.55)
+	sb.shadow_size = 5
+	sb.border_color = Color(1, 1, 1, 0.25)
+	sb.border_width_top = 1
 	return sb
 
 static func _button_box(fill: Color, border: Color) -> StyleBoxFlat:
@@ -255,12 +281,16 @@ static func section(title_text: String, hint := "") -> VBoxContainer:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", UITokens.SP_3)
 	var head := label(title_text, false, UITokens.FONT_SUBHEAD)
-	var frame := surface_box("sunken")
-	frame.border_color = UITokens.BORDER_GOLD
+	# A heading is text with a faint violet underline, not another box: the panel around it is
+	# already the container, and boxes-inside-boxes was the main source of visual noise.
+	var frame := StyleBoxFlat.new()
+	frame.bg_color = Color(0, 0, 0, 0)
+	frame.border_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.45)
 	frame.set_border_width_all(0)
-	frame.border_width_left = 3
+	frame.border_width_bottom = 1
+	_inset(frame, UITokens.SP_1, UITokens.SP_5, UITokens.SP_4, UITokens.SP_4)
 	head.add_theme_stylebox_override("normal", frame)
-	head.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
+	head.add_theme_color_override("font_color", UITokens.TEXT_STRONG)
 	box.add_child(head)
 	if hint != "":
 		var h := label(hint, true, UITokens.FONT_MICRO)
@@ -286,16 +316,22 @@ static func mini_button(text: String, tooltip := "") -> Button:
 ## Primary action: the one gold control on a screen that the player is meant to press.
 static func primary_button(text: String, tooltip := "") -> Button:
 	var b := button(text, tooltip)
-	b.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
-	var box := _button_box(UITokens.SURFACE_2, UITokens.GOLD)
+	b.add_theme_color_override("font_color", UITokens.TEXT_ON_GOLD)
+	b.add_theme_color_override("font_hover_color", UITokens.TEXT_ON_GOLD)
+	var box := _button_box(UITokens.ACCENT_VIOLET, Color(UITokens.ACCENT_PINK.r, UITokens.ACCENT_PINK.g, UITokens.ACCENT_PINK.b, 0.7))
+	box.shadow_color = Color(UITokens.ACCENT_PINK.r, UITokens.ACCENT_PINK.g, UITokens.ACCENT_PINK.b, 0.35)
+	box.shadow_size = 8
 	b.add_theme_stylebox_override("normal", box)
-	b.add_theme_stylebox_override("hover", _button_box(UITokens.SURFACE_3, UITokens.GOLD_BRIGHT))
+	var hover := _button_box(Color("#8b4cf7"), UITokens.ACCENT_PINK)
+	hover.shadow_color = Color(UITokens.ACCENT_PINK.r, UITokens.ACCENT_PINK.g, UITokens.ACCENT_PINK.b, 0.55)
+	hover.shadow_size = 12
+	b.add_theme_stylebox_override("hover", hover)
 	return b
 
 static func danger_button(text: String, tooltip := "") -> Button:
 	var b := button(text, tooltip)
 	b.add_theme_color_override("font_color", UITokens.RED)
-	b.add_theme_stylebox_override("normal", _button_box(UITokens.SURFACE_2, UITokens.RED))
+	b.add_theme_stylebox_override("normal", _button_box(Color(UITokens.RED.r, UITokens.RED.g, UITokens.RED.b, 0.10), Color(UITokens.RED.r, UITokens.RED.g, UITokens.RED.b, 0.6)))
 	return b
 
 static func panel(accent := false) -> PanelContainer:
