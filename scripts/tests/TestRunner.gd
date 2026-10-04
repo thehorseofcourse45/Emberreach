@@ -1934,8 +1934,7 @@ func _test_dungeon_sequencing() -> void:
 		"a cleared endgame leaves nothing locked")
 	GameManager.start_new_game("standard")
 
-## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
-## understands, the pure maths each passive uses, and content that actually carries them.
+## Pure rules for affinities, new passives, boss phases and status resistance.
 func _test_monster_mechanics() -> void:
 	_heading("Monster mechanics")
 	_approx(MonsterMechanics.affinity_multiplier({"weak_to": ["magic"]}, "magic"), 1.25, 0.0001, "weak style hits for 1.25x")
@@ -1960,8 +1959,9 @@ func _test_monster_mechanics() -> void:
 	_eq(MonsterMechanics.phases_due(phases, 0, 0.30), 2, "one hit through two thresholds fires both")
 	_eq(MonsterMechanics.phases_due(phases, 2, 0.30), 2, "fired phases never fire twice")
 	var boss := {"max_hit": 100, "attack_speed": 2.0, "attack_type": "melee", "passives": ["enrage"],
-		"phases": [{"at_hp_percent": 50, "attack_type": "magic", "max_hit_multiplier": 1.5,
-			"attack_speed_multiplier": 2.0, "add_passives": ["enrage", "lifedrain"]}]}
+		"phases": [{"at_hp_percent": 50, "name": "Fury", "effects": {"attack_type": "magic",
+			"max_hit_multiplier": 1.5, "attack_speed_multiplier": 2.0,
+			"add_passives": ["enrage", "lifedrain"]}}]}
 	var eff: Dictionary = MonsterMechanics.effective(boss, 1)
 	_eq(int(eff.get("max_hit")), 150, "phase scales max hit")
 	_eq(str(eff.get("attack_type")), "magic", "phase swaps attack type")
@@ -1976,6 +1976,7 @@ func _test_monster_mechanics() -> void:
 	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.4), 0.0, 0.0001, "low roll is resisted")
 	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.6), 5.0, 0.0001, "high roll halves duration at 50%")
 	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 90.0, 0.8), 2.5, 0.0001, "resistance caps at 75%")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, -50.0, 0.6), 10.0, 0.0001, "negative resistance never lengthens duration")
 
 ## The monster-mechanics schema is validated on in-memory records so every rule is testable.
 func _test_monster_mechanics_validation() -> void:
@@ -2005,6 +2006,8 @@ func _test_monster_mechanics_validation() -> void:
 	_eq(v.call(good).size(), 0, "a valid two-phase boss has no errors")
 	_eq(v.call({}).size(), 0, "a monster without the new fields has no errors")
 
+## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
+## understands, the pure maths each passive uses, and content that actually carries them.
 func _test_monster_passives() -> void:
 	_heading("Monster passives")
 	for passive_id in ["regeneration", "thorns", "enrage"]:

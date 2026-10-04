@@ -61,7 +61,7 @@ static func effective(monster: Dictionary, fired: int) -> Dictionary:
     var result: Dictionary = monster.duplicate(true)
     var phases: Array = monster.get("phases", [])
     for i in range(mini(fired, phases.size())):
-        var phase: Dictionary = phases[i]
+        var phase: Dictionary = (phases[i] as Dictionary).get("effects", {})
         if phase.has("attack_speed_multiplier"):
             result["attack_speed"] = float(result.get("attack_speed", 1.0)) / float(phase["attack_speed_multiplier"])
         if phase.has("max_hit_multiplier"):
@@ -84,7 +84,7 @@ static func status_family(effect_id: String) -> String:
 
 ## 0.0 means the status was resisted outright; otherwise the shortened duration.
 static func resisted_duration(_effect_id: String, duration: float, resistance_percent: float, roll: float) -> float:
-    var resist: float = minf(resistance_percent, RESISTANCE_CAP)
+    var resist: float = clampf(resistance_percent, 0.0, RESISTANCE_CAP)
     if roll * 100.0 < resist:
         return 0.0
     return duration * (1.0 - resist / 100.0)
