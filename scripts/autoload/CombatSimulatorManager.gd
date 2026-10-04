@@ -74,7 +74,7 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		"prayer_points": PrayerManager.cost_per_attack(),
 		"mode_config": DataLoader.game_modes.get(str(PlayerData.game_mode), {}),
 		"in_slayer_area": str(DataLoader.areas.get(place_id, {}).get("type", "area")) == "slayer_area",
-		"hazard": DataLoader.areas.get(place_id, {}).get("hazard", {}) if place_type == "area" else {},
+		"hazard": ModifierManager.negated_hazard(DataLoader.areas.get(place_id, {}).get("hazard", {})) if place_type == "area" else {},
 		"on_slayer_task": false,
 		"target_type": place_type,
 		"target_id": place_id,
@@ -85,6 +85,7 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	for key in ["accuracy", "max_hit", "attack_interval", "damage_reduction", "evasion", "max_hp"]: snapshot.player[key] = summary[key]
 	snapshot.player.min_hit_percent = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0
 	snapshot.player.min_hit_flat = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT)
+	snapshot.player.hp_regen_per_attack = ModifierManager.get_hp_regen_per_attack()
 	for id in PlayerData.active_prayers:
 		var prayer: Dictionary = PrayerManager.get_prayer(id)
 		if str(prayer.get("type", "")) == "protect": snapshot.protection_styles.append(str(prayer.get("style", "")))

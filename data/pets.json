@@ -5,7 +5,8 @@
     "name": "Emberpaw",
     "source_skill": "firemaking",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "firemaking_preservation_percent": 3
     }
   },
   "beavis": {
@@ -13,7 +14,8 @@
     "name": "Barkbite",
     "source_skill": "woodcutting",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "woodcutting_doubling_percent": 3
     }
   },
   "leonardo": {
@@ -73,7 +75,8 @@
     "name": "Slink",
     "source_skill": "thieving",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "thieving_stealth": 10
     }
   },
   "rocky": {
@@ -81,7 +84,8 @@
     "name": "Flint",
     "source_skill": "mining",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "mining_doubling_percent": 3
     }
   },
   "bubbles": {
@@ -89,7 +93,8 @@
     "name": "Ripple",
     "source_skill": "fishing",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "fishing_doubling_percent": 3
     }
   },
   "cook": {
@@ -97,7 +102,8 @@
     "name": "Simmer",
     "source_skill": "cooking",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "cooking_preservation_percent": 3
     }
   },
   "tomato": {
@@ -105,7 +111,8 @@
     "name": "Turnip",
     "source_skill": "farming",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "farming_interval_percent": 5
     }
   },
   "sprinkles": {
@@ -113,7 +120,8 @@
     "name": "Fennel",
     "source_skill": "herblore",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "herblore_preservation_percent": 3
     }
   },
   "bob": {
@@ -121,7 +129,8 @@
     "name": "Bobbin",
     "source_skill": "crafting",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "crafting_preservation_percent": 3
     }
   },
   "smith": {
@@ -129,7 +138,8 @@
     "name": "Anvil",
     "source_skill": "smithing",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "smithing_preservation_percent": 3
     }
   },
   "fletch": {
@@ -137,7 +147,8 @@
     "name": "Quill",
     "source_skill": "fletching",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "fletching_preservation_percent": 3
     }
   },
   "rune": {
@@ -145,7 +156,8 @@
     "name": "Glyph",
     "source_skill": "runecrafting",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "runecrafting_doubling_percent": 3
     }
   },
   "astro": {
@@ -153,7 +165,8 @@
     "name": "Twinkle",
     "source_skill": "astrology",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "astrology_doubling_percent": 3
     }
   },
   "cart": {
@@ -161,7 +174,8 @@
     "name": "Compass",
     "source_skill": "cartography",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "cartography_skill_xp_percent": 5
     }
   },
   "dig": {
@@ -169,7 +183,8 @@
     "name": "Trowel",
     "source_skill": "archaeology",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "archaeology_doubling_percent": 3
     }
   },
   "harvest": {
@@ -177,7 +192,8 @@
     "name": "Bramble",
     "source_skill": "harvesting",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "harvesting_doubling_percent": 3
     }
   },
   "alt": {
@@ -185,7 +201,8 @@
     "name": "Wisp",
     "source_skill": "alt_magic",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "alt_magic_preservation_percent": 3
     }
   },
   "town": {
@@ -193,7 +210,8 @@
     "name": "Hearth",
     "source_skill": "township",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "township_skill_xp_percent": 5
     }
   },
   "atk": {
@@ -201,7 +219,8 @@
     "name": "Redblade",
     "source_skill": "attack",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "melee_accuracy_percent": 3
     }
   },
   "str": {
@@ -209,7 +228,8 @@
     "name": "Boulder",
     "source_skill": "strength",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "melee_max_hit_percent": 2
     }
   },
   "hp": {
@@ -217,7 +237,8 @@
     "name": "Redcap",
     "source_skill": "hitpoints",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "hitpoints_regen_flat": 2
     }
   },
   "rng": {
@@ -225,7 +246,8 @@
     "name": "Longshot",
     "source_skill": "ranged",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "ranged_max_hit_percent": 2
     }
   },
   "mag": {
@@ -233,7 +255,8 @@
     "name": "Glimmer",
     "source_skill": "magic",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "magic_max_hit_percent": 2
     }
   },
   "pray": {
@@ -241,7 +264,8 @@
     "name": "Vigil",
     "source_skill": "prayer",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "prayer_cost_reduction_percent": 5
     }
   },
   "slay": {
@@ -249,7 +273,8 @@
     "name": "Tracker",
     "source_skill": "slayer",
     "effect": {
-      "global_skill_xp_percent": 1
+      "global_skill_xp_percent": 1,
+      "global_slayer_coins_percent": 5
     }
   },
   "pet_ranching": {

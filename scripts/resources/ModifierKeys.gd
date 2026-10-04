@@ -7,6 +7,7 @@ extends RefCounted
 # ---- Global / per-skill XP & mastery ----
 const GLOBAL_SKILL_XP_PERCENT := "global_skill_xp_percent"
 const GLOBAL_MASTERY_XP_PERCENT := "global_mastery_xp_percent"
+const GLOBAL_SKILL_INTERVAL_PERCENT := "global_skill_interval_percent"   # every skill acts faster
 const GLOBAL_GP_PERCENT := "global_gp_percent"
 const GLOBAL_SLAYER_COINS_PERCENT := "global_slayer_coins_percent"
 const GLOBAL_DOUBLE_LOOT_PERCENT := "global_double_loot_percent"
@@ -45,6 +46,9 @@ const MIN_HIT_FLAT := "min_hit_flat"
 const DAMAGE_REDUCTION_PERCENT := "damage_reduction_percent"
 const ATTACK_INTERVAL_PERCENT := "attack_interval_percent"
 const ATTACK_INTERVAL_FLAT := "attack_interval_flat"
+## All-style spellings authored on Astrology and Agility; read beside the per-style keys.
+const COMBAT_MAX_HIT_PERCENT := "combat_max_hit_percent"
+const COMBAT_INTERVAL_PERCENT := "combat_interval_percent"
 const RESPWAN_TIME_PERCENT := "respawn_time_percent"
 const CRIT_CHANCE_PERCENT := "crit_chance_percent"
 const CRIT_MULTIPLIER_PERCENT := "crit_multiplier_percent"

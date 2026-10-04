@@ -40,6 +40,62 @@
     "name": "Patron's Purse",
     "description": "The museum pays its patrons in coin when it runs out of things to display.",
     "cost": 25,
-    "gp": 150000
+    "gp": 1000
+  },
+  "museum_seed_crate": {
+    "id": "museum_seed_crate",
+    "name": "Curio: Allotment Seed Crate",
+    "description": "Seeds pressed into the pages of a donated almanac. Still viable, somehow.",
+    "cost": 40,
+    "grant_items": { "stormcabbage_seed": 10, "sunmelon_seed": 5 }
+  },
+  "museum_gems": {
+    "id": "museum_gems",
+    "name": "Curio: Jeweller's Tray",
+    "description": "Stones prised from a collection nobody will miss.",
+    "cost": 60,
+    "grant_items": { "ruby": 5, "diamond": 2 }
+  },
+  "museum_saplings": {
+    "id": "museum_saplings",
+    "name": "Curio: Arboretum Cuttings",
+    "description": "Rooted cuttings from the museum's courtyard trees.",
+    "cost": 80,
+    "grant_items": { "yew_sapling_seed": 2, "magic_sapling_seed": 1 }
+  },
+  "museum_umbral": {
+    "id": "museum_umbral",
+    "name": "Curio: Umbral Reliquary",
+    "description": "A sealed box that hums at night. The curator wants it gone.",
+    "cost": 120,
+    "grant_items": { "umbral_essence": 10 }
+  },
+  "museum_herald": {
+    "id": "museum_herald",
+    "name": "Curio: Herald's Tithe",
+    "description": "Ingots and essence from the throne's own treasury, recovered at great cost.",
+    "cost": 250,
+    "grant_items": { "herald_essence": 10, "herald_bar": 4 }
+  },
+  "museum_old_growth": {
+    "id": "museum_old_growth",
+    "name": "Curio: Old-Growth Seedlings",
+    "description": "Saplings of trees that no longer grow wild anywhere.",
+    "cost": 300,
+    "grant_items": { "redwood_sapling_seed": 2, "voidwood_sapling_seed": 1 }
+  },
+  "museum_echoes": {
+    "id": "museum_echoes",
+    "name": "Curio: Archive of Echoes",
+    "description": "Five recordings so clean the archivists refuse to play them.",
+    "cost": 400,
+    "grant_items": { "flawless_echo": 5 }
+  },
+  "museum_gates": {
+    "id": "museum_gates",
+    "name": "Curio: Sealed Gates",
+    "description": "Three folded passages from the Wayfolders' vault. Knock first.",
+    "cost": 800,
+    "grant_items": { "herald_gate": 3 }
   }
 }

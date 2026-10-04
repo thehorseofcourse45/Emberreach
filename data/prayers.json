@@ -212,7 +212,25 @@
     "level": 52,
     "prayer_point_cost": 1.5,
     "effect": {
-      "melee_max_hit_percent": 5
+      "melee_max_hit_percent": 15
+    }
+  },
+  "wrath_5": {
+    "id": "wrath_5",
+    "name": "Titanfall",
+    "level": 90,
+    "prayer_point_cost": 3.0,
+    "effect": {
+      "melee_max_hit_percent": 26
+    }
+  },
+  "wrath_6": {
+    "id": "wrath_6",
+    "name": "Worldbreaker",
+    "level": 108,
+    "prayer_point_cost": 4.0,
+    "effect": {
+      "melee_max_hit_percent": 34
     }
   },
   "hunter_1": {

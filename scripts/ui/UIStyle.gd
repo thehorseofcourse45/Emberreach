@@ -453,6 +453,8 @@ static func item_rarity(item_id: String) -> Dictionary:
 ## Human-readable modifier description, used in tooltips so bonuses are never unexplained.
 const MODIFIER_LABELS: Dictionary = {
 	"global_skill_xp_percent": "all skill XP",
+	"global_skill_interval_percent": "action speed (all skills)",
+	"farming_interval_percent": "crop growth speed",
 	"global_mastery_xp_percent": "mastery XP",
 	"global_gp_percent": "GP earned",
 	"global_slayer_coins_percent": "Huntsman coins",

@@ -1078,6 +1078,18 @@
         "icon_activity": true
       },
       {
+        "id": "plant_hearthroot",
+        "name": "Hearthroot",
+        "level_required": 1,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "hearthroot_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
         "id": "plant_sourweed",
         "name": "Sourthistle",
         "level_required": 10,
@@ -1085,6 +1097,30 @@
         "base_xp": 0,
         "input_items": {
           "sourweed_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_oak_sapling",
+        "name": "Ironbark Tree",
+        "level_required": 15,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "oak_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_ashbulb",
+        "name": "Ashbulb",
+        "level_required": 20,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "ashbulb_seed": 1
         },
         "mastery_action_time": 1.0,
         "icon_activity": true
@@ -1102,6 +1138,18 @@
         "icon_activity": true
       },
       {
+        "id": "plant_willow_sapling",
+        "name": "Silverleaf Tree",
+        "level_required": 30,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "willow_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
         "id": "plant_lemontyle",
         "name": "Goldpetal",
         "level_required": 40,
@@ -1109,6 +1157,30 @@
         "base_xp": 0,
         "input_items": {
           "lemontyle_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_stormcabbage",
+        "name": "Stormcabbage",
+        "level_required": 40,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "stormcabbage_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_yew_sapling",
+        "name": "Gravewood Tree",
+        "level_required": 50,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "yew_sapling_seed": 1
         },
         "mastery_action_time": 1.0,
         "icon_activity": true
@@ -1126,6 +1198,18 @@
         "icon_activity": true
       },
       {
+        "id": "plant_sunmelon",
+        "name": "Sunmelon",
+        "level_required": 60,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "sunmelon_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
         "id": "plant_poraxx",
         "name": "Ashcap",
         "level_required": 70,
@@ -1133,6 +1217,30 @@
         "base_xp": 0,
         "input_items": {
           "poraxx_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_magic_sapling",
+        "name": "Witchpine Tree",
+        "level_required": 70,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "magic_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_starcorn",
+        "name": "Starcorn",
+        "level_required": 80,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "starcorn_seed": 1
         },
         "mastery_action_time": 1.0,
         "icon_activity": true
@@ -1150,6 +1258,18 @@
         "icon_activity": true
       },
       {
+        "id": "plant_redwood_sapling",
+        "name": "Bloodwood Tree",
+        "level_required": 90,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "redwood_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
         "id": "plant_duskroot",
         "name": "Hushroot",
         "level_required": 95,
@@ -1162,6 +1282,18 @@
         "icon_activity": true
       },
       {
+        "id": "plant_herald_gourd",
+        "name": "Herald Gourd",
+        "level_required": 100,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "herald_gourd_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
         "id": "plant_herald_bloom",
         "name": "Herald Bloom",
         "level_required": 105,
@@ -1169,6 +1301,18 @@
         "base_xp": 0,
         "input_items": {
           "herald_bloom_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_voidwood_sapling",
+        "name": "Voidwood Tree",
+        "level_required": 110,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "voidwood_sapling_seed": 1
         },
         "mastery_action_time": 1.0,
         "icon_activity": true
@@ -1529,6 +1673,23 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_hearthroot_mash",
+        "name": "Hearthroot Mash",
+        "level_required": 4,
+        "base_interval": 5,
+        "base_xp": 17,
+        "success_chance": 0.6,
+        "input_items": {
+          "hearthroot": 2
+        },
+        "output_items": {
+          "hearthroot_mash": 1
+        },
+        "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_sardine",
         "name": "Silverfin",
         "level_required": 5,
@@ -1652,6 +1813,24 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_ashbulb_broth",
+        "name": "Ashbulb Broth",
+        "level_required": 24,
+        "base_interval": 6,
+        "base_xp": 57,
+        "success_chance": 0.68,
+        "input_items": {
+          "ashbulb": 2,
+          "hearthroot": 1
+        },
+        "output_items": {
+          "ashbulb_broth": 1
+        },
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_bronze_carp",
         "name": "Grilled Bronze Carp",
         "level_required": 25,
@@ -1768,6 +1947,24 @@
         },
         "output_items": {
           "goldpetal_salmon": 1
+        },
+        "mastery_action_time": 5.95,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_stormcabbage_roll",
+        "name": "Stormcabbage Roll",
+        "level_required": 44,
+        "base_interval": 7,
+        "base_xp": 97,
+        "success_chance": 0.78,
+        "input_items": {
+          "stormcabbage": 1,
+          "ranch_meat": 1
+        },
+        "output_items": {
+          "stormcabbage_roll": 1
         },
         "mastery_action_time": 5.95,
         "fail_output_item": "burnt_food",
@@ -1930,6 +2127,24 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_sunmelon_glazed_tuna",
+        "name": "Sunmelon-Glazed Tuna",
+        "level_required": 64,
+        "base_interval": 9,
+        "base_xp": 155,
+        "success_chance": 0.81,
+        "input_items": {
+          "raw_storm_tuna": 1,
+          "sunmelon": 1
+        },
+        "output_items": {
+          "sunmelon_glazed_tuna": 1
+        },
+        "mastery_action_time": 7.65,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_storm_tuna",
         "name": "Grilled Storm Tuna",
         "level_required": 65,
@@ -2055,6 +2270,25 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_starcorn_chowder",
+        "name": "Starcorn Chowder",
+        "level_required": 84,
+        "base_interval": 11,
+        "base_xp": 245,
+        "success_chance": 0.81,
+        "input_items": {
+          "starcorn": 2,
+          "raw_frost_pike": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "starcorn_chowder": 1
+        },
+        "mastery_action_time": 9.35,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_manta_ray",
         "name": "Glidefin Manta",
         "level_required": 85,
@@ -2157,6 +2391,25 @@
           "obsidian_sturgeon": 1
         },
         "mastery_action_time": 10.2,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_herald_gourd_pie",
+        "name": "Herald Gourd Pie",
+        "level_required": 102,
+        "base_interval": 13,
+        "base_xp": 400,
+        "success_chance": 0.79,
+        "input_items": {
+          "herald_gourd": 1,
+          "ranch_egg": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "herald_gourd_pie": 1
+        },
+        "mastery_action_time": 11.05,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -4042,6 +4295,70 @@
         "mastery_action_time": 30.0
       },
       {
+        "id": "forge_herald_helmet",
+        "name": "Herald Helmet",
+        "level_required": 106,
+        "base_interval": 20.0,
+        "base_xp": 1300,
+        "input_items": {
+          "umbral_bar": 3,
+          "summoning_shard_gold": 1,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "herald_helmet": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_herald_gauntlets",
+        "name": "Herald Gauntlets",
+        "level_required": 107,
+        "base_interval": 18.0,
+        "base_xp": 1150,
+        "input_items": {
+          "umbral_bar": 2,
+          "summoning_shard_gold": 1,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "herald_gauntlets": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_herald_sabatons",
+        "name": "Herald Sabatons",
+        "level_required": 107,
+        "base_interval": 18.0,
+        "base_xp": 1150,
+        "input_items": {
+          "umbral_bar": 2,
+          "summoning_shard_gold": 1,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "herald_sabatons": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_herald_platelegs",
+        "name": "Herald Platelegs",
+        "level_required": 108,
+        "base_interval": 24.0,
+        "base_xp": 1600,
+        "input_items": {
+          "umbral_bar": 5,
+          "summoning_shard_gold": 2,
+          "prismatic_essence": 3
+        },
+        "output_items": {
+          "herald_platelegs": 1
+        },
+        "mastery_action_time": 24.0
+      },
+      {
         "id": "forge_herald_platebody",
         "name": "Herald Platebody",
         "level_required": 110,
@@ -4116,6 +4433,86 @@
           "herald_godsword": 1
         },
         "mastery_action_time": 34.0
+      },
+      {
+        "id": "forge_throneguard_helm",
+        "name": "Throneguard Helm",
+        "level_required": 117,
+        "base_interval": 22.0,
+        "base_xp": 1700,
+        "input_items": {
+          "herald_bar": 3,
+          "summoning_shard_gold": 1,
+          "herald_essence": 2
+        },
+        "output_items": {
+          "throneguard_helm": 1
+        },
+        "mastery_action_time": 22.0
+      },
+      {
+        "id": "forge_throneguard_gauntlets",
+        "name": "Throneguard Gauntlets",
+        "level_required": 117,
+        "base_interval": 20.0,
+        "base_xp": 1600,
+        "input_items": {
+          "herald_bar": 2,
+          "summoning_shard_gold": 1,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "throneguard_gauntlets": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_throneguard_sabatons",
+        "name": "Throneguard Sabatons",
+        "level_required": 118,
+        "base_interval": 20.0,
+        "base_xp": 1600,
+        "input_items": {
+          "herald_bar": 2,
+          "summoning_shard_gold": 1,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "throneguard_sabatons": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_throneguard_platelegs",
+        "name": "Throneguard Platelegs",
+        "level_required": 119,
+        "base_interval": 26.0,
+        "base_xp": 2200,
+        "input_items": {
+          "herald_bar": 5,
+          "summoning_shard_gold": 2,
+          "herald_essence": 3
+        },
+        "output_items": {
+          "throneguard_platelegs": 1
+        },
+        "mastery_action_time": 26.0
+      },
+      {
+        "id": "forge_throneguard_cuirass",
+        "name": "Throneguard Cuirass",
+        "level_required": 120,
+        "base_interval": 30.0,
+        "base_xp": 2600,
+        "input_items": {
+          "herald_bar": 6,
+          "summoning_shard_gold": 2,
+          "herald_essence": 4
+        },
+        "output_items": {
+          "throneguard_cuirass": 1
+        },
+        "mastery_action_time": 30.0
       }
     ],
     "order": 16,
@@ -6651,6 +7048,12 @@
             "chance": 0.15,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "hearthroot_seed",
+            "chance": 0.12,
+            "min_qty": 1,
+            "max_qty": 2
           }
         ],
         "icon_activity": true
@@ -6697,6 +7100,18 @@
             "chance": 0.16,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "hearthroot_seed",
+            "chance": 0.15,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "ashbulb_seed",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 2
           }
         ],
         "icon_activity": true
@@ -6714,7 +7129,15 @@
         "gp_reward": 45,
         "output_items": {},
         "mastery_action_time": 3.0,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "ashbulb_seed",
+            "chance": 0.12,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ]
       },
       {
         "id": "marauder",
@@ -6775,7 +7198,27 @@
         "gp_reward": 160,
         "output_items": {},
         "mastery_action_time": 3.2,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "oak_sapling_seed",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "willow_sapling_seed",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "yew_sapling_seed",
+            "chance": 0.02,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "knight",
@@ -6790,7 +7233,15 @@
         "gp_reward": 220,
         "output_items": {},
         "mastery_action_time": 3.4,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "stormcabbage_seed",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ]
       },
       {
         "id": "merchant",
@@ -6828,7 +7279,27 @@
         "gp_reward": 380,
         "output_items": {},
         "mastery_action_time": 3.4,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "stormcabbage_seed",
+            "chance": 0.12,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "sunmelon_seed",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "starcorn_seed",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "bandit",
@@ -6843,7 +7314,15 @@
         "gp_reward": 470,
         "output_items": {},
         "mastery_action_time": 3.6,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "magic_sapling_seed",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "guard",
@@ -6864,6 +7343,12 @@
             "chance": 0.02,
             "min_qty": 1,
             "max_qty": 1
+          },
+          {
+            "item_id": "sunmelon_seed",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 2
           }
         ],
         "icon_activity": true
@@ -6933,6 +7418,18 @@
             "chance": 0.1,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "starcorn_seed",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "redwood_sapling_seed",
+            "chance": 0.02,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "icon_activity": true
@@ -6991,6 +7488,12 @@
             "chance": 0.06,
             "min_qty": 1,
             "max_qty": 1
+          },
+          {
+            "item_id": "herald_gourd_seed",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "icon_activity": true
@@ -7018,6 +7521,18 @@
           {
             "item_id": "chapeau_noir",
             "chance": 0.07,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "herald_gourd_seed",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "voidwood_sapling_seed",
+            "chance": 0.02,
             "min_qty": 1,
             "max_qty": 1
           }
@@ -8835,6 +9350,12 @@
             "chance": 0.22,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "bones",
+            "chance": 0.15,
+            "min_qty": 1,
+            "max_qty": 3
           }
         ],
         "mastery_action_time": 6.0,
@@ -8865,6 +9386,12 @@
             "chance": 0.2,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "iron_ore",
+            "chance": 0.12,
+            "min_qty": 2,
+            "max_qty": 4
           }
         ],
         "mastery_action_time": 6.0,
@@ -8889,6 +9416,12 @@
           {
             "item_id": "artefact_rare",
             "chance": 0.08
+          },
+          {
+            "item_id": "sapphire",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -8919,6 +9452,12 @@
             "chance": 0.2,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "emerald",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -8943,6 +9482,12 @@
           {
             "item_id": "artefact_rare",
             "chance": 0.08
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -8973,6 +9518,18 @@
             "chance": 0.22,
             "min_qty": 1,
             "max_qty": 3
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.02,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "yew_sapling_seed",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -9003,6 +9560,18 @@
             "chance": 0.2,
             "min_qty": 1,
             "max_qty": 3
+          },
+          {
+            "item_id": "dragon_bones",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "magic_sapling_seed",
+            "chance": 0.008,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -9037,6 +9606,18 @@
             "chance": 0.22,
             "min_qty": 2,
             "max_qty": 3
+          },
+          {
+            "item_id": "prismatic_essence",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "redwood_sapling_seed",
+            "chance": 0.006,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -9071,6 +9652,12 @@
             "chance": 0.25,
             "min_qty": 2,
             "max_qty": 4
+          },
+          {
+            "item_id": "umbral_essence",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -9101,6 +9688,12 @@
             "chance": 0.25,
             "min_qty": 2,
             "max_qty": 4
+          },
+          {
+            "item_id": "herald_essence",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -9127,6 +9720,18 @@
             "chance": 0.3,
             "min_qty": 3,
             "max_qty": 5
+          },
+          {
+            "item_id": "herald_bar",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "voidwood_sapling_seed",
+            "chance": 0.004,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
