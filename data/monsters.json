@@ -279,8 +279,7 @@
     "flavour": "Reed-height and patient. The web is the warning.",
     "weak_to": [
       "melee"
-    ],
-    "resists": []
+    ]
   },
   "bandit": {
     "id": "bandit",
@@ -1924,8 +1923,7 @@
     "flavour": "Ice gathers on its fangs before the pack even comes into view.",
     "weak_to": [
       "magic"
-    ],
-    "resists": []
+    ]
   },
   "ash_drake": {
     "id": "ash_drake",
@@ -2382,8 +2380,7 @@
     "flavour": "It has been sitting in the same pool so long the salt grew over its back.",
     "weak_to": [
       "magic"
-    ],
-    "resists": []
+    ]
   },
   "tidewrack_hag": {
     "id": "tidewrack_hag",
@@ -2764,9 +2761,6 @@
     "damage_reduction": 63,
     "special_attacks": [
       "stun_bash"
-    ],
-    "passives": [
-      "armored"
     ],
     "loot_table": [
       {

@@ -2041,7 +2041,7 @@ func _mm_player_damage(seed_value: int) -> int:
 	CombatManager._player_attack()
 	return 100000 - CombatManager.monster_hp
 
-## Live combat wiring for affinities, the three new passives and boss phases.
+## Data-only checks on the monster-mechanics content (affinities, phases, passives, resistance gear).
 func _test_monster_mechanics_content() -> void:
 	_heading("Monster mechanics content")
 	var with_affinity: int = 0
@@ -2126,6 +2126,7 @@ func _test_monster_mechanics_content() -> void:
 				potion_resists += 1
 	_ok(potion_resists >= 1, "a potion grants status resistance (%d)" % potion_resists)
 
+## Live combat wiring for affinities, the three new passives and boss phases.
 func _test_monster_mechanics_live() -> void:
 	_heading("Monster mechanics in live combat")
 	for passive_id in MonsterMechanics.NEW_PASSIVES:

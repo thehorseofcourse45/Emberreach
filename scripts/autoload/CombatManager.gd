@@ -935,7 +935,7 @@ func player_status_resistance(family: String) -> float:
 		"stun": ModifierKeys.STUN_RESISTANCE_PERCENT,
 	}
 	var total: float = EquipmentManager.get_status_resistance(family) \
-		+ ModifierManager.get_modifier(str(modifier_keys.get(family, "%s_resistance_percent" % family)))
+		+ ModifierManager.get_modifier(str(modifier_keys[family]))
 	return minf(total, MonsterMechanics.RESISTANCE_CAP)
 
 func apply_status(target: String, effect_id: String, duration: float, damage_per_tick: float = 0.0) -> void:
