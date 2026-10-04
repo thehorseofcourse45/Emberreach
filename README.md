@@ -306,8 +306,8 @@ the game runs before any art exists.
 - Monsters now differ mechanically, not only statistically: elemental affinities (`weak_to` /
   `resists`, x1.25 / x0.75 on the attacker's style), the `venomous`, `lifedrain` and `armored`
   passives, boss phases (HP-threshold stat/attack-type changes and phase statuses, saved mid-fight)
-  and status resistance on gear. Authoring caveat: `armored` removes a flat 8 % of the monster's max
-  HP per landed hit, so it is only appropriate on monsters under ~300 HP.
+  and status resistance on gear. Authoring caveat: `armored` removes up to 8 % of the monster's max
+  HP per landed hit, capped at half the hit; keep it on lower-HP monsters.
 - Long-tail item display names were renamed by `tools/long_tail_rename.py` (idempotent, re-runnable,
   display names only — item ids are stable, so saves and icons are untouched). The verbatim-Melvor
   names it targeted are gone from `items.json`; see `CHANGELOG.md` for the pass.

@@ -1948,7 +1948,10 @@ func _test_monster_mechanics() -> void:
 	_approx(MonsterMechanics.affinity_multiplier({"resists": ["melee"]}, "melee"), 0.75, 0.0001, "resisted style hits for 0.75x")
 	_approx(MonsterMechanics.affinity_multiplier({"weak_to": ["magic"], "resists": ["melee"]}, "ranged"), 1.0, 0.0001, "unlisted style is neutral")
 	var armored := {"passives": ["armored"], "hitpoints": 1000}
-	_eq(MonsterMechanics.armored_reduce(armored, 100), 20, "armored removes 8% of max HP flat")
+	_eq(MonsterMechanics.armored_reduce(armored, 100), 50, "armored removal is capped at half the hit (80 flat vs 100)")
+	_eq(MonsterMechanics.armored_reduce({"passives": ["armored"], "hitpoints": 100}, 100), 92, "armored removes 8% of max HP flat when under the cap")
+	_eq(MonsterMechanics.armored_reduce(armored, 31), 31 - 15, "huge flat vs small hit gives dealt minus floor(dealt/2)")
+	_eq(MonsterMechanics.armored_reduce(armored, 2), 1, "armored on a 2 hit deals 1")
 	_eq(MonsterMechanics.armored_reduce(armored, 1), 1, "armored never reduces a hit below 1")
 	_eq(MonsterMechanics.armored_reduce(armored, 0), 0, "armored leaves a zero hit alone")
 	_eq(MonsterMechanics.armored_reduce({"hitpoints": 1000}, 100), 100, "no armored passive leaves damage unchanged")
@@ -1995,23 +1998,29 @@ func _test_monster_mechanics_validation() -> void:
 	_eq(v.call({"weak_to": ["fire"]}).size(), 1, "unknown weak_to style is one error")
 	_eq(v.call({"resists": ["fire"]}).size(), 1, "unknown resists style is one error")
 	_eq(v.call({"weak_to": ["melee"], "resists": ["melee"]}).size(), 1, "style in both lists is one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 40}, {"at_hp_percent": 60}]}).size(), 1, "ascending phases are one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 0}]}).size(), 1, "threshold 0 is one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 100}]}).size(), 1, "threshold 100 is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 40}, {"name": "x", "at_hp_percent": 60}]}).size(), 1, "ascending phases are one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 0}]}).size(), 1, "threshold 0 is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 100}]}).size(), 1, "threshold 100 is one error")
 	_eq(v.call({"phases": "x"}).size(), 1, "phases must be an array")
 	_eq(v.call({"phases": [5]}).size(), 1, "phase entries must be dictionaries")
-	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"bogus": 1}}]}).size(), 1, "unknown effect key is one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"max_hit_multiplier": 5}}]}).size(), 1, "max_hit_multiplier 5 is one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"attack_speed_multiplier": 0.1}}]}).size(), 1, "attack_speed_multiplier 0.1 is one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"add_passives": ["nope"]}}]}).size(), 1, "unknown add_passives entry is one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"attack_type": "fire"}}]}).size(), 1, "invalid phase attack_type is one error")
-	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"apply_status": {"id": "nope"}}}]}).size(), 1, "unknown apply_status id is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"bogus": 1}}]}).size(), 1, "unknown effect key is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"max_hit_multiplier": 5}}]}).size(), 1, "max_hit_multiplier 5 is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"attack_speed_multiplier": 0.1}}]}).size(), 1, "attack_speed_multiplier 0.1 is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"add_passives": ["nope"]}}]}).size(), 1, "unknown add_passives entry is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"attack_type": "fire"}}]}).size(), 1, "invalid phase attack_type is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"apply_status": {"id": "nope"}}}]}).size(), 1, "unknown apply_status id is one error")
 	var good := {"weak_to": ["magic"], "resists": ["melee"], "phases": [
-		{"at_hp_percent": 66, "effects": {"max_hit_multiplier": 1.5, "add_passives": ["venomous"]}},
-		{"at_hp_percent": 33, "effects": {"attack_speed_multiplier": 2.0, "attack_type": "magic",
+		{"name": "x", "at_hp_percent": 66, "effects": {"max_hit_multiplier": 1.5, "add_passives": ["venomous"]}},
+		{"name": "x", "at_hp_percent": 33, "effects": {"attack_speed_multiplier": 2.0, "attack_type": "magic",
 			"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": 3.0}}}]}
 	_eq(v.call(good).size(), 0, "a valid two-phase boss has no errors")
 	_eq(v.call({}).size(), 0, "a monster without the new fields has no errors")
+	_eq(v.call({"phases": [{"at_hp_percent": 99.5, "name": "x"}]}).size(), 1, "non-integer threshold is one error")
+	_eq(v.call({"weak_to": ["magic", "magic"]}).size(), 1, "duplicate weak_to style is one error")
+	_eq(v.call({"resists": ["melee", "melee"]}).size(), 1, "duplicate resists style is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50}]}).size(), 1, "a phase without a name is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "name": "x", "effects": {"apply_status": {"id": "poison", "duration": 0.0, "damage_per_tick": 1.0}}}]}).size(), 1, "zero status duration is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "name": "x", "effects": {"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": -1.0}}}]}).size(), 1, "negative tick damage is one error")
 
 ## An in-test monster record: tiny evasion and huge accuracy so both sides land reliably.
 func _mm_record(id: String, overrides: Dictionary = {}) -> Dictionary:
@@ -2173,7 +2182,7 @@ func _test_monster_mechanics_live() -> void:
 	_eq(_mm_player_damage(seed_used), maxi(1, int(floor(float(neutral_dmg) * 0.75))), "a resisted style hits for 0.75x the neutral damage")
 	# (b) armored: 60 HP -> flat 4, never below 1.
 	_mm_fight("mm_armored")
-	_eq(_mm_player_damage(seed_used), maxi(1, neutral_dmg - 4), "armored removes its flat share of a landed hit")
+	_eq(_mm_player_damage(seed_used), maxi(1, neutral_dmg - mini(4, neutral_dmg / 2)), "armored removes its flat share of a landed hit (capped at half)")
 	var min_seen: int = 1000
 	var landed: int = 0
 	for s in range(1, 120):

@@ -547,7 +547,7 @@ func _mechanic_lines(live: Dictionary) -> Array[Control]:
 		var fired: int = clampi(CombatManager.monster_phases_fired, 0, phases.size())
 		if fired > 0:
 			# Derived from the fight state, so it ends with the monster that earned it.
-			lines.append(_wrapped("Phase: %s" % str((phases[fired - 1] as Dictionary).get("name", "Enraged")), UITokens.RED))
+			lines.append(_wrapped("Phase: %s" % _phase_label(str((phases[fired - 1] as Dictionary).get("name", ""))), UITokens.RED))
 		if fired < phases.size():
 			lines.append(_wrapped("Next phase at %d%% HP" % int((phases[fired] as Dictionary).get("at_hp_percent", 0)), UITokens.TEXT_MUTED))
 		else:
@@ -566,8 +566,12 @@ func _wrapped(text: String, color: Color) -> Label:
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return l
 
+## One shared fallback so the banner and the log line never disagree on an unnamed phase.
+func _phase_label(phase_name: String) -> String:
+	return phase_name if phase_name != "" else "Enraged"
+
 func _on_monster_phase(monster_id: String, phase_name: String) -> void:
-	_log["push"].call("%s enters a new phase: %s!" % [str(DataLoader.get_monster(monster_id).get("name", monster_id)), phase_name])
+	_log["push"].call("%s enters a new phase: %s!" % [str(DataLoader.get_monster(monster_id).get("name", monster_id)), _phase_label(phase_name)])
 	_refresh_fight()
 
 ## Passive tooltips: a mechanic the player cannot see is a mechanic that feels like a bug.

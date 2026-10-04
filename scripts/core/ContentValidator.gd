@@ -453,9 +453,13 @@ static func validate_monster_mechanics(monster_id: String, m: Dictionary) -> Arr
 		if typeof(list) != TYPE_ARRAY:
 			errs.append("%s %s must be an array" % [label, key])
 			continue
+		var seen: Array = []
 		for style in list:
 			if not MonsterMechanics.STYLES.has(str(style)):
 				errs.append("%s %s has invalid style '%s'" % [label, key, style])
+			elif seen.has(style):
+				errs.append("%s %s lists style '%s' twice" % [label, key, style])
+			seen.append(style)
 	if typeof(m.get("weak_to", [])) == TYPE_ARRAY and typeof(m.get("resists", [])) == TYPE_ARRAY:
 		for style in m.get("weak_to", []):
 			if (m.get("resists", []) as Array).has(style):
@@ -473,7 +477,13 @@ static func validate_monster_mechanics(monster_id: String, m: Dictionary) -> Arr
 		if typeof(ph) != TYPE_DICTIONARY:
 			errs.append("%s must be a dictionary" % plabel)
 			continue
-		var pct: int = int(ph.get("at_hp_percent", 0))
+		var raw_pct: Variant = ph.get("at_hp_percent", 0)
+		var pct: int = int(raw_pct)
+		if (typeof(raw_pct) != TYPE_INT and not (typeof(raw_pct) == TYPE_FLOAT and float(raw_pct) == floorf(float(raw_pct)))):
+			errs.append("%s at_hp_percent must be an integer" % plabel)
+			continue
+		if str(ph.get("name", "")).strip_edges() == "":
+			errs.append("%s needs a non-empty name" % plabel)
 		if pct < 1 or pct > 99:
 			errs.append("%s at_hp_percent %d must be in 1-99" % [plabel, pct])
 		elif pct >= prev:
@@ -508,6 +518,11 @@ static func validate_monster_mechanics(monster_id: String, m: Dictionary) -> Arr
 			var st: Variant = fx["apply_status"]
 			if typeof(st) != TYPE_DICTIONARY or not StatusEffect.TABLE.has(str(st.get("id", ""))):
 				errs.append("%s apply_status has unknown status id" % plabel)
+			else:
+				if float(st.get("duration", 1.0)) <= 0.0:
+					errs.append("%s apply_status duration must be > 0" % plabel)
+				if float(st.get("damage_per_tick", 0.0)) < 0.0:
+					errs.append("%s apply_status damage_per_tick must be >= 0" % plabel)
 	return errs
 
 # ---------------- regions ----------------

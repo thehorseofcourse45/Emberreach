@@ -35,7 +35,8 @@ static func armored_reduce(monster: Dictionary, dealt: int) -> int:
     if dealt <= 0 or not (monster.get("passives", []) as Array).has("armored"):
         return dealt
     var flat: int = maxi(1, floori(float(monster.get("hitpoints", 0)) * ARMORED_FRACTION))
-    return maxi(1, dealt - flat)
+    # Armour can never strip more than half of a landed hit, so weak hitters still make progress.
+    return maxi(1, dealt - mini(flat, dealt / 2))
 
 static func lifedrain_heal(dealt: int) -> int:
     if dealt <= 0:

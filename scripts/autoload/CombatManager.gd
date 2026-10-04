@@ -147,7 +147,10 @@ func _sig_monster_phase(monster_id: String, phase_name: String) -> void:
 ## The monster as it fights right now: the base record with every fired phase applied. Use
 ## DataLoader.get_monster() instead where the unmodified record is meant (loot, slayer, death).
 func current_monster() -> Dictionary:
-	return MonsterMechanics.effective(DataLoader.get_monster(current_monster_id), monster_phases_fired)
+	var record: Dictionary = DataLoader.get_monster(current_monster_id)
+	if monster_phases_fired <= 0:
+		return record  # callers only read it; avoid a deep copy per call
+	return MonsterMechanics.effective(record, monster_phases_fired)
 
 func _sig_status(target: String, effect_id: String, applied: bool) -> void:
 	if SimulationMode.is_silent():
