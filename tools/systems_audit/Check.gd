@@ -161,6 +161,37 @@ func _extra_checks() -> void:
 			CartographyManager.discovered[str(id)] = true
 			CartographyManager.survey(str(id))
 	report("empty-hex-survey", true, "All null POIs survey without an invalid Dictionary cast")
+	_mid_phase_save()
+
+func _mid_phase_save() -> void:
+	DataLoader.monsters["audit_phase_boss"] = {"id": "audit_phase_boss", "name": "Audit Boss", "combat_level": 1,
+		"hitpoints": 100, "attack_type": "melee", "attack_speed": 3.0, "max_hit": 10, "accuracy_rating": 1,
+		"melee_evasion": 1, "ranged_evasion": 1, "magic_evasion": 1, "damage_reduction": 0, "loot_table": [],
+		"passives": [], "respawn_time": 1.0, "phases": [
+			{"at_hp_percent": 75, "name": "Wrath", "effects": {"attack_type": "magic", "max_hit_multiplier": 1.5}},
+			{"at_hp_percent": 25, "name": "Fury", "effects": {"max_hit_multiplier": 2.0}}]}
+	CombatManager.start_combat({"type": "area", "id": "farmlands", "monsters": ["audit_phase_boss"], "endless": true,
+		"attack_style": "melee", "melee_style": "slash"})
+	CombatManager.player_hp = 1000.0
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
+	CombatManager.monster_max_hp = 100
+	CombatManager.monster_hp = 100
+	CombatManager.apply_damage_to_monster(30)
+	CombatManager.apply_status("player", "poison", 6.0, 2.0)
+	CombatManager.monster_effects = [StatusEffect.create("burn", 4, 1)]
+	CombatManager.monster_effects[0].tick_timer = 0.25
+	var before_player_effects: int = CombatManager.player_effects.size()
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(SaveManager.build_save_data()))
+	CombatManager.monster_phases_fired = 0
+	CombatManager.monster_hp = 1
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
+	SaveManager._apply(saved)
+	var current: Dictionary = CombatManager.current_monster()
+	report("mid-phase-save", CombatManager.monster_phases_fired == 1 and CombatManager.monster_hp == 70 and str(current.get("attack_type", "")) == "magic" and int(current.get("max_hit", 0)) == 15 and before_player_effects == 1 and CombatManager.player_effects.size() == 1 and CombatManager.monster_effects.size() == 1 and is_equal_approx(CombatManager.monster_effects[0].tick_timer, 0.25), "Fired phase index, effective monster overrides and both sides' statuses survive a full save")
+	CombatManager.stop_combat("test")
+	DataLoader.monsters.erase("audit_phase_boss")
 
 func _farmhand_run(worker_id: String, seed_id: String, split: bool) -> Dictionary:
 	FarmingManager.deserialize({})

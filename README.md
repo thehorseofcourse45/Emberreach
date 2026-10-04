@@ -303,15 +303,19 @@ the game runs before any art exists.
 - `data/harvesting_veins.json` is loaded and validated but read by **no** manager: harvesting node
   stats come from `skills.json` actions (`node_hp` / `respawn_seconds`). Vestigial data, kept only
   because `ContentValidator` still checks it.
-- Monster passives cover regeneration/thorns/enrage — most monsters still differ
-  statistically, not mechanically.
+- Monsters now differ mechanically, not only statistically: elemental affinities (`weak_to` /
+  `resists`, x1.25 / x0.75 on the attacker's style), the `venomous`, `lifedrain` and `armored`
+  passives, boss phases (HP-threshold stat/attack-type changes and phase statuses, saved mid-fight)
+  and status resistance on gear. Authoring caveat: `armored` removes a flat 8 % of the monster's max
+  HP per landed hit, so it is only appropriate on monsters under ~300 HP.
 - Long-tail item display names were renamed by `tools/long_tail_rename.py` (idempotent, re-runnable,
   display names only — item ids are stable, so saves and icons are untouched). The verbatim-Melvor
   names it targeted are gone from `items.json`; see `CHANGELOG.md` for the pass.
 - Audio is fully synthesized (no recorded assets): two generative music tracks and 16 SFX
   recipes rendered to PCM at load.
 - Ascendancy (prestige) is implemented — a lifetime-XP gate granting +5 % XP and +5 % gold per
-  ascension, additive and capped. Respecialisation is still deferred.
+  ascension, additive and capped. Single-node refunds and a full-tree `PrestigeManager.respec()`
+  exist, so a bad early choice is never permanent.
 - The palette is not colourblind-safe: `GREEN` and `RED` are near-identical under deuteranopia.
   Three rows that once conveyed state by colour alone now carry a glyph, but a palette variant is
   the real fix and is not done.
