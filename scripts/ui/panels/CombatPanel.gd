@@ -579,7 +579,7 @@ func _passive_tip(passive_id: String) -> String:
 	match passive_id:
 		"venomous": return "A quarter of its hits poison you."
 		"lifedrain": return "Heals for 30% of the damage it deals."
-		"armored": return "Shrugs off a flat 8% of its maximum health from every hit."
+		"armored": return "Shrugs off up to 8% of its maximum health from every hit, but never more than half of any one hit."
 		"regeneration": return "Heals 2% of its maximum health after every attack it makes."
 		"thorns": return "Reflects 10% of the damage it takes back at you while it stands."
 		"enrage": return "Hits 50% harder once it is at or below 25% health."
