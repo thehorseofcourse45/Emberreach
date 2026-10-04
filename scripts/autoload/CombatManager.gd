@@ -31,6 +31,7 @@ const ENEMY_THORNS_FRACTION: float = 0.10
 const ENRAGE_HP_FRACTION: float = 0.25
 const ENRAGE_MULTIPLIER: float = 1.5
 ## Monster passive ids the engine understands (data may list more only after engine support).
+## Built from MonsterMechanics.NEW_PASSIVES so the new ids cannot drift from the rules module.
 const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage"] + MonsterMechanics.NEW_PASSIVES
 
 var state: int = State.IDLE
@@ -917,6 +918,8 @@ func _tick_effects(list: Array, delta: float, is_player: bool) -> void:
 	if not is_player and monster_hp <= 0 and state == State.FIGHTING:
 		monster_hp = 0
 		_on_monster_death()
+	elif not is_player and state == State.FIGHTING:
+		_fire_due_phases()   # DoT damage crosses boss thresholds too
 
 func apply_status(target: String, effect_id: String, duration: float, damage_per_tick: float = 0.0) -> void:
 	var e: StatusEffect = StatusEffect.create(effect_id, duration, damage_per_tick)

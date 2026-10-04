@@ -2170,6 +2170,16 @@ func _test_monster_mechanics_live() -> void:
 	_ok(CombatManager.monster_effects.is_empty(), "the immune boss itself carries no status")
 	CombatManager.apply_status("monster", "stun", 3.0)
 	_ok(CombatManager.monster_effects.is_empty(), "boss immunity to stun is unchanged")
+	# (e2) a burn ticking the boss through a threshold fires the phase with no direct hit.
+	_mm_fight("mm_boss")
+	phase_names.clear()
+	CombatManager.monster_hp = 760
+	CombatManager.apply_status("monster", "burn", 5.0, 20.0)
+	CombatManager.tick(1.0)
+	_ok(CombatManager.monster_hp <= 750, "the burn tick lowered the boss HP (%d)" % CombatManager.monster_hp)
+	_eq(CombatManager.monster_phases_fired, 1, "a DoT tick across 75% fires that phase")
+	_eq(phase_names, ["mm_boss:Wrath"], "the DoT phase signal fires once")
+	_eq(str(CombatManager.current_monster().get("attack_type")), "magic", "the DoT-fired phase override is live")
 	# (g) save round trip.
 	_mm_fight("mm_boss")
 	CombatManager.apply_damage_to_monster(700)
