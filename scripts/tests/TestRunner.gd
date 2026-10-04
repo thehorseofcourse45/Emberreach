@@ -131,6 +131,7 @@ func run_all(host: Node) -> void:
 	_test_monster_mechanics_live()
 	_test_player_status_resistance()
 	_test_simulator_monster_mechanics()
+	_test_combat_panel_monster_mechanics(host)
 	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 
@@ -2307,6 +2308,74 @@ func _test_monster_mechanics_live() -> void:
 		DataLoader.monsters.erase(id)
 	PlayerData.set_level("attack", 1)
 	PlayerData.set_level("strength", 1)
+	CombatManager.monster_phases_fired = 0
+
+func _panel_texts(node: Node, out: Array[String]) -> void:
+	if node is Label:
+		out.append((node as Label).text)
+	for child in node.get_children():
+		_panel_texts(child, out)
+
+## The combat screen's monster info: affinities, passive names, phase progress and the phase
+## banner/log line. Drives live state directly; last in run_all because start_combat may roll RNG.
+func _test_combat_panel_monster_mechanics(host: Node) -> void:
+	_heading("Combat panel monster mechanics")
+	GameManager.start_new_game("standard")
+	DataLoader.monsters["ui_boss"] = _mm_record("ui_boss", {"name": "Ui Boss", "weak_to": ["magic"],
+		"resists": ["melee"], "passives": ["regeneration", "venomous"], "phases": [
+			{"at_hp_percent": 75, "name": "Wrath", "effects": {"attack_type": "magic"}},
+			{"at_hp_percent": 40, "name": "Fury", "effects": {"add_passives": ["lifedrain"]}}]})
+	DataLoader.monsters["ui_plain"] = _mm_record("ui_plain", {"name": "Ui Plain"})
+	var weak_pct: int = roundi((MonsterMechanics.WEAK_MULTIPLIER - 1.0) * 100.0)
+	var resist_pct: int = roundi((1.0 - MonsterMechanics.RESIST_MULTIPLIER) * 100.0)
+	var panel: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2(420, 900)
+	holder.size = Vector2(420, 900)
+	(host as Control).add_child(holder)
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	holder.add_child(panel)
+	_mm_fight("ui_boss")
+	var texts: Array[String] = []
+	_panel_texts(panel, texts)
+	var blob: String = "\n".join(texts)
+	_ok(blob.contains("Weak: Magic +%d%%" % weak_pct), "the panel shows the weak affinity with its percent")
+	_ok(blob.contains("Resists: Melee -%d%%" % resist_pct), "the panel shows the resisted style with its percent")
+	_ok(blob.contains("Regeneration") and blob.contains("Venomous"), "the panel names the monster's passives")
+	_ok(blob.contains("Next phase at 75% HP"), "the panel shows the first phase threshold")
+	_ok(not blob.contains("Phase: ") and not blob.contains("Final phase"), "no phase banner before a phase fires")
+	_ok(not blob.contains("Lifedrain"), "a phase-added passive is hidden until its phase fires")
+	_ok(panel.get_combined_minimum_size().x <= 420.0, "monster info fits a 420px window (needs %dpx; widest row is %s)" %
+		[int(panel.get_combined_minimum_size().x), TestSupport.widest_descendant(panel)])
+	CombatManager.apply_damage_to_monster(300)
+	texts.clear()
+	_panel_texts(panel, texts)
+	blob = "\n".join(texts)
+	_ok(blob.contains("Phase: Wrath"), "the phase name is bannered once it fires")
+	_ok(blob.contains("Next phase at 40% HP"), "the next threshold advances after a phase fires")
+	_ok(blob.contains("enters a new phase: Wrath"), "the phase entry is appended to the combat log")
+	CombatManager.apply_damage_to_monster(400)
+	texts.clear()
+	_panel_texts(panel, texts)
+	blob = "\n".join(texts)
+	_ok(blob.contains("Phase: Fury") and blob.contains("Final phase") and not blob.contains("Next phase at"),
+		"after the last phase the panel says Final phase")
+	_ok(blob.contains("Lifedrain"), "a phase-added passive appears once its phase fires")
+	_ok(panel.get_combined_minimum_size().x <= 420.0, "phase banner fits a 420px window (needs %dpx; widest row is %s)" %
+		[int(panel.get_combined_minimum_size().x), TestSupport.widest_descendant(panel)])
+	holder.size = Vector2(1440, 900)
+	_ok(panel.get_combined_minimum_size().x <= 1440.0, "monster info fits a 1440px window")
+	_mm_fight("ui_plain")
+	texts.clear()
+	_panel_texts(panel, texts)
+	blob = "\n".join(texts)
+	_ok(not blob.contains("Phase: ") and not blob.contains("Weak:") and not blob.contains("Resists:")
+		and not blob.contains("Next phase") and not blob.contains("Final phase"),
+		"a plain monster shows no affinity or phase rows, and the banner resets on a new fight")
+	CombatManager.stop_combat("test")
+	holder.queue_free()
+	DataLoader.monsters.erase("ui_boss")
+	DataLoader.monsters.erase("ui_plain")
 	CombatManager.monster_phases_fired = 0
 
 ## Player status resistance: worn gear plus prayer/potion modifiers shorten or drop incoming

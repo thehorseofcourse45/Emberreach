@@ -45,6 +45,7 @@ func _ready() -> void:
 	EventBus.dungeon_completed.connect(func(d): _log["push"].call("%s cleared." % str(DataLoader.get_dungeon(d).get("name", d))))
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.activity_changed.connect(_refresh_fight)
+	EventBus.monster_phase_entered.connect(_on_monster_phase)
 	EventBus.bank_changed.connect(_update_food_controls)
 	refresh()
 
@@ -280,13 +281,17 @@ func _refresh_fight() -> void:
 		col.add_child(Widgets.key_value("Your hit chance", UIStyle.fmt_percent(float(cmp["your_hit_chance_percent"]) / 100.0), UITokens.TEAL,
 			"Derived from the live combat model, not a separate estimate"))
 		col.add_child(Widgets.key_value("Their hit chance", UIStyle.fmt_percent(float(cmp["their_hit_chance_percent"]) / 100.0), UITokens.AMBER))
-		var passives: Array = DataLoader.get_monster(str(CombatManager.current_monster_id)).get("passives", [])
+		# The effective record, so a passive a phase adds shows up once that phase has fired.
+		var live: Dictionary = CombatManager.current_monster()
+		var passives: Array = live.get("passives", [])
 		if not passives.is_empty():
 			var passive_row := UIStyle.hbox(UITokens.SP_3)
 			for passive_id in passives:
 				var pid := str(passive_id)
 				passive_row.add_child(Widgets.badge(pid.capitalize(), _passive_color(pid), _passive_tip(pid)))
 			col.add_child(passive_row)
+		for line in _mechanic_lines(live):
+			col.add_child(line)
 	head.add_child(col)
 	_fight_box.add_child(head)
 	var maxhp: float = CombatManager._compute_max_hp()
@@ -527,9 +532,50 @@ func _food_count() -> int:
 			n += int(BankManager.items[item_id])
 	return n
 
+## Affinity, phase-progress and phase-banner rows for the monster info column. Wrapped labels,
+## so a long affinity list can never push the column wider than a 420px window.
+func _mechanic_lines(live: Dictionary) -> Array[Control]:
+	var lines: Array[Control] = []
+	var weak: String = _style_list(live.get("weak_to", []))
+	if weak != "":
+		lines.append(_wrapped("Weak: %s +%d%%" % [weak, roundi((MonsterMechanics.WEAK_MULTIPLIER - 1.0) * 100.0)], UITokens.GREEN))
+	var resists: String = _style_list(live.get("resists", []))
+	if resists != "":
+		lines.append(_wrapped("Resists: %s -%d%%" % [resists, roundi((1.0 - MonsterMechanics.RESIST_MULTIPLIER) * 100.0)], UITokens.AMBER))
+	var phases: Array = DataLoader.get_monster(CombatManager.current_monster_id).get("phases", [])
+	if not phases.is_empty():
+		var fired: int = clampi(CombatManager.monster_phases_fired, 0, phases.size())
+		if fired > 0:
+			# Derived from the fight state, so it ends with the monster that earned it.
+			lines.append(_wrapped("Phase: %s" % str((phases[fired - 1] as Dictionary).get("name", "Enraged")), UITokens.RED))
+		if fired < phases.size():
+			lines.append(_wrapped("Next phase at %d%% HP" % int((phases[fired] as Dictionary).get("at_hp_percent", 0)), UITokens.TEXT_MUTED))
+		else:
+			lines.append(_wrapped("Final phase", UITokens.TEXT_MUTED))
+	return lines
+
+func _style_list(styles: Array) -> String:
+	var names: Array[String] = []
+	for s in styles:
+		names.append(str(s).capitalize())
+	return ", ".join(names)
+
+func _wrapped(text: String, color: Color) -> Label:
+	var l := UIStyle.label(text, false, UITokens.FONT_SMALL)
+	l.add_theme_color_override("font_color", color)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return l
+
+func _on_monster_phase(monster_id: String, phase_name: String) -> void:
+	_log["push"].call("%s enters a new phase: %s!" % [str(DataLoader.get_monster(monster_id).get("name", monster_id)), phase_name])
+	_refresh_fight()
+
 ## Passive tooltips: a mechanic the player cannot see is a mechanic that feels like a bug.
 func _passive_tip(passive_id: String) -> String:
 	match passive_id:
+		"venomous": return "A quarter of its hits poison you."
+		"lifedrain": return "Heals for 30% of the damage it deals."
+		"armored": return "Shrugs off a flat 8% of its maximum health from every hit."
 		"regeneration": return "Heals 2% of its maximum health after every attack it makes."
 		"thorns": return "Reflects 10% of the damage it takes back at you while it stands."
 		"enrage": return "Hits 50% harder once it is at or below 25% health."
@@ -540,6 +586,9 @@ func _passive_color(passive_id: String) -> Color:
 		"regeneration": return UITokens.GREEN
 		"thorns": return UITokens.AMBER
 		"enrage": return UITokens.RED
+		"venomous": return UITokens.GREEN
+		"lifedrain": return UITokens.RED
+		"armored": return UITokens.AMBER
 	return UITokens.PURPLE
 
 func _clear(box: Node) -> void:
