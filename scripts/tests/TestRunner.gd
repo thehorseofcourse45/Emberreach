@@ -128,6 +128,7 @@ func run_all(host: Node) -> void:
 	# Last on purpose: it consumes the seeded combat RNG, and earlier suites (enrage sampling)
 	# depend on the stream position they were tuned against.
 	_test_monster_mechanics_live()
+	_test_player_status_resistance()
 	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 
@@ -2220,6 +2221,78 @@ func _test_monster_mechanics_live() -> void:
 	PlayerData.set_level("attack", 1)
 	PlayerData.set_level("strength", 1)
 	CombatManager.monster_phases_fired = 0
+
+## Player status resistance: worn gear plus prayer/potion modifiers shorten or drop incoming
+## poison/burn/stun-family statuses; consumes one combat RNG roll only when resistance > 0.
+func _test_player_status_resistance() -> void:
+	_heading("Player status resistance")
+	GameManager.start_new_game("standard")
+	DataLoader.monsters["sr_plain"] = _mm_record("sr_plain")
+	DataLoader.items["sr_charm"] = {"id": "sr_charm", "name": "sr_charm", "item_type": "equipment",
+		"equipment_stats": {"burn_resistance": 50}}
+	_mm_fight("sr_plain")
+	# One seed whose first roll is below 0.5 (resisted) and one above (shortened).
+	var low_seed: int = -1
+	var high_seed: int = -1
+	for s in range(1, 200):
+		var probe := RandomNumberGenerator.new()
+		probe.seed = s
+		var r: float = probe.randf()
+		if r < 0.4 and low_seed < 0:
+			low_seed = s
+		if r > 0.8 and high_seed < 0:
+			high_seed = s
+	_ok(low_seed > 0 and high_seed > 0, "found seeds for a low and a high resistance roll")
+	# No resistance: applies in full and consumes no roll.
+	CombatManager.seed_rng(high_seed)
+	CombatManager.apply_status("player", "burn", 10.0, 2.0)
+	_eq(CombatManager.player_effects.size(), 1, "no resistance applies the burn")
+	_approx(CombatManager.player_effects[0].duration, 10.0, 0.0001, "no resistance leaves full duration")
+	var probe2 := RandomNumberGenerator.new()
+	probe2.seed = high_seed
+	var first_roll: float = probe2.randf()
+	_approx(CombatManager._rng.randf(), first_roll, 0.0000001, "zero resistance consumes no RNG roll")
+	# Worn gear 50%.
+	EquipmentManager.slots[ItemData.EquipmentSlot.AMULET] = "sr_charm"
+	_approx(EquipmentManager.get_status_resistance("burn"), 50.0, 0.0001, "worn gear sums burn_resistance")
+	_approx(EquipmentManager.get_status_resistance("stun"), 0.0, 0.0001, "other families read zero")
+	_approx(CombatManager.player_status_resistance("burn"), 50.0, 0.0001, "player burn resistance is the gear value")
+	CombatManager.player_effects.clear()
+	CombatManager.seed_rng(low_seed)
+	CombatManager.apply_status("player", "burn", 10.0, 2.0)
+	_ok(CombatManager.player_effects.is_empty(), "a low roll resists the burn outright")
+	CombatManager.seed_rng(high_seed)
+	CombatManager.apply_status("player", "burn", 10.0, 2.0)
+	_eq(CombatManager.player_effects.size(), 1, "a high roll lets the burn land")
+	if CombatManager.player_effects.size() == 1:
+		_approx(CombatManager.player_effects[0].duration, 5.0, 0.0001, "50% resistance halves the duration")
+	# Slow has no family: untouched even with a roll that would resist.
+	CombatManager.player_effects.clear()
+	CombatManager.seed_rng(low_seed)
+	CombatManager.apply_status("player", "slow", 10.0)
+	_eq(CombatManager.player_effects.size(), 1, "slow ignores resistance")
+	# Monster-targeted statuses ignore player resistance.
+	CombatManager.monster_effects.clear()
+	CombatManager.seed_rng(low_seed)
+	CombatManager.apply_status("monster", "burn", 10.0, 2.0)
+	_eq(CombatManager.monster_effects.size(), 1, "monster burn ignores player resistance")
+	# Modifier 100 caps at 75.
+	EquipmentManager.slots.erase(ItemData.EquipmentSlot.AMULET)
+	ModifierManager.register("sr_test", {ModifierKeys.STUN_RESISTANCE_PERCENT: 100.0}, "test")
+	_approx(CombatManager.player_status_resistance("stun"), 75.0, 0.0001, "resistance caps at 75")
+	CombatManager.player_effects.clear()
+	CombatManager.seed_rng(high_seed)
+	CombatManager.apply_status("player", "stun", 8.0)
+	if CombatManager.player_effects.size() == 1:
+		_approx(CombatManager.player_effects[0].duration, 2.0, 0.0001, "capped 75% leaves a quarter of the duration")
+	else:
+		_ok(false, "a 0.8+ roll lets a 75% resisted stun land")
+	ModifierManager.unregister("sr_test")
+	CombatManager.stop_combat("test")
+	CombatManager.player_effects.clear()
+	DataLoader.monsters.erase("sr_plain")
+	DataLoader.items.erase("sr_charm")
+	EquipmentManager.slots.erase(ItemData.EquipmentSlot.AMULET)
 
 ## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
 ## understands, the pure maths each passive uses, and content that actually carries them.

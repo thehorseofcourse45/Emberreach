@@ -201,6 +201,15 @@ func get_damage_reduction() -> float:
         total += float(DataLoader.get_item(slots[slot]).get("equipment_stats", {}).get("damage_reduction", 0))
     return total
 
+## Percent resistance to a status family ("poison", "burn", "stun") from worn equipment, read
+## from `equipment_stats["<family>_resistance"]`.
+func get_status_resistance(family: String) -> float:
+    var key: String = "%s_resistance" % family
+    var total: float = 0.0
+    for slot in slots.keys():
+        total += float(DataLoader.get_item(slots[slot]).get("equipment_stats", {}).get(key, 0))
+    return total
+
 func get_weapon_attack_speed() -> float:
     var weapon: String = get_equipped(ItemData.EquipmentSlot.WEAPON)
     if weapon == "":

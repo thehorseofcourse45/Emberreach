@@ -921,7 +921,24 @@ func _tick_effects(list: Array, delta: float, is_player: bool) -> void:
 	elif not is_player and state == State.FIGHTING:
 		_fire_due_phases()   # DoT damage crosses boss thresholds too
 
+## Total player resistance (percent) to a status family: worn gear plus prayer/potion modifiers,
+## capped at MonsterMechanics.RESISTANCE_CAP.
+func player_status_resistance(family: String) -> float:
+	if family == "":
+		return 0.0
+	var total: float = EquipmentManager.get_status_resistance(family) \
+		+ ModifierManager.get_modifier("%s_resistance_percent" % family)
+	return minf(total, MonsterMechanics.RESISTANCE_CAP)
+
 func apply_status(target: String, effect_id: String, duration: float, damage_per_tick: float = 0.0) -> void:
+	if target == "player":
+		var family: String = MonsterMechanics.status_family(effect_id)
+		if family != "":
+			var resistance: float = player_status_resistance(family)
+			if resistance > 0.0:
+				duration = MonsterMechanics.resisted_duration(effect_id, duration, resistance, _rng.randf())
+				if duration <= 0.0:
+					return
 	var e: StatusEffect = StatusEffect.create(effect_id, duration, damage_per_tick)
 	if target == "player":
 		player_effects.append(e)
