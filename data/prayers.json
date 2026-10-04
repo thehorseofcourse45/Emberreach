@@ -60,7 +60,8 @@
     "level": 28,
     "prayer_point_cost": 1.0,
     "effect": {
-      "damage_reduction_percent": 3
+      "damage_reduction_percent": 3,
+      "stun_resistance_percent": 10
     }
   },
   "protect_from_magic": {

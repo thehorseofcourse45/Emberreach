@@ -229,7 +229,13 @@
     "respawn_time": 3.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Cairn debris, walking. The barrows resent being opened."
+    "flavour": "Cairn debris, walking. The barrows resent being opened.",
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "ranged"
+    ]
   },
   "spider": {
     "id": "spider",
@@ -270,7 +276,11 @@
     "respawn_time": 3.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Reed-height and patient. The web is the warning."
+    "flavour": "Reed-height and patient. The web is the warning.",
+    "weak_to": [
+      "melee"
+    ],
+    "resists": []
   },
   "bandit": {
     "id": "bandit",
@@ -335,7 +345,8 @@
     "damage_reduction": 15,
     "passives": [
       "regeneration",
-      "thorns"
+      "thorns",
+      "armored"
     ],
     "loot_table": [
       {
@@ -373,7 +384,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Old stone that grew a coat and decided to stand up."
+    "flavour": "Old stone that grew a coat and decided to stand up.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "guard": {
     "id": "guard",
@@ -427,6 +444,12 @@
     "flavour": "Still on duty. The orders are older than the settlement.",
     "passives": [
       "thorns"
+    ],
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
     ]
   },
   "rune_knight": {
@@ -481,7 +504,13 @@
     "respawn_time": 6.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Armour written over with binding script. The script is winning."
+    "flavour": "Armour written over with binding script. The script is winning.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "green_dragon": {
     "id": "green_dragon",
@@ -548,6 +577,29 @@
     "flavour": "Slept through the ashfall under the moss. Waking up irritable.",
     "passives": [
       "enrage"
+    ],
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 60,
+        "name": "Wyrmfury",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Wing Barrage",
+        "effects": {
+          "attack_type": "ranged",
+          "attack_speed_multiplier": 1.1
+        }
+      }
     ]
   },
   "golbin_chief": {
@@ -601,6 +653,22 @@
     "flavour": "Leads the Warrens. Wears the settlement's missing anvil as a shield.",
     "passives": [
       "enrage"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 50,
+        "name": "Rallied",
+        "effects": {
+          "attack_speed_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Cornered",
+        "effects": {
+          "max_hit_multiplier": 1.2
+        }
+      }
     ]
   },
   "air_elemental": {
@@ -645,7 +713,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "A pressure change with intent."
+    "flavour": "A pressure change with intent.",
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "ranged"
+    ]
   },
   "air_god": {
     "id": "air_god",
@@ -696,7 +770,23 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": false,
-    "flavour": "Keeper of the summit instruments. She has been waiting for a student, not a challenger."
+    "flavour": "Keeper of the summit instruments. She has been waiting for a student, not a challenger.",
+    "phases": [
+      {
+        "at_hp_percent": 66,
+        "name": "Rising Gale",
+        "effects": {
+          "attack_speed_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 33,
+        "name": "Eye of the Storm",
+        "effects": {
+          "max_hit_multiplier": 1.15
+        }
+      }
+    ]
   },
   "water_elemental": {
     "id": "water_elemental",
@@ -740,7 +830,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Water that has been told what to do."
+    "flavour": "Water that has been told what to do.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "water_god": {
     "id": "water_god",
@@ -791,7 +887,23 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": false,
-    "flavour": "Keeps the reliquary's ledger. Everyone's name is in it."
+    "flavour": "Keeps the reliquary's ledger. Everyone's name is in it.",
+    "phases": [
+      {
+        "at_hp_percent": 60,
+        "name": "Swelling Tide",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Undertow",
+        "effects": {
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
   },
   "earth_elemental": {
     "id": "earth_elemental",
@@ -835,7 +947,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Rock with an opinion."
+    "flavour": "Rock with an opinion.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
+    ]
   },
   "earth_god": {
     "id": "earth_god",
@@ -886,7 +1004,23 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": false,
-    "flavour": "He cut the mine that broke the ridge, and he will not explain why."
+    "flavour": "He cut the mine that broke the ridge, and he will not explain why.",
+    "phases": [
+      {
+        "at_hp_percent": 60,
+        "name": "Fault Line",
+        "effects": {
+          "max_hit_multiplier": 1.15
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Landslide",
+        "effects": {
+          "attack_speed_multiplier": 1.15
+        }
+      }
+    ]
   },
   "fire_elemental": {
     "id": "fire_elemental",
@@ -930,7 +1064,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "A coal that learned to move."
+    "flavour": "A coal that learned to move.",
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "magic"
+    ]
   },
   "fire_god": {
     "id": "fire_god",
@@ -981,7 +1121,27 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": false,
-    "flavour": "Tends the kiln. Believes the ashfall was the correct price."
+    "flavour": "Tends the kiln. Believes the ashfall was the correct price.",
+    "phases": [
+      {
+        "at_hp_percent": 66,
+        "name": "Banked Coals Flare",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 33,
+        "name": "Kiln Breath",
+        "effects": {
+          "apply_status": {
+            "id": "burn",
+            "duration": 6.0,
+            "damage_per_tick": 6.0
+          }
+        }
+      }
+    ]
   },
   "mist_wraith": {
     "id": "mist_wraith",
@@ -1031,7 +1191,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Ash and drowned breath, holding a shape out of habit."
+    "flavour": "Ash and drowned breath, holding a shape out of habit.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "the_mist": {
     "id": "the_mist",
@@ -1082,7 +1248,29 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": true,
-    "flavour": "The ashfall given a voice. It repeats what you said, later."
+    "flavour": "The ashfall given a voice. It repeats what you said, later.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 60,
+        "name": "Rolling In",
+        "effects": {
+          "attack_speed_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Whiteout",
+        "effects": {
+          "max_hit_multiplier": 1.15
+        }
+      }
+    ]
   },
   "dark_herald": {
     "id": "dark_herald",
@@ -1133,7 +1321,24 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": true,
-    "flavour": "Announces the dark the way weather announces rain."
+    "flavour": "Announces the dark the way weather announces rain.",
+    "phases": [
+      {
+        "at_hp_percent": 70,
+        "name": "Dusk Falls",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 35,
+        "name": "Long Night",
+        "effects": {
+          "attack_type": "magic",
+          "attack_speed_multiplier": 1.05
+        }
+      }
+    ]
   },
   "drowned_sailor": {
     "id": "drowned_sailor",
@@ -1226,7 +1431,23 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": true,
-    "flavour": "Rules Nhalassar's upper terraces and resents the surface."
+    "flavour": "Rules Nhalassar's upper terraces and resents the surface.",
+    "phases": [
+      {
+        "at_hp_percent": 66,
+        "name": "Terrace Wrath",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 33,
+        "name": "Trident Rush",
+        "effects": {
+          "attack_type": "melee"
+        }
+      }
+    ]
   },
   "abyssal_imp": {
     "id": "abyssal_imp",
@@ -1288,7 +1509,9 @@
     "special_attacks": [
       "abyssal_corruption"
     ],
-    "passives": [],
+    "passives": [
+      "lifedrain"
+    ],
     "loot_table": [
       {
         "item_id": "dragon_bones",
@@ -1360,7 +1583,23 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": true,
-    "flavour": "Commands the Deep's attention, which is a job nobody wants."
+    "flavour": "Commands the Deep's attention, which is a job nobody wants.",
+    "phases": [
+      {
+        "at_hp_percent": 66,
+        "name": "Attention Fixed",
+        "effects": {
+          "attack_speed_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 33,
+        "name": "Deep Surge",
+        "effects": {
+          "max_hit_multiplier": 1.15
+        }
+      }
+    ]
   },
   "the_herald": {
     "id": "the_herald",
@@ -1413,7 +1652,31 @@
     "respawn_time": 8.0,
     "can_be_stunned": false,
     "is_immune_to_effects": true,
-    "flavour": "The ashfall wearing a crown. It has been waiting at the Seat for you."
+    "flavour": "The ashfall wearing a crown. It has been waiting at the Seat for you.",
+    "phases": [
+      {
+        "at_hp_percent": 75,
+        "name": "Crown Ablaze",
+        "effects": {
+          "attack_speed_multiplier": 1.05
+        }
+      },
+      {
+        "at_hp_percent": 50,
+        "name": "Throne Wrath",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Ashfall Volley",
+        "effects": {
+          "attack_type": "ranged",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
   },
   "cinderkin_scout": {
     "id": "cinderkin_scout",
@@ -1508,7 +1771,16 @@
     "respawn_time": 3.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "A forgotten name wrapped in burial cloth and cold blue fire."
+    "flavour": "A forgotten name wrapped in burial cloth and cold blue fire.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "passives": [
+      "lifedrain"
+    ]
   },
   "drowned_wayfarer": {
     "id": "drowned_wayfarer",
@@ -1649,7 +1921,11 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Ice gathers on its fangs before the pack even comes into view."
+    "flavour": "Ice gathers on its fangs before the pack even comes into view.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": []
   },
   "ash_drake": {
     "id": "ash_drake",
@@ -1705,6 +1981,12 @@
     "flavour": "Young ashwyrms stalk the lava vents below the greater wyrm.",
     "passives": [
       "enrage"
+    ],
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "magic"
     ]
   },
   "broodweb_hunter": {
@@ -1816,7 +2098,8 @@
     "magic_evasion": 50,
     "damage_reduction": 16,
     "passives": [
-      "regeneration"
+      "regeneration",
+      "lifedrain"
     ],
     "loot_table": [
       {
@@ -1849,7 +2132,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "A man-shaped absence in the dust. It stands where the cut was deepest."
+    "flavour": "A man-shaped absence in the dust. It stands where the cut was deepest.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "shale_stalker": {
     "id": "shale_stalker",
@@ -1864,7 +2153,9 @@
     "ranged_evasion": 85,
     "magic_evasion": 60,
     "damage_reduction": 18,
-    "passives": [],
+    "passives": [
+      "venomous"
+    ],
     "special_attacks": [
       "venom_bite"
     ],
@@ -1948,7 +2239,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Whatever was shouted here last still hasn't finished. It always finds you."
+    "flavour": "Whatever was shouted here last still hasn't finished. It always finds you.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "slag_golem": {
     "id": "slag_golem",
@@ -1965,7 +2262,8 @@
     "damage_reduction": 22,
     "passives": [
       "thorns",
-      "enrage"
+      "enrage",
+      "armored"
     ],
     "loot_table": [
       {
@@ -2007,7 +2305,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Kiln-waste and old mortar, knitted into something with a temper."
+    "flavour": "Kiln-waste and old mortar, knitted into something with a temper.",
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "ranged"
+    ]
   },
   "brine_troll": {
     "id": "brine_troll",
@@ -2075,7 +2379,11 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "It has been sitting in the same pool so long the salt grew over its back."
+    "flavour": "It has been sitting in the same pool so long the salt grew over its back.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": []
   },
   "tidewrack_hag": {
     "id": "tidewrack_hag",
@@ -2383,7 +2691,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "A drowned harpooner who never let go of the line. It still throws."
+    "flavour": "A drowned harpooner who never let go of the line. It still throws.",
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "stormglass_warden": {
     "id": "stormglass_warden",
@@ -2427,7 +2741,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "Lightning that struck the same sand twice and cooled into a sentry."
+    "flavour": "Lightning that struck the same sand twice and cooled into a sentry.",
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "magic"
+    ]
   },
   "cinder_colossus": {
     "id": "cinder_colossus",
@@ -2445,7 +2765,9 @@
     "special_attacks": [
       "stun_bash"
     ],
-    "passives": [],
+    "passives": [
+      "armored"
+    ],
     "loot_table": [
       {
         "item_id": "dragon_bones",
@@ -2471,7 +2793,13 @@
     "respawn_time": 5.0,
     "can_be_stunned": true,
     "is_immune_to_effects": false,
-    "flavour": "A forge-heap the Herald taught to walk. Each step leaves a glowing print."
+    "flavour": "A forge-heap the Herald taught to walk. Each step leaves a glowing print.",
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "melee"
+    ]
   },
   "herald_zealot": {
     "id": "herald_zealot",

@@ -2181,7 +2181,8 @@
     "equipment_stats": {
       "melee_defence": 7,
       "ranged_defence": 7,
-      "magic_defence": 7
+      "magic_defence": 7,
+      "burn_resistance": 10
     },
     "level_requirements": {
       "hitpoints": 60
@@ -2197,7 +2198,8 @@
     "equipment_stats": {
       "melee_defence": 9,
       "ranged_defence": 9,
-      "magic_defence": 9
+      "magic_defence": 9,
+      "burn_resistance": 20
     },
     "level_requirements": {
       "hitpoints": 75
@@ -2213,7 +2215,8 @@
     "equipment_stats": {
       "melee_defence": 11,
       "ranged_defence": 11,
-      "magic_defence": 11
+      "magic_defence": 11,
+      "poison_resistance": 20
     },
     "level_requirements": {
       "hitpoints": 90
@@ -2510,7 +2513,8 @@
     "equipment_stats": {
       "ranged_defence": 15,
       "melee_defence": 12,
-      "magic_defence": 12
+      "magic_defence": 12,
+      "poison_resistance": 10
     },
     "level_requirements": {
       "ranged": 40
@@ -3829,7 +3833,8 @@
     "sell_price": 8000,
     "equipment_slot": 9,
     "equipment_stats": {
-      "melee_defence": 12
+      "melee_defence": 12,
+      "stun_resistance": 10
     },
     "passive_modifiers": {
       "thieving_stealth": 20
@@ -5687,7 +5692,8 @@
       "melee_defence": 34,
       "ranged_defence": 34,
       "magic_defence": 34,
-      "damage_reduction": 2
+      "damage_reduction": 2,
+      "burn_resistance": 25
     },
     "level_requirements": {
       "defence": 95
@@ -6584,7 +6590,8 @@
     "equipment_stats": {
       "melee_defence": 30,
       "ranged_defence": 30,
-      "magic_defence": 30
+      "magic_defence": 30,
+      "stun_resistance": 15
     },
     "level_requirements": {
       "defence": 70
@@ -6750,7 +6757,8 @@
     "equipment_stats": {
       "melee_defence": 37,
       "ranged_defence": 37,
-      "magic_defence": 37
+      "magic_defence": 37,
+      "stun_resistance": 25
     },
     "level_requirements": {
       "defence": 85
@@ -8764,5 +8772,16 @@
     "is_stackable": true,
     "heal_amount": 400,
     "description": "Heals 400 HP."
+  },
+  "potion_antivenom": {
+    "id": "potion_antivenom",
+    "name": "Antivenom Draught",
+    "item_type": "potion",
+    "sell_price": 70,
+    "is_stackable": true,
+    "charges": 15,
+    "potion_effect": {
+      "poison_resistance_percent": 30
+    }
   }
 }

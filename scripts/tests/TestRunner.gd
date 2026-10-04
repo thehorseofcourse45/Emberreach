@@ -71,6 +71,7 @@ func run_all(host: Node) -> void:
 	_test_monster_passives()
 	_test_monster_mechanics()
 	_test_monster_mechanics_validation()
+	_test_monster_mechanics_content()
 	_test_monster_ladder()
 	_test_dungeon_ladder()
 	_test_raw_fish_are_consumed()
@@ -2041,6 +2042,90 @@ func _mm_player_damage(seed_value: int) -> int:
 	return 100000 - CombatManager.monster_hp
 
 ## Live combat wiring for affinities, the three new passives and boss phases.
+func _test_monster_mechanics_content() -> void:
+	_heading("Monster mechanics content")
+	var with_affinity: int = 0
+	var bosses: int = 0
+	var bosses_ok: bool = true
+	var swap_bosses: int = 0
+	var venom_ok: bool = true
+	var lifedrain: int = 0
+	var armored: int = 0
+	var errors: Array[String] = []
+	var both: int = 0
+	var applied: Dictionary = {}
+	for mid in DataLoader.monsters.keys():
+		var m: Dictionary = DataLoader.monsters[mid]
+		errors.append_array(ContentValidator.validate_monster_mechanics(str(mid), m))
+		var weak: Array = m.get("weak_to", [])
+		var resists: Array = m.get("resists", [])
+		if not weak.is_empty() or not resists.is_empty():
+			with_affinity += 1
+		for style in weak:
+			if resists.has(style):
+				both += 1
+		var passives: Array = m.get("passives", [])
+		if passives.has("lifedrain"):
+			lifedrain += 1
+		if passives.has("armored"):
+			armored += 1
+		var applies_poison: bool = false
+		for sid in m.get("special_attacks", []):
+			var status: String = str(DataLoader.special_attacks.get(str(sid), {}).get("applies_status", ""))
+			if status != "":
+				applied[status] = true
+			if status == "poison":
+				applies_poison = true
+		if applies_poison and not passives.has("venomous"):
+			venom_ok = false
+		if bool(m.get("is_boss", false)):
+			bosses += 1
+			var phases: Array = m.get("phases", [])
+			if phases.size() < 2 or phases.size() > 3:
+				bosses_ok = false
+			for ph in phases:
+				var fx: Dictionary = ph.get("effects", {})
+				if fx.has("attack_type") and str(fx["attack_type"]) != str(m.get("attack_type", "")):
+					swap_bosses += 1
+					break
+	_ok(with_affinity >= 15, "at least 15 monsters carry an affinity (%d)" % with_affinity)
+	_eq(both, 0, "no monster has a style in both weak_to and resists")
+	_ok(bosses > 0 and bosses_ok, "every boss (%d) has 2-3 phases" % bosses)
+	_ok(swap_bosses >= 1, "at least one boss has a phase that changes its attack type (%d)" % swap_bosses)
+	_ok(venom_ok, "every monster applying poison is venomous")
+	_ok(lifedrain >= 2 and lifedrain <= 4, "2-4 monsters have lifedrain (%d)" % lifedrain)
+	_ok(armored >= 2 and armored <= 4, "2-4 monsters are armored (%d)" % armored)
+	_eq(errors.size(), 0, "every monster passes validate_monster_mechanics %s" % str(errors))
+	var resistant_items: int = 0
+	var families_covered: Dictionary = {}
+	for iid in DataLoader.items.keys():
+		var stats: Dictionary = DataLoader.items[iid].get("equipment_stats", {})
+		var found: bool = false
+		for family in ["poison", "burn", "stun"]:
+			if int(stats.get("%s_resistance" % family, 0)) > 0:
+				families_covered[family] = true
+				found = true
+		if found:
+			resistant_items += 1
+	_ok(resistant_items >= 6 and resistant_items <= 8, "6-8 equipment items carry status resistance (%d)" % resistant_items)
+	for family in ["poison", "burn", "stun"]:
+		if applied.has(family):
+			_ok(families_covered.has(family), "a resistance item counters the monster-applied %s family" % family)
+	var prayer_resists: int = 0
+	for pid in DataLoader.prayers.keys():
+		var eff: Dictionary = DataLoader.prayers[pid].get("effect", {}) if DataLoader.prayers[pid] is Dictionary else {}
+		for family in ["poison", "burn", "stun"]:
+			if eff.has("%s_resistance_percent" % family):
+				prayer_resists += 1
+	_ok(prayer_resists >= 1, "a prayer grants status resistance (%d)" % prayer_resists)
+	var potion_resists: int = 0
+	for iid in DataLoader.items.keys():
+		var fx: Dictionary = DataLoader.items[iid].get("potion_effect", {})
+		for family in ["poison", "burn", "stun"]:
+			if fx.has("%s_resistance_percent" % family):
+				potion_resists += 1
+	_ok(potion_resists >= 1, "a potion grants status resistance (%d)" % potion_resists)
+
 func _test_monster_mechanics_live() -> void:
 	_heading("Monster mechanics in live combat")
 	for passive_id in MonsterMechanics.NEW_PASSIVES:
