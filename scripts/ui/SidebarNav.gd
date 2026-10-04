@@ -190,7 +190,7 @@ static func _add_skill_links(host: Control, container: VBoxContainer, nav_button
 
 static func _icon_kind_for(screen: String) -> String:
 	match screen:
-		Screens.ACTION_QUEUE, Screens.COMBAT_SIMULATOR, Screens.PRAYERS, Screens.RAIDS, Screens.SETTINGS: return "navigation"
+		Screens.ACTION_QUEUE, Screens.COMBAT_SIMULATOR, Screens.PRAYERS, Screens.RAIDS, Screens.SETTINGS, Screens.PRESTIGE: return "navigation"
 		Screens.COMBAT: return "areas"
 		Screens.EXPEDITIONS: return "dungeons"
 		Screens.BANK, Screens.COLLECTION: return "items"
@@ -207,7 +207,7 @@ static func _icon_kind_for(screen: String) -> String:
 
 static func _icon_id_for(screen: String) -> String:
 	match screen:
-		Screens.ACTION_QUEUE, Screens.COMBAT_SIMULATOR, Screens.PRAYERS, Screens.RAIDS, Screens.SETTINGS: return screen
+		Screens.ACTION_QUEUE, Screens.COMBAT_SIMULATOR, Screens.PRAYERS, Screens.RAIDS, Screens.SETTINGS, Screens.PRESTIGE: return screen
 		Screens.COMBAT: return "farmlands"
 		Screens.EXPEDITIONS: return "air_god_dungeon"
 		Screens.SKILLS: return "woodcutting"
