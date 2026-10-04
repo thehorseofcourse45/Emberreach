@@ -69,6 +69,7 @@ func run_all(host: Node) -> void:
 	_test_general_store()
 	_test_endgame_crafting_chains()
 	_test_monster_passives()
+	_test_monster_mechanics()
 	_test_monster_ladder()
 	_test_dungeon_ladder()
 	_test_raw_fish_are_consumed()
@@ -1934,6 +1935,47 @@ func _test_dungeon_sequencing() -> void:
 
 ## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
 ## understands, the pure maths each passive uses, and content that actually carries them.
+func _test_monster_mechanics() -> void:
+	_heading("Monster mechanics")
+	_approx(MonsterMechanics.affinity_multiplier({"weak_to": ["magic"]}, "magic"), 1.25, 0.0001, "weak style hits for 1.25x")
+	_approx(MonsterMechanics.affinity_multiplier({"resists": ["melee"]}, "melee"), 0.75, 0.0001, "resisted style hits for 0.75x")
+	_approx(MonsterMechanics.affinity_multiplier({"weak_to": ["magic"], "resists": ["melee"]}, "ranged"), 1.0, 0.0001, "unlisted style is neutral")
+	var armored := {"passives": ["armored"], "hitpoints": 1000}
+	_eq(MonsterMechanics.armored_reduce(armored, 100), 20, "armored removes 8% of max HP flat")
+	_eq(MonsterMechanics.armored_reduce(armored, 1), 1, "armored never reduces a hit below 1")
+	_eq(MonsterMechanics.armored_reduce(armored, 0), 0, "armored leaves a zero hit alone")
+	_eq(MonsterMechanics.armored_reduce({"hitpoints": 1000}, 100), 100, "no armored passive leaves damage unchanged")
+	_eq(MonsterMechanics.lifedrain_heal(10), 3, "lifedrain heals 30% of damage")
+	_eq(MonsterMechanics.lifedrain_heal(1), 1, "lifedrain heals at least 1")
+	_eq(MonsterMechanics.lifedrain_heal(0), 0, "lifedrain heals nothing on zero damage")
+	var venom: Dictionary = MonsterMechanics.venom_status(100)
+	_eq(venom.get("id"), "poison", "venom applies poison")
+	_approx(float(venom.get("duration", 0.0)), 6.0, 0.0001, "venom lasts 6s")
+	_approx(float(venom.get("damage_per_tick", 0.0)), 5.0, 0.0001, "venom ticks 5% of max hit")
+	_approx(float(MonsterMechanics.venom_status(4).get("damage_per_tick", 0.0)), 1.0, 0.0001, "venom tick is at least 1")
+	var phases := [{"at_hp_percent": 75}, {"at_hp_percent": 40}]
+	_eq(MonsterMechanics.phases_due(phases, 0, 0.8), 0, "no phase above its threshold")
+	_eq(MonsterMechanics.phases_due(phases, 0, 0.70), 1, "first phase fires below 75%")
+	_eq(MonsterMechanics.phases_due(phases, 0, 0.30), 2, "one hit through two thresholds fires both")
+	_eq(MonsterMechanics.phases_due(phases, 2, 0.30), 2, "fired phases never fire twice")
+	var boss := {"max_hit": 100, "attack_speed": 2.0, "attack_type": "melee", "passives": ["enrage"],
+		"phases": [{"at_hp_percent": 50, "attack_type": "magic", "max_hit_multiplier": 1.5,
+			"attack_speed_multiplier": 2.0, "add_passives": ["enrage", "lifedrain"]}]}
+	var eff: Dictionary = MonsterMechanics.effective(boss, 1)
+	_eq(int(eff.get("max_hit")), 150, "phase scales max hit")
+	_eq(str(eff.get("attack_type")), "magic", "phase swaps attack type")
+	_approx(float(eff.get("attack_speed")), 1.0, 0.0001, "phase doubles attack rate")
+	_eq(eff.get("passives"), ["enrage", "lifedrain"], "phase appends passives without duplicates")
+	_eq(int(boss.get("max_hit")), 100, "effective leaves the input unchanged")
+	_eq(str(boss.get("attack_type")), "melee", "effective leaves input attack type alone")
+	_eq(int(MonsterMechanics.effective(boss, 0).get("max_hit")), 100, "zero fired applies nothing")
+	_eq(MonsterMechanics.status_family("toxin"), "poison", "toxin is poison family")
+	_eq(MonsterMechanics.status_family("sleep"), "stun", "sleep is stun family")
+	_eq(MonsterMechanics.status_family("slow"), "", "slow has no family")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.4), 0.0, 0.0001, "low roll is resisted")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.6), 5.0, 0.0001, "high roll halves duration at 50%")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 90.0, 0.8), 2.5, 0.0001, "resistance caps at 75%")
+
 func _test_monster_passives() -> void:
 	_heading("Monster passives")
 	for passive_id in ["regeneration", "thorns", "enrage"]:
