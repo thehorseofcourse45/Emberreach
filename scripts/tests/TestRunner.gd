@@ -70,6 +70,7 @@ func run_all(host: Node) -> void:
 	_test_endgame_crafting_chains()
 	_test_monster_passives()
 	_test_monster_mechanics()
+	_test_monster_mechanics_validation()
 	_test_monster_ladder()
 	_test_dungeon_ladder()
 	_test_raw_fish_are_consumed()
@@ -1975,6 +1976,34 @@ func _test_monster_mechanics() -> void:
 	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.4), 0.0, 0.0001, "low roll is resisted")
 	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.6), 5.0, 0.0001, "high roll halves duration at 50%")
 	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 90.0, 0.8), 2.5, 0.0001, "resistance caps at 75%")
+
+## The monster-mechanics schema is validated on in-memory records so every rule is testable.
+func _test_monster_mechanics_validation() -> void:
+	_heading("Monster mechanics validation")
+	for passive_id in ["venomous", "lifedrain", "armored"]:
+		_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(passive_id), "the engine knows the '%s' passive" % passive_id)
+	var v := func(m: Dictionary) -> Array[String]:
+		return ContentValidator.validate_monster_mechanics("t", m)
+	_eq(v.call({"weak_to": ["fire"]}).size(), 1, "unknown weak_to style is one error")
+	_eq(v.call({"resists": ["fire"]}).size(), 1, "unknown resists style is one error")
+	_eq(v.call({"weak_to": ["melee"], "resists": ["melee"]}).size(), 1, "style in both lists is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 40}, {"at_hp_percent": 60}]}).size(), 1, "ascending phases are one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 0}]}).size(), 1, "threshold 0 is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 100}]}).size(), 1, "threshold 100 is one error")
+	_eq(v.call({"phases": "x"}).size(), 1, "phases must be an array")
+	_eq(v.call({"phases": [5]}).size(), 1, "phase entries must be dictionaries")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"bogus": 1}}]}).size(), 1, "unknown effect key is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"max_hit_multiplier": 5}}]}).size(), 1, "max_hit_multiplier 5 is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"attack_speed_multiplier": 0.1}}]}).size(), 1, "attack_speed_multiplier 0.1 is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"add_passives": ["nope"]}}]}).size(), 1, "unknown add_passives entry is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"attack_type": "fire"}}]}).size(), 1, "invalid phase attack_type is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "effects": {"apply_status": {"id": "nope"}}}]}).size(), 1, "unknown apply_status id is one error")
+	var good := {"weak_to": ["magic"], "resists": ["melee"], "phases": [
+		{"at_hp_percent": 66, "effects": {"max_hit_multiplier": 1.5, "add_passives": ["venomous"]}},
+		{"at_hp_percent": 33, "effects": {"attack_speed_multiplier": 2.0, "attack_type": "magic",
+			"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": 3.0}}}]}
+	_eq(v.call(good).size(), 0, "a valid two-phase boss has no errors")
+	_eq(v.call({}).size(), 0, "a monster without the new fields has no errors")
 
 func _test_monster_passives() -> void:
 	_heading("Monster passives")

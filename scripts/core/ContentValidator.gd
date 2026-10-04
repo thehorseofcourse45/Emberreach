@@ -415,6 +415,8 @@ func _check_monsters() -> void:
 		for passive in m.get("passives", []):
 			if not CombatManager.KNOWN_MONSTER_PASSIVES.has(str(passive)):
 				_err("missing_reference", "%s references unknown passive '%s'" % [label, passive])
+		for mech_msg in validate_monster_mechanics(str(id), m):
+			_err("invalid_record", mech_msg)
 		for drop in m.get("loot_table", []):
 			if typeof(drop) != TYPE_DICTIONARY:
 				_err("invalid_record", "%s has a malformed loot entry" % label)
@@ -440,6 +442,73 @@ func _check_monsters() -> void:
 	for sa_id in DataLoader.special_attacks.keys():
 		if not carried.has(str(sa_id)):
 			_warn("unused_special_attack", "special attack '%s' is not carried by any monster" % sa_id)
+
+## Checks the monster-mechanics schema (weak_to / resists / phases). Static so tests can feed
+## in-memory records; returns one message per problem.
+static func validate_monster_mechanics(monster_id: String, m: Dictionary) -> Array[String]:
+	var errs: Array[String] = []
+	var label := "monster:%s" % monster_id
+	for key in ["weak_to", "resists"]:
+		var list: Variant = m.get(key, [])
+		if typeof(list) != TYPE_ARRAY:
+			errs.append("%s %s must be an array" % [label, key])
+			continue
+		for style in list:
+			if not MonsterMechanics.STYLES.has(str(style)):
+				errs.append("%s %s has invalid style '%s'" % [label, key, style])
+	if typeof(m.get("weak_to", [])) == TYPE_ARRAY and typeof(m.get("resists", [])) == TYPE_ARRAY:
+		for style in m.get("weak_to", []):
+			if (m.get("resists", []) as Array).has(style):
+				errs.append("%s style '%s' is in both weak_to and resists" % [label, style])
+	if not m.has("phases"):
+		return errs
+	var phases: Variant = m["phases"]
+	if typeof(phases) != TYPE_ARRAY:
+		errs.append("%s phases must be an array" % label)
+		return errs
+	var prev: int = 100
+	for i in range((phases as Array).size()):
+		var ph: Variant = phases[i]
+		var plabel := "%s phase %d" % [label, i]
+		if typeof(ph) != TYPE_DICTIONARY:
+			errs.append("%s must be a dictionary" % plabel)
+			continue
+		var pct: int = int(ph.get("at_hp_percent", 0))
+		if pct < 1 or pct > 99:
+			errs.append("%s at_hp_percent %d must be in 1-99" % [plabel, pct])
+		elif pct >= prev:
+			errs.append("%s at_hp_percent %d must be strictly below the previous phase" % [plabel, pct])
+		else:
+			prev = pct
+		var fx: Variant = ph.get("effects", {})
+		if typeof(fx) != TYPE_DICTIONARY:
+			errs.append("%s effects must be a dictionary" % plabel)
+			continue
+		for k in fx.keys():
+			if not MonsterMechanics.PHASE_EFFECT_KEYS.has(str(k)):
+				errs.append("%s has unknown effect '%s'" % [plabel, k])
+		if fx.has("attack_speed_multiplier"):
+			var a: float = float(fx["attack_speed_multiplier"])
+			if a < 0.5 or a > 2.0:
+				errs.append("%s attack_speed_multiplier %f must be in [0.5,2.0]" % [plabel, a])
+		if fx.has("max_hit_multiplier"):
+			var h: float = float(fx["max_hit_multiplier"])
+			if h < 0.5 or h > 3.0:
+				errs.append("%s max_hit_multiplier %f must be in [0.5,3.0]" % [plabel, h])
+		if fx.has("add_passives"):
+			if typeof(fx["add_passives"]) != TYPE_ARRAY:
+				errs.append("%s add_passives must be an array" % plabel)
+			else:
+				for p in fx["add_passives"]:
+					if not CombatManager.KNOWN_MONSTER_PASSIVES.has(str(p)):
+						errs.append("%s add_passives has unknown passive '%s'" % [plabel, p])
+		if fx.has("attack_type") and not VALID_MONSTER_ATTACK_TYPES.has(str(fx["attack_type"])):
+			errs.append("%s attack_type '%s' is invalid" % [plabel, fx["attack_type"]])
+		if fx.has("apply_status"):
+			var st: Variant = fx["apply_status"]
+			if typeof(st) != TYPE_DICTIONARY or not StatusEffect.TABLE.has(str(st.get("id", ""))):
+				errs.append("%s apply_status has unknown status id" % plabel)
+	return errs
 
 # ---------------- regions ----------------
 

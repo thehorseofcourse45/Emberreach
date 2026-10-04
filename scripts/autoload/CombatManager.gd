@@ -31,7 +31,7 @@ const ENEMY_THORNS_FRACTION: float = 0.10
 const ENRAGE_HP_FRACTION: float = 0.25
 const ENRAGE_MULTIPLIER: float = 1.5
 ## Monster passive ids the engine understands (data may list more only after engine support).
-const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage"]
+const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage", "venomous", "lifedrain", "armored"]
 
 var state: int = State.IDLE
 var context: Dictionary = {}          # {type, id, monsters:[...], index, endless, attack_style}
