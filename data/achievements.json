@@ -3423,5 +3423,85 @@
     "category": "progression",
     "condition": { "kind": "skill_level", "skill_id": "dreamwalking", "value": 99 },
     "reward": { "gp": 500000 }
+  },
+  "kill_bastion_warden_50": {
+    "id": "kill_bastion_warden_50",
+    "name": "Relieved of Duty",
+    "description": "Defeat 50 Bastion Warden.",
+    "category": "combat",
+    "condition": {
+      "kind": "monsters_killed",
+      "monster_id": "bastion_warden",
+      "value": 50
+    },
+    "reward": {
+      "gp": 2400,
+      "xp": {
+        "hitpoints": 300
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "kill_gloam_matron_50": {
+    "id": "kill_gloam_matron_50",
+    "name": "Out of the Fog",
+    "description": "Defeat 50 Gloam Matron.",
+    "category": "combat",
+    "condition": {
+      "kind": "monsters_killed",
+      "monster_id": "gloam_matron",
+      "value": 50
+    },
+    "reward": {
+      "gp": 3200,
+      "xp": {
+        "hitpoints": 350
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "dungeon_ashen_bastion_keep_1": {
+    "id": "dungeon_ashen_bastion_keep_1",
+    "name": "Keep on the Record",
+    "description": "Clear The Ashen Keep once.",
+    "category": "combat",
+    "condition": {
+      "kind": "dungeons_cleared",
+      "dungeon_id": "ashen_bastion_keep",
+      "value": 1
+    },
+    "reward": {
+      "gp": 4500,
+      "xp": {
+        "hitpoints": 550
+      },
+      "items": {
+        "potion_dr_3": 3
+      }
+    }
+  },
+  "dungeon_gloamreach_sink_1": {
+    "id": "dungeon_gloamreach_sink_1",
+    "name": "Sunk and Surfaced",
+    "description": "Clear The Gloam Sink once.",
+    "category": "combat",
+    "condition": {
+      "kind": "dungeons_cleared",
+      "dungeon_id": "gloamreach_sink",
+      "value": 1
+    },
+    "reward": {
+      "gp": 5500,
+      "xp": {
+        "hitpoints": 650
+      },
+      "items": {
+        "potion_dr_3": 3
+      }
+    }
   }
 }

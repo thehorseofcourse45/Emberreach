@@ -854,7 +854,6 @@
     "level_requirements": {
       "defence": 105
     },
-    "icon_id": "air_god_helmet",
     "description": "Umbral plate in the Herald's colours, made to match the platebody."
   },
   "herald_gauntlets": {
@@ -872,7 +871,6 @@
     "level_requirements": {
       "defence": 105
     },
-    "icon_id": "air_god_gloves",
     "description": "Umbral plate in the Herald's colours, made to match the platebody."
   },
   "herald_sabatons": {
@@ -890,7 +888,6 @@
     "level_requirements": {
       "defence": 105
     },
-    "icon_id": "air_god_boots",
     "description": "Umbral plate in the Herald's colours, made to match the platebody."
   },
   "herald_platelegs": {
@@ -908,7 +905,6 @@
     "level_requirements": {
       "defence": 105
     },
-    "icon_id": "air_god_platelegs",
     "description": "Umbral plate in the Herald's colours, made to match the platebody."
   },
   "herald_godsword": {
@@ -942,7 +938,6 @@
     "level_requirements": {
       "defence": 118
     },
-    "icon_id": "air_god_helmet",
     "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
   },
   "throneguard_gauntlets": {
@@ -960,7 +955,6 @@
     "level_requirements": {
       "defence": 118
     },
-    "icon_id": "air_god_gloves",
     "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
   },
   "throneguard_sabatons": {
@@ -978,7 +972,6 @@
     "level_requirements": {
       "defence": 118
     },
-    "icon_id": "air_god_boots",
     "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
   },
   "throneguard_platelegs": {
@@ -996,7 +989,6 @@
     "level_requirements": {
       "defence": 118
     },
-    "icon_id": "air_god_platelegs",
     "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
   },
   "throneguard_cuirass": {
@@ -1014,7 +1006,6 @@
     "level_requirements": {
       "defence": 118
     },
-    "icon_id": "herald_platebody",
     "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
   },
   "pure_essence": {
@@ -8227,7 +8218,6 @@
       "global_gp_percent": 3
     },
     "level_requirements": {},
-    "icon_id": "gold_ring",
     "description": "A gold ring charmed by Runescribing. Coin finds its way to the wearer."
   },
   "sapphire_ring_of_focus": {
@@ -8318,7 +8308,6 @@
     "level_requirements": {
       "alt_magic": 100
     },
-    "icon_id": "ring_of_power",
     "description": "The frontier's finest signet, bound by a master Runescriber."
   },
   "reinforced_dhide_body": {
@@ -8334,8 +8323,7 @@
     },
     "level_requirements": {
       "ranged": 85
-    },
-    "icon_id": "black_dhide_body"
+    }
   },
   "reinforced_dhide_chaps": {
     "id": "reinforced_dhide_chaps",
@@ -8350,8 +8338,7 @@
     },
     "level_requirements": {
       "ranged": 95
-    },
-    "icon_id": "black_dhide_chaps"
+    }
   },
   "reinforced_dhide_coif": {
     "id": "reinforced_dhide_coif",
@@ -8366,8 +8353,7 @@
     },
     "level_requirements": {
       "ranged": 105
-    },
-    "icon_id": "black_dhide_coif"
+    }
   },
   "reinforced_dhide_boots": {
     "id": "reinforced_dhide_boots",
@@ -8398,8 +8384,7 @@
     },
     "level_requirements": {
       "ranged": 115
-    },
-    "icon_id": "black_dhide_vambraces"
+    }
   },
   "raw_pond_perch": {
     "id": "raw_pond_perch",

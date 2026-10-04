@@ -138,7 +138,11 @@
       "abyssal_fiend",
       "umbral_stalker",
       "umbral_harbinger",
-      "abyssal_lord"
+      "abyssal_lord",
+      "bastion_sentinel",
+      "cinder_archer",
+      "marsh_hulk",
+      "gloam_witch"
     ]
   },
   "_dungeons": {

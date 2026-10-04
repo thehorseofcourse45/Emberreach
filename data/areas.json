@@ -276,6 +276,28 @@
     },
     "flavour": "Immigration order territory. Every reed is strung. Something is farming the fen."
   },
+  "ashen_bastion": {
+    "id": "ashen_bastion",
+    "name": "Ashen Bastion",
+    "type": "area",
+    "level_range": [
+      205,
+      245
+    ],
+    "monsters": [
+      "bastion_sentinel",
+      "cinder_archer"
+    ],
+    "requires": {
+      "slayer": 105
+    },
+    "hazard": {
+      "enemy_damage_percent": 15.0,
+      "player_accuracy_percent": -4.0,
+      "label": "Cinder haze: enemies +15% damage, −4 accuracy"
+    },
+    "flavour": "A fort the Herald's march walked around. Someone is still on the wall."
+  },
   "abyssal_depths": {
     "id": "abyssal_depths",
     "name": "The Umbral Deep",
@@ -298,6 +320,29 @@
       "label": "Lightless deep: enemies +15% damage, −5 accuracy"
     },
     "flavour": "The dark under the frontier. It is not empty, and it is not patient."
+  },
+  "gloamreach_marsh": {
+    "id": "gloamreach_marsh",
+    "name": "Gloamreach Marsh",
+    "type": "area",
+    "level_range": [
+      245,
+      295
+    ],
+    "monsters": [
+      "umbral_stalker",
+      "marsh_hulk",
+      "gloam_witch"
+    ],
+    "requires": {
+      "slayer": 115
+    },
+    "hazard": {
+      "enemy_damage_percent": 20.0,
+      "player_accuracy_percent": -7.0,
+      "label": "Gloam fog: enemies +20% damage, −7 accuracy"
+    },
+    "flavour": "The fog here has opinions about who leaves."
   },
   "abyssal_rift": {
     "id": "abyssal_rift",

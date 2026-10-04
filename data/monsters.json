@@ -1582,6 +1582,358 @@
     "is_immune_to_effects": false,
     "flavour": "It hunts by the sound of your footsteps, and the Deep carries every one."
   },
+  "bastion_sentinel": {
+    "id": "bastion_sentinel",
+    "name": "Bastion Sentinel",
+    "combat_level": 238,
+    "hitpoints": 2800,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 195,
+    "accuracy_rating": 3400,
+    "melee_evasion": 780,
+    "ranged_evasion": 780,
+    "magic_evasion": 780,
+    "damage_reduction": 70,
+    "special_attacks": [
+      "stun_bash"
+    ],
+    "passives": [
+      "armored"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 6,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 60000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2100,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "flavour": "A garrison that kept its post after there was nothing left to guard."
+  },
+  "cinder_archer": {
+    "id": "cinder_archer",
+    "name": "Cinder Archer",
+    "combat_level": 244,
+    "hitpoints": 2900,
+    "attack_type": "ranged",
+    "attack_speed": 3.0,
+    "max_hit": 200,
+    "accuracy_rating": 3500,
+    "melee_evasion": 820,
+    "ranged_evasion": 820,
+    "magic_evasion": 820,
+    "damage_reduction": 71,
+    "special_attacks": [
+      "quick_strike"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 6,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 60000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2200,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
+    ],
+    "flavour": "It fires embers it has been carrying since the siege."
+  },
+  "bastion_warden": {
+    "id": "bastion_warden",
+    "name": "Bastion Warden",
+    "combat_level": 255,
+    "hitpoints": 5200,
+    "attack_type": "melee",
+    "attack_speed": 3.3,
+    "max_hit": 235,
+    "accuracy_rating": 4000,
+    "melee_evasion": 950,
+    "ranged_evasion": 950,
+    "magic_evasion": 950,
+    "damage_reduction": 75,
+    "special_attacks": [
+      "stun_bash"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 8,
+        "min_quantity": 2
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 160000,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.08,
+        "quantity": 1
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 3900,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "weak_to": [],
+    "resists": [],
+    "flavour": "Keeper of the Keep's last door. It has not been relieved.",
+    "phases": [
+      {
+        "at_hp_percent": 66,
+        "name": "Gate Sworn",
+        "effects": {
+          "attack_speed_multiplier": 1.05
+        }
+      },
+      {
+        "at_hp_percent": 33,
+        "name": "Last Watch",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      }
+    ]
+  },
+  "marsh_hulk": {
+    "id": "marsh_hulk",
+    "name": "Marsh Hulk",
+    "combat_level": 272,
+    "hitpoints": 5200,
+    "attack_type": "melee",
+    "attack_speed": 3.6,
+    "max_hit": 270,
+    "accuracy_rating": 4350,
+    "melee_evasion": 1050,
+    "ranged_evasion": 1050,
+    "magic_evasion": 1050,
+    "damage_reduction": 78,
+    "special_attacks": [],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 8,
+        "min_quantity": 2
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 98000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 3100,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "flavour": "Peat, bone and a patience older than the road."
+  },
+  "gloam_witch": {
+    "id": "gloam_witch",
+    "name": "Gloam Witch",
+    "combat_level": 285,
+    "hitpoints": 6100,
+    "attack_type": "magic",
+    "attack_speed": 3.1,
+    "max_hit": 265,
+    "accuracy_rating": 4500,
+    "melee_evasion": 1100,
+    "ranged_evasion": 1100,
+    "magic_evasion": 1100,
+    "damage_reduction": 79,
+    "special_attacks": [
+      "venom_bite"
+    ],
+    "passives": [
+      "venomous"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 8,
+        "min_quantity": 2
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 105000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 3400,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "flavour": "She sells fog by the lungful and takes payment later."
+  },
+  "gloam_matron": {
+    "id": "gloam_matron",
+    "name": "Gloam Matron",
+    "combat_level": 292,
+    "hitpoints": 7800,
+    "attack_type": "magic",
+    "attack_speed": 3.3,
+    "max_hit": 325,
+    "accuracy_rating": 5000,
+    "melee_evasion": 1200,
+    "ranged_evasion": 1200,
+    "magic_evasion": 1200,
+    "damage_reduction": 81,
+    "special_attacks": [
+      "abyssal_corruption",
+      "venom_bite"
+    ],
+    "passives": [
+      "regeneration",
+      "venomous"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 10,
+        "min_quantity": 3
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 190000,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5200,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "weak_to": [],
+    "resists": [],
+    "flavour": "The marsh's oldest tenant. It does not leave; the road came to it.",
+    "phases": [
+      {
+        "at_hp_percent": 70,
+        "name": "Fog Rises",
+        "effects": {
+          "attack_speed_multiplier": 1.05
+        }
+      },
+      {
+        "at_hp_percent": 40,
+        "name": "Brood Called",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Drowning Hour",
+        "effects": {
+          "attack_type": "magic",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
+  },
   "abyssal_lord": {
     "id": "abyssal_lord",
     "name": "Umbral Lord",
