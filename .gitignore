@@ -73,3 +73,8 @@ assets/architecture.png*
 *.md
 !/README.md
 *.log
+
+# Local-only docs and tooling
+docs/superpowers/specs/
+tools/
+ART_REQUESTS.md
