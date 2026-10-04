@@ -83,12 +83,18 @@ func run_all(host: Node) -> void:
 	_test_monster_style_mix()
 	_test_neck_slot_ladder()
 	_test_armour_slot_ladders()
+	_test_melee_armour_endgame()
 	_test_gold_is_bounded()
 	_test_mastery_metadata()
 	await _test_detail_cards(host)
 	_test_attack_costs()
 	_test_arrow_tiers()
 	_test_late_products_are_usable()
+	_test_every_bonus_key_is_read()
+	_test_township_has_no_dead_ends()
+	_test_farm_plot_types()
+	_test_reward_variety()
+	_test_prayer_and_raid_ladders()
 	_test_magic_gear()
 	_test_dungeon_sequencing()
 	_test_session_meters()
@@ -868,8 +874,8 @@ func _test_combat_screen_split(host: Node) -> void:
 func _test_prayer_expansion(host: Node) -> void:
 	_heading("Prayer progression and navigation icons")
 	GameManager.start_new_game("standard")
-	_ok(DataLoader.prayers.size() == 60 and int(DataLoader.prayers["aegis_6"]["level"]) == 120,
-		"sixty prayers include unlocks through level 120")
+	_ok(DataLoader.prayers.size() == 62 and int(DataLoader.prayers["aegis_6"]["level"]) == 120,
+		"sixty-two prayers include unlocks through level 120")
 	_ok(not PrayerManager.toggle("aegis_6"), "an endgame prayer is locked at level one")
 	PlayerData.set_level("prayer", 120)
 	PlayerData.prayer_points = 20.0
@@ -892,7 +898,7 @@ func _test_prayer_expansion(host: Node) -> void:
 	var list: VBoxContainer = panel.get("_list")
 	filter.select(0)
 	panel.call("_rebuild")
-	_ok(_prayer_cards(list) == 60, "the list previews every future prayer unlock")
+	_ok(_prayer_cards(list) == 62, "the list previews every future prayer unlock")
 	filter.select(1)
 	panel.call("_rebuild")
 	_ok(_prayer_cards(list) == 1, "Unlocked shows only the level-one prayer on a new save")
@@ -909,7 +915,7 @@ func _test_husbandry(host: Node) -> void:
 	_heading("Husbandry")
 	GameManager.start_new_game("standard")
 	var farm: Dictionary = DataLoader.get_skill("farming")
-	_ok((farm.get("actions", []) as Array).size() == 10, "Husbandry lists ten crops")
+	_ok((farm.get("actions", []) as Array).size() == 22, "Husbandry lists 22 crops: herbs, allotment and trees")
 	var seeds_ok: bool = true
 	var gates_ok: bool = true
 	var products_ok: bool = true
@@ -1034,7 +1040,7 @@ func _test_husbandry(host: Node) -> void:
 	_ok(panel.call("_plot_count") == 15, "the Farm screen renders all fifteen plots")
 	_ok((panel.get("_summary") as Label).text.contains("Husbandry"), "the summary names the skill")
 	var options: Array = panel.call("_seed_options")
-	_ok(options.size() == 10, "the seed picker lists every crop")
+	_ok(options.size() == (DataLoader.get_skill("farming").get("actions", []) as Array).size(), "the seed picker lists every crop")
 	var locked_ok: bool = false
 	for o in options:
 		if str((o as Dictionary).get("id", "")) == "emberbloom_seed" and not bool((o as Dictionary).get("unlocked", false)):
@@ -2096,8 +2102,10 @@ func _test_dungeon_ladder() -> void:
 func _test_late_products_are_usable() -> void:
 	_heading("Late skill products do something")
 	var live_keys: Array = ["global_mastery_xp_percent", "global_skill_xp_percent", "global_gp_percent",
-		"global_double_loot_percent", "global_doubling_percent", "global_slayer_coins_percent"]
-	for item_id in ["master_echo_loop", "flawless_echo", "finders_fee", "herald_case", "grand_confluence", "herald_craft"]:
+		"global_double_loot_percent", "global_doubling_percent", "global_slayer_coins_percent",
+		ModifierKeys.GLOBAL_SKILL_INTERVAL_PERCENT, ModifierKeys.ATTACK_INTERVAL_PERCENT]
+	for item_id in ["master_echo_loop", "flawless_echo", "finders_fee", "herald_case", "grand_confluence", "herald_craft",
+			"echo_inscription", "herald_gate"]:
 		var it: Dictionary = DataLoader.get_item(item_id)
 		_eq(str(it.get("item_type", "")), "potion", "%s can be used from storage" % item_id)
 		_ok(int(it.get("charges", 0)) > 0, "%s lasts a number of charges" % item_id)
@@ -2120,10 +2128,287 @@ func _test_late_products_are_usable() -> void:
 	ModifierManager.register("test:dtm", {"damage_to_monsters_percent": 3.0}, "test", "test")
 	_approx(ModifierManager.get_max_hit_percent("ranged") - base, 3.0, 0.001, "damage_to_monsters_percent raises max hit")
 	ModifierManager.unregister("test:dtm")
+	# Echoed Inscription's effect must reach every skill's action time.
+	var iv_before: float = ModifierManager.get_interval("mining", 10.0)
+	BankManager.add_item_guaranteed("echo_inscription", 1)
+	_ok(PotionManager.use_potion("echo_inscription"), "an Echoed Inscription can be played")
+	_approx(ModifierManager.get_interval("mining", 10.0), iv_before * 0.95, 0.001, "an Echoed Inscription makes skills act 5% faster")
+	PotionManager.clear()
 	if potion_before != "":
 		PlayerData.active_potion = potion_before
 		PlayerData.potion_charges = charges_before
 		PotionManager._reapply()
+
+## Wrathfall (L52) gave the same +5% melee max hit as the level-4 prayer for three times the
+## points, and melee had no max-hit prayer past L70 while ranged and magic climb to 34%. The raid
+## shop's "Scavenged Bow" and "Scavenged Rod" were melee slash weapons. Each pure max-hit line must
+## now rise with level, and each raid weapon must fight with the style its name promises.
+func _test_prayer_and_raid_ladders() -> void:
+	_heading("Prayer max-hit ladders and raid weapon styles")
+	for style in ["melee", "ranged", "magic"]:
+		var key: String = "%s_max_hit_percent" % style
+		var rows: Array = []
+		for id in DataLoader.prayers:
+			var eff: Dictionary = DataLoader.prayers[id].get("effect", {}) if typeof(DataLoader.prayers[id].get("effect", {})) == TYPE_DICTIONARY else {}
+			if eff.size() == 1 and eff.has(key):
+				rows.append([int(DataLoader.prayers[id]["level"]), float(eff[key]), str(id)])
+		rows.sort_custom(func(a, b): return a[0] < b[0])
+		var rising: bool = rows.size() >= 5
+		for i in range(1, rows.size()):
+			rising = rising and float(rows[i][1]) > float(rows[i - 1][1])
+		_ok(rising, "%s max-hit prayers rise with level (%s)" % [style, rows])
+		_ok(not rows.is_empty() and int(rows[-1][0]) >= 105, "%s has a max-hit prayer from L105 up" % style)
+	var styles: Dictionary = {"raid_alt_weapon_4": "ranged_attack", "raid_alt_weapon_5": "magic_attack"}
+	for id in styles:
+		var stats: Dictionary = DataLoader.get_item(id).get("equipment_stats", {})
+		_ok(stats.has(styles[id]) and not stats.has("slash"), "%s fights with %s" % [DataLoader.get_item(id).get("name", id), styles[id]])
+	_ok(not (DataLoader.get_item("raid_alt_weapon_4").get("attack_cost_items", {}) as Dictionary).is_empty(),
+		"the raid bow fires arrows like every other bow")
+
+## Township used to be a set of dead ends: stone only fed construction, drills and supplies
+## fed one gold offer, every "Unlocks:" line was flavour text, and only Homes earned XP. Each
+## structure that promises an unlock must now grant a real modifier per level, every store must
+## be spent by at least one trader offer, and every structure level must add settlement XP.
+func _test_township_has_no_dead_ends() -> void:
+	_heading("Township has no dead ends")
+	var saved_buildings: Dictionary = TownshipManager.buildings.duplicate()
+	var saved_resources: Dictionary = TownshipManager.resources.duplicate()
+	for id in DataLoader.township_buildings.keys():
+		var b: Dictionary = DataLoader.township_buildings[id]
+		if str(b.get("unlocks", "")) != "" and not str(id).ends_with("observatory"):
+			_ok(not (b.get("modifiers", {}) as Dictionary).is_empty(),
+				"%s backs its unlock with a real bonus" % str(b.get("name", id)))
+	var spent: Dictionary = {}
+	for offer_id in DataLoader.trader.keys():
+		var offer: Variant = DataLoader.trader[offer_id]
+		if typeof(offer) == TYPE_DICTIONARY:
+			for res_id in ((offer as Dictionary).get("cost", {}) as Dictionary).keys():
+				spent[str(res_id)] = int(spent.get(str(res_id), 0)) + 1
+	# Stone also pays for construction, so one trader sink is enough; drills and supplies need two.
+	_ok(int(spent.get("stone", 0)) >= 1, "Stone has a use once construction is done")
+	for res_id in ["drills", "supplies"]:
+		_ok(int(spent.get(res_id, 0)) >= 2, "%s is spent by more than one trader offer" % TownshipManager.resource_name(res_id))
+	# Every structure level adds XP, not only Homes.
+	TownshipManager.buildings = {"township_building_homes": 1}
+	var homes_only: float = TownshipManager.xp_per_hour()
+	TownshipManager.buildings = {"township_building_homes": 1, "township_building_workshop": 2}
+	_ok(TownshipManager.xp_per_hour() > homes_only, "building a Workshop raises settlement XP per hour")
+	# The Workshop's unlock is a real modifier, registered per level and removed with it.
+	TownshipManager._reregister_modifiers()
+	_approx(ModifierManager.get_preservation_chance("crafting"), 2.0, 0.001, "a level-2 Workshop gives 2% Artifice preservation")
+	TownshipManager.buildings = {"township_building_storehouse": 3}
+	TownshipManager._reregister_modifiers()
+	_approx(ModifierManager.get_preservation_chance("crafting"), 0.0, 0.001, "tearing the Workshop down removes its bonus")
+	_approx(ModifierManager.get_modifier(ModifierKeys.BANK_SPACE_FLAT), 15.0, 0.001, "the Storehouse still adds 5 storage stacks per level")
+	# A trader offer can grant settlement XP directly (the stone sink).
+	TownshipManager.buildings = {"township_building_mine": 1}
+	var monument: Dictionary = DataLoader.trader.get("trader_monument", {})
+	_ok(not (monument.get("grant_xp", {}) as Dictionary).is_empty(), "the monument offer grants XP")
+	for res_id in (monument.get("cost", {}) as Dictionary).keys():
+		TownshipManager.resources[str(res_id)] = float(monument["cost"][res_id])
+	var xp_before: float = PlayerData.get_xp("township")
+	_ok(bool(TownshipManager.trade_offer("trader_monument").ok), "the monument can be raised when the stone is there")
+	_ok(PlayerData.get_xp("township") > xp_before, "raising a monument pays Settlement XP")
+	_approx(float(TownshipManager.resources.get("stone", 0.0)), 0.0, 0.001, "raising a monument spends the stone")
+	TownshipManager.buildings = saved_buildings
+	TownshipManager.resources = saved_resources
+	TownshipManager._reregister_modifiers()
+
+## A bonus the data grants but no script reads is a reward that silently does nothing:
+## combat_max_hit_percent (Astrology's Emberine star), combat_interval_percent (an Agility
+## obstacle), hitpoints_regen_flat and slayer_area_negation_percent all shipped that way. This
+## walks every modifier bag in data/ and fails on a key no gameplay script can resolve, so the
+## next invented key fails here instead of in a player's hands.
+func _test_every_bonus_key_is_read() -> void:
+	_heading("Every bonus key in the data is read")
+	var source: String = ""
+	var consts_used: Dictionary = {}
+	var stack: Array[String] = ["res://scripts"]
+	while not stack.is_empty():
+		var dir_path: String = stack.pop_back()
+		var dir: DirAccess = DirAccess.open(dir_path)
+		if dir == null:
+			continue
+		for sub in dir.get_directories():
+			if sub != "tests":
+				stack.append(dir_path.path_join(sub))
+		for f in dir.get_files():
+			if f.ends_with(".gd") and f != "ModifierKeys.gd":
+				source += FileAccess.get_file_as_string(dir_path.path_join(f)) + "\n"
+	var keys_src: String = FileAccess.get_file_as_string("res://scripts/resources/ModifierKeys.gd")
+	var rx: RegEx = RegEx.create_from_string("const ([A-Z_]+) *:?= *\"([a-z0-9_]+)\"")
+	for m in rx.search_all(keys_src):
+		if source.contains("ModifierKeys." + m.get_string(1)):
+			consts_used[m.get_string(2)] = true
+	var skill_ids: Array = (JSON.parse_string(FileAccess.get_file_as_string("res://data/skills.json")) as Dictionary).keys()
+	var skill_suffixes: Array[String] = ["doubling_percent", "interval_flat", "interval_percent", "mastery_xp_percent",
+		"node_preservation_percent", "preservation_percent", "resource_flat", "skill_xp_percent", "hidden_levels", "stealth"]
+	var style_suffixes: Array[String] = ["accuracy_percent", "evasion_percent", "max_hit_flat", "max_hit_percent"]
+	var bags: Array[String] = ["modifiers", "effect", "passive_modifiers", "potion_effect", "mods"]
+	var found: Dictionary = {}   # key -> "file" where first seen
+	for f in DirAccess.get_files_at("res://data"):
+		if f.ends_with(".json"):
+			_collect_bonus_keys(JSON.parse_string(FileAccess.get_file_as_string("res://data/" + f)), "", bags, f, found)
+	var dead: Array[String] = []
+	for key in found.keys():
+		var k: String = str(key)
+		var ok: bool = source.contains("\"%s\"" % k) or consts_used.has(k)
+		for s in skill_suffixes:
+			if not ok and k.ends_with("_" + s) and skill_ids.has(k.trim_suffix("_" + s)):
+				var owner: String = k.trim_suffix("_" + s)
+				var action_only: bool = not s.contains("xp_percent") and s != "stealth" and s != "hidden_levels"
+				if not (action_only and str(DataLoader.get_skill(owner).get("type", "")) == "combat"):
+					ok = true
+		for s in style_suffixes:
+			if not ok and (k == "melee_" + s or k == "ranged_" + s or k == "magic_" + s):
+				ok = true
+		if not ok:
+			dead.append("%s (%s)" % [k, found[key]])
+	_ok(found.size() > 50, "the walk found the data's bonus keys (%d)" % found.size())
+	_ok(dead.is_empty(), "no bonus key is granted without a reader: %s" % ", ".join(dead))
+	# The four keys that used to be dead now change the numbers they promise.
+	var base_hit: float = ModifierManager.get_max_hit_percent("magic")
+	var base_iv: float = ModifierManager.get_attack_interval(3.0)
+	ModifierManager.register("test:dead_keys", {"combat_max_hit_percent": 4.0, "combat_interval_percent": 10.0,
+		"hitpoints_regen_flat": 7.0, "slayer_area_negation_percent": 50.0}, "test", "test")
+	_approx(ModifierManager.get_max_hit_percent("magic") - base_hit, 4.0, 0.001, "combat_max_hit_percent raises every style's max hit")
+	_ok(ModifierManager.get_attack_interval(3.0) < base_iv, "combat_interval_percent shortens the attack interval")
+	_approx(ModifierManager.get_hp_regen_per_attack(), 7.0, 0.001, "hitpoints_regen_flat is the heal per attack")
+	var halved: Dictionary = ModifierManager.negated_hazard({"label": "x", "player_accuracy_percent": -10.0, "enemy_damage_percent": 20})
+	_approx(float(halved["player_accuracy_percent"]), -5.0, 0.001, "50% negation halves a hazard's accuracy penalty")
+	_approx(float(halved["enemy_damage_percent"]), 10.0, 0.001, "50% negation halves a hazard's damage bonus")
+	_eq(str(halved["label"]), "x", "negation leaves a hazard's label alone")
+	ModifierManager.register("test:dead_keys", {"slayer_area_negation_percent": 250.0}, "test", "test")
+	_approx(float(ModifierManager.negated_hazard({"player_accuracy_percent": -10.0})["player_accuracy_percent"]), 0.0, 0.001,
+		"negation above 100% cancels the hazard but never inverts it")
+	ModifierManager.unregister("test:dead_keys")
+
+## Allotment and Tree plots used to be labels: every seed was a herb and went anywhere. Allotment
+## crops feed Cookery and tree saplings grow logs; each new seed only takes its own plot type,
+## herbs still go anywhere (so old farms keep working), and crop growth speed is a real bonus.
+func _test_farm_plot_types() -> void:
+	_heading("Farm plot types")
+	var by_type: Dictionary = {}
+	for a in (DataLoader.get_skill("farming").get("actions", []) as Array):
+		var seed: Dictionary = DataLoader.get_item(FarmingManager.seed_id_for_action(str((a as Dictionary)["id"])))
+		var t: String = str(seed.get("plot_type", "herb"))
+		by_type[t] = int(by_type.get(t, 0)) + 1
+	_ok(int(by_type.get("allotment", 0)) >= 5, "at least five allotment crops (%d)" % int(by_type.get("allotment", 0)))
+	_ok(int(by_type.get("tree", 0)) >= 5, "at least five tree crops (%d)" % int(by_type.get("tree", 0)))
+	# Every allotment crop is an ingredient in some Cookery recipe.
+	for item_id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.items[item_id]
+		if str(it.get("item_type", "")) != "seed" or str(it.get("plot_type", "")) != "allotment":
+			continue
+		var product: String = str(it.get("product_item", ""))
+		var cooked: bool = false
+		for a in (DataLoader.get_skill("cooking").get("actions", []) as Array):
+			if ((a as Dictionary).get("input_items", {}) as Dictionary).has(product):
+				cooked = true
+		_ok(cooked, "%s is cooked into something" % product)
+		var dropped: bool = false
+		for t in (DataLoader.get_skill("thieving").get("actions", []) as Array):
+			for sec in ((t as Dictionary).get("secondary_outputs", []) if (t as Dictionary).get("secondary_outputs") != null else []):
+				if str((sec as Dictionary).get("item_id", "")) == str(item_id):
+					dropped = true
+		_ok(dropped, "%s can be stolen" % item_id)
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("farming", 120)
+	var first_allot: int = -1
+	var first_tree: int = -1
+	for i in range(FarmingManager.plots.size()):
+		if first_allot < 0 and str(FarmingManager.plots[i]["type"]) == "allotment":
+			first_allot = i
+		if first_tree < 0 and str(FarmingManager.plots[i]["type"]) == "tree":
+			first_tree = i
+	BankManager.add_item_guaranteed("oak_sapling_seed", 5)
+	BankManager.add_item_guaranteed("hearthroot_seed", 5)
+	_ok(not FarmingManager.plant(first_allot, "oak_sapling_seed"), "a sapling refuses an allotment plot")
+	_ok(not FarmingManager.plant(first_tree, "hearthroot_seed"), "a vegetable refuses a tree plot")
+	_eq(FarmingManager.plant_first_free("oak_sapling_seed"), first_tree, "plant_first_free puts a sapling in the first tree plot")
+	_ok(FarmingManager.accepts(first_tree + 1, "garum_herb_seed"), "herbs still grow in any plot")
+	_eq(FarmingManager.free_plot_count("oak_sapling_seed"), 2, "two tree plots stay free for saplings")
+	var plain: float = float(FarmingManager.plots[first_tree]["grow_seconds"])
+	_approx(plain, float(DataLoader.get_item("oak_sapling_seed")["grow_seconds"]), 0.01, "with no bonus a tree takes its listed time")
+	ModifierManager.register("test:grow", {"farming_interval_percent": 10.0}, "test", "test")
+	_eq(FarmingManager.plant_first_free("oak_sapling_seed"), first_tree + 1, "a second sapling takes the next tree plot")
+	_approx(float(FarmingManager.plots[first_tree + 1]["grow_seconds"]), plain * 0.9, 0.01, "farming_interval_percent makes crops grow faster")
+	ModifierManager.unregister("test:grow")
+	FarmingManager.plots[first_tree]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
+	FarmingManager.plots[first_tree]["alive"] = true
+	var logs_before: int = BankManager.get_count("oak_log")
+	var res: Dictionary = FarmingManager.harvest(first_tree)
+	_eq(str(res.get("item_id", "")), "oak_log", "felling an Ironbark tree yields Ironbark logs")
+	_ok(BankManager.get_count("oak_log") - logs_before >= 15, "a tree yields a stack of logs")
+	GameManager.start_new_game("standard")
+
+## Pets, Astrology stars, Cartography finds and dig sites were each one template copied many
+## times. Each family must now offer several different rewards, and every reward must be one the
+## game reads for that skill.
+func _test_reward_variety() -> void:
+	_heading("Reward variety")
+	var pet_bags: Dictionary = {}
+	for id in DataLoader.pets.keys():
+		var p: Variant = DataLoader.pets[id]
+		if typeof(p) == TYPE_DICTIONARY:
+			var sig: String = JSON.stringify((p as Dictionary).get("effect", {}), "", true)
+			pet_bags[sig] = int(pet_bags.get(sig, 0)) + 1
+	var worst: int = 0
+	for sig in pet_bags.keys():
+		worst = maxi(worst, int(pet_bags[sig]))
+	_ok(worst <= 2, "no pet bonus is shared by more than two pets (worst %d)" % worst)
+	var star2: Dictionary = {}
+	for id in DataLoader.constellations.keys():
+		var c: Variant = DataLoader.constellations[id]
+		if typeof(c) == TYPE_DICTIONARY and ((c as Dictionary).get("stars", []) as Array).size() >= 2:
+			for k in (((c as Dictionary)["stars"][1] as Dictionary).get("effect", {}) as Dictionary).keys():
+				star2[str(k)] = true
+	_ok(star2.size() >= 12, "Astrology's second stars grant at least twelve different bonuses (%d)" % star2.size())
+	var poi_names: Dictionary = {}
+	var poi_keys: Dictionary = {}
+	var with_poi: int = 0
+	for hid in DataLoader.cartography_hexes.keys():
+		var poi: Variant = (DataLoader.cartography_hexes[hid] as Dictionary).get("poi")
+		if typeof(poi) != TYPE_DICTIONARY:
+			continue
+		with_poi += 1
+		poi_names[str((poi as Dictionary).get("name", ""))] = true
+		for k in ((poi as Dictionary).get("effect", {}) as Dictionary).keys():
+			poi_keys[str(k)] = true
+	_eq(with_poi, DataLoader.cartography_hexes.size(), "every hex has something to find")
+	_eq(poi_names.size(), with_poi, "every find has its own name")
+	_ok(not poi_names.has("Point of Interest"), "no find is called 'Point of Interest'")
+	_ok(poi_keys.size() >= 15, "finds grant at least fifteen different bonuses (%d)" % poi_keys.size())
+	var tables: Dictionary = {}
+	var sites: int = 0
+	for a in (DataLoader.get_skill("archaeology").get("actions", []) as Array):
+		sites += 1
+		var ids: Array = []
+		for sec in ((a as Dictionary).get("secondary_outputs", []) as Array):
+			ids.append(str((sec as Dictionary)["item_id"]))
+		ids.sort()
+		tables[",".join(ids)] = true
+	_eq(tables.size(), sites, "every dig site has its own finds")
+	var dearest: int = 0
+	for id in DataLoader.shop_museum.keys():
+		var e: Variant = DataLoader.shop_museum[id]
+		if typeof(e) == TYPE_DICTIONARY:
+			dearest = maxi(dearest, int((e as Dictionary).get("cost", 0)))
+	_ok(DataLoader.shop_museum.size() >= 12, "the museum stocks at least twelve curios")
+	_ok(dearest >= 500, "the museum has something worth saving tokens for (dearest %d)" % dearest)
+
+func _collect_bonus_keys(node: Variant, parent: String, bags: Array[String], file: String, found: Dictionary) -> void:
+	if typeof(node) == TYPE_DICTIONARY:
+		# Mastery checkpoints are bags keyed by their level ("1", "10", "99").
+		var is_bag: bool = bags.has(parent) or parent.is_valid_int()
+		for k in (node as Dictionary).keys():
+			var v: Variant = node[k]
+			if is_bag and (typeof(v) == TYPE_FLOAT or typeof(v) == TYPE_INT) and not found.has(k):
+				found[k] = file
+			_collect_bonus_keys(v, str(k), bags, file, found)
+	elif typeof(node) == TYPE_ARRAY:
+		for v in node:
+			_collect_bonus_keys(v, parent, bags, file, found)
 
 ## Arrows stopped at steel and carried no stats, so every bow from L75 up fired the same 7 gp
 ## arrow and the ammo tier changed nothing. Arrows now run eight tiers with rising strength, and a
@@ -2234,7 +2519,8 @@ func _test_magic_gear() -> void:
 		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8:
 			continue
 		var req: Dictionary = it.get("level_requirements", {})
-		if not req.has("magic"):
+		# Raid shop weapons are bought with raid coins, not crafted, so they sit outside the ladder.
+		if not req.has("magic") or bool(it.get("is_raid_item", false)):
 			continue
 		by_level[int(req["magic"])] = it
 	var levels: Array = by_level.keys()
@@ -4046,6 +4332,36 @@ func equipment_output(item_id: String) -> bool:
 ## shields skipped 50 and everything past 85, and nothing could be worn as a cape before a
 ## level-99 skillcape. Each armour slot must now have a craftable piece within every 20 levels
 ## up to L105, and boots must exist for all three styles.
+## Melee armour used to stop at the L95 god sets while ranged and magic climb to L105-115 and
+## skills to 120. Every melee armour slot needs a crafted piece worn with Defence at L105 and
+## at L115+, and each step up must not be weaker than the one below it.
+func _test_melee_armour_endgame() -> void:
+	_heading("Melee armour reaches the endgame")
+	var crafted: Dictionary = {}
+	for skill_id in DataLoader.skills.keys():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			for out_id in (action.get("output_items", {}) as Dictionary).keys():
+				crafted[str(out_id)] = true
+	var names: Dictionary = {0: "helmet", 1: "body", 2: "legs", 3: "boots", 4: "gloves"}
+	for slot in names.keys():
+		var best_by_level: Dictionary = {}   # defence requirement -> best melee defence at it
+		for item_id in crafted.keys():
+			var it: Dictionary = DataLoader.get_item(str(item_id))
+			if int(it.get("equipment_slot", -1)) != int(slot):
+				continue
+			var req: int = int((it.get("level_requirements", {}) as Dictionary).get("defence", 0))
+			if req < 95:
+				continue
+			var d: float = float((it.get("equipment_stats", {}) as Dictionary).get("melee_defence", 0))
+			best_by_level[req] = maxf(float(best_by_level.get(req, 0.0)), d)
+		var levels: Array = best_by_level.keys()
+		levels.sort()
+		_ok(best_by_level.has(105), "a Defence-105 melee %s is craftable" % names[slot])
+		_ok(not levels.is_empty() and int(levels[-1]) >= 115, "a Defence-115+ melee %s is craftable" % names[slot])
+		for i in range(1, levels.size()):
+			_ok(float(best_by_level[levels[i]]) > float(best_by_level[levels[i - 1]]),
+				"the L%d melee %s beats the L%d one" % [int(levels[i]), names[slot], int(levels[i - 1])])
+
 func _test_armour_slot_ladders() -> void:
 	_heading("Every armour slot has a craftable ladder")
 	var crafted: Dictionary = {}

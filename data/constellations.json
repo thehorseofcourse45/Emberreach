@@ -103,7 +103,7 @@
         "id": "terra_2",
         "cost": 50,
         "effect": {
-          "strength_interval_percent": 3
+          "melee_max_hit_percent": 3
         }
       },
       {
@@ -132,7 +132,7 @@
         "id": "vale_2",
         "cost": 50,
         "effect": {
-          "hitpoints_interval_percent": 3
+          "hitpoints_regen_flat": 3
         }
       },
       {
@@ -161,7 +161,7 @@
         "id": "syllia_2",
         "cost": 50,
         "effect": {
-          "ranged_interval_percent": 3
+          "ranged_max_hit_percent": 3
         }
       },
       {
@@ -190,7 +190,7 @@
         "id": "arachi_2",
         "cost": 50,
         "effect": {
-          "magic_interval_percent": 3
+          "magic_max_hit_percent": 3
         }
       },
       {
@@ -219,7 +219,7 @@
         "id": "ko_2",
         "cost": 50,
         "effect": {
-          "thieving_interval_percent": 3
+          "thieving_stealth": 15
         }
       },
       {
@@ -248,7 +248,7 @@
         "id": "tellus_2",
         "cost": 50,
         "effect": {
-          "defence_interval_percent": 3
+          "damage_reduction_percent": 1
         }
       },
       {
@@ -277,7 +277,7 @@
         "id": "qimican_2",
         "cost": 50,
         "effect": {
-          "herblore_interval_percent": 3
+          "herblore_preservation_percent": 3
         }
       },
       {
@@ -393,7 +393,7 @@
         "id": "nysa_2",
         "cost": 50,
         "effect": {
-          "prayer_interval_percent": 3
+          "prayer_cost_reduction_percent": 3
         }
       },
       {
@@ -422,7 +422,7 @@
         "id": "haemir_2",
         "cost": 50,
         "effect": {
-          "slayer_interval_percent": 3
+          "global_slayer_coins_percent": 5
         }
       },
       {
@@ -480,7 +480,7 @@
         "id": "vex_2",
         "cost": 100,
         "effect": {
-          "thieving_interval_percent": 3
+          "global_gp_percent": 5
         }
       },
       {
@@ -509,7 +509,7 @@
         "id": "halcyon_2",
         "cost": 125,
         "effect": {
-          "astrology_interval_percent": 4
+          "astrology_doubling_percent": 5
         }
       },
       {

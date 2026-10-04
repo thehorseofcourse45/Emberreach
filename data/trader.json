@@ -56,6 +56,30 @@
     "grant_currency": { "prayer_points": 500 },
     "requires_building": "township_building_temple"
   },
+  "trader_drill_watch": {
+    "id": "trader_drill_watch",
+    "name": "Drill the Watch",
+    "description": "The training grounds run the town watch through a season of drills, and the Huntsmen's lodge pays for every trained hand.",
+    "cost": { "drills": 30, "goods": 10 },
+    "grant_currency": { "slayer_coins": 3000 },
+    "requires_building": "township_building_training_grounds"
+  },
+  "trader_field_draughts": {
+    "id": "trader_field_draughts",
+    "name": "Field Draughts",
+    "description": "Expedition packs stocked with stoneskin draughts from the apothecary's still.",
+    "cost": { "supplies": 30, "reagents": 20 },
+    "grant_items": { "potion_dr_5": 3 },
+    "requires_building": "township_building_lodge"
+  },
+  "trader_monument": {
+    "id": "trader_monument",
+    "name": "Raise a Monument",
+    "description": "Cut stone set in the square in someone's name. The settlement grows a little prouder of itself.",
+    "cost": { "stone": 200, "goods": 30 },
+    "grant_xp": { "township": 25000 },
+    "requires_building": "township_building_mine"
+  },
   "trader_levy": {
     "id": "trader_levy",
     "name": "Sell the Surplus",

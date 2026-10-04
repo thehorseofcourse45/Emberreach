@@ -110,7 +110,7 @@ func get_mastery_xp_bonus(skill_id: String) -> float:
 ## final_interval = base * (1 - reduction%/100) - flat, with a floor (default 0.25s).
 func get_interval(skill_id: String, base: float, floor_seconds: float = 0.25) -> float:
     var pct: float = get_modifier(ModifierKeys.skill_key(skill_id, ModifierKeys.SUFFIX_INTERVAL_PERCENT)) \
-        + get_modifier(ModifierKeys.GLOBAL_SKILL_XP_PERCENT.replace("xp_percent", "interval_percent"))
+        + get_modifier(ModifierKeys.GLOBAL_SKILL_INTERVAL_PERCENT)
     var flat: float = get_modifier(ModifierKeys.skill_key(skill_id, ModifierKeys.SUFFIX_INTERVAL_FLAT))
     var out: float = base * (1.0 - pct / 100.0) - flat
     return maxf(out, floor_seconds)
@@ -137,7 +137,9 @@ func get_evasion_percent(style: String) -> float:
 func get_max_hit_percent(style: String) -> float:
     # damage_to_monsters_percent is authored on rings and amulets as "more damage with any style";
     # nothing read it before, so it was a dead stat.
-    return get_modifier("%s_max_hit_percent" % style) + get_modifier("damage_to_monsters_percent")
+    # combat_max_hit_percent is the all-styles form authored on Astrology's Emberine star.
+    return get_modifier("%s_max_hit_percent" % style) + get_modifier("damage_to_monsters_percent") \
+        + get_modifier(ModifierKeys.COMBAT_MAX_HIT_PERCENT)
 
 func get_max_hit_flat(style: String) -> float:
     return get_modifier("%s_max_hit_flat" % style)
@@ -155,9 +157,26 @@ func get_life_steal() -> float:
     return get_modifier(ModifierKeys.LIFE_STEAL_PERCENT)
 
 func get_attack_interval(base: float, floor_seconds: float = 0.25) -> float:
-    var pct: float = get_modifier(ModifierKeys.ATTACK_INTERVAL_PERCENT)
+    # combat_interval_percent is the spelling Agility obstacles use for the same reduction.
+    var pct: float = get_modifier(ModifierKeys.ATTACK_INTERVAL_PERCENT) + get_modifier(ModifierKeys.COMBAT_INTERVAL_PERCENT)
     var flat: float = get_modifier(ModifierKeys.ATTACK_INTERVAL_FLAT)
     return maxf(base * (1.0 - pct / 100.0) - flat, floor_seconds)
+
+## HP the player heals after each of their own attacks (familiars, gear, Agility).
+func get_hp_regen_per_attack() -> float:
+    return maxf(0.0, get_modifier(ModifierKeys.HITPOINTS_REGEN_FLAT))
+
+## An open area's hazard with Slayer area negation applied: every numeric hazard value shrinks
+## by the negation percent (capped at 100), so 50% negation halves a -10% accuracy penalty.
+func negated_hazard(hazard: Dictionary) -> Dictionary:
+    if hazard.is_empty():
+        return hazard
+    var keep: float = 1.0 - clampf(get_modifier(ModifierKeys.SLAYER_AREA_NEGATION_PERCENT), 0.0, 100.0) / 100.0
+    var out: Dictionary = {}
+    for key in hazard:
+        var v: Variant = hazard[key]
+        out[key] = float(v) * keep if (typeof(v) == TYPE_FLOAT or typeof(v) == TYPE_INT) else v
+    return out
 
 # ---------------- Persistence & debug ----------------
 func serialize() -> Dictionary:

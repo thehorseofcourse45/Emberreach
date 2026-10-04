@@ -5,7 +5,19 @@
     "r": -2,
     "travel_cost": 4000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_-2_-2_poi",
+      "name": "The Herald's Lighthouse",
+      "reward": {
+        "gp": 15000,
+        "items": {
+          "herald_essence": 5
+        }
+      },
+      "effect": {
+        "global_skill_xp_percent": 5
+      }
+    }
   },
   "hex_-2_-1": {
     "id": "hex_-2_-1",
@@ -15,12 +27,15 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_-2_-1_poi",
-      "name": "Point of Interest",
+      "name": "Tidebreak Bastion",
       "reward": {
-        "gp": 5000
+        "gp": 12000,
+        "items": {
+          "potion_dr_5": 2
+        }
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "damage_reduction_percent": 1
       }
     }
   },
@@ -30,7 +45,19 @@
     "r": 0,
     "travel_cost": 2000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_-2_0_poi",
+      "name": "Sunken Smithy",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "runite_bar": 5
+        }
+      },
+      "effect": {
+        "smithing_preservation_percent": 2
+      }
+    }
   },
   "hex_-2_1": {
     "id": "hex_-2_1",
@@ -38,7 +65,19 @@
     "r": 1,
     "travel_cost": 3000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_-2_1_poi",
+      "name": "Herbwife's Hut",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "stormcabbage_seed": 5
+        }
+      },
+      "effect": {
+        "herblore_preservation_percent": 2
+      }
+    }
   },
   "hex_-2_2": {
     "id": "hex_-2_2",
@@ -48,12 +87,12 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_-2_2_poi",
-      "name": "Point of Interest",
+      "name": "Kiln Ruins",
       "reward": {
-        "gp": 5000
+        "gp": 8000
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "firemaking_interval_percent": 3
       }
     }
   },
@@ -65,12 +104,15 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_-1_-2_poi",
-      "name": "Point of Interest",
+      "name": "Glyphstone Field",
       "reward": {
-        "gp": 5000
+        "gp": 12000,
+        "items": {
+          "pure_essence": 200
+        }
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "runecrafting_doubling_percent": 3
       }
     }
   },
@@ -80,7 +122,16 @@
     "r": -1,
     "travel_cost": 2000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_-1_-1_poi",
+      "name": "Stone Circle",
+      "reward": {
+        "gp": 8000
+      },
+      "effect": {
+        "global_mastery_xp_percent": 2
+      }
+    }
   },
   "hex_-1_0": {
     "id": "hex_-1_0",
@@ -88,7 +139,19 @@
     "r": 0,
     "travel_cost": 1000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_-1_0_poi",
+      "name": "Ferryman's Rest",
+      "reward": {
+        "gp": 5000,
+        "items": {
+          "compost": 10
+        }
+      },
+      "effect": {
+        "food_healing_percent": 3
+      }
+    }
   },
   "hex_-1_1": {
     "id": "hex_-1_1",
@@ -98,12 +161,15 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_-1_1_poi",
-      "name": "Point of Interest",
+      "name": "Hedge Shrine",
       "reward": {
-        "gp": 5000
+        "gp": 5000,
+        "items": {
+          "big_bones": 20
+        }
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "prayer_cost_reduction_percent": 2
       }
     }
   },
@@ -113,7 +179,16 @@
     "r": 2,
     "travel_cost": 3000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_-1_2_poi",
+      "name": "Bandit Tollgate",
+      "reward": {
+        "gp": 12000
+      },
+      "effect": {
+        "thieving_stealth": 10
+      }
+    }
   },
   "hex_0_-2": {
     "id": "hex_0_-2",
@@ -121,7 +196,19 @@
     "r": -2,
     "travel_cost": 2000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_0_-2_poi",
+      "name": "Glass Dunes",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "sapphire": 10
+        }
+      },
+      "effect": {
+        "crafting_preservation_percent": 2
+      }
+    }
   },
   "hex_0_-1": {
     "id": "hex_0_-1",
@@ -129,7 +216,16 @@
     "r": -1,
     "travel_cost": 1000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_0_-1_poi",
+      "name": "Weir of Silver Reeds",
+      "reward": {
+        "gp": 5000
+      },
+      "effect": {
+        "fishing_doubling_percent": 2
+      }
+    }
   },
   "hex_0_0": {
     "id": "hex_0_0",
@@ -139,12 +235,12 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_0_0_poi",
-      "name": "Point of Interest",
+      "name": "Founders' Cairn",
       "reward": {
-        "gp": 5000
+        "gp": 2000
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "global_skill_xp_percent": 2
       }
     }
   },
@@ -154,7 +250,19 @@
     "r": 1,
     "travel_cost": 1000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_0_1_poi",
+      "name": "Charcoal Clearing",
+      "reward": {
+        "gp": 5000,
+        "items": {
+          "oak_log": 50
+        }
+      },
+      "effect": {
+        "woodcutting_doubling_percent": 2
+      }
+    }
   },
   "hex_0_2": {
     "id": "hex_0_2",
@@ -162,7 +270,19 @@
     "r": 2,
     "travel_cost": 2000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_0_2_poi",
+      "name": "Fletcher's Grove",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "willow_sapling_seed": 2
+        }
+      },
+      "effect": {
+        "fletching_preservation_percent": 2
+      }
+    }
   },
   "hex_1_-2": {
     "id": "hex_1_-2",
@@ -170,7 +290,19 @@
     "r": -2,
     "travel_cost": 3000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_1_-2_poi",
+      "name": "Starfall Crater",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "stardust": 300
+        }
+      },
+      "effect": {
+        "astrology_doubling_percent": 2
+      }
+    }
   },
   "hex_1_-1": {
     "id": "hex_1_-1",
@@ -180,12 +312,12 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_1_-1_poi",
-      "name": "Point of Interest",
+      "name": "Waystation Ledger",
       "reward": {
         "gp": 5000
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "global_gp_percent": 2
       }
     }
   },
@@ -195,7 +327,19 @@
     "r": 0,
     "travel_cost": 1000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_1_0_poi",
+      "name": "Old Quarry Face",
+      "reward": {
+        "gp": 5000,
+        "items": {
+          "iron_ore": 50
+        }
+      },
+      "effect": {
+        "mining_doubling_percent": 2
+      }
+    }
   },
   "hex_1_1": {
     "id": "hex_1_1",
@@ -203,7 +347,16 @@
     "r": 1,
     "travel_cost": 2000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_1_1_poi",
+      "name": "Drowned Bell",
+      "reward": {
+        "gp": 8000
+      },
+      "effect": {
+        "global_skill_xp_percent": 3
+      }
+    }
   },
   "hex_1_2": {
     "id": "hex_1_2",
@@ -213,12 +366,15 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_1_2_poi",
-      "name": "Point of Interest",
+      "name": "Dig of the First Kings",
       "reward": {
-        "gp": 5000
+        "gp": 12000,
+        "items": {
+          "artefact_rare": 2
+        }
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "archaeology_doubling_percent": 3
       }
     }
   },
@@ -230,12 +386,12 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_2_-2_poi",
-      "name": "Point of Interest",
+      "name": "Archive of Maps",
       "reward": {
-        "gp": 5000
+        "gp": 8000
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "cartography_skill_xp_percent": 5
       }
     }
   },
@@ -245,7 +401,16 @@
     "r": -1,
     "travel_cost": 3000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_2_-1_poi",
+      "name": "Hunter's Lodge",
+      "reward": {
+        "gp": 8000
+      },
+      "effect": {
+        "global_slayer_coins_percent": 3
+      }
+    }
   },
   "hex_2_0": {
     "id": "hex_2_0",
@@ -253,7 +418,16 @@
     "r": 0,
     "travel_cost": 2000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_2_0_poi",
+      "name": "Hollow Lantern Tower",
+      "reward": {
+        "gp": 8000
+      },
+      "effect": {
+        "global_accuracy_percent": 2
+      }
+    }
   },
   "hex_2_1": {
     "id": "hex_2_1",
@@ -263,12 +437,15 @@
     "survey_xp": 20,
     "poi": {
       "id": "hex_2_1_poi",
-      "name": "Point of Interest",
+      "name": "Wyrmfall Ridge",
       "reward": {
-        "gp": 5000
+        "gp": 12000,
+        "items": {
+          "dragon_bones": 20
+        }
       },
       "effect": {
-        "global_skill_xp_percent": 1
+        "global_double_loot_percent": 1
       }
     }
   },
@@ -278,6 +455,18 @@
     "r": 2,
     "travel_cost": 4000,
     "survey_xp": 20,
-    "poi": null
+    "poi": {
+      "id": "hex_2_2_poi",
+      "name": "Ember Throne Overlook",
+      "reward": {
+        "gp": 15000,
+        "items": {
+          "voidwood_sapling_seed": 1
+        }
+      },
+      "effect": {
+        "global_gp_percent": 3
+      }
+    }
   }
 }

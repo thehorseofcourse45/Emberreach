@@ -69,7 +69,8 @@
     "cost_growth": 1.8,
     "production": { "goods": 4 },
     "max_level": 5,
-    "unlocks": "Crafting-quality orders",
+    "unlocks": "+1% chance per level to keep Artifice materials",
+    "modifiers": { "crafting_preservation_percent": 1 },
     "effect_note": "Produces trade goods the trader exchanges for crates"
   },
   "township_building_apothecary": {
@@ -81,7 +82,8 @@
     "cost_growth": 1.8,
     "production": { "reagents": 4 },
     "max_level": 4,
-    "unlocks": "Batch brewing orders",
+    "unlocks": "+2% chance per level to keep Apothecary herbs",
+    "modifiers": { "herblore_preservation_percent": 2 },
     "effect_note": "Reagents reduce the herb bottleneck in Apothecary work"
   },
   "township_building_training_grounds": {
@@ -93,8 +95,9 @@
     "cost_growth": 1.9,
     "production": { "drills": 3 },
     "max_level": 4,
-    "unlocks": "Loadout conveniences and drill bonuses",
-    "effect_note": "Drills feed combat preparation rather than raw numbers"
+    "unlocks": "+1% accuracy with every combat style per level",
+    "modifiers": { "global_accuracy_percent": 1 },
+    "effect_note": "Drills are traded for Huntsman coins; the grounds sharpen every style's aim"
   },
   "township_building_storehouse": {
     "id": "township_building_storehouse",
@@ -105,7 +108,8 @@
     "cost_growth": 1.9,
     "production": { "goods": 2 },
     "max_level": 5,
-    "unlocks": "Extra storage stacks",
+    "unlocks": "+5 storage stacks per level",
+    "modifiers": { "bank_space_flat": 5 },
     "effect_note": "Raises your storage capacity directly"
   },
   "township_building_lodge": {
@@ -117,8 +121,9 @@
     "cost_growth": 1.9,
     "production": { "supplies": 3 },
     "max_level": 4,
-    "unlocks": "Expedition preparation options",
-    "effect_note": "Supplies improve expedition readiness"
+    "unlocks": "+3% food healing per level",
+    "modifiers": { "food_healing_percent": 3 },
+    "effect_note": "Supplies are packed into combat draughts; the lodge stretches every meal"
   },
   "township_building_temple": {
     "id": "township_building_temple",
@@ -129,7 +134,8 @@
     "cost_growth": 2.0,
     "production": { "faith": 2 },
     "max_level": 3,
-    "unlocks": "Devotion point generation",
+    "unlocks": "Faith for the Observance; -2% Devotion point cost per level",
+    "modifiers": { "prayer_cost_reduction_percent": 2 },
     "effect_note": "Faith converts to prayer points, easing long Devotion sessions"
   },
   "township_building_observatory": {

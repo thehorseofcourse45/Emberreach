@@ -182,6 +182,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 	var crit_chance: float = float(player.get("crit_chance", 0.0))
 	var crit_mult: float = float(player.get("crit_multiplier", 50.0))
 	var life_steal: float = float(player.get("life_steal", 0.0))
+	var regen_per_attack: float = float(player.get("hp_regen_per_attack", 0.0))
 	var hp: float = hp_start
 	var seconds: float = 0.0
 	var food: int = 0
@@ -246,6 +247,9 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				# still stands (the live loop reflects before the monster gets to swing).
 				if monster_hp > 0.0 and (monster.get("passives", []) as Array).has("thorns"):
 					hp -= float(CombatFormulas.thorns_reflect(int(dealt), ENEMY_THORNS_FRACTION))
+			# Mirrors CombatManager._regen_after_attack(): every own attack, hit or miss.
+			if regen_per_attack > 0.0 and hp > 0.0:
+				hp = minf(max_hp, hp + regen_per_attack)
 		if monster_hp <= 0.0:
 			kills = 1
 			_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max,

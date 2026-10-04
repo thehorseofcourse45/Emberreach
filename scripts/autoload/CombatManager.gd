@@ -319,6 +319,7 @@ func _tick_fighting(delta: float) -> void:
 		guard += 1
 		player_attack_timer -= player_attack_interval
 		_player_attack()
+		_regen_after_attack()
 	guard = 0
 	while monster_attack_timer >= monster_attack_interval and state == State.FIGHTING and guard < 512 and not CombatSimulator._blocked(monster_effects):
 		guard += 1
@@ -609,10 +610,17 @@ func _monster_attack() -> void:
 		_player_death(m.get("name", current_monster_id))
 
 ## The current open-region hazard, if any (dungeons and towns are sheltered).
+## hitpoints_regen_flat: heal a flat amount after each of the player's own attacks. The
+## simulator applies the same rule at the same point, so its survival numbers match.
+func _regen_after_attack() -> void:
+	var regen: float = ModifierManager.get_hp_regen_per_attack()
+	if regen > 0.0 and state == State.FIGHTING and player_hp > 0.0:
+		player_hp = minf(player_hp + regen, _compute_max_hp())
+
 func _active_hazard() -> Dictionary:
 	if str(context.get("type", "")) != "area":
 		return {}
-	return DataLoader.areas.get(str(context.get("id", "")), {}).get("hazard", {})
+	return ModifierManager.negated_hazard(DataLoader.areas.get(str(context.get("id", "")), {}).get("hazard", {}))
 
 ## True while a raid is running. RaidManager marks the fight by context "type" only, so every
 ## raid-specific rule in the engine asks here rather than reading a key that is never set.

@@ -839,6 +839,78 @@
       "defence": 105
     }
   },
+  "herald_helmet": {
+    "id": "herald_helmet",
+    "name": "Herald Helmet",
+    "item_type": "equipment",
+    "sell_price": 3137,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 17,
+      "ranged_defence": 17,
+      "magic_defence": 17,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "defence": 105
+    },
+    "icon_id": "air_god_helmet",
+    "description": "Umbral plate in the Herald's colours, made to match the platebody."
+  },
+  "herald_gauntlets": {
+    "id": "herald_gauntlets",
+    "name": "Herald Gauntlets",
+    "item_type": "equipment",
+    "sell_price": 2644,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 10,
+      "ranged_defence": 10,
+      "magic_defence": 10,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "defence": 105
+    },
+    "icon_id": "air_god_gloves",
+    "description": "Umbral plate in the Herald's colours, made to match the platebody."
+  },
+  "herald_sabatons": {
+    "id": "herald_sabatons",
+    "name": "Herald Sabatons",
+    "item_type": "equipment",
+    "sell_price": 2644,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 12,
+      "ranged_defence": 12,
+      "magic_defence": 12,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "defence": 105
+    },
+    "icon_id": "air_god_boots",
+    "description": "Umbral plate in the Herald's colours, made to match the platebody."
+  },
+  "herald_platelegs": {
+    "id": "herald_platelegs",
+    "name": "Herald Platelegs",
+    "item_type": "equipment",
+    "sell_price": 4292,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "melee_defence": 28,
+      "ranged_defence": 28,
+      "magic_defence": 28,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "defence": 105
+    },
+    "icon_id": "air_god_platelegs",
+    "description": "Umbral plate in the Herald's colours, made to match the platebody."
+  },
   "herald_godsword": {
     "id": "herald_godsword",
     "name": "Herald Godsword",
@@ -854,6 +926,96 @@
     "level_requirements": {
       "attack": 105
     }
+  },
+  "throneguard_helm": {
+    "id": "throneguard_helm",
+    "name": "Throneguard Helm",
+    "item_type": "equipment",
+    "sell_price": 5038,
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "defence": 118
+    },
+    "icon_id": "air_god_helmet",
+    "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
+  },
+  "throneguard_gauntlets": {
+    "id": "throneguard_gauntlets",
+    "name": "Throneguard Gauntlets",
+    "item_type": "equipment",
+    "sell_price": 4116,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 12,
+      "ranged_defence": 12,
+      "magic_defence": 12,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "defence": 118
+    },
+    "icon_id": "air_god_gloves",
+    "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
+  },
+  "throneguard_sabatons": {
+    "id": "throneguard_sabatons",
+    "name": "Throneguard Sabatons",
+    "item_type": "equipment",
+    "sell_price": 4218,
+    "equipment_slot": 3,
+    "equipment_stats": {
+      "melee_defence": 14,
+      "ranged_defence": 14,
+      "magic_defence": 14,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "defence": 118
+    },
+    "icon_id": "air_god_boots",
+    "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
+  },
+  "throneguard_platelegs": {
+    "id": "throneguard_platelegs",
+    "name": "Throneguard Platelegs",
+    "item_type": "equipment",
+    "sell_price": 6844,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "melee_defence": 33,
+      "ranged_defence": 33,
+      "magic_defence": 33,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "defence": 118
+    },
+    "icon_id": "air_god_platelegs",
+    "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
+  },
+  "throneguard_cuirass": {
+    "id": "throneguard_cuirass",
+    "name": "Throneguard Cuirass",
+    "item_type": "equipment",
+    "sell_price": 8295,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 48,
+      "ranged_defence": 48,
+      "magic_defence": 48,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "defence": 118
+    },
+    "icon_id": "herald_platebody",
+    "description": "Herald steel worn by the throne's last guard. Nothing in the Reach is heavier."
   },
   "pure_essence": {
     "id": "pure_essence",
@@ -5685,13 +5847,17 @@
     "item_type": "equipment",
     "sell_price": 0,
     "equipment_slot": 8,
-    "attack_speed": 2.6,
+    "attack_speed": 3.4,
     "equipment_stats": {
-      "slash": 74,
-      "melee_strength": 92
+      "ranged_attack": 104,
+      "ranged_strength": 70
     },
     "level_requirements": {
-      "attack": 105
+      "ranged": 105
+    },
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
     },
     "special_attack": "ocean_song",
     "is_raid_item": true,
@@ -5703,13 +5869,17 @@
     "item_type": "equipment",
     "sell_price": 0,
     "equipment_slot": 8,
-    "attack_speed": 2.6,
+    "attack_speed": 3.0,
+    "spell_max_hit": 105,
     "equipment_stats": {
-      "slash": 92,
-      "melee_strength": 115
+      "magic_attack": 185,
+      "magic_damage_percent": 48
     },
     "level_requirements": {
-      "attack": 120
+      "magic": 120
+    },
+    "attack_cost_items": {
+      "umbral_rune": 1
     },
     "special_attack": "cloudburst_magic_ray",
     "is_raid_item": true,
@@ -5752,11 +5922,14 @@
   "echo_inscription": {
     "id": "echo_inscription",
     "name": "Echoed Inscription",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 277,
     "is_stackable": true,
-    "description": "A working of careful craft carrying a captured rhythm inside it.",
-    "terminal_reason": "sell-for-GP product of Echo Keeping; the skill's output is gold, not a reagent"
+    "description": "A working of careful craft carrying a captured rhythm inside it. Play it from storage: for 40 actions every skill acts 5% faster.",
+    "charges": 40,
+    "potion_effect": {
+      "global_skill_interval_percent": 5
+    }
   },
   "master_echo_loop": {
     "id": "master_echo_loop",
@@ -6064,11 +6237,15 @@
   "herald_gate": {
     "id": "herald_gate",
     "name": "Herald Gate",
-    "item_type": "resource",
+    "item_type": "potion",
     "sell_price": 8600,
     "is_stackable": true,
-    "description": "A passage drawn to exactly one place. Knock first.",
-    "terminal_reason": "sell-for-GP product of Wayfolding; the skill's output is gold, not a reagent"
+    "description": "A passage drawn to exactly one place. Knock first. Open it from storage: for 300 attacks you attack 6% faster.",
+    "charges": 300,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "attack_interval_percent": 6
+    }
   },
   "living_legend": {
     "id": "living_legend",
@@ -6669,6 +6846,54 @@
     "sell_price": 138,
     "is_stackable": true
   },
+  "hearthroot": {
+    "id": "hearthroot",
+    "name": "Hearthroot",
+    "item_type": "resource",
+    "sell_price": 3,
+    "is_stackable": true,
+    "description": "A squat brown tuber that grows anywhere the soil has been warmed."
+  },
+  "ashbulb": {
+    "id": "ashbulb",
+    "name": "Ashbulb",
+    "item_type": "resource",
+    "sell_price": 8,
+    "is_stackable": true,
+    "description": "A sharp grey bulb. It makes your eyes water even through the skin."
+  },
+  "stormcabbage": {
+    "id": "stormcabbage",
+    "name": "Stormcabbage",
+    "item_type": "resource",
+    "sell_price": 15,
+    "is_stackable": true,
+    "description": "Tight blue-green leaves that crackle faintly when you peel them."
+  },
+  "sunmelon": {
+    "id": "sunmelon",
+    "name": "Sunmelon",
+    "item_type": "resource",
+    "sell_price": 25,
+    "is_stackable": true,
+    "description": "Heavy, gold-striped and warm to the touch long after it is picked."
+  },
+  "starcorn": {
+    "id": "starcorn",
+    "name": "Starcorn",
+    "item_type": "resource",
+    "sell_price": 40,
+    "is_stackable": true,
+    "description": "Pale kernels that glint like frost. Sweet when cooked, bitter raw."
+  },
+  "herald_gourd": {
+    "id": "herald_gourd",
+    "name": "Herald Gourd",
+    "item_type": "resource",
+    "sell_price": 60,
+    "is_stackable": true,
+    "description": "A gourd the colour of old brass. The vine always grows toward the throne."
+  },
   "emberbloom_seed": {
     "id": "emberbloom_seed",
     "name": "Emberbloom Seed",
@@ -6681,6 +6906,186 @@
     "min_yield": 3,
     "max_yield": 6,
     "harvest_xp": 36793
+  },
+  "hearthroot_seed": {
+    "id": "hearthroot_seed",
+    "name": "Hearthroot Seed",
+    "item_type": "seed",
+    "sell_price": 6,
+    "is_stackable": true,
+    "plot_type": "allotment",
+    "grow_seconds": 1800,
+    "base_survival": 0.7,
+    "product_item": "hearthroot",
+    "min_yield": 4,
+    "max_yield": 8,
+    "harvest_xp": 760,
+    "description": "Plant in an allotment plot. Grows Hearthroot in 30 min."
+  },
+  "ashbulb_seed": {
+    "id": "ashbulb_seed",
+    "name": "Ashbulb Seed",
+    "item_type": "seed",
+    "sell_price": 14,
+    "is_stackable": true,
+    "plot_type": "allotment",
+    "grow_seconds": 2700,
+    "base_survival": 0.7,
+    "product_item": "ashbulb",
+    "min_yield": 4,
+    "max_yield": 8,
+    "harvest_xp": 1700,
+    "description": "Plant in an allotment plot. Grows Ashbulb in 45 min."
+  },
+  "stormcabbage_seed": {
+    "id": "stormcabbage_seed",
+    "name": "Stormcabbage Seed",
+    "item_type": "seed",
+    "sell_price": 30,
+    "is_stackable": true,
+    "plot_type": "allotment",
+    "grow_seconds": 3600,
+    "base_survival": 0.7,
+    "product_item": "stormcabbage",
+    "min_yield": 4,
+    "max_yield": 8,
+    "harvest_xp": 2700,
+    "description": "Plant in an allotment plot. Grows Stormcabbage in 60 min."
+  },
+  "sunmelon_seed": {
+    "id": "sunmelon_seed",
+    "name": "Sunmelon Seed",
+    "item_type": "seed",
+    "sell_price": 55,
+    "is_stackable": true,
+    "plot_type": "allotment",
+    "grow_seconds": 4800,
+    "base_survival": 0.7,
+    "product_item": "sunmelon",
+    "min_yield": 4,
+    "max_yield": 8,
+    "harvest_xp": 4000,
+    "description": "Plant in an allotment plot. Grows Sunmelon in 80 min."
+  },
+  "starcorn_seed": {
+    "id": "starcorn_seed",
+    "name": "Starcorn Seed",
+    "item_type": "seed",
+    "sell_price": 85,
+    "is_stackable": true,
+    "plot_type": "allotment",
+    "grow_seconds": 6000,
+    "base_survival": 0.7,
+    "product_item": "starcorn",
+    "min_yield": 4,
+    "max_yield": 8,
+    "harvest_xp": 7200,
+    "description": "Plant in an allotment plot. Grows Starcorn in 100 min."
+  },
+  "herald_gourd_seed": {
+    "id": "herald_gourd_seed",
+    "name": "Herald Gourd Seed",
+    "item_type": "seed",
+    "sell_price": 120,
+    "is_stackable": true,
+    "plot_type": "allotment",
+    "grow_seconds": 7200,
+    "base_survival": 0.7,
+    "product_item": "herald_gourd",
+    "min_yield": 4,
+    "max_yield": 8,
+    "harvest_xp": 16000,
+    "description": "Plant in an allotment plot. Grows Herald Gourd in 120 min."
+  },
+  "oak_sapling_seed": {
+    "id": "oak_sapling_seed",
+    "name": "Ironbark Sapling",
+    "item_type": "seed",
+    "sell_price": 40,
+    "is_stackable": true,
+    "plot_type": "tree",
+    "grow_seconds": 14400,
+    "base_survival": 0.8,
+    "product_item": "oak_log",
+    "min_yield": 15,
+    "max_yield": 25,
+    "harvest_xp": 6000,
+    "description": "Plant in a tree plot. Grows into a Ironbark Tree in 4 hours and is felled for 15-25 Ironbark Log."
+  },
+  "willow_sapling_seed": {
+    "id": "willow_sapling_seed",
+    "name": "Silverleaf Sapling",
+    "item_type": "seed",
+    "sell_price": 60,
+    "is_stackable": true,
+    "plot_type": "tree",
+    "grow_seconds": 18000,
+    "base_survival": 0.8,
+    "product_item": "willow_log",
+    "min_yield": 15,
+    "max_yield": 25,
+    "harvest_xp": 11000,
+    "description": "Plant in a tree plot. Grows into a Silverleaf Tree in 5 hours and is felled for 15-25 Silverleaf Log."
+  },
+  "yew_sapling_seed": {
+    "id": "yew_sapling_seed",
+    "name": "Gravewood Sapling",
+    "item_type": "seed",
+    "sell_price": 90,
+    "is_stackable": true,
+    "plot_type": "tree",
+    "grow_seconds": 21600,
+    "base_survival": 0.8,
+    "product_item": "yew_log",
+    "min_yield": 15,
+    "max_yield": 25,
+    "harvest_xp": 20000,
+    "description": "Plant in a tree plot. Grows into a Gravewood Tree in 6 hours and is felled for 15-25 Gravewood Log."
+  },
+  "magic_sapling_seed": {
+    "id": "magic_sapling_seed",
+    "name": "Witchpine Sapling",
+    "item_type": "seed",
+    "sell_price": 140,
+    "is_stackable": true,
+    "plot_type": "tree",
+    "grow_seconds": 28800,
+    "base_survival": 0.8,
+    "product_item": "magic_log",
+    "min_yield": 12,
+    "max_yield": 20,
+    "harvest_xp": 38000,
+    "description": "Plant in a tree plot. Grows into a Witchpine Tree in 8 hours and is felled for 12-20 Witchpine Log."
+  },
+  "redwood_sapling_seed": {
+    "id": "redwood_sapling_seed",
+    "name": "Bloodwood Sapling",
+    "item_type": "seed",
+    "sell_price": 200,
+    "is_stackable": true,
+    "plot_type": "tree",
+    "grow_seconds": 36000,
+    "base_survival": 0.8,
+    "product_item": "redwood_log",
+    "min_yield": 12,
+    "max_yield": 20,
+    "harvest_xp": 65000,
+    "description": "Plant in a tree plot. Grows into a Bloodwood Tree in 10 hours and is felled for 12-20 Bloodwood Log."
+  },
+  "voidwood_sapling_seed": {
+    "id": "voidwood_sapling_seed",
+    "name": "Voidwood Sapling",
+    "item_type": "seed",
+    "sell_price": 300,
+    "is_stackable": true,
+    "plot_type": "tree",
+    "grow_seconds": 43200,
+    "base_survival": 0.8,
+    "product_item": "voidwood_log",
+    "min_yield": 10,
+    "max_yield": 18,
+    "harvest_xp": 110000,
+    "description": "Plant in a tree plot. Grows into a Voidwood Tree in 12 hours and is felled for 10-18 Voidwood Log."
   },
   "ranch_hen": {
     "id": "ranch_hen",
@@ -8305,5 +8710,59 @@
     "is_stackable": true,
     "heal_amount": 650,
     "description": "Heals 650 HP."
+  },
+  "hearthroot_mash": {
+    "id": "hearthroot_mash",
+    "name": "Hearthroot Mash",
+    "item_type": "food",
+    "sell_price": 3,
+    "is_stackable": true,
+    "heal_amount": 45,
+    "description": "Heals 45 HP."
+  },
+  "ashbulb_broth": {
+    "id": "ashbulb_broth",
+    "name": "Ashbulb Broth",
+    "item_type": "food",
+    "sell_price": 10,
+    "is_stackable": true,
+    "heal_amount": 95,
+    "description": "Heals 95 HP."
+  },
+  "stormcabbage_roll": {
+    "id": "stormcabbage_roll",
+    "name": "Stormcabbage Roll",
+    "item_type": "food",
+    "sell_price": 22,
+    "is_stackable": true,
+    "heal_amount": 150,
+    "description": "Heals 150 HP."
+  },
+  "sunmelon_glazed_tuna": {
+    "id": "sunmelon_glazed_tuna",
+    "name": "Sunmelon-Glazed Tuna",
+    "item_type": "food",
+    "sell_price": 45,
+    "is_stackable": true,
+    "heal_amount": 235,
+    "description": "Heals 235 HP."
+  },
+  "starcorn_chowder": {
+    "id": "starcorn_chowder",
+    "name": "Starcorn Chowder",
+    "item_type": "food",
+    "sell_price": 70,
+    "is_stackable": true,
+    "heal_amount": 290,
+    "description": "Heals 290 HP."
+  },
+  "herald_gourd_pie": {
+    "id": "herald_gourd_pie",
+    "name": "Herald Gourd Pie",
+    "item_type": "food",
+    "sell_price": 140,
+    "is_stackable": true,
+    "heal_amount": 400,
+    "description": "Heals 400 HP."
   }
 }
