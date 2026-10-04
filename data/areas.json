@@ -286,7 +286,8 @@
     ],
     "monsters": [
       "abyssal_imp",
-      "abyssal_fiend"
+      "abyssal_fiend",
+      "umbral_stalker"
     ],
     "requires": {
       "slayer": 110
@@ -308,6 +309,7 @@
     ],
     "monsters": [
       "abyssal_fiend",
+      "umbral_stalker",
       "abyssal_lord",
       "rift_weaver"
     ],

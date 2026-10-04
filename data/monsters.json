@@ -1538,6 +1538,50 @@
     "is_immune_to_effects": false,
     "flavour": "The Deep's outrider. Built out of what it has eaten."
   },
+  "umbral_stalker": {
+    "id": "umbral_stalker",
+    "name": "Umbral Stalker",
+    "combat_level": 265,
+    "hitpoints": 4700,
+    "attack_type": "ranged",
+    "attack_speed": 3.3,
+    "max_hit": 255,
+    "accuracy_rating": 4200,
+    "melee_evasion": 1000,
+    "ranged_evasion": 1000,
+    "magic_evasion": 1000,
+    "damage_reduction": 77,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.9,
+        "quantity": 7,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 100000,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 2700,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "It hunts by the sound of your footsteps, and the Deep carries every one."
+  },
   "abyssal_lord": {
     "id": "abyssal_lord",
     "name": "Umbral Lord",
