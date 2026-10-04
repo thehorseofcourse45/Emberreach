@@ -1379,7 +1379,6 @@
     "level_requirements": {
       "defence": 50
     },
-    "icon_id": "bronze_shield",
     "description": "Skyiron beaten thin and wide. Light for its size."
   },
   "mithril_sword": {
@@ -1508,8 +1507,7 @@
     "name": "Ghoststeel Arrowtips",
     "item_type": "resource",
     "sell_price": 3,
-    "is_stackable": true,
-    "icon_id": "steel_arrowtips"
+    "is_stackable": true
   },
   "mithril_arrow": {
     "id": "mithril_arrow",
@@ -1520,16 +1518,14 @@
       "ranged_strength": 9
     },
     "sell_price": 6,
-    "is_stackable": true,
-    "icon_id": "steel_arrow"
+    "is_stackable": true
   },
   "adamantite_arrowtips": {
     "id": "adamantite_arrowtips",
     "name": "Skyiron Arrowtips",
     "item_type": "resource",
     "sell_price": 4,
-    "is_stackable": true,
-    "icon_id": "steel_arrowtips"
+    "is_stackable": true
   },
   "adamantite_arrow": {
     "id": "adamantite_arrow",
@@ -1540,16 +1536,14 @@
       "ranged_strength": 13
     },
     "sell_price": 7,
-    "is_stackable": true,
-    "icon_id": "steel_arrow"
+    "is_stackable": true
   },
   "runite_arrowtips": {
     "id": "runite_arrowtips",
     "name": "Starforge Arrowtips",
     "item_type": "resource",
     "sell_price": 6,
-    "is_stackable": true,
-    "icon_id": "steel_arrowtips"
+    "is_stackable": true
   },
   "runite_arrow": {
     "id": "runite_arrow",
@@ -1560,16 +1554,14 @@
       "ranged_strength": 17
     },
     "sell_price": 9,
-    "is_stackable": true,
-    "icon_id": "steel_arrow"
+    "is_stackable": true
   },
   "dragonite_arrowtips": {
     "id": "dragonite_arrowtips",
     "name": "Wyrmsteel Arrowtips",
     "item_type": "resource",
     "sell_price": 8,
-    "is_stackable": true,
-    "icon_id": "steel_arrowtips"
+    "is_stackable": true
   },
   "dragonite_arrow": {
     "id": "dragonite_arrow",
@@ -1580,16 +1572,14 @@
       "ranged_strength": 22
     },
     "sell_price": 11,
-    "is_stackable": true,
-    "icon_id": "steel_arrow"
+    "is_stackable": true
   },
   "herald_arrowtips": {
     "id": "herald_arrowtips",
     "name": "Herald Arrowtips",
     "item_type": "resource",
     "sell_price": 18,
-    "is_stackable": true,
-    "icon_id": "steel_arrowtips"
+    "is_stackable": true
   },
   "herald_arrow": {
     "id": "herald_arrow",
@@ -1600,8 +1590,7 @@
       "ranged_strength": 28
     },
     "sell_price": 21,
-    "is_stackable": true,
-    "icon_id": "steel_arrow"
+    "is_stackable": true
   },
   "normal_shortbow": {
     "id": "normal_shortbow",
@@ -1987,7 +1976,6 @@
       "magic_defence": 1
     },
     "level_requirements": {},
-    "icon_id": "cape_of_completion",
     "description": "A plain traveller's cape. It keeps the ash off."
   },
   "woollen_cloak": {
@@ -2004,7 +1992,6 @@
     "level_requirements": {
       "hitpoints": 20
     },
-    "icon_id": "cape_of_completion",
     "description": "Thick ranch wool, dyed the colour of the frontier."
   },
   "verdant_cloak": {
@@ -2021,7 +2008,6 @@
     "level_requirements": {
       "hitpoints": 40
     },
-    "icon_id": "cape_of_completion",
     "description": "Wyrmhide cut long. Moss still grows in the seams."
   },
   "crimson_cloak": {
@@ -2038,7 +2024,6 @@
     "level_requirements": {
       "hitpoints": 60
     },
-    "icon_id": "cape_of_completion",
     "description": "Red hide that turns a blade aside as often as a gust."
   },
   "blighted_cloak": {
@@ -2055,7 +2040,6 @@
     "level_requirements": {
       "hitpoints": 75
     },
-    "icon_id": "cape_of_completion",
     "description": "Black hide from the blight, heavy and silent."
   },
   "umbral_shroud": {
@@ -2072,7 +2056,6 @@
     "level_requirements": {
       "hitpoints": 90
     },
-    "icon_id": "cape_of_completion",
     "description": "A cloak of the Deep's own dark. Light slides off it."
   },
   "herald_mantle": {
@@ -2090,7 +2073,6 @@
     "level_requirements": {
       "hitpoints": 105
     },
-    "icon_id": "cape_of_completion",
     "description": "Worn by those who reach the throne. It remembers the ones who did not."
   },
   "gold_amulet": {
@@ -2138,7 +2120,6 @@
     "level_requirements": {
       "hitpoints": 10
     },
-    "icon_id": "gold_amulet",
     "description": "A hawk's-eye stone on a plain chain. Steadies every kind of aim a little."
   },
   "sapphire_amulet": {
@@ -2163,7 +2144,6 @@
     "level_requirements": {
       "hitpoints": 20
     },
-    "icon_id": "gold_amulet",
     "description": "Cool blue stone that keeps the hand calm and the guard up."
   },
   "emerald_amulet": {
@@ -2188,7 +2168,6 @@
     "level_requirements": {
       "hitpoints": 30
     },
-    "icon_id": "gold_amulet",
     "description": "Green fire set in gold. Hits land a little truer, a little harder."
   },
   "ruby_amulet": {
@@ -2213,7 +2192,6 @@
     "level_requirements": {
       "hitpoints": 45
     },
-    "icon_id": "gold_amulet",
     "description": "A heavy ruby that runs warm against the skin in a fight."
   },
   "diamond_amulet": {
@@ -2238,7 +2216,6 @@
     "level_requirements": {
       "hitpoints": 60
     },
-    "icon_id": "gold_amulet",
     "description": "Clear as frost and as hard. The best a goldsmith alone can make."
   },
   "wyrmforged_torc": {
@@ -2263,7 +2240,6 @@
     "level_requirements": {
       "hitpoints": 75
     },
-    "icon_id": "gold_amulet",
     "description": "A dragonite collar set with a diamond. Wyrm-metal remembers how to bite."
   },
   "umbral_pendant": {
@@ -2291,7 +2267,6 @@
     "level_requirements": {
       "hitpoints": 90
     },
-    "icon_id": "gold_amulet",
     "description": "A shard of the Deep caged in umbral silver. It drinks a little of every wound."
   },
   "heralds_sigil": {
@@ -2319,7 +2294,6 @@
     "level_requirements": {
       "hitpoints": 105
     },
-    "icon_id": "gold_amulet",
     "description": "The mark the Herald's own guard wore. It does not care which weapon you hold."
   },
   "sapphire_ring": {
@@ -2424,7 +2398,6 @@
     "level_requirements": {
       "ranged": 40
     },
-    "icon_id": "bronze_boots",
     "description": "Wyrmhide boots that keep a hunter quiet."
   },
   "green_dhide_coif": {
@@ -2508,7 +2481,6 @@
     "level_requirements": {
       "ranged": 50
     },
-    "icon_id": "bronze_boots",
     "description": "Blue hide, double-stitched at the heel."
   },
   "blue_dhide_coif": {
@@ -2592,7 +2564,6 @@
     "level_requirements": {
       "ranged": 60
     },
-    "icon_id": "bronze_boots",
     "description": "Crimson hide that has walked through fire before."
   },
   "red_dhide_coif": {
@@ -2676,7 +2647,6 @@
     "level_requirements": {
       "ranged": 70
     },
-    "icon_id": "bronze_boots",
     "description": "Black hide from the blight. It does not crease."
   },
   "apprentice_hat": {
@@ -2753,7 +2723,6 @@
     "level_requirements": {
       "magic": 30
     },
-    "icon_id": "bronze_boots",
     "description": "Soft-soled boots stitched with a little air."
   },
   "adept_hat": {
@@ -2830,7 +2799,6 @@
     "level_requirements": {
       "magic": 60
     },
-    "icon_id": "bronze_boots",
     "description": "Chaos-thread runs through the soles. Your footing never quite slips."
   },
   "archmage_hat": {
@@ -2907,7 +2875,6 @@
     "level_requirements": {
       "magic": 90
     },
-    "icon_id": "bronze_boots",
     "description": "Blood-runed boots that carry the caster a half-step out of harm."
   },
   "herald_hat": {
@@ -2984,7 +2951,6 @@
     "level_requirements": {
       "magic": 115
     },
-    "icon_id": "bronze_boots",
     "description": "The Herald's own colours. The dark steps aside for them."
   },
   "black_dhide_coif": {
@@ -6628,7 +6594,6 @@
     "level_requirements": {
       "defence": 100
     },
-    "icon_id": "bronze_shield",
     "description": "Wyrmforged plate set with the four wardens' light. Made to outlast them."
   },
   "herald_bulwark": {
@@ -6646,7 +6611,6 @@
     "level_requirements": {
       "defence": 115
     },
-    "icon_id": "bronze_shield",
     "description": "A slab of herald steel with the throne's mark burned into it."
   },
   "burnt_food": {
@@ -8006,7 +7970,6 @@
     "level_requirements": {
       "ranged": 105
     },
-    "icon_id": "bronze_boots",
     "description": "Blighted hide plated with herald essence at the toe and heel."
   },
   "umbral_dhide_vambraces": {
