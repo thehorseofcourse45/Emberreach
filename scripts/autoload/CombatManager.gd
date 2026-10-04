@@ -273,7 +273,7 @@ func _spawn_monster(monster_id: String) -> void:
 	if _in_raid():
 		monster_max_hp = maxi(1, int(round(float(monster_max_hp) * RaidManager.enemy_hp_mult())))
 	monster_hp = monster_max_hp
-	monster_attack_interval = maxf(0.25, float(m.get("attack_speed", 3.0)))
+	monster_attack_interval = maxf(CombatSimulator.MONSTER_INTERVAL_FLOOR, float(m.get("attack_speed", 3.0)))
 	monster_attack_timer = 0.0
 	player_attack_timer = 0.0
 	player_attack_interval = ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed())
@@ -324,7 +324,7 @@ func _tick_fighting(delta: float) -> void:
 	player_attack_interval = maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed()))
 	if _in_raid():
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
-	monster_attack_interval = maxf(0.25, float(current_monster().get("attack_speed", 3.0)))
+	monster_attack_interval = maxf(CombatSimulator.MONSTER_INTERVAL_FLOOR, float(current_monster().get("attack_speed", 3.0)))
 	if not _is_player_stunned(): player_attack_timer += delta
 	if not CombatSimulator._blocked(monster_effects): monster_attack_timer += delta
 	var guard: int = 0
@@ -565,8 +565,10 @@ func _player_attack() -> void:
 		var heal_frac: float = float(sa.get("heal_fraction", 0.0))
 		if heal_frac > 0.0:
 			player_hp = minf(player_hp + float(dmg) * heal_frac, _compute_max_hp())
-	# Monster style affinity and armor apply once, to the final hit (specials included).
-	dmg = maxi(1, int(floor(float(dmg) * MonsterMechanics.affinity_multiplier(m, attack_style))))
+	# Monster style affinity and armor apply once, to the final hit (specials included). The
+	# minimum of 1 only keeps a positive hit from rounding away; a hit DR floored to 0 stays 0.
+	if dmg > 0:
+		dmg = maxi(1, int(floor(float(dmg) * MonsterMechanics.affinity_multiplier(m, attack_style))))
 	dmg = MonsterMechanics.armored_reduce(m, dmg)
 	EnchantingManager.on_hit(dmg)
 	apply_damage_to_monster(dmg)

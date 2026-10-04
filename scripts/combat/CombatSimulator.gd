@@ -35,6 +35,8 @@ const ENEMY_REGEN_FRACTION: float = 0.02
 const ENEMY_THORNS_FRACTION: float = 0.10
 const ENRAGE_HP_FRACTION: float = 0.25
 const ENRAGE_MULTIPLIER: float = 1.5
+## The fastest a monster may attack, shared with CombatManager's live loop.
+const MONSTER_INTERVAL_FLOOR: float = 0.25
 
 ## Run the whole simulation. `snapshot` must already be flattened — see CombatSimulatorManager.
 ## `trials` is the count; the production UI always passes 10,000.
@@ -225,10 +227,12 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					dealt = maxi(1, floori(dealt * float(special.get("damage_multiplier", 1))))
 					hp = minf(max_hp, hp + dealt * float(special.get("heal_fraction", 0)))
 					_add_special_status(monster_effects, special, rng, monster)
-				# Style affinity and armor apply once, to the final landed hit (specials included).
+				# Style affinity and armor apply once, to the final landed hit (specials included). The
+				# minimum of 1 only keeps a positive hit from rounding away; a hit DR floored to 0 stays 0.
 				var current: Dictionary = view["monster"]
-				dealt = float(MonsterMechanics.armored_reduce(current,
-					maxi(1, floori(dealt * MonsterMechanics.affinity_multiplier(current, style)))))
+				if dealt > 0.0:
+					dealt = float(maxi(1, floori(dealt * MonsterMechanics.affinity_multiplier(current, style))))
+				dealt = float(MonsterMechanics.armored_reduce(current, int(dealt)))
 				for status in snapshot.get("enchant_statuses", []):
 					if rng.randf() < 0.2 and not bool(monster.get("is_immune_to_effects", false)): monster_effects.append(StatusEffect.create(str(status), 4.0, maxf(1, dealt * 0.1) if str(status) == "burn" else 0))
 				dealt = maxf(0.0, dealt)
@@ -428,7 +432,7 @@ static func _monster_view(snapshot: Dictionary, player: Dictionary, monster: Dic
 		"min_hit": CombatFormulas.min_hit(max_hit, float(player.get("min_hit_percent", 0.0)),
 			float(player.get("min_hit_flat", 0.0))),
 		"player_interval": maxf(0.1, float(player.get("attack_interval", 3.0))),
-		"monster_interval": maxf(0.1, float(current.get("attack_speed", 3.0))),
+		"monster_interval": maxf(MONSTER_INTERVAL_FLOOR, float(current.get("attack_speed", 3.0))),
 		"monster_max_hit": monster_max_hit,
 		"monster_min_hit": CombatFormulas.min_hit(monster_max_hit,
 			float(current.get("min_hit_percent", 0.0)), float(current.get("min_hit_flat", 0.0))),

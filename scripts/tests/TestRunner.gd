@@ -2329,6 +2329,7 @@ func _test_simulator_monster_mechanics() -> void:
 	GameManager.start_new_game("standard")
 	for skill_id in ["attack", "strength", "defence", "hitpoints"]:
 		PlayerData.set_level(skill_id, 70)
+	_mmp_zero_damage_hits()
 	# Snapshot plumbing: the flattened monster carries the new fields, the player its resistance.
 	var boss_phases: Array = [
 		{"at_hp_percent": 70, "name": "Shift", "effects": {"attack_type": "magic"}},
@@ -2381,7 +2382,7 @@ func _test_simulator_monster_mechanics() -> void:
 			"passives": ["lifedrain"]}},
 		{"label": "venomous", "fights": 30, "monster": {"hitpoints": 2000, "max_hit": 1, "attack_speed": 0.25,
 			"passives": ["venomous"]}},
-		{"label": "two-phase boss", "fights": 150, "monster": {"hitpoints": 800, "max_hit": 60,
+		{"label": "two-phase boss", "fights": 300, "monster": {"hitpoints": 800, "max_hit": 60,
 			"accuracy_rating": 2000, "phases": boss_phases}},
 		{"label": "DoT-driven phase", "fights": 120, "weapon": "mmp_blade", "monster": {"hitpoints": 1000,
 			"max_hit": 100, "phases": [{"at_hp_percent": 60, "name": "Scorched",
@@ -2402,6 +2403,7 @@ func _test_simulator_monster_mechanics() -> void:
 		var sim_snap: Dictionary = CombatSimulatorManager.build_snapshot("area", MMP_AREA, "melee", "slash")
 		var sim: Dictionary = CombatSimulator.simulate(sim_snap, MMP_SIM_TRIALS, MMP_SEED)
 		var live: Dictionary = _mmp_live(monster_id, int(case["fights"]))
+		_eq(int(live["fights"]), int(case["fights"]), "%s: the live harness fought every requested fight" % case["label"])
 		var sim_seconds: float = float(sim["average_fight_seconds"])
 		var live_seconds: float = float(live["mean_seconds"])
 		var sim_death: float = float(sim["death_chance"])
@@ -2420,6 +2422,56 @@ func _test_simulator_monster_mechanics() -> void:
 	DataLoader.monsters.erase("mmp_boss")
 	DataLoader.areas.erase(MMP_AREA)
 	CombatManager.monster_phases_fired = 0
+
+## Damage formulas are unchanged by affinities: a landed hit that monster DR floors to 0 still
+## deals 0, and a resisted 1-damage hit still deals 1 (the minimum only stops the multiplier
+## rounding a positive hit away). Checked in both engines, deterministically.
+func _mmp_zero_damage_hits() -> void:
+	DataLoader.monsters["mmp_dr0"] = _mm_record("mmp_dr0")
+	DataLoader.monsters["mmp_dr99"] = _mm_record("mmp_dr99", {"damage_reduction": 99})
+	DataLoader.monsters["mmp_dr98"] = _mm_record("mmp_dr98", {"damage_reduction": 98})
+	DataLoader.monsters["mmp_dr98_resist"] = _mm_record("mmp_dr98_resist", {"damage_reduction": 98, "resists": ["melee"]})
+	var per_seed := func(monster_id: String) -> Array:
+		_mm_fight(monster_id)
+		var out: Array = []
+		for s in range(1, 61):
+			out.append(_mm_player_damage(s))
+		return out
+	var plain: Array = per_seed.call("mmp_dr0")
+	var floored: Array = per_seed.call("mmp_dr99")
+	var landed: int = 0
+	var lifted: int = 0
+	for i in range(plain.size()):
+		if int(plain[i]) > 0:
+			landed += 1
+			lifted += int(floored[i])
+	_ok(landed > 0 and lifted == 0,
+		"live: a landed hit that DR floors to 0 still deals 0 (%d hits, %d damage)" % [landed, lifted])
+	var neutral: Array = per_seed.call("mmp_dr98")
+	var resisted: Array = per_seed.call("mmp_dr98_resist")
+	_eq(resisted, neutral, "live: resists keeps a 1-damage hit at 1 and a 0-damage hit at 0")
+	_ok(neutral.has(0) and neutral.has(1), "live: the DR 98 seeds include both 0- and 1-damage hits")
+	CombatManager.stop_combat("test")
+	for id in ["mmp_dr0", "mmp_dr99", "mmp_dr98", "mmp_dr98_resist"]:
+		DataLoader.monsters.erase(id)
+	# The simulator, on the same rule: a stalemate of landed hits against heavy DR.
+	var base: Dictionary = _mmp_dot_phase_snapshot()
+	base.erase("player_special")
+	base["player"]["max_hit"] = 99
+	var monster: Dictionary = base["monsters"][0]
+	monster["phases"] = []
+	var sim_damage := func(dr: float, resists: Array) -> float:
+		var m: Dictionary = monster.duplicate(true)
+		m["damage_reduction"] = dr
+		m["resists"] = resists
+		return float(CombatSimulator._run_fight(base, base["player"], m, 1000.0, 1000.0, _mmp_rng(), {})["damage"])
+	var sim_plain: float = sim_damage.call(0.0, [])
+	_ok(sim_plain > 0.0, "simulator: the control fight lands hits (%.0f damage)" % sim_plain)
+	_approx(sim_damage.call(99.0, []), 0.0, 0.0001, "simulator: landed hits that DR floors to 0 deal 0")
+	var sim_neutral: float = sim_damage.call(98.0, [])
+	_ok(sim_neutral > 0.0, "simulator: DR 98 lets 1-damage hits through (%.0f damage)" % sim_neutral)
+	_approx(sim_damage.call(98.0, ["melee"]), sim_neutral, 0.0001,
+		"simulator: resists keeps 1-damage hits at 1 and 0-damage hits at 0")
 
 func _mmp_rng() -> RandomNumberGenerator:
 	var rng := RandomNumberGenerator.new()
