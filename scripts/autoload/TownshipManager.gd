@@ -12,6 +12,9 @@ extends Node
 const SECONDS_PER_TICK: float = 3600.0
 ## Population is 4–24 in this town; each resident supplies hourly skill XP.
 const XP_PER_RESIDENT: float = 2500.0
+## Every level of a non-housing structure also adds hourly XP, so the whole town levels the
+## skill: a fully built settlement earns about 130k XP/h instead of stalling at 60k from Homes.
+const XP_PER_STRUCTURE_LEVEL: float = 1500.0
 const CATEGORY: String = "township"
 const DEFAULT_MAX_LEVEL: int = 5
 
@@ -40,13 +43,13 @@ const RESOURCE_NAMES: Dictionary = {
 ## What each resource is FOR, so a store is never a mystery number on a dashboard.
 const RESOURCE_ROLES: Dictionary = {
 	"wood": "Construction & Kilncraft",
-	"stone": "Construction",
+	"stone": "Construction & monuments",
 	"metal": "Forgecraft inputs",
 	"food": "Population & crates",
 	"goods": "Trader crates",
 	"reagents": "Apothecary inputs",
-	"drills": "Combat preparation",
-	"supplies": "Expedition readiness",
+	"drills": "Huntsman coins (trader)",
+	"supplies": "Combat draughts (trader)",
 	"faith": "Devotion points (trader)",
 	"astral_dust": "Sifted into Starreading dust",
 	"population": "Gates larger structures",
@@ -161,7 +164,13 @@ func produce_tick() -> void:
 		PlayerData.add_xp("township", xp)
 
 func xp_per_hour() -> float:
-	return float(productions_population()) * XP_PER_RESIDENT * ModifierManager.get_skill_xp_multiplier("township")
+	var structure_levels: int = 0
+	for building_id in buildings.keys():
+		var def: Dictionary = buildings_data().get(building_id, {})
+		if int((def.get("production", {}) as Dictionary).get("population", 0)) <= 0:
+			structure_levels += level_of(str(building_id))
+	return (float(productions_population()) * XP_PER_RESIDENT + float(structure_levels) * XP_PER_STRUCTURE_LEVEL) \
+		* ModifierManager.get_skill_xp_multiplier("township")
 
 func productions_population() -> int:
 	var pop: int = 0
@@ -200,16 +209,21 @@ func build(building_id: String) -> bool:
 	EventBus.activity_changed.emit()
 	return true
 
-## The storehouse is the one structure that changes a main-game limit, so its effect is
-## registered as a modifier rather than applied inline. Derived state, re-registered on load.
+## A structure's "modifiers" in shop_township.json are what its "Unlocks:" line promises,
+## granted once per level built (the Storehouse's storage stacks, the Workshop's Artifice
+## preservation, ...). Derived state: re-registered from the levels on build and on load.
 func _reregister_modifiers() -> void:
-	ModifierManager.unregister("%s:storehouse" % CATEGORY)
-	var level: int = level_of("township_building_storehouse")
-	if level <= 0:
-		return
-	ModifierManager.register("%s:storehouse" % CATEGORY,
-		{ModifierKeys.BANK_SPACE_FLAT: 5 * level}, CATEGORY,
-		"Storehouse (level %d)" % level)
+	for building_id in buildings_data().keys():
+		ModifierManager.unregister("%s:%s" % [CATEGORY, building_id])
+		var mods: Dictionary = buildings_data()[building_id].get("modifiers", {})
+		var level: int = level_of(str(building_id))
+		if mods.is_empty() or level <= 0:
+			continue
+		var scaled: Dictionary = {}
+		for key in mods.keys():
+			scaled[str(key)] = float(mods[key]) * float(level)
+		ModifierManager.register("%s:%s" % [CATEGORY, building_id], scaled, CATEGORY,
+			"%s (level %d)" % [str(buildings_data()[building_id].get("name", building_id)), level])
 
 # =========================================================================
 #  Offline
@@ -288,6 +302,10 @@ func trade_offer(offer_id: String) -> Dictionary:
 			"slayer_coins":
 				PlayerData.add_slayer_coins(amount)
 				granted.append("%s Huntsman coins" % UIStyle.fmt(amount))
+	for skill_id in (offer.get("grant_xp", {}) as Dictionary).keys():
+		var xp: float = float(offer["grant_xp"][skill_id]) * ModifierManager.get_skill_xp_multiplier(str(skill_id))
+		PlayerData.add_xp(str(skill_id), xp)
+		granted.append("%s %s XP" % [UIStyle.fmt(xp), str(DataLoader.skills.get(skill_id, {}).get("name", skill_id))])
 	EventBus.notify("Traded: %s" % ", ".join(granted), "success")
 	EventBus.state_refreshed.emit()
 	return {"ok": true, "reason": "", "granted": ", ".join(granted)}
@@ -301,6 +319,9 @@ func describe_offer(offer: Dictionary) -> String:
 	for currency in (offer.get("grant_currency", {}) as Dictionary).keys():
 		parts.append("%s %s" % [UIStyle.fmt(float(offer["grant_currency"][currency])),
 			str(currency).replace("_", " ")])
+	for skill_id in (offer.get("grant_xp", {}) as Dictionary).keys():
+		parts.append("%s %s XP" % [UIStyle.fmt(float(offer["grant_xp"][skill_id])),
+			str(DataLoader.skills.get(skill_id, {}).get("name", skill_id))])
 	return ", ".join(parts) if not parts.is_empty() else "Nothing"
 
 func set_worship(god_id: String) -> void:

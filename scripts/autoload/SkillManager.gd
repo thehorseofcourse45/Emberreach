@@ -100,9 +100,9 @@ func check_action(skill_id: String, action_id: String) -> Dictionary:
 	var space: Dictionary = _check_output_space(data)
 	if not bool(space["ok"]):
 		return space
-	if skill_id == "farming" and not FarmingManager.has_free_plot():
+	if skill_id == "farming" and not FarmingManager.has_free_plot(FarmingManager.seed_id_for_action(action_id)):
 		return {"ok": false, "reason": "no_space",
-			"detail": "All farm plots are occupied — harvest or clear them first"}
+			"detail": "No free plot of the right kind — harvest or clear one first"}
 	return {"ok": true, "reason": "", "detail": ""}
 
 ## Backwards-compatible boolean form.
@@ -261,8 +261,8 @@ func perform_action() -> Dictionary:
 	if not bool(space["ok"]):
 		stop_action(StopReason.STORAGE_FULL, str(space["detail"]))
 		return {"success": false, "stop": "storage_full"}
-	if active_skill == "farming" and not FarmingManager.has_free_plot():
-		stop_action(StopReason.STORAGE_FULL, "All farm plots are occupied")
+	if active_skill == "farming" and not FarmingManager.has_free_plot(FarmingManager.seed_id_for_action(active_action_id)):
+		stop_action(StopReason.STORAGE_FULL, "No free plot of the right kind")
 		return {"success": false, "stop": "no_space"}
 
 	if active_skill == "inscription":

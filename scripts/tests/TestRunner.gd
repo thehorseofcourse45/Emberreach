@@ -69,6 +69,9 @@ func run_all(host: Node) -> void:
 	_test_general_store()
 	_test_endgame_crafting_chains()
 	_test_monster_passives()
+	_test_monster_mechanics()
+	_test_monster_mechanics_validation()
+	_test_monster_mechanics_content()
 	_test_monster_ladder()
 	_test_dungeon_ladder()
 	_test_raw_fish_are_consumed()
@@ -77,9 +80,24 @@ func run_all(host: Node) -> void:
 	_test_bottleneck_declarations()
 	_test_study_ramp_rises()
 	_test_action_xp_ladders()
+	_test_activity_names_unique()
+	_test_late_skills_pace()
+	_test_open_world_coverage()
+	_test_monster_style_mix()
+	_test_neck_slot_ladder()
+	_test_armour_slot_ladders()
+	_test_melee_armour_endgame()
+	_test_gold_is_bounded()
 	_test_mastery_metadata()
 	await _test_detail_cards(host)
 	_test_attack_costs()
+	_test_arrow_tiers()
+	_test_late_products_are_usable()
+	_test_every_bonus_key_is_read()
+	_test_township_has_no_dead_ends()
+	_test_farm_plot_types()
+	_test_reward_variety()
+	_test_prayer_and_raid_ladders()
 	_test_magic_gear()
 	_test_dungeon_sequencing()
 	_test_session_meters()
@@ -108,6 +126,12 @@ func run_all(host: Node) -> void:
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
+	# Last on purpose: it consumes the seeded combat RNG, and earlier suites (enrage sampling)
+	# depend on the stream position they were tuned against.
+	_test_monster_mechanics_live()
+	_test_player_status_resistance()
+	_test_simulator_monster_mechanics()
+	_test_combat_panel_monster_mechanics(host)
 	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 
@@ -151,6 +175,19 @@ func _test_mastery_stall() -> void:
 	_ok(absf(PlayerData.gp - (gp_before - cost)) < 0.5, "exactly the listed cost was charged")
 	_ok(EquipmentManager.equip(cape_id), "an earned cape can be equipped")
 	EquipmentManager.unequip(int(DataLoader.get_item(cape_id).get("equipment_slot", 5)))
+
+	# Capes are priced against the activity gold ceiling (25k * e^(level/32) gp/h): a single-skill
+	# cape must cost at most 3 hours of the best gold available at its gate level, or a gold
+	# rebalance silently turns the stall into a wall.
+	var overpriced: Array = []
+	for offer in offers:
+		var o: Dictionary = offer as Dictionary
+		if ShopManager.STALL_ALL_SKILLS.has(str(o["item_id"])):
+			continue
+		var hourly: float = 25000.0 * exp(float(o["required"]) / 32.0)
+		if float(o["cost"]) > 3.0 * hourly:
+			overpriced.append(str(o["item_id"]))
+	_ok(overpriced.is_empty(), "every skillcape costs at most 3h of top gold at its level %s" % str(overpriced))
 
 ## The general store is the one place gold turns directly into materials, so two things have to
 ## hold: a locked line refuses the purchase without charging, and no line is cheaper than making
@@ -846,8 +883,8 @@ func _test_combat_screen_split(host: Node) -> void:
 func _test_prayer_expansion(host: Node) -> void:
 	_heading("Prayer progression and navigation icons")
 	GameManager.start_new_game("standard")
-	_ok(DataLoader.prayers.size() == 60 and int(DataLoader.prayers["aegis_6"]["level"]) == 120,
-		"sixty prayers include unlocks through level 120")
+	_ok(DataLoader.prayers.size() == 62 and int(DataLoader.prayers["aegis_6"]["level"]) == 120,
+		"sixty-two prayers include unlocks through level 120")
 	_ok(not PrayerManager.toggle("aegis_6"), "an endgame prayer is locked at level one")
 	PlayerData.set_level("prayer", 120)
 	PlayerData.prayer_points = 20.0
@@ -870,7 +907,7 @@ func _test_prayer_expansion(host: Node) -> void:
 	var list: VBoxContainer = panel.get("_list")
 	filter.select(0)
 	panel.call("_rebuild")
-	_ok(_prayer_cards(list) == 60, "the list previews every future prayer unlock")
+	_ok(_prayer_cards(list) == 62, "the list previews every future prayer unlock")
 	filter.select(1)
 	panel.call("_rebuild")
 	_ok(_prayer_cards(list) == 1, "Unlocked shows only the level-one prayer on a new save")
@@ -887,7 +924,7 @@ func _test_husbandry(host: Node) -> void:
 	_heading("Husbandry")
 	GameManager.start_new_game("standard")
 	var farm: Dictionary = DataLoader.get_skill("farming")
-	_ok((farm.get("actions", []) as Array).size() == 10, "Husbandry lists ten crops")
+	_ok((farm.get("actions", []) as Array).size() == 22, "Husbandry lists 22 crops: herbs, allotment and trees")
 	var seeds_ok: bool = true
 	var gates_ok: bool = true
 	var products_ok: bool = true
@@ -1012,7 +1049,7 @@ func _test_husbandry(host: Node) -> void:
 	_ok(panel.call("_plot_count") == 15, "the Farm screen renders all fifteen plots")
 	_ok((panel.get("_summary") as Label).text.contains("Husbandry"), "the summary names the skill")
 	var options: Array = panel.call("_seed_options")
-	_ok(options.size() == 10, "the seed picker lists every crop")
+	_ok(options.size() == (DataLoader.get_skill("farming").get("actions", []) as Array).size(), "the seed picker lists every crop")
 	var locked_ok: bool = false
 	for o in options:
 		if str((o as Dictionary).get("id", "")) == "emberbloom_seed" and not bool((o as Dictionary).get("unlocked", false)):
@@ -1904,6 +1941,773 @@ func _test_dungeon_sequencing() -> void:
 		"a cleared endgame leaves nothing locked")
 	GameManager.start_new_game("standard")
 
+## Pure rules for affinities, new passives, boss phases and status resistance.
+func _test_monster_mechanics() -> void:
+	_heading("Monster mechanics")
+	_approx(MonsterMechanics.affinity_multiplier({"weak_to": ["magic"]}, "magic"), 1.25, 0.0001, "weak style hits for 1.25x")
+	_approx(MonsterMechanics.affinity_multiplier({"resists": ["melee"]}, "melee"), 0.75, 0.0001, "resisted style hits for 0.75x")
+	_approx(MonsterMechanics.affinity_multiplier({"weak_to": ["magic"], "resists": ["melee"]}, "ranged"), 1.0, 0.0001, "unlisted style is neutral")
+	var armored := {"passives": ["armored"], "hitpoints": 1000}
+	_eq(MonsterMechanics.armored_reduce(armored, 100), 50, "armored removal is capped at half the hit (80 flat vs 100)")
+	_eq(MonsterMechanics.armored_reduce({"passives": ["armored"], "hitpoints": 100}, 100), 92, "armored removes 8% of max HP flat when under the cap")
+	_eq(MonsterMechanics.armored_reduce(armored, 31), 31 - 15, "huge flat vs small hit gives dealt minus floor(dealt/2)")
+	_eq(MonsterMechanics.armored_reduce(armored, 2), 1, "armored on a 2 hit deals 1")
+	_eq(MonsterMechanics.armored_reduce(armored, 1), 1, "armored never reduces a hit below 1")
+	_eq(MonsterMechanics.armored_reduce(armored, 0), 0, "armored leaves a zero hit alone")
+	_eq(MonsterMechanics.armored_reduce({"hitpoints": 1000}, 100), 100, "no armored passive leaves damage unchanged")
+	_eq(MonsterMechanics.lifedrain_heal(10), 3, "lifedrain heals 30% of damage")
+	_eq(MonsterMechanics.lifedrain_heal(1), 1, "lifedrain heals at least 1")
+	_eq(MonsterMechanics.lifedrain_heal(0), 0, "lifedrain heals nothing on zero damage")
+	var venom: Dictionary = MonsterMechanics.venom_status(100)
+	_eq(venom.get("id"), "poison", "venom applies poison")
+	_approx(float(venom.get("duration", 0.0)), 6.0, 0.0001, "venom lasts 6s")
+	_approx(float(venom.get("damage_per_tick", 0.0)), 5.0, 0.0001, "venom ticks 5% of max hit")
+	_approx(float(MonsterMechanics.venom_status(4).get("damage_per_tick", 0.0)), 1.0, 0.0001, "venom tick is at least 1")
+	var phases := [{"at_hp_percent": 75}, {"at_hp_percent": 40}]
+	_eq(MonsterMechanics.phases_due(phases, 0, 0.8), 0, "no phase above its threshold")
+	_eq(MonsterMechanics.phases_due(phases, 0, 0.70), 1, "first phase fires below 75%")
+	_eq(MonsterMechanics.phases_due(phases, 0, 0.30), 2, "one hit through two thresholds fires both")
+	_eq(MonsterMechanics.phases_due(phases, 2, 0.30), 2, "fired phases never fire twice")
+	var boss := {"max_hit": 100, "attack_speed": 2.0, "attack_type": "melee", "passives": ["enrage"],
+		"phases": [{"at_hp_percent": 50, "name": "Fury", "effects": {"attack_type": "magic",
+			"max_hit_multiplier": 1.5, "attack_speed_multiplier": 2.0,
+			"add_passives": ["enrage", "lifedrain"]}}]}
+	var eff: Dictionary = MonsterMechanics.effective(boss, 1)
+	_eq(int(eff.get("max_hit")), 150, "phase scales max hit")
+	_eq(str(eff.get("attack_type")), "magic", "phase swaps attack type")
+	_approx(float(eff.get("attack_speed")), 1.0, 0.0001, "phase doubles attack rate")
+	_eq(eff.get("passives"), ["enrage", "lifedrain"], "phase appends passives without duplicates")
+	_eq(int(boss.get("max_hit")), 100, "effective leaves the input unchanged")
+	_eq(str(boss.get("attack_type")), "melee", "effective leaves input attack type alone")
+	_eq(int(MonsterMechanics.effective(boss, 0).get("max_hit")), 100, "zero fired applies nothing")
+	_eq(MonsterMechanics.status_family("toxin"), "poison", "toxin is poison family")
+	_eq(MonsterMechanics.status_family("sleep"), "stun", "sleep is stun family")
+	_eq(MonsterMechanics.status_family("slow"), "", "slow has no family")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.4), 0.0, 0.0001, "low roll is resisted")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 50.0, 0.6), 5.0, 0.0001, "high roll halves duration at 50%")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, 90.0, 0.8), 2.5, 0.0001, "resistance caps at 75%")
+	_approx(MonsterMechanics.resisted_duration("burn", 10.0, -50.0, 0.6), 10.0, 0.0001, "negative resistance never lengthens duration")
+
+## The monster-mechanics schema is validated on in-memory records so every rule is testable.
+func _test_monster_mechanics_validation() -> void:
+	_heading("Monster mechanics validation")
+	for passive_id in ["venomous", "lifedrain", "armored"]:
+		_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(passive_id), "the engine knows the '%s' passive" % passive_id)
+	var v := func(m: Dictionary) -> Array[String]:
+		return ContentValidator.validate_monster_mechanics("t", m)
+	_eq(v.call({"weak_to": ["fire"]}).size(), 1, "unknown weak_to style is one error")
+	_eq(v.call({"resists": ["fire"]}).size(), 1, "unknown resists style is one error")
+	_eq(v.call({"weak_to": ["melee"], "resists": ["melee"]}).size(), 1, "style in both lists is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 40}, {"name": "x", "at_hp_percent": 60}]}).size(), 1, "ascending phases are one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 0}]}).size(), 1, "threshold 0 is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 100}]}).size(), 1, "threshold 100 is one error")
+	_eq(v.call({"phases": "x"}).size(), 1, "phases must be an array")
+	_eq(v.call({"phases": [5]}).size(), 1, "phase entries must be dictionaries")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"bogus": 1}}]}).size(), 1, "unknown effect key is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"max_hit_multiplier": 5}}]}).size(), 1, "max_hit_multiplier 5 is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"attack_speed_multiplier": 0.1}}]}).size(), 1, "attack_speed_multiplier 0.1 is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"add_passives": ["nope"]}}]}).size(), 1, "unknown add_passives entry is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"attack_type": "fire"}}]}).size(), 1, "invalid phase attack_type is one error")
+	_eq(v.call({"phases": [{"name": "x", "at_hp_percent": 50, "effects": {"apply_status": {"id": "nope"}}}]}).size(), 1, "unknown apply_status id is one error")
+	var good := {"weak_to": ["magic"], "resists": ["melee"], "phases": [
+		{"name": "x", "at_hp_percent": 66, "effects": {"max_hit_multiplier": 1.5, "add_passives": ["venomous"]}},
+		{"name": "x", "at_hp_percent": 33, "effects": {"attack_speed_multiplier": 2.0, "attack_type": "magic",
+			"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": 3.0}}}]}
+	_eq(v.call(good).size(), 0, "a valid two-phase boss has no errors")
+	_eq(v.call({}).size(), 0, "a monster without the new fields has no errors")
+	_eq(v.call({"phases": [{"at_hp_percent": 99.5, "name": "x"}]}).size(), 1, "non-integer threshold is one error")
+	_eq(v.call({"weak_to": ["magic", "magic"]}).size(), 1, "duplicate weak_to style is one error")
+	_eq(v.call({"resists": ["melee", "melee"]}).size(), 1, "duplicate resists style is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50}]}).size(), 1, "a phase without a name is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "name": "x", "effects": {"apply_status": {"id": "poison", "duration": 0.0, "damage_per_tick": 1.0}}}]}).size(), 1, "zero status duration is one error")
+	_eq(v.call({"phases": [{"at_hp_percent": 50, "name": "x", "effects": {"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": -1.0}}}]}).size(), 1, "negative tick damage is one error")
+
+## An in-test monster record: tiny evasion and huge accuracy so both sides land reliably.
+func _mm_record(id: String, overrides: Dictionary = {}) -> Dictionary:
+	var m := {"id": id, "name": id, "combat_level": 1, "hitpoints": 1000, "attack_type": "melee",
+		"attack_speed": 3.0, "max_hit": 20, "accuracy_rating": 1000000, "melee_evasion": 1,
+		"ranged_evasion": 1, "magic_evasion": 1, "damage_reduction": 0, "loot_table": [],
+		"passives": [], "respawn_time": 1.0}
+	for key in overrides.keys():
+		m[key] = overrides[key]
+	return m
+
+## Begin a live fight against an injected monster with a huge player HP pool; the monster's
+## HP pool is padded too so nothing dies unless a test says so.
+func _mm_fight(monster_id: String, kind: String = "area") -> void:
+	if CombatManager.state != CombatManager.State.IDLE:
+		CombatManager.stop_combat("test")
+	CombatManager.start_combat({"type": kind, "id": "farmlands", "monsters": [monster_id],
+		"endless": true, "attack_style": "melee", "melee_style": "slash"})
+	CombatManager.player_max_hp = 100000.0
+	CombatManager.player_hp = 100000.0
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
+
+func _mm_player_damage(seed_value: int) -> int:
+	CombatManager.monster_max_hp = 100000
+	CombatManager.monster_hp = 100000
+	CombatManager.seed_rng(seed_value)
+	CombatManager._player_attack()
+	return 100000 - CombatManager.monster_hp
+
+## Data-only checks on the monster-mechanics content (affinities, phases, passives, resistance gear).
+func _test_monster_mechanics_content() -> void:
+	_heading("Monster mechanics content")
+	var with_affinity: int = 0
+	var bosses: int = 0
+	var bosses_ok: bool = true
+	var swap_bosses: int = 0
+	var venom_ok: bool = true
+	var lifedrain: int = 0
+	var armored: int = 0
+	var errors: Array[String] = []
+	var both: int = 0
+	var applied: Dictionary = {}
+	for mid in DataLoader.monsters.keys():
+		var m: Dictionary = DataLoader.monsters[mid]
+		errors.append_array(ContentValidator.validate_monster_mechanics(str(mid), m))
+		var weak: Array = m.get("weak_to", [])
+		var resists: Array = m.get("resists", [])
+		if not weak.is_empty() or not resists.is_empty():
+			with_affinity += 1
+		for style in weak:
+			if resists.has(style):
+				both += 1
+		var passives: Array = m.get("passives", [])
+		if passives.has("lifedrain"):
+			lifedrain += 1
+		if passives.has("armored"):
+			armored += 1
+		var applies_poison: bool = false
+		for sid in m.get("special_attacks", []):
+			var status: String = str(DataLoader.special_attacks.get(str(sid), {}).get("applies_status", ""))
+			if status != "":
+				applied[status] = true
+			if status == "poison":
+				applies_poison = true
+		if applies_poison and not passives.has("venomous"):
+			venom_ok = false
+		if bool(m.get("is_boss", false)):
+			bosses += 1
+			var phases: Array = m.get("phases", [])
+			if phases.size() < 2 or phases.size() > 3:
+				bosses_ok = false
+			for ph in phases:
+				var fx: Dictionary = ph.get("effects", {})
+				if fx.has("attack_type") and str(fx["attack_type"]) != str(m.get("attack_type", "")):
+					swap_bosses += 1
+					break
+	_ok(with_affinity >= 15, "at least 15 monsters carry an affinity (%d)" % with_affinity)
+	_eq(both, 0, "no monster has a style in both weak_to and resists")
+	_ok(bosses > 0 and bosses_ok, "every boss (%d) has 2-3 phases" % bosses)
+	_ok(swap_bosses >= 1, "at least one boss has a phase that changes its attack type (%d)" % swap_bosses)
+	_ok(venom_ok, "every monster applying poison is venomous")
+	_ok(lifedrain >= 2 and lifedrain <= 4, "2-4 monsters have lifedrain (%d)" % lifedrain)
+	_ok(armored >= 2 and armored <= 4, "2-4 monsters are armored (%d)" % armored)
+	_eq(errors.size(), 0, "every monster passes validate_monster_mechanics %s" % str(errors))
+	var resistant_items: int = 0
+	var families_covered: Dictionary = {}
+	for iid in DataLoader.items.keys():
+		var stats: Dictionary = DataLoader.items[iid].get("equipment_stats", {})
+		var found: bool = false
+		for family in ["poison", "burn", "stun"]:
+			if int(stats.get("%s_resistance" % family, 0)) > 0:
+				families_covered[family] = true
+				found = true
+		if found:
+			resistant_items += 1
+	_ok(resistant_items >= 6 and resistant_items <= 8, "6-8 equipment items carry status resistance (%d)" % resistant_items)
+	for family in ["poison", "burn", "stun"]:
+		if applied.has(family):
+			_ok(families_covered.has(family), "a resistance item counters the monster-applied %s family" % family)
+	var prayer_resists: int = 0
+	for pid in DataLoader.prayers.keys():
+		var eff: Dictionary = DataLoader.prayers[pid].get("effect", {}) if DataLoader.prayers[pid] is Dictionary else {}
+		for family in ["poison", "burn", "stun"]:
+			if eff.has("%s_resistance_percent" % family):
+				prayer_resists += 1
+	_ok(prayer_resists >= 1, "a prayer grants status resistance (%d)" % prayer_resists)
+	var potion_resists: int = 0
+	for iid in DataLoader.items.keys():
+		var fx: Dictionary = DataLoader.items[iid].get("potion_effect", {})
+		for family in ["poison", "burn", "stun"]:
+			if fx.has("%s_resistance_percent" % family):
+				potion_resists += 1
+	_ok(potion_resists >= 1, "a potion grants status resistance (%d)" % potion_resists)
+
+## Live combat wiring for affinities, the three new passives and boss phases.
+func _test_monster_mechanics_live() -> void:
+	_heading("Monster mechanics in live combat")
+	for passive_id in MonsterMechanics.NEW_PASSIVES:
+		_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(passive_id),
+			"MonsterMechanics passive '%s' is a known monster passive" % passive_id)
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("attack", 60)
+	PlayerData.set_level("strength", 60)
+	var added: Array[String] = []
+	var records := {
+		"mm_neutral": _mm_record("mm_neutral", {"hitpoints": 60}),
+		"mm_weak": _mm_record("mm_weak", {"hitpoints": 60, "weak_to": ["melee"]}),
+		"mm_resist": _mm_record("mm_resist", {"hitpoints": 60, "resists": ["melee"]}),
+		"mm_armored": _mm_record("mm_armored", {"hitpoints": 60, "passives": ["armored"]}),
+		"mm_lifedrain": _mm_record("mm_lifedrain", {"passives": ["lifedrain"]}),
+		"mm_venom": _mm_record("mm_venom", {"passives": ["venomous"]}),
+		"mm_plain": _mm_record("mm_plain"),
+		"mm_boss": _mm_record("mm_boss", {"max_hit": 20, "phases": [
+			{"at_hp_percent": 75, "name": "Wrath", "effects": {"attack_type": "magic"}},
+			{"at_hp_percent": 40, "name": "Fury", "effects": {"max_hit_multiplier": 2.0}}]}),
+		"mm_immune": _mm_record("mm_immune", {"is_immune_to_effects": true, "can_be_stunned": false,
+			"phases": [{"at_hp_percent": 50, "name": "Rot", "effects": {
+				"apply_status": {"id": "poison", "duration": 5.0, "damage_per_tick": 2.0}}}]}),
+		"mm_half": _mm_record("mm_half", {"hitpoints": 100, "phases": [
+			{"at_hp_percent": 50, "name": "Half", "effects": {"attack_type": "ranged"}}]}),
+	}
+	for id in records.keys():
+		DataLoader.monsters[id] = records[id]
+		added.append(str(id))
+	# (a) affinity multiplier against the same seed's neutral hit.
+	_mm_fight("mm_neutral")
+	var seed_used: int = -1
+	var neutral_dmg: int = 0
+	for s in range(1, 200):
+		neutral_dmg = _mm_player_damage(s)
+		if neutral_dmg >= 4:
+			seed_used = s
+			break
+	_ok(seed_used > 0, "found a seed where the neutral hit lands for 4+ (seed %d, dmg %d)" % [seed_used, neutral_dmg])
+	_mm_fight("mm_weak")
+	_eq(_mm_player_damage(seed_used), int(floor(float(neutral_dmg) * 1.25)), "a weak_to style hits for 1.25x the neutral damage")
+	_mm_fight("mm_resist")
+	_eq(_mm_player_damage(seed_used), maxi(1, int(floor(float(neutral_dmg) * 0.75))), "a resisted style hits for 0.75x the neutral damage")
+	# (b) armored: 60 HP -> flat 4, never below 1.
+	_mm_fight("mm_armored")
+	_eq(_mm_player_damage(seed_used), maxi(1, neutral_dmg - mini(4, neutral_dmg / 2)), "armored removes its flat share of a landed hit (capped at half)")
+	var min_seen: int = 1000
+	var landed: int = 0
+	for s in range(1, 120):
+		var d: int = _mm_player_damage(s)
+		if d > 0:
+			landed += 1
+			min_seen = mini(min_seen, d)
+	_ok(landed > 0 and min_seen >= 1, "armored never reduces a landed hit below 1 (%d hits, min %d)" % [landed, min_seen])
+	# (c) lifedrain heals the monster off what it dealt, capped at max HP.
+	_mm_fight("mm_lifedrain")
+	var healed_ok: bool = false
+	for s in range(1, 60):
+		CombatManager.seed_rng(s)
+		CombatManager.monster_max_hp = 1000
+		CombatManager.monster_hp = 500
+		CombatManager.player_hp = 100000.0
+		CombatManager._monster_attack()
+		var dealt: int = int(100000.0 - CombatManager.player_hp)
+		if dealt > 0:
+			healed_ok = CombatManager.monster_hp == 500 + MonsterMechanics.lifedrain_heal(dealt)
+			break
+	_ok(healed_ok, "lifedrain heals 30% of the damage dealt to the player")
+	CombatManager.seed_rng(7)
+	CombatManager.monster_hp = 999
+	CombatManager.player_hp = 100000.0
+	for _i in range(20):
+		CombatManager._monster_attack()
+	_ok(CombatManager.monster_hp <= CombatManager.monster_max_hp, "lifedrain never heals past max HP")
+	# (d) venomous: applies poison on some hits, never on a plain monster.
+	_mm_fight("mm_venom")
+	CombatManager.seed_rng(11)
+	var venom_hits: int = 0
+	var venom_applied: int = 0
+	var venom_tick_ok: bool = true
+	for _i in range(200):
+		CombatManager.player_effects.clear()
+		CombatManager.player_hp = 100000.0
+		CombatManager._monster_attack()
+		if CombatManager.player_hp < 100000.0:
+			venom_hits += 1
+			for e in CombatManager.player_effects:
+				if e.id == "poison":
+					venom_applied += 1
+					venom_tick_ok = venom_tick_ok and is_equal_approx(e.damage_per_tick, 1.0) and is_equal_approx(e.duration, 6.0)
+	_ok(venom_applied > 0 and venom_applied < venom_hits,
+		"venomous poisons on some but not all hits (%d of %d)" % [venom_applied, venom_hits])
+	_ok(venom_tick_ok, "venom poison is 6s at 5% of max hit (min 1) per tick")
+	_mm_fight("mm_plain")
+	CombatManager.seed_rng(11)
+	var plain_poison: int = 0
+	for _i in range(100):
+		CombatManager.player_effects.clear()
+		CombatManager.player_hp = 100000.0
+		CombatManager._monster_attack()
+		for e in CombatManager.player_effects:
+			if e.id == "poison":
+				plain_poison += 1
+	_eq(plain_poison, 0, "a monster without venomous never poisons")
+	# (e) one hit through two thresholds fires both phases once, in order.
+	var phase_names: Array = []
+	var on_phase := func(mid: String, pname: String): phase_names.append("%s:%s" % [mid, pname])
+	EventBus.monster_phase_entered.connect(on_phase)
+	_mm_fight("mm_boss")
+	_eq(CombatManager.monster_phases_fired, 0, "a fresh boss has fired no phases")
+	_eq(int(CombatManager.current_monster().get("max_hit")), 20, "no phase overrides before a threshold")
+	CombatManager.apply_damage_to_monster(700)
+	_eq(CombatManager.monster_phases_fired, 2, "one hit from 100% to 30% fires both phases")
+	_eq(phase_names, ["mm_boss:Wrath", "mm_boss:Fury"], "both phase signals fire once, in order")
+	_eq(str(CombatManager.current_monster().get("attack_type")), "magic", "an attack_type phase changes the live attack type")
+	_eq(int(CombatManager.current_monster().get("max_hit")), 40, "a max_hit_multiplier phase changes the live max hit")
+	CombatManager.apply_damage_to_monster(50)
+	_eq(CombatManager.monster_phases_fired, 2, "a fired phase never fires again")
+	_eq(phase_names.size(), 2, "no extra phase signals after the last threshold")
+	_eq(int(DataLoader.get_monster("mm_boss").get("max_hit")), 20, "phases never mutate the base record")
+	# (f) a phase status lands on the player even when the boss is immune.
+	_mm_fight("mm_immune")
+	CombatManager.apply_damage_to_monster(600)
+	var poisoned: bool = false
+	for e in CombatManager.player_effects:
+		if e.id == "poison":
+			poisoned = true
+	_ok(poisoned, "a phase apply_status lands on the player of an immune boss")
+	_ok(CombatManager.monster_effects.is_empty(), "the immune boss itself carries no status")
+	CombatManager.apply_status("monster", "stun", 3.0)
+	_ok(CombatManager.monster_effects.is_empty(), "boss immunity to stun is unchanged")
+	# (e2) a burn ticking the boss through a threshold fires the phase with no direct hit.
+	_mm_fight("mm_boss")
+	phase_names.clear()
+	CombatManager.monster_hp = 760
+	CombatManager.apply_status("monster", "burn", 5.0, 20.0)
+	CombatManager.tick(1.0)
+	_ok(CombatManager.monster_hp <= 750, "the burn tick lowered the boss HP (%d)" % CombatManager.monster_hp)
+	_eq(CombatManager.monster_phases_fired, 1, "a DoT tick across 75% fires that phase")
+	_eq(phase_names, ["mm_boss:Wrath"], "the DoT phase signal fires once")
+	_eq(str(CombatManager.current_monster().get("attack_type")), "magic", "the DoT-fired phase override is live")
+	# (g) save round trip.
+	_mm_fight("mm_boss")
+	CombatManager.apply_damage_to_monster(700)
+	var saved: Dictionary = CombatManager.serialize()
+	_eq(int(saved.get("phases_fired", -1)), 2, "serialize records phases_fired")
+	CombatManager.monster_phases_fired = 0
+	CombatManager.deserialize(saved)
+	_eq(CombatManager.monster_phases_fired, 2, "deserialize restores phases_fired")
+	_eq(int(CombatManager.current_monster().get("max_hit")), 40, "reload mid-phase restores the phase overrides")
+	var old_save: Dictionary = saved.duplicate(true)
+	old_save.erase("phases_fired")
+	CombatManager.deserialize(old_save)
+	_eq(CombatManager.monster_phases_fired, 0, "a save without phases_fired loads as 0")
+	var wild: Dictionary = saved.duplicate(true)
+	wild["phases_fired"] = 9
+	CombatManager.deserialize(wild)
+	_eq(CombatManager.monster_phases_fired, 2, "phases_fired clamps to the phase count")
+	wild["phases_fired"] = -3
+	CombatManager.deserialize(wild)
+	_eq(CombatManager.monster_phases_fired, 0, "negative phases_fired clamps to 0")
+	# (h) raid hp_mult 2.0: threshold is a fraction of the scaled HP pool.
+	var raid_shop_before: Dictionary = DataLoader.raid_shop.duplicate(true)
+	var raid_diff_before: String = RaidManager.difficulty
+	(DataLoader.raid_shop["difficulties"] as Dictionary)["mm_double"] = {"coin_mult": 1.0, "hp_mult": 2.0}
+	RaidManager.difficulty = "mm_double"
+	_mm_fight("mm_half", "raid")
+	_eq(CombatManager.monster_max_hp, 200, "raid hp_mult doubles the spawned HP pool")
+	CombatManager.apply_damage_to_monster(99)
+	_eq(CombatManager.monster_phases_fired, 0, "101/200 HP is above the 50% phase")
+	CombatManager.apply_damage_to_monster(1)
+	_eq(CombatManager.monster_phases_fired, 1, "the 50% phase fires at half the scaled HP")
+	EventBus.monster_phase_entered.disconnect(on_phase)
+	CombatManager.stop_combat("test")
+	RaidManager.difficulty = raid_diff_before
+	DataLoader.raid_shop = raid_shop_before
+	for id in added:
+		DataLoader.monsters.erase(id)
+	PlayerData.set_level("attack", 1)
+	PlayerData.set_level("strength", 1)
+	CombatManager.monster_phases_fired = 0
+
+func _panel_texts(node: Node, out: Array[String]) -> void:
+	if node is Label:
+		out.append((node as Label).text)
+	for child in node.get_children():
+		_panel_texts(child, out)
+
+## The combat screen's monster info: affinities, passive names, phase progress and the phase
+## banner/log line. Drives live state directly; last in run_all because start_combat may roll RNG.
+func _test_combat_panel_monster_mechanics(host: Node) -> void:
+	_heading("Combat panel monster mechanics")
+	GameManager.start_new_game("standard")
+	DataLoader.monsters["ui_boss"] = _mm_record("ui_boss", {"name": "Ui Boss", "weak_to": ["magic"],
+		"resists": ["melee"], "passives": ["regeneration", "venomous"], "phases": [
+			{"at_hp_percent": 75, "name": "Wrath", "effects": {"attack_type": "magic"}},
+			{"at_hp_percent": 40, "name": "Fury", "effects": {"add_passives": ["lifedrain"]}}]})
+	DataLoader.monsters["ui_plain"] = _mm_record("ui_plain", {"name": "Ui Plain"})
+	var weak_pct: int = roundi((MonsterMechanics.WEAK_MULTIPLIER - 1.0) * 100.0)
+	var resist_pct: int = roundi((1.0 - MonsterMechanics.RESIST_MULTIPLIER) * 100.0)
+	var panel: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2(420, 900)
+	holder.size = Vector2(420, 900)
+	(host as Control).add_child(holder)
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	holder.add_child(panel)
+	_mm_fight("ui_boss")
+	var texts: Array[String] = []
+	_panel_texts(panel, texts)
+	var blob: String = "\n".join(texts)
+	_ok(blob.contains("Weak: Magic +%d%%" % weak_pct), "the panel shows the weak affinity with its percent")
+	_ok(blob.contains("Resists: Melee -%d%%" % resist_pct), "the panel shows the resisted style with its percent")
+	_ok(blob.contains("Regeneration") and blob.contains("Venomous"), "the panel names the monster's passives")
+	_ok(blob.contains("Next phase at 75% HP"), "the panel shows the first phase threshold")
+	_ok(not blob.contains("Phase: ") and not blob.contains("Final phase"), "no phase banner before a phase fires")
+	_ok(not blob.contains("Lifedrain"), "a phase-added passive is hidden until its phase fires")
+	_ok(panel.get_combined_minimum_size().x <= 420.0, "monster info fits a 420px window (needs %dpx; widest row is %s)" %
+		[int(panel.get_combined_minimum_size().x), TestSupport.widest_descendant(panel)])
+	CombatManager.apply_damage_to_monster(300)
+	texts.clear()
+	_panel_texts(panel, texts)
+	blob = "\n".join(texts)
+	_ok(blob.contains("Phase: Wrath"), "the phase name is bannered once it fires")
+	_ok(blob.contains("Next phase at 40% HP"), "the next threshold advances after a phase fires")
+	_ok(blob.contains("enters a new phase: Wrath"), "the phase entry is appended to the combat log")
+	CombatManager.apply_damage_to_monster(400)
+	texts.clear()
+	_panel_texts(panel, texts)
+	blob = "\n".join(texts)
+	_ok(blob.contains("Phase: Fury") and blob.contains("Final phase") and not blob.contains("Next phase at"),
+		"after the last phase the panel says Final phase")
+	_ok(blob.contains("Lifedrain"), "a phase-added passive appears once its phase fires")
+	_ok(panel.get_combined_minimum_size().x <= 420.0, "phase banner fits a 420px window (needs %dpx; widest row is %s)" %
+		[int(panel.get_combined_minimum_size().x), TestSupport.widest_descendant(panel)])
+	holder.size = Vector2(1440, 900)
+	_ok(panel.get_combined_minimum_size().x <= 1440.0, "monster info fits a 1440px window")
+	_mm_fight("ui_plain")
+	texts.clear()
+	_panel_texts(panel, texts)
+	blob = "\n".join(texts)
+	_ok(not blob.contains("Phase: ") and not blob.contains("Weak:") and not blob.contains("Resists:")
+		and not blob.contains("Next phase") and not blob.contains("Final phase"),
+		"a plain monster shows no affinity or phase rows, and the banner resets on a new fight")
+	CombatManager.stop_combat("test")
+	holder.queue_free()
+	DataLoader.monsters.erase("ui_boss")
+	DataLoader.monsters.erase("ui_plain")
+	CombatManager.monster_phases_fired = 0
+
+## Player status resistance: worn gear plus prayer/potion modifiers shorten or drop incoming
+## poison/burn/stun-family statuses; consumes one combat RNG roll only when resistance > 0.
+func _test_player_status_resistance() -> void:
+	_heading("Player status resistance")
+	GameManager.start_new_game("standard")
+	DataLoader.monsters["sr_plain"] = _mm_record("sr_plain")
+	DataLoader.items["sr_charm"] = {"id": "sr_charm", "name": "sr_charm", "item_type": "equipment",
+		"equipment_stats": {"burn_resistance": 50}}
+	_mm_fight("sr_plain")
+	# One seed whose first roll is below 0.5 (resisted) and one above (shortened).
+	var low_seed: int = -1
+	var high_seed: int = -1
+	for s in range(1, 200):
+		var probe := RandomNumberGenerator.new()
+		probe.seed = s
+		var r: float = probe.randf()
+		if r < 0.4 and low_seed < 0:
+			low_seed = s
+		if r > 0.8 and high_seed < 0:
+			high_seed = s
+	_ok(low_seed > 0 and high_seed > 0, "found seeds for a low and a high resistance roll")
+	# No resistance: applies in full and consumes no roll.
+	CombatManager.seed_rng(high_seed)
+	CombatManager.apply_status("player", "burn", 10.0, 2.0)
+	_eq(CombatManager.player_effects.size(), 1, "no resistance applies the burn")
+	_approx(CombatManager.player_effects[0].duration, 10.0, 0.0001, "no resistance leaves full duration")
+	var probe2 := RandomNumberGenerator.new()
+	probe2.seed = high_seed
+	var first_roll: float = probe2.randf()
+	_approx(CombatManager._rng.randf(), first_roll, 0.0000001, "zero resistance consumes no RNG roll")
+	# Worn gear 50%.
+	EquipmentManager.slots[ItemData.EquipmentSlot.AMULET] = "sr_charm"
+	_approx(EquipmentManager.get_status_resistance("burn"), 50.0, 0.0001, "worn gear sums burn_resistance")
+	_approx(EquipmentManager.get_status_resistance("stun"), 0.0, 0.0001, "other families read zero")
+	_approx(CombatManager.player_status_resistance("burn"), 50.0, 0.0001, "player burn resistance is the gear value")
+	CombatManager.player_effects.clear()
+	CombatManager.seed_rng(low_seed)
+	CombatManager.apply_status("player", "burn", 10.0, 2.0)
+	_ok(CombatManager.player_effects.is_empty(), "a low roll resists the burn outright")
+	CombatManager.seed_rng(high_seed)
+	CombatManager.apply_status("player", "burn", 10.0, 2.0)
+	_eq(CombatManager.player_effects.size(), 1, "a high roll lets the burn land")
+	if CombatManager.player_effects.size() == 1:
+		_approx(CombatManager.player_effects[0].duration, 5.0, 0.0001, "50% resistance halves the duration")
+	# Slow has no family: untouched even with a roll that would resist.
+	CombatManager.player_effects.clear()
+	CombatManager.seed_rng(low_seed)
+	CombatManager.apply_status("player", "slow", 10.0)
+	_eq(CombatManager.player_effects.size(), 1, "slow ignores resistance")
+	# Monster-targeted statuses ignore player resistance.
+	CombatManager.monster_effects.clear()
+	CombatManager.seed_rng(low_seed)
+	CombatManager.apply_status("monster", "burn", 10.0, 2.0)
+	_eq(CombatManager.monster_effects.size(), 1, "monster burn ignores player resistance")
+	# Modifier 100 caps at 75.
+	EquipmentManager.slots.erase(ItemData.EquipmentSlot.AMULET)
+	ModifierManager.register("sr_test", {ModifierKeys.STUN_RESISTANCE_PERCENT: 100.0}, "test")
+	_approx(CombatManager.player_status_resistance("stun"), 75.0, 0.0001, "resistance caps at 75")
+	CombatManager.player_effects.clear()
+	CombatManager.seed_rng(high_seed)
+	CombatManager.apply_status("player", "stun", 8.0)
+	if CombatManager.player_effects.size() == 1:
+		_approx(CombatManager.player_effects[0].duration, 2.0, 0.0001, "capped 75% leaves a quarter of the duration")
+	else:
+		_ok(false, "a 0.8+ roll lets a 75% resisted stun land")
+	ModifierManager.unregister("sr_test")
+	CombatManager.stop_combat("test")
+	CombatManager.player_effects.clear()
+	DataLoader.monsters.erase("sr_plain")
+	DataLoader.items.erase("sr_charm")
+	EquipmentManager.slots.erase(ItemData.EquipmentSlot.AMULET)
+
+## Parity bound, the one the online/offline consistency suite uses for a seeded comparison
+## (_test_online_offline_consistency_with_timers): 10%. Mean fight length is compared
+## relatively, the death rate (a proportion) absolutely.
+const MMP_SEED: int = 20261004
+const MMP_TOLERANCE: float = 0.10
+const MMP_SIM_TRIALS: int = 1000
+const MMP_AREA: String = "mmp_area"
+
+## The offline simulator mirrors the live monster mechanics: the same player and monster
+## fought in CombatManager (seeded, fight after fight) and in CombatSimulator.simulate must
+## agree on mean fight length and death rate within the parity bounds above.
+func _test_simulator_monster_mechanics() -> void:
+	_heading("Simulator mirrors monster mechanics")
+	# The simulator must read every mechanic number from MonsterMechanics, never a copy.
+	var source: String = FileAccess.get_file_as_string("res://scripts/combat/CombatSimulator.gd")
+	var copies := RegEx.create_from_string("const\\s+(WEAK|RESIST|VENOM|LIFEDRAIN|ARMORED|RESISTANCE)_")
+	_ok(copies.search(source) == null, "the simulator declares no copy of a MonsterMechanics constant")
+	for value in [MonsterMechanics.WEAK_MULTIPLIER, MonsterMechanics.RESIST_MULTIPLIER,
+			MonsterMechanics.VENOM_DURATION, MonsterMechanics.VENOM_TICK_FRACTION,
+			MonsterMechanics.LIFEDRAIN_FRACTION, MonsterMechanics.ARMORED_FRACTION,
+			MonsterMechanics.RESISTANCE_CAP]:
+		var literal: String = str(float(value))
+		_ok(source.find(literal) < 0, "the simulator has no literal %s (a MonsterMechanics value)" % literal)
+	for family_id in ["\"toxin\"", "\"deadly_poison\"", "\"frostburn\"", "\"crystallize\""]:
+		_ok(source.find(family_id) < 0, "the simulator does not restate the status families (%s)" % family_id)
+	for call in ["MonsterMechanics.affinity_multiplier", "MonsterMechanics.armored_reduce",
+			"MonsterMechanics.lifedrain_heal", "MonsterMechanics.venom_status", "MonsterMechanics.VENOM_CHANCE",
+			"MonsterMechanics.phases_due", "MonsterMechanics.effective", "MonsterMechanics.status_family",
+			"MonsterMechanics.resisted_duration"]:
+		_ok(source.find(call) >= 0, "the simulator uses %s" % call)
+
+	GameManager.start_new_game("standard")
+	for skill_id in ["attack", "strength", "defence", "hitpoints"]:
+		PlayerData.set_level(skill_id, 70)
+	_mmp_zero_damage_hits()
+	# Snapshot plumbing: the flattened monster carries the new fields, the player its resistance.
+	var boss_phases: Array = [
+		{"at_hp_percent": 70, "name": "Shift", "effects": {"attack_type": "magic"}},
+		{"at_hp_percent": 35, "name": "Frenzy", "effects": {"attack_speed_multiplier": 2.0, "max_hit_multiplier": 2.0}}]
+	DataLoader.monsters["mmp_boss"] = _mm_record("mmp_boss", {"hitpoints": 800, "max_hit": 60,
+		"accuracy_rating": 2000, "weak_to": ["ranged"], "resists": ["magic"], "phases": boss_phases})
+	DataLoader.areas[MMP_AREA] = {"id": MMP_AREA, "name": MMP_AREA, "type": "area", "monsters": ["mmp_boss"]}
+	var snap: Dictionary = CombatSimulatorManager.build_snapshot("area", MMP_AREA, "melee", "slash")
+	var flat: Dictionary = (snap.get("monsters", [{}]) as Array)[0]
+	_eq(flat.get("weak_to", []), ["ranged"], "the simulator snapshot carries weak_to")
+	_eq(flat.get("resists", []), ["magic"], "the simulator snapshot carries resists")
+	_eq((flat.get("phases", []) as Array).size(), 2, "the simulator snapshot carries the phases")
+	var resistance: Dictionary = snap.get("status_resistance", {})
+	_ok(resistance.has("poison") and resistance.has("burn") and resistance.has("stun"),
+		"the simulator snapshot carries the player's status resistance per family")
+
+	# A DoT tick that crosses a threshold fires the phase even when no direct hit ever does:
+	# the player's hits deal 1, their burn does the rest and kills before the next swing.
+	var dot_snap: Dictionary = _mmp_dot_phase_snapshot()
+	var dot_fight: Dictionary = CombatSimulator._run_fight(dot_snap, dot_snap["player"],
+		dot_snap["monsters"][0], 1000.0, 1000.0, _mmp_rng(), {})
+	_eq(int(dot_fight.get("kills", 0)), 1, "the DoT-phase boss dies to its burn")
+	_eq(int(dot_fight.get("phases_fired", -1)), 1, "a burn tick across the threshold fires the phase in the simulator")
+	# A killing blow fires nothing: the same boss, one-shot from full HP.
+	var one_shot: Dictionary = dot_snap.duplicate(true)
+	one_shot["player"]["max_hit"] = 5000
+	one_shot["player"]["min_hit_percent"] = 1.0
+	var shot_fight: Dictionary = CombatSimulator._run_fight(one_shot, one_shot["player"],
+		one_shot["monsters"][0], 1000.0, 1000.0, _mmp_rng(), {})
+	_eq(int(shot_fight.get("phases_fired", -1)), 0, "a killing blow fires no phase in the simulator")
+
+	# Live vs simulator, one mechanic at a time.
+	var weapon_slot: int = ItemData.EquipmentSlot.WEAPON
+	var amulet_slot: int = ItemData.EquipmentSlot.AMULET
+	DataLoader.special_attacks["mmp_burn_strike"] = {"id": "mmp_burn_strike", "trigger_chance": 100.0,
+		"damage_multiplier": 0.01, "applies_status": "burn", "status_chance": 100.0,
+		"status_duration": 30.0, "status_damage_per_tick": 10.0}
+	DataLoader.special_attacks["mmp_burn_bite"] = {"id": "mmp_burn_bite", "trigger_chance": 100.0,
+		"damage_multiplier": 1.0, "applies_status": "burn", "status_chance": 100.0,
+		"status_duration": 10.0, "status_damage_per_tick": 10.0}
+	DataLoader.items["mmp_blade"] = {"id": "mmp_blade", "name": "mmp_blade", "item_type": "equipment",
+		"equipment_slot": weapon_slot, "attack_speed": 3.0, "special_attack": "mmp_burn_strike", "equipment_stats": {}}
+	DataLoader.items["mmp_charm"] = {"id": "mmp_charm", "name": "mmp_charm", "item_type": "equipment",
+		"equipment_slot": amulet_slot, "equipment_stats": {"burn_resistance": 50}}
+	var cases: Array = [
+		{"label": "weak_to", "fights": 40, "monster": {"hitpoints": 600, "max_hit": 1, "weak_to": ["melee"]}},
+		{"label": "resists", "fights": 40, "monster": {"hitpoints": 600, "max_hit": 1, "resists": ["melee"]}},
+		{"label": "armored", "fights": 40, "monster": {"hitpoints": 400, "max_hit": 1, "passives": ["armored"]}},
+		{"label": "lifedrain", "fights": 40, "monster": {"hitpoints": 600, "max_hit": 40, "attack_speed": 2.0,
+			"passives": ["lifedrain"]}},
+		{"label": "venomous", "fights": 30, "monster": {"hitpoints": 2000, "max_hit": 1, "attack_speed": 0.25,
+			"passives": ["venomous"]}},
+		{"label": "two-phase boss", "fights": 300, "monster": {"hitpoints": 800, "max_hit": 60,
+			"accuracy_rating": 2000, "phases": boss_phases}},
+		{"label": "DoT-driven phase", "fights": 120, "weapon": "mmp_blade", "monster": {"hitpoints": 1000,
+			"max_hit": 100, "phases": [{"at_hp_percent": 60, "name": "Scorched",
+				"effects": {"max_hit_multiplier": 1.5, "attack_speed_multiplier": 2.0}}]}},
+		{"label": "burn resistance", "fights": 60, "amulet": "mmp_charm", "monster": {"hitpoints": 300,
+			"max_hit": 1, "attack_speed": 1.0, "special_attacks": ["mmp_burn_bite"]}},
+	]
+	for case in cases:
+		var monster_id: String = "mmp_%s" % str(case["label"]).replace(" ", "_").replace("-", "_")
+		DataLoader.monsters[monster_id] = _mm_record(monster_id, case["monster"])
+		DataLoader.areas[MMP_AREA]["monsters"] = [monster_id]
+		EquipmentManager.slots.erase(weapon_slot)
+		EquipmentManager.slots.erase(amulet_slot)
+		if case.has("weapon"):
+			EquipmentManager.slots[weapon_slot] = str(case["weapon"])
+		if case.has("amulet"):
+			EquipmentManager.slots[amulet_slot] = str(case["amulet"])
+		var sim_snap: Dictionary = CombatSimulatorManager.build_snapshot("area", MMP_AREA, "melee", "slash")
+		var sim: Dictionary = CombatSimulator.simulate(sim_snap, MMP_SIM_TRIALS, MMP_SEED)
+		var live: Dictionary = _mmp_live(monster_id, int(case["fights"]))
+		_eq(int(live["fights"]), int(case["fights"]), "%s: the live harness fought every requested fight" % case["label"])
+		var sim_seconds: float = float(sim["average_fight_seconds"])
+		var live_seconds: float = float(live["mean_seconds"])
+		var sim_death: float = float(sim["death_chance"])
+		var live_death: float = float(live["death_rate"])
+		_ok(absf(sim_seconds - live_seconds) <= live_seconds * MMP_TOLERANCE,
+			"%s: simulator mean fight %.1fs matches live %.1fs" % [case["label"], sim_seconds, live_seconds])
+		_ok(absf(sim_death - live_death) <= MMP_TOLERANCE,
+			"%s: simulator death rate %.2f matches live %.2f" % [case["label"], sim_death, live_death])
+		DataLoader.monsters.erase(monster_id)
+	EquipmentManager.slots.erase(weapon_slot)
+	EquipmentManager.slots.erase(amulet_slot)
+	for id in ["mmp_burn_strike", "mmp_burn_bite"]:
+		DataLoader.special_attacks.erase(id)
+	for id in ["mmp_blade", "mmp_charm"]:
+		DataLoader.items.erase(id)
+	DataLoader.monsters.erase("mmp_boss")
+	DataLoader.areas.erase(MMP_AREA)
+	CombatManager.monster_phases_fired = 0
+
+## Damage formulas are unchanged by affinities: a landed hit that monster DR floors to 0 still
+## deals 0, and a resisted 1-damage hit still deals 1 (the minimum only stops the multiplier
+## rounding a positive hit away). Checked in both engines, deterministically.
+func _mmp_zero_damage_hits() -> void:
+	DataLoader.monsters["mmp_dr0"] = _mm_record("mmp_dr0")
+	DataLoader.monsters["mmp_dr99"] = _mm_record("mmp_dr99", {"damage_reduction": 99})
+	DataLoader.monsters["mmp_dr98"] = _mm_record("mmp_dr98", {"damage_reduction": 98})
+	DataLoader.monsters["mmp_dr98_resist"] = _mm_record("mmp_dr98_resist", {"damage_reduction": 98, "resists": ["melee"]})
+	var per_seed := func(monster_id: String) -> Array:
+		_mm_fight(monster_id)
+		var out: Array = []
+		for s in range(1, 61):
+			out.append(_mm_player_damage(s))
+		return out
+	var plain: Array = per_seed.call("mmp_dr0")
+	var floored: Array = per_seed.call("mmp_dr99")
+	var landed: int = 0
+	var lifted: int = 0
+	for i in range(plain.size()):
+		if int(plain[i]) > 0:
+			landed += 1
+			lifted += int(floored[i])
+	_ok(landed > 0 and lifted == 0,
+		"live: a landed hit that DR floors to 0 still deals 0 (%d hits, %d damage)" % [landed, lifted])
+	var neutral: Array = per_seed.call("mmp_dr98")
+	var resisted: Array = per_seed.call("mmp_dr98_resist")
+	_eq(resisted, neutral, "live: resists keeps a 1-damage hit at 1 and a 0-damage hit at 0")
+	_ok(neutral.has(0) and neutral.has(1), "live: the DR 98 seeds include both 0- and 1-damage hits")
+	CombatManager.stop_combat("test")
+	for id in ["mmp_dr0", "mmp_dr99", "mmp_dr98", "mmp_dr98_resist"]:
+		DataLoader.monsters.erase(id)
+	# The simulator, on the same rule: a stalemate of landed hits against heavy DR.
+	var base: Dictionary = _mmp_dot_phase_snapshot()
+	base.erase("player_special")
+	base["player"]["max_hit"] = 99
+	var monster: Dictionary = base["monsters"][0]
+	monster["phases"] = []
+	var sim_damage := func(dr: float, resists: Array) -> float:
+		var m: Dictionary = monster.duplicate(true)
+		m["damage_reduction"] = dr
+		m["resists"] = resists
+		return float(CombatSimulator._run_fight(base, base["player"], m, 1000.0, 1000.0, _mmp_rng(), {})["damage"])
+	var sim_plain: float = sim_damage.call(0.0, [])
+	_ok(sim_plain > 0.0, "simulator: the control fight lands hits (%.0f damage)" % sim_plain)
+	_approx(sim_damage.call(99.0, []), 0.0, 0.0001, "simulator: landed hits that DR floors to 0 deal 0")
+	var sim_neutral: float = sim_damage.call(98.0, [])
+	_ok(sim_neutral > 0.0, "simulator: DR 98 lets 1-damage hits through (%.0f damage)" % sim_neutral)
+	_approx(sim_damage.call(98.0, ["melee"]), sim_neutral, 0.0001,
+		"simulator: resists keeps 1-damage hits at 1 and 0-damage hits at 0")
+
+func _mmp_rng() -> RandomNumberGenerator:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = MMP_SEED
+	return rng
+
+## A pure-simulator boss whose 50% phase only a burn tick can cross: hits deal 1 every 4s, the
+## burn (334 per second) takes it 999 -> 665 -> 331 (phase) -> dead before the second swing.
+func _mmp_dot_phase_snapshot() -> Dictionary:
+	return {
+		"player": {"style": "melee", "max_hp": 1000.0, "accuracy": 1000000, "max_hit": 1,
+			"min_hit_percent": 0.0, "min_hit_flat": 0.0, "attack_interval": 4.0, "damage_reduction": 0.0,
+			"evasion": {"melee": 1000000, "ranged": 1000000, "magic": 1000000},
+			"crit_chance": 0.0, "crit_multiplier": 50.0, "life_steal": 0.0, "hybrid": false},
+		"player_special": {"id": "mmp_dot", "trigger_chance": 100.0, "damage_multiplier": 1.0,
+			"applies_status": "burn", "status_chance": 100.0, "status_duration": 100.0,
+			"status_damage_per_tick": 334.0},
+		"monsters": [{"id": "mmp_dot_boss", "name": "mmp_dot_boss", "hitpoints": 1000, "max_hit": 1,
+			"accuracy_rating": 1, "attack_speed": 3.0, "attack_type": "melee", "damage_reduction": 0.0,
+			"melee_evasion": 1, "ranged_evasion": 1, "magic_evasion": 1, "passives": [],
+			"phases": [{"at_hp_percent": 50, "name": "Cinders", "effects": {"attack_type": "magic"}}]}],
+		"mode_config": {}, "food": {}, "auto_eat_tier": 0, "prayer_points": 0.0,
+		"status_resistance": {"poison": 0.0, "burn": 0.0, "stun": 0.0},
+	}
+
+## Fight the area's monster live, seeded, until `fights` fights have ended (a kill, a death
+## or the simulator's stalemate ceiling). Like the simulator, every fight starts at full HP
+## with no status carried over, and in the same gear: a defeat's dropped item is put back.
+func _mmp_live(monster_id: String, fights: int) -> Dictionary:
+	var worn: Dictionary = EquipmentManager.slots.duplicate()
+	CombatManager.seed_rng(MMP_SEED)
+	SimulationMode.begin()
+	_mmp_start(monster_id)
+	var kills_seen: int = CombatManager.kills_this_session
+	var done: int = 0
+	var deaths: int = 0
+	var total: float = 0.0
+	var clock: float = 0.0
+	var guard: int = 0
+	while done < fights and guard < 5000000:
+		guard += 1
+		CombatManager.tick(CombatSimulator.STEP_SECONDS)
+		clock += CombatSimulator.STEP_SECONDS
+		if CombatManager.kills_this_session != kills_seen:
+			kills_seen = CombatManager.kills_this_session
+			done += 1
+			total += clock
+			clock = 0.0
+			CombatManager.player_hp = CombatManager.player_max_hp
+			CombatManager.player_effects.clear()
+		elif CombatManager.state != CombatManager.State.FIGHTING or clock >= CombatSimulator.FIGHT_SECONDS_CEILING:
+			deaths += 1
+			done += 1
+			total += clock
+			clock = 0.0
+			EquipmentManager.slots = worn.duplicate()
+			_mmp_start(monster_id)
+			kills_seen = CombatManager.kills_this_session
+	SimulationMode.end()
+	CombatManager.stop_combat("test")
+	return {"fights": done, "deaths": deaths, "death_rate": float(deaths) / float(maxi(1, done)),
+		"mean_seconds": total / float(maxi(1, done))}
+
+func _mmp_start(monster_id: String) -> void:
+	if CombatManager.state != CombatManager.State.IDLE:
+		CombatManager.stop_combat("test")
+	CombatManager.player_hp = 0.0
+	CombatManager.start_combat({"type": "area", "id": MMP_AREA, "monsters": [monster_id],
+		"endless": true, "attack_style": "melee", "melee_style": "slash"})
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
+
 ## Monster passives have to be real on BOTH sides of the fence: the vocabulary the engine
 ## understands, the pure maths each passive uses, and content that actually carries them.
 func _test_monster_passives() -> void:
@@ -2068,6 +2872,370 @@ func _test_dungeon_ladder() -> void:
 ## Arrows and runes are only a real supply loop if an attack actually spends them, and the
 ## Marksmanship skillcapes only mean anything if preservation is applied to that spend. Both
 ## combat paths call CombatFormulas.ammo_cost, so the maths is pinned once here.
+## The top products of Echo Keeping, Lostfinding, Wayfolding and Customcraft were sell-only, so
+## those skills fed nothing else in the game. They are now potions whose effect keys the game
+## actually reads, and the two combat ones only spend charges while fighting.
+func _test_late_products_are_usable() -> void:
+	_heading("Late skill products do something")
+	var live_keys: Array = ["global_mastery_xp_percent", "global_skill_xp_percent", "global_gp_percent",
+		"global_double_loot_percent", "global_doubling_percent", "global_slayer_coins_percent",
+		ModifierKeys.GLOBAL_SKILL_INTERVAL_PERCENT, ModifierKeys.ATTACK_INTERVAL_PERCENT]
+	for item_id in ["master_echo_loop", "flawless_echo", "finders_fee", "herald_case", "grand_confluence", "herald_craft",
+			"echo_inscription", "herald_gate"]:
+		var it: Dictionary = DataLoader.get_item(item_id)
+		_eq(str(it.get("item_type", "")), "potion", "%s can be used from storage" % item_id)
+		_ok(int(it.get("charges", 0)) > 0, "%s lasts a number of charges" % item_id)
+		for key in (it.get("potion_effect", {}) as Dictionary).keys():
+			_ok(live_keys.has(str(key)), "%s's effect '%s' is read by the game" % [item_id, key])
+		_ok(not it.has("terminal_reason"), "%s no longer declares itself sell-only" % item_id)
+	var potion_before: String = PlayerData.active_potion
+	var charges_before: int = PlayerData.potion_charges
+	BankManager.add_item_guaranteed("herald_case", 1)
+	_ok(PotionManager.use_potion("herald_case"), "a Herald Case can be opened")
+	var full: int = PlayerData.potion_charges
+	PotionManager.consume_charge("mining")
+	_eq(PlayerData.potion_charges, full, "a combat potion does not drain while skilling")
+	PotionManager.consume_charge("combat")
+	_eq(PlayerData.potion_charges, full - 1, "a combat potion drains per attack")
+	_approx(ModifierManager.get_modifier("global_double_loot_percent"), 5.0, 0.001, "the case's double-loot bonus is active")
+	PotionManager.clear()
+	# damage_to_monsters_percent sat on rings and amulets but nothing read it.
+	var base: float = ModifierManager.get_max_hit_percent("ranged")
+	ModifierManager.register("test:dtm", {"damage_to_monsters_percent": 3.0}, "test", "test")
+	_approx(ModifierManager.get_max_hit_percent("ranged") - base, 3.0, 0.001, "damage_to_monsters_percent raises max hit")
+	ModifierManager.unregister("test:dtm")
+	# Echoed Inscription's effect must reach every skill's action time.
+	var iv_before: float = ModifierManager.get_interval("mining", 10.0)
+	BankManager.add_item_guaranteed("echo_inscription", 1)
+	_ok(PotionManager.use_potion("echo_inscription"), "an Echoed Inscription can be played")
+	_approx(ModifierManager.get_interval("mining", 10.0), iv_before * 0.95, 0.001, "an Echoed Inscription makes skills act 5% faster")
+	PotionManager.clear()
+	if potion_before != "":
+		PlayerData.active_potion = potion_before
+		PlayerData.potion_charges = charges_before
+		PotionManager._reapply()
+
+## Wrathfall (L52) gave the same +5% melee max hit as the level-4 prayer for three times the
+## points, and melee had no max-hit prayer past L70 while ranged and magic climb to 34%. The raid
+## shop's "Scavenged Bow" and "Scavenged Rod" were melee slash weapons. Each pure max-hit line must
+## now rise with level, and each raid weapon must fight with the style its name promises.
+func _test_prayer_and_raid_ladders() -> void:
+	_heading("Prayer max-hit ladders and raid weapon styles")
+	for style in ["melee", "ranged", "magic"]:
+		var key: String = "%s_max_hit_percent" % style
+		var rows: Array = []
+		for id in DataLoader.prayers:
+			var eff: Dictionary = DataLoader.prayers[id].get("effect", {}) if typeof(DataLoader.prayers[id].get("effect", {})) == TYPE_DICTIONARY else {}
+			if eff.size() == 1 and eff.has(key):
+				rows.append([int(DataLoader.prayers[id]["level"]), float(eff[key]), str(id)])
+		rows.sort_custom(func(a, b): return a[0] < b[0])
+		var rising: bool = rows.size() >= 5
+		for i in range(1, rows.size()):
+			rising = rising and float(rows[i][1]) > float(rows[i - 1][1])
+		_ok(rising, "%s max-hit prayers rise with level (%s)" % [style, rows])
+		_ok(not rows.is_empty() and int(rows[-1][0]) >= 105, "%s has a max-hit prayer from L105 up" % style)
+	var styles: Dictionary = {"raid_alt_weapon_4": "ranged_attack", "raid_alt_weapon_5": "magic_attack"}
+	for id in styles:
+		var stats: Dictionary = DataLoader.get_item(id).get("equipment_stats", {})
+		_ok(stats.has(styles[id]) and not stats.has("slash"), "%s fights with %s" % [DataLoader.get_item(id).get("name", id), styles[id]])
+	_ok(not (DataLoader.get_item("raid_alt_weapon_4").get("attack_cost_items", {}) as Dictionary).is_empty(),
+		"the raid bow fires arrows like every other bow")
+
+## Township used to be a set of dead ends: stone only fed construction, drills and supplies
+## fed one gold offer, every "Unlocks:" line was flavour text, and only Homes earned XP. Each
+## structure that promises an unlock must now grant a real modifier per level, every store must
+## be spent by at least one trader offer, and every structure level must add settlement XP.
+func _test_township_has_no_dead_ends() -> void:
+	_heading("Township has no dead ends")
+	var saved_buildings: Dictionary = TownshipManager.buildings.duplicate()
+	var saved_resources: Dictionary = TownshipManager.resources.duplicate()
+	for id in DataLoader.township_buildings.keys():
+		var b: Dictionary = DataLoader.township_buildings[id]
+		if str(b.get("unlocks", "")) != "" and not str(id).ends_with("observatory"):
+			_ok(not (b.get("modifiers", {}) as Dictionary).is_empty(),
+				"%s backs its unlock with a real bonus" % str(b.get("name", id)))
+	var spent: Dictionary = {}
+	for offer_id in DataLoader.trader.keys():
+		var offer: Variant = DataLoader.trader[offer_id]
+		if typeof(offer) == TYPE_DICTIONARY:
+			for res_id in ((offer as Dictionary).get("cost", {}) as Dictionary).keys():
+				spent[str(res_id)] = int(spent.get(str(res_id), 0)) + 1
+	# Stone also pays for construction, so one trader sink is enough; drills and supplies need two.
+	_ok(int(spent.get("stone", 0)) >= 1, "Stone has a use once construction is done")
+	for res_id in ["drills", "supplies"]:
+		_ok(int(spent.get(res_id, 0)) >= 2, "%s is spent by more than one trader offer" % TownshipManager.resource_name(res_id))
+	# Every structure level adds XP, not only Homes.
+	TownshipManager.buildings = {"township_building_homes": 1}
+	var homes_only: float = TownshipManager.xp_per_hour()
+	TownshipManager.buildings = {"township_building_homes": 1, "township_building_workshop": 2}
+	_ok(TownshipManager.xp_per_hour() > homes_only, "building a Workshop raises settlement XP per hour")
+	# The Workshop's unlock is a real modifier, registered per level and removed with it.
+	TownshipManager._reregister_modifiers()
+	_approx(ModifierManager.get_preservation_chance("crafting"), 2.0, 0.001, "a level-2 Workshop gives 2% Artifice preservation")
+	TownshipManager.buildings = {"township_building_storehouse": 3}
+	TownshipManager._reregister_modifiers()
+	_approx(ModifierManager.get_preservation_chance("crafting"), 0.0, 0.001, "tearing the Workshop down removes its bonus")
+	_approx(ModifierManager.get_modifier(ModifierKeys.BANK_SPACE_FLAT), 15.0, 0.001, "the Storehouse still adds 5 storage stacks per level")
+	# A trader offer can grant settlement XP directly (the stone sink).
+	TownshipManager.buildings = {"township_building_mine": 1}
+	var monument: Dictionary = DataLoader.trader.get("trader_monument", {})
+	_ok(not (monument.get("grant_xp", {}) as Dictionary).is_empty(), "the monument offer grants XP")
+	for res_id in (monument.get("cost", {}) as Dictionary).keys():
+		TownshipManager.resources[str(res_id)] = float(monument["cost"][res_id])
+	var xp_before: float = PlayerData.get_xp("township")
+	_ok(bool(TownshipManager.trade_offer("trader_monument").ok), "the monument can be raised when the stone is there")
+	_ok(PlayerData.get_xp("township") > xp_before, "raising a monument pays Settlement XP")
+	_approx(float(TownshipManager.resources.get("stone", 0.0)), 0.0, 0.001, "raising a monument spends the stone")
+	TownshipManager.buildings = saved_buildings
+	TownshipManager.resources = saved_resources
+	TownshipManager._reregister_modifiers()
+
+## A bonus the data grants but no script reads is a reward that silently does nothing:
+## combat_max_hit_percent (Astrology's Emberine star), combat_interval_percent (an Agility
+## obstacle), hitpoints_regen_flat and slayer_area_negation_percent all shipped that way. This
+## walks every modifier bag in data/ and fails on a key no gameplay script can resolve, so the
+## next invented key fails here instead of in a player's hands.
+func _test_every_bonus_key_is_read() -> void:
+	_heading("Every bonus key in the data is read")
+	var source: String = ""
+	var consts_used: Dictionary = {}
+	var stack: Array[String] = ["res://scripts"]
+	while not stack.is_empty():
+		var dir_path: String = stack.pop_back()
+		var dir: DirAccess = DirAccess.open(dir_path)
+		if dir == null:
+			continue
+		for sub in dir.get_directories():
+			if sub != "tests":
+				stack.append(dir_path.path_join(sub))
+		for f in dir.get_files():
+			if f.ends_with(".gd") and f != "ModifierKeys.gd":
+				source += FileAccess.get_file_as_string(dir_path.path_join(f)) + "\n"
+	var keys_src: String = FileAccess.get_file_as_string("res://scripts/resources/ModifierKeys.gd")
+	var rx: RegEx = RegEx.create_from_string("const ([A-Z_]+) *:?= *\"([a-z0-9_]+)\"")
+	for m in rx.search_all(keys_src):
+		if source.contains("ModifierKeys." + m.get_string(1)):
+			consts_used[m.get_string(2)] = true
+	var skill_ids: Array = (JSON.parse_string(FileAccess.get_file_as_string("res://data/skills.json")) as Dictionary).keys()
+	var skill_suffixes: Array[String] = ["doubling_percent", "interval_flat", "interval_percent", "mastery_xp_percent",
+		"node_preservation_percent", "preservation_percent", "resource_flat", "skill_xp_percent", "hidden_levels", "stealth"]
+	var style_suffixes: Array[String] = ["accuracy_percent", "evasion_percent", "max_hit_flat", "max_hit_percent"]
+	var bags: Array[String] = ["modifiers", "effect", "passive_modifiers", "potion_effect", "mods"]
+	var found: Dictionary = {}   # key -> "file" where first seen
+	for f in DirAccess.get_files_at("res://data"):
+		if f.ends_with(".json"):
+			_collect_bonus_keys(JSON.parse_string(FileAccess.get_file_as_string("res://data/" + f)), "", bags, f, found)
+	var dead: Array[String] = []
+	for key in found.keys():
+		var k: String = str(key)
+		var ok: bool = source.contains("\"%s\"" % k) or consts_used.has(k)
+		for s in skill_suffixes:
+			if not ok and k.ends_with("_" + s) and skill_ids.has(k.trim_suffix("_" + s)):
+				var owner: String = k.trim_suffix("_" + s)
+				var action_only: bool = not s.contains("xp_percent") and s != "stealth" and s != "hidden_levels"
+				if not (action_only and str(DataLoader.get_skill(owner).get("type", "")) == "combat"):
+					ok = true
+		for s in style_suffixes:
+			if not ok and (k == "melee_" + s or k == "ranged_" + s or k == "magic_" + s):
+				ok = true
+		if not ok:
+			dead.append("%s (%s)" % [k, found[key]])
+	_ok(found.size() > 50, "the walk found the data's bonus keys (%d)" % found.size())
+	_ok(dead.is_empty(), "no bonus key is granted without a reader: %s" % ", ".join(dead))
+	# The four keys that used to be dead now change the numbers they promise.
+	var base_hit: float = ModifierManager.get_max_hit_percent("magic")
+	var base_iv: float = ModifierManager.get_attack_interval(3.0)
+	ModifierManager.register("test:dead_keys", {"combat_max_hit_percent": 4.0, "combat_interval_percent": 10.0,
+		"hitpoints_regen_flat": 7.0, "slayer_area_negation_percent": 50.0}, "test", "test")
+	_approx(ModifierManager.get_max_hit_percent("magic") - base_hit, 4.0, 0.001, "combat_max_hit_percent raises every style's max hit")
+	_ok(ModifierManager.get_attack_interval(3.0) < base_iv, "combat_interval_percent shortens the attack interval")
+	_approx(ModifierManager.get_hp_regen_per_attack(), 7.0, 0.001, "hitpoints_regen_flat is the heal per attack")
+	var halved: Dictionary = ModifierManager.negated_hazard({"label": "x", "player_accuracy_percent": -10.0, "enemy_damage_percent": 20})
+	_approx(float(halved["player_accuracy_percent"]), -5.0, 0.001, "50% negation halves a hazard's accuracy penalty")
+	_approx(float(halved["enemy_damage_percent"]), 10.0, 0.001, "50% negation halves a hazard's damage bonus")
+	_eq(str(halved["label"]), "x", "negation leaves a hazard's label alone")
+	ModifierManager.register("test:dead_keys", {"slayer_area_negation_percent": 250.0}, "test", "test")
+	_approx(float(ModifierManager.negated_hazard({"player_accuracy_percent": -10.0})["player_accuracy_percent"]), 0.0, 0.001,
+		"negation above 100% cancels the hazard but never inverts it")
+	ModifierManager.unregister("test:dead_keys")
+
+## Allotment and Tree plots used to be labels: every seed was a herb and went anywhere. Allotment
+## crops feed Cookery and tree saplings grow logs; each new seed only takes its own plot type,
+## herbs still go anywhere (so old farms keep working), and crop growth speed is a real bonus.
+func _test_farm_plot_types() -> void:
+	_heading("Farm plot types")
+	var by_type: Dictionary = {}
+	for a in (DataLoader.get_skill("farming").get("actions", []) as Array):
+		var seed: Dictionary = DataLoader.get_item(FarmingManager.seed_id_for_action(str((a as Dictionary)["id"])))
+		var t: String = str(seed.get("plot_type", "herb"))
+		by_type[t] = int(by_type.get(t, 0)) + 1
+	_ok(int(by_type.get("allotment", 0)) >= 5, "at least five allotment crops (%d)" % int(by_type.get("allotment", 0)))
+	_ok(int(by_type.get("tree", 0)) >= 5, "at least five tree crops (%d)" % int(by_type.get("tree", 0)))
+	# Every allotment crop is an ingredient in some Cookery recipe.
+	for item_id in DataLoader.items.keys():
+		var it: Dictionary = DataLoader.items[item_id]
+		if str(it.get("item_type", "")) != "seed" or str(it.get("plot_type", "")) != "allotment":
+			continue
+		var product: String = str(it.get("product_item", ""))
+		var cooked: bool = false
+		for a in (DataLoader.get_skill("cooking").get("actions", []) as Array):
+			if ((a as Dictionary).get("input_items", {}) as Dictionary).has(product):
+				cooked = true
+		_ok(cooked, "%s is cooked into something" % product)
+		var dropped: bool = false
+		for t in (DataLoader.get_skill("thieving").get("actions", []) as Array):
+			for sec in ((t as Dictionary).get("secondary_outputs", []) if (t as Dictionary).get("secondary_outputs") != null else []):
+				if str((sec as Dictionary).get("item_id", "")) == str(item_id):
+					dropped = true
+		_ok(dropped, "%s can be stolen" % item_id)
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("farming", 120)
+	var first_allot: int = -1
+	var first_tree: int = -1
+	for i in range(FarmingManager.plots.size()):
+		if first_allot < 0 and str(FarmingManager.plots[i]["type"]) == "allotment":
+			first_allot = i
+		if first_tree < 0 and str(FarmingManager.plots[i]["type"]) == "tree":
+			first_tree = i
+	BankManager.add_item_guaranteed("oak_sapling_seed", 5)
+	BankManager.add_item_guaranteed("hearthroot_seed", 5)
+	_ok(not FarmingManager.plant(first_allot, "oak_sapling_seed"), "a sapling refuses an allotment plot")
+	_ok(not FarmingManager.plant(first_tree, "hearthroot_seed"), "a vegetable refuses a tree plot")
+	_eq(FarmingManager.plant_first_free("oak_sapling_seed"), first_tree, "plant_first_free puts a sapling in the first tree plot")
+	_ok(FarmingManager.accepts(first_tree + 1, "garum_herb_seed"), "herbs still grow in any plot")
+	_eq(FarmingManager.free_plot_count("oak_sapling_seed"), 2, "two tree plots stay free for saplings")
+	var plain: float = float(FarmingManager.plots[first_tree]["grow_seconds"])
+	_approx(plain, float(DataLoader.get_item("oak_sapling_seed")["grow_seconds"]), 0.01, "with no bonus a tree takes its listed time")
+	ModifierManager.register("test:grow", {"farming_interval_percent": 10.0}, "test", "test")
+	_eq(FarmingManager.plant_first_free("oak_sapling_seed"), first_tree + 1, "a second sapling takes the next tree plot")
+	_approx(float(FarmingManager.plots[first_tree + 1]["grow_seconds"]), plain * 0.9, 0.01, "farming_interval_percent makes crops grow faster")
+	ModifierManager.unregister("test:grow")
+	FarmingManager.plots[first_tree]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
+	FarmingManager.plots[first_tree]["alive"] = true
+	var logs_before: int = BankManager.get_count("oak_log")
+	var res: Dictionary = FarmingManager.harvest(first_tree)
+	_eq(str(res.get("item_id", "")), "oak_log", "felling an Ironbark tree yields Ironbark logs")
+	_ok(BankManager.get_count("oak_log") - logs_before >= 15, "a tree yields a stack of logs")
+	GameManager.start_new_game("standard")
+
+## Pets, Astrology stars, Cartography finds and dig sites were each one template copied many
+## times. Each family must now offer several different rewards, and every reward must be one the
+## game reads for that skill.
+func _test_reward_variety() -> void:
+	_heading("Reward variety")
+	var pet_bags: Dictionary = {}
+	for id in DataLoader.pets.keys():
+		var p: Variant = DataLoader.pets[id]
+		if typeof(p) == TYPE_DICTIONARY:
+			var sig: String = JSON.stringify((p as Dictionary).get("effect", {}), "", true)
+			pet_bags[sig] = int(pet_bags.get(sig, 0)) + 1
+	var worst: int = 0
+	for sig in pet_bags.keys():
+		worst = maxi(worst, int(pet_bags[sig]))
+	_ok(worst <= 2, "no pet bonus is shared by more than two pets (worst %d)" % worst)
+	var star2: Dictionary = {}
+	for id in DataLoader.constellations.keys():
+		var c: Variant = DataLoader.constellations[id]
+		if typeof(c) == TYPE_DICTIONARY and ((c as Dictionary).get("stars", []) as Array).size() >= 2:
+			for k in (((c as Dictionary)["stars"][1] as Dictionary).get("effect", {}) as Dictionary).keys():
+				star2[str(k)] = true
+	_ok(star2.size() >= 12, "Astrology's second stars grant at least twelve different bonuses (%d)" % star2.size())
+	var poi_names: Dictionary = {}
+	var poi_keys: Dictionary = {}
+	var with_poi: int = 0
+	for hid in DataLoader.cartography_hexes.keys():
+		var poi: Variant = (DataLoader.cartography_hexes[hid] as Dictionary).get("poi")
+		if typeof(poi) != TYPE_DICTIONARY:
+			continue
+		with_poi += 1
+		poi_names[str((poi as Dictionary).get("name", ""))] = true
+		for k in ((poi as Dictionary).get("effect", {}) as Dictionary).keys():
+			poi_keys[str(k)] = true
+	_eq(with_poi, DataLoader.cartography_hexes.size(), "every hex has something to find")
+	_eq(poi_names.size(), with_poi, "every find has its own name")
+	_ok(not poi_names.has("Point of Interest"), "no find is called 'Point of Interest'")
+	_ok(poi_keys.size() >= 15, "finds grant at least fifteen different bonuses (%d)" % poi_keys.size())
+	var tables: Dictionary = {}
+	var sites: int = 0
+	for a in (DataLoader.get_skill("archaeology").get("actions", []) as Array):
+		sites += 1
+		var ids: Array = []
+		for sec in ((a as Dictionary).get("secondary_outputs", []) as Array):
+			ids.append(str((sec as Dictionary)["item_id"]))
+		ids.sort()
+		tables[",".join(ids)] = true
+	_eq(tables.size(), sites, "every dig site has its own finds")
+	var dearest: int = 0
+	for id in DataLoader.shop_museum.keys():
+		var e: Variant = DataLoader.shop_museum[id]
+		if typeof(e) == TYPE_DICTIONARY:
+			dearest = maxi(dearest, int((e as Dictionary).get("cost", 0)))
+	_ok(DataLoader.shop_museum.size() >= 12, "the museum stocks at least twelve curios")
+	_ok(dearest >= 500, "the museum has something worth saving tokens for (dearest %d)" % dearest)
+
+func _collect_bonus_keys(node: Variant, parent: String, bags: Array[String], file: String, found: Dictionary) -> void:
+	if typeof(node) == TYPE_DICTIONARY:
+		# Mastery checkpoints are bags keyed by their level ("1", "10", "99").
+		var is_bag: bool = bags.has(parent) or parent.is_valid_int()
+		for k in (node as Dictionary).keys():
+			var v: Variant = node[k]
+			if is_bag and (typeof(v) == TYPE_FLOAT or typeof(v) == TYPE_INT) and not found.has(k):
+				found[k] = file
+			_collect_bonus_keys(v, str(k), bags, file, found)
+	elif typeof(node) == TYPE_ARRAY:
+		for v in node:
+			_collect_bonus_keys(v, parent, bags, file, found)
+
+## Arrows stopped at steel and carried no stats, so every bow from L75 up fired the same 7 gp
+## arrow and the ammo tier changed nothing. Arrows now run eight tiers with rising strength, and a
+## bow looses the best arrow in storage up to its cap.
+func _test_arrow_tiers() -> void:
+	_heading("Arrow tiers")
+	var fletched: Dictionary = {}
+	for action in DataLoader.get_skill_actions("fletching"):
+		for out_id in (action.get("output_items", {}) as Dictionary).keys():
+			fletched[str(out_id)] = true
+	var by_tier: Dictionary = {}
+	for id in DataLoader.items.keys():
+		var it: Variant = DataLoader.items[id]
+		if typeof(it) == TYPE_DICTIONARY and int((it as Dictionary).get("ammo_tier", 0)) > 0:
+			by_tier[int((it as Dictionary)["ammo_tier"])] = str(id)
+	_eq(by_tier.size(), 8, "eight arrow tiers exist")
+	var prev: int = 0
+	for tier in range(1, 9):
+		var arrow: String = str(by_tier.get(tier, ""))
+		_ok(fletched.has(arrow), "tier %d arrow '%s' is fletched" % [tier, arrow])
+		var st: int = int((DataLoader.get_item(arrow).get("ammo_stats", {}) as Dictionary).get("ranged_strength", 0))
+		_ok(st > prev, "tier %d arrow is stronger than the tier below (%d)" % [tier, st])
+		prev = st
+	# Behaviour: the bow takes the best arrow it may, and falls back to its own default otherwise.
+	var weapon_before: String = EquipmentManager.get_equipped(8)
+	var stock: Dictionary = {}
+	for arrow in by_tier.values():
+		stock[arrow] = BankManager.get_count(str(arrow))
+		if int(stock[arrow]) > 0:
+			BankManager.remove_item(str(arrow), int(stock[arrow]))
+	EquipmentManager.slots[8] = "voidwood_longbow"
+	var base_str: int = EquipmentManager.get_strength_bonus("ranged")
+	_eq(EquipmentManager.active_ammo(), "", "with no arrows stored nothing is chosen")
+	_eq(EquipmentManager.get_attack_cost().keys(), ["herald_arrow"], "an empty quiver falls back to the bow's own arrow")
+	BankManager.add_item_guaranteed("bronze_arrow", 5)
+	_eq(EquipmentManager.active_ammo(), "bronze_arrow", "a high bow still looses a low arrow")
+	_eq(EquipmentManager.get_attack_cost().keys(), ["bronze_arrow"], "the attack spends the arrow it looses")
+	_eq(EquipmentManager.get_strength_bonus("ranged"), base_str + 1, "the arrow's strength is added")
+	BankManager.add_item_guaranteed("herald_arrow", 5)
+	_eq(EquipmentManager.active_ammo(), "herald_arrow", "the best arrow in storage is preferred")
+	_eq(EquipmentManager.get_strength_bonus("ranged"), base_str + 28, "a herald arrow adds +28 strength")
+	EquipmentManager.slots[8] = "normal_shortbow"
+	_eq(EquipmentManager.active_ammo(), "bronze_arrow", "a tier-1 bow cannot loose a herald arrow")
+	BankManager.remove_item("bronze_arrow", 5)
+	_eq(EquipmentManager.active_ammo(), "", "a tier-1 bow with only herald arrows has nothing to fire")
+	BankManager.remove_item("herald_arrow", 5)
+	for arrow in stock.keys():
+		if int(stock[arrow]) > 0:
+			BankManager.add_item_guaranteed(str(arrow), int(stock[arrow]))
+	EquipmentManager.slots[8] = weapon_before
+
 func _test_attack_costs() -> void:
 	_heading("Attack costs (ammunition and runes)")
 	var rng := RandomNumberGenerator.new()
@@ -2127,7 +3295,8 @@ func _test_magic_gear() -> void:
 		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8:
 			continue
 		var req: Dictionary = it.get("level_requirements", {})
-		if not req.has("magic"):
+		# Raid shop weapons are bought with raid coins, not crafted, so they sit outside the ladder.
+		if not req.has("magic") or bool(it.get("is_raid_item", false)):
 			continue
 		by_level[int(req["magic"])] = it
 	var levels: Array = by_level.keys()
@@ -2162,7 +3331,8 @@ func _test_magic_gear() -> void:
 	_ok(best_staff_hit >= int(0.6 * float(best_bow_hit)),
 		"the best staff is a real alternative to the best bow (%d vs %d)" % [best_staff_hit, best_bow_hit])
 	_ok(best_staff_hit <= best_bow_hit, "the best staff does not out-hit the best bow (%d vs %d)" % [best_staff_hit, best_bow_hit])
-	# Robes: cloth armour for the style, four tiers of four pieces, defence rising by tier.
+	# Robes: cloth armour for the style, four tiers of five pieces (boots joined the hat, robe, legs
+	# and gloves), defence rising by tier.
 	var tiers: Dictionary = {}
 	for id in DataLoader.items.keys():
 		var it: Dictionary = DataLoader.get_item(str(id))
@@ -2177,7 +3347,7 @@ func _test_magic_gear() -> void:
 	_ok(robe_levels.size() >= 4, "robes ship in %d tiers" % robe_levels.size())
 	var prev_def: int = 0
 	for level in robe_levels:
-		_eq(int(tiers[level]), 4, "the Magic-%d robe tier has four pieces" % int(level))
+		_eq(int(tiers[level]), 5, "the Magic-%d robe tier has five pieces" % int(level))
 		var total: int = 0
 		for id in DataLoader.items.keys():
 			var it: Dictionary = DataLoader.get_item(str(id))
@@ -2706,6 +3876,63 @@ func _test_slayer_task_flow() -> void:
 	_ok(not SlayerManager.has_task(), "the task completes once its kills are done")
 	_ok(PlayerData.slayer_coins > coins_before, "a completed task pays Slayer Coins")
 	SlayerManager.deserialize({})
+	_test_slayer_pools_are_huntable()
+	_test_slayer_expedition_task()
+
+## Mythical..Herald pointed at monsters that only spawned inside expeditions, and Godslayer and
+## Herald asked for 25-60 kills of a final boss that appears once per run. Every pool monster must
+## now spawn in an open area, and the boss tiers hunt whole expeditions instead.
+func _test_slayer_pools_are_huntable() -> void:
+	_heading("Every Slayer task can actually be hunted")
+	var open: Dictionary = {}
+	for area_id in DataLoader.areas.keys():
+		var row: Variant = DataLoader.areas[area_id]
+		if typeof(row) == TYPE_DICTIONARY:
+			for mid in (row as Dictionary).get("monsters", []):
+				open[str(mid)] = true
+	var stuck: Array[String] = []
+	var pools: Dictionary = DataLoader.slayer_tasks.get("_monsters", {})
+	for tier_id in pools.keys():
+		for mid in pools[tier_id]:
+			if not open.has(str(mid)):
+				stuck.append("%s:%s" % [tier_id, mid])
+	_ok(stuck.is_empty(), "every Slayer pool monster spawns in an open area%s" % _trouble(stuck, " — "))
+	for tier_id in ["godslayer", "herald"]:
+		var dpool: Array = (DataLoader.slayer_tasks.get("_dungeons", {}) as Dictionary).get(tier_id, [])
+		_ok(not dpool.is_empty(), "the %s tier can assign expeditions" % tier_id)
+		_ok(int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("max_clears", 0)) <= 5,
+			"a %s expedition task asks for at most 5 clears" % tier_id)
+
+func _test_slayer_expedition_task() -> void:
+	var coins_before: float = PlayerData.slayer_coins
+	var level_before: int = PlayerData.get_level("slayer")
+	PlayerData.set_level("slayer", 120)
+	var got_dungeon := false
+	for _i in range(200):
+		SlayerManager.deserialize({})
+		SlayerManager.assign_task("godslayer")
+		if SlayerManager.is_dungeon_task():
+			got_dungeon = true
+			break
+	_ok(got_dungeon, "the Godslayer tier hands out expedition tasks")
+	if got_dungeon:
+		var dungeon_id := str(PlayerData.slayer_task.get("dungeon_id", ""))
+		var required := int(PlayerData.slayer_task.get("kills_required", 0))
+		_ok(required >= 2 and required <= 4, "a Godslayer expedition task asks for 2-4 clears (%d)" % required)
+		var fights: Array = DataLoader.get_dungeon(dungeon_id).get("monsters", [])
+		_ok(str(PlayerData.slayer_task.get("monster_id", "")) == str(fights[-1]),
+			"the task's monster is the expedition's final boss, so it earns the on-task bonus")
+		SlayerManager._on_kill(str(fights[-1]))
+		_ok(int(PlayerData.slayer_task.get("kills_done", -1)) == 0, "a boss kill alone does not count as a clear")
+		SlayerManager.on_dungeon_cleared("chicken_coop")
+		_ok(int(PlayerData.slayer_task.get("kills_done", -1)) == 0, "clearing a different expedition does not count")
+		for _c in range(required):
+			SlayerManager.on_dungeon_cleared(dungeon_id)
+		_ok(not SlayerManager.has_task(), "the task completes after its clears")
+		_ok(PlayerData.slayer_coins > coins_before, "an expedition task pays Slayer Coins")
+	SlayerManager.deserialize({})
+	PlayerData.set_level("slayer", level_before)
+	PlayerData.slayer_coins = coins_before
 
 func _test_museum_flow() -> void:
 	var before: Dictionary = ArchaeologyManager.serialize()
@@ -2863,7 +4090,7 @@ func _test_unobtainable_content() -> void:
 	var too_high: Array[String] = []
 	var ordered: Array[int] = []
 	for tier_id in DataLoader.slayer_tasks.keys():
-		if tier_id == "_monsters":
+		if str(tier_id).begins_with("_"):
 			continue
 		ordered.append(int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)))
 		if int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)) > slayer_cap:
@@ -2885,7 +4112,7 @@ func _test_unobtainable_content() -> void:
 	PlayerData.set_level("slayer", slayer_cap)
 	var top_tier: String = ""
 	for tier_id in DataLoader.slayer_tasks.keys():
-		if tier_id == "_monsters":
+		if str(tier_id).begins_with("_"):
 			continue
 		if int((DataLoader.slayer_tasks[tier_id] as Dictionary).get("level_required", 1)) == slayer_cap:
 			top_tier = str(tier_id)
@@ -3557,7 +4784,9 @@ func _test_outputs_are_consumed() -> void:
 		"no obtainable item is left without a consumer%s" % _trouble(undeclared, " — "))
 
 	var declared: Array = demand["declared"]
-	_ok(declared.size() >= 10, "intentional dead ends are declared in the data (%d)" % declared.size())
+	# The floor only proves the declaration path is still in use: turning the late skills'
+	# sell-only products into potions cut the list from 11 to 5, which is the point.
+	_ok(declared.size() >= 1, "intentional dead ends are declared in the data (%d)" % declared.size())
 	var unexplained: Array[String] = []
 	for item_id in declared:
 		if str(DataLoader.get_item(str(item_id)).get("terminal_reason", "")).strip_edges() == "":
@@ -3839,6 +5068,282 @@ func _test_action_xp_ladders() -> void:
 					paid_at = int(level)
 	_ok(rungs > 0, "there are comparable ladders to check (%d rungs)" % rungs)
 	_ok(regressions == 0, "no identical job regresses at a higher level (%d)" % regressions)
+
+## Artifice once had four L85-115 wyrmhide recipes that reused the L70 names AND produced the L70
+## items: dearer inputs, identical gear. Two rows with one name are how that hid in the list.
+func _test_activity_names_unique() -> void:
+	_heading("Every activity in a skill has its own name and purpose")
+	var dupes: Array[String] = []
+	var same_output_climbs: Array[String] = []
+	for skill_id in DataLoader.get_skill_ids():
+		var seen: Dictionary = {}
+		var first_level_for_output: Dictionary = {}
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY:
+				continue
+			var name: String = str(action.get("name", ""))
+			if seen.has(name):
+				dupes.append("%s: %s" % [skill_id, name])
+			seen[name] = true
+			var outs: Dictionary = action.get("output_items", {})
+			if outs.size() == 1 and equipment_output(str(outs.keys()[0])):
+				var out_id: String = str(outs.keys()[0])
+				var lvl: int = int(action.get("level_required", 1))
+				if first_level_for_output.has(out_id) and lvl - int(first_level_for_output[out_id]) >= 10:
+					same_output_climbs.append("%s: %s at L%d and L%d" % [skill_id, out_id, int(first_level_for_output[out_id]), lvl])
+				elif not first_level_for_output.has(out_id):
+					first_level_for_output[out_id] = lvl
+	_ok(dupes.is_empty(), "no skill lists two activities under one name%s" % _trouble(dupes, " — "))
+	_ok(same_output_climbs.is_empty(),
+		"no higher-level recipe makes the same gear as a much lower one%s" % _trouble(same_output_climbs, " — "))
+	var body: Dictionary = DataLoader.get_item("reinforced_dhide_body")
+	var base: Dictionary = DataLoader.get_item("black_dhide_body")
+	_ok(int(body.get("equipment_stats", {}).get("ranged_defence", 0)) > int(base.get("equipment_stats", {}).get("ranged_defence", 0)),
+		"Reinforced Wyrmhide out-defends the Blighted tier it upgrades")
+
+func equipment_output(item_id: String) -> bool:
+	return str(DataLoader.get_item(item_id).get("item_type", "")) == "equipment"
+
+## Boots stopped at the metal line (no ranged or magic boots, and holes at 40/60/90/105/115),
+## shields skipped 50 and everything past 85, and nothing could be worn as a cape before a
+## level-99 skillcape. Each armour slot must now have a craftable piece within every 20 levels
+## up to L105, and boots must exist for all three styles.
+## Melee armour used to stop at the L95 god sets while ranged and magic climb to L105-115 and
+## skills to 120. Every melee armour slot needs a crafted piece worn with Defence at L105 and
+## at L115+, and each step up must not be weaker than the one below it.
+func _test_melee_armour_endgame() -> void:
+	_heading("Melee armour reaches the endgame")
+	var crafted: Dictionary = {}
+	for skill_id in DataLoader.skills.keys():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			for out_id in (action.get("output_items", {}) as Dictionary).keys():
+				crafted[str(out_id)] = true
+	var names: Dictionary = {0: "helmet", 1: "body", 2: "legs", 3: "boots", 4: "gloves"}
+	for slot in names.keys():
+		var best_by_level: Dictionary = {}   # defence requirement -> best melee defence at it
+		for item_id in crafted.keys():
+			var it: Dictionary = DataLoader.get_item(str(item_id))
+			if int(it.get("equipment_slot", -1)) != int(slot):
+				continue
+			var req: int = int((it.get("level_requirements", {}) as Dictionary).get("defence", 0))
+			if req < 95:
+				continue
+			var d: float = float((it.get("equipment_stats", {}) as Dictionary).get("melee_defence", 0))
+			best_by_level[req] = maxf(float(best_by_level.get(req, 0.0)), d)
+		var levels: Array = best_by_level.keys()
+		levels.sort()
+		_ok(best_by_level.has(105), "a Defence-105 melee %s is craftable" % names[slot])
+		_ok(not levels.is_empty() and int(levels[-1]) >= 115, "a Defence-115+ melee %s is craftable" % names[slot])
+		for i in range(1, levels.size()):
+			_ok(float(best_by_level[levels[i]]) > float(best_by_level[levels[i - 1]]),
+				"the L%d melee %s beats the L%d one" % [int(levels[i]), names[slot], int(levels[i - 1])])
+
+func _test_armour_slot_ladders() -> void:
+	_heading("Every armour slot has a craftable ladder")
+	var crafted: Dictionary = {}
+	for skill_id in DataLoader.skills.keys():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			for out_id in (action.get("output_items", {}) as Dictionary).keys():
+				crafted[str(out_id)] = true
+	var names: Dictionary = {0: "helmet", 1: "body", 2: "legs", 3: "boots", 4: "gloves", 5: "cape", 9: "shield"}
+	var boot_styles: Dictionary = {}
+	for slot in names.keys():
+		var levels: Dictionary = {}
+		for item_id in crafted.keys():
+			var it: Dictionary = DataLoader.get_item(str(item_id))
+			if int(it.get("equipment_slot", -1)) != int(slot):
+				continue
+			var wear: int = 0
+			for skill in (it.get("level_requirements", {}) as Dictionary).keys():
+				wear = maxi(wear, int(it["level_requirements"][skill]))
+				if int(slot) == 3:
+					boot_styles[str(skill)] = true
+			levels[wear] = true
+		var sorted_levels: Array = levels.keys()
+		sorted_levels.sort()
+		var holes: Array[String] = []
+		for i in range(1, sorted_levels.size()):
+			if int(sorted_levels[i - 1]) < 105 and int(sorted_levels[i]) - int(sorted_levels[i - 1]) > 20:
+				holes.append("L%d -> L%d" % [int(sorted_levels[i - 1]), int(sorted_levels[i])])
+		_ok(holes.is_empty(), "%s: a craftable piece within every 20 levels%s" % [names[slot], _trouble(holes, " — ")])
+		_ok(not sorted_levels.is_empty() and int(sorted_levels[-1]) >= 105,
+			"%s: the craftable ladder reaches L105" % names[slot])
+		_ok(not sorted_levels.is_empty() and int(sorted_levels[0]) <= 1, "%s: something craftable at L1" % names[slot])
+	for style in ["defence", "ranged", "magic"]:
+		_ok(boot_styles.has(style), "boots exist for %s gear" % style)
+
+## The neck slot held two gold pieces with no stats at all, so a whole equipment slot never
+## progressed. Every neck item must now do something, a craftable upgrade must exist within 20
+## levels all the way to L105, and each step up must be at least as strong as the one below it.
+func _test_neck_slot_ladder() -> void:
+	_heading("The neck slot has a real upgrade ladder")
+	var crafted: Dictionary = {}
+	for action in DataLoader.get_skill_actions("crafting"):
+		for out_id in (action.get("output_items", {}) as Dictionary).keys():
+			crafted[str(out_id)] = true
+	var ladder: Array = []
+	var empty: Array[String] = []
+	for item_id in DataLoader.items.keys():
+		var it: Variant = DataLoader.items[item_id]
+		if typeof(it) != TYPE_DICTIONARY or int((it as Dictionary).get("equipment_slot", -1)) != 6:
+			continue
+		var power: int = 0
+		for v in ((it as Dictionary).get("equipment_stats", {}) as Dictionary).values():
+			power += int(v)
+		if power <= 0 and ((it as Dictionary).get("passive_modifiers", {}) as Dictionary).is_empty():
+			empty.append(str(item_id))
+		var wear: int = 0
+		for lv in ((it as Dictionary).get("level_requirements", {}) as Dictionary).values():
+			wear = maxi(wear, int(lv))
+		if crafted.has(str(item_id)):
+			ladder.append({"id": str(item_id), "wear": wear, "power": power})
+	_ok(empty.is_empty(), "every neck item grants a stat or a bonus%s" % _trouble(empty, " — "))
+	ladder.sort_custom(func(a, b): return int(a["wear"]) < int(b["wear"]) or (int(a["wear"]) == int(b["wear"]) and int(a["power"]) < int(b["power"])))
+	var holes: Array[String] = []
+	var weaker: Array[String] = []
+	for i in range(1, ladder.size()):
+		if int(ladder[i]["wear"]) - int(ladder[i - 1]["wear"]) > 20:
+			holes.append("L%d -> L%d" % [int(ladder[i - 1]["wear"]), int(ladder[i]["wear"])])
+		if int(ladder[i]["power"]) < int(ladder[i - 1]["power"]):
+			weaker.append("%s < %s" % [ladder[i]["id"], ladder[i - 1]["id"]])
+	_ok(holes.is_empty(), "a craftable neck upgrade exists within every 20 levels%s" % _trouble(holes, " — "))
+	_ok(weaker.is_empty(), "each neck upgrade is at least as strong as the last%s" % _trouble(weaker, " — "))
+	_ok(not ladder.is_empty() and int(ladder[-1]["wear"]) >= 105, "the neck ladder reaches L105")
+
+## 25 of 46 enemies attacked with melee and only 8 with ranged, so the style that beats melee in
+## the triangle (magic) was the right answer almost everywhere. Keep the three styles within reach
+## of each other, present in every 50-level band, and mixed in every multi-monster open area.
+func _test_monster_style_mix() -> void:
+	_heading("Enemy attack styles are mixed")
+	var counts: Dictionary = {"melee": 0, "ranged": 0, "magic": 0}
+	var bands: Dictionary = {}
+	for mid in DataLoader.monsters.keys():
+		var m: Variant = DataLoader.monsters[mid]
+		if typeof(m) != TYPE_DICTIONARY:
+			continue
+		var style: String = str((m as Dictionary).get("attack_type", ""))
+		counts[style] = int(counts.get(style, 0)) + 1
+		var band: int = mini(int((m as Dictionary).get("combat_level", 1)) / 50, 5)
+		if not bands.has(band):
+			bands[band] = {}
+		(bands[band] as Dictionary)[style] = true
+	var total: int = int(counts["melee"]) + int(counts["ranged"]) + int(counts["magic"])
+	for style in ["melee", "ranged", "magic"]:
+		_ok(float(counts[style]) >= float(total) * 0.25,
+			"%s is at least a quarter of all enemies (%d of %d)" % [style, int(counts[style]), total])
+	var thin: Array[String] = []
+	for band in bands.keys():
+		if (bands[band] as Dictionary).size() < 3:
+			thin.append("L%d-%d" % [int(band) * 50, int(band) * 50 + 49])
+	_ok(thin.is_empty(), "every 50-level band has enemies of all three styles%s" % _trouble(thin, " — "))
+	var samey: Array[String] = []
+	for area_id in DataLoader.areas.keys():
+		var row: Variant = DataLoader.areas[area_id]
+		if typeof(row) != TYPE_DICTIONARY:
+			continue
+		var pool: Array = (row as Dictionary).get("monsters", [])
+		var styles: Dictionary = {}
+		var top: int = 0
+		for mid in pool:
+			var m: Dictionary = DataLoader.get_monster(str(mid))
+			styles[str(m.get("attack_type", ""))] = true
+			top = maxi(top, int(m.get("combat_level", 0)))
+		if pool.size() >= 3 and top >= 30 and styles.size() < 2:
+			samey.append(str(area_id))
+	_ok(samey.is_empty(), "every open area of 3+ enemies past L30 mixes styles%s" % _trouble(samey, " — "))
+
+## Open areas stopped at Ashwyrm Hollow (L120) and resumed at the Umbral Deep (L230): every
+## monster in between lived only inside a dungeon, so nothing in that band could be farmed.
+## Walk the non-boss monsters that open areas spawn and fail on any level jump over 15 up to L230.
+func _test_open_world_coverage() -> void:
+	_heading("Open areas cover every level band up to the Umbral Deep")
+	var levels: Dictionary = {}
+	for area_id in DataLoader.areas.keys():
+		var row: Variant = DataLoader.areas[area_id]
+		if typeof(row) != TYPE_DICTIONARY or str((row as Dictionary).get("type", "area")) != "area":
+			continue
+		for mid in (row as Dictionary).get("monsters", []):
+			var m: Dictionary = DataLoader.get_monster(str(mid))
+			if not m.is_empty() and not bool(m.get("is_boss", false)):
+				levels[int(m.get("combat_level", 0))] = true
+	var sorted_levels: Array = levels.keys()
+	sorted_levels.sort()
+	var holes: Array[String] = []
+	for i in range(1, sorted_levels.size()):
+		var lo: int = int(sorted_levels[i - 1])
+		var hi: int = int(sorted_levels[i])
+		if lo < 230 and hi - lo > 15:
+			holes.append("L%d -> L%d" % [lo, hi])
+	_ok(holes.is_empty(), "no open-area level gap over 15 below L230%s" % _trouble(holes, " — "))
+	_ok(levels.has(230), "the open-world ladder reaches the Umbral Deep (L230)")
+
+## The five late-added skills shipped with 20-25 level dry spells and a top rate of 41-66k XP/h
+## when their peers paid 150-190k. These checks keep the re-paced ladders from sliding back.
+func _test_late_skills_pace() -> void:
+	_heading("The late-added skills, Beastbinding and Attunement keep pace")
+	for skill_id in ["echo_keeping", "wayfolding", "fermentation", "customcraft", "lostfinding", "summoning", "enchanting"]:
+		var last: int = 0
+		var gap: int = 0
+		var top_rate: float = 0.0
+		var top_level: int = 0
+		for action in DataLoader.get_skill_actions(skill_id):
+			var lvl: int = int(action.get("level_required", 1))
+			gap = maxi(gap, lvl - last)
+			last = lvl
+			var rate: float = float(action.get("base_xp", 0)) / maxf(float(action.get("base_interval", 1.0)), 0.1) \
+				* float(action.get("success_chance", 1.0)) * 3600.0
+			if lvl > top_level:
+				top_level = lvl
+				top_rate = rate
+			elif lvl == top_level:
+				top_rate = maxf(top_rate, rate)
+		_ok(gap <= 10, "%s unlocks something at least every 10 levels (largest gap %d)" % [skill_id, gap])
+		_ok(top_rate >= 120000.0, "%s pays at least 120k raw XP/h at its top unlock (%.0f)" % [skill_id, top_rate])
+	var brew: Dictionary = DataLoader.get_item("blended_weather")
+	_ok(str(brew.get("item_type", "")) == "potion" and not (brew.get("potion_effect", {}) as Dictionary).is_empty(),
+		"Fermentation's Blended Weather is a brew you can drink, not only sell")
+
+## Selling crafted gear once paid 20-60M gold an hour (a Wyrmforged Platebody sold for 48x its
+## bars) while gathering paid 40-130k. Gold an activity adds by selling what it makes is now
+## bounded by its level: 25k * e^(L/32) an hour, ~26k at L1 and ~0.9M at L115. Kills are bounded
+## the same way by hitpoints, so no mid-tier monster out-earns the bosses beside it.
+func _test_gold_is_bounded() -> void:
+	_heading("No activity prints gold")
+	var printers: Array[String] = []
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(str(skill_id)):
+			if typeof(action) != TYPE_DICTIONARY or float(action.get("gp_reward", 0)) > 0:
+				continue
+			var outs: Dictionary = action.get("output_items", {})
+			if outs.size() != 1:
+				continue
+			var paid: float = 0.0
+			for id in (action.get("input_items", {}) as Dictionary).keys():
+				paid += float(DataLoader.get_item(str(id)).get("sell_price", 0)) * int(action.input_items[id])
+			var got: float = 0.0
+			for id in outs.keys():
+				got += float(DataLoader.get_item(str(id)).get("sell_price", 0)) * int(outs[id])
+			for sec in (action.get("secondary_outputs", []) as Array):
+				got += float(DataLoader.get_item(str(sec.get("item_id", ""))).get("sell_price", 0)) \
+					* float(sec.get("chance", 0.0)) * (int(sec.get("min_qty", 1)) + int(sec.get("max_qty", 1))) / 2.0
+			var per_hour: float = (got * float(action.get("success_chance", 1.0)) - paid) \
+				/ maxf(float(action.get("base_interval", 1.0)), 0.1) * 3600.0
+			var cap: float = 25000.0 * exp(float(action.get("level_required", 1)) / 32.0)
+			if per_hour > cap * 1.05:
+				printers.append("%s:%s %.0f/h (cap %.0f)" % [skill_id, str(action.id), per_hour, cap])
+	_ok(printers.is_empty(), "selling what an activity makes stays within its level's gold rate%s" % _trouble(printers, " — "))
+	var rich: Array[String] = []
+	for monster_id in DataLoader.monsters.keys():
+		var m: Dictionary = DataLoader.monsters[monster_id]
+		var gp: float = 0.0
+		for drop in (m.get("loot_table", []) as Array):
+			if typeof(drop) == TYPE_DICTIONARY and bool(drop.get("is_currency", false)) and str(drop.get("currency_id", "gp")) == "gp":
+				gp += float(drop.get("quantity", 0)) * float(drop.get("chance", 1.0))
+		var target: float = float(m.get("hitpoints", 1)) * (2.0 + float(m.get("combat_level", 1)) / 12.0) \
+			* (1.5 if bool(m.get("is_boss", false)) else 1.0)
+		if gp > target * 1.3:
+			rich.append("%s %.0f gp (target %.0f)" % [monster_id, gp, target])
+	_ok(rich.is_empty(), "no monster pays far more gold than its hitpoints and level warrant%s" % _trouble(rich, " — "))
 
 ## An action's inputs as a stable signature, so two recipes that eat the same things compare.
 func _input_signature(action: Dictionary) -> String:

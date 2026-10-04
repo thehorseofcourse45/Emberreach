@@ -2,6 +2,9 @@ extends Node
 ## FarmingManager — real-time crop growth (timestamps), so growth continues offline
 ## with zero extra simulation. Plots: allotment / herb / tree.
 ##
+## Seeds carry a plot_type: allotment crops only take allotment plots and tree saplings only
+## take tree plots. Herb seeds (no plot_type) still take any plot, as they always have.
+##
 ## Two entry points reach these plots now: the Farm screen calls plant()/harvest()/clear_plot()
 ## directly, and the skill's plant_* actions bridge through SkillManager — the action's
 ## input_items spend the seed, then plant_first_free(consume_from_bank = false) lands it.
@@ -48,15 +51,34 @@ func action_id_for_seed(seed_id: String) -> String:
 func plant_level(seed_id: String) -> int:
 	return int(DataLoader.get_action("farming", action_id_for_seed(seed_id)).get("level_required", 0))
 
-func has_free_plot() -> bool:
-	return free_plot_count() > 0
+## The plot type a seed needs, or "" for a herb seed that grows anywhere.
+func seed_plot_type(seed_id: String) -> String:
+	var t: String = str(DataLoader.get_item(seed_id).get("plot_type", ""))
+	return "" if t == "herb" else t
 
-func free_plot_count() -> int:
+## Whether plot `index` is empty and of a type this seed grows in.
+func accepts(index: int, seed_id: String) -> bool:
+	if index < 0 or index >= plots.size() or str(plots[index]["seed_id"]) != "":
+		return false
+	var need: String = seed_plot_type(seed_id)
+	return need == "" or str(plots[index]["type"]) == need
+
+func has_free_plot(seed_id: String = "") -> bool:
+	return free_plot_count(seed_id) > 0
+
+## Empty plots, or with a seed id only the empty plots that seed can go in.
+func free_plot_count(seed_id: String = "") -> int:
 	var n: int = 0
-	for p in plots:
-		if str(p["seed_id"]) == "":
+	for i in range(plots.size()):
+		if str(plots[i]["seed_id"]) == "" and (seed_id == "" or accepts(i, seed_id)):
 			n += 1
 	return n
+
+## Growth time after crop-speed bonuses (farming_interval_percent), capped at half the base.
+func grow_seconds_for(seed_id: String) -> float:
+	var base: float = float(DataLoader.get_item(seed_id).get("grow_seconds", 3600))
+	var pct: float = clampf(ModifierManager.get_modifier(ModifierKeys.skill_key("farming", ModifierKeys.SUFFIX_INTERVAL_PERCENT)), 0.0, 50.0)
+	return base * (1.0 - pct / 100.0)
 
 func ready_count() -> int:
 	var n: int = 0
@@ -75,7 +97,7 @@ func plant(index: int, seed_id: String, consume_from_bank: bool = true) -> bool:
 	if index < 0 or index >= plots.size():
 		return false
 	var plot: Dictionary = plots[index]
-	if plot["seed_id"] != "":
+	if plot["seed_id"] != "" or not accepts(index, seed_id):
 		return false
 	var seed_data: Dictionary = DataLoader.get_item(seed_id)
 	if seed_data.is_empty() or seed_data.get("item_type", "") != "seed":
@@ -93,16 +115,16 @@ func _occupy(index: int, seed_id: String, seed_data: Dictionary) -> void:
 	var plot: Dictionary = plots[index]
 	plot["seed_id"] = seed_id
 	plot["planted_unix"] = Time.get_unix_time_from_system()
-	plot["grow_seconds"] = float(seed_data.get("grow_seconds", 3600))
+	plot["grow_seconds"] = grow_seconds_for(seed_id)
 	plot["harvested"] = false
 	# Survival chance: base + 10% per compost, capped 100%.
 	var survival: float = clampf(float(seed_data.get("base_survival", 0.5)) + 0.1 * float(plot["compost"]) + (0.25 if bool(plot.get("manure", false)) else 0.0), 0.0, 1.0)
 	plot["alive"] = _rng.randf() <= survival
 
-## First empty plot wins. Returns the plot index, or -1 when nothing was plantable.
+## First empty plot this seed can grow in wins. Returns the plot index, or -1 when nothing was plantable.
 func plant_first_free(seed_id: String, consume_from_bank: bool = true) -> int:
 	for i in range(plots.size()):
-		if str(plots[i]["seed_id"]) == "":
+		if accepts(i, seed_id):
 			if plant(i, seed_id, consume_from_bank):
 				return i
 			return -1
@@ -227,7 +249,7 @@ func planting_preview(plot_index: int, seed_id: String) -> Dictionary:
 	if plot_index < 0 or plot_index >= plots.size(): return {}
 	var seed: Dictionary = DataLoader.get_item(seed_id)
 	var plot: Dictionary = plots[plot_index]
-	return {"survival": clampf(float(seed.get("base_survival", 0.5)) + int(plot.compost) * 0.1 + (0.25 if bool(plot.get("manure", false)) else 0), 0, 1), "seconds": float(seed.get("grow_seconds", 3600)), "yield_bonus": 10 if bool(plot.get("manure", false)) else 0}
+	return {"survival": clampf(float(seed.get("base_survival", 0.5)) + int(plot.compost) * 0.1 + (0.25 if bool(plot.get("manure", false)) else 0), 0, 1), "seconds": grow_seconds_for(seed_id), "yield_bonus": 10 if bool(plot.get("manure", false)) else 0}
 
 func harvest_replant(plot_index: int) -> bool:
 	if not is_ready(plot_index): return false

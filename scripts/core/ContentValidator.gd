@@ -173,6 +173,18 @@ func _check_items() -> void:
 						_err("missing_reference", "item '%s' attack_cost_items references unknown item '%s'" % [id, cost_id])
 					elif int((cost as Dictionary)[cost_id]) <= 0:
 						_err("negative_value", "item '%s' attack_cost_items spends a non-positive amount of '%s'" % [id, cost_id])
+				# A tiered bow's default arrow is the best it can loose; a cap with no arrow at that
+				# tier, or a default of a different tier, would make the cap and the cost disagree.
+				var cap: int = int(it.get("ammo_tier_max", 0))
+				if cap > 0:
+					var tiers: Array = []
+					for cost_id in (cost as Dictionary).keys():
+						if _has_item(str(cost_id)) and str(DataLoader.get_item(str(cost_id)).get("item_type", "")) == "ammo":
+							tiers.append(int(DataLoader.get_item(str(cost_id)).get("ammo_tier", 0)))
+					if tiers != [cap]:
+						_err("invalid_record", "item '%s' has ammo_tier_max %d but its default arrow is tier %s" % [id, cap, str(tiers)])
+		if type == "ammo" and it.has("ammo_tier") and int(it.get("ammo_tier", 0)) <= 0:
+			_err("negative_value", "ammo '%s' has a non-positive ammo_tier" % id)
 		if type == "food" and int(it.get("heal_amount", 0)) < 0:
 			_err("negative_value", "food '%s' has negative heal_amount" % id)
 		if type == "seed":
@@ -403,6 +415,8 @@ func _check_monsters() -> void:
 		for passive in m.get("passives", []):
 			if not CombatManager.KNOWN_MONSTER_PASSIVES.has(str(passive)):
 				_err("missing_reference", "%s references unknown passive '%s'" % [label, passive])
+		for mech_msg in validate_monster_mechanics(str(id), m):
+			_err("invalid_record", mech_msg)
 		for drop in m.get("loot_table", []):
 			if typeof(drop) != TYPE_DICTIONARY:
 				_err("invalid_record", "%s has a malformed loot entry" % label)
@@ -428,6 +442,88 @@ func _check_monsters() -> void:
 	for sa_id in DataLoader.special_attacks.keys():
 		if not carried.has(str(sa_id)):
 			_warn("unused_special_attack", "special attack '%s' is not carried by any monster" % sa_id)
+
+## Checks the monster-mechanics schema (weak_to / resists / phases). Static so tests can feed
+## in-memory records; returns one message per problem.
+static func validate_monster_mechanics(monster_id: String, m: Dictionary) -> Array[String]:
+	var errs: Array[String] = []
+	var label := "monster:%s" % monster_id
+	for key in ["weak_to", "resists"]:
+		var list: Variant = m.get(key, [])
+		if typeof(list) != TYPE_ARRAY:
+			errs.append("%s %s must be an array" % [label, key])
+			continue
+		var seen: Array = []
+		for style in list:
+			if not MonsterMechanics.STYLES.has(str(style)):
+				errs.append("%s %s has invalid style '%s'" % [label, key, style])
+			elif seen.has(style):
+				errs.append("%s %s lists style '%s' twice" % [label, key, style])
+			seen.append(style)
+	if typeof(m.get("weak_to", [])) == TYPE_ARRAY and typeof(m.get("resists", [])) == TYPE_ARRAY:
+		for style in m.get("weak_to", []):
+			if (m.get("resists", []) as Array).has(style):
+				errs.append("%s style '%s' is in both weak_to and resists" % [label, style])
+	if not m.has("phases"):
+		return errs
+	var phases: Variant = m["phases"]
+	if typeof(phases) != TYPE_ARRAY:
+		errs.append("%s phases must be an array" % label)
+		return errs
+	var prev: int = 100
+	for i in range((phases as Array).size()):
+		var ph: Variant = phases[i]
+		var plabel := "%s phase %d" % [label, i]
+		if typeof(ph) != TYPE_DICTIONARY:
+			errs.append("%s must be a dictionary" % plabel)
+			continue
+		var raw_pct: Variant = ph.get("at_hp_percent", 0)
+		var pct: int = int(raw_pct)
+		if (typeof(raw_pct) != TYPE_INT and not (typeof(raw_pct) == TYPE_FLOAT and float(raw_pct) == floorf(float(raw_pct)))):
+			errs.append("%s at_hp_percent must be an integer" % plabel)
+			continue
+		if str(ph.get("name", "")).strip_edges() == "":
+			errs.append("%s needs a non-empty name" % plabel)
+		if pct < 1 or pct > 99:
+			errs.append("%s at_hp_percent %d must be in 1-99" % [plabel, pct])
+		elif pct >= prev:
+			errs.append("%s at_hp_percent %d must be strictly below the previous phase" % [plabel, pct])
+		else:
+			prev = pct
+		var fx: Variant = ph.get("effects", {})
+		if typeof(fx) != TYPE_DICTIONARY:
+			errs.append("%s effects must be a dictionary" % plabel)
+			continue
+		for k in fx.keys():
+			if not MonsterMechanics.PHASE_EFFECT_KEYS.has(str(k)):
+				errs.append("%s has unknown effect '%s'" % [plabel, k])
+		if fx.has("attack_speed_multiplier"):
+			var a: float = float(fx["attack_speed_multiplier"])
+			if a < 0.5 or a > 2.0:
+				errs.append("%s attack_speed_multiplier %f must be in [0.5,2.0]" % [plabel, a])
+		if fx.has("max_hit_multiplier"):
+			var h: float = float(fx["max_hit_multiplier"])
+			if h < 0.5 or h > 3.0:
+				errs.append("%s max_hit_multiplier %f must be in [0.5,3.0]" % [plabel, h])
+		if fx.has("add_passives"):
+			if typeof(fx["add_passives"]) != TYPE_ARRAY:
+				errs.append("%s add_passives must be an array" % plabel)
+			else:
+				for p in fx["add_passives"]:
+					if not CombatManager.KNOWN_MONSTER_PASSIVES.has(str(p)):
+						errs.append("%s add_passives has unknown passive '%s'" % [plabel, p])
+		if fx.has("attack_type") and not VALID_MONSTER_ATTACK_TYPES.has(str(fx["attack_type"])):
+			errs.append("%s attack_type '%s' is invalid" % [plabel, fx["attack_type"]])
+		if fx.has("apply_status"):
+			var st: Variant = fx["apply_status"]
+			if typeof(st) != TYPE_DICTIONARY or not StatusEffect.TABLE.has(str(st.get("id", ""))):
+				errs.append("%s apply_status has unknown status id" % plabel)
+			else:
+				if float(st.get("duration", 1.0)) <= 0.0:
+					errs.append("%s apply_status duration must be > 0" % plabel)
+				if float(st.get("damage_per_tick", 0.0)) < 0.0:
+					errs.append("%s apply_status damage_per_tick must be >= 0" % plabel)
+	return errs
 
 # ---------------- regions ----------------
 
@@ -736,7 +832,7 @@ func _check_side_systems() -> void:
 	# multiplier, so a pool monster with no slayer_xp pays nothing for a whole task.
 	var pools: Dictionary = DataLoader.slayer_tasks.get("_monsters", {})
 	for tier_id in DataLoader.slayer_tasks.keys():
-		if tier_id == "_monsters":
+		if str(tier_id).begins_with("_"):
 			continue
 		var tier: Variant = DataLoader.slayer_tasks[tier_id]
 		if typeof(tier) != TYPE_DICTIONARY:
@@ -765,6 +861,16 @@ func _check_side_systems() -> void:
 		# which is what left Master and Legendary as single-monster pools.
 		if (pool as Array).size() < 2:
 			_warn("thin_slayer_pool", "slayer tier '%s' offers only one monster to hunt" % tier_id)
+		# Expedition tasks: the dungeon must exist and the clears range must be sane.
+		var dpool: Variant = (DataLoader.slayer_tasks.get("_dungeons", {}) as Dictionary).get(tier_id, [])
+		if typeof(dpool) == TYPE_ARRAY and not (dpool as Array).is_empty():
+			var min_clears: int = int((tier as Dictionary).get("min_clears", 1))
+			var max_clears: int = int((tier as Dictionary).get("max_clears", 3))
+			if min_clears < 1 or max_clears < min_clears:
+				_err("invalid_record", "slayer tier '%s' has clears range %d..%d" % [tier_id, min_clears, max_clears])
+			for dungeon_id in (dpool as Array):
+				if not DataLoader.dungeons.has(str(dungeon_id)):
+					_err("missing_reference", "slayer tier '%s' lists unknown expedition '%s'" % [tier_id, dungeon_id])
 
 	# Museum stock: token costs must be positive and grants must be real items.
 	for entry_id in DataLoader.shop_museum.keys():

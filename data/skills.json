@@ -443,6 +443,17 @@
         "mastery_action_time": 3.0
       },
       {
+        "id": "fish_pond_perch",
+        "name": "Pond Perch",
+        "level_required": 3,
+        "base_interval": 3.5,
+        "base_xp": 15,
+        "output_items": {
+          "raw_pond_perch": 1
+        },
+        "mastery_action_time": 3.5
+      },
+      {
         "id": "sardine",
         "name": "Silverfin",
         "level_required": 5,
@@ -465,6 +476,17 @@
         "mastery_action_time": 4.0
       },
       {
+        "id": "fish_willow_roach",
+        "name": "Willow Roach",
+        "level_required": 12,
+        "base_interval": 4.5,
+        "base_xp": 35,
+        "output_items": {
+          "raw_willow_roach": 1
+        },
+        "mastery_action_time": 4.5
+      },
+      {
         "id": "trout",
         "name": "Speckled Trout",
         "level_required": 20,
@@ -474,6 +496,17 @@
           "raw_trout": 1
         },
         "mastery_action_time": 5.0
+      },
+      {
+        "id": "fish_bronze_carp",
+        "name": "Bronze Carp",
+        "level_required": 25,
+        "base_interval": 5,
+        "base_xp": 60,
+        "output_items": {
+          "raw_bronze_carp": 1
+        },
+        "mastery_action_time": 5
       },
       {
         "id": "salmon",
@@ -487,6 +520,17 @@
         "mastery_action_time": 5.0
       },
       {
+        "id": "fish_dusk_bass",
+        "name": "Dusk Bass",
+        "level_required": 35,
+        "base_interval": 5.5,
+        "base_xp": 80,
+        "output_items": {
+          "raw_dusk_bass": 1
+        },
+        "mastery_action_time": 5.5
+      },
+      {
         "id": "lobster",
         "name": "Fen Lobster",
         "level_required": 40,
@@ -496,6 +540,17 @@
           "raw_lobster": 1
         },
         "mastery_action_time": 6.0
+      },
+      {
+        "id": "fish_moon_eel",
+        "name": "Moon Eel",
+        "level_required": 45,
+        "base_interval": 6.5,
+        "base_xp": 100,
+        "output_items": {
+          "raw_moon_eel": 1
+        },
+        "mastery_action_time": 6.5
       },
       {
         "id": "fish_squid",
@@ -520,6 +575,17 @@
         "mastery_action_time": 7.0
       },
       {
+        "id": "fish_coral_bream",
+        "name": "Coral Bream",
+        "level_required": 55,
+        "base_interval": 7.5,
+        "base_xp": 125,
+        "output_items": {
+          "raw_coral_bream": 1
+        },
+        "mastery_action_time": 7.5
+      },
+      {
         "id": "crab",
         "name": "Mudcrab",
         "level_required": 60,
@@ -529,6 +595,17 @@
           "raw_crab": 1
         },
         "mastery_action_time": 8.0
+      },
+      {
+        "id": "fish_storm_tuna",
+        "name": "Storm Tuna",
+        "level_required": 65,
+        "base_interval": 8.5,
+        "base_xp": 160,
+        "output_items": {
+          "raw_storm_tuna": 1
+        },
+        "mastery_action_time": 8.5
       },
       {
         "id": "shark",
@@ -553,6 +630,17 @@
         "mastery_action_time": 10.0
       },
       {
+        "id": "fish_frost_pike",
+        "name": "Frost Pike",
+        "level_required": 80,
+        "base_interval": 11,
+        "base_xp": 230,
+        "output_items": {
+          "raw_frost_pike": 1
+        },
+        "mastery_action_time": 11
+      },
+      {
         "id": "manta_ray",
         "name": "Void Ray",
         "level_required": 85,
@@ -562,6 +650,17 @@
           "raw_manta_ray": 1
         },
         "mastery_action_time": 12.0
+      },
+      {
+        "id": "fish_sunscale_koi",
+        "name": "Sunscale Koi",
+        "level_required": 90,
+        "base_interval": 13,
+        "base_xp": 300,
+        "output_items": {
+          "raw_sunscale_koi": 1
+        },
+        "mastery_action_time": 13
       },
       {
         "id": "whale",
@@ -575,6 +674,17 @@
         "mastery_action_time": 15.0
       },
       {
+        "id": "fish_obsidian_sturgeon",
+        "name": "Obsidian Sturgeon",
+        "level_required": 100,
+        "base_interval": 16,
+        "base_xp": 380,
+        "output_items": {
+          "raw_obsidian_sturgeon": 1
+        },
+        "mastery_action_time": 16
+      },
+      {
         "id": "dreadfin",
         "name": "Dreadfin",
         "level_required": 105,
@@ -586,6 +696,17 @@
         "mastery_action_time": 17.0
       },
       {
+        "id": "fish_aurora_lionfish",
+        "name": "Aurora Lionfish",
+        "level_required": 110,
+        "base_interval": 18,
+        "base_xp": 470,
+        "output_items": {
+          "raw_aurora_lionfish": 1
+        },
+        "mastery_action_time": 18
+      },
+      {
         "id": "abyssal_eel",
         "name": "Abyssal Eel",
         "level_required": 115,
@@ -595,6 +716,17 @@
           "raw_abyssal_eel": 1
         },
         "mastery_action_time": 19.0
+      },
+      {
+        "id": "fish_celestial_marlin",
+        "name": "Celestial Marlin",
+        "level_required": 120,
+        "base_interval": 20,
+        "base_xp": 580,
+        "output_items": {
+          "raw_celestial_marlin": 1
+        },
+        "mastery_action_time": 20
       }
     ],
     "order": 11,
@@ -942,7 +1074,20 @@
         "input_items": {
           "garum_herb_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_hearthroot",
+        "name": "Hearthroot",
+        "level_required": 1,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "hearthroot_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_sourweed",
@@ -953,7 +1098,32 @@
         "input_items": {
           "sourweed_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_oak_sapling",
+        "name": "Ironbark Tree",
+        "level_required": 15,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "oak_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_ashbulb",
+        "name": "Ashbulb",
+        "level_required": 20,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "ashbulb_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_mantalyme",
@@ -964,7 +1134,20 @@
         "input_items": {
           "mantalyme_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_willow_sapling",
+        "name": "Silverleaf Tree",
+        "level_required": 30,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "willow_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_lemontyle",
@@ -975,7 +1158,32 @@
         "input_items": {
           "lemontyle_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_stormcabbage",
+        "name": "Stormcabbage",
+        "level_required": 40,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "stormcabbage_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_yew_sapling",
+        "name": "Gravewood Tree",
+        "level_required": 50,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "yew_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_oxilyme",
@@ -986,7 +1194,20 @@
         "input_items": {
           "oxilyme_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_sunmelon",
+        "name": "Sunmelon",
+        "level_required": 60,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "sunmelon_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_poraxx",
@@ -997,7 +1218,32 @@
         "input_items": {
           "poraxx_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_magic_sapling",
+        "name": "Witchpine Tree",
+        "level_required": 70,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "magic_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_starcorn",
+        "name": "Starcorn",
+        "level_required": 80,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "starcorn_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_barrentoe",
@@ -1008,7 +1254,20 @@
         "input_items": {
           "barrentoe_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_redwood_sapling",
+        "name": "Bloodwood Tree",
+        "level_required": 90,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "redwood_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_duskroot",
@@ -1019,7 +1278,20 @@
         "input_items": {
           "duskroot_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_herald_gourd",
+        "name": "Herald Gourd",
+        "level_required": 100,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "herald_gourd_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_herald_bloom",
@@ -1030,7 +1302,20 @@
         "input_items": {
           "herald_bloom_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
+      },
+      {
+        "id": "plant_voidwood_sapling",
+        "name": "Voidwood Tree",
+        "level_required": 110,
+        "base_interval": 1.0,
+        "base_xp": 0,
+        "input_items": {
+          "voidwood_sapling_seed": 1
+        },
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       },
       {
         "id": "plant_emberbloom",
@@ -1041,7 +1326,8 @@
         "input_items": {
           "emberbloom_seed": 1
         },
-        "mastery_action_time": 1.0
+        "mastery_action_time": 1.0,
+        "icon_activity": true
       }
     ],
     "order": 13,
@@ -1091,7 +1377,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_oak_log",
@@ -1113,7 +1400,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_willow_log",
@@ -1135,7 +1423,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_teak_log",
@@ -1157,7 +1446,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_maple_log",
@@ -1179,7 +1469,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_mahogany_log",
@@ -1201,7 +1492,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_yew_log",
@@ -1223,7 +1515,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_magic_log",
@@ -1245,7 +1538,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_redwood_log",
@@ -1267,7 +1561,8 @@
             "chance": 0.4
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_cinderbark_log",
@@ -1289,7 +1584,8 @@
             "chance": 0.45
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       },
       {
         "id": "burn_voidwood_log",
@@ -1311,7 +1607,8 @@
             "chance": 0.5
           }
         ],
-        "mastery_action_time": 1.2
+        "mastery_action_time": 1.2,
+        "icon_activity": true
       }
     ],
     "order": 14,
@@ -1359,6 +1656,40 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_pond_perch",
+        "name": "Grilled Pond Perch",
+        "level_required": 3,
+        "base_interval": 4,
+        "base_xp": 15,
+        "success_chance": 0.55,
+        "input_items": {
+          "raw_pond_perch": 1
+        },
+        "output_items": {
+          "pond_perch": 1
+        },
+        "mastery_action_time": 3.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_hearthroot_mash",
+        "name": "Hearthroot Mash",
+        "level_required": 4,
+        "base_interval": 5,
+        "base_xp": 17,
+        "success_chance": 0.6,
+        "input_items": {
+          "hearthroot": 2
+        },
+        "output_items": {
+          "hearthroot_mash": 1
+        },
+        "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_sardine",
         "name": "Silverfin",
         "level_required": 5,
@@ -1372,6 +1703,24 @@
           "sardine": 1
         },
         "mastery_action_time": 3.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_emberleaf_shrimp_bowl",
+        "name": "Emberleaf Shrimp Bowl",
+        "level_required": 8,
+        "base_interval": 5,
+        "base_xp": 25,
+        "success_chance": 0.6,
+        "input_items": {
+          "raw_shrimp": 2,
+          "garum_herb": 1
+        },
+        "output_items": {
+          "emberleaf_shrimp_bowl": 1
+        },
+        "mastery_action_time": 4.25,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1393,6 +1742,42 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_willow_roach",
+        "name": "Grilled Willow Roach",
+        "level_required": 12,
+        "base_interval": 5,
+        "base_xp": 35,
+        "success_chance": 0.6,
+        "input_items": {
+          "raw_willow_roach": 1
+        },
+        "output_items": {
+          "willow_roach": 1
+        },
+        "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_marsh_chowder",
+        "name": "Marsh Chowder",
+        "level_required": 18,
+        "base_interval": 6,
+        "base_xp": 42,
+        "success_chance": 0.7,
+        "input_items": {
+          "raw_pond_perch": 2,
+          "raw_shrimp": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "marsh_chowder": 1
+        },
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_trout",
         "name": "Speckled Trout",
         "level_required": 20,
@@ -1406,6 +1791,59 @@
           "trout": 1
         },
         "mastery_action_time": 4.25,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_silverfin_egg_bites",
+        "name": "Silverfin Egg Bites",
+        "level_required": 22,
+        "base_interval": 6,
+        "base_xp": 55,
+        "success_chance": 0.68,
+        "input_items": {
+          "raw_sardine": 2,
+          "ranch_egg": 1
+        },
+        "output_items": {
+          "silverfin_egg_bites": 1
+        },
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_ashbulb_broth",
+        "name": "Ashbulb Broth",
+        "level_required": 24,
+        "base_interval": 6,
+        "base_xp": 57,
+        "success_chance": 0.68,
+        "input_items": {
+          "ashbulb": 2,
+          "hearthroot": 1
+        },
+        "output_items": {
+          "ashbulb_broth": 1
+        },
+        "mastery_action_time": 5.1,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_bronze_carp",
+        "name": "Grilled Bronze Carp",
+        "level_required": 25,
+        "base_interval": 5.5,
+        "base_xp": 60,
+        "success_chance": 0.68,
+        "input_items": {
+          "raw_bronze_carp": 1
+        },
+        "output_items": {
+          "bronze_carp": 1
+        },
+        "mastery_action_time": 4.675,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1431,7 +1869,7 @@
         "name": "Ranch Omelette",
         "level_required": 35,
         "base_interval": 6.0,
-        "base_xp": 75,
+        "base_xp": 80,
         "success_chance": 0.9,
         "input_items": {
           "ranch_egg": 2,
@@ -1441,6 +1879,41 @@
           "ranch_omelette": 1
         },
         "mastery_action_time": 5.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_dusk_bass",
+        "name": "Grilled Dusk Bass",
+        "level_required": 35,
+        "base_interval": 6.5,
+        "base_xp": 80,
+        "success_chance": 0.72,
+        "input_items": {
+          "raw_dusk_bass": 1
+        },
+        "output_items": {
+          "dusk_bass": 1
+        },
+        "mastery_action_time": 5.525,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_emberleaf_skewers",
+        "name": "Emberleaf Fish Skewers",
+        "level_required": 38,
+        "base_interval": 7,
+        "base_xp": 82,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_dusk_bass": 1,
+          "garum_herb": 1
+        },
+        "output_items": {
+          "emberleaf_skewers": 1
+        },
+        "mastery_action_time": 5.95,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1462,6 +1935,42 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_goldpetal_salmon",
+        "name": "Goldpetal Salmon",
+        "level_required": 42,
+        "base_interval": 7,
+        "base_xp": 95,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_salmon": 1,
+          "lemontyle": 1
+        },
+        "output_items": {
+          "goldpetal_salmon": 1
+        },
+        "mastery_action_time": 5.95,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_stormcabbage_roll",
+        "name": "Stormcabbage Roll",
+        "level_required": 44,
+        "base_interval": 7,
+        "base_xp": 97,
+        "success_chance": 0.78,
+        "input_items": {
+          "stormcabbage": 1,
+          "ranch_meat": 1
+        },
+        "output_items": {
+          "stormcabbage_roll": 1
+        },
+        "mastery_action_time": 5.95,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_ranch_cheese",
         "name": "Ranch Cheese",
         "level_required": 45,
@@ -1475,6 +1984,23 @@
           "ranch_cheese": 1
         },
         "mastery_action_time": 5.4,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_moon_eel",
+        "name": "Grilled Moon Eel",
+        "level_required": 45,
+        "base_interval": 7,
+        "base_xp": 100,
+        "success_chance": 0.77,
+        "input_items": {
+          "raw_moon_eel": 1
+        },
+        "output_items": {
+          "moon_eel": 1
+        },
+        "mastery_action_time": 5.95,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1530,6 +2056,41 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_coral_bream",
+        "name": "Grilled Coral Bream",
+        "level_required": 55,
+        "base_interval": 8,
+        "base_xp": 130,
+        "success_chance": 0.79,
+        "input_items": {
+          "raw_coral_bream": 1
+        },
+        "output_items": {
+          "coral_bream": 1
+        },
+        "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_coral_bisque",
+        "name": "Coral Bisque",
+        "level_required": 58,
+        "base_interval": 8.5,
+        "base_xp": 135,
+        "success_chance": 0.8,
+        "input_items": {
+          "raw_coral_bream": 2,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "coral_bisque": 1
+        },
+        "mastery_action_time": 7.225,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_crab",
         "name": "Crab",
         "level_required": 60,
@@ -1543,6 +2104,60 @@
           "crab": 1
         },
         "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_fen_lobster_gratin",
+        "name": "Fen Lobster Gratin",
+        "level_required": 62,
+        "base_interval": 9,
+        "base_xp": 150,
+        "success_chance": 0.8,
+        "input_items": {
+          "raw_lobster": 1,
+          "ranch_cheese": 1,
+          "oxilyme": 1
+        },
+        "output_items": {
+          "fen_lobster_gratin": 1
+        },
+        "mastery_action_time": 7.65,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_sunmelon_glazed_tuna",
+        "name": "Sunmelon-Glazed Tuna",
+        "level_required": 64,
+        "base_interval": 9,
+        "base_xp": 155,
+        "success_chance": 0.81,
+        "input_items": {
+          "raw_storm_tuna": 1,
+          "sunmelon": 1
+        },
+        "output_items": {
+          "sunmelon_glazed_tuna": 1
+        },
+        "mastery_action_time": 7.65,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_storm_tuna",
+        "name": "Grilled Storm Tuna",
+        "level_required": 65,
+        "base_interval": 9,
+        "base_xp": 160,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_storm_tuna": 1
+        },
+        "output_items": {
+          "storm_tuna": 1
+        },
+        "mastery_action_time": 7.65,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1564,6 +2179,25 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_ashcap_shark_stew",
+        "name": "Ashcap Shark Stew",
+        "level_required": 74,
+        "base_interval": 10,
+        "base_xp": 195,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_shark": 1,
+          "poraxx": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "ashcap_shark_stew": 1
+        },
+        "mastery_action_time": 8.5,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_cave_fish",
         "name": "Cave Fish",
         "level_required": 75,
@@ -1577,6 +2211,25 @@
           "cave_fish": 1
         },
         "mastery_action_time": 6.8,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_stormfish_pie",
+        "name": "Stormfish Pie",
+        "level_required": 78,
+        "base_interval": 10,
+        "base_xp": 225,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_storm_tuna": 1,
+          "ranch_egg": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "stormfish_pie": 1
+        },
+        "mastery_action_time": 8.5,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1600,6 +2253,42 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_frost_pike",
+        "name": "Grilled Frost Pike",
+        "level_required": 80,
+        "base_interval": 10,
+        "base_xp": 240,
+        "success_chance": 0.82,
+        "input_items": {
+          "raw_frost_pike": 1
+        },
+        "output_items": {
+          "frost_pike": 1
+        },
+        "mastery_action_time": 8.5,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_starcorn_chowder",
+        "name": "Starcorn Chowder",
+        "level_required": 84,
+        "base_interval": 11,
+        "base_xp": 245,
+        "success_chance": 0.81,
+        "input_items": {
+          "starcorn": 2,
+          "raw_frost_pike": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "starcorn_chowder": 1
+        },
+        "mastery_action_time": 9.35,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_manta_ray",
         "name": "Glidefin Manta",
         "level_required": 85,
@@ -1613,6 +2302,42 @@
           "manta_ray": 1
         },
         "mastery_action_time": 8.5,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_gravemoss_surf_and_turf",
+        "name": "Gravemoss Surf and Turf",
+        "level_required": 88,
+        "base_interval": 12,
+        "base_xp": 280,
+        "success_chance": 0.81,
+        "input_items": {
+          "raw_manta_ray": 1,
+          "ranch_meat": 1,
+          "barrentoe": 1
+        },
+        "output_items": {
+          "gravemoss_surf_and_turf": 1
+        },
+        "mastery_action_time": 10.2,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_sunscale_koi",
+        "name": "Grilled Sunscale Koi",
+        "level_required": 90,
+        "base_interval": 11,
+        "base_xp": 295,
+        "success_chance": 0.81,
+        "input_items": {
+          "raw_sunscale_koi": 1
+        },
+        "output_items": {
+          "sunscale_koi": 1
+        },
+        "mastery_action_time": 9.35,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       },
@@ -1634,6 +2359,61 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_royal_anglers_platter",
+        "name": "Royal Angler's Platter",
+        "level_required": 98,
+        "base_interval": 13,
+        "base_xp": 360,
+        "success_chance": 0.8,
+        "input_items": {
+          "raw_sunscale_koi": 1,
+          "raw_frost_pike": 1,
+          "lemontyle": 1
+        },
+        "output_items": {
+          "royal_anglers_platter": 1
+        },
+        "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_obsidian_sturgeon",
+        "name": "Grilled Obsidian Sturgeon",
+        "level_required": 100,
+        "base_interval": 12,
+        "base_xp": 380,
+        "success_chance": 0.79,
+        "input_items": {
+          "raw_obsidian_sturgeon": 1
+        },
+        "output_items": {
+          "obsidian_sturgeon": 1
+        },
+        "mastery_action_time": 10.2,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_herald_gourd_pie",
+        "name": "Herald Gourd Pie",
+        "level_required": 102,
+        "base_interval": 13,
+        "base_xp": 400,
+        "success_chance": 0.79,
+        "input_items": {
+          "herald_gourd": 1,
+          "ranch_egg": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "herald_gourd_pie": 1
+        },
+        "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_dreadfin",
         "name": "Dreadfin Fillet",
         "level_required": 105,
@@ -1651,6 +2431,42 @@
         "fail_output_qty": 1
       },
       {
+        "id": "cook_herald_leviathan_roast",
+        "name": "Herald Leviathan Roast",
+        "level_required": 106,
+        "base_interval": 14,
+        "base_xp": 425,
+        "success_chance": 0.79,
+        "input_items": {
+          "raw_whale": 1,
+          "herald_bloom": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "herald_leviathan_roast": 1
+        },
+        "mastery_action_time": 11.9,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_aurora_lionfish",
+        "name": "Grilled Aurora Lionfish",
+        "level_required": 110,
+        "base_interval": 13,
+        "base_xp": 470,
+        "success_chance": 0.77,
+        "input_items": {
+          "raw_aurora_lionfish": 1
+        },
+        "output_items": {
+          "aurora_lionfish": 1
+        },
+        "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
         "id": "cook_abyssal_eel",
         "name": "Abyssal Eel Roll",
         "level_required": 115,
@@ -1664,6 +2480,61 @@
           "abyssal_eel": 1
         },
         "mastery_action_time": 11.05,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_aurora_seafood_feast",
+        "name": "Aurora Seafood Feast",
+        "level_required": 118,
+        "base_interval": 16,
+        "base_xp": 560,
+        "success_chance": 0.78,
+        "input_items": {
+          "raw_aurora_lionfish": 2,
+          "raw_obsidian_sturgeon": 1,
+          "ranch_cheese": 1
+        },
+        "output_items": {
+          "aurora_seafood_feast": 1
+        },
+        "mastery_action_time": 13.6,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_celestial_marlin",
+        "name": "Grilled Celestial Marlin",
+        "level_required": 120,
+        "base_interval": 14,
+        "base_xp": 580,
+        "success_chance": 0.75,
+        "input_items": {
+          "raw_celestial_marlin": 1
+        },
+        "output_items": {
+          "celestial_marlin": 1
+        },
+        "mastery_action_time": 11.9,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
+      },
+      {
+        "id": "cook_emberbloom_abyssal_hotpot",
+        "name": "Emberbloom Abyssal Hotpot",
+        "level_required": 120,
+        "base_interval": 17,
+        "base_xp": 580,
+        "success_chance": 0.76,
+        "input_items": {
+          "raw_abyssal_eel": 2,
+          "emberbloom": 1,
+          "ranch_milk": 1
+        },
+        "output_items": {
+          "emberbloom_abyssal_hotpot": 1
+        },
+        "mastery_action_time": 14.45,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
       }
@@ -2538,6 +3409,20 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "smith_adamantite_shield",
+        "name": "Skyiron Shield",
+        "level_required": 50,
+        "base_interval": 1.9,
+        "base_xp": 360,
+        "input_items": {
+          "adamantite_bar": 4
+        },
+        "output_items": {
+          "adamantite_shield": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
         "id": "smelt_mithril_bar",
         "name": "Ghoststeel Bar",
         "level_required": 55,
@@ -2553,6 +3438,20 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "smith_mithril_arrowtips",
+        "name": "Ghoststeel Arrowtips",
+        "level_required": 55,
+        "base_interval": 1.7,
+        "base_xp": 65,
+        "input_items": {
+          "mithril_bar": 1
+        },
+        "output_items": {
+          "mithril_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "smelt_adamantite_bar",
         "name": "Skyiron Bar",
         "level_required": 70,
@@ -2564,6 +3463,20 @@
         },
         "output_items": {
           "adamantite_bar": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "smith_adamantite_arrowtips",
+        "name": "Skyiron Arrowtips",
+        "level_required": 70,
+        "base_interval": 1.7,
+        "base_xp": 115,
+        "input_items": {
+          "adamantite_bar": 1
+        },
+        "output_items": {
+          "adamantite_arrowtips": 15
         },
         "mastery_action_time": 1.7
       },
@@ -2740,6 +3653,20 @@
           "runite_shield": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_runite_arrowtips",
+        "name": "Starforge Arrowtips",
+        "level_required": 85,
+        "base_interval": 1.7,
+        "base_xp": 125,
+        "input_items": {
+          "runite_bar": 1
+        },
+        "output_items": {
+          "runite_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "smelt_dragonite_bar",
@@ -2982,6 +3909,20 @@
           "dragonite_shield": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_dragonite_arrowtips",
+        "name": "Wyrmsteel Arrowtips",
+        "level_required": 95,
+        "base_interval": 1.7,
+        "base_xp": 160,
+        "input_items": {
+          "dragonite_bar": 1
+        },
+        "output_items": {
+          "dragonite_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "forge_air_god_boots",
@@ -3256,6 +4197,21 @@
         "mastery_action_time": 24.0
       },
       {
+        "id": "smith_warden_aegis",
+        "name": "Wardens' Aegis",
+        "level_required": 100,
+        "base_interval": 1.9,
+        "base_xp": 600,
+        "input_items": {
+          "dragonite_bar": 4,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "warden_aegis": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
         "id": "smelt_umbral_bar",
         "name": "Umbral Bar",
         "level_required": 105,
@@ -3339,6 +4295,70 @@
         "mastery_action_time": 30.0
       },
       {
+        "id": "forge_herald_helmet",
+        "name": "Herald Helmet",
+        "level_required": 106,
+        "base_interval": 20.0,
+        "base_xp": 1300,
+        "input_items": {
+          "umbral_bar": 3,
+          "summoning_shard_gold": 1,
+          "prismatic_essence": 2
+        },
+        "output_items": {
+          "herald_helmet": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_herald_gauntlets",
+        "name": "Herald Gauntlets",
+        "level_required": 107,
+        "base_interval": 18.0,
+        "base_xp": 1150,
+        "input_items": {
+          "umbral_bar": 2,
+          "summoning_shard_gold": 1,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "herald_gauntlets": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_herald_sabatons",
+        "name": "Herald Sabatons",
+        "level_required": 107,
+        "base_interval": 18.0,
+        "base_xp": 1150,
+        "input_items": {
+          "umbral_bar": 2,
+          "summoning_shard_gold": 1,
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "herald_sabatons": 1
+        },
+        "mastery_action_time": 18.0
+      },
+      {
+        "id": "forge_herald_platelegs",
+        "name": "Herald Platelegs",
+        "level_required": 108,
+        "base_interval": 24.0,
+        "base_xp": 1600,
+        "input_items": {
+          "umbral_bar": 5,
+          "summoning_shard_gold": 2,
+          "prismatic_essence": 3
+        },
+        "output_items": {
+          "herald_platelegs": 1
+        },
+        "mastery_action_time": 24.0
+      },
+      {
         "id": "forge_herald_platebody",
         "name": "Herald Platebody",
         "level_required": 110,
@@ -3353,6 +4373,35 @@
           "herald_platebody": 1
         },
         "mastery_action_time": 28.0
+      },
+      {
+        "id": "smith_herald_bulwark",
+        "name": "Herald's Bulwark",
+        "level_required": 115,
+        "base_interval": 1.9,
+        "base_xp": 760,
+        "input_items": {
+          "herald_bar": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "herald_bulwark": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "smith_herald_arrowtips",
+        "name": "Herald Arrowtips",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 230,
+        "input_items": {
+          "herald_bar": 1
+        },
+        "output_items": {
+          "herald_arrowtips": 15
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "smelt_herald_bar",
@@ -3384,6 +4433,86 @@
           "herald_godsword": 1
         },
         "mastery_action_time": 34.0
+      },
+      {
+        "id": "forge_throneguard_helm",
+        "name": "Throneguard Helm",
+        "level_required": 117,
+        "base_interval": 22.0,
+        "base_xp": 1700,
+        "input_items": {
+          "herald_bar": 3,
+          "summoning_shard_gold": 1,
+          "herald_essence": 2
+        },
+        "output_items": {
+          "throneguard_helm": 1
+        },
+        "mastery_action_time": 22.0
+      },
+      {
+        "id": "forge_throneguard_gauntlets",
+        "name": "Throneguard Gauntlets",
+        "level_required": 117,
+        "base_interval": 20.0,
+        "base_xp": 1600,
+        "input_items": {
+          "herald_bar": 2,
+          "summoning_shard_gold": 1,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "throneguard_gauntlets": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_throneguard_sabatons",
+        "name": "Throneguard Sabatons",
+        "level_required": 118,
+        "base_interval": 20.0,
+        "base_xp": 1600,
+        "input_items": {
+          "herald_bar": 2,
+          "summoning_shard_gold": 1,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "throneguard_sabatons": 1
+        },
+        "mastery_action_time": 20.0
+      },
+      {
+        "id": "forge_throneguard_platelegs",
+        "name": "Throneguard Platelegs",
+        "level_required": 119,
+        "base_interval": 26.0,
+        "base_xp": 2200,
+        "input_items": {
+          "herald_bar": 5,
+          "summoning_shard_gold": 2,
+          "herald_essence": 3
+        },
+        "output_items": {
+          "throneguard_platelegs": 1
+        },
+        "mastery_action_time": 26.0
+      },
+      {
+        "id": "forge_throneguard_cuirass",
+        "name": "Throneguard Cuirass",
+        "level_required": 120,
+        "base_interval": 30.0,
+        "base_xp": 2600,
+        "input_items": {
+          "herald_bar": 6,
+          "summoning_shard_gold": 2,
+          "herald_essence": 4
+        },
+        "output_items": {
+          "throneguard_cuirass": 1
+        },
+        "mastery_action_time": 30.0
       }
     ],
     "order": 16,
@@ -3549,6 +4678,22 @@
         "mastery_action_time": 1.3
       },
       {
+        "id": "fletch_mithril_arrow",
+        "name": "Ghoststeel Arrow",
+        "level_required": 45,
+        "base_interval": 1.3,
+        "base_xp": 60,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "mithril_arrowtips": 1
+        },
+        "output_items": {
+          "mithril_arrow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
         "id": "fletch_yew_shortbow",
         "name": "Gravewood Shortbow",
         "level_required": 55,
@@ -3579,6 +4724,22 @@
         "mastery_action_time": 1.3
       },
       {
+        "id": "fletch_adamantite_arrow",
+        "name": "Skyiron Arrow",
+        "level_required": 60,
+        "base_interval": 1.3,
+        "base_xp": 85,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "adamantite_arrowtips": 1
+        },
+        "output_items": {
+          "adamantite_arrow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
         "id": "fletch_magic_shortbow",
         "name": "Witchpine Shortbow",
         "level_required": 75,
@@ -3590,6 +4751,22 @@
         },
         "output_items": {
           "magic_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_runite_arrow",
+        "name": "Starforge Arrow",
+        "level_required": 75,
+        "base_interval": 1.3,
+        "base_xp": 115,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "runite_arrowtips": 1
+        },
+        "output_items": {
+          "runite_arrow": 1
         },
         "mastery_action_time": 1.3
       },
@@ -3620,6 +4797,22 @@
         },
         "output_items": {
           "redwood_shortbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_dragonite_arrow",
+        "name": "Wyrmsteel Arrow",
+        "level_required": 90,
+        "base_interval": 1.3,
+        "base_xp": 150,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "dragonite_arrowtips": 1
+        },
+        "output_items": {
+          "dragonite_arrow": 1
         },
         "mastery_action_time": 1.3
       },
@@ -3665,6 +4858,22 @@
         },
         "output_items": {
           "cinderbark_longbow": 1
+        },
+        "mastery_action_time": 1.3
+      },
+      {
+        "id": "fletch_herald_arrow",
+        "name": "Herald Arrow",
+        "level_required": 105,
+        "base_interval": 1.3,
+        "base_xp": 190,
+        "input_items": {
+          "arrow_shaft": 1,
+          "feather": 1,
+          "herald_arrowtips": 1
+        },
+        "output_items": {
+          "herald_arrow": 1
         },
         "mastery_action_time": 1.3
       },
@@ -3780,6 +4989,20 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_leather_cape",
+        "name": "Leather Cape",
+        "level_required": 3,
+        "base_interval": 1.65,
+        "base_xp": 14,
+        "input_items": {
+          "leather": 2
+        },
+        "output_items": {
+          "leather_cape": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_gold_ring",
         "name": "Gold Ring",
         "level_required": 5,
@@ -3822,6 +5045,21 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_topaz_amulet",
+        "name": "Topaz Amulet",
+        "level_required": 15,
+        "base_interval": 1.65,
+        "base_xp": 30,
+        "input_items": {
+          "gold_bar": 1,
+          "topaz": 1
+        },
+        "output_items": {
+          "topaz_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_sapphire_ring",
         "name": "Sapphire Ring",
         "level_required": 20,
@@ -3847,6 +5085,35 @@
         },
         "output_items": {
           "rune_essence": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_sapphire_amulet",
+        "name": "Sapphire Amulet",
+        "level_required": 25,
+        "base_interval": 1.65,
+        "base_xp": 50,
+        "input_items": {
+          "gold_bar": 1,
+          "sapphire": 1
+        },
+        "output_items": {
+          "sapphire_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_woollen_cloak",
+        "name": "Woollen Cloak",
+        "level_required": 25,
+        "base_interval": 1.7,
+        "base_xp": 55,
+        "input_items": {
+          "ranch_wool": 3
+        },
+        "output_items": {
+          "woollen_cloak": 1
         },
         "mastery_action_time": 1.7
       },
@@ -3930,6 +5197,22 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "craft_apprentice_boots",
+        "name": "Apprentice Boots",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 60,
+        "input_items": {
+          "rune_essence": 2,
+          "air_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "apprentice_boots": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_ruby_ring",
         "name": "Ruby Ring",
         "level_required": 34,
@@ -3941,6 +5224,21 @@
         },
         "output_items": {
           "ruby_ring": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_emerald_amulet",
+        "name": "Emerald Amulet",
+        "level_required": 35,
+        "base_interval": 1.65,
+        "base_xp": 72,
+        "input_items": {
+          "gold_bar": 1,
+          "emerald": 1
+        },
+        "output_items": {
+          "emerald_amulet": 1
         },
         "mastery_action_time": 1.65
       },
@@ -4001,6 +5299,20 @@
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_green_dhide_boots",
+        "name": "Verdant Wyrmhide Boots",
+        "level_required": 40,
+        "base_interval": 1.65,
+        "base_xp": 60,
+        "input_items": {
+          "green_dragonhide": 2
+        },
+        "output_items": {
+          "green_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "set_topaz_ring",
         "name": "Topaz Ring",
         "level_required": 42,
@@ -4043,6 +5355,20 @@
           "rune_essence": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_verdant_cloak",
+        "name": "Verdant Wyrmhide Cloak",
+        "level_required": 45,
+        "base_interval": 1.65,
+        "base_xp": 70,
+        "input_items": {
+          "green_dragonhide": 3
+        },
+        "output_items": {
+          "verdant_cloak": 1
+        },
+        "mastery_action_time": 1.65
       },
       {
         "id": "craft_blue_dhide_body",
@@ -4113,6 +5439,35 @@
           "rune_essence": 1
         },
         "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_ruby_amulet",
+        "name": "Ruby Amulet",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 110,
+        "input_items": {
+          "gold_bar": 2,
+          "ruby": 1
+        },
+        "output_items": {
+          "ruby_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_blue_dhide_boots",
+        "name": "Azure Wyrmhide Boots",
+        "level_required": 50,
+        "base_interval": 1.65,
+        "base_xp": 80,
+        "input_items": {
+          "blue_dragonhide": 2
+        },
+        "output_items": {
+          "blue_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
       },
       {
         "id": "work_ranch_antler",
@@ -4277,6 +5632,36 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "craft_red_dhide_boots",
+        "name": "Crimson Wyrmhide Boots",
+        "level_required": 60,
+        "base_interval": 1.65,
+        "base_xp": 105,
+        "input_items": {
+          "red_dragonhide": 2
+        },
+        "output_items": {
+          "red_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_adept_boots",
+        "name": "Adept Boots",
+        "level_required": 60,
+        "base_interval": 1.7,
+        "base_xp": 110,
+        "input_items": {
+          "rune_essence": 3,
+          "chaos_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "adept_boots": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "work_ranch_plume",
         "name": "Ranch Plume Fittings",
         "level_required": 65,
@@ -4289,6 +5674,35 @@
           "rune_essence": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_diamond_amulet",
+        "name": "Diamond Amulet",
+        "level_required": 65,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "gold_bar": 2,
+          "diamond": 1
+        },
+        "output_items": {
+          "diamond_amulet": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_crimson_cloak",
+        "name": "Crimson Wyrmhide Cloak",
+        "level_required": 65,
+        "base_interval": 1.65,
+        "base_xp": 115,
+        "input_items": {
+          "red_dragonhide": 3
+        },
+        "output_items": {
+          "crimson_cloak": 1
+        },
+        "mastery_action_time": 1.65
       },
       {
         "id": "craft_black_dhide_body",
@@ -4376,6 +5790,20 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "craft_black_dhide_boots",
+        "name": "Blighted Wyrmhide Boots",
+        "level_required": 70,
+        "base_interval": 1.65,
+        "base_xp": 135,
+        "input_items": {
+          "black_dragonhide": 2
+        },
+        "output_items": {
+          "black_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "fit_clockwork_frame",
         "name": "Clockwork Fitting",
         "level_required": 80,
@@ -4390,8 +5818,37 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "craft_wyrmforged_torc",
+        "name": "Wyrmforged Torc",
+        "level_required": 80,
+        "base_interval": 1.9,
+        "base_xp": 180,
+        "input_items": {
+          "dragonite_bar": 2,
+          "diamond": 1
+        },
+        "output_items": {
+          "wyrmforged_torc": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_blighted_cloak",
+        "name": "Blighted Wyrmhide Cloak",
+        "level_required": 80,
+        "base_interval": 1.65,
+        "base_xp": 160,
+        "input_items": {
+          "black_dragonhide": 3
+        },
+        "output_items": {
+          "blighted_cloak": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
         "id": "craft_reinforced_dhide_body",
-        "name": "Blighted Wyrmhide Body",
+        "name": "Reinforced Wyrmhide Body",
         "level_required": 85,
         "base_interval": 1.65,
         "base_xp": 190,
@@ -4399,7 +5856,7 @@
           "black_dragonhide": 3
         },
         "output_items": {
-          "black_dhide_body": 1
+          "reinforced_dhide_body": 1
         },
         "mastery_action_time": 1.65
       },
@@ -4496,8 +5953,24 @@
         "mastery_action_time": 1.9
       },
       {
+        "id": "craft_archmage_boots",
+        "name": "Archmage Boots",
+        "level_required": 90,
+        "base_interval": 1.7,
+        "base_xp": 180,
+        "input_items": {
+          "rune_essence": 4,
+          "blood_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "archmage_boots": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_reinforced_dhide_chaps",
-        "name": "Blighted Wyrmhide Chaps",
+        "name": "Reinforced Wyrmhide Chaps",
         "level_required": 95,
         "base_interval": 1.65,
         "base_xp": 250,
@@ -4506,13 +5979,44 @@
           "umbral_essence": 1
         },
         "output_items": {
-          "black_dhide_chaps": 1
+          "reinforced_dhide_chaps": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_umbral_pendant",
+        "name": "Umbral Pendant",
+        "level_required": 95,
+        "base_interval": 1.9,
+        "base_xp": 250,
+        "input_items": {
+          "umbral_bar": 2,
+          "diamond": 1,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "umbral_pendant": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_umbral_shroud",
+        "name": "Umbral Shroud",
+        "level_required": 95,
+        "base_interval": 1.65,
+        "base_xp": 250,
+        "input_items": {
+          "black_dragonhide": 3,
+          "umbral_essence": 1
+        },
+        "output_items": {
+          "umbral_shroud": 1
         },
         "mastery_action_time": 1.65
       },
       {
         "id": "craft_reinforced_dhide_coif",
-        "name": "Blighted Wyrmhide Coif",
+        "name": "Reinforced Wyrmhide Coif",
         "level_required": 105,
         "base_interval": 1.65,
         "base_xp": 320,
@@ -4521,13 +6025,75 @@
           "herald_essence": 1
         },
         "output_items": {
-          "black_dhide_coif": 1
+          "reinforced_dhide_coif": 1
         },
         "mastery_action_time": 1.65
       },
       {
+        "id": "craft_reinforced_dhide_boots",
+        "name": "Reinforced Wyrmhide Boots",
+        "level_required": 105,
+        "base_interval": 1.65,
+        "base_xp": 320,
+        "input_items": {
+          "black_dragonhide": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "reinforced_dhide_boots": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_heralds_sigil",
+        "name": "Herald's Sigil",
+        "level_required": 110,
+        "base_interval": 1.9,
+        "base_xp": 330,
+        "input_items": {
+          "herald_bar": 2,
+          "diamond": 2,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "heralds_sigil": 1
+        },
+        "mastery_action_time": 1.9
+      },
+      {
+        "id": "craft_herald_mantle",
+        "name": "Herald's Mantle",
+        "level_required": 110,
+        "base_interval": 1.65,
+        "base_xp": 330,
+        "input_items": {
+          "black_dragonhide": 4,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "herald_mantle": 1
+        },
+        "mastery_action_time": 1.65
+      },
+      {
+        "id": "craft_herald_boots",
+        "name": "Herald Boots",
+        "level_required": 115,
+        "base_interval": 1.7,
+        "base_xp": 280,
+        "input_items": {
+          "rune_essence": 6,
+          "umbral_rune": 10,
+          "ranch_wool": 1
+        },
+        "output_items": {
+          "herald_boots": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_umbral_dhide_vambraces",
-        "name": "Blighted Wyrmhide Vambraces",
+        "name": "Umbral Wyrmhide Vambraces",
         "level_required": 115,
         "base_interval": 1.65,
         "base_xp": 400,
@@ -4536,7 +6102,7 @@
           "umbral_essence": 2
         },
         "output_items": {
-          "black_dhide_vambraces": 1
+          "umbral_dhide_vambraces": 1
         },
         "mastery_action_time": 1.65
       },
@@ -5257,6 +6823,20 @@
         "mastery_action_time": 1.8
       },
       {
+        "id": "brew_antivenom",
+        "name": "Antivenom Draught",
+        "level_required": 50,
+        "base_interval": 1.8,
+        "base_xp": 90,
+        "input_items": {
+          "garum_herb": 3
+        },
+        "output_items": {
+          "potion_antivenom": 1
+        },
+        "mastery_action_time": 1.8
+      },
+      {
         "id": "brew_potion_enchanting",
         "name": "Enchanting Potion",
         "level_required": 55,
@@ -5482,6 +7062,12 @@
             "chance": 0.15,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "hearthroot_seed",
+            "chance": 0.12,
+            "min_qty": 1,
+            "max_qty": 2
           }
         ],
         "icon_activity": true
@@ -5528,6 +7114,18 @@
             "chance": 0.16,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "hearthroot_seed",
+            "chance": 0.15,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "ashbulb_seed",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 2
           }
         ],
         "icon_activity": true
@@ -5545,7 +7143,15 @@
         "gp_reward": 45,
         "output_items": {},
         "mastery_action_time": 3.0,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "ashbulb_seed",
+            "chance": 0.12,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ]
       },
       {
         "id": "marauder",
@@ -5606,7 +7212,27 @@
         "gp_reward": 160,
         "output_items": {},
         "mastery_action_time": 3.2,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "oak_sapling_seed",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "willow_sapling_seed",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "yew_sapling_seed",
+            "chance": 0.02,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "knight",
@@ -5621,7 +7247,15 @@
         "gp_reward": 220,
         "output_items": {},
         "mastery_action_time": 3.4,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "stormcabbage_seed",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ]
       },
       {
         "id": "merchant",
@@ -5659,7 +7293,27 @@
         "gp_reward": 380,
         "output_items": {},
         "mastery_action_time": 3.4,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "stormcabbage_seed",
+            "chance": 0.12,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "sunmelon_seed",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "starcorn_seed",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "bandit",
@@ -5674,7 +7328,15 @@
         "gp_reward": 470,
         "output_items": {},
         "mastery_action_time": 3.6,
-        "icon_activity": true
+        "icon_activity": true,
+        "secondary_outputs": [
+          {
+            "item_id": "magic_sapling_seed",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "guard",
@@ -5695,6 +7357,12 @@
             "chance": 0.02,
             "min_qty": 1,
             "max_qty": 1
+          },
+          {
+            "item_id": "sunmelon_seed",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 2
           }
         ],
         "icon_activity": true
@@ -5764,6 +7432,18 @@
             "chance": 0.1,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "starcorn_seed",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "redwood_sapling_seed",
+            "chance": 0.02,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "icon_activity": true
@@ -5822,6 +7502,12 @@
             "chance": 0.06,
             "min_qty": 1,
             "max_qty": 1
+          },
+          {
+            "item_id": "herald_gourd_seed",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "icon_activity": true
@@ -5849,6 +7535,18 @@
           {
             "item_id": "chapeau_noir",
             "chance": 0.07,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "herald_gourd_seed",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "voidwood_sapling_seed",
+            "chance": 0.02,
             "min_qty": 1,
             "max_qty": 1
           }
@@ -5997,7 +7695,7 @@
         "name": "Oldroot Tablet",
         "level_required": 1,
         "base_interval": 5.0,
-        "base_xp": 15,
+        "base_xp": 18,
         "input_items": {
           "ent_mark": 1,
           "summoning_shard_green": 1
@@ -6010,9 +7708,9 @@
       {
         "id": "mole_tablet",
         "name": "Ashmole Tablet",
-        "level_required": 1,
+        "level_required": 5,
         "base_interval": 5.0,
-        "base_xp": 15,
+        "base_xp": 20,
         "input_items": {
           "mole_mark": 1,
           "summoning_shard_green": 1
@@ -6025,375 +7723,15 @@
       {
         "id": "octopus_tablet",
         "name": "Tidegrasp Tablet",
-        "level_required": 1,
+        "level_required": 10,
         "base_interval": 5.0,
-        "base_xp": 15,
+        "base_xp": 23,
         "input_items": {
           "octopus_mark": 1,
           "summoning_shard_green": 1
         },
         "output_items": {
           "octopus_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "pig_tablet",
-        "name": "Sootsow Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "pig_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "pig_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "crow_tablet",
-        "name": "Cindercrow Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "crow_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "crow_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "leprechaun_tablet",
-        "name": "Glimmerkin Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "leprechaun_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "leprechaun_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "monkey_tablet",
-        "name": "Riftmonkey Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "monkey_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "monkey_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "salamander_tablet",
-        "name": "Cinderling Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "salamander_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "salamander_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "bear_tablet",
-        "name": "Ashbear Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "bear_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "bear_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "devil_tablet",
-        "name": "Ashfiend Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "devil_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "devil_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "eagle_tablet",
-        "name": "Galecrest Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "eagle_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "eagle_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "owl_tablet",
-        "name": "Duskwing Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "owl_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "owl_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "beaver_tablet",
-        "name": "Muddam Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "beaver_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "beaver_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "fox_tablet",
-        "name": "Ashfox Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "fox_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "fox_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "golbin_thief_tablet",
-        "name": "Cinderkin Thief Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "golbin_thief_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "golbin_thief_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "occultist_tablet",
-        "name": "Ashcaller Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "occultist_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "occultist_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "wolf_tablet",
-        "name": "Dustwolf Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "wolf_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "wolf_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "minotaur_tablet",
-        "name": "Sunderhorn Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "minotaur_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "minotaur_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "centaur_tablet",
-        "name": "Windhoof Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "centaur_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "centaur_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "witch_tablet",
-        "name": "Hexweaver Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "witch_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "witch_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "cyclops_tablet",
-        "name": "Stonegaze Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "cyclops_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "cyclops_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "yak_tablet",
-        "name": "Rimeyak Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "yak_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "yak_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "unicorn_tablet",
-        "name": "Starfoil Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "unicorn_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "unicorn_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "dragon_tablet",
-        "name": "Ashwyrm Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "dragon_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "dragon_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "border_collie_tablet",
-        "name": "Border Collie Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "border_collie_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "border_collie_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "sandman_tablet",
-        "name": "Sandman Tablet",
-        "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 15,
-        "input_items": {
-          "sandman_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "sandman_tablet": 25
-        },
-        "mastery_action_time": 4.85
-      },
-      {
-        "id": "tortoise_tablet",
-        "name": "Mossback Tablet",
-        "level_required": 2,
-        "base_interval": 5.0,
-        "base_xp": 30,
-        "input_items": {
-          "tortoise_mark": 1,
-          "summoning_shard_green": 1
-        },
-        "output_items": {
-          "tortoise_tablet": 25
         },
         "mastery_action_time": 4.85
       },
@@ -6413,6 +7751,126 @@
         "mastery_action_time": 6.0
       },
       {
+        "id": "pig_tablet",
+        "name": "Sootsow Tablet",
+        "level_required": 14,
+        "base_interval": 5.0,
+        "base_xp": 25,
+        "input_items": {
+          "pig_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "pig_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "crow_tablet",
+        "name": "Cindercrow Tablet",
+        "level_required": 19,
+        "base_interval": 5.0,
+        "base_xp": 29,
+        "input_items": {
+          "crow_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "crow_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "leprechaun_tablet",
+        "name": "Glimmerkin Tablet",
+        "level_required": 23,
+        "base_interval": 5.0,
+        "base_xp": 33,
+        "input_items": {
+          "leprechaun_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "leprechaun_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "monkey_tablet",
+        "name": "Riftmonkey Tablet",
+        "level_required": 27,
+        "base_interval": 5.0,
+        "base_xp": 36,
+        "input_items": {
+          "monkey_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "monkey_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "salamander_tablet",
+        "name": "Cinderling Tablet",
+        "level_required": 32,
+        "base_interval": 5.0,
+        "base_xp": 42,
+        "input_items": {
+          "salamander_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "salamander_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "bear_tablet",
+        "name": "Ashbear Tablet",
+        "level_required": 36,
+        "base_interval": 5.0,
+        "base_xp": 47,
+        "input_items": {
+          "bear_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "bear_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "devil_tablet",
+        "name": "Ashfiend Tablet",
+        "level_required": 40,
+        "base_interval": 5.0,
+        "base_xp": 53,
+        "input_items": {
+          "devil_mark": 1,
+          "summoning_shard_green": 1
+        },
+        "output_items": {
+          "devil_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "eagle_tablet",
+        "name": "Galecrest Tablet",
+        "level_required": 45,
+        "base_interval": 5.0,
+        "base_xp": 60,
+        "input_items": {
+          "eagle_mark": 1,
+          "summoning_shard_crimson": 1
+        },
+        "output_items": {
+          "eagle_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
         "id": "refine_azure_shard",
         "name": "Azure Binding Shard",
         "level_required": 45,
@@ -6426,6 +7884,81 @@
           "summoning_shard_blue": 1
         },
         "mastery_action_time": 6.0
+      },
+      {
+        "id": "owl_tablet",
+        "name": "Duskwing Tablet",
+        "level_required": 49,
+        "base_interval": 5.0,
+        "base_xp": 68,
+        "input_items": {
+          "owl_mark": 1,
+          "summoning_shard_crimson": 1
+        },
+        "output_items": {
+          "owl_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "beaver_tablet",
+        "name": "Muddam Tablet",
+        "level_required": 54,
+        "base_interval": 5.0,
+        "base_xp": 78,
+        "input_items": {
+          "beaver_mark": 1,
+          "summoning_shard_crimson": 1
+        },
+        "output_items": {
+          "beaver_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "fox_tablet",
+        "name": "Ashfox Tablet",
+        "level_required": 58,
+        "base_interval": 5.0,
+        "base_xp": 87,
+        "input_items": {
+          "fox_mark": 1,
+          "summoning_shard_crimson": 1
+        },
+        "output_items": {
+          "fox_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "golbin_thief_tablet",
+        "name": "Cinderkin Thief Tablet",
+        "level_required": 62,
+        "base_interval": 5.0,
+        "base_xp": 98,
+        "input_items": {
+          "golbin_thief_mark": 1,
+          "summoning_shard_crimson": 1
+        },
+        "output_items": {
+          "golbin_thief_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "occultist_tablet",
+        "name": "Ashcaller Tablet",
+        "level_required": 67,
+        "base_interval": 5.0,
+        "base_xp": 112,
+        "input_items": {
+          "occultist_mark": 1,
+          "summoning_shard_crimson": 1
+        },
+        "output_items": {
+          "occultist_tablet": 25
+        },
+        "mastery_action_time": 4.85
       },
       {
         "id": "refine_silver_shard",
@@ -6443,6 +7976,96 @@
         "mastery_action_time": 6.0
       },
       {
+        "id": "wolf_tablet",
+        "name": "Dustwolf Tablet",
+        "level_required": 71,
+        "base_interval": 5.0,
+        "base_xp": 126,
+        "input_items": {
+          "wolf_mark": 1,
+          "summoning_shard_blue": 1
+        },
+        "output_items": {
+          "wolf_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "minotaur_tablet",
+        "name": "Sunderhorn Tablet",
+        "level_required": 76,
+        "base_interval": 5.0,
+        "base_xp": 145,
+        "input_items": {
+          "minotaur_mark": 1,
+          "summoning_shard_blue": 1
+        },
+        "output_items": {
+          "minotaur_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "centaur_tablet",
+        "name": "Windhoof Tablet",
+        "level_required": 80,
+        "base_interval": 5.0,
+        "base_xp": 162,
+        "input_items": {
+          "centaur_mark": 1,
+          "summoning_shard_blue": 1
+        },
+        "output_items": {
+          "centaur_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "witch_tablet",
+        "name": "Hexweaver Tablet",
+        "level_required": 84,
+        "base_interval": 5.0,
+        "base_xp": 181,
+        "input_items": {
+          "witch_mark": 1,
+          "summoning_shard_blue": 1
+        },
+        "output_items": {
+          "witch_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "cyclops_tablet",
+        "name": "Stonegaze Tablet",
+        "level_required": 89,
+        "base_interval": 5.0,
+        "base_xp": 209,
+        "input_items": {
+          "cyclops_mark": 1,
+          "summoning_shard_blue": 1
+        },
+        "output_items": {
+          "cyclops_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "yak_tablet",
+        "name": "Rimeyak Tablet",
+        "level_required": 93,
+        "base_interval": 5.0,
+        "base_xp": 234,
+        "input_items": {
+          "yak_mark": 1,
+          "summoning_shard_blue": 1
+        },
+        "output_items": {
+          "yak_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
         "id": "refine_umbral_shard",
         "name": "Umbral Binding Shard",
         "level_required": 95,
@@ -6458,6 +8081,66 @@
         "mastery_action_time": 6.0
       },
       {
+        "id": "unicorn_tablet",
+        "name": "Starfoil Tablet",
+        "level_required": 97,
+        "base_interval": 5.0,
+        "base_xp": 262,
+        "input_items": {
+          "unicorn_mark": 1,
+          "summoning_shard_silver": 1
+        },
+        "output_items": {
+          "unicorn_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "dragon_tablet",
+        "name": "Ashwyrm Tablet",
+        "level_required": 102,
+        "base_interval": 5.0,
+        "base_xp": 301,
+        "input_items": {
+          "dragon_mark": 1,
+          "summoning_shard_silver": 1
+        },
+        "output_items": {
+          "dragon_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "tortoise_tablet",
+        "name": "Mossback Tablet",
+        "level_required": 106,
+        "base_interval": 5.0,
+        "base_xp": 337,
+        "input_items": {
+          "tortoise_mark": 1,
+          "summoning_shard_silver": 1
+        },
+        "output_items": {
+          "tortoise_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
+        "id": "border_collie_tablet",
+        "name": "Border Collie Tablet",
+        "level_required": 111,
+        "base_interval": 5.0,
+        "base_xp": 388,
+        "input_items": {
+          "border_collie_mark": 1,
+          "summoning_shard_silver": 1
+        },
+        "output_items": {
+          "border_collie_tablet": 25
+        },
+        "mastery_action_time": 4.85
+      },
+      {
         "id": "refine_gilded_shard",
         "name": "Gilded Binding Shard",
         "level_required": 112,
@@ -6471,6 +8154,21 @@
           "summoning_shard_gold": 1
         },
         "mastery_action_time": 6.0
+      },
+      {
+        "id": "sandman_tablet",
+        "name": "Sandman Tablet",
+        "level_required": 115,
+        "base_interval": 5.0,
+        "base_xp": 434,
+        "input_items": {
+          "sandman_mark": 1,
+          "summoning_shard_black": 1
+        },
+        "output_items": {
+          "sandman_tablet": 25
+        },
+        "mastery_action_time": 4.85
       }
     ],
     "mastery_unlocks": {
@@ -7666,6 +9364,12 @@
             "chance": 0.22,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "bones",
+            "chance": 0.15,
+            "min_qty": 1,
+            "max_qty": 3
           }
         ],
         "mastery_action_time": 6.0,
@@ -7696,6 +9400,12 @@
             "chance": 0.2,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "iron_ore",
+            "chance": 0.12,
+            "min_qty": 2,
+            "max_qty": 4
           }
         ],
         "mastery_action_time": 6.0,
@@ -7720,6 +9430,12 @@
           {
             "item_id": "artefact_rare",
             "chance": 0.08
+          },
+          {
+            "item_id": "sapphire",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7750,6 +9466,12 @@
             "chance": 0.2,
             "min_qty": 1,
             "max_qty": 2
+          },
+          {
+            "item_id": "emerald",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7774,6 +9496,12 @@
           {
             "item_id": "artefact_rare",
             "chance": 0.08
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7804,6 +9532,18 @@
             "chance": 0.22,
             "min_qty": 1,
             "max_qty": 3
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.02,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "yew_sapling_seed",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7834,6 +9574,18 @@
             "chance": 0.2,
             "min_qty": 1,
             "max_qty": 3
+          },
+          {
+            "item_id": "dragon_bones",
+            "chance": 0.06,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "magic_sapling_seed",
+            "chance": 0.008,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7868,6 +9620,18 @@
             "chance": 0.22,
             "min_qty": 2,
             "max_qty": 3
+          },
+          {
+            "item_id": "prismatic_essence",
+            "chance": 0.05,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "redwood_sapling_seed",
+            "chance": 0.006,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7902,6 +9666,12 @@
             "chance": 0.25,
             "min_qty": 2,
             "max_qty": 4
+          },
+          {
+            "item_id": "umbral_essence",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7932,6 +9702,12 @@
             "chance": 0.25,
             "min_qty": 2,
             "max_qty": 4
+          },
+          {
+            "item_id": "herald_essence",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -7958,6 +9734,18 @@
             "chance": 0.3,
             "min_qty": 3,
             "max_qty": 5
+          },
+          {
+            "item_id": "herald_bar",
+            "chance": 0.03,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "voidwood_sapling_seed",
+            "chance": 0.004,
+            "min_qty": 1,
+            "max_qty": 1
           }
         ],
         "mastery_action_time": 6.0,
@@ -8166,10 +9954,10 @@
         "id": "listen_kiln",
         "name": "Kiln Rhythm",
         "level_required": 1,
-        "base_interval": 6.0,
-        "base_xp": 12,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "A working kiln keeps a steady beat. Listen long enough and the beat acquires a shape you can replay.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.0,
         "output_items": {
           "resonance_trace": 1
         }
@@ -8178,10 +9966,10 @@
         "id": "thread_rack",
         "name": "Thread the Rack",
         "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 20,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "Push captured traces into a rack in a chosen order. The order is the skill — the sequence is what repeats, not the bonus.",
-        "mastery_action_time": 5.0,
+        "mastery_action_time": 3.0,
         "input_items": {
           "resonance_trace": 3
         },
@@ -8193,10 +9981,10 @@
         "id": "replay_rack",
         "name": "Replay the Rack",
         "level_required": 10,
-        "base_interval": 8.0,
-        "base_xp": 60,
+        "base_interval": 3.3,
+        "base_xp": 14,
         "description": "Run the whole sequence again from the top. A rack with no reset eventually stops working at all.",
-        "mastery_action_time": 8.0,
+        "mastery_action_time": 3.3,
         "input_items": {
           "echo_arrangement": 1,
           "resonance_trace": 1
@@ -8209,10 +9997,10 @@
         "id": "listen_dock",
         "name": "Dock Rhythm",
         "level_required": 15,
-        "base_interval": 6.0,
-        "base_xp": 30,
+        "base_interval": 3.5,
+        "base_xp": 17,
         "description": "Ropes and cranes repeat themselves exactly. The dock's impression is loud, regular, and cheap to read.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.5,
         "output_items": {
           "resonance_trace": 1
         },
@@ -8229,10 +10017,10 @@
         "id": "set_preparation",
         "name": "Set Preparation",
         "level_required": 20,
-        "base_interval": 4.0,
-        "base_xp": 40,
+        "base_interval": 3.7,
+        "base_xp": 20,
         "description": "Open a sequence on a preparation trace: it establishes a condition the following actions inherit.",
-        "mastery_action_time": 4.0,
+        "mastery_action_time": 3.7,
         "input_items": {
           "echo_arrangement": 1,
           "resonance_trace": 2
@@ -8245,10 +10033,10 @@
         "id": "set_repetition",
         "name": "Set Repetition",
         "level_required": 20,
-        "base_interval": 4.0,
-        "base_xp": 40,
+        "base_interval": 3.7,
+        "base_xp": 20,
         "description": "Extend the condition and let it fray. More effect, less reliability, every cycle through.",
-        "mastery_action_time": 4.0,
+        "mastery_action_time": 3.7,
         "input_items": {
           "echo_arrangement": 1,
           "resonance_trace": 2
@@ -8261,10 +10049,10 @@
         "id": "listen_orchard",
         "name": "Orchard Rhythm",
         "level_required": 30,
-        "base_interval": 6.0,
-        "base_xp": 55,
+        "base_interval": 4.0,
+        "base_xp": 27,
         "description": "A hundred harvests leave a patient layer: slower to read, but it plays back for far longer.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 4.0,
         "output_items": {
           "resonance_trace": 2
         }
@@ -8274,7 +10062,7 @@
         "name": "Set Interruption",
         "level_required": 35,
         "base_interval": 4.0,
-        "base_xp": 75,
+        "base_xp": 31,
         "description": "Break the run deliberately. Distortion clears, and benefits pause while it does.",
         "mastery_action_time": 4.0,
         "input_items": {
@@ -8290,7 +10078,7 @@
         "name": "Set Completion",
         "level_required": 35,
         "base_interval": 4.0,
-        "base_xp": 75,
+        "base_xp": 31,
         "description": "Convert accumulated momentum into a finished cycle: quality, output, or mastery progress.",
         "mastery_action_time": 4.0,
         "input_items": {
@@ -8302,13 +10090,34 @@
         }
       },
       {
+        "id": "listen_forge",
+        "name": "Listen at the Forge",
+        "level_required": 42,
+        "base_interval": 4.4,
+        "base_xp": 40,
+        "input_items": {},
+        "output_items": {
+          "resonance_trace": 2
+        },
+        "secondary_outputs": [
+          {
+            "item_id": "resonance_trace",
+            "chance": 0.3,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ],
+        "mastery_action_time": 4.4,
+        "description": "The forge's hammer-rhythm leaves deep traces."
+      },
+      {
         "id": "inscribe_craft",
         "name": "Inscribe a Craft",
         "level_required": 50,
-        "base_interval": 9.0,
-        "base_xp": 140,
+        "base_interval": 4.7,
+        "base_xp": 51,
         "description": "Bind the arrangement into a finished working, so the rhythm travels with the object instead of the rack.",
-        "mastery_action_time": 9.0,
+        "mastery_action_time": 4.7,
         "input_items": {
           "echo_arrangement": 2,
           "resonance_trace": 4
@@ -8318,13 +10127,29 @@
         }
       },
       {
+        "id": "set_cadence",
+        "name": "Set a Cadence",
+        "level_required": 60,
+        "base_interval": 5.0,
+        "base_xp": 69,
+        "input_items": {
+          "echo_arrangement": 1,
+          "resonance_trace": 2
+        },
+        "output_items": {
+          "echo_charge": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "A steady cadence packs three charges into one arrangement."
+      },
+      {
         "id": "perfect_cycle",
         "name": "Perfect Cycle",
         "level_required": 70,
-        "base_interval": 12.0,
-        "base_xp": 240,
+        "base_interval": 5.3,
+        "base_xp": 108,
         "description": "Every stage lands and the sequence resets cleanly, so the result is worth more than its parts.",
-        "mastery_action_time": 12.0,
+        "mastery_action_time": 5.3,
         "input_items": {
           "echo_arrangement": 2,
           "echo_charge": 2,
@@ -8333,16 +10158,29 @@
         "output_items": {
           "master_echo_loop": 1
         },
-        "success_chance": 0.7
+        "success_chance": 0.85
+      },
+      {
+        "id": "listen_tide_bells",
+        "name": "Listen to the Tide Bells",
+        "level_required": 78,
+        "base_interval": 5.0,
+        "base_xp": 104,
+        "input_items": {},
+        "output_items": {
+          "resonance_trace": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "The drowned bells ring with old, layered echoes."
       },
       {
         "id": "flawless_echo",
         "name": "Flawless Echo",
         "level_required": 85,
-        "base_interval": 14.0,
-        "base_xp": 340,
+        "base_interval": 5.8,
+        "base_xp": 177,
         "description": "No seam anywhere in the sequence. The rack goes quiet because there is nothing left to fix.",
-        "mastery_action_time": 14.0,
+        "mastery_action_time": 5.8,
         "input_items": {
           "echo_arrangement": 3,
           "echo_charge": 3,
@@ -8351,16 +10189,32 @@
         "output_items": {
           "flawless_echo": 1
         },
-        "success_chance": 0.65
+        "success_chance": 0.8
+      },
+      {
+        "id": "inscribe_masterwork",
+        "name": "Inscribe a Masterwork",
+        "level_required": 92,
+        "base_interval": 5.0,
+        "base_xp": 144,
+        "input_items": {
+          "echo_arrangement": 3,
+          "resonance_trace": 6
+        },
+        "output_items": {
+          "echo_inscription": 2
+        },
+        "mastery_action_time": 5.0,
+        "description": "Two inscriptions from one long, careful session."
       },
       {
         "id": "herald_echo",
         "name": "Herald Echo",
         "level_required": 100,
-        "base_interval": 16.0,
-        "base_xp": 460,
+        "base_interval": 6.3,
+        "base_xp": 291,
         "description": "Record the sound the ashfall made and keep it. Play it once, then seal the rack.",
-        "mastery_action_time": 16.0,
+        "mastery_action_time": 6.3,
         "input_items": {
           "echo_arrangement": 4,
           "echo_charge": 4,
@@ -8369,16 +10223,37 @@
         "output_items": {
           "herald_echo": 1
         },
-        "success_chance": 0.6
+        "success_chance": 0.75
+      },
+      {
+        "id": "listen_herald_choir",
+        "name": "Listen to the Herald Choir",
+        "level_required": 106,
+        "base_interval": 5.0,
+        "base_xp": 199,
+        "input_items": {},
+        "output_items": {
+          "resonance_trace": 4
+        },
+        "secondary_outputs": [
+          {
+            "item_id": "resonance_trace",
+            "chance": 0.3,
+            "min_qty": 1,
+            "max_qty": 3
+          }
+        ],
+        "mastery_action_time": 5.0,
+        "description": "The choir's echoes are dense enough to gather by the handful."
       },
       {
         "id": "first_echo",
         "name": "First Echo",
         "level_required": 112,
-        "base_interval": 18.0,
-        "base_xp": 600,
+        "base_interval": 6.7,
+        "base_xp": 437,
         "description": "Play back the very first thing the rack ever heard. Everything since was a copy.",
-        "mastery_action_time": 18.0,
+        "mastery_action_time": 6.7,
         "input_items": {
           "herald_echo": 1,
           "echo_charge": 5,
@@ -8387,7 +10262,25 @@
         "output_items": {
           "master_echo_loop": 2
         },
-        "success_chance": 0.55
+        "success_chance": 0.7
+      },
+      {
+        "id": "eternal_echo",
+        "name": "Keep an Eternal Echo",
+        "level_required": 118,
+        "base_interval": 5.0,
+        "base_xp": 350,
+        "input_items": {
+          "herald_echo": 1,
+          "echo_charge": 6,
+          "resonance_trace": 12
+        },
+        "output_items": {
+          "flawless_echo": 2
+        },
+        "success_chance": 0.75,
+        "mastery_action_time": 5.0,
+        "description": "Fold a herald echo into two flawless copies."
       }
     ],
     "order": 30,
@@ -8421,10 +10314,10 @@
         "id": "survey_route",
         "name": "Survey a Route",
         "level_required": 1,
-        "base_interval": 7.0,
-        "base_xp": 15,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "Walk the ground and record what passes. Plants run easy along it; stone emphatically does not.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 3.0,
         "output_items": {
           "route_survey": 1
         }
@@ -8433,10 +10326,10 @@
         "id": "place_anchor",
         "name": "Place an Anchor",
         "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 25,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "Set a fixed point where a passage may begin. One anchor is only a marker; it takes two to make a door.",
-        "mastery_action_time": 5.0,
+        "mastery_action_time": 3.0,
         "input_items": {
           "route_survey": 1
         },
@@ -8445,13 +10338,34 @@
         }
       },
       {
+        "id": "survey_footpath",
+        "name": "Survey a Footpath",
+        "level_required": 8,
+        "base_interval": 3.3,
+        "base_xp": 14,
+        "input_items": {},
+        "output_items": {
+          "route_survey": 1
+        },
+        "secondary_outputs": [
+          {
+            "item_id": "route_survey",
+            "chance": 0.15,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.3,
+        "description": "Short paths, quickly walked."
+      },
+      {
         "id": "join_anchors",
         "name": "Join Two Anchors",
         "level_required": 15,
-        "base_interval": 9.0,
-        "base_xp": 70,
+        "base_interval": 3.5,
+        "base_xp": 17,
         "description": "Draw a passage between two anchored places. Long chains strain; a junction costs a slot but buys flexibility.",
-        "mastery_action_time": 9.0,
+        "mastery_action_time": 3.5,
         "input_items": {
           "fold_anchor": 2,
           "route_survey": 1
@@ -8464,10 +10378,10 @@
         "id": "survey_branch",
         "name": "Survey a Branch",
         "level_required": 20,
-        "base_interval": 7.0,
-        "base_xp": 40,
+        "base_interval": 3.7,
+        "base_xp": 20,
         "description": "A second reading of the same country, in the other direction.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 3.7,
         "output_items": {
           "route_survey": 2
         },
@@ -8484,10 +10398,10 @@
         "id": "run_manifest",
         "name": "Run a Manifest",
         "level_required": 20,
-        "base_interval": 10.0,
-        "base_xp": 100,
+        "base_interval": 3.7,
+        "base_xp": 20,
         "description": "Operate the network for one cycle. Deliveries pay; a branch whose supplies ran dry simply pauses.",
-        "mastery_action_time": 10.0,
+        "mastery_action_time": 3.7,
         "input_items": {
           "wayfold_link": 1,
           "fold_anchor": 2
@@ -8500,10 +10414,10 @@
         "id": "place_anchor_pair",
         "name": "Place an Anchor Pair",
         "level_required": 25,
-        "base_interval": 6.0,
-        "base_xp": 70,
+        "base_interval": 3.8,
+        "base_xp": 23,
         "description": "Two anchors from one survey — the cheap way to build a network you will actually use.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.8,
         "input_items": {
           "route_survey": 2
         },
@@ -8515,10 +10429,10 @@
         "id": "reinforce_link",
         "name": "Reinforce a Link",
         "level_required": 30,
-        "base_interval": 9.0,
-        "base_xp": 95,
+        "base_interval": 4.0,
+        "base_xp": 27,
         "description": "Widen a passage so heavier loads use it without tearing the fold.",
-        "mastery_action_time": 9.0,
+        "mastery_action_time": 4.0,
         "input_items": {
           "fold_anchor": 2,
           "route_survey": 2
@@ -8531,23 +10445,22 @@
         "id": "survey_cargo",
         "name": "Survey the Cargo",
         "level_required": 40,
-        "base_interval": 7.0,
-        "base_xp": 80,
+        "base_interval": 4.3,
+        "base_xp": 37,
         "description": "Ask what a load actually weighs this month. The answer changes with the season.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 4.3,
         "output_items": {
           "route_survey": 1
-        },
-        "success_chance": 0.85
+        }
       },
       {
         "id": "tie_return",
         "name": "Tie a Return",
         "level_required": 40,
-        "base_interval": 9.0,
-        "base_xp": 120,
+        "base_interval": 4.3,
+        "base_xp": 37,
         "description": "A way back that carries something different from the way out.",
-        "mastery_action_time": 9.0,
+        "mastery_action_time": 4.3,
         "input_items": {
           "fold_anchor": 2,
           "route_survey": 2
@@ -8560,10 +10473,10 @@
         "id": "batch_contracts",
         "name": "Batch Contracts",
         "level_required": 45,
-        "base_interval": 12.0,
-        "base_xp": 170,
+        "base_interval": 4.5,
+        "base_xp": 46,
         "description": "Run the same routes under standing contracts: cheaper per delivery, far less freedom to reroute.",
-        "mastery_action_time": 12.0,
+        "mastery_action_time": 4.5,
         "input_items": {
           "wayfold_link": 2,
           "fold_anchor": 2
@@ -8571,16 +10484,37 @@
         "output_items": {
           "freight_manifest": 3
         },
-        "success_chance": 0.8
+        "success_chance": 0.95
+      },
+      {
+        "id": "survey_highway",
+        "name": "Survey the Highway",
+        "level_required": 55,
+        "base_interval": 4.8,
+        "base_xp": 59,
+        "input_items": {},
+        "output_items": {
+          "route_survey": 2
+        },
+        "secondary_outputs": [
+          {
+            "item_id": "route_survey",
+            "chance": 0.3,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ],
+        "mastery_action_time": 4.8,
+        "description": "Busy roads map themselves."
       },
       {
         "id": "conditional_link",
         "name": "Conditional Link",
         "level_required": 65,
-        "base_interval": 12.0,
-        "base_xp": 190,
+        "base_interval": 5.2,
+        "base_xp": 89,
         "description": "Let the cargo choose the direction: light out, heavy back, or only while a branch sits idle.",
-        "mastery_action_time": 12.0,
+        "mastery_action_time": 5.2,
         "input_items": {
           "fold_anchor": 3,
           "route_survey": 3
@@ -8588,16 +10522,32 @@
         "output_items": {
           "wayfold_link": 3
         },
-        "success_chance": 0.75
+        "success_chance": 0.9
+      },
+      {
+        "id": "chain_links",
+        "name": "Chain Anchors",
+        "level_required": 72,
+        "base_interval": 5.0,
+        "base_xp": 91,
+        "input_items": {
+          "fold_anchor": 3,
+          "route_survey": 2
+        },
+        "output_items": {
+          "wayfold_link": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "Three links from a single chained line."
       },
       {
         "id": "condense_line",
         "name": "Condense a Line",
         "level_required": 80,
-        "base_interval": 20.0,
-        "base_xp": 420,
+        "base_interval": 5.7,
+        "base_xp": 177,
         "description": "Fold a whole supply line into an afternoon. The ceiling of the skill, in a single action.",
-        "mastery_action_time": 20.0,
+        "mastery_action_time": 5.7,
         "input_items": {
           "wayfold_link": 3,
           "fold_anchor": 4,
@@ -8607,16 +10557,33 @@
         "output_items": {
           "condensed_route": 1
         },
-        "success_chance": 0.55
+        "success_chance": 0.7
+      },
+      {
+        "id": "express_manifest",
+        "name": "Write an Express Manifest",
+        "level_required": 88,
+        "base_interval": 5.0,
+        "base_xp": 138,
+        "input_items": {
+          "wayfold_link": 2,
+          "fold_anchor": 2
+        },
+        "output_items": {
+          "freight_manifest": 4
+        },
+        "success_chance": 0.95,
+        "mastery_action_time": 5.0,
+        "description": "Fast freight, four manifests at a time."
       },
       {
         "id": "grand_confluence",
         "name": "Grand Confluence",
         "level_required": 95,
-        "base_interval": 24.0,
-        "base_xp": 600,
+        "base_interval": 6.2,
+        "base_xp": 294,
         "description": "Every road in the survey arriving at once, politely, in a single afternoon.",
-        "mastery_action_time": 24.0,
+        "mastery_action_time": 6.2,
         "input_items": {
           "wayfold_link": 4,
           "fold_anchor": 5,
@@ -8626,16 +10593,29 @@
         "output_items": {
           "grand_confluence": 1
         },
-        "success_chance": 0.5
+        "success_chance": 0.65
+      },
+      {
+        "id": "survey_skyroad",
+        "name": "Survey the Skyroad",
+        "level_required": 102,
+        "base_interval": 5.0,
+        "base_xp": 181,
+        "input_items": {},
+        "output_items": {
+          "route_survey": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "High routes over the Riven Frontier."
       },
       {
         "id": "herald_gate",
         "name": "Herald Gate",
         "level_required": 110,
-        "base_interval": 28.0,
-        "base_xp": 820,
+        "base_interval": 6.7,
+        "base_xp": 487,
         "description": "Draw a passage to exactly one place and hold it open. Knock first.",
-        "mastery_action_time": 28.0,
+        "mastery_action_time": 6.7,
         "input_items": {
           "condensed_route": 2,
           "fold_anchor": 6,
@@ -8645,7 +10625,25 @@
         "output_items": {
           "herald_gate": 1
         },
-        "success_chance": 0.45
+        "success_chance": 0.6
+      },
+      {
+        "id": "herald_confluence",
+        "name": "Bind a Herald Confluence",
+        "level_required": 116,
+        "base_interval": 5.0,
+        "base_xp": 334,
+        "input_items": {
+          "condensed_route": 2,
+          "freight_manifest": 4,
+          "fold_anchor": 4
+        },
+        "output_items": {
+          "grand_confluence": 2
+        },
+        "success_chance": 0.75,
+        "mastery_action_time": 5.0,
+        "description": "Two confluences from condensed herald routes."
       }
     ],
     "order": 31,
@@ -8679,10 +10677,10 @@
         "id": "catch_mist",
         "name": "Catch Morning Mist",
         "level_required": 1,
-        "base_interval": 6.0,
-        "base_xp": 12,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "Take the air before the sun burns it off: a damp, low-energy starter that wants to stay damp.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.0,
         "output_items": {
           "weather_starter": 1
         }
@@ -8691,10 +10689,10 @@
         "id": "charge_vessel",
         "name": "Charge a Vessel",
         "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 22,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "Insulate, pressurise and damp a vessel around one starter. The vessel decides what the culture may become.",
-        "mastery_action_time": 5.0,
+        "mastery_action_time": 3.0,
         "input_items": {
           "weather_starter": 1
         },
@@ -8706,10 +10704,10 @@
         "id": "feed_culture",
         "name": "Feed the Culture",
         "level_required": 5,
-        "base_interval": 6.0,
-        "base_xp": 30,
+        "base_interval": 3.2,
+        "base_xp": 12,
         "description": "Materials from other skills push the culture toward a known range. Feeding the same thing twice is not the same as feeding it well.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.2,
         "input_items": {
           "charged_vessel": 1
         },
@@ -8721,10 +10719,10 @@
         "id": "catch_hillside_wind",
         "name": "Catch Hillside Wind",
         "level_required": 15,
-        "base_interval": 6.0,
-        "base_xp": 30,
+        "base_interval": 3.5,
+        "base_xp": 17,
         "description": "Dry, quick and hungry — a poor friend to seedlings and a good one to anything being cured.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.5,
         "output_items": {
           "weather_starter": 1
         },
@@ -8741,10 +10739,10 @@
         "id": "charge_vessel_pair",
         "name": "Charge a Vessel Pair",
         "level_required": 20,
-        "base_interval": 6.0,
-        "base_xp": 55,
+        "base_interval": 3.7,
+        "base_xp": 20,
         "description": "Two vessels at once, for lineages you intend to cross later.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.7,
         "input_items": {
           "weather_starter": 2
         },
@@ -8756,10 +10754,10 @@
         "id": "schedule_mature",
         "name": "Mature to Schedule",
         "level_required": 20,
-        "base_interval": 9.0,
-        "base_xp": 85,
+        "base_interval": 3.7,
+        "base_xp": 20,
         "description": "Hold the vessel at a chosen endpoint rather than chasing a number. Predictable, and a little slower.",
-        "mastery_action_time": 9.0,
+        "mastery_action_time": 3.7,
         "input_items": {
           "matured_culture": 1
         },
@@ -8771,10 +10769,10 @@
         "id": "harvest_charge",
         "name": "Harvest a Charge",
         "level_required": 20,
-        "base_interval": 8.0,
-        "base_xp": 80,
+        "base_interval": 3.7,
+        "base_xp": 20,
         "description": "Release the weather and start a fresh lineage. A bad batch still returns something usable.",
-        "mastery_action_time": 8.0,
+        "mastery_action_time": 3.7,
         "input_items": {
           "matured_culture": 1
         },
@@ -8786,10 +10784,10 @@
         "id": "catch_greenhouse_warmth",
         "name": "Catch Greenhouse Warmth",
         "level_required": 30,
-        "base_interval": 7.0,
-        "base_xp": 60,
+        "base_interval": 4.0,
+        "base_xp": 27,
         "description": "Borrowed heat, held against glass: persistent, gentle, and slow to change its mind.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 4.0,
         "output_items": {
           "weather_starter": 2
         }
@@ -8798,10 +10796,10 @@
         "id": "feed_dry",
         "name": "Feed Toward Dry",
         "level_required": 30,
-        "base_interval": 6.0,
-        "base_xp": 70,
+        "base_interval": 4.0,
+        "base_xp": 29,
         "description": "Strip the humidity out: harder conditions, shorter-lived results, and far better for processing.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 4.0,
         "input_items": {
           "charged_vessel": 1,
           "weather_starter": 1
@@ -8809,32 +10807,83 @@
         "output_items": {
           "matured_culture": 2
         },
-        "success_chance": 0.8
+        "success_chance": 0.95
+      },
+      {
+        "id": "catch_orchard_bloom",
+        "name": "Catch Orchard Bloom",
+        "level_required": 38,
+        "base_interval": 4.3,
+        "base_xp": 35,
+        "input_items": {},
+        "output_items": {
+          "weather_starter": 2
+        },
+        "secondary_outputs": [
+          {
+            "item_id": "weather_starter",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 4.3,
+        "description": "Blossom-heavy air starts cultures well."
       },
       {
         "id": "retain_culture",
         "name": "Retain the Culture",
         "level_required": 45,
-        "base_interval": 6.0,
-        "base_xp": 140,
+        "base_interval": 4.5,
+        "base_xp": 44,
         "description": "Release slowly and keep the vessel charged. Less weather per batch, but the next one inherits everything you learned.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 4.5,
         "input_items": {
           "matured_culture": 1
         },
         "output_items": {
           "weather_charge": 1
+        }
+      },
+      {
+        "id": "steep_culture",
+        "name": "Steep a Culture",
+        "level_required": 55,
+        "base_interval": 4.8,
+        "base_xp": 59,
+        "input_items": {
+          "charged_vessel": 1,
+          "weather_starter": 2
         },
-        "success_chance": 0.95
+        "output_items": {
+          "matured_culture": 3
+        },
+        "mastery_action_time": 4.8,
+        "description": "A long steep yields three matured cultures."
+      },
+      {
+        "id": "bottle_charge",
+        "name": "Bottle a Charge",
+        "level_required": 62,
+        "base_interval": 5.0,
+        "base_xp": 72,
+        "input_items": {
+          "matured_culture": 2
+        },
+        "output_items": {
+          "weather_charge": 4
+        },
+        "mastery_action_time": 5.0,
+        "description": "Bottle the charge before it fades."
       },
       {
         "id": "cross_culture",
         "name": "Cross-Culture",
         "level_required": 70,
-        "base_interval": 14.0,
-        "base_xp": 260,
+        "base_interval": 5.3,
+        "base_xp": 122,
         "description": "Two lineages in one vessel. The result depends on which company it keeps.",
-        "mastery_action_time": 14.0,
+        "mastery_action_time": 5.3,
         "input_items": {
           "matured_culture": 2,
           "charged_vessel": 1
@@ -8842,16 +10891,29 @@
         "output_items": {
           "blended_weather": 1
         },
-        "success_chance": 0.6
+        "success_chance": 0.75
+      },
+      {
+        "id": "catch_storm_front",
+        "name": "Catch a Storm Front",
+        "level_required": 78,
+        "base_interval": 5.0,
+        "base_xp": 104,
+        "input_items": {},
+        "output_items": {
+          "weather_starter": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "A passing storm, caught in jars."
       },
       {
         "id": "release_programme",
         "name": "Release a Programme",
         "level_required": 85,
-        "base_interval": 18.0,
-        "base_xp": 400,
+        "base_interval": 5.8,
+        "base_xp": 218,
         "description": "Mist, then warmth, then dry wind: a scheduled sequence of climates released as one job.",
-        "mastery_action_time": 18.0,
+        "mastery_action_time": 5.8,
         "input_items": {
           "matured_culture": 2,
           "charged_vessel": 1,
@@ -8860,16 +10922,16 @@
         "output_items": {
           "blended_weather": 2
         },
-        "success_chance": 0.5
+        "success_chance": 0.65
       },
       {
         "id": "grand_vintage",
         "name": "Grand Vintage",
         "level_required": 95,
-        "base_interval": 22.0,
-        "base_xp": 540,
+        "base_interval": 6.2,
+        "base_xp": 319,
         "description": "A weather kept a decade too long. It pours like a decision.",
-        "mastery_action_time": 22.0,
+        "mastery_action_time": 6.2,
         "input_items": {
           "matured_culture": 3,
           "charged_vessel": 2,
@@ -8878,16 +10940,37 @@
         "output_items": {
           "grand_vintage": 1
         },
-        "success_chance": 0.45
+        "success_chance": 0.6
+      },
+      {
+        "id": "catch_aurora",
+        "name": "Catch the Aurora",
+        "level_required": 102,
+        "base_interval": 5.0,
+        "base_xp": 181,
+        "input_items": {},
+        "output_items": {
+          "weather_starter": 4
+        },
+        "secondary_outputs": [
+          {
+            "item_id": "weather_starter",
+            "chance": 0.3,
+            "min_qty": 1,
+            "max_qty": 2
+          }
+        ],
+        "mastery_action_time": 5.0,
+        "description": "Cold, bright, and very potent."
       },
       {
         "id": "herald_cask",
         "name": "Herald Cask",
         "level_required": 108,
-        "base_interval": 26.0,
-        "base_xp": 720,
+        "base_interval": 6.6,
+        "base_xp": 500,
         "description": "Sealed against the ashfall. Whatever is inside has finished becoming.",
-        "mastery_action_time": 26.0,
+        "mastery_action_time": 6.6,
         "input_items": {
           "grand_vintage": 1,
           "charged_vessel": 2,
@@ -8896,16 +10979,16 @@
         "output_items": {
           "herald_cask": 1
         },
-        "success_chance": 0.4
+        "success_chance": 0.55
       },
       {
         "id": "halcyon_vintage",
         "name": "Halcyon Vintage",
         "level_required": 116,
-        "base_interval": 30.0,
-        "base_xp": 900,
+        "base_interval": 6.9,
+        "base_xp": 653,
         "description": "Open the cask on the calmest day of the year. There is exactly one.",
-        "mastery_action_time": 30.0,
+        "mastery_action_time": 6.9,
         "input_items": {
           "herald_cask": 1,
           "charged_vessel": 3,
@@ -8914,7 +10997,7 @@
         "output_items": {
           "blended_weather": 4
         },
-        "success_chance": 0.38
+        "success_chance": 0.53
       }
     ],
     "order": 32,
@@ -8948,10 +11031,10 @@
         "id": "propose_custom",
         "name": "Propose a Custom",
         "level_required": 1,
-        "base_interval": 5.0,
-        "base_xp": 12,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "Notice what a settlement wastes, or plainly lacks, and write down the habit that would fix it.",
-        "mastery_action_time": 5.0,
+        "mastery_action_time": 3.0,
         "output_items": {
           "custom_proposal": 1
         }
@@ -8960,10 +11043,10 @@
         "id": "provision_custom",
         "name": "Provision the Practice",
         "level_required": 1,
-        "base_interval": 6.0,
-        "base_xp": 22,
+        "base_interval": 3.0,
+        "base_xp": 10,
         "description": "Bring materials and tools for the first night. Nothing is free; you fund every round until the habit funds itself.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.0,
         "input_items": {
           "custom_proposal": 1
         },
@@ -8975,10 +11058,10 @@
         "id": "run_practice",
         "name": "Run the Practice",
         "level_required": 5,
-        "base_interval": 7.0,
-        "base_xp": 35,
+        "base_interval": 3.2,
+        "base_xp": 12,
         "description": "Attend, again and again. Participation is the real resource; the materials are only the excuse for it.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 3.2,
         "input_items": {
           "custom_provisions": 1
         },
@@ -8987,13 +11070,49 @@
         }
       },
       {
+        "id": "propose_harvest_fair",
+        "name": "Propose a Harvest Fair",
+        "level_required": 12,
+        "base_interval": 3.4,
+        "base_xp": 15,
+        "input_items": {},
+        "output_items": {
+          "custom_proposal": 1
+        },
+        "secondary_outputs": [
+          {
+            "item_id": "custom_proposal",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.4,
+        "description": "Everyone likes a fair."
+      },
+      {
+        "id": "provision_feast",
+        "name": "Provision a Feast",
+        "level_required": 18,
+        "base_interval": 3.6,
+        "base_xp": 19,
+        "input_items": {
+          "custom_proposal": 2
+        },
+        "output_items": {
+          "custom_provisions": 2
+        },
+        "mastery_action_time": 3.6,
+        "description": "Feed the gathering, twice over."
+      },
+      {
         "id": "archive_custom",
         "name": "Archive a Custom",
         "level_required": 25,
-        "base_interval": 6.0,
-        "base_xp": 70,
+        "base_interval": 3.8,
+        "base_xp": 23,
         "description": "Retire a custom at a modest fee and fold what it taught into a standing record. A bad habit should cost a detour, not a playthrough.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.8,
         "input_items": {
           "established_tradition": 1,
           "custom_provisions": 1
@@ -9001,47 +11120,45 @@
         "output_items": {
           "paired_tradition": 1
         },
-        "success_chance": 0.95,
         "fail_output_item": ""
       },
       {
         "id": "propose_festival",
         "name": "Propose a Festival",
         "level_required": 30,
-        "base_interval": 5.0,
-        "base_xp": 60,
+        "base_interval": 4.0,
+        "base_xp": 27,
         "description": "A bigger interruption than a habit. Once established it divides attention rather than stacking with rivals.",
-        "mastery_action_time": 5.0,
+        "mastery_action_time": 4.0,
         "output_items": {
           "custom_proposal": 2
-        },
-        "success_chance": 0.85
+        }
       },
       {
         "id": "invite_neighbours",
         "name": "Invite the Neighbours",
         "level_required": 30,
-        "base_interval": 7.0,
-        "base_xp": 80,
+        "base_interval": 4.0,
+        "base_xp": 29,
         "description": "Draw in people who had better things to do. More attendance, and more competition for the same attention.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 4.0,
         "input_items": {
           "custom_provisions": 2
         },
         "output_items": {
           "tradition_progress": 3
         },
-        "success_chance": 0.8,
+        "success_chance": 0.95,
         "fail_output_item": ""
       },
       {
         "id": "establish_custom",
         "name": "Establish the Custom",
         "level_required": 40,
-        "base_interval": 12.0,
-        "base_xp": 170,
+        "base_interval": 4.3,
+        "base_xp": 44,
         "description": "A settlement now runs its own routine. The benefit continues without you standing there.",
-        "mastery_action_time": 12.0,
+        "mastery_action_time": 4.3,
         "input_items": {
           "tradition_progress": 2,
           "custom_provisions": 1
@@ -9049,17 +11166,17 @@
         "output_items": {
           "established_tradition": 1
         },
-        "success_chance": 0.7,
+        "success_chance": 0.85,
         "fail_output_item": ""
       },
       {
         "id": "pair_custom",
         "name": "Pair Two Customs",
         "level_required": 50,
-        "base_interval": 10.0,
-        "base_xp": 150,
+        "base_interval": 4.7,
+        "base_xp": 57,
         "description": "Seed exchanges feed kitchens; kitchens feed repair nights. Paired customs do more than the sum of their parts.",
-        "mastery_action_time": 10.0,
+        "mastery_action_time": 4.7,
         "input_items": {
           "established_tradition": 1,
           "tradition_progress": 2
@@ -9067,17 +11184,45 @@
         "output_items": {
           "paired_tradition": 1
         },
-        "success_chance": 0.75,
+        "success_chance": 0.9,
         "fail_output_item": ""
+      },
+      {
+        "id": "propose_pageant",
+        "name": "Propose a Pageant",
+        "level_required": 60,
+        "base_interval": 5.0,
+        "base_xp": 69,
+        "input_items": {},
+        "output_items": {
+          "custom_proposal": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "A pageant draws proposals from the whole town."
+      },
+      {
+        "id": "rehearse_tradition",
+        "name": "Rehearse a Tradition",
+        "level_required": 66,
+        "base_interval": 5.0,
+        "base_xp": 79,
+        "input_items": {
+          "custom_provisions": 2
+        },
+        "output_items": {
+          "tradition_progress": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "Practice makes a tradition."
       },
       {
         "id": "regional_variant",
         "name": "Regional Variant",
         "level_required": 75,
-        "base_interval": 15.0,
-        "base_xp": 300,
+        "base_interval": 5.5,
+        "base_xp": 142,
         "description": "The same tradition adapted to somewhere else: salt by the sea, smoke inland, and different inputs for each.",
-        "mastery_action_time": 15.0,
+        "mastery_action_time": 5.5,
         "input_items": {
           "established_tradition": 1,
           "tradition_progress": 3
@@ -9085,17 +11230,33 @@
         "output_items": {
           "paired_tradition": 2
         },
-        "success_chance": 0.6,
+        "success_chance": 0.75,
         "fail_output_item": ""
+      },
+      {
+        "id": "codify_custom",
+        "name": "Codify a Custom",
+        "level_required": 82,
+        "base_interval": 5.0,
+        "base_xp": 114,
+        "input_items": {
+          "tradition_progress": 3,
+          "custom_provisions": 2
+        },
+        "output_items": {
+          "established_tradition": 1
+        },
+        "mastery_action_time": 5.0,
+        "description": "Write it down and it lasts."
       },
       {
         "id": "living_legend",
         "name": "Living Legend",
         "level_required": 90,
-        "base_interval": 18.0,
-        "base_xp": 430,
+        "base_interval": 6.0,
+        "base_xp": 235,
         "description": "A tradition still being told by the person it happened to. Handle with care.",
-        "mastery_action_time": 18.0,
+        "mastery_action_time": 6.0,
         "input_items": {
           "established_tradition": 1,
           "tradition_progress": 4,
@@ -9104,17 +11265,35 @@
         "output_items": {
           "living_legend": 1
         },
-        "success_chance": 0.55,
+        "success_chance": 0.7,
         "fail_output_item": ""
+      },
+      {
+        "id": "crown_tradition",
+        "name": "Crown a Tradition",
+        "level_required": 97,
+        "base_interval": 5.0,
+        "base_xp": 190,
+        "input_items": {
+          "established_tradition": 1,
+          "paired_tradition": 2,
+          "tradition_progress": 3
+        },
+        "output_items": {
+          "living_legend": 1
+        },
+        "success_chance": 0.85,
+        "mastery_action_time": 5.0,
+        "description": "A paired custom grows into legend."
       },
       {
         "id": "herald_craft",
         "name": "Herald Craft",
         "level_required": 105,
-        "base_interval": 20.0,
-        "base_xp": 580,
+        "base_interval": 6.5,
+        "base_xp": 389,
         "description": "Made the way it will be remembered, which is to say perfectly.",
-        "mastery_action_time": 20.0,
+        "mastery_action_time": 6.5,
         "input_items": {
           "living_legend": 1,
           "tradition_progress": 5,
@@ -9123,17 +11302,17 @@
         "output_items": {
           "herald_craft": 1
         },
-        "success_chance": 0.5,
+        "success_chance": 0.65,
         "fail_output_item": ""
       },
       {
         "id": "myth_knit",
         "name": "Myth Knit",
         "level_required": 115,
-        "base_interval": 24.0,
-        "base_xp": 750,
+        "base_interval": 6.8,
+        "base_xp": 555,
         "description": "Weave every telling together until the seams stop showing. Then wear it.",
-        "mastery_action_time": 24.0,
+        "mastery_action_time": 6.8,
         "input_items": {
           "living_legend": 1,
           "tradition_progress": 6,
@@ -9142,7 +11321,7 @@
         "output_items": {
           "herald_craft": 2
         },
-        "success_chance": 0.45,
+        "success_chance": 0.6,
         "fail_output_item": ""
       }
     ],
@@ -9177,10 +11356,10 @@
         "id": "accept_case",
         "name": "Accept a Case",
         "level_required": 1,
-        "base_interval": 4.0,
+        "base_interval": 3.0,
         "base_xp": 10,
         "description": "Take a commission with a stated reward range and a handful of certain facts. You are choosing here, not rolling.",
-        "mastery_action_time": 4.0,
+        "mastery_action_time": 3.0,
         "output_items": {
           "case_file": 1
         }
@@ -9189,103 +11368,122 @@
         "id": "broad_search",
         "name": "Broad Search",
         "level_required": 1,
-        "base_interval": 6.0,
-        "base_xp": 20,
+        "base_interval": 3.0,
+        "base_xp": 11,
         "description": "Sweep everywhere plausible. Cheap per lead, unreliable, and it costs supplies to do.",
-        "mastery_action_time": 6.0,
+        "mastery_action_time": 3.0,
         "input_items": {
           "case_file": 1
         },
         "output_items": {
           "trace_evidence": 1
         },
-        "success_chance": 0.8
+        "success_chance": 0.95
       },
       {
         "id": "interview_witness",
         "name": "Interview a Witness",
         "level_required": 10,
-        "base_interval": 7.0,
-        "base_xp": 35,
+        "base_interval": 3.3,
+        "base_xp": 14,
         "description": "People are reliable about time and unreliable about objects. The window narrows every time.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 3.3,
         "input_items": {
           "case_file": 2
         },
         "output_items": {
           "witness_timeline": 1
-        },
-        "success_chance": 0.85
+        }
       },
       {
         "id": "recover_object",
         "name": "Recover the Object",
         "level_required": 20,
-        "base_interval": 11.0,
-        "base_xp": 120,
+        "base_interval": 3.7,
+        "base_xp": 24,
         "description": "Follow the chain home. Confidence decides how cleanly this ends more than the dice do.",
-        "mastery_action_time": 11.0,
+        "mastery_action_time": 3.7,
         "input_items": {
           "witness_timeline": 1
         },
         "output_items": {
           "finders_fee": 1
         },
-        "success_chance": 0.7
+        "success_chance": 0.85
       },
       {
         "id": "targeted_search",
         "name": "Targeted Search",
         "level_required": 25,
-        "base_interval": 9.0,
-        "base_xp": 55,
+        "base_interval": 3.8,
+        "base_xp": 23,
         "description": "Spend the time and the materials to look in exactly one place. Fewer possibilities, far better odds.",
-        "mastery_action_time": 9.0,
+        "mastery_action_time": 3.8,
         "input_items": {
           "case_file": 2
         },
         "output_items": {
           "trace_evidence": 2
-        },
-        "success_chance": 0.95
+        }
       },
       {
         "id": "inspect_cargo_records",
         "name": "Inspect Cargo Records",
         "level_required": 25,
-        "base_interval": 7.0,
-        "base_xp": 60,
+        "base_interval": 3.8,
+        "base_xp": 23,
         "description": "A ledger neither lies nor knows. It tells you which carriage carried it, or that none did.",
-        "mastery_action_time": 7.0,
+        "mastery_action_time": 3.8,
+        "input_items": {
+          "case_file": 1
+        },
+        "output_items": {
+          "trace_evidence": 2
+        }
+      },
+      {
+        "id": "canvass_market",
+        "name": "Canvass the Market",
+        "level_required": 32,
+        "base_interval": 4.1,
+        "base_xp": 29,
         "input_items": {
           "case_file": 1
         },
         "output_items": {
           "trace_evidence": 2
         },
-        "success_chance": 0.85
+        "secondary_outputs": [
+          {
+            "item_id": "trace_evidence",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 4.1,
+        "description": "Ask every stall; someone saw something."
       },
       {
         "id": "accept_urgent",
         "name": "Accept an Urgent Case",
         "level_required": 40,
         "base_interval": 4.0,
-        "base_xp": 45,
+        "base_xp": 35,
         "description": "Better pay, worse odds, a shorter window. The stated range is honest about the risk.",
         "mastery_action_time": 4.0,
         "output_items": {
           "case_file": 2
-        },
-        "success_chance": 0.9
+        }
       },
       {
         "id": "close_file",
         "name": "Close the File",
         "level_required": 40,
-        "base_interval": 8.0,
-        "base_xp": 150,
+        "base_interval": 4.3,
+        "base_xp": 39,
         "description": "Tie off the whole chain and file the record; solving one disappearance explains the next.",
-        "mastery_action_time": 8.0,
+        "mastery_action_time": 4.3,
         "input_items": {
           "restored_label": 1,
           "trace_evidence": 1
@@ -9293,16 +11491,16 @@
         "output_items": {
           "finders_fee": 2
         },
-        "success_chance": 0.8
+        "success_chance": 0.95
       },
       {
         "id": "press_label",
         "name": "Press a Label",
         "level_required": 50,
-        "base_interval": 10.0,
-        "base_xp": 130,
+        "base_interval": 4.7,
+        "base_xp": 54,
         "description": "Restore a damaged shipping mark. The document itself becomes the evidence.",
-        "mastery_action_time": 10.0,
+        "mastery_action_time": 4.7,
         "input_items": {
           "trace_evidence": 2,
           "case_file": 1
@@ -9310,16 +11508,16 @@
         "output_items": {
           "restored_label": 1
         },
-        "success_chance": 0.8
+        "success_chance": 0.95
       },
       {
         "id": "return_heirloom",
         "name": "Return an Heirloom",
         "level_required": 55,
-        "base_interval": 14.0,
-        "base_xp": 230,
+        "base_interval": 4.8,
+        "base_xp": 78,
         "description": "The good kind of case: a family, a museum, and something that unlocks how you work.",
-        "mastery_action_time": 14.0,
+        "mastery_action_time": 4.8,
         "input_items": {
           "witness_timeline": 1,
           "restored_label": 1
@@ -9327,16 +11525,16 @@
         "output_items": {
           "finders_fee": 2
         },
-        "success_chance": 0.6
+        "success_chance": 0.75
       },
       {
         "id": "echo_lens",
         "name": "Echo Lens",
         "level_required": 65,
-        "base_interval": 12.0,
-        "base_xp": 200,
+        "base_interval": 5.2,
+        "base_xp": 89,
         "description": "See repeated handling: which hands, how many, in what order. The newest instrument in the trade.",
-        "mastery_action_time": 12.0,
+        "mastery_action_time": 5.2,
         "input_items": {
           "witness_timeline": 1,
           "trace_evidence": 2
@@ -9344,16 +11542,29 @@
         "output_items": {
           "restored_label": 2
         },
-        "success_chance": 0.75
+        "success_chance": 0.9
+      },
+      {
+        "id": "accept_cold_case",
+        "name": "Accept Cold Cases",
+        "level_required": 72,
+        "base_interval": 5.0,
+        "base_xp": 91,
+        "input_items": {},
+        "output_items": {
+          "case_file": 3
+        },
+        "mastery_action_time": 5.0,
+        "description": "Old files nobody else will touch."
       },
       {
         "id": "cold_trail",
         "name": "Cold Trail",
         "level_required": 80,
-        "base_interval": 16.0,
-        "base_xp": 340,
+        "base_interval": 5.7,
+        "base_xp": 155,
         "description": "A trail years old and still warm at the edges. Follow it quietly and do not hurry the end.",
-        "mastery_action_time": 16.0,
+        "mastery_action_time": 5.7,
         "input_items": {
           "witness_timeline": 2,
           "trace_evidence": 3,
@@ -9362,16 +11573,33 @@
         "output_items": {
           "cold_trail": 1
         },
-        "success_chance": 0.65
+        "success_chance": 0.8
+      },
+      {
+        "id": "reconstruct_timeline",
+        "name": "Reconstruct a Timeline",
+        "level_required": 88,
+        "base_interval": 5.0,
+        "base_xp": 138,
+        "input_items": {
+          "trace_evidence": 3,
+          "case_file": 2
+        },
+        "output_items": {
+          "witness_timeline": 2
+        },
+        "success_chance": 0.95,
+        "mastery_action_time": 5.0,
+        "description": "Evidence alone can rebuild the day."
       },
       {
         "id": "herald_case",
         "name": "Herald Case",
         "level_required": 95,
-        "base_interval": 18.0,
-        "base_xp": 460,
+        "base_interval": 6.2,
+        "base_xp": 255,
         "description": "Closed. The label is in your handwriting and you have never seen it before.",
-        "mastery_action_time": 18.0,
+        "mastery_action_time": 6.2,
         "input_items": {
           "cold_trail": 1,
           "witness_timeline": 2,
@@ -9380,16 +11608,16 @@
         "output_items": {
           "herald_case": 1
         },
-        "success_chance": 0.6
+        "success_chance": 0.75
       },
       {
         "id": "paper_ghost",
         "name": "Paper Ghost",
         "level_required": 105,
-        "base_interval": 20.0,
-        "base_xp": 600,
+        "base_interval": 6.5,
+        "base_xp": 361,
         "description": "Find the file investigating you back. It was filed under your own name.",
-        "mastery_action_time": 20.0,
+        "mastery_action_time": 6.5,
         "input_items": {
           "witness_timeline": 3,
           "trace_evidence": 5,
@@ -9398,16 +11626,16 @@
         "output_items": {
           "cold_trail": 1
         },
-        "success_chance": 0.55
+        "success_chance": 0.7
       },
       {
         "id": "archive_ash",
         "name": "Archive Ash",
         "level_required": 115,
-        "base_interval": 24.0,
-        "base_xp": 780,
+        "base_interval": 6.8,
+        "base_xp": 512,
         "description": "File everything, burn the archive, and keep the one page that matters.",
-        "mastery_action_time": 24.0,
+        "mastery_action_time": 6.8,
         "input_items": {
           "cold_trail": 2,
           "witness_timeline": 4,
@@ -9416,7 +11644,7 @@
         "output_items": {
           "herald_case": 2
         },
-        "success_chance": 0.5
+        "success_chance": 0.65
       }
     ],
     "order": 34,
@@ -10480,6 +12708,38 @@
         "description": "Practice attunement; recycle gear and apply enchantments."
       },
       {
+        "id": "attune_martial",
+        "name": "Attune Worked Iron",
+        "level_required": 10,
+        "base_interval": 5,
+        "base_xp": 116,
+        "mastery_action_time": 5,
+        "input_items": {
+          "rune_essence": 1,
+          "iron_bar": 1
+        },
+        "output_items": {
+          "enchant_martial_essence": 1
+        },
+        "description": "Draw martial essence out of worked iron."
+      },
+      {
+        "id": "attune_warding",
+        "name": "Attune Tanned Leather",
+        "level_required": 18,
+        "base_interval": 5,
+        "base_xp": 134,
+        "mastery_action_time": 5,
+        "input_items": {
+          "rune_essence": 1,
+          "leather": 1
+        },
+        "output_items": {
+          "enchant_warding_essence": 1
+        },
+        "description": "Leather that turned blows gives up warding essence."
+      },
+      {
         "id": "study_2",
         "name": "Study Keen Attunement",
         "level_required": 25,
@@ -10493,6 +12753,22 @@
           "enchant_arcane_essence": 1
         },
         "description": "Practice attunement; recycle gear and apply enchantments."
+      },
+      {
+        "id": "attune_verdant",
+        "name": "Attune Living Wood",
+        "level_required": 35,
+        "base_interval": 5,
+        "base_xp": 175,
+        "mastery_action_time": 5,
+        "input_items": {
+          "rune_essence": 1,
+          "oak_log": 2
+        },
+        "output_items": {
+          "enchant_verdant_essence": 1
+        },
+        "description": "Fresh-cut oak still carries verdant essence."
       },
       {
         "id": "study_3",
@@ -10510,6 +12786,22 @@
         "description": "Practice attunement; recycle gear and apply enchantments."
       },
       {
+        "id": "attune_martial_2",
+        "name": "Attune Tempered Steel",
+        "level_required": 55,
+        "base_interval": 5,
+        "base_xp": 225,
+        "mastery_action_time": 5,
+        "input_items": {
+          "pure_essence": 1,
+          "steel_bar": 1
+        },
+        "output_items": {
+          "enchant_martial_essence": 2
+        },
+        "description": "Steel holds twice the martial charge of iron."
+      },
+      {
         "id": "study_4",
         "name": "Study Runic Attunement",
         "level_required": 65,
@@ -10525,6 +12817,38 @@
         "description": "Practice attunement; recycle gear and apply enchantments."
       },
       {
+        "id": "attune_warding_2",
+        "name": "Attune Wyrmhide",
+        "level_required": 75,
+        "base_interval": 5,
+        "base_xp": 278,
+        "mastery_action_time": 5,
+        "input_items": {
+          "pure_essence": 1,
+          "green_dragonhide": 1
+        },
+        "output_items": {
+          "enchant_warding_essence": 2
+        },
+        "description": "Dragonhide is warding essence made solid."
+      },
+      {
+        "id": "attune_verdant_2",
+        "name": "Attune Yew Heartwood",
+        "level_required": 82,
+        "base_interval": 5,
+        "base_xp": 298,
+        "mastery_action_time": 5,
+        "input_items": {
+          "pure_essence": 1,
+          "yew_log": 1
+        },
+        "output_items": {
+          "enchant_verdant_essence": 2
+        },
+        "description": "Old yew is thick with verdant essence."
+      },
+      {
         "id": "study_5",
         "name": "Study Ancient Attunement",
         "level_required": 90,
@@ -10538,6 +12862,37 @@
           "enchant_arcane_essence": 1
         },
         "description": "Practice attunement; recycle gear and apply enchantments."
+      },
+      {
+        "id": "attune_prismatic",
+        "name": "Split Prismatic Essence",
+        "level_required": 100,
+        "base_interval": 5,
+        "base_xp": 378,
+        "mastery_action_time": 5,
+        "input_items": {
+          "prismatic_essence": 1
+        },
+        "output_items": {
+          "enchant_arcane_essence": 3
+        },
+        "description": "Break prismatic essence into its arcane parts."
+      },
+      {
+        "id": "attune_martial_3",
+        "name": "Attune Stormsteel",
+        "level_required": 108,
+        "base_interval": 5,
+        "base_xp": 424,
+        "mastery_action_time": 5,
+        "input_items": {
+          "pure_essence": 2,
+          "runite_bar": 1
+        },
+        "output_items": {
+          "enchant_martial_essence": 3
+        },
+        "description": "Stormsteel is the richest martial source there is."
       },
       {
         "id": "study_6",

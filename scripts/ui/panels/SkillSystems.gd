@@ -90,7 +90,7 @@ func _build_slayer() -> void:
 	else:
 		box.add_child(UIStyle.label("No active task. Take one from a tier below.", true, UITokens.FONT_SMALL))
 	for tier_id in DataLoader.slayer_tasks.keys():
-		if tier_id == "_monsters":
+		if str(tier_id).begins_with("_"):
 			continue
 		var tier: Dictionary = DataLoader.slayer_tasks[tier_id]
 		if typeof(tier) != TYPE_DICTIONARY:
@@ -118,7 +118,8 @@ func _build_slayer() -> void:
 		take.disabled = busy or not have_level
 		take.tooltip_text = "You are already on a task" if busy \
 			else (gate_text if not have_level \
-			else "Assign a random monster from the %s tier" % str(tier.get("name", tier_id)))
+			else ("Assign a random monster or expedition from the %s tier" if DataLoader.slayer_tasks.get("_dungeons", {}).has(tier_id) \
+			else "Assign a random monster from the %s tier") % str(tier.get("name", tier_id)))
 		var tid: String = tier_id
 		take.pressed.connect(func():
 			SlayerManager.assign_task(tid)
@@ -131,11 +132,15 @@ func _task_card() -> Control:
 	var task: Dictionary = PlayerData.slayer_task
 	var monster_id := str(task.get("monster_id", ""))
 	var monster: Dictionary = DataLoader.get_monster(monster_id)
+	var dungeon_task: bool = SlayerManager.is_dungeon_task()
+	var dungeon_id := str(task.get("dungeon_id", ""))
 	var card := UIStyle.card(true)
 	var col := UIStyle.vbox(UITokens.SP_2)
 	card.add_child(col)
 	var head := UIStyle.hbox(UITokens.SP_4)
-	var title := UIStyle.title(str(monster.get("name", monster_id)), UITokens.FONT_SUBHEAD)
+	var heading: String = str(DataLoader.get_dungeon(dungeon_id).get("name", dungeon_id)) if dungeon_task \
+		else str(monster.get("name", monster_id))
+	var title := UIStyle.title(heading, UITokens.FONT_SUBHEAD)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(title)
 	head.add_child(Widgets.badge("%s tier" % str(task.get("tier", "easy")).capitalize(),
@@ -143,13 +148,17 @@ func _task_card() -> Control:
 	col.add_child(head)
 	var done := int(task.get("kills_done", 0))
 	var required := maxi(1, int(task.get("kills_required", 1)))
-	col.add_child(Widgets.progress_bar(float(done), float(required), UITokens.RED,
-		"%d / %d kills" % [done, required], 16, "Kills count anywhere the monster appears"))
+	if dungeon_task:
+		col.add_child(Widgets.progress_bar(float(done), float(required), UITokens.RED,
+			"%d / %d clears" % [done, required], 16, "Each full clear of this expedition counts once"))
+	else:
+		col.add_child(Widgets.progress_bar(float(done), float(required), UITokens.RED,
+			"%d / %d kills" % [done, required], 16, "Kills count anywhere the monster appears"))
 	col.add_child(UIStyle.colored_label("Pays %s × %s Slayer Coins on completion" % [
 		UIStyle.fmt(float(DataLoader.get_monster(monster_id).get("slayer_xp", 10))),
 		"%.2f" % float(task.get("coin_multiplier", 1.0))], UITokens.TEAL, UITokens.FONT_MICRO))
 	var actions := UIStyle.hbox(UITokens.SP_3)
-	var area_id := _place_for_monster(monster_id)
+	var area_id := dungeon_id if dungeon_task else _place_for_monster(monster_id)
 	var place: Dictionary = DataLoader.get_dungeon(area_id) if DataLoader.dungeons.has(area_id) else DataLoader.areas.get(area_id, {})
 	col.add_child(UIStyle.label("Location: " + str(place.get("name", "Unknown")), true, UITokens.FONT_SMALL))
 	var track := UIStyle.button("Track")

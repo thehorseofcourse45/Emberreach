@@ -36,7 +36,7 @@ func _ready() -> void:
 		+ "real time — harvesting pays the experience.", true, UITokens.FONT_SMALL)
 	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_hint)
-	add_child(UIStyle.label("All fifteen plots accept any current seed. Allotment / Herb / Tree are visual sections; current crops are herbs. Manure gives +25% survival and +10% yield; compost gives +10% survival per dressing. Apply both before planting.", true, UITokens.FONT_SMALL))
+	add_child(UIStyle.label("Vegetables grow in Allotment plots and saplings in Tree plots; herbs grow in any plot. Vegetables go into Cookery, trees are felled for logs. Manure gives +25% survival and +10% yield; compost gives +10% survival per dressing. Apply both before planting.", true, UITokens.FONT_SMALL))
 	var controls := UIStyle.hbox(UITokens.SP_4)
 	_harvest_button = UIStyle.primary_button("Harvest all ready")
 	_harvest_button.pressed.connect(_harvest_all)
@@ -132,6 +132,9 @@ func _plot_card(index: int, name_text: String) -> Control:
 	card.add_child(col)
 	var top := UIStyle.hbox(UITokens.SP_2)
 	col.add_child(top)
+	var crop_seed: String = str(FarmingManager.plots[index]["seed_id"])
+	if crop_seed != "":
+		top.add_child(UIStyle.icon_texture("farming", FarmingManager.action_id_for_seed(crop_seed)))
 	var name_label := UIStyle.label(name_text, false, UITokens.FONT_BODY)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(name_label)
@@ -292,10 +295,13 @@ func _fill_planter(button: MenuButton, plot_index: int = 0) -> void:
 			label = "%s — locked until Lv %d" % [str(o["name"]), int(o["level"])]
 		elif int(o["count"]) <= 0:
 			label = "%s — none in storage" % str(o["name"])
+		var fits: bool = FarmingManager.accepts(plot_index, str(o["id"]))
+		if not fits:
+			label = "%s — %s plots only" % [str(o["name"]), FarmingManager.seed_plot_type(str(o["id"])).capitalize()]
 		var preview: Dictionary = FarmingManager.planting_preview(plot_index, str(o.id))
 		label += " · %.0f%% survival · +%d%% yield · %s" % [float(preview.survival) * 100, int(preview.yield_bonus), UIStyle.fmt_duration(float(preview.seconds))]
-		popup.add_item(label, index)
-		popup.set_item_disabled(index, not bool(o["unlocked"]) or int(o["count"]) <= 0)
+		popup.add_icon_item(AssetRegistry.icon("farming", FarmingManager.action_id_for_seed(str(o.id))), label, index)
+		popup.set_item_disabled(index, not bool(o["unlocked"]) or int(o["count"]) <= 0 or not fits)
 		_popup_seeds.append(str(o["id"]))
 
 func _plant(index: int, seed_id: String) -> void:

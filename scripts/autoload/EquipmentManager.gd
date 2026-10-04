@@ -139,7 +139,51 @@ func get_strength_bonus(style: String) -> int:
     var total: int = 0
     for slot in slots.keys():
         total += int(DataLoader.get_item(slots[slot]).get("equipment_stats", {}).get(key, 0))
+    # Arrows are not worn; the one the bow is about to loose adds its own strength.
+    if style == "ranged":
+        var ammo: String = active_ammo()
+        if ammo != "":
+            total += int((DataLoader.get_item(ammo).get("ammo_stats", {}) as Dictionary).get("ranged_strength", 0))
     return total
+
+# ---------------- Ammunition ----------------
+var _ammo_ids: Array = []
+
+## The arrow a tiered bow will actually loose: the highest-tier arrow in storage whose
+## ammo_tier is within the bow's ammo_tier_max. "" when the weapon takes no tiered ammo or
+## nothing it can fire is in storage (the weapon's own attack_cost_items then applies).
+func active_ammo() -> String:
+    var cap: int = int(DataLoader.get_item(get_equipped(ItemData.EquipmentSlot.WEAPON)).get("ammo_tier_max", 0))
+    if cap <= 0:
+        return ""
+    if _ammo_ids.is_empty():
+        for item_id in DataLoader.items.keys():
+            var it: Variant = DataLoader.items[item_id]
+            if typeof(it) == TYPE_DICTIONARY and int((it as Dictionary).get("ammo_tier", 0)) > 0:
+                _ammo_ids.append(str(item_id))
+    var best: String = ""
+    var best_tier: int = 0
+    for ammo_id in _ammo_ids:
+        var tier: int = int(DataLoader.get_item(ammo_id).get("ammo_tier", 0))
+        if tier > best_tier and tier <= cap and BankManager.get_count(ammo_id) > 0:
+            best = ammo_id
+            best_tier = tier
+    return best
+
+## What one attack with the equipped weapon spends: its attack_cost_items, with the ammunition
+## entry swapped for the arrow active_ammo() picked. Live combat and the simulator both read this.
+func get_attack_cost() -> Dictionary:
+    var cost: Dictionary = (DataLoader.get_item(get_equipped(ItemData.EquipmentSlot.WEAPON)).get("attack_cost_items", {}) as Dictionary).duplicate()
+    var ammo: String = active_ammo()
+    if ammo == "":
+        return cost
+    var out: Dictionary = {}
+    for item_id in cost.keys():
+        if str(DataLoader.get_item(str(item_id)).get("item_type", "")) == "ammo":
+            out[ammo] = int(out.get(ammo, 0)) + int(cost[item_id])
+        else:
+            out[item_id] = cost[item_id]
+    return out
 
 func get_defence_bonus(style: String) -> int:
     var key: String = {"melee": "melee_defence", "ranged": "ranged_defence", "magic": "magic_defence"}.get(style, "melee_defence")
@@ -155,6 +199,15 @@ func get_damage_reduction() -> float:
     var total: float = 0.0
     for slot in slots.keys():
         total += float(DataLoader.get_item(slots[slot]).get("equipment_stats", {}).get("damage_reduction", 0))
+    return total
+
+## Percent resistance to a status family ("poison", "burn", "stun") from worn equipment, read
+## from `equipment_stats["<family>_resistance"]`.
+func get_status_resistance(family: String) -> float:
+    var key: String = "%s_resistance" % family
+    var total: float = 0.0
+    for slot in slots.keys():
+        total += float(DataLoader.get_item(slots[slot]).get("equipment_stats", {}).get(key, 0))
     return total
 
 func get_weapon_attack_speed() -> float:

@@ -64,7 +64,7 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		"player_special": EquipmentManager.get_weapon_special_attack().duplicate(true),
 		"enchant_statuses": DataLoader.get_item(EquipmentManager.get_equipped(8)).get("enchant_statuses", []).duplicate(),
 		"protection_styles": [],
-		"attack_cost": DataLoader.get_item(EquipmentManager.get_equipped(8)).get("attack_cost_items", {}).duplicate(),
+		"attack_cost": EquipmentManager.get_attack_cost(),
 		"ammo_preservation": ModifierManager.get_modifier(ModifierKeys.AMMO_PRESERVATION_PERCENT),
 		"attack_stock": BankManager.items.duplicate(),
 		"monsters": monsters,
@@ -74,7 +74,7 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		"prayer_points": PrayerManager.cost_per_attack(),
 		"mode_config": DataLoader.game_modes.get(str(PlayerData.game_mode), {}),
 		"in_slayer_area": str(DataLoader.areas.get(place_id, {}).get("type", "area")) == "slayer_area",
-		"hazard": DataLoader.areas.get(place_id, {}).get("hazard", {}) if place_type == "area" else {},
+		"hazard": ModifierManager.negated_hazard(DataLoader.areas.get(place_id, {}).get("hazard", {})) if place_type == "area" else {},
 		"on_slayer_task": false,
 		"target_type": place_type,
 		"target_id": place_id,
@@ -85,6 +85,12 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	for key in ["accuracy", "max_hit", "attack_interval", "damage_reduction", "evasion", "max_hp"]: snapshot.player[key] = summary[key]
 	snapshot.player.min_hit_percent = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0
 	snapshot.player.min_hit_flat = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT)
+	snapshot.player.hp_regen_per_attack = ModifierManager.get_hp_regen_per_attack()
+	# Status resistance per family, read from the same live path apply_status uses.
+	var resistance: Dictionary = {}
+	for family in MonsterMechanics.STATUS_FAMILIES:
+		resistance[str(family)] = CombatManager.player_status_resistance(str(family))
+	snapshot["status_resistance"] = resistance
 	for id in PlayerData.active_prayers:
 		var prayer: Dictionary = PrayerManager.get_prayer(id)
 		if str(prayer.get("type", "")) == "protect": snapshot.protection_styles.append(str(prayer.get("style", "")))
@@ -122,6 +128,9 @@ func _monster_record(monster_id: String) -> Dictionary:
 	return {
 		"id": monster_id,
 		"passives": m.get("passives", []).duplicate(),
+		"weak_to": m.get("weak_to", []).duplicate(),
+		"resists": m.get("resists", []).duplicate(),
+		"phases": m.get("phases", []).duplicate(true),
 		"specials": m.get("special_attacks", []).map(func(id): return DataLoader.get_special_attack(str(id)).duplicate(true)),
 		"is_immune_to_effects": bool(m.get("is_immune_to_effects", false)),
 		"can_be_stunned": bool(m.get("can_be_stunned", true)),
