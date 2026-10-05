@@ -41,6 +41,20 @@
         "item_id": "ranch_hen",
         "chance": 0.005,
         "quantity": 1
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -91,6 +105,20 @@
         "item_id": "ranch_cow",
         "chance": 0.005,
         "quantity": 1
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.255,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.255,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -136,6 +164,20 @@
         "currency_id": "gp",
         "quantity": 12,
         "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.266,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.266,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -176,6 +218,20 @@
         "currency_id": "gp",
         "quantity": 20,
         "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.271,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.271,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -221,6 +277,20 @@
         "currency_id": "gp",
         "quantity": 45,
         "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.309,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.309,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -268,6 +338,20 @@
         "currency_id": "gp",
         "quantity": 60,
         "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.325,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.325,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -319,6 +403,20 @@
         "currency_id": "gp",
         "quantity": 140,
         "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.368,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.368,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -375,6 +473,27 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.296,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -432,6 +551,27 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.365,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.365,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.365,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -495,6 +635,27 @@
         "currency_id": "gp",
         "quantity": 3500,
         "chance": 1.0
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.296,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -565,6 +726,27 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.707,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.707,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.707,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -642,6 +824,20 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.691,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.691,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -704,6 +900,27 @@
         "currency_id": "gp",
         "quantity": 7820,
         "chance": 1.0
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.372,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.372,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.372,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -761,6 +978,34 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.676,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.676,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.676,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.676,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -821,6 +1066,34 @@
         "currency_id": "gp",
         "quantity": 10200,
         "chance": 1.0
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -878,6 +1151,34 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.695,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.695,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.695,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.695,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -938,6 +1239,34 @@
         "currency_id": "gp",
         "quantity": 12830,
         "chance": 1.0
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -995,6 +1324,34 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.714,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.714,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 18,
+        "min_quantity": 9,
+        "chance": 0.714,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.714,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1055,6 +1412,34 @@
         "currency_id": "gp",
         "quantity": 15720,
         "chance": 1.0
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.288,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.288,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.288,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.288,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1112,6 +1497,34 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.733,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.733,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 18,
+        "min_quantity": 9,
+        "chance": 0.733,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.733,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1182,6 +1595,27 @@
         "currency_id": "gp",
         "quantity": 4720,
         "chance": 1.0
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.296,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -1237,8 +1671,36 @@
       },
       {
         "item_id": "enchant_catalyst",
-        "chance": 0.1,
+        "chance": 0.3,
         "quantity": 1
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.6,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.6,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.6,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.6,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1310,8 +1772,36 @@
       },
       {
         "item_id": "enchant_catalyst",
-        "chance": 0.1,
+        "chance": 0.3,
         "quantity": 1
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.619,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.619,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.619,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.619,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1371,6 +1861,34 @@
         "currency_id": "gp",
         "quantity": 18850,
         "chance": 1.0
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.307,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.307,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.307,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.307,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1415,13 +1933,41 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 84000,
+        "quantity": 89670,
         "chance": 1.0
       },
       {
         "item_id": "enchant_catalyst",
-        "chance": 0.1,
+        "chance": 0.3,
         "quantity": 1
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.638,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.638,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.638,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.638,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1482,6 +2028,48 @@
         "currency_id": "gp",
         "quantity": 55030,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.307,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.307,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.307,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.307,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1528,6 +2116,48 @@
         "currency_id": "gp",
         "quantity": 88000,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.345,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.345,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.345,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.345,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 10,
+        "min_quantity": 5,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1572,6 +2202,48 @@
         "currency_id": "gp",
         "quantity": 100000,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.373,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.373,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.373,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.373,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 13,
+        "min_quantity": 6,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1618,6 +2290,48 @@
         "currency_id": "gp",
         "quantity": 60000,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.322,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.322,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.322,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.322,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 7,
+        "min_quantity": 3,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1668,6 +2382,48 @@
         "currency_id": "gp",
         "quantity": 60000,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.334,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.334,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.334,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.334,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 8,
+        "min_quantity": 4,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1723,8 +2479,44 @@
       },
       {
         "item_id": "enchant_catalyst",
-        "chance": 0.08,
+        "chance": 0.3,
         "quantity": 1
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.704,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.704,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.704,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.704,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 33,
+        "min_quantity": 16,
+        "chance": 1.0,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1787,6 +2579,48 @@
         "currency_id": "gp",
         "quantity": 98000,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.387,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.387,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.387,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.387,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 14,
+        "min_quantity": 7,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1837,8 +2671,50 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 105000,
+        "quantity": 109952,
         "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.256,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.256,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.256,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.256,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 17,
+        "min_quantity": 8,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1891,13 +2767,49 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 190000,
+        "quantity": 215670,
         "chance": 1.0
       },
       {
         "item_id": "enchant_catalyst",
-        "chance": 0.1,
+        "chance": 0.3,
         "quantity": 1
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.615,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.615,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.615,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.615,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 54,
+        "min_quantity": 27,
+        "chance": 1.0,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1968,8 +2880,50 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 120000,
+        "quantity": 159600,
         "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.6,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.6,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.6,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.6,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 48,
+        "min_quantity": 24,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.3,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -1992,6 +2946,1054 @@
         "name": "Deep Surge",
         "effects": {
           "max_hit_multiplier": 1.15
+        }
+      }
+    ]
+  },
+  "silent_pilgrim": {
+    "id": "silent_pilgrim",
+    "name": "Silent Pilgrim",
+    "combat_level": 305,
+    "hitpoints": 9200,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 330,
+    "accuracy_rating": 5300,
+    "melee_evasion": 1250,
+    "ranged_evasion": 1250,
+    "magic_evasion": 1250,
+    "damage_reduction": 82,
+    "special_attacks": [
+      "stun_bash"
+    ],
+    "passives": [
+      "armored"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 10,
+        "min_quantity": 3
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 184000,
+        "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.281,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.281,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.281,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.281,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 21,
+        "min_quantity": 10,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 4400,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "flavour": "It walks toward the Herald's seat and has never once looked back."
+  },
+  "hush_stalker": {
+    "id": "hush_stalker",
+    "name": "Hush Stalker",
+    "combat_level": 318,
+    "hitpoints": 9600,
+    "attack_type": "ranged",
+    "attack_speed": 3.0,
+    "max_hit": 340,
+    "accuracy_rating": 5500,
+    "melee_evasion": 1300,
+    "ranged_evasion": 1300,
+    "magic_evasion": 1300,
+    "damage_reduction": 83,
+    "special_attacks": [
+      "quick_strike"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 10,
+        "min_quantity": 3
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 192000,
+        "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.297,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.297,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.297,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.297,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 23,
+        "min_quantity": 11,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 4600,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "ranged"
+    ],
+    "flavour": "You hear nothing, and then you are already hit."
+  },
+  "echoless_cantor": {
+    "id": "echoless_cantor",
+    "name": "Echoless Cantor",
+    "combat_level": 330,
+    "hitpoints": 10000,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 350,
+    "accuracy_rating": 5700,
+    "melee_evasion": 1350,
+    "ranged_evasion": 1350,
+    "magic_evasion": 1350,
+    "damage_reduction": 84,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [
+      "lifedrain"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 10,
+        "min_quantity": 3
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 206500,
+        "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.312,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.312,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.312,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.312,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 26,
+        "min_quantity": 13,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 4800,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "flavour": "It sings, and the song takes the sound out of everything near it."
+  },
+  "warden_of_the_hush": {
+    "id": "warden_of_the_hush",
+    "name": "Warden of the Hush",
+    "combat_level": 335,
+    "hitpoints": 12500,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 430,
+    "accuracy_rating": 5900,
+    "melee_evasion": 1400,
+    "ranged_evasion": 1400,
+    "magic_evasion": 1400,
+    "damage_reduction": 85,
+    "special_attacks": [
+      "abyssal_corruption",
+      "stun_bash"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 12,
+        "min_quantity": 4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 392656,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.3,
+        "quantity": 1
+      },
+      {
+        "item_id": "hush_plate_cuirass",
+        "chance": 0.05,
+        "quantity": 1
+      },
+      {
+        "item_id": "stillhide_jerkin",
+        "chance": 0.05,
+        "quantity": 1
+      },
+      {
+        "item_id": "silence_robe",
+        "chance": 0.05,
+        "quantity": 1
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.669,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.669,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.669,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.669,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 81,
+        "min_quantity": 40,
+        "chance": 1.0,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 7800,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "weak_to": [],
+    "resists": [],
+    "flavour": "Keeper of the Silent Gate. Nothing it has struck has made a sound.",
+    "phases": [
+      {
+        "at_hp_percent": 70,
+        "name": "Gate Closes",
+        "effects": {
+          "attack_speed_multiplier": 1.05
+        }
+      },
+      {
+        "at_hp_percent": 40,
+        "name": "Hush Falls",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Last Quiet",
+        "effects": {
+          "attack_type": "magic",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
+  },
+  "hollow_brute": {
+    "id": "hollow_brute",
+    "name": "Hollow Brute",
+    "combat_level": 340,
+    "hitpoints": 12800,
+    "attack_type": "melee",
+    "attack_speed": 3.6,
+    "max_hit": 400,
+    "accuracy_rating": 6000,
+    "melee_evasion": 1420,
+    "ranged_evasion": 1420,
+    "magic_evasion": 1420,
+    "damage_reduction": 85,
+    "special_attacks": [
+      "stun_bash"
+    ],
+    "passives": [
+      "regeneration",
+      "armored"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 12,
+        "min_quantity": 4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 271786,
+        "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.325,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.325,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.325,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.325,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 28,
+        "min_quantity": 14,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5400,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "flavour": "A suit of something with nothing in it, and it still hits like a wall."
+  },
+  "static_seer": {
+    "id": "static_seer",
+    "name": "Static Seer",
+    "combat_level": 352,
+    "hitpoints": 14200,
+    "attack_type": "magic",
+    "attack_speed": 3.1,
+    "max_hit": 410,
+    "accuracy_rating": 6200,
+    "melee_evasion": 1450,
+    "ranged_evasion": 1450,
+    "magic_evasion": 1450,
+    "damage_reduction": 86,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [
+      "lifedrain"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 12,
+        "min_quantity": 4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 311453,
+        "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.34,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.34,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.34,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.34,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 30,
+        "min_quantity": 15,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5800,
+    "is_boss": false,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "flavour": "It reads the air between words, and finds yours already written."
+  },
+  "the_silence": {
+    "id": "the_silence",
+    "name": "The Silence",
+    "combat_level": 360,
+    "hitpoints": 21000,
+    "attack_type": "magic",
+    "attack_speed": 3.3,
+    "max_hit": 520,
+    "accuracy_rating": 6600,
+    "melee_evasion": 1500,
+    "ranged_evasion": 1500,
+    "magic_evasion": 1500,
+    "damage_reduction": 87,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [
+      "regeneration",
+      "enrage"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 15,
+        "min_quantity": 5
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 705600,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.3,
+        "quantity": 2
+      },
+      {
+        "item_id": "hushblade",
+        "chance": 0.04,
+        "quantity": 1
+      },
+      {
+        "item_id": "echobound_bow",
+        "chance": 0.04,
+        "quantity": 1
+      },
+      {
+        "item_id": "silence_staff",
+        "chance": 0.04,
+        "quantity": 1
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.7,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.7,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.7,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.7,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 96,
+        "min_quantity": 48,
+        "chance": 1.0,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 12000,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "weak_to": [],
+    "resists": [],
+    "flavour": "What the Herald was a herald of. It has been here all along, waiting to be noticed.",
+    "phases": [
+      {
+        "at_hp_percent": 75,
+        "name": "Noticed",
+        "effects": {
+          "attack_speed_multiplier": 1.05
+        }
+      },
+      {
+        "at_hp_percent": 50,
+        "name": "Unwritten",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "No Sound",
+        "effects": {
+          "attack_type": "ranged",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
+  },
+  "ascendant_dark_herald": {
+    "id": "ascendant_dark_herald",
+    "name": "Ascendant Herald of the Long Dusk",
+    "combat_level": 312,
+    "hitpoints": 9400,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 313,
+    "accuracy_rating": 3915,
+    "melee_evasion": 1120,
+    "ranged_evasion": 1120,
+    "magic_evasion": 1120,
+    "damage_reduction": 80,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 12,
+        "min_quantity": 4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 276360,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.3,
+        "quantity": 1
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.64,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.64,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.64,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.64,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 66,
+        "min_quantity": 33,
+        "chance": 1.0,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5440,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "The Dusk, made to answer for itself.",
+    "phases": [
+      {
+        "at_hp_percent": 70,
+        "name": "Dusk Falls",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 35,
+        "name": "Long Night",
+        "effects": {
+          "attack_type": "magic",
+          "attack_speed_multiplier": 1.05
+        }
+      }
+    ]
+  },
+  "ascendant_tidewrack_king": {
+    "id": "ascendant_tidewrack_king",
+    "name": "Ascendant Tidewrack King",
+    "combat_level": 322,
+    "hitpoints": 9900,
+    "attack_type": "ranged",
+    "attack_speed": 3.2,
+    "max_hit": 315,
+    "accuracy_rating": 4350,
+    "melee_evasion": 1216,
+    "ranged_evasion": 1216,
+    "magic_evasion": 1216,
+    "damage_reduction": 82,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [
+      "regeneration"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 12,
+        "min_quantity": 4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 299722,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.3,
+        "quantity": 1
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.652,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.652,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.652,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.652,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 72,
+        "min_quantity": 36,
+        "chance": 1.0,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 6400,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "The tide does not recede. It has been promoted.",
+    "phases": [
+      {
+        "at_hp_percent": 66,
+        "name": "Terrace Wrath",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 33,
+        "name": "Trident Rush",
+        "effects": {
+          "attack_type": "melee"
+        }
+      }
+    ]
+  },
+  "ascendant_the_herald": {
+    "id": "ascendant_the_herald",
+    "name": "Ascendant Herald",
+    "combat_level": 345,
+    "hitpoints": 13800,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 494,
+    "accuracy_rating": 8120,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 88,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [
+      "regeneration",
+      "enrage"
+    ],
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 12,
+        "min_quantity": 4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 445567,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.3,
+        "quantity": 1
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.681,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.681,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.681,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.681,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 87,
+        "min_quantity": 43,
+        "chance": 1.0,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "The Herald's crown, worn by someone who finished the job.",
+    "phases": [
+      {
+        "at_hp_percent": 75,
+        "name": "Crown Ablaze",
+        "effects": {
+          "attack_speed_multiplier": 1.05
+        }
+      },
+      {
+        "at_hp_percent": 50,
+        "name": "Throne Wrath",
+        "effects": {
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Ashfall Volley",
+        "effects": {
+          "attack_type": "ranged",
+          "attack_speed_multiplier": 1.1
         }
       }
     ]
@@ -2032,13 +4034,49 @@
       {
         "is_currency": true,
         "currency_id": "gp",
-        "quantity": 152000,
+        "quantity": 255149,
         "chance": 1.0
       },
       {
         "item_id": "enchant_catalyst",
-        "chance": 0.1,
+        "chance": 0.3,
         "quantity": 1
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.625,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.625,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.625,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.625,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 60,
+        "min_quantity": 30,
+        "chance": 1.0,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -2108,6 +4146,20 @@
         "currency_id": "gp",
         "quantity": 20,
         "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -2158,6 +4210,27 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -2212,6 +4285,20 @@
         "currency_id": "gp",
         "quantity": 190,
         "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.395,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.395,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -2260,6 +4347,27 @@
         "currency_id": "gp",
         "quantity": 300,
         "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -2308,6 +4416,27 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -2364,6 +4493,27 @@
         "currency_id": "gp",
         "quantity": 11000,
         "chance": 1.0
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.388,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.388,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.388,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -2414,6 +4564,27 @@
         "currency_id": "gp",
         "quantity": 270,
         "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.265,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.265,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.265,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -2468,6 +4639,48 @@
         "currency_id": "gp",
         "quantity": 135000,
         "chance": 1.0
+      },
+      {
+        "item_id": "herald_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.275,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.275,
+        "_tier": true
+      },
+      {
+        "item_id": "herald_essence",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.275,
+        "_tier": true
+      },
+      {
+        "item_id": "soul_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.275,
+        "_tier": true
+      },
+      {
+        "is_currency": true,
+        "currency_id": "abyssal_coins",
+        "quantity": 20,
+        "min_quantity": 10,
+        "chance": 1.0,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -2518,6 +4731,27 @@
         "currency_id": "gp",
         "quantity": 500,
         "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.308,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.308,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.308,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -2576,6 +4810,27 @@
         "currency_id": "gp",
         "quantity": 650,
         "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.327,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.327,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.327,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -2625,6 +4880,27 @@
         "currency_id": "gp",
         "quantity": 800,
         "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.342,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.342,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.342,
+        "_tier": true
       }
     ],
     "bone_type": "bones",
@@ -2691,6 +4967,27 @@
         "item_id": "enchant_catalyst",
         "chance": 0.1,
         "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.358,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.358,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.358,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -2765,6 +5062,27 @@
         "item_id": "enchant_catalyst",
         "quantity": 1,
         "chance": 0.1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.388,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.388,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.388,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -2836,6 +5154,27 @@
         "item_id": "enchant_catalyst",
         "quantity": 1,
         "chance": 0.15
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.268,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.268,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.268,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -2898,6 +5237,27 @@
         "item_id": "enchant_catalyst",
         "quantity": 1,
         "chance": 0.15
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.305,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.305,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.305,
+        "_tier": true
       }
     ],
     "bone_type": "big_bones",
@@ -2964,6 +5324,27 @@
         "item_id": "enchant_catalyst",
         "quantity": 1,
         "chance": 0.2
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.33,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.33,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.33,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -3032,6 +5413,27 @@
         "item_id": "enchant_catalyst",
         "quantity": 1,
         "chance": 0.2
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.348,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.348,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.348,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -3076,6 +5478,34 @@
         "currency_id": "gp",
         "quantity": 24410,
         "chance": 1.0
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.335,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.335,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.335,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.335,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -3126,6 +5556,34 @@
         "currency_id": "gp",
         "quantity": 30600,
         "chance": 1.0
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.364,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.364,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.364,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.364,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -3175,6 +5633,34 @@
         "currency_id": "gp",
         "quantity": 37410,
         "chance": 1.0
+      },
+      {
+        "item_id": "dragonite_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.392,
+        "_tier": true
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.392,
+        "_tier": true
+      },
+      {
+        "item_id": "blood_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.392,
+        "_tier": true
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.392,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -3225,6 +5711,40 @@
         "currency_id": "gp",
         "quantity": 44850,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",
@@ -3269,6 +5789,40 @@
         "currency_id": "gp",
         "quantity": 50220,
         "chance": 1.0
+      },
+      {
+        "item_id": "umbral_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.292,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.292,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.292,
+        "_tier": true
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.292,
+        "_tier": true
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15,
+        "_tier": true
       }
     ],
     "bone_type": "dragon_bones",

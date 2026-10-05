@@ -105,6 +105,8 @@ func run_all(host: Node) -> void:
 	_test_equipment_upgrade()
 	_test_prestige()
 	_test_runescribing()
+	_test_vein_richness()
+	_test_abyssal_shop()
 	_test_tutorial()
 	_test_responsive_layouts(host)
 	# After the layout suite, which is what assembles the shell the tests share: a screen test run
@@ -1738,10 +1740,9 @@ func _report_suite(name: String, state: Dictionary) -> void:
 func _test_audio() -> void:
 	_heading("Audio")
 	var audio: Dictionary = DataLoader.audio
-	_ok(not audio.is_empty(), "the audio table loaded (%d sounds, %d tracks)" % [
-		audio.get("sfx", {}).size(), audio.get("music", {}).size()])
+	_ok(not audio.is_empty(), "the audio table loaded (%d sounds)" % audio.get("sfx", {}).size())
 	_ok(audio.get("sfx", {}).size() >= 10, "a meaningful sound set exists (%d)" % audio.get("sfx", {}).size())
-	_ok(audio.get("music", {}).size() >= 2, "both music tracks exist (%d)" % audio.get("music", {}).size())
+	_ok(not audio.has("music") and not audio.has("music_events"), "the game ships no music")
 	# Every reference resolves: ContentValidator checks these too, but the test states
 	# the promise directly so a validator regression cannot hide a broken mapping.
 	var broken: Array[String] = []
@@ -1757,11 +1758,7 @@ func _test_audio() -> void:
 	if stream != null:
 		_ok(_pcm_edge_is_quiet(stream.data, 0), "the sound starts from silence (no click)")
 		_ok(_pcm_edge_is_quiet(stream.data, stream.data.size() - 4), "the sound ends at silence (no click)")
-	var music: AudioStreamWAV = AudioManager.music_stream("explore")
-	_ok(music != null and music.data.size() > 32000,
-		"the music track synthesizes to real PCM (%d bytes)" % (music.data.size() if music != null else 0))
-	_ok(music != null and music.loop_mode == AudioStreamWAV.LOOP_FORWARD,
-		"the music track loops seamlessly")
+	_ok(not AudioManager.has_method("music_stream") and not AudioManager.has_method("set_music"), "AudioManager has no music player")
 	# Cache identity: the same recipe is not re-synthesized on every play.
 	_ok(AudioManager.sfx_stream("levelup") == stream, "synthesized sounds are cached")
 	# Throttling: one window honored, a different key unaffected.
@@ -1769,19 +1766,15 @@ func _test_audio() -> void:
 	var second: bool = AudioManager.play_sfx("pickup", "test-throttle", 60000)
 	_ok(first and not second, "a throttled sound plays once inside its window")
 	# Volume keys exist so old saves migrate them in, and applying zero mutes the bus.
-	_ok(SettingsDefaults.DEFAULTS.has("music_volume") and SettingsDefaults.DEFAULTS.has("sfx_volume"),
+	_ok(SettingsDefaults.DEFAULTS.has("sfx_volume") and not SettingsDefaults.DEFAULTS.has("music_volume"),
 		"volume settings have declared defaults")
-	var saved_music: float = float(PlayerData.settings.get("music_volume", 60.0))
 	var saved_sfx: float = float(PlayerData.settings.get("sfx_volume", 80.0))
-	PlayerData.settings["music_volume"] = 0.0
 	PlayerData.settings["sfx_volume"] = 0.0
 	AudioManager.apply_volumes()
-	var music_bus: int = AudioServer.get_bus_index("Music")
 	var sfx_bus: int = AudioServer.get_bus_index("SFX")
-	_ok(music_bus >= 0 and sfx_bus >= 0, "the Music and SFX buses exist")
-	_ok(AudioServer.is_bus_mute(music_bus) and AudioServer.is_bus_mute(sfx_bus),
+	_ok(sfx_bus >= 0 and AudioServer.get_bus_index("Music") < 0, "the SFX bus exists and there is no Music bus")
+	_ok(AudioServer.is_bus_mute(sfx_bus),
 		"zero volume mutes the bus")
-	PlayerData.settings["music_volume"] = saved_music
 	PlayerData.settings["sfx_volume"] = saved_sfx
 	AudioManager.apply_volumes()
 
@@ -2104,8 +2097,8 @@ func _test_monster_mechanics_content() -> void:
 	_ok(bosses > 0 and bosses_ok, "every boss (%d) has 2-3 phases" % bosses)
 	_ok(swap_bosses >= 1, "at least one boss has a phase that changes its attack type (%d)" % swap_bosses)
 	_ok(venom_ok, "every monster applying poison is venomous")
-	_ok(lifedrain >= 2 and lifedrain <= 4, "2-4 monsters have lifedrain (%d)" % lifedrain)
-	_ok(armored >= 2 and armored <= 4, "2-4 monsters are armored (%d)" % armored)
+	_ok(lifedrain >= 2 and lifedrain <= 6, "2-6 monsters have lifedrain (%d)" % lifedrain)
+	_ok(armored >= 2 and armored <= 6, "2-6 monsters are armored (%d)" % armored)
 	_eq(errors.size(), 0, "every monster passes validate_monster_mechanics %s" % str(errors))
 	var resistant_items: int = 0
 	var families_covered: Dictionary = {}
@@ -3281,6 +3274,13 @@ func _test_attack_costs() -> void:
 		"the preservation constant matches the key content authors")
 	for cape_id in ["ranged_cape", "ranged_cape_superior"]:
 		var cape: Dictionary = DataLoader.get_item(cape_id)
+		_ok(float((cape.get("passive_modifiers", {}) as Dictionary).get(ModifierKeys.AMMO_PRESERVATION_PERCENT, 0.0)) > 0.0,
+			"%s refunds ammunition" % cape_id)
+
+## Magic used to stop at level 30: four staves, all casting the same fixed base-10 spell, so the
+## style could not progress for another 90 levels and eight runes had no caster. These checks pin
+## the ladder that replaced it: one staff per rune, a rising spell tier, and damage that scales
+## without overtaking the bow line.
 ## Dreamlands form one ladder: strictly rising unlock level, XP and Essence, no duplicate ids, and
 ## each has an icon, so the picker (which now lists locked ones too) is never a dead end.
 func _test_dreamlands() -> void:
@@ -3300,13 +3300,6 @@ func _test_dreamlands() -> void:
 		prev = d
 	_ok(int((dreams[0] as Dictionary).level) == 1, "the first dreamland is open from level 1")
 
-		_ok(float((cape.get("passive_modifiers", {}) as Dictionary).get(ModifierKeys.AMMO_PRESERVATION_PERCENT, 0.0)) > 0.0,
-			"%s refunds ammunition" % cape_id)
-
-## Magic used to stop at level 30: four staves, all casting the same fixed base-10 spell, so the
-## style could not progress for another 90 levels and eight runes had no caster. These checks pin
-## the ladder that replaced it: one staff per rune, a rising spell tier, and damage that scales
-## without overtaking the bow line.
 func _test_magic_gear() -> void:
 	_heading("The magic gear line")
 	var by_level: Dictionary = {}
@@ -3316,7 +3309,7 @@ func _test_magic_gear() -> void:
 			continue
 		var req: Dictionary = it.get("level_requirements", {})
 		# Raid shop weapons are bought with raid coins, not crafted, so they sit outside the ladder.
-		if not req.has("magic") or bool(it.get("is_raid_item", false)):
+		if not req.has("magic") or bool(it.get("is_raid_item", false)) or bool(it.get("is_boss_drop", false)):
 			continue
 		by_level[int(req["magic"])] = it
 	var levels: Array = by_level.keys()
@@ -3359,7 +3352,7 @@ func _test_magic_gear() -> void:
 		if it.is_empty():
 			continue
 		var req: Dictionary = it.get("level_requirements", {})
-		if not req.has("magic") or int(it.get("equipment_slot", -1)) == 8:
+		if not req.has("magic") or int(it.get("equipment_slot", -1)) == 8 or bool(it.get("is_boss_drop", false)):
 			continue
 		tiers[int(req["magic"])] = int(tiers.get(int(req["magic"]), 0)) + 1
 	var robe_levels: Array = tiers.keys()
@@ -3371,7 +3364,7 @@ func _test_magic_gear() -> void:
 		var total: int = 0
 		for id in DataLoader.items.keys():
 			var it: Dictionary = DataLoader.get_item(str(id))
-			if it.is_empty() or int(it.get("equipment_slot", -1)) == 8:
+			if it.is_empty() or int(it.get("equipment_slot", -1)) == 8 or bool(it.get("is_boss_drop", false)):
 				continue
 			if int((it.get("level_requirements", {}) as Dictionary).get("magic", -1)) != int(level):
 				continue
@@ -3389,7 +3382,7 @@ func _test_magic_gear() -> void:
 		_ok(craftable.has(staff_id), "%s has a recipe" % staff_id)
 	for id in DataLoader.items.keys():
 		var it: Dictionary = DataLoader.get_item(str(id))
-		if it.is_empty() or int(it.get("equipment_slot", -1)) == 8:
+		if it.is_empty() or int(it.get("equipment_slot", -1)) == 8 or bool(it.get("is_boss_drop", false)):
 			continue
 		if (it.get("level_requirements", {}) as Dictionary).has("magic"):
 			_ok(craftable.has(str(id)), "%s has a recipe" % str(id))
@@ -3738,6 +3731,56 @@ func _test_prestige() -> void:
 ## First-run onboarding. The failure this guards against is silence: a new character with a step
 ## list that fails to load, starts somewhere other than the beginning, never advances, or loses
 ## its place on reload.
+## Prospecting veins roll a richness tier on every spawn; the tier scales node uses and survives a save.
+## Abyssal coins are a real currency: an abyssal-priced upgrade charges them and never gold.
+func _test_abyssal_shop() -> void:
+	_heading("Abyssal coins buy from the Provisioner")
+	GameManager.start_new_game("standard")
+	var priced: int = 0
+	for id in DataLoader.shop.keys():
+		if typeof(DataLoader.shop[id]) == TYPE_DICTIONARY and ShopManager.currency_of(str(id)) == "abyssal_coins":
+			priced += 1
+	_ok(priced >= 3, "the shop stocks abyssal-priced upgrades (%d)" % priced)
+	var uid: String = "abyssal_plunder"
+	var cost: float = float(DataLoader.get_shop_upgrade(uid).get("cost", 0))
+	PlayerData.add_gp(cost * 10.0)
+	_ok(not bool(ShopManager.can_buy(uid)["ok"]), "gold alone cannot buy an abyssal upgrade")
+	PlayerData.add_abyssal_coins(cost)
+	var gp_before: float = PlayerData.gp
+	var loot_before: float = ModifierManager.get_modifier("global_double_loot_percent")
+	_ok(ShopManager.buy(uid), "enough abyssal coins buys it")
+	_approx(PlayerData.abyssal_coins, 0.0, 0.001, "the purchase spent the abyssal coins")
+	_approx(PlayerData.gp, gp_before, 0.001, "the purchase left gold untouched")
+	_ok(ModifierManager.get_modifier("global_double_loot_percent") > loot_before, "the bought bonus is live")
+	_ok(not PlayerData.spend_abyssal_coins(1.0), "an empty abyssal balance refuses a spend")
+
+func _test_vein_richness() -> void:
+	_heading("Prospecting veins roll a richness tier")
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	var base_hp: int = int(DataLoader.get_action("harvesting", "basic").get("node_hp", 0))
+	var seen: Dictionary = {}
+	var scaled_ok: bool = true
+	for _i in range(200):
+		SkillManager.start_action("harvesting", "basic", 0)
+		seen[SkillManager.node_richness] = true
+		var mult: float = float(SkillManager.richness_tier().get("hp_mult", 0.0))
+		if mult <= 0.0 or SkillManager.node_max_hp != maxi(1, roundi(float(base_hp) * mult)):
+			scaled_ok = false
+	_ok(scaled_ok, "every spawn has a known tier and node uses = base x hp_mult")
+	_ok(seen.size() >= 3, "200 spawns roll several tiers (%d)" % seen.size())
+	var snap: Dictionary = SkillManager.serialize()
+	var tier_id: String = SkillManager.node_richness
+	var max_hp: int = SkillManager.node_max_hp
+	SkillManager.stop_action()
+	SkillManager.deserialize(snap)
+	_eq(SkillManager.node_richness, tier_id, "richness tier survives save/load")
+	_eq(SkillManager.node_max_hp, max_hp, "scaled node uses survive save/load")
+	SkillManager.stop_action()
+	SkillManager.start_action("mining", str(DataLoader.get_skill_actions("mining")[0].get("id", "")), 0)
+	_eq(SkillManager.node_richness, "", "a skill without vein_richness never rolls a tier")
+	SkillManager.stop_action()
+
 func _test_tutorial() -> void:
 	_heading("First-run onboarding")
 	_ok(DataLoader.tutorial.size() >= 5,

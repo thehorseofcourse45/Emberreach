@@ -204,5 +204,54 @@
     "cost": 23000000,
     "currency": "gp",
     "requires_all_skills_99": true
+  },
+  "abyssal_plunder": {
+    "id": "abyssal_plunder",
+    "name": "Abyssal Plunder",
+    "cost": 500,
+    "currency": "abyssal_coins",
+    "description": "Bought with abyssal coins. More of every drop comes home.",
+    "effect": {
+      "global_double_loot_percent": 5
+    }
+  },
+  "abyssal_insight": {
+    "id": "abyssal_insight",
+    "name": "Abyssal Insight",
+    "cost": 1500,
+    "currency": "abyssal_coins",
+    "requires": [
+      "abyssal_plunder"
+    ],
+    "description": "Bought with abyssal coins. Every skill learns faster.",
+    "effect": {
+      "global_skill_xp_percent": 3
+    }
+  },
+  "abyssal_mastery": {
+    "id": "abyssal_mastery",
+    "name": "Abyssal Mastery",
+    "cost": 3000,
+    "currency": "abyssal_coins",
+    "requires": [
+      "abyssal_insight"
+    ],
+    "description": "Bought with abyssal coins. Mastery comes sooner.",
+    "effect": {
+      "global_mastery_xp_percent": 5
+    }
+  },
+  "abyssal_tithe": {
+    "id": "abyssal_tithe",
+    "name": "Abyssal Tithe",
+    "cost": 6000,
+    "currency": "abyssal_coins",
+    "requires": [
+      "abyssal_mastery"
+    ],
+    "description": "Bought with abyssal coins. Gold income rises.",
+    "effect": {
+      "global_gp_percent": 10
+    }
   }
 }

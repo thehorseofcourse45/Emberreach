@@ -19,7 +19,9 @@
 		"completion_reward": {
 			"gp": 500,
 			"items": {
-				"bronze_platebody": 1
+				"bronze_platebody": 1,
+				"iron_ore": 2,
+				"air_rune": 6
 			}
 		},
 		"rewards_first_clear": {
@@ -50,7 +52,9 @@
 		"completion_reward": {
 			"gp": 5000,
 			"items": {
-				"iron_scimitar": 1
+				"iron_scimitar": 1,
+				"mithril_ore": 2,
+				"chaos_rune": 6
 			}
 		},
 		"flavour": "The barrows of Hearthfall have opened. The dead want their names back."
@@ -77,7 +81,9 @@
 		"completion_reward": {
 			"gp": 25000,
 			"items": {
-				"ring_of_power": 1
+				"ring_of_power": 1,
+				"mithril_ore": 3,
+				"chaos_rune": 9
 			}
 		},
 		"flavour": "Reedwrack Fen's heart, and the nest that keeps restocking it."
@@ -103,7 +109,9 @@
 			"gp": 1000000,
 			"items": {
 				"dragon_bones": 4,
-				"summoning_shard_green": 8
+				"summoning_shard_green": 8,
+				"dragonite_ore": 8,
+				"prismatic_essence": 8
 			}
 		},
 		"rewards_first_clear": {
@@ -136,7 +144,9 @@
 			"gp": 1500000,
 			"items": {
 				"dragon_bones": 6,
-				"summoning_shard_green": 10
+				"summoning_shard_green": 10,
+				"dragonite_ore": 8,
+				"prismatic_essence": 8
 			}
 		},
 		"rewards_first_clear": {
@@ -169,7 +179,9 @@
 			"gp": 2000000,
 			"items": {
 				"dragon_bones": 8,
-				"summoning_shard_green": 12
+				"summoning_shard_green": 12,
+				"dragonite_ore": 9,
+				"prismatic_essence": 9
 			}
 		},
 		"rewards_first_clear": {
@@ -202,7 +214,9 @@
 			"gp": 3000000,
 			"items": {
 				"dragon_bones": 10,
-				"summoning_shard_green": 16
+				"summoning_shard_green": 16,
+				"dragonite_ore": 9,
+				"prismatic_essence": 9
 			}
 		},
 		"rewards_first_clear": {
@@ -235,7 +249,9 @@
 			"items": {
 				"dragon_bones": 12,
 				"summoning_shard_green": 20,
-				"red_dragonhide": 4
+				"red_dragonhide": 4,
+				"umbral_ore": 10,
+				"umbral_essence": 10
 			}
 		},
 		"rewards_first_clear": {
@@ -267,10 +283,16 @@
 			"items": {
 				"dragon_bones": 16,
 				"summoning_shard_green": 24,
-				"red_dragonhide": 6
+				"red_dragonhide": 6,
+				"umbral_ore": 11,
+				"umbral_essence": 11
 			}
 		},
-		"rewards_first_clear": {},
+		"rewards_first_clear": {
+			"items": {
+				"umbral_pendant": 1
+			}
+		},
 		"flavour": "Nightfall that never lifts. Cut a path through it or be part of it."
 	},
 	"underwater_city": {
@@ -294,7 +316,9 @@
 			"gp": 10000000,
 			"items": {
 				"dragon_bones": 20,
-				"summoning_shard_green": 30
+				"summoning_shard_green": 30,
+				"umbral_ore": 11,
+				"umbral_essence": 11
 			}
 		},
 		"rewards_first_clear": {
@@ -325,7 +349,9 @@
 			"gp": 50000000,
 			"items": {
 				"dragon_bones": 40,
-				"summoning_shard_green": 60
+				"summoning_shard_green": 60,
+				"herald_ore": 15,
+				"soul_rune": 45
 			}
 		},
 		"rewards_first_clear": {
@@ -353,7 +379,11 @@
 		},
 		"equipment_locked": true,
 		"completion_reward": {
-			"gp": 1500
+			"gp": 1500,
+			"items": {
+				"iron_ore": 2,
+				"air_rune": 6
+			}
 		},
 		"rewards_first_clear": {
 			"items": {
@@ -379,7 +409,11 @@
 		},
 		"equipment_locked": true,
 		"completion_reward": {
-			"gp": 8500
+			"gp": 8500,
+			"items": {
+				"mithril_ore": 2,
+				"chaos_rune": 6
+			}
 		},
 		"rewards_first_clear": {
 			"items": {
@@ -406,7 +440,11 @@
 		},
 		"equipment_locked": true,
 		"completion_reward": {
-			"gp": 20000
+			"gp": 20000,
+			"items": {
+				"mithril_ore": 3,
+				"chaos_rune": 9
+			}
 		},
 		"rewards_first_clear": {
 			"items": {
@@ -433,7 +471,11 @@
 		},
 		"equipment_locked": true,
 		"completion_reward": {
-			"gp": 42000
+			"gp": 42000,
+			"items": {
+				"runite_ore": 3,
+				"death_rune": 9
+			}
 		},
 		"rewards_first_clear": {
 			"items": {
@@ -464,7 +506,9 @@
 		"completion_reward": {
 			"gp": 35000,
 			"items": {
-				"adamantite_bar": 2
+				"adamantite_bar": 2,
+				"mithril_ore": 3,
+				"chaos_rune": 9
 			}
 		},
 		"rewards_first_clear": {
@@ -494,7 +538,9 @@
 			"gp": 120000,
 			"items": {
 				"summoning_shard_green": 6,
-				"big_bones": 4
+				"big_bones": 4,
+				"runite_ore": 5,
+				"death_rune": 15
 			}
 		},
 		"rewards_first_clear": {
@@ -526,12 +572,15 @@
 			"gp": 20000000,
 			"items": {
 				"dragon_bones": 24,
-				"summoning_shard_green": 36
+				"summoning_shard_green": 36,
+				"umbral_ore": 12,
+				"umbral_essence": 12
 			}
 		},
 		"rewards_first_clear": {
 			"items": {
-				"potion_dr_3": 5
+				"potion_dr_3": 5,
+				"umbral_dhide_vambraces": 1
 			}
 		},
 		"flavour": "The garrison sealed itself in. The seal held; the garrison did not."
@@ -558,14 +607,122 @@
 			"gp": 35000000,
 			"items": {
 				"dragon_bones": 32,
-				"summoning_shard_green": 48
+				"summoning_shard_green": 48,
+				"herald_ore": 15,
+				"soul_rune": 45
 			}
 		},
 		"rewards_first_clear": {
 			"items": {
-				"potion_dr_3": 8
+				"potion_dr_3": 8,
+				"herald_bulwark": 1
 			}
 		},
 		"flavour": "Where the marsh keeps what it has swallowed. It is not finished."
+	},
+	"the_silent_gate": {
+		"id": "the_silent_gate",
+		"name": "The Silent Gate",
+		"level_range": [
+			300,
+			340
+		],
+		"monsters": [
+			"silent_pilgrim",
+			"hush_stalker",
+			"echoless_cantor",
+			"warden_of_the_hush"
+		],
+		"requires": {
+			"slayer": 60
+		},
+		"requires_dungeon": "throne_of_the_herald",
+		"equipment_locked": true,
+		"completion_reward": {
+			"gp": 80000000,
+			"items": {
+				"dragon_bones": 48,
+				"summoning_shard_green": 72,
+				"herald_ore": 17,
+				"soul_rune": 51
+			}
+		},
+		"rewards_first_clear": {
+			"items": {
+				"enchant_catalyst": 5,
+				"herald_godsword": 1
+			}
+		},
+		"flavour": "A gate the Herald never walked through, because he was already on the other side."
+	},
+	"the_hollow_throne": {
+		"id": "the_hollow_throne",
+		"name": "The Hollow Throne",
+		"level_range": [
+			345,
+			380
+		],
+		"monsters": [
+			"hollow_brute",
+			"static_seer",
+			"hollow_brute",
+			"the_silence"
+		],
+		"requires": {
+			"slayer": 60
+		},
+		"requires_dungeon": "the_silent_gate",
+		"equipment_locked": true,
+		"completion_reward": {
+			"gp": 140000000,
+			"items": {
+				"dragon_bones": 64,
+				"summoning_shard_green": 96,
+				"herald_ore": 19,
+				"soul_rune": 57
+			}
+		},
+		"rewards_first_clear": {
+			"items": {
+				"enchant_catalyst": 10,
+				"hush_plate_cuirass": 1
+			}
+		},
+		"flavour": "The seat that was never the Herald's. It was only kept warm."
+	},
+	"ascendant_trials": {
+		"id": "ascendant_trials",
+		"name": "The Ascendant Trials",
+		"level_range": [
+			300,
+			350
+		],
+		"monsters": [
+			"ascendant_dark_herald",
+			"ascendant_tidewrack_king",
+			"ascendant_the_herald"
+		],
+		"requires": {
+			"slayer": 60
+		},
+		"requires_dungeon": "throne_of_the_herald",
+		"equipment_locked": true,
+		"completion_reward": {
+			"gp": 100000000,
+			"items": {
+				"dragon_bones": 60,
+				"summoning_shard_green": 90,
+				"enchant_catalyst": 3,
+				"herald_ore": 17,
+				"soul_rune": 51
+			}
+		},
+		"rewards_first_clear": {
+			"items": {
+				"enchant_catalyst": 8,
+				"heralds_sigil": 1
+			}
+		},
+		"flavour": "Every boss you beat, back and better. Repeat as desired."
 	}
 }

@@ -49,6 +49,7 @@ func _ready() -> void:
 	add_child(_stall)
 	add_child(_store_signpost())
 	EventBus.gp_changed.connect(func(_a, _t): _rebuild())
+	EventBus.abyssal_coins_changed.connect(func(_a, _t): _rebuild())
 	EventBus.shop_upgrade_purchased.connect(func(_u): _rebuild())
 	EventBus.state_refreshed.connect(_rebuild)
 	# The mastery stall's "Owned" badge reads storage, so a bank change can change a row here.
@@ -113,7 +114,7 @@ func _state_of(upgrade_id: String) -> String:
 		return "owned"
 	if not ShopManager.has_requirement(upgrade_id):
 		return "locked"
-	if PlayerData.gp < float(u.get("cost", 0)):
+	if ShopManager.balance(ShopManager.currency_of(upgrade_id)) < float(u.get("cost", 0)):
 		return "locked"
 	return "available"
 
@@ -242,7 +243,8 @@ func _upgrade_card(upgrade_id: String, state: String) -> Control:
 	head.add_child(Widgets.badge("Owned" if state == "owned" else ("Locked" if state == "locked" else "Available"),
 		UITokens.GREEN if state == "owned" else (UITokens.TEXT_MUTED if state == "locked" else UITokens.GOLD_BRIGHT),
 		"Purchase state"))
-	head.add_child(Widgets.badge("%s GP" % UIStyle.fmt(cost), UITokens.GOLD, "Exact cost: %s GP" % UIStyle.fmt_exact(cost)))
+	var unit: String = ShopManager.currency_label(ShopManager.currency_of(upgrade_id))
+	head.add_child(Widgets.badge("%s %s" % [UIStyle.fmt(cost), unit], UITokens.GOLD, "Exact cost: %s %s" % [UIStyle.fmt_exact(cost), unit]))
 	var owned_count: int = int(PlayerData.shop_upgrades.get(upgrade_id, 0))
 	if owned_count > 0:
 		head.add_child(Widgets.badge("×%d" % owned_count, UITokens.BLUE, "How many of this upgrade you own"))
@@ -284,7 +286,7 @@ func _upgrade_card(upgrade_id: String, state: String) -> Control:
 	var button := UIStyle.primary_button("Purchase")
 	var check: Dictionary = ShopManager.can_buy(upgrade_id)
 	button.disabled = not bool(check["ok"])
-	button.tooltip_text = "Buy for %s GP" % UIStyle.fmt_exact(cost) if bool(check["ok"]) else str(check["reason"])
+	button.tooltip_text = "Buy for %s %s" % [UIStyle.fmt_exact(cost), unit] if bool(check["ok"]) else str(check["reason"])
 	var uid: String = upgrade_id
 	button.pressed.connect(func(): _buy(uid))
 	buttons.add_child(button)
@@ -334,12 +336,14 @@ func _buy(upgrade_id: String) -> void:
 		EventBus.notify("Cannot buy: %s" % str(check["reason"]), "warn")
 		return
 	var effect: Dictionary = u.get("effect", {})
-	var body: String = "%s\n\nCost: %s GP\nYour gold after this purchase: %s GP" % [
-		str(u.get("name", upgrade_id)), UIStyle.fmt_exact(cost), UIStyle.fmt_exact(PlayerData.gp - cost)]
+	var cur: String = ShopManager.currency_of(upgrade_id)
+	var unit: String = ShopManager.currency_label(cur)
+	var body: String = "%s\n\nCost: %s %s\nYour balance after this purchase: %s %s" % [
+		str(u.get("name", upgrade_id)), UIStyle.fmt_exact(cost), unit, UIStyle.fmt_exact(ShopManager.balance(cur) - cost), unit]
 	if not effect.is_empty():
 		body += "\n\nEffect: %s" % UIStyle.describe_modifier_table(effect)
 	if cost >= CONFIRM_THRESHOLD:
-		ConfirmDialog.ask(self, "Confirm purchase", body, "Buy for %s GP" % UIStyle.fmt(cost),
+		ConfirmDialog.ask(self, "Confirm purchase", body, "Buy for %s %s" % [UIStyle.fmt(cost), unit],
 			func():
 				ShopManager.buy(upgrade_id)
 				_rebuild())

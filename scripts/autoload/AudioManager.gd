@@ -1,7 +1,7 @@
 extends Node
 ## AudioManager — Emberreach's entire soundtrack is synthesized at runtime from
-## data/audio.json: the project ships no audio files, so every sound effect and both
-## music loops are built as AudioStreamWAV buffers from declarative recipes.
+## data/audio.json: the project ships no audio files, so every sound effect is
+## built as an AudioStreamWAV buffer from a declarative recipe. There is no music.
 ##
 ## Design rules:
 ##  - Nothing here hardcodes a sound. Events, throttles, tracks and the notification-kind
@@ -12,9 +12,8 @@ extends Node
 ##  - The manager is inert in CLI modes (GameManager.cli_mode): verification runs never
 ##    open audio devices or pay synthesis cost, and tests can still call the pure
 ##    synthesis helpers directly.
-##  - Two audio buses ("Music", "SFX") keep the two volume settings independent.
+##  - One audio bus (SFX) carries every effect and its volume setting.
 
-const BUS_MUSIC: String = "Music"
 const BUS_SFX: String = "SFX"
 ## One pool player per concurrent effect; the pool cycles, so a burst of item pickups
 ## overlaps a few sounds instead of cutting each other off.
@@ -22,13 +21,9 @@ const SFX_PLAYERS: int = 8
 const SAMPLE_RATE: int = 22050
 
 var _sfx_cache: Dictionary = {}          # sound id -> AudioStreamWAV
-var _music_cache: Dictionary = {}        # track id -> AudioStreamWAV
 var _players: Array[AudioStreamPlayer] = []
 var _next_player: int = 0
-var _music_player: AudioStreamPlayer
 var _last_played_ms: Dictionary = {}     # throttle key -> Time.get_ticks_msec()
-var _current_music: String = ""
-var _started: bool = false
 
 func _ready() -> void:
 	_ensure_buses()
@@ -37,13 +32,7 @@ func _ready() -> void:
 		p.bus = BUS_SFX
 		add_child(p)
 		_players.append(p)
-	_music_player = AudioStreamPlayer.new()
-	_music_player.bus = BUS_MUSIC
-	add_child(_music_player)
-	# Wiring is cheap and needs no audio device, so it always happens. Music startup is
-	# gated inside set_music, because MainUI sets cli_mode AFTER autoloads initialise.
 	_wire_data_events()
-	EventBus.state_refreshed.connect(_on_state_refreshed)
 	EventBus.game_loaded.connect(_on_game_loaded)
 	apply_volumes()
 
@@ -74,31 +63,10 @@ func play_sfx(sound_id: String, throttle_key: String = "", throttle_ms: int = 0)
 	player.play()
 	return true
 
-## Switch the looping background track. Same track twice is a no-op.
-## Gated on cli_mode: verification runs never pay the music synthesis cost, and their
-## screenshots need no soundtrack. One-shot effects still play (headless uses a dummy
-## audio driver), which lets tests exercise the throttle and volume logic for real.
-func set_music(track_id: String) -> void:
-	if GameManager.cli_mode:
-		return
-	if track_id == _current_music and _music_player.playing:
-		return
-	var stream: AudioStreamWAV = music_stream(track_id)
-	if stream == null:
-		return
-	_current_music = track_id
-	_music_player.stream = stream
-	if float(PlayerData.settings.get("music_volume", 60.0)) > 0.0:
-		_music_player.play()
-
-## Push both volume settings onto their buses. Called at boot, on load and whenever
-## the Settings sliders move.
+## Push the SFX volume setting onto its bus. Called at boot, on load and whenever
+## the Settings slider moves.
 func apply_volumes() -> void:
-	_set_bus_volume(BUS_MUSIC, float(PlayerData.settings.get("music_volume", 60.0)))
 	_set_bus_volume(BUS_SFX, float(PlayerData.settings.get("sfx_volume", 80.0)))
-
-func music_track() -> String:
-	return _current_music
 
 # ==========================================================================
 #  Synthesis (pure; callable from tests without touching playback)
@@ -114,18 +82,6 @@ func sfx_stream(sound_id: String) -> AudioStreamWAV:
 	var stream := _synth_sfx(recipe as Dictionary)
 	if stream != null:
 		_sfx_cache[sound_id] = stream
-	return stream
-
-## The looping stream for a music track id, or null when the recipe is missing/invalid.
-func music_stream(track_id: String) -> AudioStreamWAV:
-	if _music_cache.has(track_id):
-		return _music_cache[track_id]
-	var recipe: Variant = _audio_data().get("music", {}).get(track_id)
-	if typeof(recipe) != TYPE_DICTIONARY:
-		return null
-	var stream := _synth_music(recipe as Dictionary)
-	if stream != null:
-		_music_cache[track_id] = stream
 	return stream
 
 ## One-shot SFX recipe -> PCM. Tones without an explicit "at" play back to back;
@@ -179,68 +135,6 @@ static func _synth_sfx(recipe: Dictionary) -> AudioStreamWAV:
 	stream.data = _pcm_to_bytes(pcm)
 	return stream
 
-## Looping music recipe -> PCM of exactly `chords.size() * pattern.size()` steps, so the
-## loop point lands on a beat and wraps seamlessly.
-static func _synth_music(recipe: Dictionary) -> AudioStreamWAV:
-	var chords: Array = recipe.get("chords", [])
-	var pattern: Array = recipe.get("pattern", [])
-	if chords.is_empty() or pattern.is_empty():
-		return null
-	var rate: int = clampi(int(recipe.get("rate", 22050)), 8000, 48000)
-	var root_hz: float = maxf(20.0, float(recipe.get("root_hz", 220.0)))
-	var bpm: float = clampf(float(recipe.get("bpm", 100.0)), 30.0, 300.0)
-	var lead_wave: String = str(recipe.get("wave", "triangle"))
-	var bass_wave: String = str(recipe.get("bass_wave", "sine"))
-	var lead_gain: float = clampf(float(recipe.get("lead_gain", 0.45)), 0.0, 1.0)
-	var bass_gain: float = clampf(float(recipe.get("bass_gain", 0.5)), 0.0, 1.0)
-	var step_seconds: float = 60.0 / bpm / 2.0   # eighth notes
-	var steps: int = chords.size() * pattern.size()
-	var frames: int = int(float(steps) * step_seconds * float(rate))
-	if frames <= 0:
-		return null
-	var pcm := PackedFloat32Array()
-	pcm.resize(frames)
-	for s in range(steps):
-		var bar: int = s / pattern.size()
-		var chord: Array = chords[clampi(bar, 0, chords.size() - 1)]
-		if chord.is_empty():
-			continue
-		var degree: int = int(pattern[s % pattern.size()]) % chord.size()
-		var lead_hz: float = root_hz * pow(2.0, float(chord[degree]) / 12.0)
-		_note_into(pcm, rate, float(s) * step_seconds, step_seconds * 0.92,
-			lead_hz, lead_wave, lead_gain)
-		# Bass holds the chord root for the whole step, one octave down.
-		var bass_hz: float = maxf(20.0, root_hz * pow(2.0, float(chord[0]) / 12.0) * 0.5)
-		_note_into(pcm, rate, float(s) * step_seconds, step_seconds * 0.98,
-			bass_hz, bass_wave, bass_gain)
-	var stream := AudioStreamWAV.new()
-	stream.format = AudioStreamWAV.FORMAT_16_BITS
-	stream.mix_rate = rate
-	stream.stereo = false
-	# Every note envelope starts and ends at zero amplitude, so the seam (last step ->
-	# first step) is already click-free — no fade needed, and a fade would audibly dip
-	# the volume once per loop.
-	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	stream.loop_begin = 0
-	stream.loop_end = frames
-	stream.data = _pcm_to_bytes(pcm)
-	return stream
-
-## Add one enveloped note into an existing PCM buffer.
-static func _note_into(pcm: PackedFloat32Array, rate: int, at_seconds: float,
-		duration: float, freq: float, wave: String, gain: float) -> void:
-	var frames: int = pcm.size()
-	var from: int = int(at_seconds * float(rate))
-	var count: int = maxi(1, int(duration * float(rate)))
-	var phase: float = 0.0
-	for i in range(count):
-		var idx: int = from + i
-		if idx < 0 or idx >= frames:
-			continue
-		phase += TAU * freq / float(rate)
-		var env: float = _attack_release(float(i) / float(rate), duration)
-		pcm[idx] += _wave(wave, phase) * env * gain
-
 ## Attack ramp + exponential-ish release: starts and ends each note at zero amplitude
 ## so neither a note boundary nor the loop seam can produce a click.
 static func _attack_release(t: float, duration: float) -> float:
@@ -293,15 +187,6 @@ func _wire_data_events() -> void:
 		EventBus.connect(ev_name, func(_a = null, _b = null, _c = null, _d = null):
 			if ev_name in ["skill_level_up", "mastery_level_up", "pet_unlocked"] and not EventBus.toasts_enabled("success"): return
 			play_sfx(sound_id, ev_name, throttle_ms))
-	# Background music follows combat, straight from data.
-	var music_events: Dictionary = _audio_data().get("music_events", {})
-	for signal_name in music_events.keys():
-		if not EventBus.has_signal(str(signal_name)):
-			continue
-		var track_id: String = str(music_events[signal_name])
-		var mus_name: String = str(signal_name)
-		EventBus.connect(mus_name, func(_a = null, _b = null, _c = null, _d = null):
-			set_music(track_id))
 	# Notification sounds pick by kind (info/success/warn/error).
 	EventBus.notification.connect(_on_notification)
 
@@ -314,18 +199,8 @@ func _on_notification(_text: String, kind: String) -> void:
 	if sound_id != "":
 		play_sfx(sound_id, "notification:" + kind, 400)
 
-## The first state refresh of a session starts the ambient track.
-func _on_state_refreshed() -> void:
-	if _started:
-		return
-	_started = true
-	set_music("explore")
-
 func _on_game_loaded() -> void:
 	apply_volumes()
-	if not _started:
-		_started = true
-		set_music("explore")
 
 func _set_bus_volume(bus_name: String, volume_100: float) -> void:
 	var idx: int = AudioServer.get_bus_index(bus_name)
@@ -336,7 +211,7 @@ func _set_bus_volume(bus_name: String, volume_100: float) -> void:
 	AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(v, 1.0) / 100.0))
 
 func _ensure_buses() -> void:
-	for bus_name in [BUS_MUSIC, BUS_SFX]:
+	for bus_name in [BUS_SFX]:
 		if AudioServer.get_bus_index(bus_name) >= 0:
 			continue
 		AudioServer.add_bus()

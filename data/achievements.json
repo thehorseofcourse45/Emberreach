@@ -3503,5 +3503,125 @@
         "potion_dr_3": 3
       }
     }
+  },
+  "kill_warden_of_the_hush_50": {
+    "id": "kill_warden_of_the_hush_50",
+    "name": "Quiet at the Gate",
+    "description": "Defeat 50 Warden of the Hush.",
+    "category": "combat",
+    "condition": {
+      "kind": "monsters_killed",
+      "monster_id": "warden_of_the_hush",
+      "value": 50
+    },
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "hitpoints": 600
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "kill_the_silence_25": {
+    "id": "kill_the_silence_25",
+    "name": "Noticed",
+    "description": "Defeat 25 The Silence.",
+    "category": "combat",
+    "condition": {
+      "kind": "monsters_killed",
+      "monster_id": "the_silence",
+      "value": 25
+    },
+    "reward": {
+      "gp": 8000,
+      "xp": {
+        "hitpoints": 900
+      },
+      "items": {
+        "shark": 75
+      }
+    }
+  },
+  "kill_ascendant_the_herald_10": {
+    "id": "kill_ascendant_the_herald_10",
+    "name": "Ascended Past Him",
+    "description": "Defeat 10 Ascendant Herald.",
+    "category": "combat",
+    "condition": {
+      "kind": "monsters_killed",
+      "monster_id": "ascendant_the_herald",
+      "value": 10
+    },
+    "reward": {
+      "gp": 7000,
+      "xp": {
+        "hitpoints": 800
+      },
+      "items": {
+        "shark": 75
+      }
+    }
+  },
+  "dungeon_the_silent_gate_1": {
+    "id": "dungeon_the_silent_gate_1",
+    "name": "Through the Gate",
+    "description": "Clear The Silent Gate once.",
+    "category": "combat",
+    "condition": {
+      "kind": "dungeons_cleared",
+      "dungeon_id": "the_silent_gate",
+      "value": 1
+    },
+    "reward": {
+      "gp": 7500,
+      "xp": {
+        "hitpoints": 800
+      },
+      "items": {
+        "potion_dr_3": 5
+      }
+    }
+  },
+  "dungeon_the_hollow_throne_1": {
+    "id": "dungeon_the_hollow_throne_1",
+    "name": "Seated",
+    "description": "Clear The Hollow Throne once.",
+    "category": "combat",
+    "condition": {
+      "kind": "dungeons_cleared",
+      "dungeon_id": "the_hollow_throne",
+      "value": 1
+    },
+    "reward": {
+      "gp": 10000,
+      "xp": {
+        "hitpoints": 1000
+      },
+      "items": {
+        "potion_dr_3": 5
+      }
+    }
+  },
+  "dungeon_ascendant_trials_5": {
+    "id": "dungeon_ascendant_trials_5",
+    "name": "Trialled",
+    "description": "Clear The Ascendant Trials 5 times.",
+    "category": "combat",
+    "condition": {
+      "kind": "dungeons_cleared",
+      "dungeon_id": "ascendant_trials",
+      "value": 5
+    },
+    "reward": {
+      "gp": 9000,
+      "xp": {
+        "hitpoints": 900
+      },
+      "items": {
+        "potion_dr_3": 5
+      }
+    }
   }
 }

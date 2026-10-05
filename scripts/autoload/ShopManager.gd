@@ -34,6 +34,19 @@ func has_requirement(upgrade_id: String) -> bool:
         return false
     return true
 
+## The currency an upgrade is priced in: "abyssal_coins", or gold for anything else.
+func currency_of(upgrade_id: String) -> String:
+    return "abyssal_coins" if str(get_upgrade(upgrade_id).get("currency", "gp")) == "abyssal_coins" else "gp"
+
+func balance(currency: String) -> float:
+    return PlayerData.abyssal_coins if currency == "abyssal_coins" else PlayerData.gp
+
+func currency_label(currency: String) -> String:
+    return "Abyssal Coins" if currency == "abyssal_coins" else "GP"
+
+func _spend(currency: String, amount: float) -> bool:
+    return PlayerData.spend_abyssal_coins(amount) if currency == "abyssal_coins" else PlayerData.spend_gp(amount)
+
 ## Returns {ok: bool, reason: String} so the UI can show *why* a buy is blocked.
 func can_buy(upgrade_id: String) -> Dictionary:
     var u: Dictionary = get_upgrade(upgrade_id)
@@ -45,8 +58,9 @@ func can_buy(upgrade_id: String) -> Dictionary:
     if not has_requirement(upgrade_id):
         return {"ok": false, "reason": "Requirements not met"}
     var cost: float = float(u.get("cost", 0))
-    if PlayerData.gp < cost:
-        return {"ok": false, "reason": "Not enough GP"}
+    var currency: String = currency_of(upgrade_id)
+    if balance(currency) < cost:
+        return {"ok": false, "reason": "Not enough %s" % currency_label(currency)}
     return {"ok": true, "reason": ""}
 
 func buy(upgrade_id: String) -> bool:
@@ -55,7 +69,7 @@ func buy(upgrade_id: String) -> bool:
         EventBus.notification.emit("Cannot buy: %s" % check["reason"], "warn")
         return false
     var u: Dictionary = get_upgrade(upgrade_id)
-    if not PlayerData.spend_gp(float(u.get("cost", 0))):
+    if not _spend(currency_of(upgrade_id), float(u.get("cost", 0))):
         return false
     PlayerData.shop_upgrades[upgrade_id] = int(PlayerData.shop_upgrades.get(upgrade_id, 0)) + 1
     _apply_one(upgrade_id)

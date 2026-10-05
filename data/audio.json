@@ -1,5 +1,5 @@
 {
-  "_comment": "Audio definitions. Every sound is SYNTHESIZED at runtime from these recipes (the project ships no audio files): 'sfx' entries are one-shot sound effects, 'music' entries are looping procedural tracks, 'events' maps EventBus signal names to a sound (optional throttle_ms), 'music_events' switches the background track, 'notification_sounds' maps notification kinds to sounds. Tone fields: freq (Hz, required), freq_end (sweep target), dur (seconds), wave (sine|square|triangle|saw|noise), gain (0..1 relative), at (absolute start offset; tones without it play sequentially).",
+  "_comment": "Audio definitions. Every sound is SYNTHESIZED at runtime from these recipes (the project ships no audio files): 'sfx' entries are one-shot sound effects, 'events' maps EventBus signal names to a sound (optional throttle_ms), 'notification_sounds' maps notification kinds to sounds. Tone fields: freq (Hz, required), freq_end (sweep target), dur (seconds), wave (sine|square|triangle|saw|noise), gain (0..1 relative), at (absolute start offset; tones without it play sequentially).",
   "sfx": {
     "click": {
       "wave": "square",
@@ -127,32 +127,6 @@
       "gain": 0.5
     }
   },
-  "music": {
-    "explore": {
-      "_comment": "Calm loop for idle play: gentle arpeggio over Am-F-C-G with a soft bass.",
-      "root_hz": 220.0,
-      "bpm": 84,
-      "chords": [[0, 3, 7], [8, 12, 15], [3, 7, 10], [7, 11, 14]],
-      "pattern": [0, 1, 2, 1, 0, 2, 1, 2],
-      "wave": "triangle",
-      "bass_wave": "sine",
-      "lead_gain": 0.5,
-      "bass_gain": 0.6,
-      "rate": 22050
-    },
-    "combat": {
-      "_comment": "Driving loop for fights: minor arpeggio, faster tempo.",
-      "root_hz": 196.0,
-      "bpm": 132,
-      "chords": [[0, 3, 7], [0, 3, 7], [5, 8, 12], [7, 10, 14]],
-      "pattern": [0, 2, 1, 2, 0, 2, 1, 0],
-      "wave": "saw",
-      "bass_wave": "square",
-      "lead_gain": 0.4,
-      "bass_gain": 0.45,
-      "rate": 22050
-    }
-  },
   "events": {
     "skill_level_up": "levelup",
     "mastery_level_up": "mastery",
@@ -172,10 +146,6 @@
     "shop_upgrade_purchased": "purchase",
     "prayer_activated": { "sound": "chime", "throttle_ms": 400 },
     "save_blocked": "error"
-  },
-  "music_events": {
-    "combat_started": "combat",
-    "combat_ended": "explore"
   },
   "notification_sounds": {
     "_comment": "notification(text, kind) picks a sound by kind; unlisted kinds are silent.",

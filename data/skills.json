@@ -9924,7 +9924,13 @@
       }
     ],
     "order": 29,
-    "description": "Harvest veins, nodes and wild resources from the landscape."
+    "description": "Harvest veins, nodes and wild resources from the landscape.",
+    "vein_richness": [
+      { "id": "poor", "name": "Poor vein", "weight": 20, "hp_mult": 0.5, "xp_mult": 1.0 },
+      { "id": "normal", "name": "Vein", "weight": 60, "hp_mult": 1.0, "xp_mult": 1.0 },
+      { "id": "rich", "name": "Rich vein", "weight": 15, "hp_mult": 1.5, "xp_mult": 1.2 },
+      { "id": "motherlode", "name": "Motherlode", "weight": 5, "hp_mult": 2.5, "xp_mult": 1.5 }
+    ]
   },
   "echo_keeping": {
     "id": "echo_keeping",

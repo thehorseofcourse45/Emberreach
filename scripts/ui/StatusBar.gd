@@ -41,6 +41,7 @@ func _ready() -> void:
 
 	_add_chip(row, "gp", "gp", "Gold pieces — earned by selling and by expeditions")
 	_add_chip(row, "slayer_coins", "slayer_coins", "Huntsman coins from contracts and bounties")
+	_add_chip(row, "abyssal_coins", "abyssal_coins", "Abyssal coins from late encounters, spent at the Provisioner")
 	_add_chip(row, "prayer_points", "prayer_points", "Devotion points — spent per attack while a rite is active")
 	_add_chip(row, "stardust", "stardust", "Stardust spent in Starreading")
 
@@ -78,6 +79,7 @@ func _ready() -> void:
 
 	EventBus.gp_changed.connect(func(_a, _t): refresh())
 	EventBus.slayer_coins_changed.connect(func(_a, _t): refresh())
+	EventBus.abyssal_coins_changed.connect(func(_a, _t): refresh())
 	EventBus.prayer_points_changed.connect(func(_t): refresh())
 	EventBus.skill_level_up.connect(func(_s, _l): refresh())
 	EventBus.state_refreshed.connect(refresh)
@@ -92,6 +94,7 @@ func _add_chip(parent: Control, icon_id: String, key: String, tooltip: String) -
 func refresh() -> void:
 	_set_chip("gp", PlayerData.gp, "currencies", "gp")
 	_set_chip("slayer_coins", PlayerData.slayer_coins, "currencies", "slayer_coins")
+	_set_chip("abyssal_coins", PlayerData.abyssal_coins, "currencies", "abyssal_coins")
 	_set_chip("prayer_points", PlayerData.prayer_points, "currencies", "prayer_points")
 	_set_chip("stardust", BankManager.get_count("stardust"), "items", "stardust")
 	_combat_level.text = "Combat %d" % PlayerData.get_combat_level()

@@ -27,7 +27,6 @@ var special_attacks: Dictionary = {}
 var township_buildings: Dictionary = {}
 var cartography_hexes: Dictionary = {}
 var archaeology_sites: Dictionary = {}
-var harvesting_veins: Dictionary = {}
 var raid_shop: Dictionary = {}
 ## Settlement trader offers: exchange settlement stores for a specific item.
 var trader: Dictionary = {}
@@ -37,7 +36,7 @@ var shop_store: Dictionary = {}
 var shop_museum: Dictionary = {}
 ## Cartography ships: hull upgrades that discount hex travel.
 var cartography_ships: Dictionary = {}
-## Audio: synthesized SFX recipes, music tracks and event-to-sound mappings.
+## Audio: synthesized SFX recipes and event-to-sound mappings.
 var new_skill_systems: Dictionary = {}
 ## Ascendancy node tree: ranked, point-bought prestige nodes (see PrestigeManager).
 var ascendancy: Dictionary = {}
@@ -71,7 +70,6 @@ func _load_all() -> void:
     township_buildings = _load_file("shop_township.json")
     cartography_hexes = _load_file("cartography_hexes.json")
     archaeology_sites = _load_file("archaeology_sites.json")
-    harvesting_veins = _load_file("harvesting_veins.json")
     raid_shop = _load_file("raid_shop.json")
     trader = _load_file("trader.json")
     shop_store = _load_file("shop_store.json")

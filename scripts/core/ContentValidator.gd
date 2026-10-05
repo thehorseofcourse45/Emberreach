@@ -673,11 +673,8 @@ func _check_audio() -> void:
 		_err("missing_audio", "audio.json is missing or empty")
 		return
 	var sfx: Dictionary = audio.get("sfx", {})
-	var music: Dictionary = audio.get("music", {})
 	if sfx.is_empty():
 		_err("missing_audio", "audio.json defines no sound effects")
-	if music.is_empty():
-		_err("missing_audio", "audio.json defines no music tracks")
 	for sound_id in sfx.keys():
 		var recipe: Variant = sfx[sound_id]
 		if typeof(recipe) != TYPE_DICTIONARY:
@@ -693,13 +690,6 @@ func _check_audio() -> void:
 				_err("invalid_value", "sound '%s' tone %d needs a positive freq" % [sound_id, i])
 			elif float((tone as Dictionary).get("dur", 0.0)) <= 0.0:
 				_err("invalid_value", "sound '%s' tone %d needs a positive dur" % [sound_id, i])
-	for track_id in music.keys():
-		var m: Variant = music[track_id]
-		if typeof(m) != TYPE_DICTIONARY:
-			_err("invalid_record", "music track '%s' is not an object" % track_id)
-			continue
-		if (m as Dictionary).get("chords", []).is_empty() or (m as Dictionary).get("pattern", []).is_empty():
-			_err("invalid_record", "music track '%s' needs non-empty chords and pattern" % track_id)
 	var events: Dictionary = audio.get("events", {})
 	for signal_name in events.keys():
 		if not EventBus.has_signal(str(signal_name)):
@@ -712,12 +702,6 @@ func _check_audio() -> void:
 			sound_id = str((spec as Dictionary).get("sound", ""))
 		if sound_id != "" and not sfx.has(sound_id):
 			_err("unknown_sound", "audio event '%s' references missing sound '%s'" % [signal_name, sound_id])
-	for signal_name in audio.get("music_events", {}).keys():
-		if not EventBus.has_signal(str(signal_name)):
-			_err("unknown_signal", "music event '%s' is not an EventBus signal" % signal_name)
-		var track: String = str((audio.get("music_events", {}) as Dictionary)[signal_name])
-		if not music.has(track):
-			_err("unknown_sound", "music event '%s' references missing track '%s'" % [signal_name, track])
 	var note_table: Dictionary = audio.get("notification_sounds", {})
 	for kind in note_table.keys():
 		if str(kind).begins_with("_"):
@@ -816,12 +800,13 @@ func _check_side_systems() -> void:
 		if not _has_skill("prayer"):
 			_warn("missing_reference", "prayer '%s' exists but there is no prayer skill" % id)
 
-	for id in DataLoader.harvesting_veins.keys():
-		var v: Dictionary = DataLoader.harvesting_veins[id]
-		if int(v.get("node_hp", 0)) <= 0:
-			_err("invalid_quantity", "harvesting vein '%s' node_hp must be > 0" % id)
-		if float(v.get("respawn_seconds", 0.0)) <= 0.0:
-			_err("invalid_duration", "harvesting vein '%s' respawn_seconds must be > 0" % id)
+	# Vein richness tiers (SkillManager._roll_richness): a zero weight or multiplier would make a
+	# tier unreachable or a node with no uses.
+	for skill_id in DataLoader.skills.keys():
+		for t in (DataLoader.skills[skill_id].get("vein_richness", []) as Array):
+			if typeof(t) != TYPE_DICTIONARY or float(t.get("weight", 0.0)) <= 0.0 \
+					or float(t.get("hp_mult", 0.0)) <= 0.0 or float(t.get("xp_mult", 0.0)) <= 0.0:
+				_err("invalid_record", "skill '%s' has a vein_richness tier without positive weight/hp_mult/xp_mult" % skill_id)
 
 	for id in DataLoader.cartography_hexes.keys():
 		var h: Dictionary = DataLoader.cartography_hexes[id]

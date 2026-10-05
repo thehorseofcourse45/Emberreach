@@ -33,7 +33,6 @@ Emberreach/
 │   ├── shop_museum.json  prayers.json  special_attacks.json  constellations.json
 │   ├── obstacles.json  familiars.json  pets.json  slayer_tasks.json  audio.json
 │   └── cartography_hexes.json  cartography_ships.json  archaeology_sites.json
-│       harvesting_veins.json
 ├── scripts/
 │   ├── autoload/              # singleton managers (see §4)
 │   ├── combat/                # CombatFormulas.gd, StatusEffect.gd, CombatSimulator.gd
@@ -102,7 +101,7 @@ replays elapsed time through the *same* code paths.
 | `ActionQueueManager` | Queued skill actions; policy and persistence for the queue screen. |
 | `LootFilterManager` | Loot filter policy for the combat simulator. |
 | `CombatSimulatorManager` | Win-chance simulation for an area/dungeon using the real formulas. |
-| `AudioManager` | Synthesized SFX + music from `data/audio.json`; Music/SFX volume buses. |
+| `AudioManager` | Synthesized SFX from `data/audio.json` on one SFX volume bus; no music. |
 | `AssetRegistry` | Art system: loads textures by convention, generates placeholders. |
 
 ## 5. Playable UI
@@ -221,12 +220,12 @@ Loaded content. This block is generated from the live singletons — do not hand
 | Check | Value |
 |---|---|
 | Skills | 39 (9 combat / 30 non-combat) |
-| Skill actions | 593 |
-| Items | 629 |
-| Monsters | 46 |
-| Areas | 14 |
-| Dungeons | 17 |
-| Prayers | 60 |
+| Skill actions | 758 |
+| Items | 756 |
+| Monsters | 68 |
+| Areas | 21 |
+| Dungeons | 22 |
+| Prayers | 62 |
 | Autoload singletons | 42 |
 | Screens | 21 |
 <!-- doc-facts:end -->
@@ -300,9 +299,9 @@ the game runs before any art exists.
   Cartography ship upgrades and the Archaeology museum shop were implemented after this list was
   first written — `cartography_ships.json` and `shop_museum.json` each have a live manager
   consumer now.
-- `data/harvesting_veins.json` is loaded and validated but read by **no** manager: harvesting node
-  stats come from `skills.json` actions (`node_hp` / `respawn_seconds`). Vestigial data, kept only
-  because `ContentValidator` still checks it.
+- Prospecting veins roll a richness tier on every spawn (`vein_richness` on the skill in
+  `skills.json`: Poor / Vein / Rich / Motherlode). The tier scales the node's uses and XP per action
+  until it respawns, and is saved with the node. Rate estimates still assume an average vein.
 - Monsters now differ mechanically, not only statistically: elemental affinities (`weak_to` /
   `resists`, x1.25 / x0.75 on the attacker's style), the `venomous`, `lifedrain` and `armored`
   passives, boss phases (HP-threshold stat/attack-type changes and phase statuses, saved mid-fight)
@@ -311,8 +310,8 @@ the game runs before any art exists.
 - Long-tail item display names were renamed by `tools/long_tail_rename.py` (idempotent, re-runnable,
   display names only — item ids are stable, so saves and icons are untouched). The verbatim-Melvor
   names it targeted are gone from `items.json`; see `CHANGELOG.md` for the pass.
-- Audio is fully synthesized (no recorded assets): two generative music tracks and 16 SFX
-  recipes rendered to PCM at load.
+- Audio is fully synthesized (no recorded assets): SFX recipes rendered to PCM at load. There is
+  no music.
 - Ascendancy (prestige) is implemented — a lifetime-XP gate granting +5 % XP and +5 % gold per
   ascension, additive and capped. Single-node refunds and a full-tree `PrestigeManager.respec()`
   exist, so a bad early choice is never permanent.

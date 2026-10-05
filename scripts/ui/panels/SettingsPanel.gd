@@ -178,19 +178,15 @@ func _build_presentation() -> void:
 	row.add_child(menu)
 	box.add_child(row)
 
-## Two buses, two sliders: music and effects are independently adjustable because an
-## idle game is often left running for hours — the score and the level-up chime are
-## heard in very different proportions over a session.
+## One slider: the game has no music, so effects are the only sound to adjust.
 func _build_sound() -> void:
 	_volume_save_timer = Timer.new()
 	_volume_save_timer.one_shot = true
 	_volume_save_timer.wait_time = 0.4
 	_volume_save_timer.timeout.connect(func(): SaveManager.save_game())
 	add_child(_volume_save_timer)
-	var box := UIStyle.section("Sound", "music and effects, both synthesized in-game")
+	var box := UIStyle.section("Sound", "effects, synthesized in-game")
 	add_child(box)
-	box.add_child(_volume_slider("music_volume", "Music volume",
-		"Background score volume. The soundtrack is generated live, so there is no track to skip — zero mutes it."))
 	box.add_child(_volume_slider("sfx_volume", "Sound effects volume",
 		"Level-up, combat and notification sounds. Zero mutes them entirely."))
 	var test := UIStyle.button("Test sound", "Play a sample effect so the volume can be judged without leveling up")

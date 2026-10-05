@@ -238,6 +238,14 @@ func add_slayer_coins(amount: float) -> void:
 
 func add_abyssal_coins(amount: float) -> void:
     abyssal_coins += amount
+    EventBus.abyssal_coins_changed.emit(amount, abyssal_coins)
+
+func spend_abyssal_coins(amount: float) -> bool:
+    if amount < 0.0 or abyssal_coins < amount:
+        return false
+    abyssal_coins -= amount
+    EventBus.abyssal_coins_changed.emit(-amount, abyssal_coins)
+    return true
 
 func add_prayer_points(amount: float) -> void:
     prayer_points += amount

@@ -142,7 +142,12 @@
       "bastion_sentinel",
       "cinder_archer",
       "marsh_hulk",
-      "gloam_witch"
+      "gloam_witch",
+      "silent_pilgrim",
+      "hush_stalker",
+      "echoless_cantor",
+      "hollow_brute",
+      "static_seer"
     ]
   },
   "_dungeons": {

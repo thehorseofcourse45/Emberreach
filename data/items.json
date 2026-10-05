@@ -8768,5 +8768,121 @@
     "potion_effect": {
       "poison_resistance_percent": 30
     }
+  },
+  "hush_plate_cuirass": {
+    "id": "hush_plate_cuirass",
+    "name": "Hushplate Cuirass",
+    "item_type": "equipment",
+    "sell_price": 9000,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70
+    },
+    "level_requirements": {
+      "defence": 120
+    },
+    "description": "Plate that makes no sound when struck."
+  },
+  "stillhide_jerkin": {
+    "id": "stillhide_jerkin",
+    "name": "Stillhide Jerkin",
+    "item_type": "equipment",
+    "sell_price": 8500,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "ranged_defence": 62,
+      "melee_defence": 50,
+      "magic_defence": 50
+    },
+    "level_requirements": {
+      "ranged": 120
+    },
+    "description": "Hide cured in the Verge's dead air."
+  },
+  "silence_robe": {
+    "id": "silence_robe",
+    "name": "Robe of Silence",
+    "item_type": "equipment",
+    "sell_price": 8800,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "magic_defence": 66,
+      "melee_defence": 48,
+      "ranged_defence": 48
+    },
+    "level_requirements": {
+      "magic": 120
+    },
+    "description": "A robe that dampens every spell but your own."
+  },
+  "hushblade": {
+    "id": "hushblade",
+    "name": "Hushblade",
+    "item_type": "equipment",
+    "sell_price": 450000,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "slash": 100,
+      "melee_strength": 130
+    },
+    "level_requirements": {
+      "attack": 120
+    },
+    "description": "A blade you do not hear leave its sheath.",
+    "attack_speed": 2.6
+  },
+  "echobound_bow": {
+    "id": "echobound_bow",
+    "name": "Echobound Bow",
+    "item_type": "equipment",
+    "sell_price": 450000,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "ranged_attack": 130,
+      "ranged_strength": 90
+    },
+    "level_requirements": {
+      "ranged": 120
+    },
+    "description": "Its string answers a moment late.",
+    "attack_speed": 3.4,
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    }
+  },
+  "silence_staff": {
+    "id": "silence_staff",
+    "name": "Staff of Silence",
+    "item_type": "equipment",
+    "sell_price": 450000,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "magic_attack": 205,
+      "magic_damage_percent": 52
+    },
+    "level_requirements": {
+      "magic": 120
+    },
+    "description": "A staff that casts without a sound.",
+    "attack_speed": 3.0,
+    "spell_max_hit": 115,
+    "attack_cost_items": {
+      "umbral_rune": 1
+    }
   }
 }

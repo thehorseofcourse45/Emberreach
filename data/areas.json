@@ -367,5 +367,51 @@
       "label": "Breathing rift: enemies +25% damage, −10 accuracy"
     },
     "flavour": "A wound in the rock that breathes. The most dangerous place anyone has mapped."
+  },
+  "silence_verge": {
+    "id": "silence_verge",
+    "name": "The Silence Verge",
+    "type": "area",
+    "level_range": [
+      300,
+      335
+    ],
+    "monsters": [
+      "silent_pilgrim",
+      "hush_stalker",
+      "echoless_cantor"
+    ],
+    "requires": {
+      "slayer": 120
+    },
+    "hazard": {
+      "enemy_damage_percent": 25.0,
+      "player_accuracy_percent": -10.0,
+      "label": "Hushed air: enemies +25% damage, −10 accuracy"
+    },
+    "flavour": "Where the Herald's road runs out of sound."
+  },
+  "hollow_expanse": {
+    "id": "hollow_expanse",
+    "name": "The Hollow Expanse",
+    "type": "area",
+    "level_range": [
+      335,
+      370
+    ],
+    "monsters": [
+      "echoless_cantor",
+      "hollow_brute",
+      "static_seer"
+    ],
+    "requires": {
+      "slayer": 120
+    },
+    "hazard": {
+      "enemy_damage_percent": 30.0,
+      "player_accuracy_percent": -12.0,
+      "label": "Hollow static: enemies +30% damage, −12 accuracy"
+    },
+    "flavour": "Past the Verge there is no distance left, only the Silence."
   }
 }

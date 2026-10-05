@@ -51,6 +51,7 @@ var stop_detail: String = ""
 var node_hp: int = 0
 var node_max_hp: int = 0
 var node_respawn_timer: float = 0.0
+var node_richness: String = ""   ## vein richness tier id; "" when the skill has no vein_richness
 var stun_timer: float = 0.0
 
 var _rng := RandomNumberGenerator.new()
@@ -126,8 +127,7 @@ func start_action(skill_id: String, action_id: String, target_quantity: int = 0)
 	total_action_count = 0
 	current_interval = _compute_interval()
 	var data: Dictionary = DataLoader.get_action(skill_id, action_id)
-	node_max_hp = int(data.get("node_hp", 0))
-	node_hp = node_max_hp
+	_roll_richness()
 	node_respawn_timer = 0.0
 	stun_timer = 0.0
 	MasteryManager.update_item_mastery_source(skill_id, action_id)
@@ -151,6 +151,7 @@ func stop_action(reason: int = StopReason.PLAYER, detail: String = "") -> void:
 	node_hp = 0
 	node_max_hp = 0
 	node_respawn_timer = 0.0
+	node_richness = ""
 	stop_reason = reason
 	stop_detail = detail
 	if was_running:
@@ -204,7 +205,7 @@ func tick(delta: float, emit_progress: bool = true) -> void:
 		var respawning: float = minf(node_respawn_timer, delta)
 		node_respawn_timer = maxf(0.0, node_respawn_timer - delta)
 		if node_respawn_timer <= 0.0:
-			node_hp = node_max_hp
+			_roll_richness()
 		delta -= respawning
 	if delta <= 0.0:
 		return
@@ -295,6 +296,7 @@ func perform_action() -> Dictionary:
 	var xp: float = float(data.get("base_xp", 0.0)) * ModifierManager.get_skill_xp_multiplier(active_skill)
 	if data.has("research_unlock"):
 		xp *= 1.0 + ModifierManager.get_modifier("inscription_research_xp_percent") / 100.0
+	xp *= float(richness_tier().get("xp_mult", 1.0))
 	if xp > 0.0:
 		PlayerData.add_xp(active_skill, xp)
 	var mastery_time: float = float(data.get("mastery_action_time", -1.0))
@@ -467,6 +469,42 @@ func _damage_node() -> void:
 func is_node_based() -> bool:
 	return node_max_hp > 0
 
+## Prospecting veins: each spawn rolls a richness tier from the skill's `vein_richness` table.
+## The tier scales the node's uses (hp_mult) and the XP per action (xp_mult) until it respawns.
+## Skills without the table get node_richness == "" and behave exactly as before.
+func richness_tier() -> Dictionary:
+	if node_richness == "":
+		return {}
+	for t in (DataLoader.get_skill(active_skill).get("vein_richness", []) as Array):
+		if typeof(t) == TYPE_DICTIONARY and str(t.get("id", "")) == node_richness:
+			return t
+	return {}
+
+func _scaled_hp(base_hp: int) -> int:
+	if base_hp <= 0:
+		return 0
+	return maxi(1, roundi(float(base_hp) * float(richness_tier().get("hp_mult", 1.0))))
+
+func _roll_richness() -> void:
+	node_richness = ""
+	var base_hp: int = int(get_action_data().get("node_hp", 0))
+	var tiers: Array = DataLoader.get_skill(active_skill).get("vein_richness", []) as Array
+	if base_hp > 0 and not tiers.is_empty():
+		var total: float = 0.0
+		for t in tiers:
+			total += float(t.get("weight", 0.0))
+		var roll: float = _rng.randf() * total
+		for t in tiers:
+			node_richness = str(t.get("id", ""))
+			roll -= float(t.get("weight", 0.0))
+			if roll < 0.0:
+				break
+	node_max_hp = _scaled_hp(base_hp)
+	node_hp = node_max_hp
+	var tier: Dictionary = richness_tier()
+	if float(tier.get("hp_mult", 1.0)) > 1.0 and not SimulationMode.is_silent():
+		EventBus.notification.emit("%s found: %d uses" % [str(tier.get("name", node_richness)), node_max_hp], "info")
+
 # =========================================================================
 #  Offline / bounded simulation
 # =========================================================================
@@ -510,6 +548,7 @@ func serialize() -> Dictionary:
 		"progress": progress, "running": running, "last_action_count": last_action_count,
 		"total_action_count": total_action_count, "repeat_target": repeat_target,
 		"node_hp": node_hp, "node_respawn_timer": node_respawn_timer, "stun_timer": stun_timer,
+		"node_richness": node_richness,
 	}
 
 func deserialize(d: Dictionary) -> void:
@@ -528,7 +567,8 @@ func deserialize(d: Dictionary) -> void:
 		active_action_id = ""
 		return
 	var data: Dictionary = DataLoader.get_action(active_skill, active_action_id)
-	node_max_hp = int(data.get("node_hp", 0))
+	node_richness = str(d.get("node_richness", ""))
+	node_max_hp = _scaled_hp(int(data.get("node_hp", 0)))
 	node_hp = clampi(int(d.get("node_hp", node_max_hp)), 0, maxi(node_max_hp, 0))
 	current_interval = _compute_interval()
 	# A save taken mid-action with materials already gone should not silently resume producing.
