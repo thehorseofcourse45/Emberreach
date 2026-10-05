@@ -3299,6 +3299,43 @@ func _test_dreamlands() -> void:
 		_ok(AssetRegistry.has_asset("icons/dreams/%s.png" % id), "dreamland '%s' has an icon" % id)
 		prev = d
 	_ok(int((dreams[0] as Dictionary).level) == 1, "the first dreamland is open from level 1")
+	var known: Array = ["xp_percent", "essence_percent", "mastery_xp_percent", "depth_rate", "nightmare_immune", "nightmare_mult",
+		"event_chance", "no_events", "event_kind", "essence_double_chance", "items_per_hour", "draught_hours", "text"]
+	var texts: Dictionary = {}
+	for d in dreams:
+		var tw: Dictionary = DreamwalkingManager.twist(str(d.id))
+		_ok(tw.has("text") and str(tw.text) != "" and tw.size() >= 2, "%s has a twist with text and an effect" % str(d.id))
+		_ok(not texts.has(str(tw.get("text", ""))), "%s twist text is unique" % str(d.id))
+		texts[str(tw.get("text", ""))] = true
+		for key in tw.keys():
+			_ok(known.has(str(key)), "%s twist key '%s' is understood" % [str(d.id), str(key)])
+	# Twists change the numbers: compare previews with and without a twist on the same dreamland.
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("dreamwalking", 120)
+	DreamwalkingManager.select("void", 1.0)
+	var void_pre: Dictionary = DreamwalkingManager.preview(8.0 * 3600.0)
+	var void_def: Dictionary = DreamwalkingManager.dream("void")
+	var saved_twist: Variant = void_def.get("twist")
+	void_def.erase("twist")
+	var plain: Dictionary = DreamwalkingManager.preview(8.0 * 3600.0)
+	void_def["twist"] = saved_twist
+	_ok(float(void_pre.essence) > float(plain.essence) and float(void_pre.xp) < float(plain.xp), "the Velvet Void twist trades XP for Essence in the forecast")
+	DreamwalkingManager.select("clockwork", 1.0)
+	var fast: Dictionary = DreamwalkingManager.preview(12.0 * 3600.0)
+	var clock_def: Dictionary = DreamwalkingManager.dream("clockwork")
+	var saved_clock: Variant = clock_def.get("twist")
+	clock_def.erase("twist")
+	var slow: Dictionary = DreamwalkingManager.preview(12.0 * 3600.0)
+	clock_def["twist"] = saved_clock
+	_ok(float(fast.essence) > float(slow.essence), "Clockwork Dusk's twist deepens the dream faster")
+	DreamwalkingManager.select("threshold", 1.0)
+	var before_draughts: int = BankManager.get_count("potion_dreamwalking")
+	var res: Dictionary = DreamwalkingManager.advance_offline(16.0 * 3600.0)
+	_eq(BankManager.get_count("potion_dreamwalking") - before_draughts, 2, "Wake's Edge returns a Lucid Draught per 8 hours (%s)" % str(res.get("items", {})))
+	DreamwalkingManager.select("orchard", 1.0)
+	var feed_before: int = BankManager.get_count("ranch_feed")
+	DreamwalkingManager.advance_offline(5.0 * 3600.0)
+	_eq(BankManager.get_count("ranch_feed") - feed_before, 20, "Lantern Orchard yields 4 Ranch Feed per hour")
 
 func _test_magic_gear() -> void:
 	_heading("The magic gear line")

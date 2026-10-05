@@ -248,6 +248,9 @@ func _dreams() -> void:
 	choice.selected = maxi(0, ids.find(DreamwalkingManager.dreamscape))
 	var dream_icon := UIStyle.icon_texture("dreams", str(ids[choice.selected]))
 	box.add_child(dream_icon)
+	var twist_label := UIStyle.label("", true, UITokens.FONT_SMALL)
+	twist_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(twist_label)
 	var slider := HSlider.new()
 	slider.min_value = 0
 	slider.max_value = 100
@@ -261,6 +264,7 @@ func _dreams() -> void:
 	var update := func(_value = 0):
 		DreamwalkingManager.select(str(ids[choice.selected]), slider.value / 100.0)
 		dream_icon.texture = AssetRegistry.icon("dreams", str(ids[choice.selected]))
+		twist_label.text = "Twist · " + str(DreamwalkingManager.twist(str(ids[choice.selected])).get("text", "none"))
 		var forecast: Dictionary = DreamwalkingManager.preview(8.0 * 3600.0)
 		label.text = "%.0f%% dreams · %.0f%% waking. Eight-hour example: ≈ %s XP / %s Essence; waking output reduced by %s. Current modifiers held constant; future buffs may expire." % [slider.value, 100.0 - slider.value, UIStyle.fmt(float(forecast.xp)), UIStyle.fmt(float(forecast.essence)), UIStyle.fmt_duration(float(forecast.seconds))]
 	slider.value_changed.connect(update)
@@ -269,6 +273,14 @@ func _dreams() -> void:
 	if DreamwalkingManager.next_essence_bonus > 0:
 		box.add_child(UIStyle.label("Lucid Draught ready: +15% Essence for your next dream.", true, UITokens.FONT_SMALL))
 	build_events(self)
+	var all_lands := _card("Every dreamland", "Each dreamland has its own twist. Locked ones show the level that opens them.")
+	for def in DataLoader.new_skill_systems.get("dreams", []):
+		var open: bool = PlayerData.get_level("dreamwalking") >= int(def.level)
+		var line := UIStyle.label("%s (level %d): %s" % [def.name, int(def.level), str(DreamwalkingManager.twist(str(def.id)).get("text", ""))], true, UITokens.FONT_SMALL)
+		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		if not open:
+			line.modulate = Color(1, 1, 1, 0.55)
+		all_lands.add_child(line)
 	var bazaar := _card("Dream Bazaar", "%d Dream Essence in Storage" % BankManager.get_count("dream_essence"))
 	for offer in DataLoader.new_skill_systems.get("bazaar", []):
 		var offer_icon: String = {"insight": "scribe_xp_tome_1_inked", "fortune": "scribe_doubling_inked", "town_tick": "dream_essence", "paper": "scribe_paper", "manure": "ranch_manure", "ore": "coal"}.get(str(offer.id), "dream_essence")

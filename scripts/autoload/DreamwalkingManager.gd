@@ -16,6 +16,14 @@ func dream(id: String) -> Dictionary:
 			return def
 	return {}
 
+## A dreamland's unique twist (see data/new_skill_systems.json). Missing keys mean "no effect".
+func twist(id: String) -> Dictionary:
+	var t: Variant = dream(id).get("twist", {})
+	return t if t is Dictionary else {}
+
+func _depth(hours: float, cap: float, rate: float) -> float:
+	return 1.0 + minf(cap, maxf(0.0, hours * rate - 1.0)) / 12.0
+
 func select(id: String, fraction: float) -> bool:
 	var def: Dictionary = dream(id)
 	if def.is_empty() or PlayerData.get_level("dreamwalking") < int(def.level) or not is_finite(fraction):
@@ -44,6 +52,7 @@ func advance_offline(seconds: float, advance_buffs: bool = false) -> Dictionary:
 	seconds = minf(seconds, OfflineProgression.MAX_CAP_HOURS * 3600.0)
 	result.seconds = seconds
 	var mastery: int = MasteryManager.get_level("dreamwalking", dreamscape)
+	var tw: Dictionary = twist(dreamscape)
 	var depth_cap: float = 12.0 * (1.0 + ModifierManager.get_modifier("dreamwalking_depth_percent") / 100.0) + float(mastery - 1) / 99.0
 	var total_xp: float = 0.0
 	var essence: float = essence_fraction
@@ -53,26 +62,47 @@ func advance_offline(seconds: float, advance_buffs: bool = false) -> Dictionary:
 		if advance_buffs:
 			for buff in InscriptionManager.buffs.values():
 				slice = minf(slice, maxf(0.001, float(buff.remaining)))
-		var depth: float = 1.0 + minf(depth_cap, maxf(0.0, (elapsed + slice * 0.5) / 3600.0 - 1.0)) / 12.0
-		total_xp += float(def.xp_hour) * slice / 3600.0 * depth * ModifierManager.get_skill_xp_multiplier("dreamwalking")
-		essence += float(def.essence_hour) * slice / 3600.0 * depth * (1.0 + float(mastery - 1) / 500.0 + (ModifierManager.get_modifier("dreamwalking_essence_percent") + next_essence_bonus) / 100.0)
+		var depth: float = _depth((elapsed + slice * 0.5) / 3600.0, depth_cap, float(tw.get("depth_rate", 1.0)))
+		total_xp += float(def.xp_hour) * slice / 3600.0 * depth * ModifierManager.get_skill_xp_multiplier("dreamwalking") * (1.0 + float(tw.get("xp_percent", 0.0)) / 100.0)
+		essence += float(def.essence_hour) * slice / 3600.0 * depth * (1.0 + float(mastery - 1) / 500.0 + (ModifierManager.get_modifier("dreamwalking_essence_percent") + next_essence_bonus + float(tw.get("essence_percent", 0.0))) / 100.0)
 		elapsed += slice
 		if advance_buffs:
 			OfflineProgression._advance_passive_clocks(slice)
 	var gain: int = floori(essence)
 	essence_fraction = essence - gain
-	if seconds >= 21600.0 and ModifierManager.get_modifier("dreamwalking_nightmare_immunity") <= 0.0 and _rng.randf() < maxf(0.01, 0.10 - float(mastery - 1) / 1200.0):
+	if float(tw.get("essence_double_chance", 0.0)) > 0.0 and _rng.randf() < float(tw.get("essence_double_chance", 0.0)):
+		gain *= 2
+	var nightmare_free: bool = bool(tw.get("nightmare_immune", false)) or ModifierManager.get_modifier("dreamwalking_nightmare_immunity") > 0.0
+	if seconds >= 21600.0 and not nightmare_free and _rng.randf() < maxf(0.01, (0.10 - float(mastery - 1) / 1200.0) * float(tw.get("nightmare_mult", 1.0))):
 		result.nightmare_loss = floori(gain * 0.1)
 		gain -= int(result.nightmare_loss)
 	BankManager.add_item_guaranteed("dream_essence", gain)
 	SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, "dream_essence", gain)
 	PlayerData.add_xp("dreamwalking", total_xp)
-	MasteryManager.add_mastery_xp("dreamwalking", dreamscape, seconds, ModifierManager.get_mastery_xp_bonus("dreamwalking"))
+	MasteryManager.add_mastery_xp("dreamwalking", dreamscape, seconds, ModifierManager.get_mastery_xp_bonus("dreamwalking") + float(tw.get("mastery_xp_percent", 0.0)) / 100.0)
+	var found: Dictionary = {}
+	var per_hour: Variant = tw.get("items_per_hour", {})
+	if per_hour is Dictionary:
+		for item_id in per_hour:
+			var count: int = floori(float(per_hour[item_id]) * seconds / 3600.0)
+			if count > 0:
+				BankManager.add_item_guaranteed(str(item_id), count)
+				found[str(item_id)] = count
+	var draught_hours: float = float(tw.get("draught_hours", 0.0))
+	if draught_hours > 0.0:
+		var draughts: int = floori(seconds / (draught_hours * 3600.0))
+		if draughts > 0:
+			BankManager.add_item_guaranteed("potion_dreamwalking", draughts)
+			found["potion_dreamwalking"] = draughts
+	result["items"] = found
 	SummoningManager.on_action("dreamwalking", seconds / 60.0)
 	PetManager.roll_for_skill("dreamwalking", seconds)
 	next_essence_bonus = 0.0
-	if seconds >= 3600.0 and events.size() < 10 and (_rng.randf() < 0.35 or ModifierManager.get_modifier("dreamwalking_event_guarantee") > 0.0):
+	var event_chance: float = float(tw.get("event_chance", 0.35))
+	if seconds >= 3600.0 and not bool(tw.get("no_events", false)) and events.size() < 10 and (_rng.randf() < event_chance or ModifierManager.get_modifier("dreamwalking_event_guarantee") > 0.0):
 		var shadow: bool = _rng.randf() < 0.5
+		if str(tw.get("event_kind", "")) != "":
+			shadow = str(tw.get("event_kind")) == "shadow"
 		events.append({"kind": "shadow" if shadow else "garden", "text": "A shadow offers you lucidity in exchange for a tenth of your Dream Essence." if shadow else "A sleeping gardener offers a basket of fertile dreamsoil."})
 		result.events = 1
 	result.essence = gain
@@ -130,12 +160,15 @@ func preview(offline_seconds: float) -> Dictionary:
 	var seconds: float = maxf(0.0, minf(offline_seconds, OfflineProgression.MAX_CAP_HOURS * 3600.0)) * allocated_share()
 	var mastery: int = MasteryManager.get_level("dreamwalking", dreamscape)
 	var cap: float = 12.0 * (1.0 + ModifierManager.get_modifier("dreamwalking_depth_percent") / 100.0) + float(mastery - 1) / 99.0
+	var tw: Dictionary = twist(dreamscape)
 	var elapsed: float = 0.0
 	var weighted: float = 0.0
 	while elapsed < seconds:
 		var slice: float = minf(3600.0, seconds - elapsed)
-		weighted += slice / 3600.0 * (1.0 + minf(cap, maxf(0.0, (elapsed + slice * 0.5) / 3600.0 - 1)) / 12.0)
+		weighted += slice / 3600.0 * _depth((elapsed + slice * 0.5) / 3600.0, cap, float(tw.get("depth_rate", 1.0)))
 		elapsed += slice
-	var expected: float = float(def.get("essence_hour", 0)) * weighted * (1.0 + float(mastery - 1) / 500.0 + (ModifierManager.get_modifier("dreamwalking_essence_percent") + next_essence_bonus) / 100.0)
-	if seconds >= 21600 and ModifierManager.get_modifier("dreamwalking_nightmare_immunity") <= 0: expected *= 1.0 - maxf(0.01, 0.1 - float(mastery - 1) / 1200.0) * 0.1
-	return {"seconds": seconds, "xp": float(def.get("xp_hour", 0)) * weighted * ModifierManager.get_skill_xp_multiplier("dreamwalking"), "essence": expected}
+	var expected: float = float(def.get("essence_hour", 0)) * weighted * (1.0 + float(mastery - 1) / 500.0 + (ModifierManager.get_modifier("dreamwalking_essence_percent") + next_essence_bonus + float(tw.get("essence_percent", 0.0))) / 100.0)
+	expected *= 1.0 + float(tw.get("essence_double_chance", 0.0))
+	var nightmare_free: bool = bool(tw.get("nightmare_immune", false)) or ModifierManager.get_modifier("dreamwalking_nightmare_immunity") > 0
+	if seconds >= 21600 and not nightmare_free: expected *= 1.0 - maxf(0.01, (0.1 - float(mastery - 1) / 1200.0) * float(tw.get("nightmare_mult", 1.0))) * 0.1
+	return {"seconds": seconds, "xp": float(def.get("xp_hour", 0)) * weighted * ModifierManager.get_skill_xp_multiplier("dreamwalking") * (1.0 + float(tw.get("xp_percent", 0.0)) / 100.0), "essence": expected}

@@ -653,119 +653,203 @@
       "name": "Starlit Meadow",
       "level": 1,
       "xp_hour": 4324,
-      "essence_hour": 11
+      "essence_hour": 11,
+      "twist": {
+        "essence_percent": 10,
+        "text": "Starlight: +10% Essence."
+      }
     },
     {
       "id": "orchard",
       "name": "Lantern Orchard",
       "level": 8,
       "xp_hour": 7481,
-      "essence_hour": 18
+      "essence_hour": 18,
+      "twist": {
+        "items_per_hour": {
+          "ranch_feed": 4
+        },
+        "text": "Lantern fruit: 4 Ranch Feed for every hour dreamed."
+      }
     },
     {
       "id": "shore",
       "name": "Moonlit Shore",
       "level": 15,
       "xp_hour": 12943,
-      "essence_hour": 25
+      "essence_hour": 25,
+      "twist": {
+        "mastery_xp_percent": 20,
+        "text": "Moonlit lessons: +20% mastery XP for this dreamland."
+      }
     },
     {
       "id": "harbour",
       "name": "Sleepwalker's Harbour",
       "level": 22,
       "xp_hour": 17634,
-      "essence_hour": 32
+      "essence_hour": 32,
+      "twist": {
+        "nightmare_immune": true,
+        "text": "Safe moorings: nightmares can never take Essence here."
+      }
     },
     {
       "id": "wood",
       "name": "Whispering Wood",
       "level": 30,
       "xp_hour": 25111,
-      "essence_hour": 40
+      "essence_hour": 40,
+      "twist": {
+        "items_per_hour": {
+          "coal": 12
+        },
+        "text": "Dreamwood embers: 12 Coal for every hour dreamed."
+      }
     },
     {
       "id": "carnival",
       "name": "Hollow Carnival",
       "level": 38,
       "xp_hour": 32060,
-      "essence_hour": 48
+      "essence_hour": 48,
+      "twist": {
+        "event_chance": 0.8,
+        "text": "Carnival games: dream events are far more likely (80% instead of 35%)."
+      }
     },
     {
       "id": "library",
       "name": "Dream Library",
       "level": 45,
       "xp_hour": 39701,
-      "essence_hour": 55
+      "essence_hour": 55,
+      "twist": {
+        "nightmare_mult": 0.5,
+        "text": "Quiet study: nightmares are half as likely."
+      }
     },
     {
       "id": "archive",
       "name": "Mirror Archive",
       "level": 52,
       "xp_hour": 46754,
-      "essence_hour": 62
+      "essence_hour": 62,
+      "twist": {
+        "xp_percent": 20,
+        "items_per_hour": {
+          "scribe_paper": 10
+        },
+        "text": "Mirrored pages: +20% Dreamwalking XP and 10 Scribe Paper per hour."
+      }
     },
     {
       "id": "citadel",
       "name": "Sleeping Citadel",
       "level": 60,
       "xp_hour": 56362,
-      "essence_hour": 70
+      "essence_hour": 70,
+      "twist": {
+        "essence_percent": 20,
+        "event_kind": "garden",
+        "text": "Sleeping garrison: +20% Essence; shadows never appear, only gardeners."
+      }
     },
     {
       "id": "clockwork",
       "name": "Clockwork Dusk",
       "level": 67,
       "xp_hour": 65871,
-      "essence_hour": 77
+      "essence_hour": 77,
+      "twist": {
+        "depth_rate": 2.0,
+        "text": "Perfect hours: dream depth builds twice as fast."
+      }
     },
     {
       "id": "rift",
       "name": "Lucid Rift",
       "level": 75,
       "xp_hour": 78719,
-      "essence_hour": 85
+      "essence_hour": 85,
+      "twist": {
+        "essence_double_chance": 0.15,
+        "text": "Lucid rift: a 15% chance each dream to double the Essence gained."
+      }
     },
     {
       "id": "cathedral",
       "name": "Drowned Cathedral",
       "level": 82,
       "xp_hour": 94400,
-      "essence_hour": 92
+      "essence_hour": 92,
+      "twist": {
+        "essence_percent": 30,
+        "nightmare_mult": 2.0,
+        "text": "Sunken choir: +30% Essence, but nightmares are twice as likely."
+      }
     },
     {
       "id": "void",
       "name": "Velvet Void",
       "level": 90,
       "xp_hour": 116180,
-      "essence_hour": 100
+      "essence_hour": 100,
+      "twist": {
+        "essence_percent": 25,
+        "xp_percent": -15,
+        "text": "Velvet void: +25% Essence, -15% Dreamwalking XP."
+      }
     },
     {
       "id": "summit",
       "name": "Starless Summit",
       "level": 97,
       "xp_hour": 137207,
-      "essence_hour": 107
+      "essence_hour": 107,
+      "twist": {
+        "no_events": true,
+        "nightmare_immune": true,
+        "mastery_xp_percent": 15,
+        "text": "Stillness: no events, no nightmares, +15% mastery XP."
+      }
     },
     {
       "id": "astral",
       "name": "Astral Sea",
       "level": 105,
       "xp_hour": 165937,
-      "essence_hour": 115
+      "essence_hour": 115,
+      "twist": {
+        "items_per_hour": {
+          "summoning_shard_green": 2
+        },
+        "text": "Astral tide: 2 Summoning Shards for every hour dreamed."
+      }
     },
     {
       "id": "threshold",
       "name": "Wake's Edge",
       "level": 110,
       "xp_hour": 185552,
-      "essence_hour": 120
+      "essence_hour": 120,
+      "twist": {
+        "draught_hours": 8,
+        "text": "Almost morning: every 8 hours dreamed returns a free Lucid Draught."
+      }
     },
     {
       "id": "crown",
       "name": "Crown of Dreams",
       "level": 115,
       "xp_hour": 207486,
-      "essence_hour": 125
+      "essence_hour": 125,
+      "twist": {
+        "xp_percent": 10,
+        "essence_percent": 10,
+        "mastery_xp_percent": 10,
+        "text": "Crowned: +10% XP, +10% Essence and +10% mastery XP."
+      }
     }
   ],
   "bazaar": [
