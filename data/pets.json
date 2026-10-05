@@ -329,5 +329,14 @@
     "effect": {
       "raid_wave_skip": 1
     }
+  },
+  "pet_caravaneering": {
+    "id": "pet_caravaneering",
+    "name": "Haggle",
+    "source_skill": "caravaneering",
+    "effect": {
+      "caravaneering_profit_percent": 5
+    },
+    "icon_id": "caravaneering"
   }
 }

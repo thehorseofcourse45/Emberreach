@@ -6823,6 +6823,20 @@
         "mastery_action_time": 1.8
       },
       {
+        "id": "brew_potion_caravaneering",
+        "name": "Merchant's Tonic",
+        "level_required": 55,
+        "base_interval": 1.8,
+        "base_xp": 95,
+        "input_items": {
+          "garum_herb": 2
+        },
+        "output_items": {
+          "potion_caravaneering": 1
+        },
+        "mastery_action_time": 1.8
+      },
+      {
         "id": "brew_antivenom",
         "name": "Antivenom Draught",
         "level_required": 50,
@@ -12967,5 +12981,40 @@
     },
     "order": 39,
     "description": "Allocate offline time to dreams for essence, events and the Dream Bazaar."
+  },
+  "caravaneering": {
+    "id": "caravaneering",
+    "name": "Caravaneering",
+    "category": "non_combat",
+    "type": "passive",
+    "max_level": 120,
+    "mastery_unlocks": {
+      "10": {
+        "caravaneering_interval_percent": 3
+      },
+      "50": {
+        "caravaneering_doubling_percent": 5
+      },
+      "99": {
+        "caravaneering_skill_xp_percent": 10
+      }
+    },
+    "actions": [],
+    "pool_checkpoints": {
+      "10": {
+        "caravaneering_skill_xp_percent": 3
+      },
+      "25": {
+        "caravaneering_interval_percent": 3
+      },
+      "50": {
+        "caravaneering_doubling_percent": 5
+      },
+      "95": {
+        "caravaneering_skill_xp_percent": 8
+      }
+    },
+    "order": 40,
+    "description": "Outfit caravans and send them on timed trade routes across your charted map."
   }
 }

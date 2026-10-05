@@ -14,7 +14,7 @@ signal navigated(route: Dictionary)
 const NewSystems = preload("res://scripts/ui/panels/NewSkillSystems.gd")
 
 const HANDLED: Array[String] = [
-	"ranching", "inscription", "engineering", "enchanting", "dreamwalking",
+	"ranching", "inscription", "engineering", "enchanting", "dreamwalking", "caravaneering",
 	"slayer", "summoning", "astrology", "agility", "cartography", "archaeology",
 	"alt_magic",
 ]
@@ -34,7 +34,7 @@ func rebuild() -> void:
 		c.queue_free()
 	if not visible or _skill_id == "":
 		return
-	if _skill_id in ["ranching", "inscription", "engineering", "enchanting", "dreamwalking"]:
+	if _skill_id in ["ranching", "inscription", "engineering", "enchanting", "dreamwalking", "caravaneering"]:
 		var systems := NewSystems.new()
 		add_child(systems)
 		systems.set_skill(_skill_id)

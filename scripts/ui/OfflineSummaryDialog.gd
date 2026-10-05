@@ -69,6 +69,11 @@ func show_summary(summary: Dictionary) -> void:
 		_content.add_child(Widgets.key_value("Dreamwalking", "%s · %d Essence" % [UIStyle.fmt_duration(float(dreaming.seconds)), int(dreaming.essence)], UITokens.TEAL))
 		if int(dreaming.get("nightmare_loss", 0)) > 0:
 			_content.add_child(UIStyle.label("A nightmare cost %d session Essence." % int(dreaming.nightmare_loss), true, UITokens.FONT_SMALL))
+	var caravans: Dictionary = summary.get("caravaneering", {})
+	if int(caravans.get("trips", 0)) > 0:
+		_content.add_child(Widgets.key_value("Caravans", "%d trips · %s GP" % [int(caravans.trips), UIStyle.fmt(float(caravans.gp))], UITokens.GOLD))
+		for item_id in (caravans.get("items", {}) as Dictionary):
+			_content.add_child(UIStyle.label("%d× %s from trade routes" % [int(caravans.items[item_id]), str(DataLoader.get_item(str(item_id)).get("name", item_id))], true, UITokens.FONT_SMALL))
 	preload("res://scripts/ui/panels/NewSkillSystems.gd").build_events(_content)
 	var levels: Dictionary = summary.get("levels_gained", {})
 	if not levels.is_empty():

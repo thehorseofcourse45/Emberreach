@@ -3623,5 +3623,47 @@
         "potion_dr_3": 5
       }
     }
+  },
+  "ach_caravaneering_novice": {
+    "id": "ach_caravaneering_novice",
+    "name": "Caravaneering Novice",
+    "description": "Reach Caravaneering level 10.",
+    "category": "progression",
+    "condition": {
+      "kind": "skill_level",
+      "skill_id": "caravaneering",
+      "value": 10
+    },
+    "reward": {
+      "gp": 1500
+    }
+  },
+  "ach_caravaneering_adept": {
+    "id": "ach_caravaneering_adept",
+    "name": "Caravaneering Adept",
+    "description": "Reach Caravaneering level 50.",
+    "category": "progression",
+    "condition": {
+      "kind": "skill_level",
+      "skill_id": "caravaneering",
+      "value": 50
+    },
+    "reward": {
+      "gp": 25000
+    }
+  },
+  "ach_caravaneering_master": {
+    "id": "ach_caravaneering_master",
+    "name": "Caravaneering Master",
+    "description": "Reach Caravaneering level 99.",
+    "category": "progression",
+    "condition": {
+      "kind": "skill_level",
+      "skill_id": "caravaneering",
+      "value": 99
+    },
+    "reward": {
+      "gp": 500000
+    }
   }
 }

@@ -78,6 +78,7 @@ replays elapsed time through the *same* code paths.
 | `RanchingManager` | Pens, stock, feed, breeding, produce and manure. |
 | `InscriptionManager` | Research, scribing quality texts, equippable tomes, active glyphs. |
 | `EngineeringManager` | Device slots, installed workers, hourly fuel and prepaid time. |
+| `CaravaneeringManager` | Trade caravans: timed routes over charted hexes, daily prices, bandit rolls, repeat orders. |
 | `EnchantingManager` | Disenchant to typed essence; enchant individual gear pieces. |
 | `DreamwalkingManager` | Offline dream allocation, dream depth, events and the Dream Bazaar. |
 | `CombatManager` | Tick combat, endless areas, dungeons, loot, death, auto-eat. |
@@ -219,14 +220,14 @@ Loaded content. This block is generated from the live singletons — do not hand
 <!-- doc-facts:start -->
 | Check | Value |
 |---|---|
-| Skills | 39 (9 combat / 30 non-combat) |
-| Skill actions | 758 |
-| Items | 756 |
+| Skills | 40 (9 combat / 31 non-combat) |
+| Skill actions | 759 |
+| Items | 758 |
 | Monsters | 68 |
 | Areas | 21 |
 | Dungeons | 22 |
 | Prayers | 62 |
-| Autoload singletons | 42 |
+| Autoload singletons | 44 |
 | Screens | 21 |
 <!-- doc-facts:end -->
 

@@ -84,6 +84,7 @@ func start_new_game(mode: String) -> void:
 	RanchingManager.deserialize({})
 	InscriptionManager.deserialize({})
 	EngineeringManager.deserialize({})
+	CaravaneeringManager.deserialize({})
 	EnchantingManager.deserialize({})
 	DreamwalkingManager.deserialize({})
 	SlayerManager.deserialize({})

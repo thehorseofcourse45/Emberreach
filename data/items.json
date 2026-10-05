@@ -8884,5 +8884,37 @@
     "attack_cost_items": {
       "umbral_rune": 1
     }
+  },
+  "caravaneering_skillcape": {
+    "id": "caravaneering_skillcape",
+    "name": "Caravaneering Skillcape",
+    "item_type": "equipment",
+    "sell_price": 250000,
+    "is_stackable": true,
+    "equipment_slot": 5,
+    "requires_level": {
+      "skill": "caravaneering",
+      "level": 99
+    },
+    "level_requirements": {
+      "caravaneering": 99
+    },
+    "passive_modifiers": {
+      "caravaneering_slots": 1,
+      "caravaneering_profit_percent": 10
+    },
+    "description": "The mastery cape of Caravaneering."
+  },
+  "potion_caravaneering": {
+    "id": "potion_caravaneering",
+    "name": "Merchant's Tonic",
+    "item_type": "potion",
+    "sell_price": 10,
+    "is_stackable": true,
+    "charges": 20,
+    "charge_scope": "caravaneering:trip",
+    "potion_effect": {
+      "caravaneering_profit_percent": 15
+    }
   }
 }

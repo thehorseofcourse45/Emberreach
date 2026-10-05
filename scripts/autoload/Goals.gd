@@ -479,6 +479,10 @@ func sources_for_item(item_id: String) -> Array:
 	for offer in DataLoader.new_skill_systems.get("bazaar", []):
 		if offer.get("items", {}).has(item_id): out.append({"kind": "shop", "label": str(offer.name), "detail": "%d Dream Essence in the Dream Bazaar" % int(offer.cost), "level_required": 1, "unlocked": BankManager.get_count("dream_essence") >= int(offer.cost), "route": {"screen": "skills", "skill_id": "dreamwalking"}})
 	if item_id == "dream_essence": out.append({"kind": "passive", "label": "Dreamwalking", "detail": "Allocate offline time to a dreamscape, then collect Essence on your return.", "level_required": 1, "unlocked": true, "route": {"screen": "skills", "skill_id": "dreamwalking"}})
+	# Trade routes hand back their specialty goods when a caravan returns.
+	for route in DataLoader.new_skill_systems.get("caravan_routes", []):
+		if (route.get("specialty", {}) as Dictionary).has(item_id):
+			out.append({"kind": "passive", "label": "Caravaneering · %s" % str(route.name), "detail": "Specialty good of the %s trade route; send a caravan there and collect it on return." % str(route.name), "level_required": int(route.level), "unlocked": PlayerData.get_level("caravaneering") >= int(route.level), "route": {"screen": "skills", "skill_id": "caravaneering"}})
 	# A familiar's mark is awarded by that familiar's own skill while it is bonded and summoned.
 	# Twenty-six of them read as unfinished content because this one table was never consulted.
 	for familiar_id in DataLoader.familiars.keys():

@@ -89,6 +89,7 @@ func run_all(host: Node) -> void:
 	_test_melee_armour_endgame()
 	_test_gold_is_bounded()
 	_test_mastery_metadata()
+	await _test_caravaneering_ui(host)
 	await _test_detail_cards(host)
 	_test_attack_costs()
 	_test_arrow_tiers()
@@ -100,6 +101,8 @@ func run_all(host: Node) -> void:
 	_test_prayer_and_raid_ladders()
 	_test_magic_gear()
 	_test_dreamlands()
+	_test_caravaneering_data()
+	_test_caravaneering_core()
 	_test_dungeon_sequencing()
 	_test_session_meters()
 	_test_equipment_upgrade()
@@ -3283,6 +3286,257 @@ func _test_attack_costs() -> void:
 ## without overtaking the bow line.
 ## Dreamlands form one ladder: strictly rising unlock level, XP and Essence, no duplicate ids, and
 ## each has an icon, so the picker (which now lists locked ones too) is never a dead end.
+## Caravaneering data: shapes, references and monotone ladders, so the trade skill is never a dead end.
+## Caravaneering rules: deterministic prices, validated dispatch, trips that pay exactly once,
+## repeat orders that stop safely, and a save that survives a mid-trip reload.
+## The caravan panel builds with no, one and several caravans, locks what the player cannot use
+## yet, and fits a phone-width column.
+func _test_caravaneering_ui(host: Node) -> void:
+	_heading("Caravaneering panel")
+	GameManager.start_new_game("standard")
+	var cm = CaravaneeringManager
+	var NewSystems = load("res://scripts/ui/panels/NewSkillSystems.gd")
+	PlayerData.set_level("caravaneering", 100)
+	CartographyManager.discovered["hex_-1_0"] = true
+	var states: Array = [0, 1, 3]
+	for count in states:
+		cm.deserialize({})
+		cm.owned_wagons = ["handcart", "wagon", "freight"]
+		for i in range(count):
+			BankManager.add_item_guaranteed("oak_log", 30)
+			PlayerData.add_gp(1000)
+			cm.dispatch("ferryman_run", "wagon" if i == 1 else ("freight" if i == 2 else "handcart"), "hired_hand", {"oak_log": 30})
+		PlayerData.set_level("caravaneering", 100)
+		var panel: Control = NewSystems.new()
+		panel.custom_minimum_size = Vector2(380, 0)
+		host.add_child(panel)
+		panel.set_skill("caravaneering")
+		await host.get_tree().process_frame
+		await host.get_tree().process_frame
+		_ok(panel.get_child_count() >= 3, "the caravan panel builds with %d caravans out (%d cards)" % [count, panel.get_child_count()])
+		_ok(panel.get_combined_minimum_size().x <= 420.0, "the caravan panel fits 420px with %d caravans (min width %.0f)" % [count, panel.get_combined_minimum_size().x])
+		panel.queue_free()
+		await host.get_tree().process_frame
+	PlayerData.set_level("caravaneering", 1)
+	var low: Control = NewSystems.new()
+	host.add_child(low)
+	low.set_skill("caravaneering")
+	await host.get_tree().process_frame
+	var disabled: int = 0
+	for option in low.find_children("*", "OptionButton", true, false):
+		for i in range((option as OptionButton).item_count):
+			if (option as OptionButton).is_item_disabled(i):
+				disabled += 1
+	_ok(disabled >= 8, "locked routes and guards are disabled at level 1 (%d disabled entries)" % disabled)
+	low.queue_free()
+	cm.deserialize({})
+	GameManager.start_new_game("standard")
+
+func _test_caravaneering_core() -> void:
+	_heading("Caravaneering core")
+	GameManager.start_new_game("standard")
+	var cm = CaravaneeringManager
+	PlayerData.set_level("caravaneering", 100)
+	CartographyManager.discovered["hex_-1_0"] = true
+	cm.seed_rng(7)
+	var day: int = 20000
+	_eq(cm.price_factor("ferryman_run", "oak_log", day), cm.price_factor("ferryman_run", "oak_log", day), "the daily price drift is deterministic")
+	var lo: float = 9.0
+	var hi: float = 0.0
+	for d in range(day, day + 300):
+		var f: float = cm.price_factor("ferryman_run", "oak_log", d)
+		lo = minf(lo, f)
+		hi = maxf(hi, f)
+	_ok(lo >= 0.85 and hi <= 1.2001, "price drift stays within 0.85-1.20 (%.3f-%.3f)" % [lo, hi])
+	_ok(cm.demand_factor("ferryman_run", "oak_log") >= 1.3 and cm.demand_factor("ferryman_run", "oak_log") <= 1.6, "a demanded good pays 1.3-1.6x")
+	_eq(cm.demand_factor("ferryman_run", "coal"), 1.0, "a good the route does not want pays 1.0x")
+	var cargo := {"oak_log": 40}
+	_ok(cm.can_dispatch("ferryman_run", "handcart", "hired_hand", cargo) == "Out of cargo", "dispatch needs the cargo in Storage")
+	BankManager.add_item_guaranteed("oak_log", 100)
+	PlayerData.add_gp(100000)
+	_ok(cm.can_dispatch("ferryman_run", "handcart", "hired_hand", {"oak_log": 61}) != "", "cargo over capacity is refused")
+	_ok(cm.can_dispatch("ferryman_run", "handcart", "hired_hand", {}) != "", "an empty load is refused")
+	_ok(cm.can_dispatch("ferryman_run", "grand", "hired_hand", cargo) != "", "an unowned wagon is refused")
+	_ok(cm.can_dispatch("nope", "handcart", "hired_hand", cargo) != "" and cm.can_dispatch("ferryman_run", "nope", "hired_hand", cargo) != "" and cm.can_dispatch("ferryman_run", "handcart", "nope", cargo) != "", "unknown ids are refused")
+	CartographyManager.discovered.erase("hex_-1_0")
+	_ok(cm.can_dispatch("ferryman_run", "handcart", "hired_hand", cargo) == "Destination not discovered yet", "an undiscovered destination is refused")
+	CartographyManager.discovered["hex_-1_0"] = true
+	var stock_before: int = BankManager.get_count("oak_log")
+	var gp_before: float = PlayerData.gp
+	_ok(cm.dispatch("ferryman_run", "handcart", "hired_hand", cargo), "a valid dispatch succeeds")
+	_eq(stock_before - BankManager.get_count("oak_log"), 40, "dispatch takes the cargo once")
+	_eq(gp_before - PlayerData.gp, 100.0, "dispatch pays the guard's wage once")
+	_ok(cm.can_dispatch("ferryman_run", "handcart", "hired_hand", cargo) == "That wagon is already out", "a wagon cannot go out twice")
+	var xp_before: float = PlayerData.get_xp("caravaneering")
+	var gp_mid: float = PlayerData.gp
+	cm.advance(60.0)
+	_eq(PlayerData.gp, gp_mid, "nothing is paid before the caravan returns")
+	cm.advance(3600.0)
+	_ok(PlayerData.gp > gp_mid, "the caravan pays on return (+%d GP)" % int(PlayerData.gp - gp_mid))
+	_ok(PlayerData.get_xp("caravaneering") > xp_before, "the trip awards Caravaneering XP")
+	_eq(BankManager.get_count("leather"), 4, "the route's specialty goods arrive")
+	var gp_after: float = PlayerData.gp
+	cm.advance(7200.0)
+	_eq(PlayerData.gp, gp_after, "a finished trip never pays twice")
+	_eq(cm.caravans.size(), 0, "the finished caravan frees its slot")
+	# Bandits stay within 10-40% of cargo value.
+	var worst: float = 1.0
+	SimulationMode.begin()  # a silent run: no UI refresh storm, like an offline catch-up
+	for i in range(60):
+		cm.seed_rng(1000 + i)
+		BankManager.add_item_guaranteed("oak_log", 60)
+		PlayerData.add_gp(1000)
+		cm.dispatch("ferryman_run", "handcart", "hired_hand", {"oak_log": 60})
+		cm.advance(100000.0)
+		if not cm.history.is_empty():
+			worst = minf(worst, 1.0 - float(cm.history[0].loss))
+	SimulationMode.end()
+	_ok(worst >= 0.6 - 0.0001, "bandit losses never exceed 40 percent (worst keep %.2f)" % worst)
+	# Repeat orders run until the cargo does, then park safely.
+	BankManager.remove_item("oak_log", BankManager.get_count("oak_log"))
+	BankManager.add_item_guaranteed("oak_log", 130)
+	PlayerData.add_gp(10000)
+	_ok(cm.dispatch("ferryman_run", "handcart", "hired_hand", {"oak_log": 60}, true), "a repeating caravan dispatches")
+	cm.advance(100.0 * 3600.0)
+	_ok(cm.caravans.size() == 1 and bool(cm.caravans[0].get("idle", false)) and str(cm.caravans[0].status) == "Out of cargo", "repeat orders stop at 'Out of cargo' (%s)" % str(cm.caravans[0].status if not cm.caravans.is_empty() else "none"))
+	_ok(BankManager.get_count("oak_log") >= 0 and PlayerData.gp >= 0.0, "nothing goes negative")
+	_ok(cm.dismiss(0) and cm.caravans.is_empty(), "an idle caravan can be dismissed")
+	# Save round trip mid-trip.
+	BankManager.add_item_guaranteed("oak_log", 60)
+	cm.dispatch("ferryman_run", "handcart", "hired_hand", {"oak_log": 60})
+	cm.advance(600.0)
+	var saved: Dictionary = cm.serialize()
+	var remaining: float = float(cm.caravans[0].remaining)
+	cm.deserialize({})
+	_eq(cm.caravans.size(), 0, "a blank load clears caravans")
+	cm.deserialize(saved)
+	_eq(cm.caravans.size(), 1, "a mid-trip caravan survives save/load")
+	_eq(float(cm.caravans[0].remaining), remaining, "its remaining time is preserved")
+	cm.advance(remaining + 1.0)
+	_eq(cm.caravans.size(), 0, "and it still finishes exactly once after loading")
+	cm.deserialize({"caravans": [{"route": "ghost", "wagon": "handcart", "guard": "hired_hand"}, "junk", {"route": "ferryman_run", "wagon": "nope", "guard": "hired_hand"}], "owned_wagons": ["nope", "wagon"]})
+	_eq(cm.caravans.size(), 0, "caravans naming unknown ids are dropped without error")
+	_ok(cm.owned_wagons.has("handcart") and cm.owned_wagons.has("wagon") and not cm.owned_wagons.has("nope"), "unknown owned wagons are ignored, known ones kept")
+	# The whole save path carries it: build_save_data -> JSON -> _apply.
+	BankManager.add_item_guaranteed("oak_log", 60)
+	PlayerData.add_gp(500)
+	cm.dispatch("ferryman_run", "handcart", "hired_hand", {"oak_log": 60}, true)
+	var disk: Variant = JSON.parse_string(JSON.stringify(SaveManager.build_save_data()))
+	_ok(disk is Dictionary and (disk as Dictionary).has("caravaneering"), "the save file has a caravaneering section")
+	cm.deserialize({})
+	SaveManager._apply(disk)
+	_ok(cm.caravans.size() == 1 and bool(cm.caravans[0].repeat) and int(cm.caravans[0].cargo.get("oak_log", 0)) == 60, "the full save path restores a repeating caravan")
+	cm.deserialize({})
+	# Review fixes: one caravan finishing must not advance the others a second time.
+	cm.deserialize({})
+	cm.owned_wagons = ["handcart", "wagon"]
+	CartographyManager.discovered["hex_0_-1"] = true
+	BankManager.add_item_guaranteed("oak_log", 100)
+	PlayerData.add_gp(10000)
+	cm.dispatch("ferryman_run", "handcart", "hired_hand", {"oak_log": 30})
+	cm.dispatch("reed_road", "wagon", "hired_hand", {"oak_log": 30})
+	cm.caravans[0].remaining = 10.0
+	cm.caravans[1].remaining = 100.0
+	cm.advance(50.0)
+	_eq(cm.caravans.size(), 1, "the short trip finished and left the other one out")
+	_eq(float(cm.caravans[0].remaining), 50.0, "the other caravan was advanced exactly once")
+	# A caravan out beyond the slot count still arrives (cape swapped off, old save).
+	cm.deserialize({})
+	for i in range(4):
+		cm.caravans.append({"route": "ferryman_run", "wagon": "handcart", "guard": "hired_hand", "cargo": {"oak_log": 5}, "remaining": 30.0, "total": 30.0, "repeat": false, "status": "Travelling"})
+	PlayerData.set_level("caravaneering", 1)
+	_ok(cm.slots() < 4, "only %d slots at level 1" % cm.slots())
+	cm.advance(60.0)
+	_eq(cm.caravans.size(), 0, "caravans beyond the slot count still arrive")
+	PlayerData.set_level("caravaneering", 100)
+	# Cargo never sells above the General Store's price for it.
+	var capped: int = 0
+	var overpriced: int = 0
+	for r in cm.routes():
+		for g in DataLoader.new_skill_systems.get("caravan_goods", []):
+			var cap: float = cm.store_price(str(g.item_id))
+			if cap > 0.0:
+				capped += 1
+				for d in range(day, day + 40):
+					if cm.unit_price(str(r.id), str(g.item_id), d) > cap + 0.0001:
+						overpriced += 1
+	_eq(overpriced, 0, "no good sells above the General Store price")
+	_ok(capped > 0, "store-bought goods are price-capped (%d route/good pairs)" % capped)
+	# The forecast matches the real average outcome.
+	var cargo5: Dictionary = {"mithril_bar": 50}
+	var pv: Dictionary = cm.preview("smithy_line", "wagon", "hired_hand", cargo5)
+	var chance: float = cm.loss_chance("smithy_line", "hired_hand")
+	_ok(chance > 0.0 and absf(float(pv.expected_revenue) - float(pv.revenue) * ((1.0 - chance) * 1.05 + chance * 0.75)) < 0.01, "the forecast uses the true average (risk %.0f percent)" % (chance * 100.0))
+	# A bad history in a save cannot break the panel's data.
+	cm.deserialize({"history": ["x", {"route": "ghost"}, {"route": "ferryman_run"}, 5]})
+	_eq(cm.history.size(), 1, "only well-formed history entries survive loading")
+	_ok(cm.history[0].has("revenue") and cm.history[0].has("loss") and cm.history[0].has("items"), "loaded history entries are complete")
+	# A parked caravan can be resumed after restocking.
+	cm.deserialize({})
+	BankManager.remove_item("oak_log", BankManager.get_count("oak_log"))
+	BankManager.add_item_guaranteed("oak_log", 30)
+	PlayerData.add_gp(1000)
+	cm.dispatch("ferryman_run", "handcart", "hired_hand", {"oak_log": 30}, true)
+	cm.advance(100000.0)
+	_ok(cm.caravans.size() == 1 and bool(cm.caravans[0].get("idle", false)), "the repeating caravan parked once the cargo ran out")
+	_ok(not cm.resume(0), "resume refuses while Storage is still empty")
+	BankManager.add_item_guaranteed("oak_log", 30)
+	_ok(cm.resume(0) and not bool(cm.caravans[0].get("idle", false)), "resume sends a restocked caravan out again")
+	cm.deserialize({})
+	# Skill is passive: no online action XP path.
+	_eq(str(SkillManager.check_action("caravaneering", "x").get("reason", "")), "passive", "Caravaneering has no online action training")
+	GameManager.start_new_game("standard")
+	_eq(cm.caravans.size(), 0, "a new game starts with no caravans")
+
+func _test_caravaneering_data() -> void:
+	_heading("Caravaneering data")
+	var sys: Dictionary = DataLoader.new_skill_systems
+	var wagons: Array = sys.get("caravan_wagons", [])
+	var guards: Array = sys.get("caravan_guards", [])
+	var routes: Array = sys.get("caravan_routes", [])
+	var goods: Array = sys.get("caravan_goods", [])
+	_eq(wagons.size(), 4, "four wagon tiers")
+	_eq(guards.size(), 3, "three guard tiers")
+	_ok(routes.size() >= 12, "at least 12 trade routes (%d)" % routes.size())
+	var prev: Dictionary = {}
+	for w in wagons:
+		if not prev.is_empty():
+			_ok(int(w.capacity) > int(prev.capacity) and int(w.level) > int(prev.level) and int(w.price) > int(prev.price), "wagon %s outgrows %s" % [str(w.id), str(prev.id)])
+		prev = w
+	prev = {}
+	for g in guards:
+		if not prev.is_empty():
+			_ok(int(g.power) > int(prev.power) and int(g.wage) > int(prev.wage), "guard %s outclasses %s" % [str(g.id), str(prev.id)])
+		prev = g
+	prev = {}
+	var ids: Dictionary = {}
+	for r in routes:
+		_ok(not ids.has(str(r.id)), "route %s id is unique" % str(r.id))
+		ids[str(r.id)] = true
+		_ok(DataLoader.cartography_hexes.has(str(r.hex)), "route %s ends on a real hex" % str(r.id))
+		_ok(float(r.hours) > 0.0 and float(r.multiplier) > 1.0 and int(r.risk) >= 0 and int(r.xp) > 0, "route %s has sane numbers" % str(r.id))
+		for item_id in (r.demand as Array):
+			_ok(not DataLoader.get_item(str(item_id)).is_empty(), "route %s demands a real item (%s)" % [str(r.id), str(item_id)])
+		for item_id in (r.specialty as Dictionary).keys():
+			_ok(not DataLoader.get_item(str(item_id)).is_empty(), "route %s specialty is a real item (%s)" % [str(r.id), str(item_id)])
+		if not prev.is_empty():
+			_ok(int(r.level) > int(prev.level) and int(r.xp) > int(prev.xp), "route %s climbs above %s in level and XP" % [str(r.id), str(prev.id)])
+		prev = r
+	for g in goods:
+		_ok(not DataLoader.get_item(str(g.item_id)).is_empty(), "good %s is a real item" % str(g.item_id))
+	_ok(DataLoader.skills.has("caravaneering") and str(DataLoader.skills["caravaneering"].get("type", "")) == "passive", "the caravaneering skill is passive")
+	for item_id in ["caravaneering_skillcape", "potion_caravaneering"]:
+		_ok(not DataLoader.get_item(item_id).is_empty(), "%s exists" % item_id)
+		_ok(AssetRegistry.has_asset("icons/items/%s.png" % item_id), "%s has an icon" % item_id)
+	var caravan_report: Dictionary = BalanceReport.build().get("caravans", {})
+	_ok((caravan_report.get("warnings", ["missing"]) as Array).is_empty(), "no caravan route out-earns the best other action at its level")
+	var last_rate: float = 0.0
+	for row in (caravan_report.get("rows", []) as Array):
+		_ok(float(row.gp_hour) >= last_rate, "caravan route %s earns at least as much per hour as the one before (%.0f GP/h)" % [str(row.route), float(row.gp_hour)])
+		last_rate = float(row.gp_hour)
+	_ok(DataLoader.pets.has("pet_caravaneering"), "the caravaneering pet exists")
+	_ok(AssetRegistry.has_asset("icons/skills/caravaneering.png"), "the caravaneering skill has an icon")
+
 func _test_dreamlands() -> void:
 	_heading("Dreamlands")
 	var dreams: Array = DataLoader.new_skill_systems.get("dreams", [])

@@ -36,8 +36,48 @@ static func build() -> Dictionary:
 		"bottlenecks": _bottlenecks(),
 		"combat": _combat_curve(),
 		"economy": _economy(),
+		"caravans": _caravans(),
 		"unused": _unused_items(),
 	}
+
+## Caravaneering must stay a modest gold source: every route's sustained GP/hour (best wagon and
+## guard the route's level allows, best demanded good in a full wagon, average demand and a clean
+## run) has to sit at or under the best raw gold rate any other action offers at that level.
+static func _caravans() -> Dictionary:
+	var rows: Array = []
+	var warnings: Array[String] = []
+	var best_other: Array = []   # [level_required, gp_per_hour]
+	for skill_id in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill_actions(skill_id):
+			var interval: float = float((action as Dictionary).get("base_interval", 0.0))
+			if interval <= 0.0:
+				continue
+			var out_gp: float = 0.0
+			for item_id in ((action as Dictionary).get("output_items", {}) as Dictionary).keys():
+				out_gp += float(DataLoader.get_item(str(item_id)).get("sell_price", 0)) * float(action.output_items[item_id])
+			var in_gp: float = 0.0
+			for item_id in ((action as Dictionary).get("input_items", {}) as Dictionary).keys():
+				in_gp += float(DataLoader.get_item(str(item_id)).get("sell_price", 0)) * float(action.input_items[item_id])
+			best_other.append([int((action as Dictionary).get("level_required", 1)), (out_gp - in_gp) * 3600.0 / interval])
+	for r in (DataLoader.new_skill_systems.get("caravan_routes", []) as Array):
+		var capacity: int = 0
+		for w in (DataLoader.new_skill_systems.get("caravan_wagons", []) as Array):
+			if int(w.level) <= int(r.level): capacity = maxi(capacity, int(w.capacity))
+		var wage: float = 0.0
+		for g in (DataLoader.new_skill_systems.get("caravan_guards", []) as Array):
+			if int(g.level) <= int(r.level): wage = maxf(wage, float(g.wage))
+		var best_price: float = 0.0
+		for good in (r.demand as Array):
+			best_price = maxf(best_price, float(DataLoader.get_item(str(good)).get("sell_price", 0)))
+		var revenue: float = best_price * float(capacity) * float(r.multiplier) * 1.45 * 1.05
+		var rate: float = (revenue - wage) / maxf(float(r.hours), 0.001)
+		var ceiling: float = 0.0
+		for other in best_other:
+			if int(other[0]) <= int(r.level): ceiling = maxf(ceiling, float(other[1]))
+		rows.append({"route": str(r.name), "level": int(r.level), "gp_hour": rate, "ceiling": ceiling})
+		if ceiling > 0.0 and rate > ceiling:
+			warnings.append("caravan route '%s' (%s GP/h) out-earns every other action at level %d (%s GP/h)" % [str(r.name), _fmt(rate), int(r.level), _fmt(ceiling)])
+	return {"rows": rows, "warnings": warnings}
 
 ## Raw XP and output per hour for the first and last unlock of every non-combat skill.
 static func _rates() -> Dictionary:
@@ -519,14 +559,17 @@ static func _economy() -> Dictionary:
 	var township_gp: float = 0.0
 	for building_id in DataLoader.township_buildings.keys():
 		township_gp += float(DataLoader.township_buildings[building_id].get("base_cost", 0))
+	var wagon_gp: float = 0.0
+	for w in (DataLoader.new_skill_systems.get("caravan_wagons", []) as Array):
+		wagon_gp += float(w.price)
 	var warnings: Array[String] = []
 	if shop_gp + stall_gp <= 0.0:
 		warnings.append("gold has no catalogue to spend on")
 	return {
 		"sources": {"monster_loot": loot_gp, "tasks": quest_gp, "expeditions": dungeon_gp},
-		"sinks": {"provisioner": shop_gp, "mastery_stall": stall_gp, "settlement": township_gp},
+		"sinks": {"provisioner": shop_gp, "mastery_stall": stall_gp, "settlement": township_gp, "caravan_wagons": wagon_gp},
 		"source_total": loot_gp + quest_gp + dungeon_gp,
-		"sink_total": shop_gp + stall_gp + township_gp,
+		"sink_total": shop_gp + stall_gp + township_gp + wagon_gp,
 		"warnings": warnings,
 	}
 
@@ -592,6 +635,12 @@ static func format_text() -> Array[String]:
 			int((row as Dictionary)["max_hit"]), int((row as Dictionary)["dr"]),
 			"  [boss]" if bool((row as Dictionary)["boss"]) else ""])
 	for note in (report["combat"] as Dictionary)["warnings"]:
+		lines.append("  WARN %s" % str(note))
+	lines.append("")
+	lines.append("--- caravan routes (best wagon/guard, full load of the best demanded good) ---")
+	for row in (report["caravans"] as Dictionary)["rows"]:
+		lines.append("  L%-4d %-22s %10s GP/h   best other action at this level: %10s GP/h" % [int((row as Dictionary)["level"]), str((row as Dictionary)["route"]), _fmt(float((row as Dictionary)["gp_hour"])), _fmt(float((row as Dictionary)["ceiling"]))])
+	for note in (report["caravans"] as Dictionary)["warnings"]:
 		lines.append("  WARN %s" % str(note))
 	lines.append("")
 	var economy: Dictionary = report["economy"]

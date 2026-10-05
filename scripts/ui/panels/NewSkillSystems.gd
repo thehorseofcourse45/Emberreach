@@ -3,6 +3,13 @@ extends VBoxContainer
 var skill_id: String = ""
 var _live_pens: Array = []
 var _live_workers: Array = []
+var _live_caravans: Array = []
+
+# The caravan planner keeps its choices across the panel rebuilds a refresh causes.
+static var _cv_route: String = ""
+static var _cv_wagon: String = "handcart"
+static var _cv_guard: String = "hired_hand"
+static var _cv_cargo: Dictionary = {}
 
 func set_skill(id: String) -> void:
 	skill_id = id
@@ -52,6 +59,126 @@ func build() -> void:
 		"engineering": _engineering()
 		"enchanting": _enchanting()
 		"dreamwalking": _dreams()
+		"caravaneering": _caravans()
+
+func _caravans() -> void:
+	var cm = CaravaneeringManager
+	_live_caravans.clear()
+	var box := _card("Trade caravans", "%d of %d caravan slots in use. Choose a route, wagon, guard and cargo; the caravan sells at the destination and returns with its specialty goods, even while you are away." % [cm.caravans.size(), cm.slots()])
+	for index in range(cm.caravans.size()):
+		var c: Dictionary = cm.caravans[index]
+		var r: Dictionary = cm.route(str(c.route))
+		var panel := UIStyle.section(str(r.get("name", c.route)), "%s · %s wagon · %s" % [str(c.status), str(cm.wagon(str(c.wagon)).get("name", "")), str(cm.guard(str(c.guard)).get("name", ""))])
+		box.add_child(panel)
+		var bar := Widgets.progress_bar(float(c.total) - float(c.remaining), maxf(float(c.total), 1.0), UITokens.GOLD, "Trip progress", 18)
+		panel.add_child(bar)
+		_live_caravans.append({"index": index, "bar": bar})
+		panel.add_child(Widgets.item_rewards(c.cargo))
+		var row := _flow()
+		panel.add_child(row)
+		var repeat := CheckBox.new()
+		repeat.text = "Repeat these orders"
+		repeat.button_pressed = bool(c.repeat)
+		repeat.toggled.connect(func(on: bool): cm.set_repeat(index, on))
+		row.add_child(repeat)
+		if bool(c.get("idle", false)):
+			_button(row, "Resume", func(): cm.resume(index), true, "Send it out again on the same orders (restock Storage and gold first)")
+			_button(row, "Dismiss", func(): cm.dismiss(index), true, "Free this slot")
+	var plan := _card("Plan a trip", "Prices drift daily; goods a destination wants pay 30-60% more. Bandits may take 10-40% of the cargo on risky roads unless your guard is strong enough.")
+	var route_ids: Array = []
+	var route_names: Array = []
+	var level: int = PlayerData.get_level("caravaneering")
+	for r in cm.routes():
+		route_ids.append(str(r.id))
+		var note: String = ""
+		if level < int(r.level): note = " · unlocks at level %d" % int(r.level)
+		elif not CartographyManager.is_discovered(str(r.hex)): note = " · chart the destination first"
+		route_names.append("%s · %.1fh%s" % [str(r.name), float(r.hours), note])
+	var route_choice := _choice(plan, route_ids, route_names)
+	for i in range(route_ids.size()):
+		var rr: Dictionary = cm.route(str(route_ids[i]))
+		route_choice.set_item_disabled(i, level < int(rr.level) or not CartographyManager.is_discovered(str(rr.hex)))
+	var wagon_ids: Array = []
+	var wagon_names: Array = []
+	for w in cm.wagons():
+		if cm.owned_wagons.has(str(w.id)):
+			wagon_ids.append(str(w.id))
+			wagon_names.append("%s · carries %d" % [str(w.name), int(w.capacity)])
+	var wagon_choice := _choice(plan, wagon_ids, wagon_names)
+	var guard_ids: Array = []
+	var guard_names: Array = []
+	for g in cm.guards():
+		guard_ids.append(str(g.id))
+		guard_names.append("%s · power %d · %s GP/trip%s" % [str(g.name), int(g.power), UIStyle.fmt(float(g.wage)), "" if level >= int(g.level) else " · level %d" % int(g.level)])
+	var guard_choice := _choice(plan, guard_ids, guard_names)
+	for i in range(guard_ids.size()):
+		guard_choice.set_item_disabled(i, level < int(cm.guard(str(guard_ids[i])).level))
+	route_choice.selected = maxi(0, route_ids.find(_cv_route))
+	wagon_choice.selected = maxi(0, wagon_ids.find(_cv_wagon))
+	guard_choice.selected = maxi(0, guard_ids.find(_cv_guard))
+	var goods: Array = []
+	var good_names: Array = []
+	for g in DataLoader.new_skill_systems.get("caravan_goods", []):
+		var have: int = BankManager.get_count(str(g.item_id))
+		if have > 0:
+			goods.append(str(g.item_id))
+			good_names.append("%s (%d in Storage)" % [str(DataLoader.get_item(str(g.item_id)).get("name", g.item_id)), have])
+	var cargo_label := UIStyle.label("", true, UITokens.FONT_SMALL)
+	cargo_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var preview_label := UIStyle.label("", true, UITokens.FONT_SMALL)
+	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var good_choice := _choice(plan, goods, good_names, goods.map(func(id): return AssetRegistry.item_icon(str(id))))
+	var qty := SpinBox.new()
+	qty.min_value = 1
+	qty.max_value = 100000
+	qty.value = 10
+	plan.add_child(qty)
+	var refresh := func():
+		_cv_route = str(route_ids[route_choice.selected]) if not route_ids.is_empty() else ""
+		_cv_wagon = str(wagon_ids[wagon_choice.selected]) if not wagon_ids.is_empty() else "handcart"
+		_cv_guard = str(guard_ids[guard_choice.selected]) if not guard_ids.is_empty() else "hired_hand"
+		var capacity: int = cm.capacity(_cv_wagon)
+		var parts: Array = []
+		for id in _cv_cargo:
+			parts.append("%d× %s" % [int(_cv_cargo[id]), str(DataLoader.get_item(str(id)).get("name", id))])
+		cargo_label.text = "Cargo %d / %d: %s" % [cm.load_of(_cv_cargo), capacity, "empty" if parts.is_empty() else ", ".join(parts)]
+		var p: Dictionary = cm.preview(_cv_route, _cv_wagon, _cv_guard, _cv_cargo)
+		var why: String = cm.can_dispatch(_cv_route, _cv_wagon, _cv_guard, _cv_cargo)
+		preview_label.text = "Forecast: ≈ %s GP back for %s GP of goods and %s GP wages (profit ≈ %s), %.1f hours, %.0f%% bandit risk, ≈ %s XP.%s" % [UIStyle.fmt(float(p.expected_revenue)), UIStyle.fmt(float(p.base_value)), UIStyle.fmt(float(p.wages)), UIStyle.fmt(float(p.profit)), float(p.hours), float(p.loss_risk) * 100.0, UIStyle.fmt(float(p.xp)), "" if why == "" else "  Cannot dispatch yet: " + why]
+	route_choice.item_selected.connect(func(_i): refresh.call())
+	wagon_choice.item_selected.connect(func(_i): refresh.call())
+	guard_choice.item_selected.connect(func(_i): refresh.call())
+	var cargo_row := _flow()
+	plan.add_child(cargo_row)
+	_button(cargo_row, "Add cargo", func():
+		if goods.is_empty(): return
+		var id: String = str(goods[good_choice.selected])
+		var room: int = cm.capacity(_cv_wagon) - cm.load_of(_cv_cargo)
+		var add: int = mini(int(qty.value), mini(room, BankManager.get_count(id) - int(_cv_cargo.get(id, 0))))
+		if add > 0: _cv_cargo[id] = int(_cv_cargo.get(id, 0)) + add
+		refresh.call(), not goods.is_empty())
+	_button(cargo_row, "Clear cargo", func():
+		_cv_cargo.clear()
+		refresh.call())
+	plan.add_child(cargo_label)
+	plan.add_child(preview_label)
+	var go_row := _flow()
+	plan.add_child(go_row)
+	for repeat in [false, true]:
+		_button(go_row, "Dispatch & repeat" if repeat else "Dispatch", func():
+			if cm.dispatch(_cv_route, _cv_wagon, _cv_guard, _cv_cargo.duplicate(), repeat):
+				_cv_cargo.clear()
+			else:
+				EventBus.notify(cm.can_dispatch(_cv_route, _cv_wagon, _cv_guard, _cv_cargo), "warn"), not route_ids.is_empty(), "Repeating caravans re-load the same cargo from Storage each time they return" if repeat else "")
+	refresh.call()
+	var shop := _card("Wagons", "Bigger wagons carry more. You keep a wagon once bought.")
+	for w in cm.wagons():
+		var owned: bool = cm.owned_wagons.has(str(w.id))
+		_button(shop, "%s · carries %d · %s" % [str(w.name), int(w.capacity), "owned" if owned else "%s GP (level %d)" % [UIStyle.fmt(float(w.price)), int(w.level)]], func(): cm.buy_wagon(str(w.id)), not owned and level >= int(w.level) and PlayerData.gp >= float(w.price))
+	if not cm.history.is_empty():
+		var trips := _card("Recent trips", "")
+		for h in cm.history:
+			trips.add_child(UIStyle.label("%s: %s GP%s" % [str(cm.route(str(h.route)).get("name", h.route)), UIStyle.fmt(float(h.revenue)), "" if float(h.loss) <= 0.0 else " (bandits took %.0f%%)" % (float(h.loss) * 100.0)], true, UITokens.FONT_SMALL))
 
 func _ranch() -> void:
 	var box := _card("The ranch", "Six pens, two matching animals per pen. Feed keeps production at full speed. Collect produce and XP; breed every six hours.")
@@ -307,6 +434,10 @@ func _process(_delta: float) -> void:
 	for entry in _live_pens:
 		if entry.bar != null and int(entry.index) < RanchingManager.pens.size():
 			entry.bar.value = float(RanchingManager.pens[int(entry.index)].progress)
+	for entry in _live_caravans:
+		if int(entry.index) < CaravaneeringManager.caravans.size():
+			var c: Dictionary = CaravaneeringManager.caravans[int(entry.index)]
+			entry.bar.value = float(c.total) - float(c.remaining)
 	for entry in _live_workers:
 		if int(entry.index) < EngineeringManager.installed.size():
 			var worker: Dictionary = EngineeringManager.installed[int(entry.index)]

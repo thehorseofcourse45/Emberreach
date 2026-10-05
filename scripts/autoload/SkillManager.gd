@@ -66,7 +66,7 @@ func _ready() -> void:
 ## Full requirement check. Returns {ok, reason, detail} so the UI can always explain itself.
 func check_action(skill_id: String, action_id: String) -> Dictionary:
 	var data: Dictionary = DataLoader.get_action(skill_id, action_id)
-	if skill_id in ["ranching", "dreamwalking"]:
+	if skill_id in ["ranching", "dreamwalking", "caravaneering"]:
 		return {"ok": false, "reason": "passive", "detail": "Use this skill’s system controls below; it progresses passively."}
 	if skill_id == "enchanting":
 		data = EnchantingManager.action_data(data)

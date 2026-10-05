@@ -219,7 +219,7 @@ func _process(_delta: float) -> void:
 		_xp_remaining.text = UIStyle.fmt_exact(float(XPTable.xp_to_next_level(xp, level)))
 
 func _rebuild_activities() -> void:
-	_main_grid.visible = _skill_id not in ["ranching", "dreamwalking"]
+	_main_grid.visible = _skill_id not in ["ranching", "dreamwalking", "caravaneering"]
 	_clear(_activities)
 	_activities.add_child(UIStyle.title("Activities", UITokens.FONT_SUBHEAD))
 	_activities.add_child(UIStyle.label("Choose a reward to train toward.", true, UITokens.FONT_SMALL))

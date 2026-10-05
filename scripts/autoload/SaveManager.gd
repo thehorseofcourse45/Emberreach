@@ -141,6 +141,7 @@ func build_save_data() -> Dictionary:
 		"ranching": RanchingManager.serialize(),
 		"inscription": InscriptionManager.serialize(),
 		"engineering": EngineeringManager.serialize(),
+		"caravaneering": CaravaneeringManager.serialize(),
 		"enchanting": EnchantingManager.serialize(),
 		"dreamwalking": DreamwalkingManager.serialize(),
 		"slayer": SlayerManager.serialize(),
@@ -436,6 +437,7 @@ func _apply(data: Dictionary) -> void:
 	RanchingManager.deserialize(data.get("ranching", {}))
 	InscriptionManager.deserialize(data.get("inscription", {}))
 	EngineeringManager.deserialize(data.get("engineering", {}))
+	CaravaneeringManager.deserialize(data.get("caravaneering", {}))
 	DreamwalkingManager.deserialize(data.get("dreamwalking", {}))
 	BankManager.deserialize(data.get("bank", {}))
 	EquipmentManager.deserialize(data.get("equipment", {}))

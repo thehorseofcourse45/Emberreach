@@ -1324,8 +1324,8 @@ func _check_ascendancy() -> void:
 
 func _check_new_skill_systems() -> void:
 	var data: Dictionary = DataLoader.new_skill_systems
-	var item_fields: Dictionary = {"species": ["stock", "produce", "hide"], "devices": ["id", "fuel"], "enchants": [], "dreams": [], "bazaar": []}
-	var number_fields: Dictionary = {"species": ["level", "seconds", "feed", "xp", "meat"], "devices": ["level", "fuel_cost"], "enchants": ["level", "tier"], "dreams": ["level", "xp_hour", "essence_hour"], "bazaar": ["cost"]}
+	var item_fields: Dictionary = {"species": ["stock", "produce", "hide"], "devices": ["id", "fuel"], "enchants": [], "dreams": [], "bazaar": [], "caravan_wagons": [], "caravan_guards": [], "caravan_routes": []}
+	var number_fields: Dictionary = {"species": ["level", "seconds", "feed", "xp", "meat"], "devices": ["level", "fuel_cost"], "enchants": ["level", "tier"], "dreams": ["level", "xp_hour", "essence_hour"], "bazaar": ["cost"], "caravan_wagons": ["level", "price", "capacity"], "caravan_guards": ["level", "power", "wage"], "caravan_routes": ["level", "hours", "multiplier", "xp"]}
 	for group in item_fields:
 		var records: Variant = data.get(group, [])
 		if not records is Array: _err("invalid_record", "new_skill_systems.%s must be an array" % group); continue
@@ -1341,6 +1341,12 @@ func _check_new_skill_systems() -> void:
 				var value: Variant = record.get(field, null)
 				if not (value is int or value is float) or not is_finite(float(value)) or float(value) <= 0: _err("invalid_number", "%s.%s.%s must be a positive finite number" % [group, id, field])
 			if group == "devices" and not _has_skill(str(record.get("skill", ""))) and str(record.get("skill", "")) != "combat": _err("missing_reference", "device '%s' has unknown skill" % id)
+			if group == "caravan_routes":
+				if not DataLoader.cartography_hexes.has(str(record.get("hex", ""))): _err("missing_reference", "caravan route '%s' ends on an unknown hex" % id)
+				for good in (record.get("demand", []) as Array):
+					if not _has_item(str(good)): _err("missing_reference", "caravan route '%s' demands a missing item '%s'" % [id, str(good)])
+				for good in (record.get("specialty", {}) as Dictionary).keys():
+					if not _has_item(str(good)): _err("missing_reference", "caravan route '%s' specialty is a missing item '%s'" % [id, str(good)])
 			if group == "enchants":
 				if str(record.get("scope", "")) not in ["weapon", "armor", "skilling"]: _err("invalid_record", "enchant '%s' has invalid scope" % id)
 				if str(record.get("essence", "")) not in ["martial", "warding", "arcane", "verdant"]: _err("invalid_record", "enchant '%s' has invalid Essence" % id)

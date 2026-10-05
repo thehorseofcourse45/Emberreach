@@ -87,6 +87,8 @@ const ENCHANTING_POTENCY_PERCENT := "enchanting_potency_percent"
 const DREAMWALKING_ESSENCE_PERCENT := "dreamwalking_essence_percent"
 const DREAMWALKING_NIGHTMARE_IMMUNITY := "dreamwalking_nightmare_immunity"
 const DREAMWALKING_EVENT_GUARANTEE := "dreamwalking_event_guarantee"
+const CARAVANEERING_PROFIT_PERCENT := "caravaneering_profit_percent"
+const CARAVANEERING_SLOTS := "caravaneering_slots"
 
 ## Build a per-skill key, e.g. skill_key("woodcutting", ModifierKeys.SUFFIX_INTERVAL_PERCENT).
 static func skill_key(skill_id: String, suffix: String) -> String:

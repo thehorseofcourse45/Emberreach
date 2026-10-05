@@ -12793,5 +12793,115 @@
     "reward": {
       "gp": 200
     }
+  },
+  "caravaneering_foundation": {
+    "id": "caravaneering_foundation",
+    "name": "Caravaneering · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Outfit a caravan, pick a route and send it out; collect when it returns.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "caravaneering",
+        "required": 3,
+        "label": "Caravaneering 3",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200
+    }
+  },
+  "caravaneering_journey_10": {
+    "id": "caravaneering_journey_10",
+    "name": "Caravaneering Journey · 10",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Outfit a caravan, pick a route and send it out; collect when it returns.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "caravaneering",
+        "required": 10,
+        "label": "Caravaneering 10",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000,
+      "xp": {
+        "caravaneering": 1000
+      }
+    },
+    "prerequisites": [
+      "caravaneering_foundation"
+    ]
+  },
+  "caravaneering_journey_50": {
+    "id": "caravaneering_journey_50",
+    "name": "Caravaneering Journey · 50",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Outfit a caravan, pick a route and send it out; collect when it returns.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "caravaneering",
+        "required": 50,
+        "label": "Caravaneering 50",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "caravaneering": 5000
+      }
+    },
+    "prerequisites": [
+      "caravaneering_journey_10"
+    ]
+  },
+  "caravaneering_journey_99": {
+    "id": "caravaneering_journey_99",
+    "name": "Caravaneering Journey · 99",
+    "chapter": 5,
+    "difficulty": "expert",
+    "region": "farmlands",
+    "description": "Outfit a caravan, pick a route and send it out; collect when it returns.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "caravaneering",
+        "required": 99,
+        "label": "Caravaneering 99",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9900,
+      "xp": {
+        "caravaneering": 9900
+      }
+    },
+    "prerequisites": [
+      "caravaneering_journey_50"
+    ]
   }
 }

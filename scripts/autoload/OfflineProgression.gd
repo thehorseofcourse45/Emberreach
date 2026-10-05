@@ -207,6 +207,7 @@ func _finish() -> void:
 	var dream_seconds: float = float(_job.get("dream_seconds", 0.0))
 	_advance_passive_clocks(maxf(0.0, float(summary["elapsed_seconds"]) - dream_seconds - float(_job.get("passive_seconds", 0.0))))
 	summary["dreamwalking"] = DreamwalkingManager.advance_offline(dream_seconds, true)
+	summary["caravaneering"] = CaravaneeringManager.take_tally()
 	summary["township_ticks"] = int(_job.get("township_ticks", 0))
 	if dream_seconds > 0:
 		summary["notes"].append("%s allocated to Dreamwalking." % UIStyle.fmt_duration(dream_seconds))
@@ -255,6 +256,7 @@ func _advance_passive_clocks(seconds: float) -> void:
 		_job["township_ticks"] = int(_job.get("township_ticks", 0)) + TownshipManager.advance_offline(slice)
 		RanchingManager.advance(slice)
 		EngineeringManager.advance(slice, end_time)
+		CaravaneeringManager.advance(slice, end_time)
 		_job["passive_seconds"] = float(_job.get("passive_seconds", 0.0)) + slice
 		remaining -= slice
 
