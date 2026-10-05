@@ -235,11 +235,16 @@ func _dreams() -> void:
 	var box := _card("Enter the Dreamlands", "Allocate offline time between your waking activity and dreams. Dreamwalking never earns XP while the game is open. Longer dreams gain depth; the existing offline cap still applies.")
 	var ids: Array = []
 	var names: Array = []
+	var locked: Array = []
 	for def in DataLoader.new_skill_systems.get("dreams", []):
-		if PlayerData.get_level("dreamwalking") >= int(def.level):
-			ids.append(str(def.id))
-			names.append("%s · %s XP/hour" % [def.name, UIStyle.fmt(float(def.xp_hour))])
+		var open: bool = PlayerData.get_level("dreamwalking") >= int(def.level)
+		ids.append(str(def.id))
+		locked.append(not open)
+		names.append(("%s · %s XP/hour" % [def.name, UIStyle.fmt(float(def.xp_hour))]) if open else ("%s · unlocks at level %d" % [def.name, int(def.level)]))
 	var choice := _choice(box, ids, names, ids.map(func(id): return AssetRegistry.icon("dreams", str(id))))
+	for i in range(ids.size()):
+		if locked[i]:
+			choice.set_item_disabled(i, true)
 	choice.selected = maxi(0, ids.find(DreamwalkingManager.dreamscape))
 	var dream_icon := UIStyle.icon_texture("dreams", str(ids[choice.selected]))
 	box.add_child(dream_icon)

@@ -656,11 +656,25 @@
       "essence_hour": 11
     },
     {
+      "id": "orchard",
+      "name": "Lantern Orchard",
+      "level": 8,
+      "xp_hour": 7481,
+      "essence_hour": 18
+    },
+    {
       "id": "shore",
       "name": "Moonlit Shore",
       "level": 15,
       "xp_hour": 12943,
       "essence_hour": 25
+    },
+    {
+      "id": "harbour",
+      "name": "Sleepwalker's Harbour",
+      "level": 22,
+      "xp_hour": 17634,
+      "essence_hour": 32
     },
     {
       "id": "wood",
@@ -670,11 +684,25 @@
       "essence_hour": 40
     },
     {
+      "id": "carnival",
+      "name": "Hollow Carnival",
+      "level": 38,
+      "xp_hour": 32060,
+      "essence_hour": 48
+    },
+    {
       "id": "library",
       "name": "Dream Library",
       "level": 45,
       "xp_hour": 39701,
       "essence_hour": 55
+    },
+    {
+      "id": "archive",
+      "name": "Mirror Archive",
+      "level": 52,
+      "xp_hour": 46754,
+      "essence_hour": 62
     },
     {
       "id": "citadel",
@@ -684,11 +712,25 @@
       "essence_hour": 70
     },
     {
+      "id": "clockwork",
+      "name": "Clockwork Dusk",
+      "level": 67,
+      "xp_hour": 65871,
+      "essence_hour": 77
+    },
+    {
       "id": "rift",
       "name": "Lucid Rift",
       "level": 75,
       "xp_hour": 78719,
       "essence_hour": 85
+    },
+    {
+      "id": "cathedral",
+      "name": "Drowned Cathedral",
+      "level": 82,
+      "xp_hour": 94400,
+      "essence_hour": 92
     },
     {
       "id": "void",
@@ -698,11 +740,25 @@
       "essence_hour": 100
     },
     {
+      "id": "summit",
+      "name": "Starless Summit",
+      "level": 97,
+      "xp_hour": 137207,
+      "essence_hour": 107
+    },
+    {
       "id": "astral",
       "name": "Astral Sea",
       "level": 105,
       "xp_hour": 165937,
       "essence_hour": 115
+    },
+    {
+      "id": "threshold",
+      "name": "Wake's Edge",
+      "level": 110,
+      "xp_hour": 185552,
+      "essence_hour": 120
     },
     {
       "id": "crown",

@@ -99,6 +99,7 @@ func run_all(host: Node) -> void:
 	_test_reward_variety()
 	_test_prayer_and_raid_ladders()
 	_test_magic_gear()
+	_test_dreamlands()
 	_test_dungeon_sequencing()
 	_test_session_meters()
 	_test_equipment_upgrade()
@@ -3280,6 +3281,25 @@ func _test_attack_costs() -> void:
 		"the preservation constant matches the key content authors")
 	for cape_id in ["ranged_cape", "ranged_cape_superior"]:
 		var cape: Dictionary = DataLoader.get_item(cape_id)
+## Dreamlands form one ladder: strictly rising unlock level, XP and Essence, no duplicate ids, and
+## each has an icon, so the picker (which now lists locked ones too) is never a dead end.
+func _test_dreamlands() -> void:
+	_heading("Dreamlands")
+	var dreams: Array = DataLoader.new_skill_systems.get("dreams", [])
+	_ok(dreams.size() >= 17, "at least 17 dreamlands are defined (%d)" % dreams.size())
+	var seen: Dictionary = {}
+	var prev: Dictionary = {}
+	for d in dreams:
+		var id: String = str((d as Dictionary).get("id", ""))
+		_ok(not seen.has(id), "dreamland '%s' id is unique" % id)
+		seen[id] = true
+		if not prev.is_empty():
+			_ok(int(d.level) > int(prev.level) and float(d.xp_hour) > float(prev.xp_hour) and float(d.essence_hour) > float(prev.essence_hour),
+				"%s climbs above %s in level, XP and Essence" % [id, str(prev.id)])
+		_ok(AssetRegistry.has_asset("icons/dreams/%s.png" % id), "dreamland '%s' has an icon" % id)
+		prev = d
+	_ok(int((dreams[0] as Dictionary).level) == 1, "the first dreamland is open from level 1")
+
 		_ok(float((cape.get("passive_modifiers", {}) as Dictionary).get(ModifierKeys.AMMO_PRESERVATION_PERCENT, 0.0)) > 0.0,
 			"%s refunds ammunition" % cape_id)
 
