@@ -51,7 +51,7 @@ func _start_wave() -> void:
         list.append(WAVE_ENEMY)
     EventBus.notification.emit("Golbin Raid — wave %d" % wave, "info")
     CombatManager.start_combat({"type": "raid", "id": "golbin_raid", "monsters": list,
-        "endless": false, "raid": true, "attack_style": "melee", "melee_style": "slash"})
+        "endless": false, "raid": true})
 
 func _on_combat_ended(ctx: Dictionary) -> void:
     if active and ctx.get("type", "") == "raid" and ctx.get("reason", "") != "complete":

@@ -461,7 +461,8 @@ func _player_max_hit(style: String) -> int:
 	if style == "magic":
 		var eff_magic: int = _player_effective("magic")
 		return CombatFormulas.max_hit_magic(_spell_max_hit(), float(EquipmentManager.get_strength_bonus("magic")),
-			eff_magic, ModifierManager.get_max_hit_percent("magic"), ModifierManager.get_max_hit_flat("magic"))
+			eff_magic, ModifierManager.get_max_hit_percent("magic"), ModifierManager.get_max_hit_flat("magic"),
+			PlayerData.game_mode)
 	var strength_skill: String = "strength" if style == "melee" else "ranged"
 	var eff: int = _player_effective(strength_skill)
 	var sb: float = float(EquipmentManager.get_strength_bonus(style))

@@ -21,12 +21,12 @@ extends RefCounted
 
 ## Hard ceiling on one fight. Prevents a two-sided stalemate (a monster that cannot be hit and a
 ## player who cannot be hit) from running forever. Reaching it counts as a loss.
-const FIGHT_SECONDS_CEILING: float = 300.0
+const FIGHT_SECONDS_CEILING: float = 900.0
 ## Resolution of the inner loop. Small enough that attack ordering is faithful, large enough that
 ## 10,000 fights finish in a sensible time.
 const STEP_SECONDS: float = 0.1
 ## Guards against a pathological loop where a step of 0 advances nothing.
-const MAX_STEPS_PER_FIGHT: int = 6000
+const MAX_STEPS_PER_FIGHT: int = 9000
 ## Mirrors CombatManager.ENEMY_REGEN_FRACTION: a regenerating monster heals this
 ## fraction of max HP per own attack. Kept literal so the pure model stays
 ## dependency-free; the simulator suite pins parity with the live loop.

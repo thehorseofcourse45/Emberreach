@@ -56,9 +56,12 @@ static func max_hit_melee_ranged(mode: String, effective_lvl: int, strength_bonu
 static func max_hit_magic_base(spell_max_hit: float, magic_damage_bonus: float, effective_magic_lvl: int) -> int:
     return int(floor(spell_max_hit * (1.0 + magic_damage_bonus / 100.0) * (1.0 + (float(effective_magic_lvl) + 1.0) / 200.0)))
 
+## `mode` applies the game mode's damage multiplier relative to Standard, so Adventure's x10 reaches
+## spells the same way it reaches melee and ranged.
 static func max_hit_magic(spell_max_hit: float, magic_damage_bonus: float, effective_magic_lvl: int,
-        percent_mod: float, flat_mod: float) -> int:
-    var base: int = max_hit_magic_base(spell_max_hit, magic_damage_bonus, effective_magic_lvl)
+        percent_mod: float, flat_mod: float, mode: String = "standard") -> int:
+    var mode_scale: float = float(MODE_DAMAGE_MULTIPLIER.get(mode, 10)) / 10.0
+    var base: int = int(floor(float(max_hit_magic_base(spell_max_hit, magic_damage_bonus, effective_magic_lvl)) * mode_scale))
     return int(floor(float(base) * (1.0 + percent_mod / 100.0))) + int(flat_mod)
 
 # ---- 5. Evasion ----
