@@ -976,7 +976,6 @@
     {
       "id": "ferryman_run",
       "name": "Ferryman's Run",
-      "hex": "hex_-1_0",
       "level": 1,
       "hours": 0.5,
       "risk": 5,
@@ -993,7 +992,6 @@
     {
       "id": "reed_road",
       "name": "Silver Reed Road",
-      "hex": "hex_0_-1",
       "level": 5,
       "hours": 1.0,
       "risk": 8,
@@ -1010,7 +1008,6 @@
     {
       "id": "charcoal_haul",
       "name": "Charcoal Haul",
-      "hex": "hex_0_1",
       "level": 10,
       "hours": 1.0,
       "risk": 10,
@@ -1027,7 +1024,6 @@
     {
       "id": "quarry_road",
       "name": "Quarry Road",
-      "hex": "hex_1_0",
       "level": 15,
       "hours": 1.5,
       "risk": 15,
@@ -1044,7 +1040,6 @@
     {
       "id": "smithy_line",
       "name": "Smithy Line",
-      "hex": "hex_-2_0",
       "level": 25,
       "hours": 2.0,
       "risk": 20,
@@ -1061,7 +1056,6 @@
     {
       "id": "lantern_pass",
       "name": "Lantern Pass",
-      "hex": "hex_2_0",
       "level": 35,
       "hours": 3.0,
       "risk": 30,
@@ -1078,7 +1072,6 @@
     {
       "id": "dune_crossing",
       "name": "Dune Crossing",
-      "hex": "hex_0_-2",
       "level": 45,
       "hours": 4.0,
       "risk": 35,
@@ -1095,7 +1088,6 @@
     {
       "id": "tollgate_road",
       "name": "Tollgate Road",
-      "hex": "hex_-1_2",
       "level": 55,
       "hours": 5.0,
       "risk": 45,
@@ -1112,7 +1104,6 @@
     {
       "id": "kings_road",
       "name": "Kings' Road",
-      "hex": "hex_1_2",
       "level": 70,
       "hours": 6.0,
       "risk": 50,
@@ -1129,7 +1120,6 @@
     {
       "id": "wyrmfall_run",
       "name": "Wyrmfall Run",
-      "hex": "hex_2_1",
       "level": 85,
       "hours": 8.0,
       "risk": 60,
@@ -1146,7 +1136,6 @@
     {
       "id": "lighthouse_route",
       "name": "Lighthouse Route",
-      "hex": "hex_-2_-2",
       "level": 100,
       "hours": 10.0,
       "risk": 70,
@@ -1163,7 +1152,6 @@
     {
       "id": "ember_throne_route",
       "name": "Ember Throne Route",
-      "hex": "hex_2_2",
       "level": 112,
       "hours": 12.0,
       "risk": 80,

@@ -112,6 +112,9 @@ func run_all(host: Node) -> void:
 	_test_vein_richness()
 	_test_abyssal_shop()
 	_test_tutorial()
+	_test_engagement_hooks()
+	_test_survey_minigame()
+	_test_map_polish()
 	_test_responsive_layouts(host)
 	# After the layout suite, which is what assembles the shell the tests share: a screen test run
 	# before it would navigate a shell with no panels built and no sidebar to find a tab in.
@@ -126,6 +129,7 @@ func run_all(host: Node) -> void:
 	_test_overview_skill_tabs(host)
 	_test_task_tabs_and_rotation(host)
 	_test_systems_wiring(host)
+	_test_frontier_activities(host)
 	_test_audio()
 	_test_settings_gap_keys()
 	_test_content_validation()
@@ -142,10 +146,6 @@ func run_all(host: Node) -> void:
 	TestSupport.restore_snapshot(snapshot, files)
 	_report()
 
-## The mastery stall is the only acquisition path for the 58 skillcapes and the 2 completion
-## capes, so its gate has to be real: ungated it is a gold-only shortcut to a 99 reward, and
-## mispriced it is a currency printer.
-func _test_mastery_stall() -> void:
 ## Regressions from the gameplay audit: each assertion fails on the pre-fix code.
 func _test_audit_fixes() -> void:
 	_heading("Audit fixes")
@@ -175,6 +175,10 @@ func _test_audit_fixes() -> void:
 	if float(best_heal) < CombatManager._compute_max_hp():
 		_eq(int(DataLoader.get_item(CombatManager.find_food()).get("heal_amount", 0)), best_heal,
 			"when no food fills the gap, the biggest one is eaten")
+	# A food slot narrows auto-eat to what the player assigned.
+	EquipmentManager.food_slots[0] = small_food
+	_eq(CombatManager.find_food(), small_food, "auto-eat sticks to the food assigned to a slot")
+	EquipmentManager.food_slots[0] = ""
 	CombatManager.player_hp = hp0
 	PlayerData.set_level("hitpoints", hp_level0)
 	BankManager.remove_item("shark", 1)
@@ -214,6 +218,29 @@ func _test_audit_fixes() -> void:
 		_ok(CombatManager.equipment_locked() and not EquipmentManager.equip(cape), "a locked expedition blocks equipping")
 		CombatManager.state = CombatManager.State.IDLE
 		CombatManager.context = {}
+	# Status effects change the fight: vulnerability, weakened hits, slower swings.
+	var stunned: Array = [StatusEffect.create("stun", 3.0)]
+	var cursed: Array = [StatusEffect.create("silence", 3.0)]
+	_eq(CombatManager._status_scaled(100, [], stunned), 130, "a stunned target takes 30 percent more")
+	_eq(CombatManager._status_scaled(100, cursed, []), 75, "a silenced attacker hits 25 percent weaker")
+	_ok(StatusEffect.total([StatusEffect.create("slow", 3.0)], "attack_interval_percent") > 0.0, "slow lengthens the swing")
+	# A reset-all drops the Ascendancy; a hand-edited save cannot crash the loaders.
+	PlayerData.prestige = {"ascensions": 2, "points": 5, "nodes": {}}
+	GameManager.reset_everything("standard")
+	_eq(PrestigeManager.points(), 0, "reset everything also clears Ascendancy points")
+	var quests_before: Dictionary = Quests.serialize()
+	Quests.deserialize({"accepted": [1], "claimed": 5})
+	Quests.deserialize(quests_before)
+	var plots_before: Dictionary = FarmingManager.serialize()
+	FarmingManager.deserialize({"plots": "garbage"})
+	_ok(not FarmingManager.plots.is_empty(), "a malformed farm section rebuilds the plots")
+	FarmingManager.deserialize(plots_before)
+	Achievements.deserialize({"completed": 3, "claimed": []})
+	Achievements.deserialize({})
+	# Loading a save drops bonuses the previous character earned.
+	ModifierManager.register("ghost", {"global_gp_percent": 777.0}, "shop", "Ghost")
+	SaveManager._apply(SaveManager.build_save_data())
+	_ok(ModifierManager.get_modifier("global_gp_percent") < 700.0, "restoring a save clears stale shop bonuses")
 	# A 168 hour window is processed in full, not cut at the chunk limit.
 	var gather: Dictionary = _find_gather_action()
 	if not gather.is_empty():
@@ -230,6 +257,10 @@ func _test_audit_fixes() -> void:
 			"a 168 hour window is fully processed")
 		SkillManager.stop_action(SkillManager.StopReason.PLAYER)
 
+## The mastery stall is the only acquisition path for the 58 skillcapes and the 2 completion
+## capes, so its gate has to be real: ungated it is a gold-only shortcut to a 99 reward, and
+## mispriced it is a currency printer.
+func _test_mastery_stall() -> void:
 	_heading("Mastery stall")
 	var offers: Array = ShopManager.stall_offers()
 	_ok(offers.size() >= 60, "the stall stocks every skillcape and both completion capes (%d)" % offers.size())
@@ -3068,6 +3099,37 @@ func _test_township_has_no_dead_ends() -> void:
 	_ok(bool(TownshipManager.trade_offer("trader_monument").ok), "the monument can be raised when the stone is there")
 	_ok(PlayerData.get_xp("township") > xp_before, "raising a monument pays Settlement XP")
 	_approx(float(TownshipManager.resources.get("stone", 0.0)), 0.0, 0.001, "raising a monument spends the stone")
+	# Worship used to read a data block nothing defined, so every patron gave nothing.
+	var saved_worship: String = TownshipManager.worship
+	_ok(not DataLoader.worship.is_empty(), "worship.json defines patrons")
+	for patron_id in DataLoader.worship.keys():
+		_ok(not (DataLoader.worship[patron_id].get("modifiers", {}) as Dictionary).is_empty(),
+			"patron %s grants a real bonus" % str(patron_id))
+	TownshipManager.buildings = {}
+	TownshipManager.set_worship("")
+	var gp_base: float = ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT)
+	TownshipManager.set_worship("patron_tide")
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) - gp_base, 0.0, 0.001, "a patron gives nothing without a Shrine")
+	TownshipManager.buildings = {"township_building_temple": 2}
+	TownshipManager._reregister_modifiers()
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) - gp_base, 8.0, 0.001, "a level-2 Shrine doubles the Tide's 4% gold blessing")
+	TownshipManager.set_worship("not_a_patron")
+	_eq(TownshipManager.worship, "", "an unknown patron id is refused")
+	_approx(ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) - gp_base, 0.0, 0.001, "clearing the patron removes its blessing")
+	# Schoolhouse: the chosen skill earns XP per level each tick; combat and unknown skills are refused.
+	TownshipManager.buildings = {"township_building_school": 2}
+	TownshipManager.set_study("not_a_skill")
+	_eq(TownshipManager.study, "", "an unknown study skill is refused")
+	TownshipManager.set_study("attack")
+	_eq(TownshipManager.study, "", "a combat skill cannot be studied")
+	TownshipManager.set_study("township")
+	_eq(TownshipManager.study, "", "a passive system skill cannot be studied")
+	TownshipManager.set_study("woodcutting")
+	var study_before: float = PlayerData.get_xp("woodcutting")
+	TownshipManager.produce_tick()
+	_approx(PlayerData.get_xp("woodcutting") - study_before, 2.0 * TownshipManager.XP_PER_SCHOOL_LEVEL * ModifierManager.get_skill_xp_multiplier("woodcutting"), 0.5, "a level-2 Schoolhouse pays the studied skill XP each tick")
+	TownshipManager.set_study("")
+	TownshipManager.worship = saved_worship
 	TownshipManager.buildings = saved_buildings
 	TownshipManager.resources = saved_resources
 	TownshipManager._reregister_modifiers()
@@ -3227,13 +3289,13 @@ func _test_reward_variety() -> void:
 	var with_poi: int = 0
 	for hid in DataLoader.cartography_hexes.keys():
 		var poi: Variant = (DataLoader.cartography_hexes[hid] as Dictionary).get("poi")
-		if typeof(poi) != TYPE_DICTIONARY:
+		if typeof(poi) != TYPE_DICTIONARY or (poi as Dictionary).is_empty():
 			continue
 		with_poi += 1
 		poi_names[str((poi as Dictionary).get("name", ""))] = true
 		for k in ((poi as Dictionary).get("effect", {}) as Dictionary).keys():
 			poi_keys[str(k)] = true
-	_eq(with_poi, DataLoader.cartography_hexes.size(), "every hex has something to find")
+	_ok(with_poi >= 25 and with_poi < DataLoader.cartography_hexes.size(), "landmarks are separated by ordinary terrain")
 	_eq(poi_names.size(), with_poi, "every find has its own name")
 	_ok(not poi_names.has("Point of Interest"), "no find is called 'Point of Interest'")
 	_ok(poi_keys.size() >= 15, "finds grant at least fifteen different bonuses (%d)" % poi_keys.size())
@@ -3383,6 +3445,25 @@ func _test_caravaneering_ui(host: Node) -> void:
 	var NewSystems = load("res://scripts/ui/panels/NewSkillSystems.gd")
 	PlayerData.set_level("caravaneering", 100)
 	CartographyManager.discovered["hex_-1_0"] = true
+	var empty: Control = NewSystems.new()
+	host.add_child(empty)
+	empty.set_skill("caravaneering")
+	var empty_options: Array[Node] = empty.find_children("*", "OptionButton", true, false)
+	var cargo_picker: OptionButton = empty_options[3]
+	_ok(cargo_picker.disabled and cargo_picker.get_item_text(0) == "No trade goods in Storage", "empty cargo picker explains missing trade goods")
+	for button in empty.find_children("*", "Button", true, false):
+		if button.text in ["Add cargo", "Fill with wanted goods", "Remove selected good"]:
+			_ok(button.disabled, "%s disabled without stock" % button.text)
+	empty.queue_free()
+	await host.get_tree().process_frame
+	BankManager.add_item_guaranteed("oak_log", 20)
+	var stocked: Control = NewSystems.new()
+	host.add_child(stocked)
+	stocked.set_skill("caravaneering")
+	var stocked_picker: OptionButton = stocked.find_children("*", "OptionButton", true, false)[3]
+	_ok(not stocked_picker.disabled and stocked_picker.item_count > 0 and stocked_picker.get_item_text(0).contains("20 in Storage"), "restocked trade goods enable cargo picker")
+	stocked.queue_free()
+	await host.get_tree().process_frame
 	var states: Array = [0, 1, 3]
 	for count in states:
 		cm.deserialize({})
@@ -3412,7 +3493,11 @@ func _test_caravaneering_ui(host: Node) -> void:
 		for i in range((option as OptionButton).item_count):
 			if (option as OptionButton).is_item_disabled(i):
 				disabled += 1
-	_ok(disabled >= 8, "locked routes and guards are disabled at level 1 (%d disabled entries)" % disabled)
+	_ok(disabled >= 2, "locked guards are disabled at level 1 (%d disabled entries); routes remain previewable" % disabled)
+	var route_picker: OptionButton = low.find_children("*", "OptionButton", true, false)[0]
+	for i in range(route_picker.item_count):
+		var thumbnail: Texture2D = route_picker.get_popup().get_item_icon(i)
+		_ok(thumbnail != null and thumbnail.get_width() == 32 and thumbnail.get_height() == 21, "destination popup item %d uses a tiny thumbnail" % i)
 	low.queue_free()
 	cm.deserialize({})
 	GameManager.start_new_game("standard")
@@ -3444,7 +3529,14 @@ func _test_caravaneering_core() -> void:
 	_ok(cm.can_dispatch("ferryman_run", "grand", "hired_hand", cargo) != "", "an unowned wagon is refused")
 	_ok(cm.can_dispatch("nope", "handcart", "hired_hand", cargo) != "" and cm.can_dispatch("ferryman_run", "nope", "hired_hand", cargo) != "" and cm.can_dispatch("ferryman_run", "handcart", "nope", cargo) != "", "unknown ids are refused")
 	CartographyManager.discovered.erase("hex_-1_0")
-	_ok(cm.can_dispatch("ferryman_run", "handcart", "hired_hand", cargo) == "Destination not discovered yet", "an undiscovered destination is refused")
+	_ok(cm.can_dispatch("ferryman_run", "handcart", "hired_hand", cargo) == "", "Caravaneering works without discovering a Surveying destination")
+	for r in cm.routes():
+		if int(r.level) > 1:
+			PlayerData.set_level("caravaneering", int(r.level) - 1)
+			_ok(cm.can_dispatch(str(r.id), "handcart", "hired_hand", cargo).begins_with("Route unlocks"), "%s stays locked below its skill level" % str(r.id))
+		PlayerData.set_level("caravaneering", int(r.level))
+		_ok(cm.can_dispatch(str(r.id), "handcart", "hired_hand", cargo) == "", "%s unlocks at its skill level without Surveying" % str(r.id))
+	PlayerData.set_level("caravaneering", 100)
 	CartographyManager.discovered["hex_-1_0"] = true
 	var stock_before: int = BankManager.get_count("oak_log")
 	var gp_before: float = PlayerData.gp
@@ -3551,7 +3643,7 @@ func _test_caravaneering_core() -> void:
 	var cargo5: Dictionary = {"mithril_bar": 50}
 	var pv: Dictionary = cm.preview("smithy_line", "wagon", "hired_hand", cargo5)
 	var chance: float = cm.loss_chance("smithy_line", "hired_hand")
-	_ok(chance > 0.0 and absf(float(pv.expected_revenue) - float(pv.revenue) * ((1.0 - chance) * 1.05 + chance * 0.75)) < 0.01, "the forecast uses the true average (risk %.0f percent)" % (chance * 100.0))
+	_ok(chance > 0.0 and absf(float(pv.expected_revenue) - float(pv.revenue) * (1.0 - 5.0 * 0.06 * (chance + 2.0 * maxf(chance, 0.15)) / 6.0 + 0.05 * pow(1.0 - (chance + 2.0 * maxf(chance, 0.15)) / 6.0, 5.0))) < 0.01, "the balanced journey forecast uses the true average (risk %.0f percent)" % (chance * 100.0))
 	# A bad history in a save cannot break the panel's data.
 	cm.deserialize({"history": ["x", {"route": "ghost"}, {"route": "ferryman_run"}, 5]})
 	_eq(cm.history.size(), 1, "only well-formed history entries survive loading")
@@ -3598,7 +3690,7 @@ func _test_caravaneering_data() -> void:
 	for r in routes:
 		_ok(not ids.has(str(r.id)), "route %s id is unique" % str(r.id))
 		ids[str(r.id)] = true
-		_ok(DataLoader.cartography_hexes.has(str(r.hex)), "route %s ends on a real hex" % str(r.id))
+		_ok(not r.has("hex") and ResourceLoader.exists("res://assets/caravans/maps/%s.png" % str(r.id)), "route %s has its own landscape and no Surveying dependency" % str(r.id))
 		_ok(float(r.hours) > 0.0 and float(r.multiplier) > 1.0 and int(r.risk) >= 0 and int(r.xp) > 0, "route %s has sane numbers" % str(r.id))
 		for item_id in (r.demand as Array):
 			_ok(not DataLoader.get_item(str(item_id)).is_empty(), "route %s demands a real item (%s)" % [str(r.id), str(item_id)])
@@ -3800,12 +3892,16 @@ func _test_magic_gear() -> void:
 	CombatManager.monster_max_hp = 45
 	var healthy_total: float = 0.0
 	var wounded_total: float = 0.0
+	# Same seed for each healthy/wounded pair: both swings see identical hit and damage rolls, so
+	# only enrage differs and the result no longer depends on dice drawn earlier in the suite.
 	for _i in range(60):
+		CombatManager.seed_rng(9100 + _i)
 		CombatManager.player_hp = 9000.0
 		CombatManager.player_max_hp = 9000.0
 		CombatManager.monster_hp = 45
 		CombatManager._monster_attack()
 		healthy_total += 9000.0 - CombatManager.player_hp
+		CombatManager.seed_rng(9100 + _i)
 		CombatManager.player_hp = 9000.0
 		CombatManager.player_max_hp = 9000.0
 		CombatManager.monster_hp = 5
@@ -4298,6 +4394,75 @@ func _test_systems_wiring(host: Node) -> void:
 	_test_ship_flow()
 	_test_familiar_star_and_obstacle_flow()
 
+## Surveying's charting activities belong on the Frontier map: the map is the surface their
+## progress is drawn across, and the generic Activities card they used to sit in promised "a
+## reward to train toward" for actions that produce nothing. This asserts the integration itself —
+## the rows live inside the map section, the generic card is gone, the details card follows the
+## section, and a tap on a row selects that activity everywhere at once.
+func _test_frontier_activities(host: Node) -> void:
+	_heading("Surveying's activities live on the Frontier map")
+	host.call("navigate", {"screen": Screens.SKILLS, "skill_id": "cartography"})
+	var panel: Control = (host.get("_panels") as Dictionary).get(Screens.SKILLS, null)
+	_ok(panel != null, "the Skills screen exists")
+	if panel == null:
+		return
+	var systems: Control = panel.get("_systems")
+	var grid: Control = panel.get("_main_grid")
+	var activities: Control = panel.get("_activities_card")
+	_ok(systems != null and grid != null and activities != null,
+		"the screen carries its systems section, grid and activities card")
+	if systems == null or grid == null or activities == null:
+		return
+	_ok(systems.visible, "Surveying shows its Frontier map section")
+	_ok(not activities.visible, "the generic Activities card is gone for Surveying")
+	var children: Array = panel.get_children()
+	_ok(children.find(systems) < children.find(grid),
+		"the Frontier map section sits above the details card")
+	var where: String = _card_text(systems)
+	_ok(where.contains("charted"), "the hex map is still inside the Frontier map section")
+	var missing: Array[String] = []
+	for action in DataLoader.get_skill_actions("cartography"):
+		if typeof(action) != TYPE_DICTIONARY:
+			continue
+		var chart_name: String = str((action as Dictionary).get("name", ""))
+		if not where.contains(chart_name):
+			missing.append(chart_name)
+	_ok(missing.is_empty(), "every Surveying chart is listed on the Frontier map%s" % _trouble(missing, " — missing: "))
+	_ok(not _card_text(activities).contains("Survey Hex"),
+		"the hidden Activities card holds no stale rows")
+
+	# The tap: selecting a chart on the map drives the details card below it.
+	var contexts: Array[Dictionary] = []
+	panel.connect("context_changed", func(ctx): contexts.append(ctx))
+	var coast: Button = _find_row_button(systems, "Chart the Coast")
+	_ok(coast != null, "Chart the Coast is a tappable row on the map")
+	if coast != null:
+		coast.pressed.emit()
+		_eq(str(panel.get("_selected_action")), "chart_coast", "tapping a chart selects it")
+		_eq(str(systems.get("_selected_action")), "chart_coast", "the map's list marks the selection")
+		_ok(contexts.size() == 1 and str((contexts[0] as Dictionary).get("action_id", "")) == "chart_coast",
+			"the tap asks the detail pane for that recipe")
+		_ok(_card_text(grid).contains("Chart the Coast"),
+			"the details card below the map shows the selected chart")
+
+	# Locks still read correctly in the new home: a chart above your level is listed but disabled.
+	var level_before: int = PlayerData.get_level("cartography")
+	PlayerData.set_level("cartography", 1)
+	panel.call("refresh")
+	var locked: Button = _find_row_button(systems, "Chart the Coast")
+	_ok(locked != null and locked.disabled, "a chart above your level is listed but locked")
+	var open: Button = _find_row_button(systems, "Survey Hex")
+	_ok(open != null and not open.disabled, "the first chart is open at level 1")
+	PlayerData.set_level("cartography", level_before)
+	panel.call("refresh")
+
+	# And nothing else moved: a plain skill still gets its generic Activities card first.
+	host.call("navigate", {"screen": Screens.SKILLS, "skill_id": "woodcutting"})
+	_ok(activities.visible, "a gathering skill still shows its Activities card")
+	children = panel.get_children()
+	_ok(children.find(grid) < children.find(systems),
+		"a plain skill keeps the generic order: activities, then systems")
+
 func _test_slayer_task_flow() -> void:
 	var coins_before: float = PlayerData.slayer_coins
 	SlayerManager.deserialize({})
@@ -4409,18 +4574,40 @@ func _test_ship_flow() -> void:
 	_ok(CartographyManager.buy_ship("keel_cutter"), "the keel cutter can be bought")
 	_ok(absf(CartographyManager.travel_percent() - 80.0) < 0.01,
 		"the cutter discounts travel to 80% of base")
-	var hex_id := ""
-	var base := 0.0
-	for key in DataLoader.cartography_hexes.keys():
-		hex_id = str(key)
-		base = float((DataLoader.cartography_hexes[key] as Dictionary).get("travel_cost", 0))
-		break
+	# The frontier: the origin starts charted, its neighbours are reachable, far regions are not.
+	var origin: String = CartographyManager.hex_at(Vector2i.ZERO)
+	_ok(origin != "" and CartographyManager.is_discovered(origin), "the origin region starts charted")
+	var far: String = CartographyManager.hex_at(Vector2i(5, 5))
+	if far != "" and not CartographyManager.is_discovered(far):
+		_ok(CartographyManager.travel_block(far) != "" and not CartographyManager.travel(far),
+			"a region with no charted neighbour is out of reach")
+	var hex_id: String = CartographyManager.hex_at(Vector2i(-1, 0))
+	var base: float = float(CartographyManager.get_hex(hex_id).get("travel_cost", 0))
+	var mult: float = float(CartographyManager.terrain_rule(hex_id).get("cost_mult", 1.0))
 	if hex_id != "" and base > 0.0:
 		var gp0 := PlayerData.gp
-		_ok(CartographyManager.travel(hex_id), "travel succeeds with gold")
-		_ok(not CartographyManager.is_discovered(hex_id) or gp0 - PlayerData.gp <= base + 0.5,
-			"discounted travel never costs more than base")
-		_approx(gp0 - PlayerData.gp, base * 0.8, 0.51, "travel costs 80% of base with the cutter")
+		_ok(CartographyManager.travel(hex_id), "a neighbour of the origin can be travelled to")
+		_approx(gp0 - PlayerData.gp, base * mult * 0.8, 0.51, "travel costs base x terrain x 80% with the cutter")
+	# Terrain rules: plains is cheaper than mountains, and crystal badlands need the third hull.
+	_ok(float(DataLoader.cartography_terrain.get("plains", {}).get("cost_mult", 1.0)) < float(DataLoader.cartography_terrain.get("mountains", {}).get("cost_mult", 1.0)),
+		"plains travel is cheaper than mountains")
+	for key in DataLoader.cartography_hexes.keys():
+		if str(DataLoader.cartography_hexes[key].get("terrain", "")) == "crystal_badlands" and not CartographyManager.is_discovered(str(key)):
+			var c: Vector2i = CartographyManager.coord_of(str(key))
+			for d in CartographyManager.NEIGHBOURS:
+				var n: String = CartographyManager.hex_at(c + d)
+				if n != "":
+					CartographyManager.discovered[n] = true
+			_ok(CartographyManager.travel_block(str(key)).contains("Sail"), "crystal badlands need a larger hull (%s)" % CartographyManager.travel_block(str(key)))
+			break
+	_ok(CartographyManager.survey_reveals(origin) > 0, "every region allows some survey reveals")
+	# Content on the map: every area, dungeon and dig site sits on a real region.
+	var placed: int = 0
+	for table in [DataLoader.areas, DataLoader.dungeons, DataLoader.archaeology_sites]:
+		for rid in table.keys():
+			if DataLoader.cartography_hexes.has(str(table[rid].get("hex", ""))):
+				placed += 1
+	_eq(placed, DataLoader.areas.size() + DataLoader.dungeons.size() + DataLoader.archaeology_sites.size(), "every area, dungeon and dig site is on the map")
 	CartographyManager.deserialize(CartographyManager.serialize())
 	_ok(CartographyManager.ship == "keel_cutter", "the hull survives a save round trip")
 	CartographyManager.deserialize(before)
@@ -6072,6 +6259,8 @@ func _test_detail_cards(host: Node) -> void:
 	var frame := Control.new()
 	frame.size = Vector2(UITokens.W_DETAIL, 640)
 	host.add_child(frame)
+	# Detach from host first: a node with a parent cannot be added to a second one.
+	panel.get_parent().remove_child(panel)
 	frame.add_child(panel)
 	# A plain Control does not size its children, and a VBox would otherwise collapse to its own
 	# minimum: the pane has to be told how wide it is for this to measure anything.
@@ -6099,7 +6288,7 @@ func _test_detail_cards(host: Node) -> void:
 	_ok(starved.is_empty(), "no card squeezes a label below reading width%s" % _trouble(starved, " — starved: "))
 
 	Goals.clear()
-	panel.queue_free()
+	frame.queue_free()   # owns panel now, so this frees both
 	overview.queue_free()
 	skills.queue_free()
 
@@ -6462,6 +6651,115 @@ func _primary_output(skill_id: String, action_id: String) -> String:
 ## online/offline comparison is a fair one. Several managers roll their own RNG (pet unlocks,
 ## summoning marks, farming survival, slayer task rolls); leaving any of them random would mean
 ## two "identical" runs diverge through a passive XP bonus rather than through the model.
+## Rotating tasks reopen each window and need fresh work, a daily streak scales their rewards,
+## random events fire at their data rate, and rare drops are kept in a bounded, saved history.
+func _test_engagement_hooks() -> void:
+	_heading("Engagement: rotation repeats, streak, random events, rare drops")
+	GameManager.start_new_game("standard")
+	var qid: String = "timber_drive"
+	Quests.rotation_window_override = 500
+	_satisfy_quest(qid)
+	_ok(Quests.is_complete(qid), "a rotating task completes")
+	_ok(Quests.claim(qid), "the rotating task can be claimed")
+	_ok(not Quests.claim(qid), "it cannot be claimed twice in one rotation")
+	_eq(Quests.current_streak(), 1, "the first claim starts a one-day streak")
+	Quests.rotation_window_override = 501
+	_ok(not Quests.is_claimed(qid), "the task reopens in the next rotation")
+	_ok(not Quests.is_complete(qid), "old progress does not re-complete it")
+	_satisfy_quest(qid)
+	_ok(Quests.is_complete(qid), "fresh progress completes it again")
+	Quests._streak = 1
+	Quests._streak_day = Quests._today() - 1
+	var gp_before: float = PlayerData.gp
+	_ok(Quests.claim(qid), "the repeat can be claimed")
+	_eq(Quests.current_streak(), 2, "claiming on the next day extends the streak")
+	_approx(PlayerData.gp - gp_before, 400.0 * 1.1, 0.01, "a two-day streak pays +10% task gold")
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(Quests.serialize()))
+	Quests.deserialize(saved)
+	_ok(Quests.is_claimed(qid) and Quests.current_streak() == 2, "claims and streak survive a save round trip")
+	Quests.rotation_window_override = -1
+	const RandomEvents = preload("res://scripts/core/RandomEvents.gd")
+	_ok(DataLoader.random_events.size() >= 3, "random_events.json defines events")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var hits: int = 0
+	for _i in range(20000):
+		if RandomEvents.roll("lucky_haul", rng):
+			hits += 1
+	_ok(hits > 100 and hits < 320, "lucky haul fires about 1%% of the time (%d / 20000)" % hits)
+	_approx(RandomEvents.gp_for("travelling_merchant", 10), 250.0, 0.001, "the merchant pays per skill level")
+	var n: int = PlayerData.notable_drops.size()
+	PlayerData.record_rare_drop("normal_log", 1, "woodcutting")
+	_eq(PlayerData.notable_drops.size(), n + 1, "a rare drop is recorded")
+	for _i in range(PlayerData.NOTABLE_DROPS_MAX + 10):
+		PlayerData.record_rare_drop("normal_log", 1, "combat")
+	_eq(PlayerData.notable_drops.size(), PlayerData.NOTABLE_DROPS_MAX, "the drop history is capped")
+	var pd: Dictionary = JSON.parse_string(JSON.stringify(PlayerData.serialize()))
+	PlayerData.deserialize(pd)
+	_eq(PlayerData.notable_drops.size(), PlayerData.NOTABLE_DROPS_MAX, "the drop history survives a save round trip")
+	GameManager.start_new_game("standard")
+	_eq(PlayerData.notable_drops.size(), 0, "a new game clears the drop history")
+
+## Surveying is a tile hunt: the picture cuts evenly into tiles, each hex hides its POI on a
+## fixed tile, a wrong tile claims nothing, and revealing the POI tile claims it.
+func _test_survey_minigame() -> void:
+	_heading("Survey minigame")
+	const Survey = preload("res://scripts/ui/SurveyMinigame.gd")
+	_eq(Survey.GRID * Survey.TILE_SIZE, Survey.PICTURE_SIZE, "the survey picture cuts evenly into tiles")
+	var hex_id: String = ""
+	for id in DataLoader.cartography_hexes.keys():
+		if not (DataLoader.cartography_hexes[id].get("poi", {}) as Dictionary).is_empty():
+			hex_id = str(id)
+			break
+	_ok(hex_id != "", "a hex with a Point of Interest exists")
+	var poi: Vector2i = Survey.poi_cell(hex_id)
+	_ok(poi.x >= 0 and poi.x < Survey.GRID and poi.y >= 0 and poi.y < Survey.GRID, "the POI hides on the board")
+	_ok(poi == Survey.poi_cell(hex_id), "a hex always hides its POI on the same tile")
+	_eq(Survey.hint(poi, poi), 0, "the hint is zero on the POI")
+	_eq(Survey.hint(poi + Vector2i(1, 1), poi), 1, "a diagonal neighbour is one tile away")
+	_eq(Survey.placeholder_picture(hex_id).get_width(), Survey.PICTURE_SIZE, "the placeholder picture is full size")
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(CartographyManager.serialize()))
+	CartographyManager.discovered[hex_id] = true
+	CartographyManager.surveyed.erase(hex_id)
+	var game = Survey.new()
+	game.hex_id = hex_id
+	(Engine.get_main_loop() as SceneTree).root.add_child(game)
+	game._reveal(Vector2i(0, 0) if poi != Vector2i(0, 0) else Vector2i(1, 1))
+	_ok(not CartographyManager.surveyed.has(hex_id), "a wrong tile claims nothing")
+	game._reveal(poi)
+	_ok(CartographyManager.surveyed.has(hex_id), "revealing the POI tile claims it")
+	# free(), not queue_free(): a live Window left on the root keeps quit() from finishing.
+	game.free()
+	CartographyManager.deserialize(saved)
+
+## Map polish: charting counts for tasks and milestones, terrain set bonuses, the ship token.
+func _test_map_polish() -> void:
+	_heading("Frontier map polish")
+	var saved: Dictionary = JSON.parse_string(JSON.stringify(CartographyManager.serialize()))
+	var n: int = CartographyManager.discovered.size()
+	_approx(float(Quests.describe_objective({"kind": "chart_hexes", "required": 1})["current"]), float(n), 0.001, "chart_hexes counts charted regions")
+	_approx(Achievements.measure({"kind": "chart_hexes", "value": 1}), float(n), 0.001, "the chart_hexes milestone counts charted regions")
+	var dunes: String = ""
+	for id in DataLoader.cartography_hexes.keys():
+		var h: Dictionary = DataLoader.cartography_hexes[id]
+		if str(h.get("terrain", "")) == "dunes" and not (h.get("poi", {}) as Dictionary).is_empty():
+			dunes = str(id)
+	_eq(CartographyManager.terrain_progress("dunes").y, 1, "the dunes set has one landmark")
+	CartographyManager.surveyed.erase(dunes)
+	CartographyManager._reregister()
+	var before: float = ModifierManager.get_modifier("global_double_loot_percent")
+	CartographyManager.discovered[dunes] = true
+	CartographyManager.survey(dunes)
+	_ok(ModifierManager.get_modifier("global_double_loot_percent") > before, "claiming every landmark on a terrain grants its set bonus")
+	var next: String = CartographyManager.hex_at(Vector2i(1, 0))
+	CartographyManager.discovered.erase(next)
+	PlayerData.add_gp(1000000.0)
+	_ok(CartographyManager.travel(next) and CartographyManager.current_hex == next, "travel moves the ship token")
+	var round_trip: Dictionary = JSON.parse_string(JSON.stringify(CartographyManager.serialize()))
+	CartographyManager.deserialize(round_trip)
+	_eq(CartographyManager.current_hex, next, "the ship position survives a save round trip")
+	CartographyManager.deserialize(saved)
+
 func _deterministic(on: bool) -> void:
 	if not on:
 		return
@@ -6723,6 +7021,14 @@ func _attach(node: Node) -> void:
 func _find_button(root: Node, needle: String) -> Button:
 	for node in _walk(root):
 		if node is Button and (node as Button).text.find(needle) >= 0:
+			return node
+	return null
+
+## Activity rows keep their text in child Labels inside the Button, so a match on the button's
+## own text finds nothing: match on everything the row renders.
+func _find_row_button(root: Node, needle: String) -> Button:
+	for node in _walk(root):
+		if node is Button and _card_text(node).contains(needle):
 			return node
 	return null
 

@@ -1,7 +1,10 @@
 extends Node
-## Caravaneering: caravans carry Storage items along trade routes over discovered Cartography hexes.
+## Caravaneering: caravans carry Storage items along trade routes unlocked by Caravaneering levels.
 ## A trip is a countdown in seconds (no wall clock), so reloads and clock changes cannot pay twice.
 ## Prices are deterministic per route + good + day. Bandits are a data roll: route risk vs guard power.
+
+const Journey = preload("res://scripts/core/CaravanJourney.gd")
+var next_trip_id: int = 1
 
 const DAY_SECONDS: float = 86400.0
 const HISTORY_LIMIT: int = 10
@@ -78,7 +81,7 @@ func unit_price(route_id: String, item_id: String, day: int) -> float:
 	var profit: float = 1.0 + ModifierManager.get_modifier("caravaneering_profit_percent") / 100.0
 	var price: float = float(DataLoader.get_item(item_id).get("sell_price", 0)) * float(def.multiplier) * demand_factor(route_id, item_id) * price_factor(route_id, item_id, day) * profit
 	var cap: float = store_price(item_id)
-	return minf(price, cap) if cap > 0.0 else price
+	return minf(price, cap / 1.05) if cap > 0.0 else price
 
 func sale_value(route_id: String, item_id: String, qty: int, day: int) -> int:
 	return floori(unit_price(route_id, item_id, day) * float(maxi(0, qty)))
@@ -106,12 +109,17 @@ func preview(route_id: String, wagon_id: String, guard_id: String, cargo: Dictio
 		base += float(DataLoader.get_item(str(item_id)).get("sell_price", 0)) * qty
 		revenue += float(sale_value(route_id, str(item_id), qty, day))
 	var chance: float = loss_chance(route_id, guard_id)
-	var expected: float = revenue * ((1.0 - chance) * 1.05 + chance * 0.75)
+	# Balanced journey forecast: five independent stops; weather has a minimum risk.
+	var hazards: float = chance + 2.0 * maxf(chance, 0.15)
+	var expected_loss: float = 5.0 * 0.06 * hazards / 6.0
+	var safe_trip: float = pow(1.0 - hazards / 6.0, 5.0)
+	var expected: float = revenue * (1.0 - expected_loss + 0.05 * safe_trip)
+	var stop_rewards: float = 5.0 * maxi(1, floori(float(route(route_id).get("xp", 0)) * 0.001)) * (8.0 - hazards) / 6.0
 	var wage: float = float(guard(guard_id).get("wage", 0))
 	var hours: float = trip_seconds(route_id) / 3600.0
 	return {"revenue": revenue, "expected_revenue": expected, "wages": wage, "base_value": base,
 		"profit": expected - wage - base, "loss_risk": chance, "hours": hours,
-		"gp_per_hour": (expected - wage) / maxf(hours, 0.001), "xp": float(route(route_id).get("xp", 0))}
+		"stop_rewards": stop_rewards, "gp_per_hour": (expected + stop_rewards - wage) / maxf(hours, 0.001), "xp": float(route(route_id).get("xp", 0)) * ModifierManager.get_skill_xp_multiplier("caravaneering")}
 
 # ---------------- dispatch ----------------
 func wagon_in_use(wagon_id: String) -> bool:
@@ -142,7 +150,6 @@ func can_dispatch(route_id: String, wagon_id: String, guard_id: String, cargo: D
 	if level < int(r.level): return "Route unlocks at Caravaneering %d" % int(r.level)
 	if level < int(w.level): return "Wagon unlocks at Caravaneering %d" % int(w.level)
 	if level < int(g.level): return "Guard unlocks at Caravaneering %d" % int(g.level)
-	if not CartographyManager.is_discovered(str(r.hex)): return "Destination not discovered yet"
 	if not owned_wagons.has(wagon_id): return "You do not own that wagon"
 	var busy: int = 0
 	for i in range(caravans.size()):
@@ -155,7 +162,9 @@ func can_dispatch(route_id: String, wagon_id: String, guard_id: String, cargo: D
 	var total: int = load_of(cargo)
 	if total <= 0: return "Load some cargo first"
 	if total > int(w.capacity): return "Cargo exceeds the wagon's capacity"
+	var goods: Array = _group("caravan_goods").map(func(g): return str(g.item_id))
 	for item_id in cargo:
+		if not goods.has(str(item_id)): return "That item is not a trade good"
 		if int(cargo[item_id]) < 0 or not BankManager.has_item(str(item_id), int(cargo[item_id])):
 			return "Out of cargo"
 	if PlayerData.gp < float(g.wage): return "Out of gold for the guard's wage"
@@ -179,7 +188,9 @@ func _launch(route_id: String, wagon_id: String, guard_id: String, cargo: Dictio
 	PlayerData.spend_gp(float(guard(guard_id).wage))
 	var seconds: float = trip_seconds(route_id)
 	var entry: Dictionary = {"route": route_id, "wagon": wagon_id, "guard": guard_id, "cargo": clean,
-		"remaining": seconds, "total": seconds, "repeat": repeat, "status": "Travelling"}
+		"remaining": seconds, "total": seconds, "repeat": repeat, "status": "Travelling",
+		"journey": Journey.create(route_id, next_trip_id)}
+	next_trip_id += 1
 	if at >= 0 and at < caravans.size():
 		caravans[at] = entry
 	else:
@@ -199,7 +210,7 @@ func resume(index: int) -> bool:
 	if why != "":
 		c.status = why
 		return false
-	_launch(str(c.route), str(c.wagon), str(c.guard), c.cargo, true, index)
+	_launch(str(c.route), str(c.wagon), str(c.guard), c.cargo, bool(c.repeat), index)
 	_notify()
 	return true
 
@@ -234,8 +245,11 @@ func advance(seconds: float, _end_time: float = 0.0) -> void:
 				break
 			if float(c.remaining) > left:
 				c.remaining = float(c.remaining) - left
+				_reach_stops(c)
 				break
 			left -= float(c.remaining)
+			c.remaining = 0.0
+			_reach_stops(c)
 			if not _complete(index):
 				break   # the slot was freed; the caravan now at `index` was already advanced
 	if _dirty:
@@ -259,7 +273,10 @@ func _complete(index: int) -> bool:
 	for item_id in c.cargo:
 		revenue += float(sale_value(str(c.route), str(item_id), int(c.cargo[item_id]), day))
 	var loss: float = 0.0
-	if _rng.randf() < loss_chance(str(c.route), str(c.guard)):
+	if c.has("journey"):
+		loss = float(c.journey.loss)
+		revenue *= 1.0 - loss if loss > 0.0 else 1.05
+	elif _rng.randf() < loss_chance(str(c.route), str(c.guard)):
 		loss = _rng.randf_range(0.10, 0.40)
 		revenue *= 1.0 - loss
 	else:
@@ -269,6 +286,7 @@ func _complete(index: int) -> bool:
 	var xp: float = float(r.get("xp", 0)) * ModifierManager.get_skill_xp_multiplier("caravaneering")
 	PlayerData.add_xp("caravaneering", xp)
 	MasteryManager.add_mastery_xp("caravaneering", str(c.route), float(c.total), ModifierManager.get_mastery_xp_bonus("caravaneering"))
+	PetManager.roll_for_skill("caravaneering", float(c.total))
 	var doubling: float = ModifierManager.get_modifier("caravaneering_doubling_percent") / 100.0
 	var found: Dictionary = {}
 	for item_id in (r.get("specialty", {}) as Dictionary):
@@ -278,7 +296,8 @@ func _complete(index: int) -> bool:
 		found[str(item_id)] = qty
 	if PlayerData.active_potion == "potion_caravaneering":
 		PotionManager.consume_charge("caravaneering:trip")
-	history.push_front({"route": str(c.route), "revenue": gold, "loss": loss, "xp": xp, "items": found})
+	history.push_front({"route": str(c.route), "revenue": gold, "loss": loss, "xp": xp, "items": found,
+		"total": float(c.total), "journey": c.get("journey", {}).duplicate(true)})
 	if history.size() > HISTORY_LIMIT:
 		history.resize(HISTORY_LIMIT)
 	_tally.trips = int(_tally.trips) + 1
@@ -308,9 +327,10 @@ func take_tally() -> Dictionary:
 
 # ---------------- save ----------------
 func serialize() -> Dictionary:
-	return {"caravans": caravans.duplicate(true), "owned_wagons": owned_wagons.duplicate(), "history": history.duplicate(true)}
+	return {"next_trip_id": next_trip_id, "caravans": caravans.duplicate(true), "owned_wagons": owned_wagons.duplicate(), "history": history.duplicate(true)}
 
 func deserialize(data: Dictionary) -> void:
+	next_trip_id = maxi(1, int(data.get("next_trip_id", 1)))
 	caravans = []
 	owned_wagons = ["handcart"]
 	history = []
@@ -338,6 +358,9 @@ func deserialize(data: Dictionary) -> void:
 			caravans.append({"route": str(entry.route), "wagon": str(entry.wagon), "guard": str(entry.guard), "cargo": cargo,
 				"remaining": remaining, "total": total, "repeat": bool(entry.get("repeat", false)),
 				"idle": bool(entry.get("idle", false)), "status": str(entry.get("status", "Travelling"))})
+			if entry.get("journey", {}) is Dictionary and not (entry.get("journey", {}) as Dictionary).is_empty():
+				caravans[-1].journey = Journey.restore(str(entry.route), entry.journey)
+				next_trip_id = maxi(next_trip_id, int(caravans[-1].journey.seed) + 1)
 			if not owned_wagons.has(str(entry.wagon)):
 				owned_wagons.append(str(entry.wagon))
 		caravans = caravans.slice(0, 6)
@@ -347,6 +370,38 @@ func deserialize(data: Dictionary) -> void:
 			if entry is Dictionary and not route(str(entry.get("route", ""))).is_empty():
 				history.append({"route": str(entry.route), "revenue": maxi(0, int(entry.get("revenue", 0))),
 					"loss": clampf(float(entry.get("loss", 0.0)), 0.0, 1.0), "xp": maxf(0.0, float(entry.get("xp", 0.0))),
-					"items": entry.get("items", {}) if entry.get("items", {}) is Dictionary else {}})
+					"items": entry.get("items", {}) if entry.get("items", {}) is Dictionary else {},
+					"total": maxf(0.0, float(entry.get("total", 0))),
+					"journey": Journey.restore(str(entry.route), entry.journey) if entry.get("journey", {}) is Dictionary and not (entry.get("journey", {}) as Dictionary).is_empty() else {}})
+				if not history[-1].journey.is_empty(): next_trip_id = maxi(next_trip_id, int(history[-1].journey.seed) + 1)
 		history = history.slice(0, HISTORY_LIMIT)
 	_tally = {"trips": 0, "gp": 0, "xp": 0, "items": {}}
+
+## Stop rewards are granted once, online and during offline catch-up, before the arrival payout.
+func _reach_stops(c: Dictionary) -> void:
+	if not c.has("journey") or float(c.total) <= 0.0: return
+	var j: Dictionary = c.journey
+	var progress: float = clampf(1.0 - float(c.remaining) / float(c.total), 0.0, 1.0)
+	while int(j.next_stop) <= 5 and progress + 0.000001 >= float(j.next_stop) / 6.0:
+		var stop: int = int(j.next_stop)
+		j.next_stop = stop + 1
+		var result: Dictionary = Journey.resolve(c, stop, route(str(c.route)), float(guard(str(c.guard)).get("power", 0)))
+		j.log.append(result)
+		if int(result.gp) > 0:
+			PlayerData.add_gp(int(result.gp))
+			_tally.gp = int(_tally.gp) + int(result.gp)
+		_dirty = true
+
+func set_approach(seed: int, stop: int, choice: String) -> bool:
+	if stop < 1 or stop > 5 or not Journey.APPROACHES.has(choice): return false
+	for c in caravans:
+		if c.has("journey") and int(c.journey.seed) == seed and not bool(c.get("idle", false)):
+			if stop < int(c.journey.next_stop): return false
+			c.journey.points[stop].approach = choice
+			return true
+	return false
+
+func trip(seed: int) -> Dictionary:
+	for c in caravans:
+		if c.has("journey") and int(c.journey.seed) == seed: return c
+	return {}

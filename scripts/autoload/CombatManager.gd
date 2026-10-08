@@ -183,7 +183,7 @@ func expedition_unlock_reason() -> String:
 ## The single evaluator every UI reads, so the list, the card and the detail pane cannot disagree.
 ## True while a fight inside an `equipment_locked` dungeon is running.
 func equipment_locked() -> bool:
-	return state != State.IDLE and str(context.get("type", "")) == "dungeon" \
+	return state != State.IDLE and state != State.DEAD and str(context.get("type", "")) == "dungeon" \
 		and bool(DataLoader.get_dungeon(str(context.get("id", ""))).get("equipment_locked", false))
 
 func dungeon_lock_reason(dungeon_id: String) -> String:
@@ -333,6 +333,8 @@ func _tick_fighting(delta: float) -> void:
 	if _in_raid():
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
 	monster_attack_interval = maxf(CombatSimulator.MONSTER_INTERVAL_FLOOR, float(current_monster().get("attack_speed", 3.0)))
+	player_attack_interval *= 1.0 + StatusEffect.total(player_effects, "attack_interval_percent") / 100.0
+	monster_attack_interval *= 1.0 + StatusEffect.total(monster_effects, "attack_interval_percent") / 100.0
 	if not _is_player_stunned(): player_attack_timer += delta
 	if not CombatSimulator._blocked(monster_effects): monster_attack_timer += delta
 	var guard: int = 0
@@ -580,6 +582,7 @@ func _player_attack() -> void:
 	if dmg > 0:
 		dmg = maxi(1, int(floor(float(dmg) * MonsterMechanics.affinity_multiplier(m, attack_style))))
 	dmg = MonsterMechanics.armored_reduce(m, dmg)
+	dmg = _status_scaled(dmg, player_effects, monster_effects)
 	EnchantingManager.on_hit(dmg)
 	apply_damage_to_monster(dmg)
 	_sig_player_attacked(dmg, is_crit)
@@ -590,9 +593,23 @@ func _player_attack() -> void:
 	if ls > 0.0:
 		player_hp = minf(player_hp + float(dmg) * ls / 100.0, _compute_max_hp())
 
+## A hit after status effects: the attacker's own debuffs (damage dealt) and the target's
+## vulnerabilities (damage taken). A positive hit never rounds to nothing.
+func _status_scaled(dmg: int, attacker_effects: Array, target_effects: Array) -> int:
+	if dmg <= 0 or (attacker_effects.is_empty() and target_effects.is_empty()):
+		return dmg
+	var mult: float = 1.0 + (StatusEffect.total(attacker_effects, "damage_dealt_percent") 		+ StatusEffect.total(target_effects, "damage_taken_percent")) / 100.0
+	return maxi(1, int(floor(float(dmg) * maxf(0.0, mult))))
+
+## Regeneration is per own attack, hit or miss, so it wraps the swing.
 func _monster_attack() -> void:
 	if state != State.FIGHTING:
 		return
+	_monster_swing()
+	if state == State.FIGHTING and monster_hp > 0 and (current_monster().get("passives", []) as Array).has("regeneration"):
+		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(monster_max_hp) * ENEMY_REGEN_FRACTION)))
+
+func _monster_swing() -> void:
 	var m: Dictionary = current_monster()
 	var m_style: String = str(m.get("attack_type", "melee"))
 	var acc: float = float(m.get("accuracy_rating", 10))
@@ -628,6 +645,7 @@ func _monster_attack() -> void:
 		dmg = maxi(1, int(floor(float(dmg) * float(sa.get("damage_multiplier", 1.0)))))
 		_sig_monster_special(str(sa.get("id", "")))
 		_apply_special_status(sa, "player")
+	dmg = _status_scaled(dmg, monster_effects, player_effects)
 	player_hp -= float(dmg)
 	_record_damage_taken(float(dmg))
 	_sig_monster_attacked(dmg)
@@ -639,9 +657,6 @@ func _monster_attack() -> void:
 	# Lifedrain: the monster heals a share of the damage it dealt, capped at its max HP.
 	if dmg > 0 and monster_hp > 0 and passives.has("lifedrain"):
 		monster_hp = mini(monster_max_hp, monster_hp + MonsterMechanics.lifedrain_heal(dmg))
-	# Regenerating monsters knit wounds on every own attack while still standing.
-	if monster_hp > 0 and passives.has("regeneration"):
-		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(monster_max_hp) * ENEMY_REGEN_FRACTION)))
 	if player_hp <= 0.0:
 		_player_death(m.get("name", current_monster_id))
 
@@ -769,8 +784,10 @@ func _on_monster_death() -> void:
 		state = State.RESPAWNING
 		respawn_timer = respawn
 
-func _grant_loot(m: Dictionary) -> void:
-	EngineeringManager.on_kill(m)
+## loot_only re-rolls just the loot table (the Champion foe event), skipping per-kill side effects.
+func _grant_loot(m: Dictionary, loot_only: bool = false) -> void:
+	if not loot_only:
+		EngineeringManager.on_kill(m)
 	var gp_pct: float = 1.0 + ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) / 100.0
 	var dbl: float = ModifierManager.get_modifier(ModifierKeys.GLOBAL_DOUBLE_LOOT_PERCENT)
 	for drop in m.get("loot_table", []):
@@ -800,6 +817,13 @@ func _grant_loot(m: Dictionary) -> void:
 		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, item_id, float(qty))
 		if float(drop.get("chance", 1.0)) <= SimulationMode.RARE_DROP_CHANCE_THRESHOLD:
 			SimulationMode.bump(SimulationMode.BUCKET_RARE_DROPS, item_id, float(qty))
+			PlayerData.record_rare_drop(item_id, qty, "combat")
+	if loot_only:
+		return
+	const RandomEvents = preload("res://scripts/core/RandomEvents.gd")
+	if RandomEvents.roll("champion_foe", _rng):
+		RandomEvents.announce("champion_foe", "%s dropped its loot twice." % str(m.get("name", "")))
+		_grant_loot(m, true)
 	var bone: String = str(m.get("bone_type", ""))
 	if bone != "":
 		BankManager.add_item_guaranteed(bone, 1)
@@ -1020,10 +1044,14 @@ func find_food() -> String:
 	var best_heal: int = -1
 	var maxhp: float = _compute_max_hp()
 	var missing: float = maxf(1.0, maxhp - player_hp)
+	# Foods assigned to a slot are the ones the player chose to burn; with none assigned, any food goes.
+	var slotted: Array = EquipmentManager.food_slots.filter(func(id): return id != "")
 	for item_id in BankManager.items.keys():
 		if DataLoader.get_item(item_id).get("item_type", "") != "food":
 			continue
 		if int(BankManager.items[item_id]) <= 0:
+			continue
+		if not slotted.is_empty() and not slotted.has(item_id):
 			continue
 		var heal: int = int(DataLoader.get_item(item_id).get("heal_amount", 0))
 		if heal <= 0:
@@ -1060,12 +1088,14 @@ func simulate_elapsed(elapsed: float) -> Dictionary:
 	while remaining > 1e-6 and guard < MAX_OFFLINE_STEPS:
 		guard += 1
 		var step: float = minf(remaining, OFFLINE_STEP)
+		var deaths_before: int = deaths_this_session
 		tick(step)
 		remaining -= step
 		out["seconds_processed"] = elapsed - remaining
 		if state == State.IDLE:
 			out["stopped"] = true
-			out["reason"] = "fight ended"
+			# A defeat also ends in IDLE (stop_combat), so tell the two apart by the death count.
+			out["reason"] = "defeated" if deaths_this_session > deaths_before else "fight ended"
 			break
 		if state == State.DEAD:
 			out["stopped"] = true

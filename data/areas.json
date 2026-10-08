@@ -2,6 +2,7 @@
   "_comment": "Combat areas (open fighting) and slayer areas. 'monsters' lists the spawn pool.",
   "farmlands": {
     "id": "farmlands",
+    "hex": "terrain_-1_0",
     "name": "Hearthfall Fields",
     "type": "area",
     "level_range": [
@@ -17,6 +18,7 @@
   },
   "golbin_village": {
     "id": "golbin_village",
+    "hex": "terrain_-2_1",
     "name": "Cinderkin Warrens",
     "type": "area",
     "level_range": [
@@ -31,6 +33,7 @@
   },
   "graveyard": {
     "id": "graveyard",
+    "hex": "terrain_-3_0",
     "name": "Ashen Barrows",
     "type": "area",
     "level_range": [
@@ -46,6 +49,7 @@
   },
   "sandy_shores": {
     "id": "sandy_shores",
+    "hex": "terrain_-1_-1",
     "name": "Sunken Strand",
     "type": "area",
     "level_range": [
@@ -61,6 +65,7 @@
   },
   "wet_forest": {
     "id": "wet_forest",
+    "hex": "terrain_-4_1",
     "name": "Reedwrack Marsh",
     "type": "area",
     "level_range": [
@@ -75,6 +80,7 @@
   },
   "bandit_hideout": {
     "id": "bandit_hideout",
+    "hex": "terrain_-6_3",
     "name": "Rook's Hollow",
     "type": "area",
     "level_range": [
@@ -89,6 +95,7 @@
   },
   "icy_hills": {
     "id": "icy_hills",
+    "hex": "terrain_1_-6",
     "name": "Frostbound Reach",
     "type": "area",
     "level_range": [
@@ -108,6 +115,7 @@
   },
   "greyharrow_quarry": {
     "id": "greyharrow_quarry",
+    "hex": "terrain_5_1",
     "name": "Greyharrow Quarry",
     "type": "area",
     "level_range": [
@@ -128,6 +136,7 @@
   },
   "saltmarch_basin": {
     "id": "saltmarch_basin",
+    "hex": "terrain_-6_-1",
     "name": "Saltmarch Basin",
     "type": "area",
     "level_range": [
@@ -146,6 +155,7 @@
   },
   "castle_of_kings": {
     "id": "castle_of_kings",
+    "hex": "terrain_-3_3",
     "name": "Sunderhold Keep",
     "type": "area",
     "level_range": [
@@ -165,6 +175,7 @@
   },
   "dragon_valley": {
     "id": "dragon_valley",
+    "hex": "terrain_1_7",
     "name": "Ashwyrm Hollow",
     "type": "area",
     "level_range": [
@@ -187,6 +198,7 @@
   },
   "sundered_reaches": {
     "id": "sundered_reaches",
+    "hex": "terrain_-7_-1",
     "name": "The Sundered Reaches",
     "type": "area",
     "level_range": [
@@ -211,6 +223,7 @@
   },
   "drowned_reach": {
     "id": "drowned_reach",
+    "hex": "terrain_-5_-3",
     "name": "The Drowned Reach",
     "type": "area",
     "level_range": [
@@ -234,6 +247,7 @@
   },
   "heralds_march": {
     "id": "heralds_march",
+    "hex": "terrain_-7_-2",
     "name": "The Herald's March",
     "type": "area",
     "level_range": [
@@ -257,6 +271,7 @@
   },
   "spider_slayer_area": {
     "id": "spider_slayer_area",
+    "hex": "terrain_-3_-1",
     "name": "Broodweb Fen",
     "type": "slayer_area",
     "level_range": [
@@ -278,6 +293,7 @@
   },
   "ashen_bastion": {
     "id": "ashen_bastion",
+    "hex": "terrain_2_7",
     "name": "Ashen Bastion",
     "type": "area",
     "level_range": [
@@ -300,6 +316,7 @@
   },
   "abyssal_depths": {
     "id": "abyssal_depths",
+    "hex": "terrain_6_3",
     "name": "The Umbral Deep",
     "type": "area",
     "level_range": [
@@ -323,6 +340,7 @@
   },
   "gloamreach_marsh": {
     "id": "gloamreach_marsh",
+    "hex": "terrain_-7_-3",
     "name": "Gloamreach Marsh",
     "type": "area",
     "level_range": [
@@ -346,6 +364,7 @@
   },
   "abyssal_rift": {
     "id": "abyssal_rift",
+    "hex": "terrain_-7_-4",
     "name": "Riftmouth",
     "type": "area",
     "level_range": [
@@ -370,6 +389,7 @@
   },
   "silence_verge": {
     "id": "silence_verge",
+    "hex": "terrain_-6_-5",
     "name": "The Silence Verge",
     "type": "area",
     "level_range": [
@@ -393,6 +413,7 @@
   },
   "hollow_expanse": {
     "id": "hollow_expanse",
+    "hex": "terrain_-7_-5",
     "name": "The Hollow Expanse",
     "type": "area",
     "level_range": [

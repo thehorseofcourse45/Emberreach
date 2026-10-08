@@ -79,6 +79,20 @@ func refresh() -> void:
 		var ranking: Control = _ranking(spec)
 		if ranking != null:
 			_body.add_child(ranking)
+	if not PlayerData.notable_drops.is_empty():
+		_body.add_child(_notable_drops())
+
+## Rare drops (roll chance <= 1%), newest first. PlayerData saves and caps the list.
+func _notable_drops() -> Control:
+	var box := UIStyle.section("Notable drops", "rare finds, newest first")
+	var drops: Array = PlayerData.notable_drops.duplicate()
+	drops.reverse()
+	for e in drops:
+		var src: String = str(e.get("source", ""))
+		var where: String = "Combat" if src == "combat" else str(DataLoader.get_skill(src).get("name", src))
+		var item_name: String = str(DataLoader.get_item(str(e["item_id"])).get("name", e["item_id"]))
+		box.add_child(Widgets.key_value("%s ×%d" % [item_name, int(e["qty"])], where, UITokens.GOLD_BRIGHT))
+	return box
 
 func _lifetime(rows: Array) -> Control:
 	var box := UIStyle.section("Lifetime", "totals across every system")

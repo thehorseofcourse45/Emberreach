@@ -15,6 +15,7 @@ var damage_per_tick: float = 0.0
 var damage_type: String = "normal"  ## normal | pure | abyssal
 var damage_taken_percent: float = 0.0  ## e.g. Stun +30, Sleep +20, Crystallize +50
 var attack_interval_percent: float = 0.0  ## Slow
+var damage_dealt_percent: float = 0.0  ## Debuffs: negative weakens the afflicted one's own hits
 var source_id: String = ""
 
 const TABLE := {
@@ -25,19 +26,19 @@ const TABLE := {
     "burn": {"kind": Kind.DOT, "tick_interval": 1.0},
     "poison": {"kind": Kind.DOT, "tick_interval": 1.0},
     "bleed": {"kind": Kind.DOT, "tick_interval": 1.0},
-    "slow": {"kind": Kind.SLOW, "attack_interval_percent": 10.0},
-    "fear": {"kind": Kind.DEBUFF},
-    "silence": {"kind": Kind.DEBUFF},
-    "curse": {"kind": Kind.DEBUFF},
+    "slow": {"kind": Kind.SLOW, "attack_interval_percent": 30.0},
+    "fear": {"kind": Kind.DEBUFF, "damage_dealt_percent": -25.0},
+    "silence": {"kind": Kind.DEBUFF, "damage_dealt_percent": -25.0},
+    "curse": {"kind": Kind.DEBUFF, "damage_dealt_percent": -20.0, "damage_taken_percent": 10.0},
     "blight": {"kind": Kind.DOT},
     "laceration": {"kind": Kind.DOT},
     "voidburst": {"kind": Kind.DOT},
-    "eldritch_curse": {"kind": Kind.DEBUFF},
+    "eldritch_curse": {"kind": Kind.DEBUFF, "damage_dealt_percent": -30.0, "damage_taken_percent": 15.0},
     "ablaze": {"kind": Kind.DOT},
     "toxin": {"kind": Kind.DOT},
     "deadly_poison": {"kind": Kind.DOT},
     "frostburn": {"kind": Kind.DOT},
-    "corruption": {"kind": Kind.DEBUFF},
+    "corruption": {"kind": Kind.DEBUFF, "damage_dealt_percent": -20.0, "damage_taken_percent": 15.0},
 }
 
 static func create(effect_id: String, p_duration: float, p_damage_per_tick: float = 0.0,
@@ -50,10 +51,18 @@ static func create(effect_id: String, p_duration: float, p_damage_per_tick: floa
     e.tick_interval = float(def.get("tick_interval", 1.0))
     e.damage_taken_percent = float(def.get("damage_taken_percent", 0.0))
     e.attack_interval_percent = float(def.get("attack_interval_percent", 0.0))
+    e.damage_dealt_percent = float(def.get("damage_dealt_percent", 0.0))
     e.duration = p_duration
     e.damage_per_tick = p_damage_per_tick
     e.source_id = p_source
     return e
+
+## Sum one numeric field over a list of effects (slow, damage taken, damage dealt).
+static func total(list: Array, field: String) -> float:
+    var t: float = 0.0
+    for e in list:
+        t += float(e.get(field))
+    return t
 
 func blocks_attack() -> bool:
     return kind == Kind.STUN or kind == Kind.SLEEP

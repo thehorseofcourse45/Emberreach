@@ -2,6 +2,7 @@
 	"_comment": "3 reference dungeons. 'monsters' is the fixed fight sequence ending in a boss. Equipment/food are locked during a run unless the shop upgrade is owned.",
 	"chicken_coop": {
 		"id": "chicken_coop",
+		"hex": "terrain_0_1",
 		"name": "The Plucked Roost",
 		"level_range": [
 			1,
@@ -33,6 +34,7 @@
 	},
 	"undead_graveyard": {
 		"id": "undead_graveyard",
+		"hex": "terrain_1_-2",
 		"name": "Barrow of Names",
 		"level_range": [
 			10,
@@ -61,6 +63,7 @@
 	},
 	"spider_forest": {
 		"id": "spider_forest",
+		"hex": "terrain_-4_3",
 		"name": "Broodweb Warren",
 		"level_range": [
 			25,
@@ -90,6 +93,7 @@
 	},
 	"air_god_dungeon": {
 		"id": "air_god_dungeon",
+		"hex": "terrain_6_-1",
 		"name": "Observatory of Gales",
 		"level_range": [
 			110,
@@ -124,6 +128,7 @@
 	},
 	"water_god_dungeon": {
 		"id": "water_god_dungeon",
+		"hex": "terrain_-5_-1",
 		"name": "Tidal Reliquary",
 		"level_range": [
 			120,
@@ -159,6 +164,7 @@
 	},
 	"earth_god_dungeon": {
 		"id": "earth_god_dungeon",
+		"hex": "terrain_4_3",
 		"name": "Deepstone Sanctum",
 		"level_range": [
 			130,
@@ -194,6 +200,7 @@
 	},
 	"fire_god_dungeon": {
 		"id": "fire_god_dungeon",
+		"hex": "terrain_3_5",
 		"name": "Emberthrone Kiln",
 		"level_range": [
 			140,
@@ -229,6 +236,7 @@
 	},
 	"into_the_mist": {
 		"id": "into_the_mist",
+		"hex": "terrain_-5_7",
 		"name": "Into the Murk",
 		"level_range": [
 			150,
@@ -263,6 +271,7 @@
 	},
 	"impending_darkness": {
 		"id": "impending_darkness",
+		"hex": "terrain_-4_7",
 		"name": "The Long Dusk",
 		"level_range": [
 			180,
@@ -297,6 +306,7 @@
 	},
 	"underwater_city": {
 		"id": "underwater_city",
+		"hex": "terrain_-6_-3",
 		"name": "Nhalassar, the Drowned City",
 		"level_range": [
 			180,
@@ -330,6 +340,7 @@
 	},
 	"throne_of_the_herald": {
 		"id": "throne_of_the_herald",
+		"hex": "terrain_-5_-5",
 		"name": "Seat of the Herald",
 		"level_range": [
 			250,
@@ -363,6 +374,7 @@
 	},
 	"cinderkin_forge": {
 		"id": "cinderkin_forge",
+		"hex": "terrain_-1_2",
 		"name": "Cinderkin Forge",
 		"level_range": [
 			4,
@@ -394,6 +406,7 @@
 	},
 	"drowned_causeway": {
 		"id": "drowned_causeway",
+		"hex": "terrain_-3_1",
 		"name": "Drowned Causeway",
 		"level_range": [
 			20,
@@ -424,6 +437,7 @@
 	},
 	"rook_viaduct": {
 		"id": "rook_viaduct",
+		"hex": "terrain_2_-3",
 		"name": "Rook's Viaduct",
 		"level_range": [
 			23,
@@ -455,6 +469,7 @@
 	},
 	"frostfang_den": {
 		"id": "frostfang_den",
+		"hex": "terrain_-3_4",
 		"name": "Frostfang Den",
 		"level_range": [
 			42,
@@ -486,6 +501,7 @@
 	},
 	"greyharrow_deep": {
 		"id": "greyharrow_deep",
+		"hex": "terrain_2_-5",
 		"name": "Greyharrow Deep",
 		"level_range": [
 			43,
@@ -520,6 +536,7 @@
 	},
 	"sunderhold_undercroft": {
 		"id": "sunderhold_undercroft",
+		"hex": "terrain_-5_4",
 		"name": "Sunderhold Undercroft",
 		"level_range": [
 			71,
@@ -552,6 +569,7 @@
 	},
 	"ashen_bastion_keep": {
 		"id": "ashen_bastion_keep",
+		"hex": "terrain_3_6",
 		"name": "The Ashen Keep",
 		"level_range": [
 			225,
@@ -587,6 +605,7 @@
 	},
 	"gloamreach_sink": {
 		"id": "gloamreach_sink",
+		"hex": "terrain_-3_-7",
 		"name": "The Gloam Sink",
 		"level_range": [
 			260,
@@ -622,6 +641,7 @@
 	},
 	"the_silent_gate": {
 		"id": "the_silent_gate",
+		"hex": "terrain_-5_-6",
 		"name": "The Silent Gate",
 		"level_range": [
 			300,
@@ -657,6 +677,7 @@
 	},
 	"the_hollow_throne": {
 		"id": "the_hollow_throne",
+		"hex": "terrain_5_7",
 		"name": "The Hollow Throne",
 		"level_range": [
 			345,
@@ -692,6 +713,7 @@
 	},
 	"ascendant_trials": {
 		"id": "ascendant_trials",
+		"hex": "terrain_-4_-7",
 		"name": "The Ascendant Trials",
 		"level_range": [
 			300,

@@ -138,6 +138,18 @@
     "modifiers": { "prayer_cost_reduction_percent": 2 },
     "effect_note": "Faith converts to prayer points, easing long Devotion sessions"
   },
+  "township_building_school": {
+    "id": "township_building_school",
+    "name": "Schoolhouse",
+    "type": "township_building",
+    "description": "Slate boards and a bell. Residents who know a trade teach it to anyone who will sit still.",
+    "cost": { "wood": 140, "stone": 100, "goods": 40 },
+    "cost_growth": 1.9,
+    "production": { "goods": 1 },
+    "max_level": 5,
+    "unlocks": "",
+    "effect_note": "Pick one skill for the residents to study; it earns XP every hour, online or offline"
+  },
   "township_building_observatory": {
     "id": "township_building_observatory",
     "name": "Starreading Terrace",

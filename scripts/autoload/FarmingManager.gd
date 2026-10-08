@@ -242,7 +242,12 @@ func serialize() -> Dictionary:
 	return {"plots": plots}
 
 func deserialize(d: Dictionary) -> void:
-	plots = d.get("plots", [])
+	var saved: Variant = d.get("plots", [])
+	plots = []
+	if typeof(saved) == TYPE_ARRAY:
+		for p in saved:
+			if typeof(p) == TYPE_DICTIONARY and (p as Dictionary).has("seed_id"):
+				plots.append(p)
 	if plots.is_empty():
 		_build_plots()
 

@@ -1,0 +1,89 @@
+{
+  "_comment": "Cartography terrain rules (CartographyManager). cost_mult scales a hex travel cost; reveals is how many tiles one survey attempt may uncover (SurveyMinigame); min_ship_order is the hull order needed to travel there; modifiers is the region-set bonus granted once every landmark on that terrain is claimed. Unlisted terrain uses 1.0 / 12 / 1.",
+  "plains": {
+    "cost_mult": 0.8,
+    "reveals": 14,
+    "modifiers": {
+      "global_gp_percent": 3
+    }
+  },
+  "forest": {
+    "cost_mult": 1.0,
+    "reveals": 12,
+    "modifiers": {
+      "woodcutting_skill_xp_percent": 5
+    }
+  },
+  "coast": {
+    "cost_mult": 1.0,
+    "reveals": 12,
+    "modifiers": {
+      "fishing_skill_xp_percent": 5
+    }
+  },
+  "dunes": {
+    "cost_mult": 1.1,
+    "reveals": 12,
+    "modifiers": {
+      "global_double_loot_percent": 1
+    }
+  },
+  "ruins": {
+    "cost_mult": 1.1,
+    "reveals": 11,
+    "modifiers": {
+      "archaeology_skill_xp_percent": 5
+    }
+  },
+  "swamp": {
+    "cost_mult": 1.2,
+    "reveals": 10,
+    "modifiers": {
+      "herblore_preservation_percent": 3
+    }
+  },
+  "tundra": {
+    "cost_mult": 1.3,
+    "reveals": 11,
+    "modifiers": {
+      "food_healing_percent": 3
+    }
+  },
+  "mountains": {
+    "cost_mult": 1.5,
+    "reveals": 12,
+    "modifiers": {
+      "mining_skill_xp_percent": 5
+    }
+  },
+  "mistwood": {
+    "cost_mult": 1.2,
+    "reveals": 8,
+    "modifiers": {
+      "global_skill_xp_percent": 2
+    }
+  },
+  "fungal_hollows": {
+    "cost_mult": 1.2,
+    "reveals": 9,
+    "modifiers": {
+      "hitpoints_regen_flat": 1
+    }
+  },
+  "volcanic": {
+    "cost_mult": 1.4,
+    "reveals": 11,
+    "min_ship_order": 2,
+    "modifiers": {
+      "combat_max_hit_percent": 2
+    }
+  },
+  "crystal_badlands": {
+    "cost_mult": 1.6,
+    "reveals": 10,
+    "min_ship_order": 3,
+    "modifiers": {
+      "damage_reduction_percent": 2
+    }
+  }
+}

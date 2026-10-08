@@ -936,7 +936,7 @@ func _check_objective(label: String, obj: Variant) -> void:
 	var kind: String = str(o.get("kind", ""))
 	var known: Array[String] = ["have_item", "gain_item", "skill_level", "combat_level", "mastery_level", "kill_monster",
 		"defeat_boss", "complete_dungeon", "craft_item", "do_actions", "reach_region",
-		"buy_upgrade", "build_structure", "gp_total", "unlock_pet", "discover_items"]
+		"buy_upgrade", "build_structure", "gp_total", "unlock_pet", "discover_items", "chart_hexes"]
 	if not known.has(kind):
 		_err("invalid_objective", "%s objective kind '%s' is unknown" % [label, kind])
 		return
@@ -965,7 +965,7 @@ func _check_condition(label: String, cond: Variant) -> void:
 	var kind: String = str(c.get("kind", ""))
 	var known: Array[String] = ["skill_level", "total_level", "item_count", "lifetime_item",
 		"monsters_killed", "dungeons_cleared", "items_discovered", "gp_earned", "actions_completed",
-		"quests_completed", "pets_unlocked", "settlement_buildings"]
+		"quests_completed", "pets_unlocked", "settlement_buildings", "chart_hexes"]
 	if not known.has(kind):
 		_err("invalid_condition", "%s condition kind '%s' is unknown" % [label, kind])
 		return
@@ -1342,7 +1342,7 @@ func _check_new_skill_systems() -> void:
 				if not (value is int or value is float) or not is_finite(float(value)) or float(value) <= 0: _err("invalid_number", "%s.%s.%s must be a positive finite number" % [group, id, field])
 			if group == "devices" and not _has_skill(str(record.get("skill", ""))) and str(record.get("skill", "")) != "combat": _err("missing_reference", "device '%s' has unknown skill" % id)
 			if group == "caravan_routes":
-				if not DataLoader.cartography_hexes.has(str(record.get("hex", ""))): _err("missing_reference", "caravan route '%s' ends on an unknown hex" % id)
+				if not ResourceLoader.exists("res://assets/caravans/maps/%s.png" % id): _err("missing_reference", "caravan route '%s' has no destination landscape" % id)
 				for good in (record.get("demand", []) as Array):
 					if not _has_item(str(good)): _err("missing_reference", "caravan route '%s' demands a missing item '%s'" % [id, str(good)])
 				for good in (record.get("specialty", {}) as Dictionary).keys():

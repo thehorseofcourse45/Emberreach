@@ -160,6 +160,8 @@ func measure(cond: Dictionary) -> float:
 			for b in TownshipManager.buildings.keys():
 				levels += int(TownshipManager.buildings[b])
 			return float(levels)
+		"chart_hexes":
+			return float(CartographyManager.discovered.size())
 	return 0.0
 
 func _describe(cond: Dictionary) -> String:
@@ -192,6 +194,8 @@ func _describe(cond: Dictionary) -> String:
 			return "Bond with %d companions" % int(cond.get("value", 1))
 		"settlement_buildings":
 			return "Reach %d total structure levels" % int(cond.get("value", 1))
+		"chart_hexes":
+			return "Chart %d regions" % int(cond.get("value", 1))
 	return "Unknown condition"
 
 # ---------------- evaluation ----------------
@@ -289,12 +293,15 @@ func serialize() -> Dictionary:
 		"completed_unix": _completed_unix.duplicate(), "claimed_unix": _claimed_unix.duplicate(),
 	}
 
+func _dict_or_empty(v: Variant) -> Dictionary:
+	return v if typeof(v) == TYPE_DICTIONARY else {}
+
 func deserialize(d: Dictionary) -> void:
 	if d.has("completed") or d.has("claimed"):
-		_completed = d.get("completed", {})
-		_claimed = d.get("claimed", {})
-		_completed_unix = d.get("completed_unix", {})
-		_claimed_unix = d.get("claimed_unix", {})
+		_completed = _dict_or_empty(d.get("completed", {}))
+		_claimed = _dict_or_empty(d.get("claimed", {}))
+		_completed_unix = _dict_or_empty(d.get("completed_unix", {}))
+		_claimed_unix = _dict_or_empty(d.get("claimed_unix", {}))
 	else:
 		# Migration from the pre-claim era: everything previously unlocked had already been
 		# paid out, so it arrives already completed and already claimed; nothing is owed.

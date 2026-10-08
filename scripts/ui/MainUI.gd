@@ -489,6 +489,9 @@ func _handle_cli() -> bool:
 ## be reviewed by eye instead of only asserted structurally. Requires a display: do not pass
 ## --headless. Prints the written paths and quits when done.
 func _run_screenshot_sweep() -> void:
+	# Screens flip faster than anyone can listen, so capture runs are silent. Muting Master (not the
+	# sfx_volume setting) means nothing muted can ever be written to a save.
+	AudioServer.set_bus_mute(0, true)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_shot_dir))
 	var widths: Array[int] = [420, 900, 1440]
 	var shots: Array[String] = Screens.ORDER.duplicate()

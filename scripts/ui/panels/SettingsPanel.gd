@@ -427,7 +427,7 @@ func _on_reset() -> void:
 func _do_reset() -> void:
 	var mode: String = str(PlayerData.settings.get("new_game_mode", PlayerData.game_mode))
 	SaveManager.delete_save()
-	GameManager.start_new_game(mode)
+	GameManager.reset_everything(mode)
 	SaveManager.save_game()
 	EventBus.notify("Progress reset. A new journey has begun.", "warn")
 	Screens.go({"screen": Screens.OVERVIEW})

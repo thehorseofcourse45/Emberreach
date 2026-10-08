@@ -1,6 +1,7 @@
 {
   "small": {
     "id": "small",
+    "hex": "terrain_1_-1",
     "name": "Small Dig Site",
     "level_required": 1,
     "excavate_xp": 20,
@@ -25,6 +26,7 @@
   },
   "shallow": {
     "id": "shallow",
+    "hex": "terrain_2_-1",
     "name": "Shallow Dig Site",
     "level_required": 15,
     "excavate_xp": 32,
@@ -49,6 +51,7 @@
   },
   "medium": {
     "id": "medium",
+    "hex": "terrain_-2_-1",
     "name": "Medium Dig Site",
     "level_required": 30,
     "excavate_xp": 45,
@@ -73,6 +76,7 @@
   },
   "weathered": {
     "id": "weathered",
+    "hex": "terrain_4_-3",
     "name": "Weathered Dig Site",
     "level_required": 45,
     "excavate_xp": 62,
@@ -97,6 +101,7 @@
   },
   "large": {
     "id": "large",
+    "hex": "terrain_-2_-3",
     "name": "Large Dig Site",
     "level_required": 60,
     "excavate_xp": 80,
@@ -121,6 +126,7 @@
   },
   "sunken": {
     "id": "sunken",
+    "hex": "terrain_-5_-2",
     "name": "Sunken Dig Site",
     "level_required": 70,
     "excavate_xp": 100,
@@ -145,6 +151,7 @@
   },
   "ancient": {
     "id": "ancient",
+    "hex": "terrain_2_5",
     "name": "Ancient Dig Site",
     "level_required": 85,
     "excavate_xp": 130,
@@ -169,6 +176,7 @@
   },
   "primeval": {
     "id": "primeval",
+    "hex": "terrain_-5_-4",
     "name": "Primeval Dig Site",
     "level_required": 95,
     "excavate_xp": 160,
@@ -193,6 +201,7 @@
   },
   "reliquary": {
     "id": "reliquary",
+    "hex": "terrain_3_7",
     "name": "Reliquary Dig Site",
     "level_required": 100,
     "excavate_xp": 180,
@@ -217,6 +226,7 @@
   },
   "heraldic": {
     "id": "heraldic",
+    "hex": "terrain_7_5",
     "name": "Heraldic Dig Site",
     "level_required": 105,
     "excavate_xp": 200,
@@ -237,6 +247,7 @@
   },
   "throne": {
     "id": "throne",
+    "hex": "terrain_6_7",
     "name": "Throne Dig Site",
     "level_required": 115,
     "excavate_xp": 250,

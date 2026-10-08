@@ -32,7 +32,8 @@ Emberreach/
 │   ├── trader.json  raid_shop.json  shop.json  shop_store.json  shop_township.json
 │   ├── shop_museum.json  prayers.json  special_attacks.json  constellations.json
 │   ├── obstacles.json  familiars.json  pets.json  slayer_tasks.json  audio.json
-│   └── cartography_hexes.json  cartography_ships.json  archaeology_sites.json
+│   └── cartography_hexes.json  cartography_ships.json  archaeology_sites.json  worship.json  random_events.json
+│                                cartography_terrain.json
 ├── scripts/
 │   ├── autoload/              # singleton managers (see §4)
 │   ├── combat/                # CombatFormulas.gd, StatusEffect.gd, CombatSimulator.gd
@@ -104,6 +105,7 @@ replays elapsed time through the *same* code paths.
 | `CombatSimulatorManager` | Win-chance simulation for an area/dungeon using the real formulas. |
 | `AudioManager` | Synthesized SFX from `data/audio.json` on one SFX volume bus; no music. |
 | `AssetRegistry` | Art system: loads textures by convention, generates placeholders. |
+| `_mcp_game_helper` | Godot AI editor plugin runtime helper (dev tooling, not gameplay). |
 
 ## 5. Playable UI
 
@@ -267,6 +269,7 @@ assets/icons/items/<item_id>.png          32x32
 assets/icons/skills/<skill_id>.png        32x32
 assets/sprites/monsters/<monster_id>.png  96x96
 assets/icons/{areas,dungeons,prayers,pets,familiars,obstacles,currencies,slots,status}/<id>.png
+assets/survey/<hex_id>.png                256x256, cut into 32x32 tiles (8x8 survey board)
 assets/ui/<name>.png                      (panel_9slice, button_9slice, progress_bg, ...)
 ```
 
@@ -296,7 +299,7 @@ the game runs before any art exists.
 
 - All 39 skills, the Phase 9 endgame (God Dungeons, Raid, Abyssal) and the dark-fantasy UI
   overhaul are implemented; area hazards **are** applied during combat (`_active_hazard()`).
-- Depth still light in places: Township tasks/education, and Summoning tablet quantity scaling.
+- Depth still light in places: Township education is the Schoolhouse (`township_building_school`): residents study one chosen non-combat skill and pay it 4,000 XP per Schoolhouse level each settlement tick, online or offline. Summoning tablet quantity does scale: mastery grants `summoning_resource_flat` (+5 at mastery 50, +15 at 99), applied to every output by `SkillManager._produce_outputs`.
   Cartography ship upgrades and the Archaeology museum shop were implemented after this list was
   first written — `cartography_ships.json` and `shop_museum.json` each have a live manager
   consumer now.
@@ -316,6 +319,6 @@ the game runs before any art exists.
 - Ascendancy (prestige) is implemented — a lifetime-XP gate granting +5 % XP and +5 % gold per
   ascension, additive and capped. Single-node refunds and a full-tree `PrestigeManager.respec()`
   exist, so a bad early choice is never permanent.
-- The palette is not colourblind-safe: `GREEN` and `RED` are near-identical under deuteranopia.
-  Three rows that once conveyed state by colour alone now carry a glyph, but a palette variant is
-  the real fix and is not done.
+- `GREEN` (#5eead4, light mint) and `RED` (#ef4444) were re-picked so they stay apart under
+  deuteranopia and protanopia (simulated separation 55 and 47, against 13 and 34 for the old pair).
+  Three rows also carry a glyph alongside colour. There is no in-game palette toggle.

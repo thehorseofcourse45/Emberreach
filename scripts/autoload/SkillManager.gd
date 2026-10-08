@@ -429,6 +429,7 @@ func _produce_outputs(data: Dictionary) -> Dictionary:
 				SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, sec_id, float(stored_sec))
 				if float(sec.get("chance", 0.0)) <= SimulationMode.RARE_DROP_CHANCE_THRESHOLD:
 					SimulationMode.bump(SimulationMode.BUCKET_RARE_DROPS, sec_id, float(stored_sec))
+					PlayerData.record_rare_drop(sec_id, stored_sec, active_skill)
 	return produced
 
 ## GP rewards, summoning marks/charges, pet rolls, archaeology tracking.
@@ -440,6 +441,15 @@ func _post_action(data: Dictionary, action_time: float) -> void:
 	var gp: float = float(data.get("gp_reward", 0.0))
 	if gp > 0.0:
 		PlayerData.add_gp(gp * (1.0 + ModifierManager.get_modifier(ModifierKeys.GLOBAL_GP_PERCENT) / 100.0))
+	if str(DataLoader.get_skill(active_skill).get("type", "")) == "gathering":
+		const RandomEvents = preload("res://scripts/core/RandomEvents.gd")
+		if RandomEvents.roll("lucky_haul", _rng):
+			_produce_outputs(data)
+			RandomEvents.announce("lucky_haul", "%s paid out twice." % str(data.get("name", active_action_id)))
+		if RandomEvents.roll("travelling_merchant", _rng):
+			var bonus: float = RandomEvents.gp_for("travelling_merchant", PlayerData.get_level(active_skill))
+			PlayerData.add_gp(bonus)
+			RandomEvents.announce("travelling_merchant", "bought your odds and ends for %s GP." % UIStyle.fmt(bonus))
 	SummoningManager.on_action(active_skill, action_time)
 	PetManager.roll_for_skill(active_skill, current_interval)
 	if active_skill == "archaeology":

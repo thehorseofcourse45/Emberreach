@@ -3665,5 +3665,44 @@
     "reward": {
       "gp": 500000
     }
+  },
+  "ach_charted_25": {
+    "id": "ach_charted_25",
+    "name": "Edge of the Map",
+    "description": "Chart 25 regions of the frontier map.",
+    "category": "progression",
+    "condition": {
+      "kind": "chart_hexes",
+      "value": 25
+    },
+    "reward": {
+      "gp": 5000
+    }
+  },
+  "ach_charted_75": {
+    "id": "ach_charted_75",
+    "name": "Wide Horizons",
+    "description": "Chart 75 regions of the frontier map.",
+    "category": "progression",
+    "condition": {
+      "kind": "chart_hexes",
+      "value": 75
+    },
+    "reward": {
+      "gp": 25000
+    }
+  },
+  "ach_charted_150": {
+    "id": "ach_charted_150",
+    "name": "Cartographer of the Frontier",
+    "description": "Chart 150 regions of the frontier map.",
+    "category": "progression",
+    "condition": {
+      "kind": "chart_hexes",
+      "value": 150
+    },
+    "reward": {
+      "gp": 100000
+    }
   }
 }

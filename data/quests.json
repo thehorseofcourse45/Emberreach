@@ -12903,5 +12903,86 @@
     "prerequisites": [
       "caravaneering_journey_50"
     ]
+  },
+  "frontier_charts_10": {
+    "id": "frontier_charts_10",
+    "name": "Frontier Charts · 10",
+    "chapter": 2,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Push the map outward from Emberreach, one neighbouring region at a time.",
+    "objectives": [
+      {
+        "kind": "chart_hexes",
+        "required": 10,
+        "label": "Chart 10 regions",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cartography"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1500,
+      "xp": {
+        "cartography": 800
+      }
+    }
+  },
+  "frontier_charts_25": {
+    "id": "frontier_charts_25",
+    "name": "Frontier Charts · 25",
+    "chapter": 3,
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "Push the map outward from Emberreach, one neighbouring region at a time.",
+    "objectives": [
+      {
+        "kind": "chart_hexes",
+        "required": 25,
+        "label": "Chart 25 regions",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cartography"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 6000,
+      "xp": {
+        "cartography": 3000
+      }
+    },
+    "prerequisites": [
+      "frontier_charts_10"
+    ]
+  },
+  "frontier_charts_50": {
+    "id": "frontier_charts_50",
+    "name": "Frontier Charts · 50",
+    "chapter": 4,
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Push the map outward from Emberreach, one neighbouring region at a time.",
+    "objectives": [
+      {
+        "kind": "chart_hexes",
+        "required": 50,
+        "label": "Chart 50 regions",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cartography"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 20000,
+      "xp": {
+        "cartography": 9000
+      }
+    },
+    "prerequisites": [
+      "frontier_charts_25"
+    ]
   }
 }

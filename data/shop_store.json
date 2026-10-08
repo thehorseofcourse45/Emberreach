@@ -6,9 +6,9 @@
     "name": "Bronze Bar",
     "subtitle": "Smelted in a hurry",
     "description": "The smelter still beats waiting on a furnace.",
-    "cost": 750,
+    "cost": 950,
     "quantity": 50,
-    "unit_price": 15
+    "unit_price": 19
   },
   "store_iron_bar": {
     "id": "store_iron_bar",
@@ -85,9 +85,9 @@
     "name": "Leather",
     "subtitle": "Tanned and supple",
     "description": "Cured hides, ready for the cut.",
-    "cost": 960,
+    "cost": 1360,
     "quantity": 80,
-    "unit_price": 12
+    "unit_price": 17
   },
   "store_summoning_shard_green": {
     "id": "store_summoning_shard_green",
@@ -173,12 +173,12 @@
     "name": "Emberleaf",
     "subtitle": "Dried Emberleaf",
     "description": "Cut for you, dried and bundled.",
-    "cost": 800,
+    "cost": 960,
     "quantity": 40,
     "requires_skill": {
       "herblore": 15
     },
-    "unit_price": 20
+    "unit_price": 24
   },
   "store_sourweed": {
     "id": "store_sourweed",

@@ -100,6 +100,13 @@ func show_summary(summary: Dictionary) -> void:
 			_content.add_child(Widgets.item_row(str(item_id), int(rare[item_id]),
 				"Track", func(): Goals.pin("item", str(item_id))))
 
+	var surprises: Dictionary = summary.get("random_events", {})
+	if not surprises.is_empty():
+		_content.add_child(UIStyle.section("Surprises"))
+		for ev_id in surprises.keys():
+			_content.add_child(Widgets.key_value(str(DataLoader.random_events.get(str(ev_id), {}).get("name", ev_id)),
+				"x%d" % int(surprises[ev_id]), UITokens.GOLD_BRIGHT))
+
 	var pets: Array = summary.get("pets", [])
 	if not pets.is_empty():
 		_content.add_child(UIStyle.section("New companions"))

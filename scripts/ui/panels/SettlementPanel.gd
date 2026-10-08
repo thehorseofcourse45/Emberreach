@@ -11,6 +11,8 @@ signal context_changed(ctx: Dictionary)
 var _resources_box: VBoxContainer
 var _buildings_box: VBoxContainer
 var _trader_box: VBoxContainer
+var _worship_box: VBoxContainer
+var _study_box: VBoxContainer
 var _ticks: Label
 var _built: bool = false
 
@@ -30,6 +32,10 @@ func _ready() -> void:
 	add_child(_buildings_box)
 	_trader_box = UIStyle.section("Trader", "spend stores on what the frontier cannot make")
 	add_child(_trader_box)
+	_worship_box = UIStyle.section("Patron", "one blessing at a time, deepened by the Shrine")
+	add_child(_worship_box)
+	_study_box = UIStyle.section("Schoolhouse", "residents study one skill")
+	add_child(_study_box)
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.bank_changed.connect(_refresh_costs)
 	refresh()
@@ -47,6 +53,8 @@ func refresh() -> void:
 	_rebuild_resources()
 	_rebuild_buildings()
 	_rebuild_trader()
+	_rebuild_worship()
+	_rebuild_study()
 
 func _rebuild_resources() -> void:
 	for c in _resources_box.get_children():
@@ -187,6 +195,68 @@ func _rebuild_trader() -> void:
 		if not bool(check["ok"]):
 			col.add_child(UIStyle.colored_label(str(check["reason"]), UITokens.AMBER, UITokens.FONT_MICRO))
 		_trader_box.add_child(card)
+
+## Patrons from data/worship.json. The blessing scales with the Shrine, so without one the
+## choice is shown but locked. set_worship() emits state_refreshed, which rebuilds this list.
+func _rebuild_worship() -> void:
+	for c in _worship_box.get_children():
+		_worship_box.remove_child(c)
+		c.queue_free()
+	var shrine: int = TownshipManager.level_of("township_building_temple")
+	if shrine <= 0:
+		_worship_box.add_child(UIStyle.label("Build a Shrine to choose a patron. Each Shrine level deepens the blessing.", true, UITokens.FONT_SMALL))
+	for patron_id in DataLoader.worship.keys():
+		var p: Dictionary = DataLoader.worship[patron_id]
+		var pid: String = str(patron_id)
+		var active: bool = TownshipManager.worship == pid
+		var card := UIStyle.card(active)
+		var col := UIStyle.vbox(UITokens.SP_2)
+		card.add_child(col)
+		var head := HBoxContainer.new()
+		head.add_theme_constant_override("separation", UITokens.SP_4)
+		var title := UIStyle.label(str(p.get("name", pid)), false, UITokens.FONT_BODY)
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		head.add_child(title)
+		var effects: Array[String] = []
+		for key in (p.get("modifiers", {}) as Dictionary).keys():
+			effects.append("+%s%% %s" % [UIStyle.fmt(float(p["modifiers"][key])),
+				str(key).trim_suffix("_percent").replace("_", " ")])
+		head.add_child(Widgets.badge("; ".join(effects) + " per Shrine level", UITokens.GOLD_BRIGHT, "Granted once per Shrine level"))
+		col.add_child(head)
+		if str(p.get("description", "")) != "":
+			var d := UIStyle.label(str(p["description"]), true, UITokens.FONT_SMALL)
+			d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			col.add_child(d)
+		var button := UIStyle.primary_button("✓ Current patron" if active else "Worship")
+		button.disabled = active or shrine <= 0
+		button.tooltip_text = "Already your patron" if active else ("Build a Shrine first" if shrine <= 0 else "Switch your patron; switching is free")
+		button.pressed.connect(func(): TownshipManager.set_worship(pid))
+		col.add_child(button)
+		_worship_box.add_child(card)
+
+## The Schoolhouse: pick the one skill the residents study. Choosing emits state_refreshed, which rebuilds this box.
+func _rebuild_study() -> void:
+	for c in _study_box.get_children():
+		_study_box.remove_child(c)
+		c.queue_free()
+	var level: int = TownshipManager.level_of(TownshipManager.SCHOOL_ID)
+	if level <= 0:
+		_study_box.add_child(UIStyle.label("Build a Schoolhouse to set the residents studying a skill. Each level adds XP every hour.", true, UITokens.FONT_SMALL))
+		return
+	var ids: Array[String] = [""]
+	ids.append_array(TownshipManager.study_options())
+	var labels: Array[String] = []
+	for id in ids:
+		labels.append("Nothing" if id == "" else str(DataLoader.get_skill(id).get("name", id)))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", UITokens.SP_4)
+	row.add_child(UIStyle.label("Residents study", true, UITokens.FONT_SMALL))
+	var menu := Widgets.option_menu(labels, func(i): TownshipManager.set_study(ids[clampi(i, 0, ids.size() - 1)]), maxi(0, ids.find(TownshipManager.study)))
+	menu.tooltip_text = "Switching is free. Studying pays the skill XP every settlement tick."
+	row.add_child(menu)
+	_study_box.add_child(row)
+	var rate: float = TownshipManager.study_xp_per_hour()
+	_study_box.add_child(UIStyle.colored_label("+%s XP / hour (Schoolhouse level %d)" % [UIStyle.fmt(rate), level] if rate > 0.0 else "Nobody is studying.", UITokens.TEAL if rate > 0.0 else UITokens.TEXT_DIM, UITokens.FONT_MICRO))
 
 func _refresh_costs() -> void:
 	if _built:

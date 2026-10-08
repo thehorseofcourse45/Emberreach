@@ -1,0 +1,770 @@
+{
+  "ferryman_run": {
+    "start": {
+      "x": 0.06,
+      "y": 0.38,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.92,
+      "y": 0.35,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.2,
+        "y": 0.27,
+        "name": "Stone bridge"
+      },
+      {
+        "x": 0.29,
+        "y": 0.12,
+        "name": "Waterfall ruins"
+      },
+      {
+        "x": 0.27,
+        "y": 0.56,
+        "name": "Woodland camp"
+      },
+      {
+        "x": 0.47,
+        "y": 0.23,
+        "name": "Foresters cottage"
+      },
+      {
+        "x": 0.7,
+        "y": 0.3,
+        "name": "Old ferry"
+      },
+      {
+        "x": 0.53,
+        "y": 0.43,
+        "name": "Sandy cove"
+      },
+      {
+        "x": 0.84,
+        "y": 0.29,
+        "name": "Coastal hamlet"
+      },
+      {
+        "x": 0.69,
+        "y": 0.18,
+        "name": "River crossing"
+      },
+      {
+        "x": 0.88,
+        "y": 0.1,
+        "name": "Windmill bluff"
+      },
+      {
+        "x": 0.64,
+        "y": 0.41,
+        "name": "Estuary landing"
+      }
+    ]
+  },
+  "reed_road": {
+    "start": {
+      "x": 0.07,
+      "y": 0.59,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.88,
+      "y": 0.45,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.11,
+        "y": 0.6,
+        "name": "Reed camp"
+      },
+      {
+        "x": 0.39,
+        "y": 0.22,
+        "name": "Stilt houses"
+      },
+      {
+        "x": 0.19,
+        "y": 0.45,
+        "name": "Marsh bridge"
+      },
+      {
+        "x": 0.46,
+        "y": 0.68,
+        "name": "Silt island"
+      },
+      {
+        "x": 0.86,
+        "y": 0.51,
+        "name": "Lantern jetty"
+      },
+      {
+        "x": 0.5,
+        "y": 0.33,
+        "name": "Willow grove"
+      },
+      {
+        "x": 0.75,
+        "y": 0.52,
+        "name": "Fishing pools"
+      },
+      {
+        "x": 0.26,
+        "y": 0.15,
+        "name": "Wooden causeway"
+      },
+      {
+        "x": 0.27,
+        "y": 0.62,
+        "name": "Herbalist hut"
+      },
+      {
+        "x": 0.68,
+        "y": 0.34,
+        "name": "Silver marsh"
+      }
+    ]
+  },
+  "charcoal_haul": {
+    "start": {
+      "x": 0.07,
+      "y": 0.78,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.92,
+      "y": 0.12,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.13,
+        "y": 0.59,
+        "name": "Burners camp"
+      },
+      {
+        "x": 0.29,
+        "y": 0.3,
+        "name": "Timber bridge"
+      },
+      {
+        "x": 0.14,
+        "y": 0.82,
+        "name": "Logging clearing"
+      },
+      {
+        "x": 0.42,
+        "y": 0.16,
+        "name": "Kiln yard"
+      },
+      {
+        "x": 0.31,
+        "y": 0.16,
+        "name": "Foresters lodge"
+      },
+      {
+        "x": 0.78,
+        "y": 0.32,
+        "name": "Stream crossing"
+      },
+      {
+        "x": 0.36,
+        "y": 0.2,
+        "name": "Coal stockpile"
+      },
+      {
+        "x": 0.7,
+        "y": 0.46,
+        "name": "Mossy ruins"
+      },
+      {
+        "x": 0.91,
+        "y": 0.11,
+        "name": "Sawmill"
+      },
+      {
+        "x": 0.8,
+        "y": 0.85,
+        "name": "Woodland market"
+      }
+    ]
+  },
+  "quarry_road": {
+    "start": {
+      "x": 0.07,
+      "y": 0.58,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.96,
+      "y": 0.28,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.2,
+        "y": 0.55,
+        "name": "Stone camp"
+      },
+      {
+        "x": 0.69,
+        "y": 0.55,
+        "name": "Quarry steps"
+      },
+      {
+        "x": 0.66,
+        "y": 0.67,
+        "name": "Ore depot"
+      },
+      {
+        "x": 0.46,
+        "y": 0.38,
+        "name": "Ravine bridge"
+      },
+      {
+        "x": 0.96,
+        "y": 0.12,
+        "name": "Old mine"
+      },
+      {
+        "x": 0.5,
+        "y": 0.16,
+        "name": "Stonecutters yard"
+      },
+      {
+        "x": 0.61,
+        "y": 0.74,
+        "name": "Watch hut"
+      },
+      {
+        "x": 0.23,
+        "y": 0.86,
+        "name": "River ford"
+      },
+      {
+        "x": 0.58,
+        "y": 0.8,
+        "name": "Mining village"
+      },
+      {
+        "x": 0.83,
+        "y": 0.48,
+        "name": "Cliff road"
+      }
+    ]
+  },
+  "smithy_line": {
+    "start": {
+      "x": 0.07,
+      "y": 0.52,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.91,
+      "y": 0.29,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.1,
+        "y": 0.52,
+        "name": "Forge camp"
+      },
+      {
+        "x": 0.34,
+        "y": 0.64,
+        "name": "Slag crossing"
+      },
+      {
+        "x": 0.62,
+        "y": 0.09,
+        "name": "Ironworks"
+      },
+      {
+        "x": 0.25,
+        "y": 0.17,
+        "name": "Canal bridge"
+      },
+      {
+        "x": 0.52,
+        "y": 0.31,
+        "name": "Ore store"
+      },
+      {
+        "x": 0.86,
+        "y": 0.13,
+        "name": "Furnace yard"
+      },
+      {
+        "x": 0.85,
+        "y": 0.72,
+        "name": "Marsh jetty"
+      },
+      {
+        "x": 0.8,
+        "y": 0.45,
+        "name": "Smiths hamlet"
+      },
+      {
+        "x": 0.72,
+        "y": 0.31,
+        "name": "Workshop row"
+      },
+      {
+        "x": 0.9,
+        "y": 0.28,
+        "name": "Foundry gate"
+      }
+    ]
+  },
+  "lantern_pass": {
+    "start": {
+      "x": 0.06,
+      "y": 0.16,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.93,
+      "y": 0.64,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.3,
+        "y": 0.48,
+        "name": "Lantern camp"
+      },
+      {
+        "x": 0.47,
+        "y": 0.2,
+        "name": "Broken tower"
+      },
+      {
+        "x": 0.22,
+        "y": 0.27,
+        "name": "Stone arch"
+      },
+      {
+        "x": 0.62,
+        "y": 0.62,
+        "name": "Mossy bridge"
+      },
+      {
+        "x": 0.27,
+        "y": 0.24,
+        "name": "Guard post"
+      },
+      {
+        "x": 0.46,
+        "y": 0.44,
+        "name": "Ruined courtyard"
+      },
+      {
+        "x": 0.8,
+        "y": 0.34,
+        "name": "High lookout"
+      },
+      {
+        "x": 0.77,
+        "y": 0.14,
+        "name": "Old stair"
+      },
+      {
+        "x": 0.33,
+        "y": 0.47,
+        "name": "Travellers rest"
+      },
+      {
+        "x": 0.93,
+        "y": 0.65,
+        "name": "Pass gate"
+      }
+    ]
+  },
+  "dune_crossing": {
+    "start": {
+      "x": 0.09,
+      "y": 0.46,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.91,
+      "y": 0.83,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.17,
+        "y": 0.45,
+        "name": "Desert camp"
+      },
+      {
+        "x": 0.25,
+        "y": 0.19,
+        "name": "Palm oasis"
+      },
+      {
+        "x": 0.29,
+        "y": 0.1,
+        "name": "Sandstone bridge"
+      },
+      {
+        "x": 0.48,
+        "y": 0.78,
+        "name": "Buried shrine"
+      },
+      {
+        "x": 0.58,
+        "y": 0.37,
+        "name": "Caravanserai"
+      },
+      {
+        "x": 0.37,
+        "y": 0.38,
+        "name": "Water well"
+      },
+      {
+        "x": 0.17,
+        "y": 0.62,
+        "name": "Ruined market"
+      },
+      {
+        "x": 0.78,
+        "y": 0.73,
+        "name": "Dune shelter"
+      },
+      {
+        "x": 0.59,
+        "y": 0.58,
+        "name": "Rocky pass"
+      },
+      {
+        "x": 0.88,
+        "y": 0.9,
+        "name": "Oasis bazaar"
+      }
+    ]
+  },
+  "tollgate_road": {
+    "start": {
+      "x": 0.03,
+      "y": 0.24,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.88,
+      "y": 0.34,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.17,
+        "y": 0.44,
+        "name": "Woodland camp"
+      },
+      {
+        "x": 0.72,
+        "y": 0.43,
+        "name": "River bridge"
+      },
+      {
+        "x": 0.61,
+        "y": 0.32,
+        "name": "Gatehouse"
+      },
+      {
+        "x": 0.49,
+        "y": 0.13,
+        "name": "Watchtower"
+      },
+      {
+        "x": 0.94,
+        "y": 0.09,
+        "name": "Foresters cabin"
+      },
+      {
+        "x": 0.49,
+        "y": 0.38,
+        "name": "Toll market"
+      },
+      {
+        "x": 0.23,
+        "y": 0.78,
+        "name": "Forest clearing"
+      },
+      {
+        "x": 0.12,
+        "y": 0.64,
+        "name": "Old stockade"
+      },
+      {
+        "x": 0.2,
+        "y": 0.43,
+        "name": "Travellers rest"
+      },
+      {
+        "x": 0.89,
+        "y": 0.32,
+        "name": "Guard barracks"
+      }
+    ]
+  },
+  "kings_road": {
+    "start": {
+      "x": 0.1,
+      "y": 0.34,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.88,
+      "y": 0.17,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.18,
+        "y": 0.55,
+        "name": "Royal camp"
+      },
+      {
+        "x": 0.4,
+        "y": 0.17,
+        "name": "Broken aqueduct"
+      },
+      {
+        "x": 0.35,
+        "y": 0.43,
+        "name": "Old courtyard"
+      },
+      {
+        "x": 0.39,
+        "y": 0.6,
+        "name": "Stone bridge"
+      },
+      {
+        "x": 0.33,
+        "y": 0.33,
+        "name": "Palace ruins"
+      },
+      {
+        "x": 0.78,
+        "y": 0.54,
+        "name": "Guard tower"
+      },
+      {
+        "x": 0.75,
+        "y": 0.73,
+        "name": "Ancient market"
+      },
+      {
+        "x": 0.33,
+        "y": 0.42,
+        "name": "Garden shrine"
+      },
+      {
+        "x": 0.74,
+        "y": 0.23,
+        "name": "Citadel road"
+      },
+      {
+        "x": 0.92,
+        "y": 0.19,
+        "name": "City gate"
+      }
+    ]
+  },
+  "wyrmfall_run": {
+    "start": {
+      "x": 0.05,
+      "y": 0.15,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.93,
+      "y": 0.08,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.2,
+        "y": 0.65,
+        "name": "Highland camp"
+      },
+      {
+        "x": 0.49,
+        "y": 0.49,
+        "name": "Bone clearing"
+      },
+      {
+        "x": 0.37,
+        "y": 0.22,
+        "name": "Rope bridge"
+      },
+      {
+        "x": 0.42,
+        "y": 0.15,
+        "name": "Dragon skull"
+      },
+      {
+        "x": 0.68,
+        "y": 0.75,
+        "name": "Cliff lookout"
+      },
+      {
+        "x": 0.68,
+        "y": 0.33,
+        "name": "Mountain shelter"
+      },
+      {
+        "x": 0.63,
+        "y": 0.38,
+        "name": "Ravine crossing"
+      },
+      {
+        "x": 0.48,
+        "y": 0.5,
+        "name": "Stone shrine"
+      },
+      {
+        "x": 0.18,
+        "y": 0.12,
+        "name": "Old mine"
+      },
+      {
+        "x": 0.92,
+        "y": 0.13,
+        "name": "Summit camp"
+      }
+    ]
+  },
+  "lighthouse_route": {
+    "start": {
+      "x": 0.08,
+      "y": 0.41,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.9,
+      "y": 0.12,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.17,
+        "y": 0.61,
+        "name": "Coastal camp"
+      },
+      {
+        "x": 0.18,
+        "y": 0.39,
+        "name": "Cliff bridge"
+      },
+      {
+        "x": 0.57,
+        "y": 0.68,
+        "name": "Rocky cove"
+      },
+      {
+        "x": 0.78,
+        "y": 0.49,
+        "name": "Fishing pier"
+      },
+      {
+        "x": 0.26,
+        "y": 0.56,
+        "name": "Storm shelter"
+      },
+      {
+        "x": 0.76,
+        "y": 0.43,
+        "name": "Harbour market"
+      },
+      {
+        "x": 0.89,
+        "y": 0.08,
+        "name": "Lighthouse bluff"
+      },
+      {
+        "x": 0.71,
+        "y": 0.49,
+        "name": "Old quay"
+      },
+      {
+        "x": 0.83,
+        "y": 0.33,
+        "name": "Seafarers rest"
+      },
+      {
+        "x": 0.4,
+        "y": 0.29,
+        "name": "Headland watch"
+      }
+    ]
+  },
+  "ember_throne_route": {
+    "start": {
+      "x": 0.1,
+      "y": 0.44,
+      "name": "Departure"
+    },
+    "end": {
+      "x": 0.93,
+      "y": 0.12,
+      "name": "Destination"
+    },
+    "stops": [
+      {
+        "x": 0.13,
+        "y": 0.67,
+        "name": "Ash camp"
+      },
+      {
+        "x": 0.72,
+        "y": 0.54,
+        "name": "Basalt bridge"
+      },
+      {
+        "x": 0.58,
+        "y": 0.51,
+        "name": "Lava ford"
+      },
+      {
+        "x": 0.35,
+        "y": 0.17,
+        "name": "Obsidian shrine"
+      },
+      {
+        "x": 0.85,
+        "y": 0.11,
+        "name": "Black tower"
+      },
+      {
+        "x": 0.2,
+        "y": 0.75,
+        "name": "Ruined forge"
+      },
+      {
+        "x": 0.38,
+        "y": 0.65,
+        "name": "Cinder shelter"
+      },
+      {
+        "x": 0.69,
+        "y": 0.4,
+        "name": "Magma crossing"
+      },
+      {
+        "x": 0.9,
+        "y": 0.24,
+        "name": "Fortress road"
+      },
+      {
+        "x": 0.92,
+        "y": 0.15,
+        "name": "Throne gate"
+      }
+    ]
+  }
+}

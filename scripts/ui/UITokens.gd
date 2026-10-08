@@ -38,8 +38,8 @@ const GOLD_BRIGHT := Color("#d8ccff")    ## headings and highlighted values
 const TEAL := Color("#22d3ee")           ## gathering, recovery, positive passive
 const BLUE := Color("#60a5fa")           ## crafting, arcane
 const AMBER := Color("#fbbf24")          ## caution / blocked
-const RED := Color("#fb5a7a")            ## danger, combat, destructive
-const GREEN := Color("#34d399")          ## success, satisfied requirement
+const RED := Color("#ef4444")            ## danger, combat, destructive (a saturated red; 5.1:1 on BG, and far from GREEN under red-green colour blindness)
+const GREEN := Color("#5eead4")          ## success, satisfied requirement (light mint: stays apart from RED under red-green colour blindness)
 const PURPLE := Color("#e879f9")         ## rare / mastery
 const DISABLED := Color("#5d5a7d")
 

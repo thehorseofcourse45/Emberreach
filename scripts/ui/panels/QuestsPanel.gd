@@ -132,7 +132,7 @@ func _rebuild_rotating(filter: String) -> void:
 	_rotation_label = UIStyle.colored_label(_rotation_headline(), UITokens.GOLD_BRIGHT, UITokens.FONT_SMALL)
 	_list.add_child(_rotation_label)
 	_list.add_child(UIStyle.label(
-		"Featured from the rotation pool — a task that leaves can return in a later rotation. Claimed tasks stay claimed.",
+		"Featured from the rotation pool. A claimed task reopens next rotation and needs fresh progress. Daily streak: %d day(s), rewards x%.1f. Claim one each day to keep it." % [Quests.current_streak(), Quests.streak_multiplier()],
 		true, UITokens.FONT_MICRO))
 	var shown: int = 0
 	for quest_id in Quests.featured_rotating_ids():

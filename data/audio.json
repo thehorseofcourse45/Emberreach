@@ -140,6 +140,7 @@
     "quest_completed": "quest",
     "achievement_unlocked": "achievement",
     "pet_unlocked": { "sound": "rare", "throttle_ms": 500 },
+    "rare_drop": { "sound": "rare", "throttle_ms": 500 },
     "item_discovered": { "sound": "rare", "throttle_ms": 500 },
     "monster_discovered": { "sound": "rare", "throttle_ms": 500 },
     "dungeon_discovered": { "sound": "rare", "throttle_ms": 500 },

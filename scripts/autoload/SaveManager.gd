@@ -163,6 +163,10 @@ func save_game(_reason_is_major: bool = false) -> bool:
 	if _write_in_progress:
 		# Duplicate submission guard: a save already owns the write slot.
 		return false
+	# A half-applied catch-up must never reach disk with the old marker, or the next launch replays
+	# the window. The catch-up saves itself once it finishes.
+	if OfflineProgression.is_running:
+		return false
 	_write_in_progress = true
 	EventBus.save_status.emit("saving", "Saving…")
 
@@ -429,6 +433,7 @@ func _read_json(path: String) -> Variant:
 
 func _apply(data: Dictionary) -> void:
 	# Every subsystem tolerates a missing section; each re-derives its own modifiers.
+	GameManager.clear_derived_modifiers()
 	PlayerData.deserialize(data.get("player", {}))
 	PlayerData.settings.merge(data.get("settings", {}), false)
 	MasteryManager.deserialize(data.get("mastery", {}))

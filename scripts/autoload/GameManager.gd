@@ -103,9 +103,7 @@ func start_new_game(mode: String) -> void:
 	# Clear every derived modifier category; each owning manager re-registers its own sources.
 	# "prestige" is deliberately absent: an ascension's bonus must survive the reset it bought,
 	# and PrestigeManager re-registers it from PlayerData.prestige.
-	for category in ["prayer", "potion", "shop", "agility", "astrology", "summoning",
-			"pet", "poi", "raid", "township", "mastery_item", "equipment", "goals"]:
-		ModifierManager.clear_category(category)
+	clear_derived_modifiers()
 	ProgressTracker.mark_dirty(true)
 	boot_state = BootState.NEW
 	# A reset keeps the player's preferences (including their chosen speed and save cadence), so
@@ -113,6 +111,20 @@ func start_new_game(mode: String) -> void:
 	apply_session_settings()
 	EventBus.state_refreshed.emit()
 	EventBus.notification.emit("New journey started (%s)" % mode, "success")
+
+## Drop every derived modifier source; each owning manager re-registers its own on deserialize.
+## Also used before restoring a save, so an import cannot inherit the previous character's bonuses.
+func clear_derived_modifiers() -> void:
+	for category in ["prayer", "potion", "shop", "agility", "astrology", "summoning",
+			"pet", "poi", "raid", "township", "mastery_item", "equipment", "goals"]:
+		ModifierManager.clear_category(category)
+
+## A confirmed "reset all progress": a new game that also drops the Ascendancy, which
+## start_new_game keeps because an ascension must survive the reset it buys.
+func reset_everything(mode: String) -> void:
+	start_new_game(mode)
+	PlayerData.prestige = {}
+	PrestigeManager._reapply()
 
 ## Player-confirmed fresh start after a failed load. The broken file stays quarantined.
 func recover_with_new_game() -> void:

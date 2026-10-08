@@ -9,6 +9,10 @@ signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
 const QUANTITY_PRESETS: Array[int] = [1, 5, 10, 25, 50]
+## Skills whose activity list is rendered inside their system section instead of the generic
+## Activities card. Surveying's charts are what the Frontier map shows progress across, so they
+## live on the map; here, that card only promised rewards those actions never produce.
+const INTEGRATED_ACTIVITIES: Array[String] = ["cartography"]
 ## Preloaded by path: the global class cache is not guaranteed to know a freshly added
 ## file when the headless test suite runs.
 const SkillSystemsView = preload("res://scripts/ui/panels/SkillSystems.gd")
@@ -65,6 +69,7 @@ func focus_route(route: Dictionary) -> void:
 	if action_id != "":
 		_selected_action = action_id
 		_refresh_selected()
+		_sync_system_selection()
 	if str(route.get("start", "")) == "1":
 		_on_start()
 
@@ -89,6 +94,7 @@ func _build() -> void:
 	_systems.visible = false
 	add_child(_systems)
 	_systems.navigated.connect(func(route): navigated.emit(route))
+	_systems.action_selected.connect(func(_sid, action_id): _select_action(str(action_id)))
 	_activities_card = UIStyle.panel()
 	_activities_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_main_grid.add_child(_activities_card)
@@ -115,11 +121,25 @@ func _build() -> void:
 	_update_columns()
 
 func _update_columns() -> void:
-	if _main_grid != null:
-		var wide: bool = size.x >= 760
-		_main_grid.columns = 2 if wide else 1
-		if _selected_card != null:
-			_main_grid.move_child(_selected_card, 1 if wide else 0)
+	if _main_grid == null:
+		return
+	var wide: bool = size.x >= 760
+	# Two columns only make sense when both cells hold content: a hidden Activities card would
+	# leave the details card sitting beside an empty half of the grid.
+	var paired: bool = wide and _activities_card != null and _activities_card.visible
+	_main_grid.columns = 2 if paired else 1
+	if _selected_card != null:
+		_main_grid.move_child(_selected_card, 1 if paired else 0)
+
+## Child order is the page's reading order. When a skill's activities are rendered inside its
+## system section, that section moves above the details card, so a tap on a chart row updates the
+## card directly beneath it instead of one that scrolled past off the top of the screen.
+func _arrange_layout() -> void:
+	if _header == null or _main_grid == null or _systems == null:
+		return
+	var integrated: bool = _skill_id in INTEGRATED_ACTIVITIES
+	move_child(_systems, 1 if integrated else 2)
+	move_child(_main_grid, 2 if integrated else 1)
 
 # =========================================================================
 #  Refresh
@@ -144,6 +164,7 @@ func refresh() -> void:
 	_refresh_selected()
 	_refresh_mastery()
 	_rebuild_modifiers()
+	_systems.set_selected_action(_selected_action)
 	_systems.rebuild()
 
 func _rebuild_header() -> void:
@@ -220,7 +241,14 @@ func _process(_delta: float) -> void:
 
 func _rebuild_activities() -> void:
 	_main_grid.visible = _skill_id not in ["ranching", "dreamwalking", "caravaneering"]
+	var integrated: bool = _skill_id in INTEGRATED_ACTIVITIES
+	_activities_card.visible = not integrated
+	_arrange_layout()
+	_update_columns()
 	_clear(_activities)
+	if integrated:
+		# The rows are drawn by the system section that owns them (the Frontier map).
+		return
 	_activities.add_child(UIStyle.title("Activities", UITokens.FONT_SUBHEAD))
 	_activities.add_child(UIStyle.label("Choose a reward to train toward.", true, UITokens.FONT_SMALL))
 	var actions: Array = DataLoader.get_skill_actions(_skill_id)
@@ -241,7 +269,15 @@ func _select_action(action_id: String) -> void:
 	_quantity_index = 0
 	_rebuild_activities()
 	_refresh_selected()
+	_sync_system_selection()
 	context_changed.emit({"kind": "recipe", "skill_id": _skill_id, "action_id": action_id})
+
+## The integrated activity list draws its own highlight, so it needs the current selection back
+## before it redraws — and redrawing it here is what makes a tap on the map's list light up.
+func _sync_system_selection() -> void:
+	_systems.set_selected_action(_selected_action)
+	if _skill_id in INTEGRATED_ACTIVITIES:
+		_systems.rebuild()
 
 func _refresh_selected() -> void:
 	_clear(_selected_box)

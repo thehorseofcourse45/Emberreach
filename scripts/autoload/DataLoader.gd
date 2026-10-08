@@ -41,6 +41,12 @@ var new_skill_systems: Dictionary = {}
 ## Ascendancy node tree: ranked, point-bought prestige nodes (see PrestigeManager).
 var ascendancy: Dictionary = {}
 var audio: Dictionary = {}
+## Settlement patrons chosen at the Shrine (TownshipManager.set_worship).
+var worship: Dictionary = {}
+## Random idle events (scripts/core/RandomEvents.gd).
+var random_events: Dictionary = {}
+## Cartography terrain rules: travel cost, survey reveals, hull gate (CartographyManager).
+var cartography_terrain: Dictionary = {}
 
 # Derived indexes
 var _actions_by_skill: Dictionary = {}      # skill_id -> Array[Dictionary]
@@ -77,6 +83,9 @@ func _load_all() -> void:
     cartography_ships = _load_file("cartography_ships.json")
     audio = _load_file("audio.json")
     tutorial = _load_file("tutorial.json")
+    worship = _load_file("worship.json")
+    random_events = _load_file("random_events.json")
+    cartography_terrain = _load_file("cartography_terrain.json")
     # Authoring convenience: a hex with no Point of Interest is written "poi": null.
     # Dictionary.get() only falls back to its default when the KEY is absent, so a null
     # value would leak into every typed Dictionary read downstream. Normalise once here.

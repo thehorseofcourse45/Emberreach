@@ -28,6 +28,7 @@ func _ready() -> void:
 	_column.set_anchors_preset(Control.PRESET_FULL_RECT)
 	EventBus.notification.connect(push)
 	EventBus.skill_level_up.connect(push_level_up)
+	EventBus.rare_drop.connect(push_rare_drop)
 	EventBus.game_loaded.connect(clear)
 
 func push_level_up(skill_id: String, level: int) -> void:
@@ -35,6 +36,11 @@ func push_level_up(skill_id: String, level: int) -> void:
 	if skill.is_empty():
 		return
 	push("Level up!\n%s reached level %d" % [str(skill.get("name", skill_id)), level], "level", skill_id)
+
+## Gold toast with the item's own icon. "rare" is not a mutable kind, so it always shows.
+func push_rare_drop(item_id: String, quantity: int, source: String) -> void:
+	var where: String = "in combat" if source == "combat" else "while %s" % str(DataLoader.get_skill(source).get("name", source))
+	push("Rare drop!\n%s ×%d %s" % [str(DataLoader.get_item(item_id).get("name", item_id)), quantity, where], "rare", item_id)
 
 func push(text: String, kind: String = "info", skill_id: String = "") -> void:
 	if text.strip_edges() == "":
@@ -72,7 +78,7 @@ func _build(text: String, kind: String, skill_id: String = "") -> Control:
 	var accent: Color = UITokens.TEAL
 	var icon_id: String = "ok"
 	match kind:
-		"level":
+		"level", "rare":
 			accent = UITokens.GOLD_BRIGHT
 		"warn":
 			accent = UITokens.AMBER
@@ -92,7 +98,12 @@ func _build(text: String, kind: String, skill_id: String = "") -> Control:
 	row.add_theme_constant_override("separation", UITokens.SP_4)
 	panel.add_child(row)
 	var icon := TextureRect.new()
-	icon.texture = AssetRegistry.skill_icon(skill_id) if kind == "level" else AssetRegistry.icon("status", icon_id)
+	if kind == "level":
+		icon.texture = AssetRegistry.skill_icon(skill_id)
+	elif kind == "rare":
+		icon.texture = AssetRegistry.item_icon(skill_id)   # skill_id carries the item id here
+	else:
+		icon.texture = AssetRegistry.icon("status", icon_id)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.custom_minimum_size = Vector2(UITokens.ICON_SM, UITokens.ICON_SM)
@@ -103,7 +114,7 @@ func _build(text: String, kind: String, skill_id: String = "") -> Control:
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l.add_theme_color_override("font_color", accent if kind in ["error", "level"] else UITokens.TEXT)
+	l.add_theme_color_override("font_color", accent if kind in ["error", "level", "rare"] else UITokens.TEXT)
 	row.add_child(l)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return panel

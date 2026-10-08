@@ -234,7 +234,11 @@ func ascend() -> Dictionary:
 	var kept_nodes: Dictionary = purchased().duplicate(true)
 	var kept_points: int = points() + POINTS_PER_ASCENSION
 	var kept_earned: int = points_earned() + POINTS_PER_ASCENSION
+	# Milestones are lifetime: their stats survive, so their claims must too, or every ascension
+	# re-opens the same rewards.
+	var kept_achievements: Dictionary = Achievements.serialize()
 	GameManager.start_new_game(str(PlayerData.game_mode))
+	Achievements.deserialize(kept_achievements)
 	PlayerData.prestige = {
 		"ascensions": n,
 		"total": total_ascendancies() + 1,
@@ -281,5 +285,6 @@ func serialize() -> Dictionary:
 	return {"prestige": PlayerData.prestige}
 
 func deserialize(d: Dictionary) -> void:
-	PlayerData.prestige = d.get("prestige", {})
+	var p: Variant = d.get("prestige", {})
+	PlayerData.prestige = p if typeof(p) == TYPE_DICTIONARY else {}
 	_reapply()

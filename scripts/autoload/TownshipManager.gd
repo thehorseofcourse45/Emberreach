@@ -17,6 +17,9 @@ const XP_PER_RESIDENT: float = 2500.0
 const XP_PER_STRUCTURE_LEVEL: float = 1500.0
 const CATEGORY: String = "township"
 const DEFAULT_MAX_LEVEL: int = 5
+## The Schoolhouse pays its studied skill this much XP per level per tick (before that skill's XP bonuses).
+const SCHOOL_ID: String = "township_building_school"
+const XP_PER_SCHOOL_LEVEL: float = 4000.0
 
 ## Every resource the settlement can hold. Population is deliberately NOT here: it is a gate
 ## (a derived count), not a spendable store, and the panel shows it separately.
@@ -59,6 +62,7 @@ var resources: Dictionary = {}
 var buildings: Dictionary = {}       # building_id -> level
 var population: int = 0
 var worship: String = ""
+var study: String = ""
 var _tick_accumulator: float = 0.0
 
 func _ready() -> void:
@@ -162,6 +166,7 @@ func produce_tick() -> void:
 	var xp: float = xp_per_hour()
 	if xp > 0.0:
 		PlayerData.add_xp("township", xp)
+	PlayerData.add_xp(study, study_xp_per_hour())   # add_xp ignores "" and non-positive amounts
 
 func xp_per_hour() -> float:
 	var structure_levels: int = 0
@@ -224,6 +229,7 @@ func _reregister_modifiers() -> void:
 			scaled[str(key)] = float(mods[key]) * float(level)
 		ModifierManager.register("%s:%s" % [CATEGORY, building_id], scaled, CATEGORY,
 			"%s (level %d)" % [str(buildings_data()[building_id].get("name", building_id)), level])
+	_apply_worship()
 
 # =========================================================================
 #  Offline
@@ -324,12 +330,41 @@ func describe_offer(offer: Dictionary) -> String:
 			str(DataLoader.skills.get(skill_id, {}).get("name", skill_id))])
 	return ", ".join(parts) if not parts.is_empty() else "Nothing"
 
+## The Schoolhouse: residents study one non-combat skill and pay it XP every tick.
+func study_options() -> Array[String]:
+	var out: Array[String] = []
+	for id in DataLoader.get_skill_ids():
+		if str(DataLoader.get_skill(id).get("type", "")) in ["gathering", "artisan", "processing"]:
+			out.append(str(id))
+	return out
+
+func study_xp_per_hour() -> float:
+	if study == "":
+		return 0.0
+	return float(level_of(SCHOOL_ID)) * XP_PER_SCHOOL_LEVEL * ModifierManager.get_skill_xp_multiplier(study)
+
+func set_study(skill_id: String) -> void:
+	study = skill_id if study_options().has(skill_id) else ""
+	EventBus.state_refreshed.emit()
+
+## Patrons live in data/worship.json. An unknown id clears the patron rather than saving junk.
 func set_worship(god_id: String) -> void:
-	worship = god_id
+	worship = god_id if DataLoader.worship.has(god_id) else ""
+	_apply_worship()
+	EventBus.state_refreshed.emit()
+
+## The blessing is granted per Shrine level, so it is re-applied whenever buildings change.
+func _apply_worship() -> void:
 	ModifierManager.unregister("%s:worship" % CATEGORY)
-	var eff: Dictionary = DataLoader.game_modes.get("worship_effects", {}).get(god_id, {})
-	if not eff.is_empty():
-		ModifierManager.register("%s:worship" % CATEGORY, eff, CATEGORY, "Worship: %s" % god_id)
+	var shrine: int = level_of("township_building_temple")
+	var patron: Dictionary = DataLoader.worship.get(worship, {})
+	if shrine <= 0 or patron.is_empty():
+		return
+	var scaled: Dictionary = {}
+	for key in (patron.get("modifiers", {}) as Dictionary).keys():
+		scaled[str(key)] = float(patron["modifiers"][key]) * float(shrine)
+	ModifierManager.register("%s:worship" % CATEGORY, scaled, CATEGORY,
+		"Worship: %s (Shrine %d)" % [str(patron.get("name", worship)), shrine])
 
 # =========================================================================
 #  Persistence
@@ -341,6 +376,7 @@ func serialize() -> Dictionary:
 		"buildings": buildings,
 		"population": population,
 		"worship": worship,
+		"study": study,
 		"tick_accumulator": _tick_accumulator,
 	}
 
@@ -359,12 +395,14 @@ func deserialize(d: Dictionary) -> void:
 			if level > 0 and DataLoader.township_buildings.has(str(building_id)):
 				buildings[str(building_id)] = mini(level, max_level_of(str(building_id)))
 	population = int(productions_population())
-	worship = str(d.get("worship", ""))
+	var saved_patron: String = str(d.get("worship", ""))
+	worship = saved_patron if DataLoader.worship.has(saved_patron) else ""
 	var acc: float = float(d.get("tick_accumulator", 0.0))
 	_tick_accumulator = clampf(acc, 0.0, SECONDS_PER_TICK) if is_finite(acc) else 0.0
-	if worship != "":
-		set_worship(worship)
-	_reregister_modifiers()
+	study = str(d.get("study", ""))
+	if not study_options().has(study):
+		study = ""
+	_reregister_modifiers()   # also applies the patron
 
 func build_preview(building_id: String) -> Dictionary:
 	var cost: Dictionary = scaled_cost(building_id)

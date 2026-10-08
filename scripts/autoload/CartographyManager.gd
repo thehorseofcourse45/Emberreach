@@ -9,6 +9,8 @@ var discovered: Dictionary = {}   # hex_id -> true (visited)
 var surveyed: Dictionary = {}     # hex_id -> true (POI claimed)
 var ship: String = DEFAULT_SHIP           # hull currently under the player
 var ships_owned: Array[String] = [DEFAULT_SHIP]
+## The last region travelled to; the map draws the ship token here.
+var current_hex: String = ""
 
 func get_hex(hex_id: String) -> Dictionary:
     return DataLoader.cartography_hexes.get(hex_id, {})
@@ -16,18 +18,69 @@ func get_hex(hex_id: String) -> Dictionary:
 func is_discovered(hex_id: String) -> bool:
     return discovered.has(hex_id)
 
+## The map is a frontier: a region is reachable from the origin or from a charted neighbour.
+const NEIGHBOURS: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1), Vector2i(1, -1), Vector2i(-1, 1)]
+var _by_coord: Dictionary = {}   # Vector2i(q, r) -> hex_id, built on first use
+
+func coord_of(hex_id: String) -> Vector2i:
+    var h: Dictionary = get_hex(hex_id)
+    return Vector2i(int(h.get("q", 0)), int(h.get("r", 0)))
+
+func hex_at(c: Vector2i) -> String:
+    if _by_coord.is_empty():
+        for id in DataLoader.cartography_hexes.keys():
+            _by_coord[coord_of(str(id))] = str(id)
+    return str(_by_coord.get(c, ""))
+
+## Terrain rules from data/cartography_terrain.json; unlisted terrain uses the defaults.
+func terrain_rule(hex_id: String) -> Dictionary:
+    return DataLoader.cartography_terrain.get(str(get_hex(hex_id).get("terrain", "")), {})
+
+func travel_cost(hex_id: String) -> float:
+    return float(get_hex(hex_id).get("travel_cost", 0)) * float(terrain_rule(hex_id).get("cost_mult", 1.0)) * travel_percent() / 100.0
+
+func survey_reveals(hex_id: String) -> int:
+    return int(terrain_rule(hex_id).get("reveals", 12))
+
+## Why a region cannot be travelled to, or "" when it can.
+func travel_block(hex_id: String) -> String:
+    if get_hex(hex_id).is_empty():
+        return "Unknown region"
+    if discovered.has(hex_id):
+        return ""
+    var c: Vector2i = coord_of(hex_id)
+    if c != Vector2i.ZERO:
+        var linked: bool = false
+        for d in NEIGHBOURS:
+            if discovered.has(hex_at(c + d)):
+                linked = true
+                break
+        if not linked:
+            return "Chart a neighbouring region first"
+    var need: int = int(terrain_rule(hex_id).get("min_ship_order", 1))
+    if int(current_ship().get("order", 1)) < need:
+        for s in ships():
+            if int(s.get("order", 0)) == need:
+                return "Sail the %s or better to reach this terrain" % str(s.get("name", "next hull"))
+        return "Needs a larger hull"
+    return ""
+
 func travel(hex_id: String) -> bool:
     var h: Dictionary = get_hex(hex_id)
     if h.is_empty():
         return false
-    var base_cost: float = float(h.get("travel_cost", 0))
-    var cost: float = base_cost * travel_percent() / 100.0
+    var block: String = travel_block(hex_id)
+    if block != "":
+        EventBus.notification.emit(block, "warn")
+        return false
+    var cost: float = travel_cost(hex_id)
     if not PlayerData.spend_gp(cost):
         EventBus.notification.emit("Not enough GP to travel", "warn")
         return false
     if not discovered.has(hex_id):
         discovered[hex_id] = true
         PlayerData.add_xp("cartography", float(h.get("survey_xp", 10)) * ModifierManager.get_skill_xp_multiplier("cartography"))
+    current_hex = hex_id
     return true
 
 ## Survey the current hex; claim its POI reward once.
@@ -126,10 +179,34 @@ func _reregister() -> void:
             mods[k] = float(mods.get(k, 0.0)) + float(eff[k])
     if not mods.is_empty():
         ModifierManager.register("%s:effects" % CATEGORY, mods, CATEGORY, "Points of Interest")
+    # Region sets: every landmark on one terrain claimed grants that terrain's "modifiers".
+    ModifierManager.unregister("%s:regions" % CATEGORY)
+    var sets: Dictionary = {}
+    for terrain in DataLoader.cartography_terrain.keys():
+        var bonus: Dictionary = DataLoader.cartography_terrain[terrain].get("modifiers", {})
+        var prog: Vector2i = terrain_progress(str(terrain))
+        if bonus.is_empty() or prog.y == 0 or prog.x < prog.y:
+            continue
+        for key in bonus.keys():
+            sets[key] = float(sets.get(key, 0.0)) + float(bonus[key])
+    if not sets.is_empty():
+        ModifierManager.register("%s:regions" % CATEGORY, sets, CATEGORY, "Region sets")
+
+## Landmarks on one terrain type: x = claimed, y = total.
+func terrain_progress(terrain: String) -> Vector2i:
+    var out := Vector2i.ZERO
+    for id in DataLoader.cartography_hexes.keys():
+        var h: Dictionary = DataLoader.cartography_hexes[id]
+        if str(h.get("terrain", "")) != terrain or (h.get("poi", {}) as Dictionary).is_empty():
+            continue
+        out.y += 1
+        if surveyed.has(id):
+            out.x += 1
+    return out
 
 func serialize() -> Dictionary:
     return {"discovered": discovered, "surveyed": surveyed,
-        "ship": ship, "ships_owned": ships_owned}
+        "ship": ship, "ships_owned": ships_owned, "current_hex": current_hex}
 
 func deserialize(d: Dictionary) -> void:
     discovered = d.get("discovered", {})
@@ -142,4 +219,10 @@ func deserialize(d: Dictionary) -> void:
         ships_owned = [DEFAULT_SHIP]
     if not ships_owned.has(ship):
         ship = ships_owned[ships_owned.size() - 1]
+    # The origin region is home: always charted, so its neighbours are the first frontier.
+    var origin: String = hex_at(Vector2i.ZERO)
+    if origin != "":
+        discovered[origin] = true
+    current_hex = str(d.get("current_hex", origin))
+    if not discovered.has(current_hex): current_hex = origin
     _reregister()

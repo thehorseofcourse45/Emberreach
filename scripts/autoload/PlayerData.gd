@@ -51,6 +51,9 @@ var prestige: Dictionary = {"ascensions": 0, "total": 0, "history": {}, "lifetim
 ## is". A save that never saw the tutorial lands on 0 and simply re-derives from the start.
 var tutorial_step: int = 0
 var unlock_history: Array = []
+## Rare drops (roll chance <= 1%), oldest first, capped at NOTABLE_DROPS_MAX. Saved with the run.
+var notable_drops: Array = []
+const NOTABLE_DROPS_MAX: int = 50
 
 ## Equipped-item protection: item ids the player marked "do not sell / do not drop".
 var protected_items: Dictionary = {}
@@ -118,6 +121,7 @@ func get_stat(bucket: String, key: String = "", default: float = 0.0) -> float:
 func initialize_new_game() -> void:
     skills.clear()
     unlock_history.clear()
+    notable_drops.clear()
     for skill_id in DataLoader.get_skill_ids():
         var start_level: int = 1
         skills[skill_id] = {"xp": float(XPTable.xp_for_level(start_level)), "level": start_level}
@@ -289,6 +293,14 @@ func _recalc_completion() -> void:
     var pct: float = 0.0 if total == 0 else float(got) / float(total) * 100.0
     EventBus.completion_updated.emit(pct)
 
+## The one place a rare drop is recorded: history for the Stats screen, then the signal that
+## drives the toast and fanfare (both already stay quiet during offline catch-up).
+func record_rare_drop(item_id: String, quantity: int, source: String) -> void:
+    notable_drops.append({"item_id": item_id, "qty": quantity, "source": source, "unix": int(Time.get_unix_time_from_system())})
+    if notable_drops.size() > NOTABLE_DROPS_MAX:
+        notable_drops = notable_drops.slice(-NOTABLE_DROPS_MAX)
+    EventBus.rare_drop.emit(item_id, quantity, source)
+
 # ---------------- Persistence ----------------
 func serialize() -> Dictionary:
     return {
@@ -306,6 +318,7 @@ func serialize() -> Dictionary:
         "prestige": prestige,
         "tutorial_step": tutorial_step,
         "unlock_history": unlock_history.duplicate(true),
+        "notable_drops": notable_drops.duplicate(true),
     }
 
 func deserialize(d: Dictionary) -> void:
@@ -343,6 +356,18 @@ func deserialize(d: Dictionary) -> void:
     favorite_items = _sanitize_item_flags(d.get("favorite_items", {}))
     prestige = _sanitize_prestige(d.get("prestige", {}))
     tutorial_step = sanitize_tutorial_step(d.get("tutorial_step", 0))
+    notable_drops = []
+    var drops: Variant = d.get("notable_drops", [])
+    if drops is Array:
+        for e in drops.slice(-NOTABLE_DROPS_MAX):
+            if not (e is Dictionary) or not DataLoader.items.has(str(e.get("item_id", ""))):
+                continue
+            var q: Variant = e.get("qty", 1)
+            var t: Variant = e.get("unix", 0)
+            notable_drops.append({"item_id": str(e["item_id"]),
+                "qty": maxi(1, int(q)) if (q is int or q is float) else 1,
+                "source": str(e.get("source", "")),
+                "unix": maxi(0, int(t)) if ((t is int or t is float) and is_finite(float(t))) else 0})
     _sanitize_skills()
 
 ## An older save has no tutorial_step key, and a hand-edited one can hold a string or a negative.

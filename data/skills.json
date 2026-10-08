@@ -88,6 +88,7 @@
     "actions": [
       {
         "id": "commune_abyss",
+        "icon_activity": true,
         "name": "Commune with the Abyss",
         "level_required": 1,
         "base_interval": 5.0,
@@ -99,6 +100,7 @@
       },
       {
         "id": "listen_abyss",
+        "icon_activity": true,
         "name": "Listen to the Abyss",
         "level_required": 10,
         "base_interval": 5.0,
@@ -110,6 +112,7 @@
       },
       {
         "id": "feed_darkness",
+        "icon_activity": true,
         "name": "Feed the Darkness",
         "level_required": 20,
         "base_interval": 5.0,
@@ -121,6 +124,7 @@
       },
       {
         "id": "open_veil",
+        "icon_activity": true,
         "name": "Open the Veil",
         "level_required": 30,
         "base_interval": 5.0,
@@ -132,6 +136,7 @@
       },
       {
         "id": "drink_deep",
+        "icon_activity": true,
         "name": "Drink from the Deep",
         "level_required": 40,
         "base_interval": 5.0,
@@ -143,6 +148,7 @@
       },
       {
         "id": "steep_shadow",
+        "icon_activity": true,
         "name": "Steep in Shadow",
         "level_required": 50,
         "base_interval": 5.0,
@@ -154,6 +160,7 @@
       },
       {
         "id": "bind_horror",
+        "icon_activity": true,
         "name": "Bind a Lesser Horror",
         "level_required": 60,
         "base_interval": 5.0,
@@ -165,6 +172,7 @@
       },
       {
         "id": "chain_restless",
+        "icon_activity": true,
         "name": "Chain a Restless One",
         "level_required": 70,
         "base_interval": 5.0,
@@ -176,6 +184,7 @@
       },
       {
         "id": "crown_hollow",
+        "icon_activity": true,
         "name": "Crown the Hollow",
         "level_required": 85,
         "base_interval": 5.0,
@@ -187,6 +196,7 @@
       },
       {
         "id": "shoulder_dark",
+        "icon_activity": true,
         "name": "Shoulder the Dark",
         "level_required": 95,
         "base_interval": 5.0,
@@ -198,6 +208,7 @@
       },
       {
         "id": "become_herald",
+        "icon_activity": true,
         "name": "Become the Herald",
         "level_required": 100,
         "base_interval": 5.0,
@@ -209,6 +220,7 @@
       },
       {
         "id": "unmake_light",
+        "icon_activity": true,
         "name": "Unmake the Light",
         "level_required": 110,
         "base_interval": 5.0,
@@ -220,6 +232,7 @@
       },
       {
         "id": "the_quiet_throne",
+        "icon_activity": true,
         "name": "The Quiet Throne",
         "level_required": 120,
         "base_interval": 5.0,
@@ -10695,6 +10708,7 @@
     "actions": [
       {
         "id": "catch_mist",
+        "icon_activity": true,
         "name": "Catch Morning Mist",
         "level_required": 1,
         "base_interval": 3.0,
@@ -10707,6 +10721,7 @@
       },
       {
         "id": "charge_vessel",
+        "icon_activity": true,
         "name": "Charge a Vessel",
         "level_required": 1,
         "base_interval": 3.0,
@@ -10722,6 +10737,7 @@
       },
       {
         "id": "feed_culture",
+        "icon_activity": true,
         "name": "Feed the Culture",
         "level_required": 5,
         "base_interval": 3.2,
@@ -10737,6 +10753,7 @@
       },
       {
         "id": "catch_hillside_wind",
+        "icon_activity": true,
         "name": "Catch Hillside Wind",
         "level_required": 15,
         "base_interval": 3.5,
@@ -10757,6 +10774,7 @@
       },
       {
         "id": "charge_vessel_pair",
+        "icon_activity": true,
         "name": "Charge a Vessel Pair",
         "level_required": 20,
         "base_interval": 3.7,
@@ -10772,6 +10790,7 @@
       },
       {
         "id": "schedule_mature",
+        "icon_activity": true,
         "name": "Mature to Schedule",
         "level_required": 20,
         "base_interval": 3.7,
@@ -10787,6 +10806,7 @@
       },
       {
         "id": "harvest_charge",
+        "icon_activity": true,
         "name": "Harvest a Charge",
         "level_required": 20,
         "base_interval": 3.7,
@@ -10802,6 +10822,7 @@
       },
       {
         "id": "catch_greenhouse_warmth",
+        "icon_activity": true,
         "name": "Catch Greenhouse Warmth",
         "level_required": 30,
         "base_interval": 4.0,
@@ -10814,6 +10835,7 @@
       },
       {
         "id": "feed_dry",
+        "icon_activity": true,
         "name": "Feed Toward Dry",
         "level_required": 30,
         "base_interval": 4.0,
@@ -10831,6 +10853,7 @@
       },
       {
         "id": "catch_orchard_bloom",
+        "icon_activity": true,
         "name": "Catch Orchard Bloom",
         "level_required": 38,
         "base_interval": 4.3,
@@ -10852,6 +10875,7 @@
       },
       {
         "id": "retain_culture",
+        "icon_activity": true,
         "name": "Retain the Culture",
         "level_required": 45,
         "base_interval": 4.5,
@@ -10867,6 +10891,7 @@
       },
       {
         "id": "steep_culture",
+        "icon_activity": true,
         "name": "Steep a Culture",
         "level_required": 55,
         "base_interval": 4.8,
@@ -10883,6 +10908,7 @@
       },
       {
         "id": "bottle_charge",
+        "icon_activity": true,
         "name": "Bottle a Charge",
         "level_required": 62,
         "base_interval": 5.0,
@@ -10898,6 +10924,7 @@
       },
       {
         "id": "cross_culture",
+        "icon_activity": true,
         "name": "Cross-Culture",
         "level_required": 70,
         "base_interval": 5.3,
@@ -10915,6 +10942,7 @@
       },
       {
         "id": "catch_storm_front",
+        "icon_activity": true,
         "name": "Catch a Storm Front",
         "level_required": 78,
         "base_interval": 5.0,
@@ -10928,6 +10956,7 @@
       },
       {
         "id": "release_programme",
+        "icon_activity": true,
         "name": "Release a Programme",
         "level_required": 85,
         "base_interval": 5.8,
@@ -10946,6 +10975,7 @@
       },
       {
         "id": "grand_vintage",
+        "icon_activity": true,
         "name": "Grand Vintage",
         "level_required": 95,
         "base_interval": 6.2,
@@ -10964,6 +10994,7 @@
       },
       {
         "id": "catch_aurora",
+        "icon_activity": true,
         "name": "Catch the Aurora",
         "level_required": 102,
         "base_interval": 5.0,
@@ -10985,6 +11016,7 @@
       },
       {
         "id": "herald_cask",
+        "icon_activity": true,
         "name": "Herald Cask",
         "level_required": 108,
         "base_interval": 6.6,
@@ -11003,6 +11035,7 @@
       },
       {
         "id": "halcyon_vintage",
+        "icon_activity": true,
         "name": "Halcyon Vintage",
         "level_required": 116,
         "base_interval": 6.9,
@@ -13015,6 +13048,6 @@
       }
     },
     "order": 40,
-    "description": "Outfit caravans and send them on timed trade routes across your charted map."
+    "description": "Outfit caravans and unlock independent trade routes as your Caravaneering level grows. Visit reward stops and navigate danger on each destination’s journey map."
   }
 }

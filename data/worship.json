@@ -1,0 +1,27 @@
+{
+  "_comment": "Settlement patrons (TownshipManager.set_worship). One patron at a time, chosen once a Shrine stands; switching is free. Each modifier is granted per Shrine level, so the Shrine is what deepens the blessing.",
+  "patron_gale": {
+    "id": "patron_gale",
+    "name": "The Gale",
+    "description": "Keeper of the Observatory of Gales. Hands move quicker to learn what the wind already knows.",
+    "modifiers": { "global_skill_xp_percent": 2 }
+  },
+  "patron_tide": {
+    "id": "patron_tide",
+    "name": "The Tide",
+    "description": "Warden of the Tidal Reliquary. What goes out comes back, and a little more besides.",
+    "modifiers": { "global_gp_percent": 4 }
+  },
+  "patron_stone": {
+    "id": "patron_stone",
+    "name": "The Deepstone",
+    "description": "Sleeper beneath the Deepstone Sanctum. Blows land on you as they would on a mountain.",
+    "modifiers": { "damage_reduction_percent": 1 }
+  },
+  "patron_ember": {
+    "id": "patron_ember",
+    "name": "The Ember",
+    "description": "Tender of the Emberthrone Kiln. Every strike carries a little of the forge's heat.",
+    "modifiers": { "combat_max_hit_percent": 2 }
+  }
+}

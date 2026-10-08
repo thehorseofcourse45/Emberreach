@@ -1,0 +1,6 @@
+{
+  "_comment": "Random idle events (scripts/core/RandomEvents.gd). Each rolls once per eligible action or kill with its own chance, from the caller's seeded RNG, so online and offline play see the same odds. Offline hits are counted in the welcome-back summary.",
+  "lucky_haul": { "id": "lucky_haul", "name": "Lucky haul!", "chance": 0.01, "description": "A gathering action pays out twice." },
+  "travelling_merchant": { "id": "travelling_merchant", "name": "A travelling merchant", "chance": 0.002, "gp_per_level": 25, "description": "Buys your odds and ends for gold that scales with the skill's level." },
+  "champion_foe": { "id": "champion_foe", "name": "Champion foe!", "chance": 0.01, "description": "A kill drops its loot table a second time." }
+}

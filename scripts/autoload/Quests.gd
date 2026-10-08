@@ -37,6 +37,15 @@ var _rotating_order: Array[String] = []
 ## Verification hook: pins the rotation window so screenshots and checks stay stable.
 ## Negative (the default) means the window follows the wall clock.
 var rotation_window_override: int = -1
+## A rotating claim lasts one window: quest_id -> the window it was claimed in. The claim also
+## stores each objective's counter as a baseline, so the next rotation needs fresh work.
+var _rotating_claims: Dictionary = {}
+var _baselines: Dictionary = {}        # quest_id -> Array of floats, one per objective
+## Days in a row with a rotating claim. Each day past the first adds 10% to task GP and XP.
+var _streak: int = 0
+var _streak_day: int = -1
+const STREAK_STEP: float = 0.10
+const STREAK_MAX_BONUS: float = 0.50
 
 func _ready() -> void:
 	_load()
@@ -187,10 +196,22 @@ func is_accepted(quest_id: String) -> bool:
 	return _accepted.has(quest_id)
 
 func is_claimed(quest_id: String) -> bool:
+	if _rotating.has(quest_id):
+		return int(_rotating_claims.get(quest_id, -1)) == rotation_window()
 	return _claimed.has(quest_id)
 
+func _today() -> int:
+	return int(Time.get_unix_time_from_system() / 86400.0)
+
+## The streak holds while the last rotating claim was today or yesterday; a missed day resets it.
+func current_streak() -> int:
+	return _streak if _streak_day >= _today() - 1 else 0
+
+func streak_multiplier() -> float:
+	return 1.0 + minf(STREAK_MAX_BONUS, STREAK_STEP * float(maxi(0, current_streak() - 1)))
+
 func is_complete(quest_id: String) -> bool:
-	if not _quests.has(quest_id) or _claimed.has(quest_id):
+	if not _quests.has(quest_id) or is_claimed(quest_id):
 		return false
 	return progress(quest_id)["all_satisfied"]
 
@@ -242,6 +263,12 @@ func progress(quest_id: String) -> Dictionary:
 		var obj: Dictionary = q["objectives"][i]
 		var row: Dictionary = describe_objective(obj)
 		row["index"] = i
+		# A repeated rotating task counts only what happened since its last claim.
+		var base: Array = _baselines.get(quest_id, [])
+		if i < base.size() and bool(row["lifetime"]):
+			row["current"] = maxf(0.0, float(row["current"]) - float(base[i]))
+			row["satisfied"] = float(row["current"]) >= float(row["required"])
+			row["percent"] = clampf(0.0 if float(row["required"]) <= 0.0 else float(row["current"]) / float(row["required"]), 0.0, 1.0)
 		out["objectives"].append(row)
 		if bool(row["satisfied"]):
 			out["satisfied"] += 1
@@ -316,6 +343,10 @@ func describe_objective(obj: Dictionary) -> Dictionary:
 			current = float((PlayerData.completion_log.get("items", {}) as Dictionary).size())
 			lifetime = true
 			hint = "Distinct items discovered"
+		"chart_hexes":
+			current = float(CartographyManager.discovered.size())
+			lifetime = true
+			hint = "Regions charted on the frontier map"
 		_:
 			hint = "Unsupported objective kind '%s'" % kind
 	return {
@@ -364,7 +395,7 @@ func accept(quest_id: String) -> bool:
 func claim(quest_id: String) -> bool:
 	if not _quests.has(quest_id):
 		return false
-	if _claimed.has(quest_id):
+	if is_claimed(quest_id):
 		EventBus.notify("That reward was already collected.", "warn")
 		return false
 	if not prerequisites_met(quest_id):
@@ -373,16 +404,44 @@ func claim(quest_id: String) -> bool:
 	if not is_complete(quest_id):
 		EventBus.notify("Objectives are not met yet.", "warn")
 		return false
-	_claimed[quest_id] = true
-	_accepted[quest_id] = true
 	PlayerData.bump_total("quests_completed", 1.0)
-	grant_reward(get_quest(quest_id).get("reward", {}))
+	if _rotating.has(quest_id):
+		_claim_rotating(quest_id)
+	else:
+		_claimed[quest_id] = true
+		_accepted[quest_id] = true
+		grant_reward(get_quest(quest_id).get("reward", {}))
 	EventBus.quest_completed.emit(quest_id)
 	EventBus.quest_reward_claimed.emit(quest_id)
 	EventBus.notify("Reward collected: %s" % str(get_quest(quest_id).get("name", quest_id)), "success")
 	ProgressTracker.evaluate_now()
 	SaveManager.save_game()
 	return true
+
+## A rotating claim lasts its window, pays the streak bonus on GP and XP, and baselines every
+## objective so the task needs fresh work when it next appears.
+func _claim_rotating(quest_id: String) -> void:
+	var today: int = _today()
+	if _streak_day != today:
+		_streak = _streak + 1 if _streak_day == today - 1 else 1
+		_streak_day = today
+	_rotating_claims[quest_id] = rotation_window()
+	_accepted.erase(quest_id)
+	var reward: Dictionary = (get_quest(quest_id).get("reward", {}) as Dictionary).duplicate(true)
+	var mult: float = streak_multiplier()
+	if reward.has("gp"):
+		reward["gp"] = float(reward["gp"]) * mult
+	var xp: Dictionary = reward.get("xp", {})
+	for skill_id in xp.keys():
+		xp[skill_id] = float(xp[skill_id]) * mult
+	grant_reward(reward)
+	_baselines[quest_id] = _raw_counters(quest_id)
+
+func _raw_counters(quest_id: String) -> Array:
+	var out: Array = []
+	for obj in get_quest(quest_id).get("objectives", []):
+		out.append(float(describe_objective(obj)["current"]))
+	return out
 
 ## Apply a reward bundle. Shared with dungeons-style rewards but routed through one place so
 ## every quest reward is auditable and idempotent when combined with the claimed set.
@@ -464,15 +523,15 @@ func describe_reward(reward: Dictionary) -> String:
 # ---------------- persistence ----------------
 
 func serialize() -> Dictionary:
-	return {"accepted": _accepted.duplicate(), "claimed": _claimed.duplicate()}
+	return {"accepted": _accepted.duplicate(), "claimed": _claimed.duplicate(),
+		"rotating_claims": _rotating_claims.duplicate(), "baselines": _baselines.duplicate(true),
+		"streak": _streak, "streak_day": _streak_day}
 
 func deserialize(d: Dictionary) -> void:
-	_accepted = d.get("accepted", {})
-	_claimed = d.get("claimed", {})
-	if typeof(_accepted) != TYPE_DICTIONARY:
-		_accepted = {}
-	if typeof(_claimed) != TYPE_DICTIONARY:
-		_claimed = {}
+	var accepted: Variant = d.get("accepted", {})
+	var claimed: Variant = d.get("claimed", {})
+	_accepted = accepted if typeof(accepted) == TYPE_DICTIONARY else {}
+	_claimed = claimed if typeof(claimed) == TYPE_DICTIONARY else {}
 	# Drop records for quests that no longer exist so a content change can never leave
 	# a phantom "completed" flag blocking a rebuilt quest chain.
 	for id in _accepted.keys():
@@ -481,3 +540,29 @@ func deserialize(d: Dictionary) -> void:
 	for id in _claimed.keys():
 		if not _quests.has(id):
 			_claimed.erase(id)
+	_rotating_claims = {}
+	_baselines = {}
+	var rc: Variant = d.get("rotating_claims", {})
+	if typeof(rc) == TYPE_DICTIONARY:
+		for id in (rc as Dictionary).keys():
+			if _rotating.has(id) and (rc[id] is int or rc[id] is float):
+				_rotating_claims[id] = int(rc[id])
+	var bl: Variant = d.get("baselines", {})
+	if typeof(bl) == TYPE_DICTIONARY:
+		for id in (bl as Dictionary).keys():
+			if _rotating.has(id) and bl[id] is Array:
+				var vals: Array = []
+				for v in bl[id]:
+					vals.append(float(v) if (v is int or v is float) else 0.0)
+				_baselines[id] = vals
+	var s: Variant = d.get("streak", 0)
+	_streak = maxi(0, int(s)) if (s is int or s is float) else 0
+	var sd: Variant = d.get("streak_day", -1)
+	_streak_day = int(sd) if (sd is int or sd is float) else -1
+	# Saves from before rotating tasks repeated: a claimed rotating task keeps its claim for this
+	# window and baselines from today's counters, so nobody gets a free re-claim.
+	for id in _claimed.keys():
+		if _rotating.has(id):
+			_claimed.erase(id)
+			_rotating_claims[id] = rotation_window()
+			_baselines[id] = _raw_counters(id)

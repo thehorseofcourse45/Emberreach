@@ -18,6 +18,9 @@ signal mastery_pool_checkpoint(skill_id: String, percent: float, reached: bool)
 
 # --- Items, currencies, inventory ---
 signal item_obtained(item_id: String, quantity: int)
+## A drop whose roll chance was <= SimulationMode.RARE_DROP_CHANCE_THRESHOLD landed. Carries the
+## source ("combat"/"<skill_id>") so the toast and history can name where it came from.
+signal rare_drop(item_id: String, quantity: int, source: String)
 signal item_lost(item_id: String, quantity: int)
 signal gp_changed(amount: float, new_total: float)
 signal slayer_coins_changed(amount: float, new_total: float)

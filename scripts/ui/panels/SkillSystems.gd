@@ -10,6 +10,10 @@ extends VBoxContainer
 ## re-reads state from the managers, so no row can show a stale affordability.
 
 signal navigated(route: Dictionary)
+## Emitted when a charting activity is tapped in the Frontier map's integrated activity list.
+## SkillsPanel owns the selection (its details card is what answers a tap), so the map's rows
+## report back instead of selecting anything themselves.
+signal action_selected(skill_id: String, action_id: String)
 
 const NewSystems = preload("res://scripts/ui/panels/NewSkillSystems.gd")
 
@@ -20,15 +24,27 @@ const HANDLED: Array[String] = [
 ]
 
 const RuneWards = preload("res://scripts/core/RuneWards.gd")
+const SurveyMapView = preload("res://scripts/ui/SurveyMap.gd")
 
 var _skill_id: String = ""
 var _star_sort: int = 0
+var _survey_state: Dictionary = {}
+var _survey_map: SurveyMapView
+## The activity SkillsPanel currently has selected, so the integrated list can mark its row.
+var _selected_action: String = ""
 
 func set_skill(skill_id: String) -> void:
 	_skill_id = skill_id
 	visible = HANDLED.has(skill_id)
 
+## Handed over before every rebuild: this section draws the highlighted row but never decides
+## which activity is current — that stays with the panel that shows the activity's details.
+func set_selected_action(action_id: String) -> void:
+	_selected_action = action_id
+
 func rebuild() -> void:
+	if is_instance_valid(_survey_map) and _survey_map.canvas != null:
+		_survey_state = _survey_map.view_state()
 	for c in get_children():
 		remove_child(c)
 		c.queue_free()
@@ -36,6 +52,7 @@ func rebuild() -> void:
 		return
 	if _skill_id in ["ranching", "inscription", "engineering", "enchanting", "dreamwalking", "caravaneering"]:
 		var systems := NewSystems.new()
+		systems.navigated.connect(func(route): navigated.emit(route))
 		add_child(systems)
 		systems.set_skill(_skill_id)
 		return
@@ -498,55 +515,30 @@ func _build_cartography() -> void:
 			row.add_child(buy)
 		ships_box.add_child(row)
 
-	var routes := UIStyle.section("Frontier hexes",
-		"Travel pays discovery XP once; timed Surveying activities pay training XP. Survey a revealed hex afterwards to claim its Point of Interest once.")
+	var routes := UIStyle.section("Frontier map",
+		"Dim regions are unexplored. Cyan borders mark visited hexes; green borders mark claimed discoveries. Surveying trains with the charts listed below.")
 	add_child(routes)
-	for hex_id in DataLoader.cartography_hexes.keys():
-		var hex: Dictionary = DataLoader.cartography_hexes[hex_id]
-		if typeof(hex) != TYPE_DICTIONARY:
+	_survey_map = SurveyMapView.new()
+	_survey_map.navigated.connect(func(route): navigated.emit(route))
+	routes.add_child(_survey_map)
+	_survey_map.restore_view(_survey_state)
+	_build_charting(routes)
+
+## The charting activities, inside the Frontier map section. They are how Surveying trains and
+## the map is what they chart, so they belong beside it rather than in the skill's generic
+## "Activities" card — which described them as a reward to train toward when they produce nothing
+## at all. Selection is reported up; the details card below the section is what answers it.
+func _build_charting(parent: VBoxContainer) -> void:
+	var charts := UIStyle.section("Charting activities",
+		"Each chart trains Surveying on its own timer; the level gates are the skill's progression. Pick one and it runs while you travel and survey.")
+	parent.add_child(charts)
+	for action in DataLoader.get_skill_actions(_skill_id):
+		if typeof(action) != TYPE_DICTIONARY:
 			continue
-		var is_discovered: bool = CartographyManager.is_discovered(hex_id)
-		var is_surveyed: bool = CartographyManager.surveyed.has(hex_id)
-		var raw_poi: Variant = hex.get("poi", {})
-		var poi: Dictionary = raw_poi if raw_poi is Dictionary else {}
-		var base_cost := float((hex as Dictionary).get("travel_cost", 0))
-		var cost := base_cost * CartographyManager.travel_percent() / 100.0
-		var row := UIStyle.hbox(UITokens.SP_4)
-		var where := UIStyle.label("Hex (%s, %s)" % [
-			str((hex as Dictionary).get("q", "?")), str((hex as Dictionary).get("r", "?"))],
-			false, UITokens.FONT_SMALL)
-		where.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		where.tooltip_text = str(hex.get("id", hex_id))
-		if not poi.is_empty():
-			var reward: Dictionary = poi.get("reward", {})
-			where.text += " · " + ("Supplies" if not reward.get("items", {}).is_empty() else "Treasure" if reward.has("gp") else "Permanent bonus")
-			where.tooltip_text += " " + UIStyle.describe_modifier_table(poi.get("effect", {}))
-		row.add_child(where)
-		if is_surveyed:
-			row.add_child(Widgets.badge("✓ %s" % str(poi.get("name", "Surveyed")), UITokens.GREEN,
-				"Point of Interest claimed"))
-		elif is_discovered and not poi.is_empty():
-			var survey := UIStyle.mini_button("Survey")
-			survey.tooltip_text = "Claim this Point of Interest and its permanent effect"
-			var hid_survey: String = hex_id
-			survey.pressed.connect(func():
-				CartographyManager.survey(hid_survey)
-				rebuild())
-			row.add_child(survey)
-		elif is_discovered:
-			row.add_child(Widgets.badge("Visited", UITokens.TEXT_MUTED, "Revealed — nothing to survey here"))
-		else:
-			var afford: bool = PlayerData.gp >= cost
-			var travel := UIStyle.mini_button("Travel · %s" % UIStyle.fmt(cost))
-			travel.disabled = not afford
-			travel.tooltip_text = "Reveal this hex" if afford else "Need %s GP (%s)" % [
-				UIStyle.fmt(cost), UIStyle.fmt(PlayerData.gp)]
-			var hid_travel: String = hex_id
-			travel.pressed.connect(func():
-				if CartographyManager.travel(hid_travel):
-					rebuild())
-			row.add_child(travel)
-		routes.add_child(row)
+		var action_id: String = str((action as Dictionary).get("id", ""))
+		charts.add_child(Widgets.activity_row(_skill_id, action,
+			action_id == _selected_action,
+			func(id): action_selected.emit(_skill_id, str(id))))
 
 # ==========================================================================
 #  Excavation (archaeology): the museum — donations, tokens, stock
