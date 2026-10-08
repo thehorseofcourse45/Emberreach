@@ -214,6 +214,7 @@ func harvest(plot_index: int, player_modifiers: bool = true, at_time: float = 0.
 	p["seed_id"] = ""
 	p["harvested"] = true
 	p["manure"] = false
+	p["compost"] = 0   # compost is spent by the crop it fed, like manure
 	plots_changed.emit()
 	return {"item_id": out_item, "quantity": total, "xp": xp}
 

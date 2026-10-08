@@ -66,6 +66,7 @@ func run_all(host: Node) -> void:
 	_test_combat_defeat_and_retreat(host)
 	_test_duplicate_submissions()
 	_test_mastery_stall()
+	_test_audit_fixes()
 	_test_general_store()
 	_test_endgame_crafting_chains()
 	_test_monster_passives()
@@ -145,6 +146,90 @@ func run_all(host: Node) -> void:
 ## capes, so its gate has to be real: ungated it is a gold-only shortcut to a 99 reward, and
 ## mispriced it is a currency printer.
 func _test_mastery_stall() -> void:
+## Regressions from the gameplay audit: each assertion fails on the pre-fix code.
+func _test_audit_fixes() -> void:
+	_heading("Audit fixes")
+	# Stall capes cannot be resold (resale with +GP% printed gold).
+	var cape: String = ShopManager.stall_item_ids()[0]
+	BankManager.add_item_guaranteed(cape, 1)
+	var gp0: float = PlayerData.gp
+	_ok(not BankManager.sell_item(cape, 1), "a stall cape cannot be sold back")
+	_ok(BankManager.get_count(cape) >= 1 and PlayerData.gp == gp0, "the refused sale kept the cape and the gold")
+	# Auto-eat: with nothing covering the gap, the biggest food wins, not the smallest.
+	BankManager.add_item_guaranteed("shark", 1)
+	var small_food: String = ""
+	for id in DataLoader.items.keys():
+		if str(DataLoader.items[id].get("item_type", "")) == "food" and int(DataLoader.items[id].get("heal_amount", 0)) > 0 \
+				and (small_food == "" or int(DataLoader.items[id]["heal_amount"]) < int(DataLoader.items[small_food]["heal_amount"])):
+			small_food = str(id)
+	BankManager.add_item_guaranteed(small_food, 1)
+	var hp0: float = CombatManager.player_hp
+	var hp_level0: int = PlayerData.get_level("hitpoints")
+	PlayerData.set_level("hitpoints", 120)
+	CombatManager.player_hp = 0.0
+	var best_heal: int = 0
+	for id in BankManager.items.keys():
+		if DataLoader.get_item(id).get("item_type", "") == "food" and int(BankManager.items[id]) > 0:
+			best_heal = maxi(best_heal, int(DataLoader.get_item(id).get("heal_amount", 0)))
+	_ok(float(best_heal) < CombatManager._compute_max_hp(), "test precondition: no bank food fills a full gap (%d)" % best_heal)
+	if float(best_heal) < CombatManager._compute_max_hp():
+		_eq(int(DataLoader.get_item(CombatManager.find_food()).get("heal_amount", 0)), best_heal,
+			"when no food fills the gap, the biggest one is eaten")
+	CombatManager.player_hp = hp0
+	PlayerData.set_level("hitpoints", hp_level0)
+	BankManager.remove_item("shark", 1)
+	BankManager.remove_item(small_food, 1)
+	BankManager.remove_item(cape, 1)
+	# Compost is spent by the harvest it fed.
+	var seed_id: String = ""
+	for id in DataLoader.items.keys():
+		if str(DataLoader.items[id].get("item_type", "")) == "seed" and FarmingManager.accepts(0, str(id)):
+			seed_id = str(id)
+			break
+	if seed_id != "":
+		var p: Dictionary = FarmingManager.plots[0]
+		p["seed_id"] = seed_id
+		p["alive"] = true
+		p["planted_unix"] = 1.0
+		p["grow_seconds"] = 1.0
+		p["compost"] = 2
+		var got: Dictionary = FarmingManager.harvest(0, false, 100.0)
+		BankManager.remove_item(str(got.get("item_id", "")), int(got.get("quantity", 0)))
+		_eq(int(FarmingManager.plots[0]["compost"]), 0, "harvesting uses up the plot's compost")
+	# "Clear N expeditions" counts clears, not distinct dungeons.
+	var saved_clears: Variant = PlayerData.stats.get("dungeons_cleared", {})
+	PlayerData.stats["dungeons_cleared"] = {"a": 20, "b": 7}
+	_eq(Achievements.measure({"kind": "dungeons_cleared"}), 27.0, "total expedition clears are summed")
+	PlayerData.stats["dungeons_cleared"] = saved_clears
+	# Equipment locks only for a locked dungeon that is actually running.
+	_ok(not CombatManager.equipment_locked(), "equipment is free outside a fight")
+	var locked_id: String = ""
+	for did in DataLoader.dungeons.keys():
+		if bool(DataLoader.dungeons[did].get("equipment_locked", false)):
+			locked_id = str(did)
+			break
+	if locked_id != "":
+		CombatManager.state = CombatManager.State.FIGHTING
+		CombatManager.context = {"type": "dungeon", "id": locked_id}
+		_ok(CombatManager.equipment_locked() and not EquipmentManager.equip(cape), "a locked expedition blocks equipping")
+		CombatManager.state = CombatManager.State.IDLE
+		CombatManager.context = {}
+	# A 168 hour window is processed in full, not cut at the chunk limit.
+	var gather: Dictionary = _find_gather_action()
+	if not gather.is_empty():
+		PlayerData.settings["offline_cap_hours"] = 168.0
+		SkillManager.start_action(str(gather["skill_id"]), str(gather["action_id"]), 0)
+		GameManager.boot_state = GameManager.BootState.LOADED
+		PlayerData.last_offline_unix = int(Time.get_unix_time_from_system()) - 168 * 3600
+		OfflineProgression.run_on_load()
+		var guard: int = 0
+		while OfflineProgression.is_running and guard < 10000:
+			guard += 1
+			OfflineProgression._step_chunk()
+		_ok(float(OfflineProgression.last_summary()["processed_seconds"]) >= 168.0 * 3600.0 - 5.0,
+			"a 168 hour window is fully processed")
+		SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+
 	_heading("Mastery stall")
 	var offers: Array = ShopManager.stall_offers()
 	_ok(offers.size() >= 60, "the stall stocks every skillcape and both completion capes (%d)" % offers.size())

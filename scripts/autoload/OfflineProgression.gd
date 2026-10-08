@@ -142,7 +142,8 @@ func _step_chunk() -> bool:
 		_finish()
 		return false
 	_chunks_done += 1
-	var slice: float = minf(CHUNK_SECONDS, target - processed)
+	# Stretch the chunk so the whole window fits in MAX_TOTAL_CHUNKS instead of losing its tail.
+	var slice: float = minf(maxf(CHUNK_SECONDS, target / float(MAX_TOTAL_CHUNKS)), target - processed)
 	_advance_passive_clocks(slice)
 	# ONE activity slot: combat takes precedence when a fight is in progress, otherwise the
 	# selected skill action runs. This mirrors online play exactly.
@@ -220,6 +221,7 @@ func _finish() -> void:
 	summary["items_consumed"] = _int_table(events.get(SimulationMode.BUCKET_ITEMS_CONSUMED, {}))
 	summary["items_gained"] = _int_table(events.get(SimulationMode.BUCKET_ITEMS_PRODUCED, {}))
 	summary["rare_drops"] = _int_table(events.get(SimulationMode.BUCKET_RARE_DROPS, {}))
+	summary["random_events"] = _int_table(events.get("random_events", {}))
 	summary["combat"] = {
 		"kills": int(SimulationMode.get_total_from(events, SimulationMode.BUCKET_KILLS)),
 		"kills_by_monster": _int_table(events.get(SimulationMode.BUCKET_KILLS, {})),

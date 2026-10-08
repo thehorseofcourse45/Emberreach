@@ -321,6 +321,10 @@ func sell_item(item_id: String, quantity: int, allow_protected: bool = false) ->
 	var have: int = get_count(item_id)
 	if have < quantity:
 		return false
+	# The mastery stall sells at face sell_price; resale with +GP% would mint gold.
+	if ShopManager.stall_item_ids().has(item_id):
+		EventBus.notify("%s cannot be sold back." % DataLoader.get_item(item_id).get("name", item_id), "warn")
+		return false
 	var unit: int = int(DataLoader.get_item(item_id).get("sell_price", 0))
 	var total: float = float(unit) * float(quantity) * (1.0 + ModifierManager.get_modifier("global_gp_percent") / 100.0)
 	if not remove_item(item_id, quantity):

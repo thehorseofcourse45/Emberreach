@@ -138,7 +138,10 @@ func measure(cond: Dictionary) -> float:
 		"dungeons_cleared":
 			if cond.has("dungeon_id"):
 				return PlayerData.get_stat("dungeons_cleared", str(cond["dungeon_id"]))
-			return float((PlayerData.stats.get("dungeons_cleared", {}) as Dictionary).size())
+			var clears: int = 0
+			for k in (PlayerData.stats.get("dungeons_cleared", {}) as Dictionary).keys():
+				clears += int(PlayerData.stats["dungeons_cleared"][k])
+			return float(clears)
 		"items_discovered":
 			return float((PlayerData.completion_log.get("items", {}) as Dictionary).size())
 		"gp_earned":

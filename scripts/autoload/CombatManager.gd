@@ -181,6 +181,11 @@ func expedition_unlock_reason() -> String:
 ## Why a dungeon is still shut: "" when it can be entered. `requires` is a {skill: level} map;
 ## `requires_dungeon` reuses the shop-upgrade vocabulary to chain one clear to the next unlock.
 ## The single evaluator every UI reads, so the list, the card and the detail pane cannot disagree.
+## True while a fight inside an `equipment_locked` dungeon is running.
+func equipment_locked() -> bool:
+	return state != State.IDLE and str(context.get("type", "")) == "dungeon" \
+		and bool(DataLoader.get_dungeon(str(context.get("id", ""))).get("equipment_locked", false))
+
 func dungeon_lock_reason(dungeon_id: String) -> String:
 	var dungeon: Dictionary = DataLoader.get_dungeon(dungeon_id)
 	var reqs: Dictionary = dungeon.get("requires", {}) as Dictionary
@@ -531,7 +536,8 @@ func _player_attack() -> void:
 	# simulator's depletion model.
 	var weapon_cost: Dictionary = EquipmentManager.get_attack_cost()
 	var attack_cost: Dictionary = CombatFormulas.ammo_cost(_rng, weapon_cost,
-		ModifierManager.get_modifier(ModifierKeys.AMMO_PRESERVATION_PERCENT))
+		ModifierManager.get_modifier(ModifierKeys.AMMO_PRESERVATION_PERCENT)
+		+ (ModifierManager.get_modifier(ModifierKeys.RUNE_PRESERVATION_PERCENT) if attack_style == "magic" else 0.0))
 	if not bool(BankManager.consume_bundle(attack_cost).ok):
 		stop_combat("supplies exhausted")
 		return
@@ -548,7 +554,9 @@ func _player_attack() -> void:
 	hit_chance = clampf(hit_chance + float(tri["accuracy_percent"]), 0.0, 100.0)
 	# Open-region hazard: hostile ground costs accuracy.
 	hit_chance = clampf(hit_chance + float(_active_hazard().get("player_accuracy_percent", 0.0)), 0.0, 100.0)
-	if _rng.randf() * 100.0 > hit_chance:
+	# Specials roll first so an accuracy-ignoring one can land through a miss.
+	var sa: Dictionary = _roll_special_attack(EquipmentManager.get_weapon_special_attack())
+	if not bool(sa.get("ignores_accuracy", false)) and _rng.randf() * 100.0 > hit_chance:
 		return
 	var mh: int = maxi(1, _player_max_hit(attack_style))
 	mh = maxi(1, int(floor(float(mh) * (1.0 + float(tri["damage_percent"]) / 100.0))))
@@ -560,7 +568,6 @@ func _player_attack() -> void:
 	var dmg: int = int(res["damage"])
 	var is_crit: bool = bool(res["is_crit"])
 	# Weapon special attack: replaces the normal attack and may apply a status.
-	var sa: Dictionary = _roll_special_attack(EquipmentManager.get_weapon_special_attack())
 	if not sa.is_empty():
 		dmg = maxi(1, int(floor(float(dmg) * float(sa.get("damage_multiplier", 1.0)))))
 		_sig_player_special(str(sa.get("id", "")))
@@ -1031,7 +1038,7 @@ func find_food() -> String:
 		if covers and not best_covers:
 			best = item_id
 			best_heal = heal
-		elif covers == best_covers and heal < best_heal:
+		elif covers == best_covers and ((heal < best_heal) if covers else (heal > best_heal)):
 			best = item_id
 			best_heal = heal
 	return best

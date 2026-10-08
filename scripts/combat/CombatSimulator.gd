@@ -325,7 +325,6 @@ static func _auto_eat(snapshot: Dictionary, hp: float, max_hp: float) -> Diction
 	if hp / maxf(max_hp, 1.0) * 100.0 > threshold:
 		return none
 	var missing: float = maxf(1.0, max_hp - hp)
-	var best: int = -1
 	var chosen: int = 0
 	var chosen_id: String = ""
 	# Sorted by heal so the first food that covers the gap is the cheapest such food, which is
@@ -335,13 +334,10 @@ static func _auto_eat(snapshot: Dictionary, hp: float, max_hp: float) -> Diction
 	for food_id in ids:
 		if bool(snapshot.get("finite_supplies", false)) and int(snapshot.get("food_counts", {}).get(food_id, 0)) <= 0: continue
 		var heal: int = int(foods[food_id])
-		if best < 0:
-			best = heal
-			chosen = heal
-			chosen_id = str(food_id)
+		# Nothing covers the gap: the loop ends on the biggest food, as the live manager does.
+		chosen = heal
+		chosen_id = str(food_id)
 		if heal >= missing:
-			chosen = heal
-			chosen_id = str(food_id)
 			break
 	if chosen_id == "": return none
 	if bool(snapshot.get("finite_supplies", false)): snapshot.food_counts[chosen_id] -= 1

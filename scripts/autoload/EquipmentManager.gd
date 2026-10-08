@@ -23,6 +23,9 @@ func equip(item_id: String) -> bool:
     var slot: int = int(data.get("equipment_slot", -1))
     if slot < 0:
         return false
+    if CombatManager.equipment_locked():
+        EventBus.notification.emit("Equipment is locked during this expedition", "warn")
+        return false
     if not _meets_requirements(data):
         EventBus.notification.emit("Requirements not met for %s" % data.get("name", item_id), "warn")
         return false
@@ -43,6 +46,9 @@ func equip(item_id: String) -> bool:
 
 func unequip(slot: int) -> bool:
     if not slots.has(slot) or slots[slot] == "":
+        return false
+    if CombatManager.equipment_locked():
+        EventBus.notification.emit("Equipment is locked during this expedition", "warn")
         return false
     var item_id: String = slots[slot]
     BankManager.return_item(item_id, 1)
