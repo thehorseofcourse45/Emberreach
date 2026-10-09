@@ -78,6 +78,11 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		"on_slayer_task": false,
 		"target_type": place_type,
 		"target_id": place_id,
+		# The live loadout and strategy, flattened into plain records. The model is handed one
+		# dictionary and no autoload, so anything it has to honour has to travel inside it.
+		"loadout": _ability_loadout(),
+		"strategy": CombatManager.active_strategy.duplicate(true),
+		"weapon_special": EquipmentManager.get_weapon_special_attack(),
 	}
 	# The player's own accuracy/max-hit come from CombatManager's derived paths so the simulator
 	# cannot drift from the live numbers.
@@ -104,6 +109,57 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	last_error = ""
 	return snapshot
 
+## A minimal valid snapshot for `monster_id`, assembled from the same readers build_snapshot uses
+## and touching no live combat state. This is the seam the simulator's own tests drive: a run
+## through the manager needs a worker thread and the whole game around it, and a snapshot that
+## could only be built by starting a fight could not be tested without one.
+func build_snapshot_for_test(monster_id: String, loadout: Array, bias: String) -> Dictionary:
+	var record: Dictionary = _monster_record(monster_id)
+	if record.is_empty():
+		last_error = "No monster named '%s'." % monster_id
+		return {}
+	var ids: Array = []
+	var abilities: Array = []
+	for entry in loadout:
+		var ab: Dictionary = DataLoader.get_ability(str(entry))
+		if not ab.is_empty():
+			ids.append(str(entry))
+			abilities.append(ab.duplicate(true))
+	var strategy: Dictionary = PlayerData.DEFAULT_COMBAT_STRATEGY.duplicate(true)
+	strategy["name"] = "Snapshot fixture"
+	strategy["ability_loadout"] = ids
+	strategy["special_bias"] = bias
+	last_error = ""
+	return {
+		"player": _player_stats("melee", "stab"),
+		"monsters": [record],
+		"food": {},
+		"auto_eat_tier": 0,
+		"auto_eat_threshold_percent": 0.0,
+		"prayer_points": 0.0,
+		"mode_config": DataLoader.game_modes.get(str(PlayerData.game_mode), {}),
+		"in_slayer_area": false,
+		"hazard": {},
+		"on_slayer_task": false,
+		"loadout": abilities,
+		"strategy": strategy,
+		"weapon_special": {},
+		"target_type": "monster",
+		"target_id": monster_id,
+	}
+
+## The loadout flattened into whole ability records, IN ROLL ORDER (set_loadout preserves the order
+## the player offered, and that order is the order the engine rolls them in). An id list would be
+## smaller, but the worker thread running a 10,000-fight job is given this dictionary and nothing
+## else — it cannot ask DataLoader what a trigger chance or a cooldown is.
+func _ability_loadout() -> Array:
+	var out: Array = []
+	for ability_id in CombatManager.active_loadout:
+		var ab: Dictionary = DataLoader.get_ability(str(ability_id))
+		if not ab.is_empty():
+			out.append(ab.duplicate(true))
+	return out
+
 ## A monster is one trial. A dungeon is its full fixed sequence, because "survive the expedition" is
 ## the question a dungeon actually asks.
 func _monster_sequence(place_type: String, place_id: String) -> Array:
@@ -121,6 +177,15 @@ func _monster_sequence(place_type: String, place_id: String) -> Array:
 	return out
 
 ## The monster is copied into a plain record, so a later data edit cannot change a running job.
+## Three groups of key here are load-bearing rather than descriptive, and each is a rule the model
+## applies rather than a number it reports:
+##   * `passives` — regeneration, rage, veil and leech. A missing key reads as "no passives", a
+##     silent no-op rather than an error, which is exactly how this key went missing once already.
+##   * `is_immune_to_effects` / `can_be_stunned` — the two gates apply_status applies before a
+##     status lands. Without them in the record those gates were permanently permissive.
+##   * `min_hit_percent` / `min_hit_flat` — the live engine reads its equivalent from
+##     ModifierManager at attack time; the model reads it from here, which is one of its published
+##     assumptions.
 func _monster_record(monster_id: String) -> Dictionary:
 	var m: Dictionary = DataLoader.get_monster(monster_id)
 	if m.is_empty():

@@ -20,6 +20,7 @@ var _food_controls: Array[Dictionary] = []
 var _prep_box: VBoxContainer
 var _places_box: VBoxContainer
 var _log: Dictionary = Widgets.event_log(40)
+var _triggers: Dictionary = Widgets.event_log(30)
 var _selected_area: String = ""
 var _built: bool = false
 var _enemy_bar: ProgressBar = null
@@ -31,6 +32,10 @@ var _player_text: Label = null
 var _meter_box: VBoxContainer = null
 var _meter_labels: Dictionary = {}
 var expeditions_only: bool = false
+# Rebuilt with the fight readout; the motion hooks target these and no-ops while they are null.
+var _monster_sprite: TextureRect
+var _monster_fx: Control
+var _player_fx: Control
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
@@ -39,10 +44,15 @@ func _ready() -> void:
 	EventBus.combat_started.connect(func(_c): _log["push"].call("Fight begun."); refresh())
 	EventBus.combat_ended.connect(func(c): _log["push"].call("Fight ended (%s)." % str(c.get("reason", ""))); refresh())
 	EventBus.monster_killed.connect(func(m): _log["push"].call("Defeated %s." % str(DataLoader.get_monster(m).get("name", m))))
-	EventBus.monster_attacked.connect(func(d): if d > 0: _log["push"].call("You take %d damage." % d))
-	EventBus.player_attacked.connect(func(d, crit): _log["push"].call("You hit for %d%s." % [d, " (critical)" if crit else ""]))
+	EventBus.monster_attacked.connect(_on_monster_attacked)
+	EventBus.player_attacked.connect(_on_player_attacked)
 	EventBus.player_died.connect(func(c): _log["push"].call("Defeated by %s." % str(c.get("killer", "an enemy"))))
 	EventBus.dungeon_completed.connect(func(d): _log["push"].call("%s cleared." % str(DataLoader.get_dungeon(d).get("name", d))))
+	EventBus.ability_triggered.connect(_on_ability_triggered)
+	EventBus.player_special_attack.connect(_on_special_attack)
+	# An adopted preset rewrites the active strategy and the effective loadout, so both are read
+	# back here rather than assumed: this panel displays what CombatManager actually adopted.
+	EventBus.strategy_changed.connect(func(_name): refresh())
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.activity_changed.connect(_refresh_fight)
 	EventBus.monster_phase_entered.connect(_on_monster_phase)
@@ -154,6 +164,7 @@ func _rebuild_prep() -> void:
 	_melee_menu.tooltip_text = "Which melee skill trains while you fight"
 	row.add_child(_melee_menu)
 	_prep_box.add_child(row)
+	_prep_box.add_child(_build_strategy())
 
 	# Supplies and rules, stated explicitly.
 	var summary: Dictionary = CombatManager.player_combat_summary()
@@ -236,9 +247,210 @@ func _style_index() -> int:
 		"magic": return 2
 	return 0
 
+# =========================================================================
+#  Strategy bar, ability slots, trigger feed
+# =========================================================================
+
+## The decision half of the panel: which preset is running, its levers, and the ability slots the
+## player owns. Every write goes through set_strategy / set_loadout and every read of the live
+## loadout goes through active_loadout, because those two are silent — set_strategy keeps the old
+## record when the validator refuses one, and set_loadout drops a locked ability and trims past the
+## cap without a word. A dropdown or a slot showing what was ASKED for would be a lie about what
+## the engine will actually roll.
+func _build_strategy() -> Control:
+	var box := UIStyle.section("Strategy", "Presets are validated on adoption; the slots are the ones your Defence has unlocked.")
+	var names: Array[String] = []
+	for rec in PlayerData.combat_strategies:
+		names.append(str((rec as Dictionary).get("name", "")))
+	var active: String = str(PlayerData.combat_strategy_active)
+	var row := HFlowContainer.new()
+	row.add_theme_constant_override("h_separation", UITokens.SP_4)
+	row.add_theme_constant_override("v_separation", UITokens.SP_3)
+	row.add_child(UIStyle.label("Preset", true, UITokens.FONT_SMALL))
+	if names.is_empty():
+		row.add_child(UIStyle.label("none stored", true, UITokens.FONT_SMALL))
+	else:
+		var preset_menu := Widgets.option_menu(names, func(i): _adopt_strategy(names[i]))
+		preset_menu.tooltip_text = "Adopted through CombatManager.set_strategy, which refuses a record the validator rejects"
+		# select(-1) on a miss, because option_menu clamps a bad index to 0: showing the FIRST
+		# preset while the levers below report another one would be the card contradicting itself.
+		var found: int = names.find(active)
+		preset_menu.select(found)
+		row.add_child(preset_menu)
+		if found < 0:
+			row.add_child(UIStyle.colored_label("active '%s' is not in the stored list" % active,
+				UITokens.AMBER, UITokens.FONT_MICRO))
+	box.add_child(row)
+
+	# The GLOBAL active preset, not a per-area binding: nothing in the UI binds areas, so the card
+	# reports the one record every fight starts from and nothing more.
+	var current: Dictionary = CombatManager.strategy_for("")
+	var bias: String = str(current.get("special_bias", "normal"))
+	var prayer: String = str(current.get("protection_prayer_auto", ""))
+	box.add_child(Widgets.key_value("Special attack bias", bias.capitalize(),
+		UITokens.GOLD_BRIGHT if bias == "eager" else (UITokens.AMBER if bias == "hold" else UITokens.TEXT_MUTED),
+		"eager doubles the special's trigger chance, hold sets it to zero, normal leaves it alone"))
+	box.add_child(Widgets.key_value("Auto-eat threshold", UIStyle.fmt_percent(float(current.get("food_threshold", 0.0)))))
+	box.add_child(Widgets.key_value("Protection prayer",
+		"off" if prayer == "" else str(DataLoader.prayers.get(prayer, {}).get("name", prayer))))
+
+	var cap: int = CombatManager.ability_slot_cap()
+	var effective: Array[String] = _effective_loadout()
+	var unlocked: Array[String] = _unlocked_ability_ids()
+	var slots := HFlowContainer.new()
+	slots.add_theme_constant_override("h_separation", UITokens.SP_4)
+	slots.add_theme_constant_override("v_separation", UITokens.SP_3)
+	slots.add_child(UIStyle.label("Abilities", true, UITokens.FONT_SMALL))
+	if unlocked.is_empty():
+		slots.add_child(UIStyle.label("none unlocked yet", true, UITokens.FONT_SMALL))
+	for slot in range(cap):
+		var options: Array[String] = ["— empty —"]
+		for ability_id in unlocked:
+			options.append(str(DataLoader.get_ability(ability_id).get("name", ability_id)))
+		var slotted: String = effective[slot] if slot < effective.size() else ""
+		# The index, not the name, is what option_menu takes; -1 (a stale id) falls back to empty.
+		var index: int = 1 + unlocked.find(slotted) if slotted != "" else 0
+		var slot_menu := Widgets.option_menu(options, _on_slot_picked.bind(slot, unlocked), maxi(0, index))
+		slot_menu.tooltip_text = str(DataLoader.get_ability(slotted).get("description", "One slot. Empty slots do nothing."))
+		slots.add_child(slot_menu)
+	box.add_child(slots)
+	var cap_note: String = "%d of %d slots — the cap" % [effective.size(), cap]
+	if cap < CombatManager.ABILITY_SLOT_MAX:
+		cap_note = "%d of %d slots — one more at Defence %d" % [effective.size(), cap, 25 * cap]
+	box.add_child(Widgets.key_value("Active abilities",
+		"none — nothing can fire" if effective.is_empty() else ", ".join(_ability_names(effective)),
+		UITokens.TEAL, cap_note))
+	# The preset's nominal list is only worth showing when the two disagree, which is exactly the
+	# case the engine decides silently: locked abilities and anything past the cap are dropped.
+	var dropped: Array[String] = _dropped_ids(current.get("ability_loadout", []) as Array, cap)
+	for note in dropped:
+		box.add_child(UIStyle.colored_label("Preset asks for %s — not slotted." % note, UITokens.AMBER, UITokens.FONT_MICRO))
+	return box
+
+## Adopt a stored preset, by its full record rather than its name: set_strategy is the only path
+## that runs the content validator. It returns nothing, so the accepted name is read back rather
+## than assumed — a refusal leaves the previous preset running, and a dropdown left showing the
+## refused value would report a decision the game did not make.
+func _adopt_strategy(strategy_name: String) -> void:
+	var record: Dictionary = {}
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == strategy_name:
+			record = (rec as Dictionary).duplicate(true)
+			break
+	if record.is_empty():
+		EventBus.notify("No strategy preset named '%s'." % strategy_name, "warn")
+		refresh()
+		return
+	CombatManager.set_strategy(record)
+	if str(PlayerData.combat_strategy_active) != strategy_name:
+		EventBus.notify("Strategy '%s' was refused — still on '%s'." % [strategy_name, str(PlayerData.combat_strategy_active)], "warn")
+		refresh()
+
+## `slot` and `unlocked` are bound rather than captured, so each menu reports its own slot.
+func _on_slot_picked(index: int, slot: int, unlocked: Array) -> void:
+	_set_slot(slot, "" if index <= 0 else str(unlocked[index - 1]))
+
+## Fill or clear one slot, then report what survived. The trimmed list is read back rather than
+## shown as asked, because set_loadout is silent and a slot the player just filled that comes back
+## empty with no explanation is indistinguishable from a broken picker.
+func _set_slot(slot: int, ability_id: String) -> void:
+	var requested: Array = _loadout_with(slot, ability_id)
+	CombatManager.set_loadout(requested)
+	var dropped: Array[String] = _dropped_ids(requested, CombatManager.ability_slot_cap())
+	if not dropped.is_empty():
+		EventBus.notify("Not slotted: %s." % ", ".join(dropped), "warn")
+	refresh()
+
+## The loadout the player is asking for: the effective one with `slot` replaced. Blanks and repeats
+## are squeezed out here because a repeat would otherwise occupy the slot the player just filled.
+func _loadout_with(slot: int, ability_id: String) -> Array:
+	var current: Array = _effective_loadout()
+	while current.size() <= slot:
+		current.append("")
+	current[slot] = ability_id
+	var packed: Array = []
+	for entry in current:
+		if str(entry) != "" and not packed.has(str(entry)):
+			packed.append(str(entry))
+	return packed
+
+## A copy of the live loadout. active_loadout belongs to CombatManager and is handed out by
+## reference, so it is only ever read, and into a fresh list.
+func _effective_loadout() -> Array[String]:
+	var out: Array[String] = []
+	for entry in CombatManager.active_loadout:
+		out.append(str(entry))
+	return out
+
+## Which of the requested ids the engine did not take, and why. This walks set_loadout's own rules
+## in its own order, keeping a SURVIVOR count rather than reading the input position: the cap is
+## tested against what has been kept so far, so an entry refused for its lock consumes no slot and
+## cannot push a later, slot-eligible entry over the cap here. Reading the index instead tells the
+## player to grind Defence for a slot the engine never refused on cap grounds.
+func _dropped_ids(requested: Array, cap: int) -> Array[String]:
+	var out: Array[String] = []
+	var kept: Array[String] = []
+	for entry in requested:
+		var id: String = str(entry)
+		var ab: Dictionary = DataLoader.get_ability(id)
+		var label: String = str(ab.get("name", id))
+		if kept.size() >= cap:
+			# set_loadout breaks here, so everything past this point goes unslotted on cap grounds
+			# whatever its own req_levels say.
+			out.append("%s (past your %d ability slots)" % [label, cap])
+		elif kept.has(id):
+			# A repeat takes no slot and is no refusal worth a line.
+			continue
+		elif ab.is_empty():
+			# Dropped by the engine, and unselectable here too, so there is nothing to explain.
+			continue
+		elif not CombatManager._ability_unlocked(ab):
+			out.append("%s (not unlocked yet)" % label)
+		else:
+			kept.append(id)
+	return out
+
+## Abilities the player owns, in id order. The unlock test is CombatManager's own, so this list
+## and the engine's admission rule cannot drift apart — a re-implemented req_levels check here would
+## be a second rule to keep in step.
+func _unlocked_ability_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for entry in DataLoader.abilities.keys():
+		var id: String = str(entry)
+		var ab: Dictionary = DataLoader.get_ability(id)
+		if not ab.is_empty() and CombatManager._ability_unlocked(ab):
+			ids.append(id)
+	ids.sort()
+	return ids
+
+func _ability_names(ids: Array) -> Array[String]:
+	var out: Array[String] = []
+	for entry in ids:
+		out.append(str(DataLoader.get_ability(str(entry)).get("name", str(entry))))
+	return out
+
+func _on_ability_triggered(ability_id: String) -> void:
+	_triggers["push"].call("%s fires." % str(DataLoader.get_ability(ability_id).get("name", ability_id)))
+
+func _on_special_attack(sa_id: String) -> void:
+	_triggers["push"].call("Special: %s." % str(DataLoader.get_special_attack(sa_id).get("name", sa_id)))
+
+## The trigger feed, kept beside the fight log. The label is lifted out with the log BEFORE the
+## clear below frees the box's children, so the feed survives the readout's wholesale rebuild
+## instead of being re-created empty on every refresh.
+func _add_triggers(box: VBoxContainer) -> void:
+	box.add_child(UIStyle.label("Abilities and specials", true, UITokens.FONT_MICRO))
+	box.add_child(_triggers["root"])
+
 func _refresh_fight() -> void:
 	# The log is cached across rebuilds, so lift it out before the clear frees the box's children.
 	Widgets.detach(_log["root"])
+	Widgets.detach(_triggers["root"])
+	# The readout is torn down and rebuilt wholesale, so the motion targets are dropped with it: a
+	# floater or a flash aimed at the previous cell would otherwise be pointing at a freed node.
+	_monster_sprite = null
+	_monster_fx = null
+	_player_fx = null
 	_clear(_fight_box)
 	_enemy_bar = null
 	_enemy_text = null
@@ -255,16 +467,19 @@ func _refresh_fight() -> void:
 		# immediately after retreating, and an empty panel would answer nothing.
 		_build_meters()
 		_fight_box.add_child(_log["root"])
+		_add_triggers(_fight_box)
 		return
 	var cmp: Dictionary = CombatManager.target_comparison()
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", UITokens.SP_5)
 	var sprite := TextureRect.new()
 	sprite.texture = AssetRegistry.monster_sprite(CombatManager.current_monster_id)
-	sprite.custom_minimum_size = Vector2(88, 88)
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	head.add_child(sprite)
+	var monster_cell := _fx_cell(sprite, Vector2(UITokens.ICON_XL, UITokens.ICON_XL))
+	head.add_child(monster_cell["cell"])
+	_monster_sprite = sprite
+	_monster_fx = monster_cell["overlay"]
 	var col := UIStyle.vbox(UITokens.SP_2)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not cmp.is_empty():
@@ -298,7 +513,13 @@ func _refresh_fight() -> void:
 	_player_bar = Widgets.progress_bar(CombatManager.player_hp, maxhp, UITokens.GREEN,
 		"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)], 16)
 	_player_text = (_player_bar.get_child(0) as Label) if _player_bar.get_child_count() > 0 else null
-	_fight_box.add_child(_player_bar)
+	var hp_cell := _fx_cell(_player_bar, Vector2(0, 16))
+	_fight_box.add_child(hp_cell["cell"])
+	_player_fx = hp_cell["overlay"]
+	# Nearly dead: a looping call for attention. Motion drops it under reduced motion, and the bar is
+	# rebuilt (and so re-evaluated) on every refresh, so healing above the line stops it.
+	if maxhp > 0.0 and CombatManager.player_hp / maxhp < 0.25:
+		Motion.pulse(_player_bar)
 	if not CombatManager.player_effects.is_empty():
 		var effects: Array[String] = []
 		for e in CombatManager.player_effects:
@@ -328,6 +549,7 @@ func _refresh_fight() -> void:
 	_fight_box.add_child(buttons)
 	_build_meters()
 	_fight_box.add_child(_log["root"])
+	_add_triggers(_fight_box)
 
 ## A rolling DPS window and session tallies. The combat log above already narrates each
 ## exchange; these answer the question the log cannot — is the fight going faster than the
@@ -660,3 +882,56 @@ func _update_food_controls() -> void:
 		eat.disabled = quantity <= 0 or full
 		eat.text = "Out of food" if quantity <= 0 else ("Full health" if full else "Eat")
 		eat.tooltip_text = "Eat one to restore up to %s HP" % UIStyle.fmt(heal)
+# =========================================================================
+#  Combat motion
+# =========================================================================
+
+## A cell with a dedicated overlay for damage floaters. Motion.spawn_floater reuses whichever
+## hidden Label it finds under the Control it is handed, so the cell that holds the avatar or the
+## HP bar also has to hold an overlay of its own — pointing the floater at a shared parent would
+## let it hijack that parent's Labels. The cell is a plain Control, not a container, so the overlay
+## keeps its own position and the content is anchored to fill the cell.
+func _fx_cell(content: Control, min_size: Vector2) -> Dictionary:
+	var cell := Control.new()
+	cell.custom_minimum_size = min_size
+	cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	cell.add_child(content)
+	var overlay := Control.new()
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cell.add_child(overlay)
+	return {"cell": cell, "overlay": overlay}
+
+func _on_player_attacked(damage: int, is_crit: bool) -> void:
+	_log["push"].call("You hit for %d%s." % [damage, " (critical)" if is_crit else ""])
+	_floater(_monster_fx, "-%d" % damage, UITokens.GOLD_BRIGHT if is_crit else UITokens.TEXT_STRONG, is_crit)
+	_flash(_monster_sprite)
+
+func _on_monster_attacked(damage: int) -> void:
+	if damage <= 0:
+		return
+	_log["push"].call("You take %d damage." % damage)
+	_floater(_player_fx, "-%d" % damage, UITokens.RED)
+
+## The size goes on the Label Motion just woke rather than on the overlay: a theme override does
+## not reach a child, and the pool is shared between ordinary hits and crits, so a size left on a
+## pooled Label would stick to the next number that reuses it.
+func _floater(overlay: Control, text: String, color: Color, crit := false) -> void:
+	if overlay == null or not is_instance_valid(overlay):
+		return
+	Motion.spawn_floater(overlay, text, color)
+	for child in overlay.get_children():
+		var label := child as Label
+		if label != null and label.visible:
+			label.add_theme_font_size_override("font_size",
+				UITokens.FONT_SUBHEAD if crit else UITokens.FONT_BODY)
+
+## 80ms of over-bright so a hit lands even when the log line is missed. Over 1.0 rather than plain
+## white: modulate multiplies, so a sprite is only white if its texture is white.
+func _flash(sprite: TextureRect) -> void:
+	if sprite == null or not is_instance_valid(sprite) or Motion.reduced():
+		return
+	sprite.modulate = Color(2.4, 2.4, 2.4)
+	var tween := sprite.create_tween()
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.08)

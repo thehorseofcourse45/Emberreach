@@ -1,0 +1,18 @@
+{
+  "woodcutting": [
+    {"id": "woodcutting_bonus", "weight": 1, "min_level": 10, "kind": "spawn", "category": "bonus", "target_action": "oak_tree", "duration_actions": 20, "bonus": {"xp_percent": 50.0, "success_penalty": 10.0}},
+    {"id": "woodcutting_risk", "weight": 1, "min_level": 1, "kind": "card", "category": "risk", "title": "A split in the grain", "text": "Work around the knot, or attempt a more ambitious cut?", "choices": [{"label": "Work carefully", "policy": "safe", "effect": {"xp_percent": 10.0}}, {"label": "Attempt the cut", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}}]}
+  ],
+  "fishing": [
+    {"id": "fishing_bonus", "weight": 1, "min_level": 5, "kind": "spawn", "category": "bonus", "target_action": "sardine", "duration_actions": 20, "bonus": {"xp_percent": 50.0, "success_penalty": 10.0}},
+    {"id": "fishing_risk", "weight": 1, "min_level": 1, "kind": "card", "category": "risk", "title": "A tug below", "text": "Keep a steady line, or pull against the current?", "choices": [{"label": "Keep steady", "policy": "safe", "effect": {"xp_percent": 10.0}}, {"label": "Pull hard", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}}]}
+  ],
+  "mining": [
+    {"id": "mining_bonus", "weight": 1, "min_level": 1, "kind": "spawn", "category": "bonus", "target_action": "tin_ore", "duration_actions": 20, "bonus": {"xp_percent": 50.0, "success_penalty": 10.0}},
+    {"id": "mining_risk", "weight": 1, "min_level": 1, "kind": "card", "category": "risk", "title": "A fractured seam", "text": "Chip away at the edge, or strike through the centre?", "choices": [{"label": "Chip the edge", "policy": "safe", "effect": {"xp_percent": 10.0}}, {"label": "Strike through", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}}]}
+  ],
+  "cooking": [
+    {"id": "cooking_bonus", "weight": 1, "min_level": 5, "kind": "spawn", "category": "bonus", "target_action": "cook_sardine", "duration_actions": 20, "bonus": {"xp_percent": 50.0, "success_penalty": 10.0}},
+    {"id": "cooking_risk", "weight": 1, "min_level": 1, "kind": "card", "category": "risk", "title": "The perfect heat", "text": "Keep the fire low, or try a fierce sear?", "choices": [{"label": "Keep it low", "policy": "safe", "effect": {"xp_percent": 10.0}}, {"label": "Try the sear", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}}]}
+  ]
+}

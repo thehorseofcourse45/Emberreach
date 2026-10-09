@@ -32,7 +32,23 @@ const ENRAGE_HP_FRACTION: float = 0.25
 const ENRAGE_MULTIPLIER: float = 1.5
 ## Monster passive ids the engine understands (data may list more only after engine support).
 ## Built from MonsterMechanics.NEW_PASSIVES so the new ids cannot drift from the rules module.
-const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage"] + MonsterMechanics.NEW_PASSIVES
+## A monster with the "rage" passive hits harder the further its health has fallen, by this much of
+## its max HP: 1.0 at full health, 1.5x on its last point. The wounded half of a fight is the
+## dangerous half, which is what makes finishing a fight worth the risk of starting one badly.
+const ENEMY_RAGE_BONUS_FRACTION: float = 0.5
+## Flat evasion a monster with the "veil" passive adds to its own rating. Flat, not a percentage,
+## because evasion is a rating the player's accuracy is compared against and every other source in
+## the game (EquipmentManager, ModifierManager) is a flat bonus to it.
+const ENEMY_VEIL_BONUS: int = 15
+## Fraction of the damage a monster with the "leech" passive deals that it heals itself for,
+## capped at its maximum. A FRACTION (0..1) of damage dealt, never a percent of it — the same
+## precedent as special_attacks.json's heal_fraction and an ability's heal_on_hit_fraction.
+const ENEMY_LEECH_FRACTION: float = 0.25
+## Monster passive ids the engine understands (data may list more only after engine support).
+## ContentValidator rejects any id missing from here, so this array IS the gate between data and
+## behaviour: a passive listed here that the engine did not implement would validate and then do
+## nothing, which is the one failure mode a validator cannot see.
+const KNOWN_MONSTER_PASSIVES: Array[String] = ["regeneration", "thorns", "enrage", "rage", "veil", "leech"] + MonsterMechanics.NEW_PASSIVES
 
 var state: int = State.IDLE
 var context: Dictionary = {}          # {type, id, monsters:[...], index, endless, attack_style}
@@ -77,6 +93,11 @@ var _fight_dps_clock_start: float = 0.0
 var _rng := RandomNumberGenerator.new()
 var combat_enabled: bool = true
 
+## The strategy preset in force right now: {name, ability_loadout, food_threshold, special_bias,
+## protection_prayer_auto}. Always a complete record — a missing or rejected preset falls back to
+## PlayerData.DEFAULT_COMBAT_STRATEGY rather than leaving the combat path reading absent fields.
+var active_strategy: Dictionary = {}
+
 # Auto Eat thresholds: [threshold%, heal-to%, efficiency%]
 const AUTO_EAT = {
 	1: {"threshold": 20.0, "heal_to": 40.0, "efficiency": 60.0},
@@ -88,6 +109,14 @@ func _ready() -> void:
 	_rng.randomize()
 	player_max_hp = _compute_max_hp()
 	player_hp = player_max_hp
+	active_strategy = _strategy_record(PlayerData.combat_strategy_active)
+	# active_loadout is deliberately NOT seeded from PlayerData here. At boot `skills` is still
+	# empty, so every get_level() answers 1, the slot cap would compute to 1 and set_loadout would
+	# write that clamped loadout back — silently deleting slots from the player's save. The loadout
+	# is re-derived in deserialize(), which SaveManager._apply always reaches after
+	# PlayerData.deserialize, and a new game has nothing to restore. The strategy's own
+	# ability_loadout is left alone for the same reason: the live record is restored here, but
+	# nothing is slotted from it until the player picks a preset through set_strategy.
 
 func seed_rng(seed_value: int) -> void:
 	_rng.seed = seed_value
@@ -160,6 +189,14 @@ func _sig_status(target: String, effect_id: String, applied: bool) -> void:
 	else:
 		EventBus.status_effect_expired.emit(target, effect_id)
 
+func _sig_ability_triggered(ability_id: String) -> void:
+	if not SimulationMode.is_silent():
+		EventBus.ability_triggered.emit(ability_id)
+
+func _sig_strategy_changed(strategy_name: String) -> void:
+	if not SimulationMode.is_silent():
+		EventBus.strategy_changed.emit(strategy_name)
+
 # =========================================================================
 #  Control
 # =========================================================================
@@ -228,6 +265,10 @@ func start_combat(ctx: Dictionary) -> bool:
 	monster_attack_timer = 0.0
 	state = State.FIGHTING
 	_begin_fight_clock()
+	# The region's preset (which may re-slot the loadout) is adopted before the protection prayer
+	# is asked for, so the prayer comes from the preset the fight is actually running.
+	_apply_area_strategy(str(ctx.get("id", "")))
+	_activate_strategy_prayer()
 	ProgressTracker.record_region_visit(str(ctx.get("id", "")))
 	_sig_combat_started(ctx)
 	EventBus.activity_changed.emit()
@@ -243,6 +284,8 @@ func stop_combat(reason: String = "") -> void:
 	context = {}
 	player_effects.clear()
 	monster_effects.clear()
+	# A speedup still waiting to be spent belongs to the fight that earned it.
+	_ability_interval_percent = 0.0
 	respawn_timer = 0.0
 	if was_active:
 		_sig_combat_ended("retreat" if reason == "" else reason, completed)
@@ -330,6 +373,15 @@ func tick(delta: float) -> void:
 
 func _tick_fighting(delta: float) -> void:
 	player_attack_interval = maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed()))
+	# A Flurry-class ability is a PER-TICK speedup, not a per-swing one: the interval is recomputed
+	# from ModifierManager at the top of every tick, so a speedup held in the field would be
+	# overwritten before it ever reached a swing. It is spent here instead and cleared, which means
+	# it covers every swing this tick's while-loop fires — one swing live at ~16ms frames, as many
+	# as the accumulated timer allows during a 1s offline step. Positive percent = faster.
+	# ModifierManager.get_attack_interval (ModifierManager.gd:155) is the canonical formula this
+	# mirrors; there is no helper that takes an extra percent, so if that one changes, change this.
+	player_attack_interval = maxf(0.25, player_attack_interval * (1.0 - _ability_interval_percent / 100.0))
+	_ability_interval_percent = 0.0
 	if _in_raid():
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
 	monster_attack_interval = maxf(CombatSimulator.MONSTER_INTERVAL_FLOOR, float(current_monster().get("attack_speed", 3.0)))
@@ -471,13 +523,20 @@ func _player_max_hit(style: String) -> int:
 
 func _monster_evasion_for(style: String) -> int:
 	var m: Dictionary = DataLoader.get_monster(current_monster_id)
+	var rating: int = 0
 	match style:
 		"melee":
-			return int(m.get("melee_evasion", 10))
+			rating = int(m.get("melee_evasion", 10))
 		"ranged":
-			return int(m.get("ranged_evasion", 10))
+			rating = int(m.get("ranged_evasion", 10))
 		_:
-			return int(m.get("magic_evasion", 10))
+			rating = int(m.get("magic_evasion", 10))
+	# Veil: a flat bonus on the rating, so the player has to bring more accuracy to land the same
+	# hit rate. Read here rather than at the call sites so the stat comparison the UI shows and the
+	# roll _player_attack makes are the same number.
+	if (m.get("passives", []) as Array).has("veil"):
+		rating += ENEMY_VEIL_BONUS
+	return rating
 
 func _player_evasion_for(monster_style: String) -> int:
 	var eff_def: int = _player_effective("defence")
@@ -544,6 +603,9 @@ func _player_attack() -> void:
 	if not bool(BankManager.consume_bundle(attack_cost).ok):
 		stop_combat("supplies exhausted")
 		return
+	# Abilities: the cooldown is spent on every player attack, before any roll, so the cost of an
+	# ability is the same whether or not the swing connects.
+	_decrement_ability_cooldowns()
 	PrayerManager.spend_for_attack()   # active prayers cost points per attack
 	PotionManager.consume_charge("combat")
 	var m: Dictionary = current_monster()
@@ -560,14 +622,30 @@ func _player_attack() -> void:
 	# Specials roll first so an accuracy-ignoring one can land through a miss.
 	var sa: Dictionary = _roll_special_attack(EquipmentManager.get_weapon_special_attack())
 	if not bool(sa.get("ignores_accuracy", false)) and _rng.randf() * 100.0 > hit_chance:
+		# A whiff fires nothing, so the hook must not keep pointing at the last ability that did.
+		_last_ability_fired = ""
 		return
+	# Abilities roll only on a landed hit, and at most one of them takes the swing.
+	_roll_abilities()
+	# Everything below reads the fired record, and this runs on EVERY landed hit, so the lookup and
+	# the two effects that need no damage number are hoisted behind the fired check.
+	var ab_effect: Dictionary = {}
+	if _last_ability_fired != "":
+		var ab: Dictionary = DataLoader.get_ability(_last_ability_fired)
+		ab_effect = ab.get("effect", {})
+		_apply_ability_status(ab)
+		_ability_interval_percent += float(ab_effect.get("interval_percent", 0.0))
 	var mh: int = maxi(1, _player_max_hit(attack_style))
+	# max_hit_percent is a percentage of this swing's max hit, the same convention (and the same
+	# place) as the combat triangle below.
+	mh = maxi(1, int(floor(float(mh) * (1.0 + float(ab_effect.get("max_hit_percent", 0.0)) / 100.0))))
 	mh = maxi(1, int(floor(float(mh) * (1.0 + float(tri["damage_percent"]) / 100.0))))
 	var mn: int = CombatFormulas.min_hit(mh,
 		ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0,
 		ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT))
 	var res: Dictionary = CombatFormulas.roll_damage(_rng, mn, mh, float(m.get("damage_reduction", 0.0)),
-		ModifierManager.get_crit_chance(), ModifierManager.get_crit_multiplier())
+		ModifierManager.get_crit_chance() + float(ab_effect.get("crit_chance_percent", 0.0)),
+		ModifierManager.get_crit_multiplier())
 	var dmg: int = int(res["damage"])
 	var is_crit: bool = bool(res["is_crit"])
 	# Weapon special attack: replaces the normal attack and may apply a status.
@@ -585,6 +663,11 @@ func _player_attack() -> void:
 	dmg = MonsterMechanics.armored_reduce(m, dmg)
 	dmg = _status_scaled(dmg, player_effects, monster_effects)
 	EnchantingManager.on_hit(dmg)
+	# heal_on_hit_fraction is a FRACTION (0..1) of the damage this swing dealt, the same precedent
+	# as special_attacks.json's heal_fraction — never a percent.
+	var ab_heal: float = float(ab_effect.get("heal_on_hit_fraction", 0.0))
+	if ab_heal > 0.0:
+		_apply_ability_heal(float(dmg) * ab_heal)
 	apply_damage_to_monster(dmg)
 	_sig_player_attacked(dmg, is_crit)
 	_record_damage(dmg)
@@ -606,8 +689,10 @@ func _status_scaled(dmg: int, attacker_effects: Array, target_effects: Array) ->
 func _monster_attack() -> void:
 	if state != State.FIGHTING:
 		return
+	# Read before the swing: a swing that kills the player ends the fight and clears the monster.
+	var regenerates: bool = (current_monster().get("passives", []) as Array).has("regeneration")
 	_monster_swing()
-	if state == State.FIGHTING and monster_hp > 0 and (current_monster().get("passives", []) as Array).has("regeneration"):
+	if regenerates and monster_hp > 0:
 		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(monster_max_hp) * ENEMY_REGEN_FRACTION)))
 
 func _monster_swing() -> void:
@@ -636,6 +721,10 @@ func _monster_swing() -> void:
 			ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
 	# Open-region hazard: hostile ground hits harder.
 	raw *= (1.0 + float(_active_hazard().get("enemy_damage_percent", 0.0)) / 100.0)
+	# Rage: a wounded monster hits harder, scaled off its CURRENT hp, so a monster that regenerates
+	# or leechs is never free damage. Sits after the triangle and the hazard because both of those
+	# are properties of WHERE the fight happens; this one is a property of the monster.
+	raw *= _enemy_rage_multiplier(monster_hp, monster_max_hp)
 	# ModifierManager combines its own sources; worn equipment adds on top. Clamped because
 	# _combine multiplies out and can exceed 100%, which would make the multiplier negative and
 	# turn every hit into a heal.
@@ -658,8 +747,22 @@ func _monster_swing() -> void:
 	# Lifedrain: the monster heals a share of the damage it dealt, capped at its max HP.
 	if dmg > 0 and monster_hp > 0 and passives.has("lifedrain"):
 		monster_hp = mini(monster_max_hp, monster_hp + MonsterMechanics.lifedrain_heal(dmg))
+	# Leech: a fraction of what this swing dealt, and never past its own maximum. The monster_hp > 0
+	# guard is the same one regeneration needs — a status that killed the monster earlier in this
+	# same tick leaves nothing to heal.
+	if monster_hp > 0 and (m.get("passives", []) as Array).has("leech"):
+		monster_hp = mini(monster_max_hp, monster_hp + maxi(1, int(float(dmg) * ENEMY_LEECH_FRACTION)))
 	if player_hp <= 0.0:
 		_player_death(m.get("name", current_monster_id))
+
+## A monster's rage multiplier: 1.0 at full health, rising to 1.0 + ENEMY_RAGE_BONUS_FRACTION as its
+## health falls. A function rather than an inline expression so the simulator can mirror the shape
+## exactly and so the curve is assertable without a fight — a fight can only show that rage bites.
+func _enemy_rage_multiplier(monster_hp: int, monster_max_hp: int) -> float:
+	if (DataLoader.get_monster(current_monster_id).get("passives", []) as Array).has("rage"):
+		var wounded: float = 1.0 - clampf(float(monster_hp) / float(maxi(1, monster_max_hp)), 0.0, 1.0)
+		return 1.0 + ENEMY_RAGE_BONUS_FRACTION * wounded
+	return 1.0
 
 ## The current open-region hazard, if any (dungeons and towns are sheltered).
 ## hitpoints_regen_flat: heal a flat amount after each of the player's own attacks. The
@@ -738,10 +841,17 @@ func _grant_combat_xp(damage: int) -> void:
 #  Special attacks
 # =========================================================================
 
+## ONE roll, exactly where it always was and against the same kind of number: a strategy's
+## special_bias only scales the value this draw is compared against, so the stream the offline path
+## replays is unchanged. The `chance <= 0.0` arm is what makes "hold" a guarantee rather than a
+## 1-in-2^53 promise — randf() can return 0.0, and `0.0 > 0.0` is false.
 func _roll_special_attack(sa_def: Dictionary) -> Dictionary:
 	if sa_def.is_empty():
 		return {}
-	if _rng.randf() * 100.0 > float(sa_def.get("trigger_chance", 10.0)):
+	var bias: String = str(active_strategy.get("special_bias", "normal"))
+	var chance: float = _biased_special_chance(float(sa_def.get("trigger_chance", 10.0)), bias)
+	var roll: float = _rng.randf() * 100.0
+	if chance <= 0.0 or roll > chance:
 		return {}
 	return sa_def
 
@@ -1007,7 +1117,8 @@ func _auto_eat() -> void:
 	var cfg: Dictionary = AUTO_EAT[tier]
 	var maxhp: float = _compute_max_hp()
 	var pct: float = player_hp / maxf(maxhp, 1.0) * 100.0
-	var threshold: float = float(cfg["threshold"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT)
+	var threshold: float = _food_threshold_percent(float(cfg["threshold"]))
+	threshold += ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT)
 	if pct > threshold:
 		return
 	var eff: float = float(cfg["efficiency"]) + ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_EFFICIENCY_PERCENT)
@@ -1128,6 +1239,19 @@ func serialize() -> Dictionary:
 	}
 
 func deserialize(d: Dictionary) -> void:
+	# Cooldowns and the last fired id are attack counters, not saved state: the live attack timer
+	# is dropped the same way, and a reload must not hand out a free trigger. The loadout is
+	# re-derived through set_loadout, so a loadout a hand-edited or older save no longer qualifies
+	# for is dropped rather than trusted. The strategy PRESET is restored for the same reason, but
+	# without re-slotting: the loadout the player actually chose is PlayerData.ability_loadout, and
+	# a preset only slots abilities when the player adopts it. This is also what a new game runs
+	# through (GameManager.start_new_game -> deserialize({})), so starting over returns the live
+	# record to the default instead of leaving last fight's preset in force.
+	_ability_cooldowns.clear()
+	_last_ability_fired = ""
+	_ability_interval_percent = 0.0
+	active_strategy = _strategy_record(PlayerData.combat_strategy_active)
+	set_loadout(PlayerData.ability_loadout)
 	state = int(d.get("state", State.IDLE))
 	context = d.get("context", {})
 	current_monster_id = str(d.get("monster_id", ""))
@@ -1169,3 +1293,259 @@ func deserialize(d: Dictionary) -> void:
 	if player_hp <= 0.0:
 		player_hp = _compute_max_hp()
 	EventBus.activity_changed.emit()
+
+# =========================================================================
+#  Abilities
+# =========================================================================
+## Slottable combat abilities, from data/abilities.json. Two rules make the feature safe to replay
+## offline, and both are load-bearing rather than stylistic:
+##   * the loadout order IS the roll order, and AT MOST ONE ability fires per player attack — the
+##     first entry that is off cooldown and wins its trigger roll takes the swing, and no entry
+##     after it is ever rolled;
+##   * a rolled-but-missed entry and a blocked entry cost different amounts of randomness (1 and 0
+##     draws), which is why both cases are pinned by the suite.
+## The costs are fixed and the order is fixed, so simulate_elapsed() replaying these same ticks
+## from the same seeded _rng lands on the same numbers the live fight did.
+
+## Slot cap: one slot, plus one per 25 Defence, never more than four. data/skills.json's Defence
+## skill id is "defence".
+const ABILITY_SLOT_MAX: int = 4
+
+var active_loadout: Array[String] = []      ## ability ids, in roll order
+var _ability_cooldowns: Dictionary = {}    ## ability_id -> player attacks still to wait
+var _ability_interval_percent: float = 0.0 ## a per-tick speedup, spent by the next tick
+var _last_ability_fired: String = ""       ## "" when no ability fired on the last attack
+
+func ability_slot_cap() -> int:
+	return mini(ABILITY_SLOT_MAX, 1 + int(PlayerData.get_level("defence") / 25))
+
+## Slots `ids`, dropping unknown ids, duplicates, abilities whose req_levels the player has not
+## reached, and anything past the slot cap — in that order, so the survivors are the first entries
+## the player offered. That order is the roll order, which is why it is preserved rather than
+## sorted. Persists through PlayerData, the same path as every other player choice.
+func set_loadout(ids: Array) -> void:
+	var kept: Array[String] = []
+	for entry in ids:
+		if kept.size() >= ability_slot_cap():
+			break
+		var ability_id: String = str(entry)
+		if kept.has(ability_id):
+			continue
+		var ab: Dictionary = DataLoader.get_ability(ability_id)
+		if ab.is_empty() or not _ability_unlocked(ab):
+			continue
+		kept.append(ability_id)
+	active_loadout = kept
+	var stale: Array[String] = []
+	for ability_id in _ability_cooldowns.keys():
+		if not active_loadout.has(str(ability_id)):
+			stale.append(str(ability_id))
+	for ability_id in stale:
+		_ability_cooldowns.erase(ability_id)
+	_last_ability_fired = ""
+	PlayerData.ability_loadout.clear()
+	PlayerData.ability_loadout.append_array(active_loadout)
+
+func _ability_unlocked(ab: Dictionary) -> bool:
+	var reqs: Dictionary = ab.get("req_levels", {})
+	for skill_id in reqs.keys():
+		if PlayerData.get_level(str(skill_id)) < int(reqs[skill_id]):
+			return false
+	return true
+
+## Cooldowns count PLAYER ATTACKS and are spent at the top of _player_attack(), before any roll:
+## a fixed cost in a fixed place is what keeps the stream reproducible.
+func _decrement_ability_cooldowns() -> void:
+	for ability_id in _ability_cooldowns.keys():
+		_ability_cooldowns[ability_id] = maxi(0, int(_ability_cooldowns[ability_id]) - 1)
+
+## The ability step of one player attack: which ability, if any, has this swing. It only selects —
+## every effect is applied by _player_attack() at the point the number it scales exists. Named
+## `_roll_abilities`, not `_roll_abilities_for_test`: this IS the production path that
+## _player_attack() calls, and the test suite drives it directly only because doing so needs no
+## fight.
+##
+## RNG CONSUMPTION ORDER inside one player attack. Task 5's simulator mirror must draw in exactly
+## this sequence; a stream that differs between the live and offline paths desynchronises offline
+## gains without any error being raised.
+##   1. to-hit roll                                    (_player_attack, before this is called)
+##   2. one trigger roll per loadout entry IN LOADOUT ORDER, stopping at the first entry that is
+##      off cooldown and whose roll lands. A blocked entry is skipped WITHOUT a draw; an entry
+##      after the winner is never rolled at all.
+##   3. when the winner carried apply_status, ONE status-chance roll from _apply_special_status,
+##      fixed at 100% for an ability and so never blocking (the trigger roll is the chance)
+##   4. the damage roll and the crit roll              (both inside CombatFormulas.roll_damage)
+##   5. the weapon special-attack roll, then that special's own status-chance roll
+## Steps 1, 4 and 5 are exactly where they were before abilities existed.
+func _roll_abilities() -> void:
+	_last_ability_fired = ""
+	for ability_id in active_loadout:
+		if int(_ability_cooldowns.get(ability_id, 0)) > 0:
+			continue
+		var ab: Dictionary = DataLoader.get_ability(ability_id)
+		if ab.is_empty():
+			continue
+		if _rng.randf() * 100.0 > float(ab.get("trigger_chance", 0.0)):
+			continue
+		_ability_cooldowns[ability_id] = int(ab.get("cooldown_attacks", 0))
+		_last_ability_fired = ability_id
+		_sig_ability_triggered(ability_id)
+		return
+
+## apply_status names an id in StatusEffect.TABLE, and the record's sibling status_duration is how
+## long it lasts (ContentValidator enforces that pairing, so neither can be missing here). It reuses
+## the existing special-attack status path, whose extra status_chance roll is fixed at 100% for an
+## ability: the trigger roll above is the chance. The sibling status_damage_per_tick is passed
+## through the same key special_attacks.json uses and is a NUMBER, not a percent; without it
+## StatusEffect.tick returns 0.0 and the status marks the target and expires having done nothing, so
+## every apply_status ability ships one. The defaults are only a guard against a malformed record.
+func _apply_ability_status(ab: Dictionary) -> void:
+	var status_id: String = str((ab.get("effect", {}) as Dictionary).get("apply_status", ""))
+	if status_id == "":
+		return
+	_apply_special_status({
+		"applies_status": status_id,
+		"status_chance": 100.0,
+		"status_duration": float(ab.get("status_duration", 0.0)),
+		"status_damage_per_tick": float(ab.get("status_damage_per_tick", 0.0)),
+	}, "monster")
+
+## Heals without ever overhealing: a fraction of a big hit on a wounded character would otherwise
+## print a nonsense HP total, so the clamp is the same _compute_max_hp() the auto-eat and
+## life-steal paths use.
+func _apply_ability_heal(amount: float) -> void:
+	if amount <= 0.0:
+		return
+	player_hp = minf(player_hp + amount, _compute_max_hp())
+
+# =========================================================================
+#  Strategies
+# =========================================================================
+## A strategy preset is a preparation choice, not a new mechanic: {name, ability_loadout,
+## food_threshold, special_bias, protection_prayer_auto}. TWO RULES make it safe to replay offline
+## and are load-bearing rather than stylistic:
+##   * every field is a THRESHOLD or a pointer at existing machinery — food_threshold replaces the
+##     auto-eat HP threshold, special_bias scales the weapon special's proc chance, and the rest
+##     name things that already exist. Nothing here adds a roll, so the seven-step draw order
+##     _roll_abilities() documents is unchanged and Task 5's simulator mirror can reproduce it;
+##   * set_strategy() validates before it adopts, so an invalid record can never reach the combat
+##     path — the previous preset stays live and the rejection is reported.
+##
+## Two thresholds are deliberately left exactly as they were, and both are pinned by the suite:
+##   * food_threshold 0.0 means "use the auto-eat tier default", so a player who never touches a
+##     preset eats at precisely the tier's threshold, modifier included;
+##   * special_bias "normal" is the identity, so the weapon special's own trigger chance is
+##     compared against the same number it always was.
+
+## Adopt a strategy preset. Validated first, so a bad record is refused rather than stored, and
+## the ability ids go through the same set_loadout door the ability UI uses — a preset can never
+## slot an ability the player has not unlocked or that exceeds the slot cap.
+func set_strategy(s: Dictionary) -> void:
+	var errs: Array = ContentValidator.check_strategy_record(s)
+	if not errs.is_empty():
+		push_warning("CombatManager: strategy refused (%s)" % str((errs[0] as Dictionary)["message"]))
+		return
+	active_strategy = s.duplicate(true)
+	PlayerData.combat_strategy_active = str(active_strategy.get("name", ""))
+	_remember_strategy(active_strategy)
+	set_loadout(active_strategy.get("ability_loadout", []) as Array)
+	_sig_strategy_changed(str(active_strategy.get("name", "")))
+
+## The preset bound to `area_id`, or the live strategy when the area has none, as a COPY. A
+## binding whose name no longer resolves falls back to the live strategy as well, so a stale save
+## degrades to what the player last chose rather than to nothing. The copy is the point: without it
+## a caller editing the record in place would reach past set_strategy — and past the content
+## validator behind it — and mutate the live combat record. Reading is unaffected; adoption still
+## goes through set_strategy.
+func strategy_for(area_id: String) -> Dictionary:
+	var bound: String = str(PlayerData.combat_strategies_by_area.get(area_id, ""))
+	if bound == "":
+		return active_strategy.duplicate(true)
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == bound:
+			return (rec as Dictionary).duplicate(true)
+	return active_strategy.duplicate(true)
+
+## Bind a preset to a combat area, so entering it adopts that preset without the player re-picking
+## it every fight. An empty name unbinds. A name no stored preset answers to is refused rather than
+## stored, because this map resolves to a record and a dangling name would look bound and do
+## nothing.
+func assign_strategy_to_area(area_id: String, strategy_name: String) -> void:
+	if area_id == "":
+		return
+	if strategy_name == "":
+		PlayerData.combat_strategies_by_area.erase(area_id)
+		return
+	if _strategy_record_or_empty(strategy_name).is_empty():
+		push_warning("CombatManager: no strategy named '%s' to assign to '%s'" % [strategy_name, area_id])
+		return
+	PlayerData.combat_strategies_by_area[area_id] = strategy_name
+
+## Presets are name-keyed — that is what combat_strategies_by_area points at — so re-adopting a
+## name replaces that record instead of growing a second one.
+func _remember_strategy(record: Dictionary) -> void:
+	var strategy_name: String = str(record.get("name", ""))
+	for i in range(PlayerData.combat_strategies.size()):
+		if str((PlayerData.combat_strategies[i] as Dictionary).get("name", "")) == strategy_name:
+			PlayerData.combat_strategies[i] = record.duplicate(true)
+			return
+	PlayerData.combat_strategies.append(record.duplicate(true))
+
+## Resolves a preset name to a stored record, or the default when nothing matches. Used for the
+## live record (a new game, a reload, an empty choice), never for a name the player just named.
+func _strategy_record(strategy_name: String) -> Dictionary:
+	var found: Dictionary = _strategy_record_or_empty(strategy_name)
+	return found if not found.is_empty() else PlayerData.DEFAULT_COMBAT_STRATEGY.duplicate(true)
+
+func _strategy_record_or_empty(strategy_name: String) -> Dictionary:
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == strategy_name:
+			return rec
+	return {}
+
+## The strategy's lever on the WEAPON special attack: a multiplier on the record's own trigger
+## chance, never a second roll. eager doubles up to the 100% ceiling, hold is a hard zero, normal is
+## the identity. Monster specials are the monster's own choice and are not touched. Task 5's
+## simulator mirror computes this same number from the same two arguments.
+func _biased_special_chance(base: float, bias: String) -> float:
+	match bias:
+		"eager":
+			return minf(base * 2.0, 100.0)
+		"hold":
+			return 0.0
+		_:
+			return clampf(base, 0.0, 100.0)
+
+## The strategy's food threshold as a percent of max HP, or `tier_threshold` untouched when the
+## preset does not set one. A fraction of 0.0 means "defer to the auto-eat tier", which is what
+## keeps an unedited preset identical to a build with no strategies. No RNG: this only moves the
+## number the existing HP comparison is made against.
+func _food_threshold_percent(tier_threshold: float) -> float:
+	var override: float = float(active_strategy.get("food_threshold", 0.0))
+	if override > 0.0:
+		return override * 100.0
+	return tier_threshold
+
+## Entering a combat area adopts the preset bound to it, so a player picks a strategy once per
+## region rather than once per fight. The live record is only replaced when the region names a
+## different preset, so an unbound region never re-slots the loadout the player is using.
+func _apply_area_strategy(area_id: String) -> void:
+	var preset: Dictionary = strategy_for(area_id)
+	if str(preset.get("name", "")) != str(active_strategy.get("name", "")):
+		set_strategy(preset)
+
+## protection_prayer_auto turns the strategy's protection prayer on through the ordinary
+## PrayerManager door, so the prayer's level requirement and the two-active-prayer limit both
+## still decide: a preset can ask for the prayer and never force it past a rule the player is held
+## to. Eligibility is asked BEFORE the toggle, because toggle refuses an ineligible prayer by
+## notifying the player, and a prayer the player never asked for by hand must not pop "Prayer level
+## too low" on every single fight — the brief's "if its requirements are met" is a silent no-op when
+## they are not. The rules themselves are PrayerManager's, asked once there. Left active afterwards,
+## the same as a prayer the player switched on by hand.
+func _activate_strategy_prayer() -> void:
+	var prayer_id: String = str(active_strategy.get("protection_prayer_auto", ""))
+	if prayer_id == "" or PrayerManager.is_active(prayer_id):
+		return
+	if PrayerManager.blocked_reason(prayer_id) != "":
+		return
+	PrayerManager.toggle(prayer_id)

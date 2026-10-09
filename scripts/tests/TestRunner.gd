@@ -48,6 +48,7 @@ func run_all(host: Node) -> void:
 	_test_achievement_reward_once()
 	_test_save_round_trip()
 	_test_save_migration()
+	test_migrate_2_to_3_defaults()
 	_test_malformed_save_rejected()
 	_test_offline_cap_and_negative_time()
 	_test_online_offline_consistency()
@@ -134,6 +135,36 @@ func run_all(host: Node) -> void:
 	_test_settings_gap_keys()
 	_test_content_validation()
 	_test_game_modes()
+	test_abilities_load()
+	test_events_load()
+	test_event_validation_rejects()
+	test_card_timeout_applies_policy()
+	test_spawn_switch_no_double_consume()
+	test_events_offline_equivalence()
+	test_momentum_caps_and_resets()
+	test_activity_event_ui(host)
+	test_ability_validation_rejects()
+	test_ability_cooldown_respected()
+	test_ability_roll_count()
+	test_ability_heal_caps()
+	test_ability_slot_cap()
+	test_combat_strategy_ui(host)
+	test_ability_effects_in_fight()
+	test_special_bias_hold()
+	test_special_bias_arithmetic()
+	test_strategy_food_threshold()
+	test_set_strategy_rejects_invalid()
+	test_strategy_area_and_prayer()
+	test_monster_passives()
+	test_identity_theme_builds()
+	test_surface_box_falls_back()
+	test_surface_box_uses_flat_by_default()
+	test_motion_reduced_disables()
+	test_floater_pool_bounded()
+	# Awaited: both new motion pins are coroutines (they need frames for the tween to run and for
+	# the pivot to be re-read), and an un-awaited coroutine would report after _report() has printed.
+	await test_tween_bar_defers_until_in_tree(host)
+	await test_pulse_sets_center_pivot(host)
 	# Must be awaited: the QoL suites are coroutines, and an un-awaited coroutine suspends here
 	# and resumes only after _report() has already printed — its checks would never be counted.
 	await _test_progression_qol(host)
@@ -260,6 +291,500 @@ func _test_audit_fixes() -> void:
 ## The mastery stall is the only acquisition path for the 58 skillcapes and the 2 completion
 ## capes, so its gate has to be real: ungated it is a gold-only shortcut to a 99 reward, and
 ## mispriced it is a currency printer.
+func test_events_load() -> void:
+	_heading("Activity event content")
+	_ok(DataLoader.has_method("get_skill_events"), "event pool lookup exists")
+	if not DataLoader.has_method("get_skill_events"):
+		return
+	for skill_id in ["woodcutting", "fishing", "mining", "cooking"]:
+		var pool: Array = DataLoader.call("get_skill_events", skill_id)
+		_ok(pool.size() >= 2 and pool.size() <= 3, "%s has exemplar events" % skill_id)
+		var kinds: Array = []
+		for event in pool:
+			kinds.append(str(event.get("kind", "")))
+		_ok(kinds.has("spawn") and kinds.has("card"), "%s includes a spawn and a card" % skill_id)
+	_eq(DataLoader.call("get_skill_events", "thieving"), [], "skills without event pools return an empty array")
+	_eq(DataLoader.call("get_skill_events", "unknown_skill"), [], "unknown skills return an empty array")
+
+## Task 2 pin: an event record the engine cannot act on must be caught by ContentValidator, not
+## discovered as a silent no-op (or a walk-away card) in the live loop. Single-defect fixtures like
+## the ability suite, so neither a deleted check nor a doubled one can pass unnoticed.
+## NOTE: house style is _ok/_one_error — TestRunner has no assert_* helpers (plan snippets translated).
+func test_event_validation_rejects() -> void:
+	_heading("Activity event validation")
+	# The plan's headline case: an unknown kind fails validation instead of reaching the loop.
+	var unknown: Array = ContentValidator.check_event_record({"id": "x", "kind": "mystery"})
+	_ok(not unknown.is_empty(), "an unknown kind must error (%s)" % _failure_text(unknown))
+
+	var spawn_base: Dictionary = {
+		"id": "evt_fixture_spawn", "weight": 1, "min_level": 5, "kind": "spawn",
+		"target_action": "oak_tree", "duration_actions": 20,
+		"bonus": {"xp_percent": 50.0, "success_penalty": 10.0},
+	}
+	var card_base: Dictionary = {
+		"id": "evt_fixture_card", "weight": 1, "min_level": 1, "kind": "card",
+		"title": "A test", "text": "Text",
+		"choices": [
+			{"label": "Play safe", "policy": "safe", "effect": {"xp_percent": 10.0}},
+			{"label": "Push luck", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}},
+		],
+	}
+	# A lambda, not Callable.bind: bound-argument order is a needless thing to depend on here.
+	var check := func(ev: Dictionary) -> Array:
+		return ContentValidator.check_event_record(ev, "woodcutting")
+
+	var spawn_errs: Array = ContentValidator.check_event_record(spawn_base, "woodcutting")
+	_ok(spawn_errs.is_empty(), "a well-formed spawn validates (%s)" % _failure_text(spawn_errs))
+	var card_errs: Array = ContentValidator.check_event_record(card_base, "woodcutting")
+	_ok(card_errs.is_empty(), "a well-formed card validates (%s)" % _failure_text(card_errs))
+	_one_error(check, spawn_base, {"id": ""}, "a spawn with no id")
+	_one_error(check, spawn_base, {"kind": "mystery"}, "a kind outside spawn/card")
+	_one_error(check, spawn_base, {"weight": 0}, "a weight of 0")
+	_one_error(check, spawn_base, {"weight": null}, "a missing weight")
+	_one_error(check, spawn_base, {"min_level": 0}, "a min_level below 1")
+	_one_error(check, spawn_base, {"min_level": 1.5}, "a non-integer min_level")
+	_one_error(check, spawn_base, {"min_level": null}, "a missing min_level")
+	_one_error(check, spawn_base, {"target_action": null}, "a spawn with no target_action")
+	_one_error(check, spawn_base, {"target_action": "no_such_tree"},
+		"a target_action outside the skill's actions", "missing_reference")
+	_one_error(check, spawn_base, {"duration_actions": 0}, "duration_actions below 1")
+	_one_error(check, spawn_base, {"duration_actions": 2.5}, "a non-integer duration_actions")
+	_one_error(check, spawn_base, {"bonus": "lots"}, "a non-object bonus")
+	_one_error(check, spawn_base, {"bonus": {"nope": 1.0}}, "an unknown bonus key")
+	_one_error(check, spawn_base, {"bonus": {"xp_percent": "lots"}}, "a non-numeric bonus value")
+	_one_error(check, card_base, {"choices": "none"}, "a card whose choices are not an array")
+	_one_error(check, card_base, {"choices": [card_base["choices"][0]]},
+		"a card with fewer than two choices")
+	_one_error(check, card_base, {"choices": [
+		card_base["choices"][0], card_base["choices"][1], card_base["choices"][0]]},
+		"a card with more than two choices")
+	_one_error(check, card_base, {"choices": [
+		{"label": "Play safe", "policy": "safe", "effect": {}},
+		{"label": "Push luck", "policy": "bold", "effect": {}}]},
+		"a choice policy outside safe/greedy")
+	_one_error(check, card_base, {"choices": [
+		{"label": "", "policy": "safe", "effect": {}}, card_base["choices"][1]]},
+		"a choice with no label")
+	_one_error(check, card_base, {"choices": [
+		card_base["choices"][0], {"label": "Push luck", "policy": "greedy", "effect": "lots"}]},
+		"a non-object choice effect")
+	_one_error(check, card_base, {"choices": [
+		card_base["choices"][0], {"label": "Push luck", "policy": "greedy", "effect": {"nope": 1.0}}]},
+		"an unknown choice effect key")
+
+	var shipped: Array = []
+	for skill_id in DataLoader.events.keys():
+		var skills_pool: Variant = DataLoader.events[skill_id]
+		if typeof(skills_pool) != TYPE_ARRAY:
+			continue
+		for ev in (skills_pool as Array):
+			if typeof(ev) == TYPE_DICTIONARY:
+				shipped.append_array(ContentValidator.check_event_record(ev, str(skill_id)))
+	_ok(shipped.is_empty(), "every shipped event validates (%s)" % _failure_text(shipped))
+
+	# The wiring, not just the free function: --validate must walk the shipped pools itself. The
+	# probes are appended and popped so the pool is byte-identical afterwards.
+	var pool: Array = DataLoader.events.get("woodcutting", [])
+	var probe_size: int = pool.size()
+	pool.append({"id": "wired_probe", "kind": "mystery"})
+	pool.append((pool[0] as Dictionary).duplicate(true))
+	var saw_broken: bool = false
+	var saw_duplicate: bool = false
+	for issue in ContentValidator.new().validate_all():
+		var severity: String = str((issue as Dictionary).get("severity", ""))
+		var code: String = str((issue as Dictionary).get("code", ""))
+		var message: String = str((issue as Dictionary).get("message", ""))
+		if severity == "error" and message.contains("wired_probe"):
+			saw_broken = true
+		if severity == "error" and code == "duplicate_id" and message.contains("woodcutting_bonus"):
+			saw_duplicate = true
+	while pool.size() > probe_size:
+		pool.pop_back()
+	_ok(saw_broken, "validate_all reports a broken event record, not just the free function")
+	_ok(saw_duplicate, "validate_all rejects a duplicate event id inside one pool")
+
+## Task 3 pin, plan Review Focus: a card must NEVER deadlock the loop. Every route — walk-away
+## timeout, stored policy, player button — goes through resolve(), applies a real effect exactly
+## once, and releases the pause. A route that resolved back into "manual" (or failed to unpause)
+## would hang the loop with the watchdog already spent, which no green check above would show.
+func test_card_timeout_applies_policy() -> void:
+	_heading("Activity card timeout")
+	var ev: Dictionary = {
+		"id": "c1", "kind": "card", "category": "risk",
+		"choices": [
+			{"label": "S", "policy": "safe", "effect": {"xp_percent": 10.0}},
+			{"label": "G", "policy": "greedy", "effect": {"xp_percent": 40.0, "fail_chance": 25.0}},
+		],
+	}
+	var saved_policies: Dictionary = PlayerData.event_policies.duplicate()
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+
+	# The plan's headline case: nobody chose and nothing is stored -> the CONSERVATIVE choice.
+	PlayerData.event_policies = {}
+	var res: Dictionary = EventDirector.resolve(ev, "TIMEOUT")
+	_eq(str(res.get("choice_policy", "")), "safe",
+		"timeout with no stored policy falls back to safe")
+	var mods: Dictionary = EventDirector.begin_action("woodcutting", "normal_tree")
+	_eq(float(mods.get("xp_percent", 0.0)), 10.0, "the fallback applied the safe choice's effect")
+	_eq(float(EventDirector.begin_action("woodcutting", "normal_tree").get("xp_percent", 0.0)), 0.0,
+		"the effect pays for exactly one attempt, not every attempt")
+
+	# A stored preference beats the safe fallback; an explicit button passes straight through.
+	PlayerData.event_policies["risk"] = "greedy"
+	_eq(str(EventDirector.resolve(ev, "TIMEOUT").get("choice_policy", "")), "greedy",
+		"timeout falls back to the STORED policy")
+	_eq(str(EventDirector.resolve(ev, "safe").get("choice_policy", "")), "safe",
+		"an explicit player choice is applied as-is")
+
+	# The watchdog itself: a card nobody answers resolves and releases the pause. It rides the
+	# skill loop's GAME clock (SkillManager.tick), not wall time, so a driver without frame
+	# boundaries — this test, an offline slice — can never deadlock on it either.
+	PlayerData.event_policies = {}
+	EventDirector._pending_card_effect = {}
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "the loop is running for the watchdog")
+	# The remainder handed back after the timeout must not be able to complete an action here,
+	# or a fresh 2%-chance card could re-pause the loop under the assertions below.
+	_ok(SkillManager.current_interval > 1.0,
+		"the watchdog's remainder tick cannot complete a whole action")
+	EventDirector.offer_card_for_test(ev)
+	_ok(not EventDirector.pending_card.is_empty() and SkillManager.paused,
+		"an unanswered card pauses the loop")
+	SkillManager.tick(1.0, false)
+	_ok(not EventDirector.pending_card.is_empty(), "one second does not time the card out")
+	var seen: Array = []
+	EventBus.event_resolved.connect(
+		func(_id: String, policy: String) -> void: seen.append(policy), Object.CONNECT_ONE_SHOT)
+	SkillManager.tick(EventDirector.CARD_TIMEOUT_SECONDS, false)
+	_ok(EventDirector.pending_card.is_empty(), "the game clock resolves a walk-away card")
+	_ok(not SkillManager.paused, "the watchdog releases the pause — the loop cannot deadlock")
+	_eq(seen.size(), 1, "the watchdog resolved through event_resolved, exactly once")
+	_eq(str(seen[0]) if seen.size() > 0 else "", "safe", "with the stored policy's fallback")
+	SkillManager.stop_action()
+
+	# The preference is a save key: this plan owns its persistence, so pin the real JSON path.
+	PlayerData.event_policies = {"risk": "greedy"}
+	var snapshot: Variant = JSON.parse_string(JSON.stringify(SaveManager.build_save_data(), "\t"))
+	PlayerData.event_policies = {}
+	SaveManager._apply(snapshot if typeof(snapshot) == TYPE_DICTIONARY else {})
+	_eq(str(PlayerData.event_policies.get("risk", "")), "greedy",
+		"event_policies survives a save / load round trip")
+
+	PlayerData.event_policies = saved_policies
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+
+## Task 3 pin, plan Review Focus: switching to a spawn must not duplicate inputs/outputs or
+## double-consume charges. The switch re-points the ONE slot and consumes nothing itself; the
+## offer's duration survives it; the bonus fires only on the spawn's own target action.
+func test_spawn_switch_no_double_consume() -> void:
+	_heading("Activity spawn switch")
+	SkillManager.stop_action()
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	var xp_before: float = PlayerData.get_xp("woodcutting")
+	var held_before: int = _total_items_held()
+	# Two REAL woodcutting actions from data/skills.json.
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "action A (normal_tree) starts")
+	EventDirector.offer_spawn_for_test("woodcutting", "oak_tree", 5)
+	EventDirector.accept_spawn()
+	_eq(SkillManager.active_action_id, "oak_tree", "accept switches the slot to the spawn's target")
+	_eq(_total_items_held(), held_before, "the switch itself consumes or produces nothing")
+	_eq(PlayerData.get_xp("woodcutting"), xp_before, "the switch itself grants no XP")
+	_eq(int(EventDirector.active_spawn.get("actions_left", 0)), 5,
+		"the offer keeps its full duration across the switch")
+
+	# One completion burns exactly one charge, through the real roll hook. The pool is swapped out
+	# for the probe so the weighted draw cannot fire a card and perturb the assertions below — the
+	# draw itself is pinned by the offline-equivalence test, where firing is the whole point.
+	var pool: Array = DataLoader.events.get("woodcutting", [])
+	DataLoader.events["woodcutting"] = []
+	var probe := RandomNumberGenerator.new()
+	probe.seed = 7
+	EventDirector.roll_post_action("woodcutting", "oak_tree", probe)
+	DataLoader.events["woodcutting"] = pool
+	_eq(int(EventDirector.active_spawn.get("actions_left", 0)), 4,
+		"one completed action burns one charge")
+
+	EventDirector.active_spawn["bonus"] = {"xp_percent": 50.0, "success_penalty": 10.0}
+	var on_target: Dictionary = EventDirector.begin_action("woodcutting", "oak_tree")
+	_eq(float(on_target.get("xp_percent", 0.0)), 50.0, "the bonus applies on its own target action")
+	_approx(float(on_target.get("success_delta", 0.0)), -0.1, 0.0001,
+		"and carries its success penalty")
+	_eq(float(EventDirector.begin_action("woodcutting", "normal_tree").get("xp_percent", 0.0)), 0.0,
+		"but not on a different action of the same skill")
+	_eq(float(EventDirector.begin_action("fishing", "oak_tree").get("xp_percent", 0.0)), 0.0,
+		"and not in a different skill")
+
+	# A stale offer (the slot moved on) is dismissed instead of force-switching the player.
+	SkillManager.stop_action()
+	EventDirector.offer_spawn_for_test("woodcutting", "magic_tree", 5)
+	EventDirector.accept_spawn()
+	_ok(EventDirector.active_spawn.is_empty(), "a stale offer is dismissed, never force-switched")
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+
+## Task 4 pin, plan Review Focus: offline resolution must equal online resolution for the same
+## seed. The SAME 600 seconds run twice from identical fresh state — once as real online ticks,
+## once as a silent simulate_elapsed replay — with an immediately-resolving stored policy, and
+## both must land on identical action counts and identical XP. The pause path's equality (default
+## manual policy, cards timing out) is pinned separately by _test_online_offline_consistency;
+## this proves the stored-policy path AND that event rolls sit on the SAME stream in both
+## drivers. Not vacuous: it asserts the pool exists and that events actually fired mid-run.
+func test_events_offline_equivalence() -> void:
+	_heading("Offline event equivalence")
+	var gather: Dictionary = _find_gather_action()
+	if gather.is_empty():
+		_ok(false, "found a gathering action")
+		return
+	var skill_id: String = str(gather["skill_id"])
+	var action_id: String = str(gather["action_id"])
+	_ok(not DataLoader.get_skill_events(skill_id).is_empty(),
+		"%s draws from an event pool" % skill_id)
+	var fired: Array = []
+	var on_offered := func(event: Dictionary) -> void: fired.append(str(event.get("id", "")))
+	var on_resolved := func(event_id: String, _policy: String) -> void: fired.append(str(event_id))
+	EventBus.event_offered.connect(on_offered)
+	EventBus.event_resolved.connect(on_resolved)
+
+	# Run A — online: the stored policy resolves every card the instant it fires (no pause).
+	GameManager.start_new_game("standard")
+	PlayerData.event_policies = {"risk": "safe", "bonus": "safe"}
+	_deterministic(true)
+	SkillManager.seed_rng(99)
+	_ok(SkillManager.start_action(skill_id, action_id), "the online run starts its action")
+	var xp0: float = PlayerData.get_xp(skill_id)
+	for _i in range(600):
+		SkillManager.tick(1.0, false)
+	var online_actions: int = SkillManager.total_action_count
+	var online_dxp: float = PlayerData.get_xp(skill_id) - xp0
+
+	# Run B — offline: identical fresh state, identical seed, silent replay of the same 600s.
+	GameManager.start_new_game("standard")
+	PlayerData.event_policies = {"risk": "safe", "bonus": "safe"}
+	_deterministic(true)
+	SkillManager.seed_rng(99)
+	_ok(SkillManager.start_action(skill_id, action_id), "the offline run starts its action")
+	var xp1: float = PlayerData.get_xp(skill_id)
+	SimulationMode.begin()
+	var offline: Dictionary = SkillManager.simulate_elapsed(600.0)
+	SimulationMode.end()
+	var offline_dxp: float = PlayerData.get_xp(skill_id) - xp1
+	SkillManager.stop_action()
+	EventBus.event_offered.disconnect(on_offered)
+	EventBus.event_resolved.disconnect(on_resolved)
+
+	_ok(fired.size() >= 1,
+		"the seeded run actually fired events (%d: %s)" % [fired.size(), ", ".join(fired)])
+	_eq(int(offline.get("actions", 0)), online_actions, "same seed, same action count")
+	_approx(offline_dxp, online_dxp, 0.0001, "same seed, same xp")
+
+## Task 5 pin, plan Review Focus: momentum must reset on failure and never exceed its cap. Pinned
+## at the rule (both branches), at the multiplier it feeds, through BOTH engine funnels, and
+## through the real save path — a streak that dies on reload is the bug this test exists for.
+func test_momentum_caps_and_resets() -> void:
+	_heading("Momentum streak")
+	var saved_momentum: Dictionary = PlayerData.momentum.duplicate()
+	PlayerData.momentum.clear()
+	SkillManager.momentum_streak = 0
+	for i in 30:
+		SkillManager._apply_momentum_for_test(true)
+	_eq(SkillManager.momentum_streak, 20, "streak caps at 20")
+	_eq(SkillManager.momentum_streak, SkillManager.MOMENTUM_CAP_ACTIONS,
+		"the cap is exactly MOMENTUM_CAP_ACTIONS")
+	SkillManager._apply_momentum_for_test(false)
+	_eq(SkillManager.momentum_streak, 0, "failure resets streak")
+
+	# The multiplier the XP grant uses: flat at 0, +0.5% a step, hard-stopped at the cap — even
+	# for a streak set by hand beyond it.
+	SkillManager.momentum_streak = 0
+	_approx(SkillManager.momentum_xp_multiplier(), 1.0, 0.00001, "a cold streak multiplies by 1.0")
+	SkillManager.momentum_streak = 1
+	_approx(SkillManager.momentum_xp_multiplier(), 1.005, 0.00001, "step 1 adds 0.5%")
+	SkillManager.momentum_streak = 999
+	_approx(SkillManager.momentum_xp_multiplier(), 1.1, 0.00001,
+		"beyond the cap adds nothing more")
+
+	# Both engine funnels go through the rule: one REAL success climbs (normal_tree has no
+	# success_chance, so it defaults to 1.0 and the roll cannot fail), one real failure wipes.
+	SkillManager.stop_action()
+	SkillManager.momentum_streak = 0
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "an action starts for the funnels")
+	SkillManager.perform_action()
+	_eq(SkillManager.momentum_streak, 1, "a successful attempt climbs the streak by one")
+	_ok(int(PlayerData.momentum.get("woodcutting", 0)) == 1, "the climb is mirrored to PlayerData")
+	SkillManager._on_action_failure({})
+	_eq(SkillManager.momentum_streak, 0, "a failed attempt wipes the streak")
+	SkillManager.stop_action()
+
+	# Per-skill persistence through the real JSON path, and a session resumes ITS skill's record.
+	PlayerData.momentum = {"woodcutting": 7, "fishing": 3}
+	var snapshot: Variant = JSON.parse_string(JSON.stringify(SaveManager.build_save_data(), "\t"))
+	PlayerData.momentum = {}
+	SaveManager._apply(snapshot if typeof(snapshot) == TYPE_DICTIONARY else {})
+	_eq(int(PlayerData.momentum.get("woodcutting", 0)), 7,
+		"momentum survives a save / load round trip")
+	_eq(int(PlayerData.momentum.get("fishing", 0)), 3,
+		"streaks are tracked per skill, not as one global")
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "the skill restarts after reload")
+	_eq(SkillManager.momentum_streak, 7, "the session resumes its own skill's streak")
+	SkillManager.stop_action()
+	PlayerData.momentum = saved_momentum
+	SkillManager.momentum_streak = 0
+
+## Task 6 pin: the three activity-event surfaces must actually BUILD and be wired — a card
+## dialog whose buttons do not resolve, a spawn row that never appears, or a policy menu that
+## writes nothing are all shapes that compile and stay silent. The plan asks for suite +
+## screenshot; these structural pins are the suite half of that.
+## Depth-first, INCLUDING internal children: AcceptDialog's button box is internal, so a flat
+## child scan would report a real button as missing.
+func _collect_controls(node: Node, into: Array) -> void:
+	for child in node.get_children(true):
+		into.append(child)
+		_collect_controls(child, into)
+
+func test_activity_event_ui(host: Node) -> void:
+	_heading("Activity event UI")
+	if host == null or not host.is_inside_tree():
+		_ok(false, "a live shell is available to host the UI")
+		return
+	var saved_policies: Dictionary = PlayerData.event_policies.duplicate()
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+
+	# --- Card dialog: ConfirmDialog.ask_event ---
+	var ev: Dictionary = {
+		"id": "ui_card", "kind": "card", "category": "risk", "title": "The tightrope",
+		"text": "Step wide, or make the dash?",
+		"choices": [
+			{"label": "Step wide", "policy": "safe", "effect": {"xp_percent": 5.0}},
+			{"label": "Make the dash", "policy": "greedy", "effect": {"xp_percent": 15.0}},
+		],
+	}
+	var dlg: ConfirmDialog = ConfirmDialog.ask_event(host, ev)
+	_eq(dlg.get_ok_button().text, "Step wide", "choice 0 rides the OK button")
+	_ok(not dlg.get_cancel_button().is_visible(),
+		"the built-in Cancel is hidden — there is no third option")
+	_eq(dlg.dialog_text, "",
+		"the card composes its own content (AcceptDialog gives custom children the full rect)")
+	var controls: Array = []
+	_collect_controls(dlg, controls)
+	var second_button: Button = null
+	var bar: ProgressBar = null
+	var card_text: Label = null
+	for node in controls:
+		if node is Button and (node as Button).text == "Make the dash":
+			second_button = node
+		elif node is ProgressBar and bar == null:
+			bar = node
+		elif node is Label and str((node as Label).text).contains("Step wide, or make the dash"):
+			card_text = node
+	_ok(second_button != null, "choice 1 is a real button on the dialog")
+	_ok(bar != null, "the timeout bar is built")
+	_ok(card_text != null, "the card's text renders through the composed content")
+
+	# The bar drains with the pending card's own timer (the game clock), not an animation.
+	EventDirector.pending_card = {"id": "ui_card", "kind": "card", "timer": 7.5}
+	if bar != null:
+		dlg.call("_process", 0.0)
+		_approx(bar.value, 50.0, 0.1, "the bar reflects the pending timer (7.5 of 15s)")
+
+	# Pressing choice 0 resolves through EventDirector and releases the pause.
+	EventDirector.pending_card = {"id": "ui_card", "kind": "card", "timer": 15.0}
+	SkillManager.paused = true
+	dlg.get_ok_button().pressed.emit()
+	_ok(EventDirector.pending_card.is_empty(), "the OK press resolves the pending card")
+	_ok(not SkillManager.paused, "and releases the pause")
+	_eq(float(EventDirector._pending_card_effect.get("xp_percent", 0.0)), 5.0,
+		"choice 0's effect is what reached the one-shot slot")
+	_ok(not dlg.visible, "the dialog closes on choice")
+
+	# Dismissing (X / Esc) is not a third choice: it resolves through the TIMEOUT path.
+	var dlg2: ConfirmDialog = ConfirmDialog.ask_event(host, ev)
+	EventDirector.pending_card = {"id": "ui_card", "kind": "card", "timer": 15.0}
+	SkillManager.paused = true
+	dlg2.canceled.emit()
+	_ok(EventDirector.pending_card.is_empty(), "dismiss resolves through the TIMEOUT path")
+	_ok(not SkillManager.paused, "so a closed window can never strand the pause")
+	dlg2.queue_free()
+	EventDirector._pending_card_effect = {}
+
+	# --- Policy row: SkillsPanel ---
+	var skills_panel: Control = load("res://scripts/ui/panels/SkillsPanel.gd").new()
+	host.add_child(skills_panel)
+	skills_panel.call("_select_skill", "woodcutting")
+	var ask_menus: Array = []
+	for node in (skills_panel.get("_selected_box") as VBoxContainer).find_children("", "OptionButton", true, false):
+		if (node as OptionButton).item_count >= 3 and str((node as OptionButton).get_item_text(0)) == "Ask me":
+			ask_menus.append(node)
+	_eq(ask_menus.size(), 2, "woodcutting's two event categories each get a policy menu")
+	var risk_menu: OptionButton = null
+	for menu in ask_menus:
+		if str((menu as OptionButton).tooltip_text).contains("risk"):
+			risk_menu = menu
+	_ok(risk_menu != null, "the risk category's menu is identifiable")
+	if risk_menu != null:
+		PlayerData.event_policies = {}
+		(risk_menu as OptionButton).item_selected.emit(2)
+		_eq(str(PlayerData.event_policies.get("risk", "")), "greedy",
+			"the menu writes PlayerData.event_policies")
+	# A skill with no event pool must show no policy row at all.
+	skills_panel.call("_select_skill", "firemaking")
+	var dead_menus: int = 0
+	for node in (skills_panel.get("_selected_box") as VBoxContainer).find_children("", "OptionButton", true, false):
+		if (node as OptionButton).item_count >= 3 and str((node as OptionButton).get_item_text(0)) == "Ask me":
+			dead_menus += 1
+	_eq(dead_menus, 0, "a skill with no event pool shows no policy row")
+	skills_panel.queue_free()
+	PlayerData.event_policies = saved_policies
+
+	# --- Spawn offer row: ActivityStrip ---
+	var strip: ActivityStrip = ActivityStrip.new()
+	host.add_child(strip)
+	strip.call("refresh")
+	var spawn_row: Control = strip.get("_spawn_row")
+	_ok(spawn_row != null, "the strip builds its spawn row")
+	if spawn_row == null:
+		strip.queue_free()
+		return
+	_ok(not spawn_row.visible, "no offer, no spawn row")
+	_ok(SkillManager.start_action("woodcutting", "normal_tree"), "a session runs for the offer")
+	# An offer that ARRIVED mid-session (a start_action would have superseded a stale one).
+	EventDirector.active_spawn = {
+		"id": "woodcutting_bonus", "kind": "spawn", "category": "bonus",
+		"skill_id": "woodcutting", "target_action": "oak_tree",
+		"duration_actions": 20, "actions_left": 5,
+		"bonus": {"xp_percent": 50.0, "success_penalty": 10.0},
+	}
+	strip.call("refresh")
+	_ok(spawn_row.visible, "an active offer shows the spawn row")
+	var spawn_label: Label = strip.get("_spawn_label")
+	var oak_name: String = str(DataLoader.get_action("woodcutting", "oak_tree").get("name", "oak_tree"))
+	_ok(spawn_label.text.contains(oak_name), "the row names the bonus target ('%s')" % spawn_label.text)
+	_ok(spawn_label.text.contains("5 left"), "the row counts the remaining charges")
+	# The count drops inside the engine's completion path with no signal — it must be polled.
+	EventDirector.active_spawn["actions_left"] = 3
+	strip.call("_process", 0.0)
+	_ok(spawn_label.text.contains("3 left"), "the count follows the engine, not a cached string")
+	(strip.get("_spawn_switch") as Button).pressed.emit()
+	_eq(SkillManager.active_action_id, "oak_tree", "the strip's switch button hands off to EventDirector")
+	_ok(not EventDirector.active_spawn.is_empty(), "the offer stays live while its bonus runs")
+	SkillManager.stop_action()
+	EventDirector.active_spawn = {}
+	EventDirector.pending_card = {}
+	EventDirector._pending_card_effect = {}
+	SkillManager.paused = false
+	strip.call("refresh")
+	_ok(not spawn_row.visible, "the row disappears with the offer")
+	strip.queue_free()
+
 func _test_mastery_stall() -> void:
 	_heading("Mastery stall")
 	var offers: Array = ShopManager.stall_offers()
@@ -1648,6 +2173,163 @@ func _test_save_migration() -> void:
 	_ok(absf(ModifierManager.get_modifier("global_skill_xp_percent")) < 900.0,
 		"the stale modifier from the old save was not restored")
 
+## Task 6 pin: a v2 save must reach the combat code with every key Tasks 3 and 4 added, correctly
+## shaped. Filling only the missing keys is not enough — a v2 save written by an intermediate build
+## of this same branch can already carry some of them with the wrong type, and a String standing in
+## for an Array is exactly what crashes the code downstream.
+func test_migrate_2_to_3_defaults() -> void:
+	_heading("Old-save migration (format 2 -> 3)")
+	var v2: Dictionary = {
+		"save_version": 2,
+		"player": {"skills": {"woodcutting": {"xp": 500.0, "level": 5}}, "gp": 42.0},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	# The shape v3 promises the code: key -> the type PlayerData.deserialize reads it as.
+	var promised: Dictionary = {
+		"ability_loadout": TYPE_ARRAY,
+		"combat_strategies": TYPE_ARRAY,
+		"combat_strategies_by_area": TYPE_DICTIONARY,
+		"combat_strategy_active": TYPE_STRING,
+		"event_policies": TYPE_DICTIONARY,
+		"momentum": TYPE_DICTIONARY,
+	}
+	var out: Dictionary = SaveManager.migrate_save(v2, 2)
+	_eq(int(out.get("save_version", 0)), 3, "the v2 save reports version 3")
+	# The rest of this check reads those keys by name, so a migration that dropped or mistyped one
+	# is reported here instead of crashing the rest of the test on a cast.
+	var wrong: String = _wrongly_shaped(out.get("player", {}), promised)
+	_ok(wrong == "", "a v2 save arrives with every promised key in the promised type (wrong: %s)"
+		% (wrong if wrong != "" else "none"))
+	if wrong != "":
+		return
+	var player: Dictionary = out["player"]
+	_ok((player["ability_loadout"] as Array).is_empty(), "the migrated loadout slots no abilities")
+	var strategies: Array = player["combat_strategies"]
+	_eq(strategies.size(), 1, "the migrated player holds exactly one strategy preset")
+	var default_strategy: Dictionary = strategies[0] \
+		if strategies.size() == 1 and typeof(strategies[0]) == TYPE_DICTIONARY else {}
+	_ok(ContentValidator.check_strategy_record(default_strategy).is_empty(),
+		"the default strategy passes the content validator (%s)" % _failure_text(ContentValidator.check_strategy_record(default_strategy)))
+	_eq(player["combat_strategy_active"], str(default_strategy.get("name", "Default")),
+		"the active strategy names the preset that is actually stored")
+	_eq(player["event_policies"], {"risk": "safe", "bonus": "safe"}, "every event policy defaults to safe")
+	_ok((player["combat_strategies_by_area"] as Dictionary).is_empty(), "no area is bound to a strategy yet")
+	_ok((player["momentum"] as Dictionary).is_empty(), "momentum starts empty")
+	_ok((player["save_format_history"] as Array).has(2), "the format history records the format it came from")
+
+	# Total, not "fill when missing": every one of these keys is present but the wrong type.
+	var dirty: Dictionary = {
+		"save_version": 2,
+		"player": {
+			"skills": {"woodcutting": {"xp": 10.0, "level": 1}},
+			"ability_loadout": "power_strike",
+			"combat_strategies": "not a list",
+			"combat_strategies_by_area": [],
+			"combat_strategy_active": {"name": "Default"},
+			"event_policies": "safe",
+			"momentum": 7,
+		},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	var repaired: Dictionary = SaveManager.migrate_save(dirty, 2)
+	var rp: Dictionary = repaired["player"]
+	var unrepaired: String = _wrongly_shaped(rp, promised)
+	_ok(unrepaired == "", "a wrongly-typed value is repaired, not passed through (still wrong: %s)"
+		% (unrepaired if unrepaired != "" else "none"))
+	if unrepaired != "":
+		return
+	_ok((rp["ability_loadout"] as Array).is_empty(), "a String loadout is repaired to an empty list")
+	_eq((rp["combat_strategies"] as Array).size(), 1, "a non-list strategies value is replaced by the default preset")
+	_ok(ContentValidator.check_strategy_record((rp["combat_strategies"] as Array)[0] as Dictionary).is_empty(),
+		"the replacement preset is itself a valid strategy record")
+	_ok((rp["combat_strategies_by_area"] as Dictionary).is_empty(), "a list area map is repaired to {}")
+	_eq(rp["combat_strategy_active"], "Default", "an object active-strategy is repaired to the stored preset's name")
+	_eq(rp["event_policies"], {"risk": "safe", "bonus": "safe"}, "a String policies value is repaired to the safe defaults")
+	_ok((rp["momentum"] as Dictionary).is_empty(), "a number momentum value is repaired to {}")
+	_eq(SaveManager.migrate_save(repaired, 2), repaired, "migrating an already-migrated save changes nothing")
+
+	# …and none of that may cost the player a choice the v2 save legitimately already held.
+	var custom: Dictionary = {
+		"save_version": 2,
+		"player": {
+			"skills": {"woodcutting": {"xp": 10.0, "level": 1}},
+			"ability_loadout": ["power_strike"],
+			"combat_strategies": [{"name": "Boss", "ability_loadout": [], "food_threshold": 0.5,
+				"special_bias": "eager", "protection_prayer_auto": ""}],
+			"combat_strategies_by_area": {"crypt": "Boss"},
+			"combat_strategy_active": "Boss",
+		},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	var kept: Dictionary = SaveManager.migrate_save(custom, 2)["player"]
+	var clobbered: String = _wrongly_shaped(kept, promised)
+	_ok(clobbered == "", "a save that already has the keys keeps them in shape (wrong: %s)"
+		% (clobbered if clobbered != "" else "none"))
+	if clobbered != "":
+		return
+	_eq(kept["ability_loadout"], ["power_strike"], "a real loadout is carried through, not overwritten")
+	_eq(str((kept["combat_strategies"] as Array)[0].get("name", "")), "Boss", "a real strategy preset is carried through")
+	_eq(kept["combat_strategies_by_area"], {"crypt": "Boss"}, "an area binding is carried through")
+	_eq(kept["combat_strategy_active"], "Boss", "the active strategy the player chose is carried through")
+
+	# The chain must not regress: a v1 save still walks all the way to the current version.
+	var legacy: Dictionary = {
+		"version": "1.4.0",
+		"player": {"skills": {"woodcutting": {"xp": 1000.0, "level": 12}}, "gp": 999.0},
+		"bank": {"items": {}},
+		"equipment": {"slots": {}},
+	}
+	var chain: Dictionary = SaveManager.migrate_save(legacy, 1)
+	_eq(int(chain.get("save_version", 0)), SaveManager.SAVE_VERSION,
+		"a v1 save migrates all the way to the current version")
+	var lp: Dictionary = chain["player"]
+	var chain_wrong: String = _wrongly_shaped(lp, promised)
+	_ok(chain_wrong == "", "a v1 save gains every promised key on the way through (wrong: %s)"
+		% (chain_wrong if chain_wrong != "" else "none"))
+	if chain_wrong != "":
+		return
+	var history: Array = lp["save_format_history"]
+	_eq(history, [1, 2, 3], "the format history is chronological (1 -> 2 -> 3)")
+
+	# The end the migration exists for: a v2 file on disk loads into the live singletons already
+	# carrying the combat keys, and is written back at the new version.
+	var files: Dictionary = TestSupport.backup_save_files()
+	var snapshot: Dictionary = SaveManager.build_save_data()
+	var on_disk: Dictionary = v2.duplicate(true)
+	var f := FileAccess.open(SaveManager.SAVE_PATH, FileAccess.WRITE)
+	if f == null:
+		_ok(false, "could open the save file for the v2 load test")
+		return
+	f.store_string(JSON.stringify(on_disk, "\t"))
+	f.close()
+	_ok(SaveManager.load_game(), "a v2 save file loads")
+	_eq(int(SaveManager.detect_version(SaveManager._read_json(SaveManager.SAVE_PATH))), 3,
+		"the migrated save is written back to disk at version 3")
+	_eq(PlayerData.combat_strategies.size(), 1, "the loaded player has one strategy preset")
+	_eq(PlayerData.combat_strategy_active, "Default", "the loaded player is on the default preset")
+	_ok(PlayerData.ability_loadout.is_empty(), "the loaded player has no slotted abilities")
+	_ok((PlayerData.combat_strategies[0] as Dictionary).get("name", "") == "Default",
+		"the preset the loaded player has is the default one")
+	TestSupport.restore_snapshot(snapshot, files)
+
+## Names the promised keys a migrated player block is missing or holding at the wrong type, or ""
+## when it is in the promised shape. One shared check for every case in
+## test_migrate_2_to_3_defaults, because a cast on a mistyped value is a hard error that silently
+## skips the rest of a suite — a broken migration would read as fewer checks, not as a failure.
+func _wrongly_shaped(player: Variant, promised: Dictionary) -> String:
+	if typeof(player) != TYPE_DICTIONARY:
+		return "player block is not an object"
+	var wrong: Array = []
+	for key in promised.keys():
+		if not (player as Dictionary).has(key):
+			wrong.append("%s (absent)" % key)
+		elif typeof((player as Dictionary)[key]) != int(promised[key]):
+			wrong.append("%s (%s)" % [key, type_string(typeof((player as Dictionary)[key]))])
+	return ", ".join(wrong)
+
 func _test_malformed_save_rejected() -> void:
 	_heading("Malformed saves are rejected, not loaded")
 	var cases: Array = [
@@ -1972,6 +2654,1076 @@ func _test_game_modes() -> void:
 	_ok(PlayerData.get_level_cap("woodcutting") == XPTable.MAX_LEVEL, "standard mode caps nothing")
 	PlayerData.game_mode = saved_mode
 	BankManager.purchased_slots = saved_slots
+## Task 2 pin: build_theme() must return a Theme with the ember display/text fonts
+## registered (missing files fall back to the default font, never crash).
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_identity_theme_builds() -> void:
+	_heading("Identity theme")
+	var theme: Theme = UIStyle.build_theme()
+	_ok(theme != null, "build_theme must return a Theme")
+	_ok(theme != null and theme.has_font("display", ""), "display font registered")
+	_ok(theme != null and theme.has_font("text", ""), "text font registered")
+
+## Task 3 pin: surface_box() uses 9-slice art when present, StyleBoxFlat otherwise.
+## Missing art must never break the theme — it falls back to today's flat box.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_surface_box_falls_back() -> void:
+	_heading("Identity surfaces")
+	var sb: StyleBox = UIStyle.surface_box("nonexistent_kind_xyz")
+	_ok(sb is StyleBoxFlat, "missing art must fall back to StyleBoxFlat")
+
+## Task 6a pin: the files in assets/ui/ are old-scheme navy art, not ember art, so the art branch
+## is opt-in. Off by default the warm code-drawn surfaces render even though the art is on disk;
+## on, the box has to be a real 9-slice — the four texture margins carry the token value, because
+## a box with zero texture margins stretches the image instead of slicing it.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_surface_box_uses_flat_by_default() -> void:
+	_heading("Identity surfaces")
+	UITokens.NINE_SLICE_ART_ENABLED = false
+	_ok(UIStyle.surface_box("panel") is StyleBoxFlat,
+		"with the art flag off the warm flat box is used even though panel_9slice.png exists")
+	if not ResourceLoader.exists("res://assets/ui/panel_9slice.png"):
+		UITokens.NINE_SLICE_ART_ENABLED = false
+		return
+	UITokens.NINE_SLICE_ART_ENABLED = true
+	var art = UIStyle.surface_box("panel")
+	_ok(art is StyleBoxTexture, "enabling the flag consumes assets/ui/<kind>_9slice.png")
+	if art is StyleBoxTexture:
+		var m: float = float(UITokens.NINE_SLICE_MARGINS.get("panel", 12))
+		_eq(art.texture_margin_left, m, "left texture margin slices the art")
+		_eq(art.texture_margin_right, m, "right texture margin slices the art")
+		_eq(art.texture_margin_top, m, "top texture margin slices the art")
+		_eq(art.texture_margin_bottom, m, "bottom texture margin slices the art")
+	UITokens.NINE_SLICE_ART_ENABLED = false
+
+## Task 4 pin: Motion helpers are no-ops when reduced motion is on, and the floater
+## pool reuses hidden Labels instead of growing without bound (never queue_free).
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_motion_reduced_disables() -> void:
+	_heading("Identity motion")
+	Motion.force_reduced = true
+	var c := Control.new()
+	Motion.fade_rise(c)
+	_ok(c.modulate.a == 1.0, "reduced motion must leave alpha untouched")
+	Motion.force_reduced = false
+	c.free()
+
+func test_floater_pool_bounded() -> void:
+	var parent := Control.new()
+	for i in 40:
+		Motion.spawn_floater(parent, "1", Color.WHITE)
+	_ok(parent.get_child_count() <= 12, "floater pool must stay bounded")
+	parent.free()
+
+## Task 5 review pin: a bar is built by a factory and parented by the caller, so tween_bar almost
+## always sees it before it is in the tree, where no tween can be created. The value must be right
+## immediately (this func is a no-op under reduced motion, so the tween must never be what sets it)
+## and the glide must be armed rather than dropped.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_tween_bar_defers_until_in_tree(host: Node) -> void:
+	_heading("Identity motion")
+	var holder := Control.new()
+	host.add_child(holder)
+	var bar := ProgressBar.new()
+	bar.max_value = 100.0
+	bar.value = 0.0
+	Motion.tween_bar(bar, 60.0)
+	_ok(is_equal_approx(bar.value, 60.0),
+		"an off-tree bar is already at its value (%.1f)" % bar.value)
+	_ok(bar.get_signal_connection_list("tree_entered").size() == 1,
+		"the glide is armed on tree_entered instead of being dropped")
+	# The armed one-shot has to actually run, so the value is knocked back to 0 the way a live
+	# caller would. Only a running tween can move it off 0 again; a snap would leave it there.
+	# The leading frame is what makes this deterministic: SceneTree runs process_timers before
+	# process_tweens, so a timer alone can expire before the tween's first step. A frame boundary
+	# guarantees at least one step, and the timer after it gives the glide room to travel.
+	bar.value = 0.0
+	holder.add_child(bar)
+	await host.get_tree().process_frame
+	await host.get_tree().create_timer(0.12).timeout
+	await host.get_tree().process_frame
+	_ok(bar.value > 0.0 and bar.value <= 60.0,
+		"the deferred glide runs once the bar is in the tree (bar has moved to %.2f of 60)" % bar.value)
+	_ok(bar.get_signal_connection_list("tree_entered").is_empty(),
+		"the one-shot is spent, so re-parenting cannot stack a second glide")
+	holder.queue_free()
+
+## Task 5 review pin: the pulse has to pivot on the control's centre. The HP bar pulses on the
+## frame it is added, when `size` is still (0,0), so a pivot read only at call time lands in the
+## corner and the bar breathes lopsided. The pivot is re-read on every lap of the loop, which also
+## covers a window resize moving the centre mid-pulse.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_pulse_sets_center_pivot(host: Node) -> void:
+	_heading("Identity motion")
+	var holder := Control.new()
+	host.add_child(holder)
+	var laid_out := Control.new()
+	laid_out.custom_minimum_size = Vector2(120, 24)
+	holder.add_child(laid_out)
+	laid_out.size = Vector2(120, 24)
+	Motion.pulse(laid_out)
+	_ok(laid_out.pivot_offset == laid_out.size * 0.5,
+		"a pulsing control pivots on its centre (%s)" % laid_out.pivot_offset)
+	# The case that was broken: pulsed at size zero, measured a frame later.
+	var late := Control.new()
+	holder.add_child(late)
+	late.size = Vector2.ZERO
+	Motion.pulse(late)
+	late.size = Vector2(200, 40)
+	await host.get_tree().process_frame
+	await host.get_tree().process_frame
+	_ok(late.pivot_offset == late.size * 0.5,
+		"the pulse re-reads the size once the control is laid out (%s of %s)" % [late.pivot_offset, late.size])
+	holder.queue_free()
+
+## Task 1 pin: abilities.json is a registry like every other data file, and an unknown id must
+## come back empty rather than crashing a loadout screen that asks for a stale slot.
+## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+func test_abilities_load() -> void:
+	_heading("Combat abilities")
+	var ab: Dictionary = DataLoader.get_ability("power_strike")
+	_ok(not ab.is_empty(), "power_strike must exist")
+	_ok(DataLoader.get_ability("no_such_ability") == {}, "unknown id returns {}")
+	_ok(DataLoader.abilities.size() == 8, "the ability table loaded (%d abilities)" % DataLoader.abilities.size())
+
+## Task 2 pin: ContentValidator is the ONLY thing standing between abilities.json and a silent
+## no-op ability in the live engine. Each enumerated rejection gets its OWN fixture that differs
+## from an otherwise-valid record by exactly one defect, and asserts the validator reported exactly
+## ONE failure — a catch-all assertion stays green when a single check is deleted.
+func test_ability_validation_rejects() -> void:
+	_heading("Ability + strategy validation")
+	var errs: Array = ContentValidator.check_ability_record(
+		{"id": "bad", "effect": {"nope": 1.0}, "trigger_chance": 150.0, "cooldown_attacks": -1})
+	_ok(not errs.is_empty(), "unknown effect + bad ranges must error")
+
+	# The fixture bases must exist. An empty base errors on every check at once, which would make
+	# every "exactly one failure" assertion below pass for the wrong reason.
+	var gore: Dictionary = DataLoader.get_ability("gore")
+	_ok(not gore.is_empty(), "gore must exist (the status_duration fixtures are built from it)")
+	var power_strike: Dictionary = DataLoader.get_ability("power_strike")
+	_ok(not power_strike.is_empty(), "power_strike must exist (the stray status_duration fixture is built from it)")
+
+	var base: Dictionary = {
+		"id": "fixture", "name": "Fixture", "description": "d", "style": "melee",
+		"req_levels": {"attack": 10}, "unlock": "", "effect": {"max_hit_percent": 5.0},
+		"trigger_chance": 10.0, "cooldown_attacks": 2,
+	}
+	_ok(ContentValidator.check_ability_record(base).is_empty(),
+		"a well-formed ability validates (%s)" % _failure_text(ContentValidator.check_ability_record(base)))
+	_one_error(ContentValidator.check_ability_record, base, {"id": ""}, "a record with no id")
+	_one_error(ContentValidator.check_ability_record, base, {"style": "psychic"},
+		"a style outside melee/ranged/magic/any")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": 5.0},
+		"a non-object effect")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": {"max_hit_percent": "lots"}},
+		"a non-numeric effect value")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": 5.0},
+		"a non-object req_levels")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": {"attack": 0}},
+		"a req_levels value below 1")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": {"attack": 1.5}},
+		"a non-integer req_levels value")
+	_one_error(ContentValidator.check_ability_record, base, {"req_levels": {"nope_skill": 5}},
+		"an unknown req_levels skill", "missing_reference")
+	_one_error(ContentValidator.check_ability_record, base, {"trigger_chance": null},
+		"a missing trigger_chance")
+	_one_error(ContentValidator.check_ability_record, base, {"trigger_chance": 0.0},
+		"a trigger_chance of 0")
+	_one_error(ContentValidator.check_ability_record, base, {"cooldown_attacks": null},
+		"a missing cooldown_attacks")
+	_one_error(ContentValidator.check_ability_record, base, {"cooldown_attacks": -1},
+		"a negative cooldown_attacks")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": {"unknown_effect": 1.0}},
+		"an unknown effect key")
+	_one_error(ContentValidator.check_ability_record, base, {"effect": {}},
+		"an empty effect")
+	# status_duration is conditional in both directions, and a duration of 0 expires instantly.
+	_one_error(ContentValidator.check_ability_record, gore, {"status_duration": null},
+		"apply_status without status_duration")
+	_one_error(ContentValidator.check_ability_record, gore, {"status_duration": 0.0},
+		"a status_duration of 0")
+	_one_error(ContentValidator.check_ability_record, power_strike, {"status_duration": 3.0},
+		"status_duration without apply_status")
+	_one_error(ContentValidator.check_ability_record, gore, {"effect": {"apply_status": "not_a_status"}},
+		"an unknown apply_status", "missing_reference")
+
+	var shipped: Array = []
+	for ability_id in DataLoader.abilities.keys():
+		shipped.append_array(ContentValidator.check_ability_record(DataLoader.abilities[ability_id]))
+	_ok(shipped.is_empty(), "every shipped ability validates (%s)" % _failure_text(shipped))
+
+	var sbase: Dictionary = {"name": "Boss", "ability_loadout": ["power_strike"],
+		"food_threshold": 0.5, "special_bias": "eager", "protection_prayer_auto": ""}
+	_ok(ContentValidator.check_strategy_record(sbase).is_empty(),
+		"a well-formed strategy validates (%s)" % _failure_text(ContentValidator.check_strategy_record(sbase)))
+	_one_error(ContentValidator.check_strategy_record, sbase, {"name": ""}, "a strategy with no name")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"ability_loadout": "power_strike"},
+		"a non-array ability_loadout")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"ability_loadout": ["nope_ability"]},
+		"an unknown ability in the loadout", "missing_reference")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"food_threshold": 1.5},
+		"a food_threshold above 1")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"food_threshold": -0.1},
+		"a food_threshold below 0")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"food_threshold": null},
+		"a missing food_threshold")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"special_bias": "reckless"},
+		"a special_bias outside eager/normal/hold")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"protection_prayer_auto": "not_a_prayer"},
+		"an unknown protection_prayer_auto", "missing_reference")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"protection_prayer_auto": 3},
+		"a non-string protection_prayer_auto")
+	_one_error(ContentValidator.check_strategy_record, sbase, {"protection_prayer_auto": null},
+		"a missing protection_prayer_auto")
+
+# =========================================================================
+#  Task 3 — abilities in the live engine
+# =========================================================================
+
+## Task 3 pin. The plan's sketch ("cooldown 4 over 8 attacks fires at most twice") is seed
+## dependent and goes flaky across engine versions, so the cooldown GATE is what gets asserted: a
+## non-zero counter blocks the roll on every attack, the counter drains by one each attack, and the
+## very same pinned roll fires again the moment it reaches zero.
+func test_ability_cooldown_respected() -> void:
+	_heading("Ability cooldown gate")
+	_combat_levels_for_abilities(100)
+	var strike: Dictionary = DataLoader.get_ability("power_strike")
+	CombatManager.set_loadout(["power_strike"])
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "an unlocked ability is slotted")
+	var cooldown: int = int(strike.get("cooldown_attacks", 0))
+	var hit_seed: int = _seed_with_rolls(float(strike.get("trigger_chance", 0.0)), 0)
+	_ok(hit_seed > 0, "found a pinned seed whose first roll triggers Power Strike")
+
+	# A cooldown of N blocks the next N-1 attacks and releases on the Nth, because
+	# _player_attack spends the counter before it rolls.
+	CombatManager._ability_cooldowns["power_strike"] = 3
+	CombatManager._decrement_ability_cooldowns()
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), 2, "the counter drains by one on every player attack")
+	var blocked: int = 0
+	for _i in range(2):
+		CombatManager.seed_rng(hit_seed)
+		CombatManager._roll_abilities()
+		if CombatManager._last_ability_fired == "":
+			blocked += 1
+		CombatManager._decrement_ability_cooldowns()
+	_eq(blocked, 2, "a non-zero cooldown blocks the roll on every attack")
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), 0, "the counter reached zero")
+
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities()
+	_eq(CombatManager._last_ability_fired, "power_strike", "the same pinned roll fires at cooldown zero")
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), cooldown, "firing set cooldown_attacks")
+
+	# A fight must actually spend the counter, or the gate is only real in the test helper.
+	_ok(_start_test_fight(), "started a fight on the easiest open region")
+	CombatManager.set_loadout(["power_strike"])
+	_restore_test_fight(CombatManager.current_monster_id)
+	CombatManager._ability_cooldowns["power_strike"] = 3
+	CombatManager._player_attack()
+	_eq(int(CombatManager._ability_cooldowns["power_strike"]), 2,
+		"_player_attack spends a cooldown, blocked or not")
+	CombatManager.stop_combat("retreat")
+
+## The load-bearing offline-parity pin. Offline gains replay these same ticks from a seeded
+## stream, so the NUMBER of draws an attack takes is part of the balance contract, not a detail.
+## Each assertion compares CombatManager's stream against a second generator advanced the same
+## number of times: two generators from one seed cannot disagree, so the count is exact and cannot
+## go stale when the stream's values change.
+func test_ability_roll_count() -> void:
+	_heading("Ability roll count (offline parity)")
+	_combat_levels_for_abilities(100)
+	var strike_chance: float = float(DataLoader.get_ability("power_strike").get("trigger_chance", 0.0))
+	var venom_chance: float = float(DataLoader.get_ability("envenom").get("trigger_chance", 0.0))
+	# One chance has to cover the pair for a single miss-then-hit seed to exist; asserted rather
+	# than assumed, so a data edit fails here with a readable reason.
+	_approx(venom_chance, strike_chance, 0.0001, "the two fixture abilities share a trigger chance")
+	var hit_seed: int = _seed_with_rolls(strike_chance, 0)
+	var miss_then_hit: int = _seed_with_rolls(strike_chance, 1)
+	_ok(hit_seed > 0 and miss_then_hit > 0, "found pinned seeds for a hit and a miss-then-hit")
+
+	CombatManager.set_loadout([])
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities()
+	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 0), "an empty loadout draws nothing")
+
+	CombatManager.set_loadout(["power_strike", "envenom"])
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities()
+	_eq(CombatManager._last_ability_fired, "power_strike", "the first loadout entry that rolls high takes the attack")
+	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 1),
+		"a firing ability drew exactly once, so a second ability cannot fire on the same attack")
+
+	# A blocked entry is skipped WITHOUT a draw, so the survivor still sees the first draw.
+	CombatManager._ability_cooldowns["power_strike"] = 2
+	CombatManager.seed_rng(hit_seed)
+	CombatManager._roll_abilities()
+	_eq(CombatManager._last_ability_fired, "envenom", "the next off-cooldown entry takes a blocked attack")
+	_eq(CombatManager._rng.randi(), _stream_after_draws(hit_seed, 1), "a blocked entry consumed no randomness")
+
+	# A missed entry does spend its draw, so the pair costs exactly two.
+	CombatManager._ability_cooldowns.clear()
+	CombatManager.seed_rng(miss_then_hit)
+	CombatManager._roll_abilities()
+	_eq(CombatManager._last_ability_fired, "envenom", "a miss falls through to the next entry")
+	_eq(CombatManager._rng.randi(), _stream_after_draws(miss_then_hit, 2), "two rolled entries drew exactly twice")
+
+## An ability heal must never take the player past max HP: a fraction of a big hit on a wounded
+## character would otherwise print a nonsense HP total, and a negative one would be a heal that
+## drains.
+func test_ability_heal_caps() -> void:
+	_heading("Ability heal")
+	_combat_levels_for_abilities(100)
+	var max_hp: float = CombatManager._compute_max_hp()
+	CombatManager.player_hp = 1.0
+	CombatManager._apply_ability_heal(99999.0)
+	_eq(CombatManager.player_hp, max_hp, "an oversized ability heal clamps at max HP")
+	CombatManager.player_hp = max_hp * 0.5
+	CombatManager._apply_ability_heal(10.0)
+	_approx(CombatManager.player_hp, max_hp * 0.5 + 10.0, 0.001, "an ordinary heal adds exactly its amount")
+	CombatManager._apply_ability_heal(0.0)
+	_approx(CombatManager.player_hp, max_hp * 0.5 + 10.0, 0.001, "a zero heal changes nothing")
+	CombatManager._apply_ability_heal(-25.0)
+	_approx(CombatManager.player_hp, max_hp * 0.5 + 10.0, 0.001, "a negative heal never drains the player")
+	CombatManager.stop_combat("retreat")
+
+## The slot cap is the Defence gate, and set_loadout is the only door: an over-long request, a
+## locked ability and a stale id must all be dropped rather than trusted.
+func test_ability_slot_cap() -> void:
+	_heading("Ability slot cap and unlock gate")
+	var four: Array = ["power_strike", "flurry", "precision_shot", "immolate"]
+	_combat_levels_for_abilities(1)
+	_eq(CombatManager.ability_slot_cap(), 1, "Defence 1 allows a single slot")
+	CombatManager.set_loadout(four)
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "a four-ability request is clamped to the cap")
+
+	_combat_levels_for_abilities(26)
+	_eq(CombatManager.ability_slot_cap(), 2, "Defence 26 opens a second slot")
+	CombatManager.set_loadout(four)
+	_eq(CombatManager.active_loadout, ["power_strike", "flurry"] as Array[String],
+		"the clamp keeps the order the abilities were offered in")
+
+	_combat_levels_for_abilities(100)
+	_eq(CombatManager.ability_slot_cap(), 4, "the cap never exceeds four")
+	CombatManager.set_loadout(four)
+	_eq(CombatManager.active_loadout.size(), 4, "all four fit at Defence 100")
+	_eq(PlayerData.ability_loadout, CombatManager.active_loadout, "set_loadout persisted the loadout")
+
+	# The loadout is saved state, so it has to survive the same round trip every other field does.
+	# Through JSON, because serialize() hands back the live array by reference — a save never sees
+	# that, and neither may this check.
+	var json_text: String = JSON.stringify(SaveManager.build_save_data(), "\t")
+	# A boot must not re-clamp a stored loadout against levels that have not loaded yet: get_level()
+	# answers 1 for every skill until PlayerData holds a save, so a clamp at that point computes a
+	# cap of 1 and silently deletes the player's other three slots. Nothing should touch the stored
+	# loadout here; only deserialize(), after PlayerData has real levels, is allowed to.
+	var loaded_skills: Dictionary = PlayerData.skills.duplicate(true)
+	PlayerData.skills.clear()
+	CombatManager._ready()
+	_eq(PlayerData.ability_loadout.size(), 4,
+		"a boot does not re-clamp a stored loadout against pre-load skill levels")
+	PlayerData.skills = loaded_skills
+	# Perturb BOTH halves before reloading: asserting PlayerData against an untouched
+	# CombatManager.active_loadout would pass even if deserialize re-derived nothing, which is the
+	# half that can actually break.
+	PlayerData.ability_loadout.clear()
+	CombatManager.set_loadout([])
+	SaveManager._apply(JSON.parse_string(json_text))
+	_eq(CombatManager.active_loadout, four as Array[String],
+		"deserialize re-derives the exact stored loadout, in order")
+	_eq(PlayerData.ability_loadout, CombatManager.active_loadout, "the saved and live loadouts agree")
+
+	_combat_levels_for_abilities(1)
+	PlayerData.set_level("magic", 1)
+	CombatManager.set_loadout(["immolate", "gore"])
+	_eq(CombatManager.active_loadout, ["gore"] as Array[String], "an ability below its req_level is not slotted")
+	CombatManager.set_loadout(["power_strike", "power_strike"])
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "a duplicated id occupies one slot")
+	CombatManager.set_loadout(["no_such_ability"])
+	_eq(CombatManager.active_loadout.size(), 0, "a stale id is dropped, not stored")
+	# A cooldown belongs to the ability, not to the slot, so removing an ability must not leave a
+	# counter that a later re-slot would silently inherit.
+	CombatManager.set_loadout(["flurry"])
+	CombatManager._ability_cooldowns["flurry"] = 3
+	CombatManager._ability_cooldowns["gore"] = 2
+	CombatManager.set_loadout(["flurry"])
+	_eq(CombatManager._ability_cooldowns.size(), 1, "re-slopping drops the cooldown of a removed ability")
+	_eq(int(CombatManager._ability_cooldowns["flurry"]), 3, "a still-slotted ability keeps its cooldown")
+
+## The panel's write path, driven the way a click drives it, and the finding Task 4's review
+## deferred to the UI: set_loadout drops a locked ability and trims past the cap without a word, so
+## a picker that showed what was ASKED for would advertise slots the player does not have. What the
+## panel shows is what CombatManager adopted, and a refused preset never becomes the active one.
+func test_combat_strategy_ui(host: Node) -> void:
+	_heading("Combat strategy UI")
+	var saved_skills: Dictionary = PlayerData.skills.duplicate(true)
+	var saved_strategies: Array = PlayerData.combat_strategies.duplicate(true)
+	var saved_active: String = str(PlayerData.combat_strategy_active)
+	var saved_loadout: Array = CombatManager.active_loadout.duplicate()
+	var panel: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
+	host.add_child(panel)
+	_combat_levels_for_abilities(1)
+	CombatManager.set_loadout([])
+	panel.call("_set_slot", 0, "power_strike")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "a filled slot reaches the live loadout")
+	var shown: Array[String] = []
+	for node in panel.find_children("*", "Label", true, false):
+		shown.append(str((node as Label).text))
+	_ok(shown.has("Power Strike"), "the panel shows the effective ability by name, not the requested id")
+
+	# active_loadout is handed out by reference and belongs to CombatManager, so the panel copies it.
+	var borrowed: Array = panel.call("_effective_loadout")
+	borrowed.append("flurry")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String],
+		"the panel's copy of the loadout cannot write back into CombatManager")
+
+	# A locked ability is refused, and the refusal is named rather than leaving a slot empty.
+	PlayerData.set_level("attack", 1)
+	panel.call("_set_slot", 0, "gore")
+	_eq(CombatManager.active_loadout.size(), 0, "an ability below its req_level never reaches the loadout")
+	_eq(", ".join(panel.call("_dropped_ids", ["gore"], CombatManager.ability_slot_cap())),
+		"Gore (not unlocked yet)", "the locked ability is reported by name")
+
+	# And so is one that is simply past the cap.
+	PlayerData.set_level("attack", 100)
+	panel.call("_set_slot", 0, "power_strike")
+	panel.call("_set_slot", 1, "flurry")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String], "Defence 1 still keeps a single slot")
+	_eq(", ".join(panel.call("_dropped_ids", ["power_strike", "flurry"], CombatManager.ability_slot_cap())),
+		"Flurry (past your 1 ability slots)", "the over-cap ability is reported as past the cap")
+	_eq(", ".join(panel.call("_loadout_with", 1, "power_strike")), "power_strike",
+		"re-picking an ability already in the loadout does not fill a second slot with it")
+
+	# Two refusals in a row: neither consumed a slot, so the third ability still takes the one
+	# slot and the report must not call it a cap refusal. An index-based count gets this wrong.
+	PlayerData.set_level("attack", 1)
+	PlayerData.set_level("magic", 1)
+	PlayerData.set_level("strength", 100)
+	var two_locked_then_one: Array = ["gore", "immolate", "flurry"]
+	CombatManager.set_loadout(two_locked_then_one)
+	_eq(CombatManager.active_loadout, ["flurry"] as Array[String],
+		"a refusal takes no slot, so the next unlocked ability still takes the only one")
+	_eq(", ".join(panel.call("_dropped_ids", two_locked_then_one, CombatManager.ability_slot_cap())),
+		"Gore (not unlocked yet), Immolate (not unlocked yet)",
+		"entries refused after another refusal are not misreported as past the cap")
+
+	# A preset the validator refuses keeps the previous one running, so the dropdown must not be
+	# left reporting a decision the game did not make.
+	var good_name: String = str((PlayerData.combat_strategies[0] as Dictionary).get("name", ""))
+	var active_before: String = str(PlayerData.combat_strategy_active)
+	PlayerData.combat_strategies.append({"name": "Refused", "ability_loadout": ["no_such_ability"],
+		"food_threshold": 0.0, "special_bias": "normal", "protection_prayer_auto": ""})
+	panel.call("_adopt_strategy", "Refused")
+	_eq(str(PlayerData.combat_strategy_active), active_before,
+		"a preset the validator refuses does not become the active strategy")
+	panel.call("_adopt_strategy", good_name)
+	_eq(str(PlayerData.combat_strategy_active), good_name, "an accepted preset is adopted")
+
+	PlayerData.skills = saved_skills
+	PlayerData.combat_strategies = saved_strategies
+	PlayerData.combat_strategy_active = saved_active
+	CombatManager.set_loadout(saved_loadout)
+	panel.queue_free()
+
+## The three effects that need a live number, exercised through the real attack path. The seed is
+## SEARCHED, not assumed: every assertion is a fact about the engine, so a change in the stream
+## shows up as "no seed found" instead of turning into a flake. The search only says an effect
+## happens SOMEWHERE in 400 seeds, so each finding is then replayed and the ability the engine
+## names is asserted — that credits every effect to its own id instead of to "something fired".
+func test_ability_effects_in_fight() -> void:
+	_heading("Abilities on a landed hit")
+	# A status that carries no per-tick damage marks the target and expires having done nothing,
+	# which is the one way an apply_status ability can look alive and be inert. Data-driven, so a
+	# future edit that drops the value anywhere in the table fails here.
+	var inert: Array[String] = []
+	for ability_id in DataLoader.abilities.keys():
+		var rec: Dictionary = DataLoader.abilities[ability_id]
+		if (rec.get("effect", {}) as Dictionary).has("apply_status") \
+				and float(rec.get("status_damage_per_tick", 0.0)) <= 0.0:
+			inert.append(str(ability_id))
+	_ok(inert.is_empty(), "every apply_status ability ships a per-tick damage value (inert: %s)" % str(inert))
+	_combat_levels_for_abilities(100)
+	if not _start_test_fight():
+		_ok(false, "started a fight on the easiest open region")
+		return
+	CombatManager.set_loadout(["flurry", "gore", "blood_pact"])
+	var monster: String = CombatManager.current_monster_id
+	var dealt: Array = []
+	var capture := func(d: int, _is_crit: bool) -> void: dealt.append(d)
+	EventBus.player_attacked.connect(capture)
+	var flurry_seed: int = -1
+	var gore_seed: int = -1
+	var gore_duration: float = -1.0
+	var pact_seed: int = -1
+	var pact_gain: float = -1.0
+	var pact_damage: float = 0.0
+	for candidate in range(1, 400):
+		_restore_test_fight(monster)
+		dealt.clear()
+		CombatManager.seed_rng(candidate)
+		CombatManager._player_attack()
+		if flurry_seed < 0 and CombatManager._ability_interval_percent > 0.0:
+			flurry_seed = candidate
+		if gore_seed < 0 and CombatManager.monster_effects.size() == 1 \
+				and str(CombatManager.monster_effects[0].id) == "bleed":
+			gore_seed = candidate
+			gore_duration = CombatManager.monster_effects[0].duration
+		if pact_seed < 0 and dealt.size() == 1 and CombatManager.player_hp > 1.0:
+			pact_seed = candidate
+			pact_gain = CombatManager.player_hp - 1.0
+			pact_damage = float(dealt[0])
+		if flurry_seed > 0 and gore_seed > 0 and pact_seed > 0:
+			break
+	EventBus.player_attacked.disconnect(capture)
+
+	_ok(flurry_seed > 0, "Flurry holds its speedup for the next swing")
+	_ok(gore_seed > 0, "Gore applied bleed to the monster on a landed hit")
+	if gore_seed > 0:
+		_eq(_replay_attack(monster, gore_seed), "gore", "the pinned bleed seed is attributed to Gore")
+		_approx(gore_duration, float(DataLoader.get_ability("gore").get("status_duration", 0.0)), 0.001,
+			"the status lasts the record's status_duration")
+		# The damage is read off the status tick, not off monster_hp. An endless fight replaces a
+		# bleed-killed monster at full HP (CombatManager._tick_effects -> _on_monster_death), so an HP
+		# comparison only holds on the runs where the monster happens to survive — this check used to
+		# go red exactly when the DOT worked. Stepped with two whole intervals plus half of one, so
+		# the remainder must deal nothing and this pins "once per tick_interval" rather than a flat
+		# rate. The expected figure comes from the ability record, so a status that never received
+		# status_damage_per_tick returns 0 and fails here. The replay above is the same pinned seed as
+		# the search iteration, so monster_effects is that one bleed.
+		var bleed: StatusEffect = CombatManager.monster_effects[0]
+		var per_tick: float = float(DataLoader.get_ability("gore").get("status_damage_per_tick", 0.0))
+		_approx(bleed.tick(bleed.tick_interval * 2.5), per_tick * 2.0, 0.001,
+			"the bleed deals its per-tick damage once per tick_interval")
+	_ok(pact_seed > 0, "Blood Pact healed a wounded player on a landed hit")
+	if pact_seed > 0:
+		_eq(_replay_attack(monster, pact_seed), "blood_pact",
+			"the pinned heal seed is attributed to Blood Pact")
+		var frac: float = float(DataLoader.get_ability("blood_pact").get("effect", {})
+			.get("heal_on_hit_fraction", 0.0))
+		_approx(pact_gain, pact_damage * (frac + ModifierManager.get_life_steal() / 100.0), 0.001,
+			"the heal is heal_on_hit_fraction of the damage dealt, not a percent of it")
+
+	# The held speedup has to reach the interval, not just a variable: _tick_fighting recomputes
+	# the interval from ModifierManager every tick, so a buff left in place would be overwritten.
+	if flurry_seed > 0:
+		CombatManager.set_loadout(["flurry"])
+		_restore_test_fight(monster)
+		CombatManager.player_hp = CombatManager._compute_max_hp()
+		CombatManager.tick(0.01)
+		var baseline: float = CombatManager.player_attack_interval
+		CombatManager.seed_rng(flurry_seed)
+		CombatManager._player_attack()
+		_eq(CombatManager._last_ability_fired, "flurry", "the pinned speedup seed is attributed to Flurry")
+		CombatManager.tick(0.01)
+		_ok(CombatManager.player_attack_interval < baseline,
+			"the next tick's swing is faster than the ModifierManager baseline")
+	CombatManager.stop_combat("retreat")
+
+	# The remaining suites assume a fresh character.
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+
+# =========================================================================
+#  Task 4 — strategy presets in the live engine
+# =========================================================================
+
+## special_bias is a THRESHOLD change, never a draw change, and that is the load-bearing part: Task
+## 5's simulator has to reproduce the live stream draw for draw, so a suppression that skipped the
+## roll would be a silent desync. Asserted as BOTH halves — no special fired, and the stream still
+## advanced by exactly one value — so a future "fix" that short-circuits the draw fails here.
+func test_special_bias_hold() -> void:
+	_heading("Strategy special bias: hold")
+	var guaranteed: Dictionary = {"id": "guaranteed", "trigger_chance": 100.0}
+	CombatManager.set_strategy(_strategy({"name": "Hold", "special_bias": "hold"}))
+	var fired: int = 0
+	for seed_value in range(1, 51):
+		CombatManager.seed_rng(seed_value)
+		if not CombatManager._roll_special_attack(guaranteed).is_empty():
+			fired += 1
+	_eq(fired, 0, "hold suppresses a guaranteed-chance weapon special on all 50 seeds")
+
+	CombatManager.seed_rng(7)
+	CombatManager._roll_special_attack(guaranteed)
+	_eq(CombatManager._rng.randi(), _stream_after_draws(7, 1),
+		"a held special still spends exactly one draw, so the offline stream is unchanged")
+
+	# The other side of the same coin: normal must be the identity, or every existing fight
+	# changes because a strategy exists.
+	CombatManager.set_strategy(_strategy({"name": "Normal", "special_bias": "normal"}))
+	CombatManager.seed_rng(7)
+	_ok(not CombatManager._roll_special_attack(guaranteed).is_empty(),
+		"normal fires a 100% special on the very seed hold suppressed")
+
+## The arithmetic on its own, assertable without a fight, and the exact shape Task 5 mirrors.
+func test_special_bias_arithmetic() -> void:
+	_heading("Strategy special bias: arithmetic")
+	_eq(CombatManager._biased_special_chance(80.0, "eager"), 100.0, "eager doubles 80% and caps at 100")
+	_eq(CombatManager._biased_special_chance(30.0, "eager"), 60.0, "eager doubles a chance below the cap")
+	_eq(CombatManager._biased_special_chance(30.0, "normal"), 30.0, "normal is the identity")
+	_eq(CombatManager._biased_special_chance(30.0, "hold"), 0.0, "hold is a hard zero")
+	_eq(CombatManager._biased_special_chance(30.0, "reckless"), 30.0,
+		"an unrecognised bias falls back to the identity, not to zero")
+	_eq(CombatManager._biased_special_chance(30.0, ""), 30.0, "an empty bias is the identity too")
+
+## food_threshold only ever replaces the NUMBER the existing HP comparison is made against, so 0.0
+## has to be indistinguishable from having no strategies at all. Driven through the real _auto_eat()
+## and the real bank, and the fractions are derived from AUTO_EAT so a data edit fails here with a
+## readable reason instead of silently testing a threshold the tier table no longer has.
+func test_strategy_food_threshold() -> void:
+	_heading("Strategy food threshold")
+	_combat_levels_for_abilities(100)
+	PlayerData.settings["auto_eat_tier"] = 1
+	_ok(not bool(CombatManager.context.get("raid", false)), "no raid context, so the tier is the tier setting")
+	BankManager.add_item_guaranteed("shrimp", 20)
+
+	var tier_threshold: float = float(CombatManager.AUTO_EAT[1]["threshold"]) / 100.0
+	CombatManager.set_strategy(_strategy({"name": "Tier default", "food_threshold": 0.0}))
+	_ok(_auto_eat_at(tier_threshold - 0.05), "food_threshold 0.0 eats below the tier-1 threshold")
+	_ok(not _auto_eat_at(tier_threshold + 0.05), "food_threshold 0.0 leaves the player alone above the tier default")
+
+	CombatManager.set_strategy(_strategy({"name": "Finicky", "food_threshold": 0.5}))
+	_ok(_auto_eat_at(0.45), "a 0.5 food_threshold eats at 45% of max HP, where tier 1 would not")
+	_ok(not _auto_eat_at(0.6), "a 0.5 food_threshold leaves the player alone above half HP")
+
+	# The strategy replaces the tier threshold; AUTO_EAT_THRESHOLD_PERCENT still lands on top of
+	# whatever the threshold ended up being, exactly as it does with no strategy at all. 0.6 sits
+	# between the two answers (50% alone refuses it, 50%+20 accepts it), so this fails if the
+	# modifier is dropped or applied before the override.
+	ModifierManager.register("test:auto_eat_threshold",
+		{ModifierKeys.AUTO_EAT_THRESHOLD_PERCENT: 20.0}, "generic", "test")
+	_ok(_auto_eat_at(0.6), "the threshold modifier lands on top of the strategy threshold (50% + 20)")
+	CombatManager.set_strategy(_strategy({"name": "Tier default", "food_threshold": 0.0}))
+	_ok(_auto_eat_at(tier_threshold + 0.1), "the modifier widens the tier default too (20% + 20%)")
+	_ok(not _auto_eat_at(tier_threshold + 0.25), "the tier default plus the modifier is 40%, not 20%")
+	ModifierManager.unregister("test:auto_eat_threshold")
+	_ok(not _auto_eat_at(tier_threshold + 0.1), "removing the modifier puts the tier default back at 20%")
+
+	# Leave the shared state as the suite expects to find it.
+	PlayerData.settings["auto_eat_tier"] = 0
+	BankManager.remove_item("shrimp", BankManager.get_count("shrimp"))
+
+## set_strategy is the only door, so it is the only place a bad record can be refused. Each patch
+## is a DIFFERENT validator failure, and every one of them has to leave the live record, the saved
+## choice and the preset list exactly as they were.
+func test_set_strategy_rejects_invalid() -> void:
+	_heading("Strategy validation at the door")
+	_combat_levels_for_abilities(100)
+	var announced: Array[String] = []
+	var capture := func(strategy_name: String) -> void: announced.append(strategy_name)
+	EventBus.strategy_changed.connect(capture)
+	var good: Dictionary = _strategy({"name": "Boss", "ability_loadout": ["power_strike"],
+		"food_threshold": 0.4, "special_bias": "eager"})
+	CombatManager.set_strategy(good)
+	_eq(announced, ["Boss"] as Array[String], "an accepted strategy announces itself once")
+	_eq(CombatManager.active_loadout, ["power_strike"] as Array[String],
+		"the preset's ability_loadout went through the same set_loadout door as the ability UI")
+	_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.4,
+		"the live record is the preset, not a copy of its name")
+
+	for patch in [{"special_bias": "reckless"}, {"food_threshold": 1.5}, {"name": ""},
+			{"ability_loadout": ["nope_ability"]}, {"protection_prayer_auto": "not_a_prayer"}]:
+		var bad: Dictionary = good.duplicate(true)
+		for key in patch.keys():
+			bad[key] = patch[key]
+		CombatManager.set_strategy(bad)
+		_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.4,
+			"an invalid %s is refused and the previous strategy stays live" % str(patch.keys()[0]))
+		_eq(CombatManager.active_loadout, ["power_strike"] as Array[String],
+			"an invalid %s did not re-slot the loadout" % str(patch.keys()[0]))
+	_eq(announced.size(), 1, "a rejected strategy announces nothing")
+	_eq(str(PlayerData.combat_strategy_active), "Boss", "the saved choice still names the accepted preset")
+	var boss_entries: int = 0
+	for rec in PlayerData.combat_strategies:
+		if str((rec as Dictionary).get("name", "")) == "Boss":
+			boss_entries += 1
+	_eq(boss_entries, 1, "rejected presets are never stored, so the list holds one 'Boss'")
+	EventBus.strategy_changed.disconnect(capture)
+
+	# A corrupt save must not be able to reach the fight either. start_combat adopts a bound preset
+	# through the same door, so a record that fails validation is refused there too and the live
+	# strategy is the one the player had.
+	var corrupt: Dictionary = good.duplicate(true)
+	corrupt["name"] = "Corrupt"
+	corrupt["food_threshold"] = 5.0
+	PlayerData.combat_strategies.append(corrupt)
+	CombatManager.assign_strategy_to_area(str(_find_area()["id"]), "Corrupt")
+	_ok(_start_test_fight(), "entered a region whose stored preset no longer validates")
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Boss",
+		"a stored preset that fails validation never reaches the combat path")
+	CombatManager.stop_combat("retreat")
+	PlayerData.combat_strategies.erase(corrupt)
+	PlayerData.combat_strategies_by_area.clear()
+
+## The last two fields: an area binding resolved at combat start, and the protection prayer asked
+## for through PrayerManager — so its level gate and its two-prayer cap still decide, because a
+## preset may request the prayer and never force it past a rule the player is held to.
+func test_strategy_area_and_prayer() -> void:
+	_heading("Strategy area assignment and auto prayer")
+	var area: Dictionary = _find_area()
+	_ok(not area.is_empty(), "found an open region to bind a preset to")
+	if area.is_empty():
+		return
+	var area_id: String = str(area["id"])
+	PlayerData.set_level("prayer", 100)
+	CombatManager.set_strategy(_strategy({"name": "Region boss", "special_bias": "eager",
+		"protection_prayer_auto": "protect_from_melee"}))
+	CombatManager.assign_strategy_to_area(area_id, "Region boss")
+	_eq(str(PlayerData.combat_strategies_by_area.get(area_id, "")), "Region boss", "the preset is bound to the region")
+	_eq(str(CombatManager.strategy_for(area_id).get("special_bias", "")), "eager", "strategy_for resolves the region's preset")
+	CombatManager.assign_strategy_to_area("no_such_area", "no_such_preset")
+	_ok(not PlayerData.combat_strategies_by_area.has("no_such_area"), "an unknown preset name is not bound to a region")
+	CombatManager.assign_strategy_to_area(area_id, "")
+	_ok(not PlayerData.combat_strategies_by_area.has(area_id), "an empty name unbinds the region")
+	CombatManager.assign_strategy_to_area(area_id, "Region boss")
+	_eq(str(CombatManager.strategy_for("unbound_region").get("name", "")), "Region boss",
+		"an unbound region uses the live strategy")
+	# strategy_for hands out a COPY, and each of its THREE returns is pinned separately, because a
+	# pin that passes with or without the copy is worse than no pin: it hides the exact revert it
+	# looks like it is guarding. A caller editing a returned record in place would reach past
+	# set_strategy — and past the content validator behind it — straight into the live record.
+	var borrowed: Dictionary = CombatManager.strategy_for(area_id)
+	borrowed["food_threshold"] = 0.99
+	borrowed["special_bias"] = "hold"
+	_eq(float(CombatManager.strategy_for(area_id).get("food_threshold", -1.0)), 0.0,
+		"bound path: editing a borrowed record does not reach the stored preset")
+
+	# Unbound area: what is handed out is the LIVE record, so the assertion is against
+	# active_strategy itself. The nested list is appended IN PLACE, because assigning a whole new
+	# list to the copy's key would rebind that key alone and pass even under a shallow duplicate —
+	# this is what separates a deep copy from a shallow one.
+	var unbound: Dictionary = CombatManager.strategy_for("unbound_region")
+	unbound["name"] = "Renamed by a caller"
+	unbound["special_bias"] = "hold"
+	(unbound["ability_loadout"] as Array).append("power_strike")
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss",
+		"unbound path: editing the borrowed record does not reach the live record's name")
+	_eq(str(CombatManager.active_strategy.get("special_bias", "")), "eager",
+		"unbound path: editing the borrowed record does not reach the live record's bias")
+	_eq(CombatManager.active_strategy.get("ability_loadout", []), [] as Array,
+		"unbound path: the copy is deep, so a nested list cannot be appended to through it")
+
+	# Unresolvable binding — a preset an older build dropped, or a hand-edited save. The name loop
+	# finds nothing and the fallback hands out the live record, so this path had no biting coverage
+	# of its own and could be reverted to returning the live Dictionary unnoticed.
+	PlayerData.combat_strategies_by_area["stale_region"] = "Preset from an older build"
+	_eq(str(CombatManager.strategy_for("stale_region").get("name", "")), "Region boss",
+		"a binding that no longer resolves falls back to the live strategy")
+	var stale: Dictionary = CombatManager.strategy_for("stale_region")
+	stale["name"] = "Renamed by a caller"
+	stale["food_threshold"] = 0.99
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss",
+		"unresolvable path: editing the borrowed record does not reach the live record's name")
+	_eq(float(CombatManager.active_strategy.get("food_threshold", -1.0)), 0.0,
+		"unresolvable path: editing the borrowed record does not reach the live record's threshold")
+	PlayerData.combat_strategies_by_area.erase("stale_region")
+
+	# The auto-prayer is a SILENT no-op when it is ineligible. PrayerManager.toggle refuses an
+	# ineligible prayer by notifying the player, and a prayer the player never asked for by hand
+	# must not pop that message on every fight — so the notification stream itself is asserted, not
+	# just the absence of the activation.
+	var notified: Array[String] = []
+	var watch := func(text: String, _kind: String) -> void: notified.append(text)
+	EventBus.notification.connect(watch)
+	PrayerManager.deactivate_all()
+	PlayerData.set_level("prayer", 1)
+	notified.clear()
+	_ok(_start_test_fight(), "started a fight in the bound region")
+	_ok(not PlayerData.active_prayers.has("protect_from_melee"),
+		"a prayer the player has not unlocked is left alone")
+	_eq(notified.size(), 0,
+		"an ineligible auto-prayer says nothing (got %s)" % str(notified))
+	CombatManager.stop_combat("retreat")
+
+	PlayerData.set_level("prayer", 100)
+	notified.clear()
+	_ok(_start_test_fight(), "restarted the fight at the prayer's unlock level")
+	_ok(PlayerData.active_prayers.has("protect_from_melee"),
+		"combat start activated the strategy's protection prayer")
+	_ok(CombatManager._has_protection_prayer("melee"), "the strategy's prayer is live in the combat path")
+	_ok(notified.is_empty(), "an eligible auto-prayer activates silently, like a hand-set prayer")
+	CombatManager.stop_combat("retreat")
+
+	PrayerManager.deactivate_all()
+	_ok(PrayerManager.toggle("thick_skin"), "activated a first prayer")
+	_ok(PrayerManager.toggle("protect_from_ranged"), "activated a second prayer")
+	notified.clear()
+	_ok(_start_test_fight(), "started a fight with both prayer slots taken")
+	_eq(PlayerData.active_prayers.size(), PrayerManager.MAX_ACTIVE, "the two-prayer cap still holds")
+	_ok(not PlayerData.active_prayers.has("protect_from_melee"),
+		"the strategy's prayer is refused once both slots are full")
+	_eq(notified.size(), 0, "a full slot pair is also a silent no-op for the auto-prayer")
+	# The same refusals still TELL the player when a human asked for them, so asking first has not
+	# cost toggle its feedback: this is the path the strategy would have walked into.
+	notified.clear()
+	_ok(not PrayerManager.toggle("protect_from_magic"), "a third prayer is refused")
+	_eq(notified.size(), 1, "a hand-set third prayer still warns about the two-prayer cap")
+	notified.clear()
+	PlayerData.set_level("prayer", 1)
+	_ok(not PrayerManager.toggle("redemption"), "a prayer above the player's level is refused")
+	_eq(notified.size(), 1, "a locked prayer still warns about the level")
+	PlayerData.set_level("prayer", 100)
+	EventBus.notification.disconnect(watch)
+	CombatManager.stop_combat("retreat")
+	PrayerManager.deactivate_all()
+
+	# Entering the region adopts its preset; the record the combat path then reads is the adopted
+	# one, which is the only way "the region's preset applied" means anything.
+	CombatManager.set_strategy(_strategy({"name": "Plain", "special_bias": "normal"}))
+	_ok(_start_test_fight(), "entered the bound region with another strategy live")
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss", "combat start adopted the region's preset")
+	_eq(CombatManager._biased_special_chance(10.0, str(CombatManager.active_strategy.get("special_bias", ""))), 20.0,
+		"the adopted preset's bias is what the special roll now reads")
+	CombatManager.stop_combat("retreat")
+
+	# Persistence: the active record and the bindings survive the same round trip the loadout does.
+	var json_text: String = JSON.stringify(SaveManager.build_save_data(), "\t")
+	CombatManager.set_strategy(_strategy({"name": "Plain", "special_bias": "hold"}))
+	SaveManager._apply(JSON.parse_string(json_text))
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Region boss", "deserialize restores the saved strategy")
+	_eq(str(CombatManager.strategy_for(area_id).get("name", "")), "Region boss", "deserialize restores the area binding")
+
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	_eq(str(CombatManager.active_strategy.get("name", "")), "Default", "a new game returns to the default preset")
+	_eq(PlayerData.combat_strategies_by_area.size(), 0, "a new game clears the area bindings")
+
+# =========================================================================
+#  Task 5 — monster passives in the live engine
+# =========================================================================
+
+## rage, veil and leech, each measured against the SAME fixture monster without it on the same
+## pinned seed, so the only thing that can explain a difference is the passive itself. The fixture
+## is installed in the data table for the length of the check and removed afterwards: no shipped
+## monster carries these yet, and editing game balance to test an engine path is not a test.
+## Every check is an EXACT figure rather than a direction, because the monster's rolls are held
+## still (a pinned seed, a fixed damage roll) and anything less would pass on a passive that did
+## the wrong amount of the right thing.
+func test_monster_passives() -> void:
+	_heading("Monster passives")
+	# KNOWN_MONSTER_PASSIVES is the only gate: ContentValidator rejects any passive id missing
+	# from it, so a passive the engine implements but the whitelist omits cannot ship in data.
+	for passive in ["regeneration", "rage", "veil", "leech"]:
+		_ok(CombatManager.KNOWN_MONSTER_PASSIVES.has(str(passive)),
+			"the content validator's whitelist admits '%s'" % str(passive))
+	var plain_id: String = _fixture_monster("plain", [])
+	var rage_id: String = _fixture_monster("rage", ["rage"])
+	var veil_id: String = _fixture_monster("veil", ["veil"])
+	var leech_id: String = _fixture_monster("leech", ["leech"])
+	var regen_id: String = _fixture_monster("regen", ["regeneration"])
+	var all_id: String = _fixture_monster("all", ["regeneration", "rage", "veil", "leech"])
+
+	# rage: the arithmetic on its own, because a fight can only show that rage bites, never that
+	# it bites in proportion to the wound. This is also the exact shape the simulator mirrors.
+	# _enemy_rage_multiplier reads the live monster, so the fight context is established first:
+	# the same two numbers have to give two answers depending on nothing but the record.
+	_restore_test_fight(rage_id)
+	_eq(CombatManager._enemy_rage_multiplier(400, 400), 1.0, "a full-health monster is not raging")
+	_eq(CombatManager._enemy_rage_multiplier(200, 400), 1.25, "half health is half the bonus")
+	_eq(CombatManager._enemy_rage_multiplier(0, 400), 1.5, "a monster on its last HP hits hardest")
+	_restore_test_fight(plain_id)
+	_eq(CombatManager._enemy_rage_multiplier(200, 400), 1.0,
+		"the control's damage does not scale at all with its wounds")
+
+	# ...and the wiring: same seed, same to-hit roll, same damage roll, only the multiplier left.
+	var plain_total: int = 0
+	var rage_total: int = 0
+	var landed: int = 0
+	for seed_value in range(1, 7):
+		var plain: Dictionary = _monster_swing(plain_id, 200, seed_value)
+		var raging: Dictionary = _monster_swing(rage_id, 200, seed_value)
+		if int(plain["damage"]) <= 0:
+			continue
+		landed += 1
+		_eq(int(raging["damage"]), int(floor(float(plain["damage"]) * 1.25)),
+			"seed %d: a monster at half health deals exactly 1.25x the control's hit" % seed_value)
+		plain_total += int(plain["damage"])
+		rage_total += int(raging["damage"])
+	_ok(landed >= 5, "the fixture landed on at least five of six seeds")
+	_ok(rage_total > plain_total, "a raging monster deals strictly more damage over the same hits")
+	# The whole point is the wound, so a monster that has taken nothing must pay the control's
+	# bill exactly. Same seed, full health on both sides.
+	_eq(int((_monster_swing(rage_id, 400, 3) as Dictionary)["damage"]),
+		int((_monster_swing(plain_id, 400, 3) as Dictionary)["damage"]),
+		"a raging monster at FULL health deals exactly what the control deals")
+
+	# veil: a flat bonus on the rating, so the same player accuracy is a lower hit chance.
+	_restore_test_fight(plain_id)
+	var plain_evasion: int = CombatManager._monster_evasion_for("melee")
+	var plain_chance: float = float(CombatManager.target_comparison().get("your_hit_chance_percent", 0.0))
+	_restore_test_fight(veil_id)
+	_eq(CombatManager._monster_evasion_for("melee"), plain_evasion + CombatManager.ENEMY_VEIL_BONUS,
+		"veil adds its flat bonus to the evasion rating")
+	_ok(float(CombatManager.target_comparison().get("your_hit_chance_percent", 100.0)) < plain_chance,
+		"a veiled monster lowers the player's hit chance against it")
+
+	# leech: a fraction of the damage it just dealt, and never past its own maximum.
+	var leech_hit: Dictionary = _monster_swing(leech_id, 200, 3)
+	_eq(int(leech_hit["monster_hp"]), 200 + int(floor(float(leech_hit["damage"]) * 0.25)),
+		"leech knits back a quarter of the damage the monster just dealt")
+	var capped: Dictionary = _monster_swing(leech_id, 397, 3)
+	_eq(int(capped["monster_hp"]), 400, "a leech heal can never take a monster past its maximum")
+	var plain_hit: Dictionary = _monster_swing(plain_id, 200, 3)
+	_eq(int(plain_hit["monster_hp"]), 200, "the control takes its hit and heals nothing")
+
+	# regeneration must behave exactly as it did, and all four have to coexist on one record:
+	# each is an independent branch off the same swing, and one of them gating another would
+	# silently disable it.
+	var regen_hit: Dictionary = _monster_swing(regen_id, 200, 3)
+	_eq(int(regen_hit["monster_hp"]), 208, "regeneration still heals 2% of max HP per own attack")
+	var all_hit: Dictionary = _monster_swing(all_id, 200, 3)
+	_eq(int(all_hit["monster_hp"]), 200 + 8 + int(floor(float(all_hit["damage"]) * 0.25)),
+		"all four passives apply to the same monster's swing")
+
+	# A fixture that outlives this check would reach the validator, the monster-table assertions
+	# and every "list the monsters" screen in the suite, so it is removed rather than left behind.
+	for id in [plain_id, rage_id, veil_id, leech_id, regen_id, all_id]:
+		DataLoader.monsters.erase(str(id))
+	CombatManager.stop_combat("retreat")
+
+## A monster record carrying `passives`, installed in the data table so the real attack path can be
+## driven against it. One id per tag rather than a shared one, because the checks hold several
+## fixtures at once and each has to still be there when its own assertion runs.
+func _fixture_monster(tag: String, passives: Array) -> String:
+	var id: String = "test:passive_%s" % tag
+	DataLoader.monsters[id] = {
+		"id": id, "name": "Passive Fixture", "combat_level": 1, "hitpoints": 400, "max_hit": 40,
+		"min_hit_percent": 0.0, "min_hit_flat": 0.0, "accuracy_rating": 1000000,
+		"attack_speed": 3.0, "attack_type": "melee", "damage_type": "normal",
+		"damage_reduction": 0.0, "melee_evasion": 10, "ranged_evasion": 10, "magic_evasion": 10,
+		"passives": passives, "loot_table": [], "respawn_time": 3.0, "can_be_stunned": true,
+		"is_immune_to_effects": false,
+	}
+	return id
+
+## One real _monster_attack() against a fixture held at a given HP, on a pinned seed, reporting
+## what the swing did. Returns {damage, monster_hp} so two worlds that differ only by a passive
+## can be compared exactly, without either of them having to survive the other's noise. The
+## fixture's accuracy rating is high enough that the swing always connects, and the player's HP is
+## topped up first, so a missed to-hit is the only thing that can make `damage` zero.
+func _monster_swing(monster_id: String, monster_hp: int, seed_value: int) -> Dictionary:
+	_restore_test_fight(monster_id)
+	CombatManager.monster_hp = monster_hp
+	CombatManager.player_hp = CombatManager._compute_max_hp()
+	CombatManager.seed_rng(seed_value)
+	var dealt: Array = []
+	var capture := func(d: int) -> void: dealt.append(d)
+	EventBus.monster_attacked.connect(capture)
+	CombatManager._monster_attack()
+	EventBus.monster_attacked.disconnect(capture)
+	var damage: int = int(dealt[0]) if dealt.size() == 1 else 0
+	return {"damage": damage, "monster_hp": CombatManager.monster_hp}
+
+## A complete strategy record with every field spelled out, patched by `overrides`. Written out
+## rather than layered on the engine's own default so a test can never pass because the field it
+## is checking happened to be missing.
+func _strategy(overrides: Dictionary = {}) -> Dictionary:
+	var record: Dictionary = {"name": "Test", "ability_loadout": [], "food_threshold": 0.0,
+		"special_bias": "normal", "protection_prayer_auto": ""}
+	for key in overrides.keys():
+		record[key] = overrides[key]
+	return record
+
+## Drives the real _auto_eat() with the player at `hp_fraction` of max HP and reports whether it
+## spent a food. Counted across every food rather than one item id, because _find_food()
+## deliberately picks whichever food covers the missing health.
+func _auto_eat_at(hp_fraction: float) -> bool:
+	var before: int = _food_in_bank()
+	CombatManager.player_hp = CombatManager._compute_max_hp() * hp_fraction
+	CombatManager._auto_eat()
+	return _food_in_bank() < before
+
+func _food_in_bank() -> int:
+	var total: int = 0
+	for item_id in BankManager.items.keys():
+		if str(DataLoader.get_item(str(item_id)).get("item_type", "")) == "food":
+			total += int(BankManager.items[item_id])
+	return total
+
+## Replays one pinned seed through the real attack path and returns the ability the engine named,
+## so a caller can assert WHICH ability the effect was credited to.
+func _replay_attack(monster_id: String, seed_value: int) -> String:
+	_restore_test_fight(monster_id)
+	CombatManager.seed_rng(seed_value)
+	CombatManager._player_attack()
+	return CombatManager._last_ability_fired
+
+## A fight on the easiest open region, so an ability check measures the ability and not the monster.
+func _start_test_fight() -> bool:
+	var area: Dictionary = _find_area()
+	if area.is_empty():
+		return false
+	return CombatManager.start_combat({"type": "area", "id": str(area["id"]),
+		"monsters": area["monsters"], "endless": true, "attack_style": "melee", "melee_style": "stab"})
+
+## Puts the fight back exactly as the setup left it. Every search trial has to start from
+## identical state or "found a seed that did X" proves nothing — including the monster's max HP,
+## which an endless kill in a previous trial would otherwise have replaced.
+func _restore_test_fight(monster_id: String) -> void:
+	CombatManager.state = CombatManager.State.FIGHTING
+	CombatManager.current_monster_id = monster_id
+	CombatManager.monster_max_hp = maxi(1, int(DataLoader.get_monster(monster_id).get("hitpoints", 10)))
+	CombatManager.monster_hp = CombatManager.monster_max_hp
+	CombatManager.player_hp = 1.0
+	CombatManager.player_effects.clear()
+	CombatManager.monster_effects.clear()
+	CombatManager._ability_cooldowns.clear()
+	CombatManager._last_ability_fired = ""
+	CombatManager._ability_interval_percent = 0.0
+
+## The shipped req_levels, satisfied at one level, so a loadout check measures the slot cap and not
+## the unlock gate it is not testing.
+func _combat_levels_for_abilities(defence_level: int) -> void:
+	for skill_id in ["attack", "strength", "ranged", "magic", "hitpoints"]:
+		PlayerData.set_level(skill_id, 100)
+	PlayerData.set_level("defence", defence_level)
+
+## The first seed whose draws are `leading_misses` misses then a hit against a `chance_percent`
+## trigger. Pinning the seed AND searching for the outcome is what makes a roll deterministic.
+func _seed_with_rolls(chance_percent: float, leading_misses: int) -> int:
+	var probe := RandomNumberGenerator.new()
+	for candidate in range(1, 8192):
+		probe.seed = candidate
+		var missed: int = 0
+		var hit: bool = false
+		for _i in range(leading_misses + 1):
+			if probe.randf() * 100.0 <= chance_percent:
+				hit = true
+				break
+			missed += 1
+		if hit and missed == leading_misses:
+			return candidate
+	return -1
+
+## The value CombatManager's own stream hands out after exactly `draws` randf() calls from
+## `seed_value`.
+func _stream_after_draws(seed_value: int, draws: int) -> int:
+	var probe := RandomNumberGenerator.new()
+	probe.seed = seed_value
+	for _i in range(draws):
+		probe.randf()
+	return probe.randi()
+
+## Copies `base`, applies `patch` (a null value erases the key) and asserts the validator reported
+## exactly one failure with the expected code. EXACTLY one, so neither a deleted check (silently
+## zero errors) nor a doubled one passes.
+func _one_error(check: Callable, base: Dictionary, patch: Dictionary, label: String,
+		code: String = "invalid_record") -> void:
+	var ab: Dictionary = base.duplicate(true)
+	for key in patch.keys():
+		if patch[key] == null:
+			ab.erase(key)
+		else:
+			ab[key] = patch[key]
+	var errs: Array = check.call(ab)
+	_ok(errs.size() == 1 and str(errs[0]["code"]) == code,
+		"%s must be the only failure and coded '%s' (got %s)" % [label, code, _failure_text(errs)])
+
+func _failure_text(errs: Array) -> String:
+	if errs.is_empty():
+		return "none"
+	var parts: Array[String] = []
+	for e in errs:
+		parts.append("%s: %s" % [str(e["code"]), str(e["message"])])
+	return "; ".join(parts)
 
 func _test_content_validation() -> void:
 	_heading("Content reference validation")

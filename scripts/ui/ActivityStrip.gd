@@ -16,6 +16,15 @@ var _estimates: Label
 ## Eat-button cache: last HP it was built for, and a flag to rebuild when the bank changes.
 var _eat_hp_seen: int = -1
 var _eat_dirty: bool = true
+# The activity layer's spawn offer (EventDirector): shown only while an offer is live, polled
+# for its remaining charges because the count drops on engine completions, not on signals.
+var _spawn_row: HBoxContainer
+var _spawn_label: Label
+var _spawn_switch: Button
+# The open event card dialog, if any. Cards are opened here because the strip is the one piece
+# of chrome present on every screen; closed on event_resolved (buttons, stored policy or
+# watchdog all resolve through EventDirector.resolve, which always emits that signal).
+var _card_dialog: ConfirmDialog = null
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(0, UITokens.H_STRIP - 6)
@@ -49,6 +58,18 @@ func _ready() -> void:
 	health.size_flags_stretch_ratio = 0.6
 	health.custom_minimum_size.x = 148
 	row.add_child(health)
+	# Spawn offer: "Bonus: <target> (<n> left)" + a one-click switch of the activity slot.
+	_spawn_row = HBoxContainer.new()
+	_spawn_row.add_theme_constant_override("h_separation", UITokens.SP_3)
+	_spawn_label = UIStyle.label("", false, UITokens.FONT_SMALL)
+	_spawn_label.add_theme_color_override("font_color", UITokens.TEAL)
+	_spawn_row.add_child(_spawn_label)
+	_spawn_switch = UIStyle.mini_button("Switch", "Move the activity slot onto the bonus event's target action")
+	_spawn_switch.pressed.connect(_on_switch)
+	_spawn_row.add_child(_spawn_switch)
+	_spawn_row.visible = false
+	row.add_child(_spawn_row)
+
 	_estimates = UIStyle.label("", true, UITokens.FONT_MICRO)
 	_estimates.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	# A hard 200px minimum here set the floor for the whole window; wrap instead so the strip can
@@ -77,6 +98,9 @@ func _ready() -> void:
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.combat_ended.connect(func(_c): refresh())
 	EventBus.bank_changed.connect(func(): _eat_dirty = true)
+	EventBus.event_offered.connect(_on_event_offered)
+	EventBus.event_resolved.connect(_on_event_resolved)
+	EventBus.state_refreshed.connect(_close_card_dialog)
 	refresh()
 
 func _process(_delta: float) -> void:
@@ -94,6 +118,12 @@ func _process(_delta: float) -> void:
 		_eat_hp_seen = hp
 		_eat_dirty = false
 		_refresh_eat()
+	# Same polling rule for the spawn countdown: the charge drops inside the engine's completion
+	# path with no signal of its own, so the label follows the state instead of a cached string.
+	if _spawn_row.visible:
+		var spawn_text: String = _spawn_text()
+		if spawn_text != "" and _spawn_label.text != spawn_text:
+			_spawn_label.text = spawn_text
 
 func refresh() -> void:
 	var activity: Dictionary = GameManager.current_activity()
@@ -128,6 +158,11 @@ func refresh() -> void:
 			_estimates.text = detail
 	_stop.disabled = kind == "idle" or kind == "stopped"
 	_stop.text = "Retreat" if kind == "combat" else "Stop"
+	# The spawn offer rides the strip: hidden with no live offer, refreshed by activity_changed
+	# (EventDirector emits it on offer, accept and expiry).
+	_spawn_row.visible = not EventDirector.active_spawn.is_empty()
+	if _spawn_row.visible:
+		_spawn_label.text = _spawn_text()
 	_refresh_eat()
 
 func _refresh_combat_readout() -> void:
@@ -212,3 +247,32 @@ func _on_stop() -> void:
 func _on_eat() -> void:
 	if CombatManager.eat_best_food() != "":
 		refresh()
+func _spawn_text() -> String:
+	if EventDirector.active_spawn.is_empty():
+		return ""
+	var skill_id: String = str(EventDirector.active_spawn.get("skill_id", ""))
+	var target: String = str(EventDirector.active_spawn.get("target_action", ""))
+	var action_name: String = str(DataLoader.get_action(skill_id, target).get("name", target))
+	return "Bonus: %s (%d left)" % [action_name, int(EventDirector.active_spawn.get("actions_left", 0))]
+
+func _on_switch() -> void:
+	EventDirector.accept_spawn()
+	refresh()
+
+func _on_event_offered(event: Dictionary) -> void:
+	# Only cards interrupt: a spawn offer is already announced by activity_changed -> refresh.
+	if str(event.get("kind", "")) != "card":
+		return
+	if _card_dialog != null and is_instance_valid(_card_dialog):
+		return   # the loop is paused while a card waits — there is never a second one
+	_card_dialog = ConfirmDialog.ask_event(self, event)
+
+func _on_event_resolved(_event_id: String, _policy: String) -> void:
+	# Every resolution route — button, stored policy or watchdog — lands here and closes the card.
+	_close_card_dialog()
+	refresh()
+
+func _close_card_dialog() -> void:
+	if _card_dialog != null and is_instance_valid(_card_dialog):
+		_card_dialog.queue_free()
+	_card_dialog = null

@@ -75,6 +75,9 @@ static func progress_bar(value: float, maximum: float, color: Color, text := "",
 	var bar := ProgressBar.new()
 	bar.max_value = maxf(1.0, maximum)
 	bar.value = clampf(value, 0.0, maxf(1.0, maximum))
+	# Set-then-tween: the value above is authoritative (the tween is a full no-op
+	# when reduced motion is on), Motion only adds the visual glide.
+	Motion.tween_bar(bar, bar.value)
 	bar.show_percentage = false
 	bar.custom_minimum_size = Vector2(0, maxi(height, 18) if text != "" else height)
 	bar.add_theme_stylebox_override("fill", UIStyle.glow_fill(color))
@@ -138,7 +141,7 @@ static func requirement_row(label: String, current: float, required: float, sati
 static func item_icon(item_id: String, size := UITokens.ICON_MD) -> Control:
 	var rarity: Dictionary = UIStyle.item_rarity(item_id)
 	var frame := PanelContainer.new()
-	var sb := UIStyle.surface_box("sunken")
+	var sb: StyleBoxFlat = UIStyle.surface_box("sunken")
 	sb.set_corner_radius_all(UITokens.R_SM)
 	sb.border_color = rarity["color"]
 	sb.set_border_width_all(2 if rarity["key"] != "common" else 1)

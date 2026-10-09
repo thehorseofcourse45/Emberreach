@@ -60,15 +60,11 @@ func push(text: String, kind: String = "info", skill_id: String = "") -> void:
 		_remove_entry(_entries[0])
 	var node := _build(text, kind, skill_id)
 	_column.add_child(node)
+	Motion.fade_rise(node)
 	var entry: Dictionary = {"node": node, "timer": _lifetime_for(kind), "text": text,
 		"count": 1, "label": node.get_node("body/label"), "kind": kind}
 	_entries.append(entry)
 	_refresh_entry(entry)
-	if not UITokens_motion_reduced():
-		node.modulate.a = 0.0
-		var tween := create_tween()
-		tween.set_ignore_time_scale(true)
-		tween.tween_property(node, "modulate:a", 1.0, UITokens.DUR_NORMAL)
 
 func _lifetime_for(kind: String) -> float:
 	return LIFETIME_ERROR if kind == "error" or kind == "warn" else LIFETIME

@@ -20,19 +20,30 @@ func get_prayer(prayer_id: String) -> Dictionary:
 func is_active(prayer_id: String) -> bool:
     return PlayerData.active_prayers.has(prayer_id)
 
+## Why this prayer cannot be activated right now, or "" when it can: the player's Prayer level has
+## not reached its requirement, or MAX_ACTIVE prayers are already on. The level and slot rules live
+## HERE and nowhere else, so toggle() cannot enforce one thing and an automatic caller another:
+## toggle turns this into the message it shows the player, while an automatic caller — a combat
+## strategy's protection_prayer_auto, which the player never asked for by hand — reads it and
+## stays a SILENT no-op instead of popping a warning on every fight. An unknown id is not answered
+## here; the caller holds the record and can see for itself that it does not exist.
+func blocked_reason(prayer_id: String) -> String:
+    if PlayerData.get_level("prayer") < int(get_prayer(prayer_id).get("level", 1)):
+        return "Prayer level too low"
+    if PlayerData.active_prayers.size() >= MAX_ACTIVE:
+        return "Only %d prayers may be active" % MAX_ACTIVE
+    return ""
+
 ## Toggle a prayer on/off. Returns true if the state changed.
 func toggle(prayer_id: String) -> bool:
     if is_active(prayer_id):
         deactivate(prayer_id)
         return true
-    var p: Dictionary = get_prayer(prayer_id)
-    if p.is_empty():
+    if get_prayer(prayer_id).is_empty():
         return false
-    if PlayerData.get_level("prayer") < int(p.get("level", 1)):
-        EventBus.notification.emit("Prayer level too low", "warn")
-        return false
-    if PlayerData.active_prayers.size() >= MAX_ACTIVE:
-        EventBus.notification.emit("Only %d prayers may be active" % MAX_ACTIVE, "warn")
+    var blocked: String = blocked_reason(prayer_id)
+    if blocked != "":
+        EventBus.notification.emit(blocked, "warn")
         return false
     PlayerData.active_prayers.append(prayer_id)
     _register(prayer_id)
