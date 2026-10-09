@@ -135,7 +135,7 @@ static func _add_pinned_nav(host: Control, container: VBoxContainer, nav_buttons
 static func _add_settlement_nav(host: Control, container: VBoxContainer, nav_buttons: Dictionary, drawer: PanelContainer = null) -> void:
 	container.add_child(UIStyle.label("SETTLEMENT", true, UITokens.FONT_MICRO))
 	var b := Button.new()
-	b.text = Screens.label_for(Screens.SETTLEMENT)
+	b.text = skill_nav_text("township")
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.custom_minimum_size = Vector2(0, UITokens.H_HEADER)
 	b.add_theme_font_size_override("font_size", UITokens.FONT_BODY)
@@ -164,7 +164,7 @@ static func _add_skill_links(host: Control, container: VBoxContainer, nav_button
 			true, UITokens.FONT_MICRO))
 		for skill_id in DataLoader.get_skill_ids():
 			var skill: Dictionary = DataLoader.get_skill(skill_id)
-			if str(skill.get("category", "")) != category:
+			if skill_id == "township" or str(skill.get("category", "")) != category:
 				continue
 			var button := Button.new()
 			# "·" separator: level is visible, not hidden in the tooltip.

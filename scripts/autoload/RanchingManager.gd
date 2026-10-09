@@ -1,5 +1,16 @@
 extends Node
 ## Real-time animal pens. Produce waits for collection; feed and cycle progress persist.
+const MANAGEMENT := {
+	"balanced": {"name": "Balanced", "level": 1, "feed": 1.0, "speed": 1.0, "breed": 1.0, "rare": 0.0, "hint": "Normal feed, produce and breeding."},
+	"pasture": {"name": "Pasture", "level": 1, "feed": 0.75, "speed": 0.9, "breed": 1.0, "rare": 0.0, "hint": "25% less feed; 10% slower produce."},
+	"production": {"name": "Production", "level": 25, "feed": 1.5, "speed": 1.2, "breed": 0.8, "rare": 0.0, "hint": "20% faster produce; 50% more feed; 20% slower breeding."},
+	"breeding": {"name": "Breeding", "level": 45, "feed": 1.2, "speed": 0.8, "breed": 1.5, "rare": 0.03, "hint": "50% faster breeding; +3% rare chance; 20% slower produce and 20% more feed."}
+}
+const PEN_UPGRADES := [
+	{"name": "Feeding trough", "level": 10, "cost": 1000, "hint": "20% less feed for this pen."},
+	{"name": "Spacious enclosure", "level": 35, "cost": 7500, "hint": "Room for four matching animals instead of two."},
+	{"name": "Sanctuary", "level": 70, "cost": 40000, "hint": "10% faster produce, 25% faster breeding, +3% rare chance; mood never drops below 50%."}
+]
 var pens: Array = []
 var _rng := RandomNumberGenerator.new()
 
@@ -29,7 +40,7 @@ func stock(index: int, id: String, variant: bool = false) -> bool:
 	if index < 0 or index >= pens.size() or def.is_empty() or PlayerData.get_level("ranching") < int(def.level):
 		return false
 	var pen: Dictionary = pens[index]
-	if int(pen.animals) >= 2 or (int(pen.animals) > 0 and (str(pen.species) != id or bool(pen.variant) != variant)):
+	if int(pen.animals) >= capacity(index) or (int(pen.animals) > 0 and (str(pen.species) != id or bool(pen.variant) != variant)):
 		return false
 	var stock_id: String = str(def.stock)
 	if variant:
@@ -42,6 +53,36 @@ func stock(index: int, id: String, variant: bool = false) -> bool:
 	pen.animals = int(pen.animals) + 1
 	EventBus.state_refreshed.emit()
 	return true
+
+func capacity(index: int) -> int:
+	return 4 if index >= 0 and index < pens.size() and int(pens[index].get("upgrade", 0)) >= 2 else 2
+
+func set_management(index: int, mode: String) -> bool:
+	if index < 0 or index >= pens.size() or not MANAGEMENT.has(mode) or PlayerData.get_level("ranching") < int(MANAGEMENT[mode].level): return false
+	pens[index]["management"] = mode
+	EventBus.state_refreshed.emit()
+	return true
+
+func upgrade_pen(index: int) -> bool:
+	if index < 0 or index >= pens.size(): return false
+	var tier: int = int(pens[index].get("upgrade", 0))
+	if tier >= PEN_UPGRADES.size(): return false
+	var upgrade: Dictionary = PEN_UPGRADES[tier]
+	if PlayerData.get_level("ranching") < int(upgrade.level) or not PlayerData.spend_gp(float(upgrade.cost)): return false
+	pens[index]["upgrade"] = tier + 1
+	EventBus.state_refreshed.emit()
+	return true
+
+func pen_rates(index: int) -> Dictionary:
+	if index < 0 or index >= pens.size(): return {}
+	var pen: Dictionary = pens[index]
+	var def: Dictionary = species(str(pen.species))
+	var mode: Dictionary = MANAGEMENT[str(pen.get("management", "balanced"))]
+	var tier: int = int(pen.get("upgrade", 0))
+	var mastery: int = MasteryManager.get_level("ranching", "raise_" + str(pen.species))
+	var feed: float = float(def.get("feed", 0)) * int(pen.animals) * maxf(0.1, 1.0 - ModifierManager.get_modifier("ranching_feed_reduction_percent") / 100.0) * float(mode.feed) * (0.8 if tier >= 1 else 1.0)
+	var speed: float = (1.0 + 0.02 * (mastery - 1)) * (1.0 + ModifierManager.get_modifier("ranching_interval_percent") / 100.0) * float(mode.speed) * (1.1 if tier >= 3 else 1.0)
+	return {"feed_hour": feed, "speed": speed, "breed": float(mode.breed) * (1.25 if tier >= 3 else 1.0), "rare": float(mode.rare) + (0.03 if tier >= 3 else 0.0), "floor": maxf(50.0 if tier >= 3 else 25.0, ModifierManager.get_modifier("ranching_happiness_floor"))}
 
 func crop_feed(item_id: String, quantity: int) -> bool:
 	var valid: bool = false
@@ -78,17 +119,17 @@ func advance(seconds: float) -> void:
 		var def: Dictionary = species(str(pen.species))
 		if def.is_empty():
 			continue
-		var mastery: int = MasteryManager.get_level("ranching", "raise_" + str(def.id))
-		var feed_rate: float = float(def.feed) * float(pen.animals) / 3600.0 * maxf(0.1, 1.0 - ModifierManager.get_modifier("ranching_feed_reduction_percent") / 100.0)
+		var rates: Dictionary = pen_rates(pens.find(pen))
+		var feed_rate: float = maxf(0.000001, float(rates.feed_hour) / 3600.0)
 		var fed: float = minf(seconds, float(pen.feed) / feed_rate)
 		pen.feed = maxf(0.0, float(pen.feed) - fed * feed_rate)
 		var hungry: float = seconds - fed
-		var floor_happiness: float = maxf(25.0, ModifierManager.get_modifier("ranching_happiness_floor"))
+		var floor_happiness: float = float(rates.floor)
 		var old_happiness: float = 100.0 if fed > 0 else float(pen.happiness)
 		pen.happiness = maxf(floor_happiness, old_happiness - hungry / 3600.0 * 10.0)
 		var decay_seconds: float = minf(hungry, maxf(0.0, old_happiness - floor_happiness) / 10.0 * 3600.0)
 		var productive_seconds: float = fed + decay_seconds * (old_happiness + float(pen.happiness)) / 200.0 + (hungry - decay_seconds) * floor_happiness / 100.0
-		var speed: float = (1.0 + 0.02 * float(mastery - 1)) * (1.0 + ModifierManager.get_modifier("ranching_interval_percent") / 100.0)
+		var speed: float = float(rates.speed)
 		pen.progress = float(pen.progress) + productive_seconds * speed
 		var cycles: int = int(float(pen.progress) / float(def.seconds))
 		pen.progress = fmod(float(pen.progress), float(def.seconds))
@@ -102,7 +143,10 @@ func advance(seconds: float) -> void:
 			pen.pending["ranch_manure"] = int(pen.pending.get("ranch_manure", 0)) + cycles * int(pen.animals)
 			pen.pending_xp = float(pen.pending_xp) + cycles * int(pen.animals) * float(def.xp)
 			pen.cycles = int(pen.cycles) + cycles
-		pen.breed_seconds = float(pen.breed_seconds) + seconds
+		if int(pen.animals) >= 2:
+			var was_ready: bool = float(pen.breed_seconds) >= 21600.0
+			pen.breed_seconds = minf(21600.0, float(pen.breed_seconds) + seconds * float(rates.breed))
+			if not was_ready and float(pen.breed_seconds) >= 21600.0: changed = true
 		if ModifierManager.get_modifier("ranching_autocollect") > 0.0 and int(pen.cycles) > 0:
 			collect(pens.find(pen))
 	if changed and not SimulationMode.is_silent():
@@ -133,15 +177,15 @@ func breed(index: int) -> bool:
 	if index < 0 or index >= pens.size():
 		return false
 	var pen: Dictionary = pens[index]
-	if int(pen.animals) != 2 or float(pen.breed_seconds) < 21600.0 or float(pen.happiness) < 50.0:
+	if int(pen.animals) < 2 or float(pen.breed_seconds) < 21600.0 or float(pen.happiness) < 50.0:
 		return false
 	pen.breed_seconds = 0.0
 	if _rng.randf() > 0.75:
-		EventBus.notify("No offspring this time. Your animals can breed again in six hours.", "info")
+		EventBus.notify("No offspring this time. The next breeding cycle has begun.", "info")
 		EventBus.state_refreshed.emit()
 		return true
 	var def: Dictionary = species(str(pen.species))
-	var chance: float = 0.03 + ModifierManager.get_modifier("ranching_variant_percent") / 100.0
+	var chance: float = 0.03 + ModifierManager.get_modifier("ranching_variant_percent") / 100.0 + float(pen_rates(index).rare)
 	var mastery: int = MasteryManager.get_level("ranching", "raise_" + str(pen.species))
 	chance += 0.02 if mastery >= 50 else 0.0
 	chance += 0.05 if mastery >= 99 else 0.0
@@ -180,7 +224,10 @@ func deserialize(data: Dictionary) -> void:
 			continue
 		var p: Dictionary = value.duplicate(true)
 		if not species(str(p.get("species", ""))).is_empty() or str(p.get("species", "")) == "":
-			p.animals = clampi(int(p.get("animals", 0)), 0, 2)
+			p["upgrade"] = clampi(int(p.get("upgrade", 0)), 0, PEN_UPGRADES.size())
+			var mode: String = str(p.get("management", "balanced"))
+			p["management"] = mode if MANAGEMENT.has(mode) else "balanced"
+			p.animals = clampi(int(p.get("animals", 0)), 0, 4 if int(p.upgrade) >= 2 else 2)
 			p.variant = bool(p.get("variant", false))
 			for key in ["feed", "progress", "pending_xp", "breed_seconds"]:
 				var n: float = float(p.get(key, 0.0))

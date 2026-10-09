@@ -27,16 +27,16 @@ var _dirty: bool = true
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	add_child(UIStyle.title("Farm", UITokens.FONT_DISPLAY))
+	add_child(UIStyle.title("Husbandry · Farm management", UITokens.FONT_DISPLAY))
 	_summary = UIStyle.label("", true, UITokens.FONT_SMALL)
 	_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_summary)
-	_hint = UIStyle.label("Seeds are stolen: thieving targets drop them from level 1 to 115. "
-		+ "Compost (+10% survival per dressing) comes from the settlement trader. Crops grow in "
-		+ "real time — harvesting pays the experience.", true, UITokens.FONT_SMALL)
+	_hint = UIStyle.label("Rotate to a different crop after a successful harvest for +10% survival and +15% yield. Upgrade empty plots at levels 20, 50 and 90; each tier adds +5% survival, +10% yield and 5% faster growth. Crops keep growing offline.", true, UITokens.FONT_SMALL)
 	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_hint)
-	add_child(UIStyle.label("Vegetables grow in Allotment plots and saplings in Tree plots; herbs grow in any plot. Vegetables go into Cookery, trees are felled for logs. Manure gives +25% survival and +10% yield; compost gives +10% survival per dressing. Apply both before planting.", true, UITokens.FONT_SMALL))
+	var guide := UIStyle.label("Balanced: normal growth. Careful: +20% survival, 15% longer. Intensive: +35% yield, −15% survival, 20% longer. Compost adds 10% survival per dose (up to 5); manure adds 25% survival and 10% yield. XP per harvest stays unchanged.", true, UITokens.FONT_SMALL)
+	guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	add_child(guide)
 	var controls := UIStyle.hbox(UITokens.SP_4)
 	_harvest_button = UIStyle.primary_button("Harvest all ready")
 	_harvest_button.pressed.connect(_harvest_all)
@@ -52,6 +52,7 @@ func _ready() -> void:
 	if not FarmingManager.plots_changed.is_connected(_mark_dirty):
 		FarmingManager.plots_changed.connect(_mark_dirty)
 	EventBus.bank_changed.connect(_mark_dirty)
+	EventBus.gp_changed.connect(func(_amount, _total): _mark_dirty())
 	EventBus.skill_level_up.connect(func(_skill_id, _level): _mark_dirty())
 	EventBus.state_refreshed.connect(_mark_dirty)
 	_built = true
@@ -127,7 +128,7 @@ func _rebuild() -> void:
 func _plot_card(index: int, name_text: String) -> Control:
 	var state: String = _state_for(index)
 	var card: PanelContainer = UIStyle.card(state == "ready")
-	card.custom_minimum_size = Vector2(216, 0)
+	card.custom_minimum_size = Vector2(280, 0)
 	var col := UIStyle.vbox(UITokens.SP_2)
 	card.add_child(col)
 	var top := UIStyle.hbox(UITokens.SP_2)
@@ -147,13 +148,41 @@ func _plot_card(index: int, name_text: String) -> Control:
 	if state == "growing" or state == "ready":
 		bar = Widgets.progress_bar(_progress_value(index), maxf(1.0, _progress_max(index)), UITokens.TEAL)
 		col.add_child(bar)
-	var buttons := UIStyle.hbox(UITokens.SP_2)
+	var p: Dictionary = FarmingManager.plots[index]
+	var tier: int = int(p.get("upgrade", 0))
+	var soil := UIStyle.label("%s · %s" % ["Basic soil" if tier == 0 else str(FarmingManager.UPGRADES[tier - 1].name), str(FarmingManager.METHODS[str(p.get("method", "balanced"))].name)], true, UITokens.FONT_SMALL)
+	soil.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	col.add_child(soil)
+	if crop_seed != "" and p.has("crop_survival"):
+		col.add_child(UIStyle.label("%.0f%% survival · +%d%% yield" % [float(p.crop_survival) * 100.0, int(p.get("crop_yield_bonus", 0))], true, UITokens.FONT_SMALL))
+	if str(p.get("last_seed", "")) != "":
+		var rotation := UIStyle.label("Last harvest: " + _crop_name(str(p.last_seed)), true, UITokens.FONT_SMALL)
+		rotation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		col.add_child(rotation)
+	if state == "empty":
+		var method := OptionButton.new()
+		method.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		method.clip_text = true
+		method.fit_to_longest_item = false
+		var keys: Array = FarmingManager.METHODS.keys()
+		for key in keys: method.add_item(str(FarmingManager.METHODS[key].name))
+		method.select(keys.find(str(p.get("method", "balanced"))))
+		method.item_selected.connect(func(choice): FarmingManager.set_method(index, str(keys[choice])))
+		col.add_child(method)
+		if tier < FarmingManager.UPGRADES.size():
+			var next: Dictionary = FarmingManager.UPGRADES[tier]
+			var upgrade := UIStyle.mini_button("Upgrade · Lv %d · %s GP" % [int(next.level), UIStyle.fmt(float(next.cost))])
+			upgrade.tooltip_text = str(next.name) + ": +5% survival, +10% yield, 5% faster growth. Permanent; applies to future plantings."
+			upgrade.disabled = PlayerData.get_level("farming") < int(next.level) or PlayerData.gp < float(next.cost)
+			upgrade.pressed.connect(func(): FarmingManager.upgrade_plot(index))
+			col.add_child(upgrade)
+	var buttons := UIStyle.vbox(UITokens.SP_2)
 	col.add_child(buttons)
 	_build_buttons(buttons, index, state)
 	_tiles.append({"index": index, "state_label": state_label, "bar": bar})
 	return card
 
-func _build_buttons(buttons: HBoxContainer, index: int, state: String) -> void:
+func _build_buttons(buttons: VBoxContainer, index: int, state: String) -> void:
 	match state:
 		"empty":
 			var plant := MenuButton.new()
@@ -163,11 +192,15 @@ func _build_buttons(buttons: HBoxContainer, index: int, state: String) -> void:
 			plant.get_popup().about_to_popup.connect(func(): _fill_planter(plant, index))
 			plant.get_popup().id_pressed.connect(func(id: int): _plant(index, str(_popup_seeds[id])))
 			buttons.add_child(plant)
-			if BankManager.get_count("compost") > 0:
+			if BankManager.get_count("compost") > 0 and int(FarmingManager.plots[index].compost) < 5:
 				var compost := UIStyle.mini_button("Compost ×%d" % BankManager.get_count("compost"),
 					"+10% survival when this plot is planted")
 				compost.pressed.connect(func(): _compost(index))
 				buttons.add_child(compost)
+			if BankManager.has_item("ranch_manure", 1) and not bool(FarmingManager.plots[index].get("manure", false)):
+				var manure := UIStyle.mini_button("Apply manure", "+25% survival and +10% yield for the next crop")
+				manure.pressed.connect(func(): FarmingManager.apply_manure(index))
+				buttons.add_child(manure)
 		"ready":
 			var harvest := UIStyle.mini_button("Harvest")
 			harvest.pressed.connect(func(): _harvest(index))
@@ -222,12 +255,12 @@ func _state_text(index: int, state: String) -> String:
 		"empty":
 			var c: int = int(p["compost"])
 			if c > 0:
-				return "Empty. Dressed with compost ×%d (+%d%% survival when planted)." % [c, c * 10]
-			return "Empty. Plant a seed, or dress it with compost first."
+				return "Prepared: compost ×%d (+%d%% survival)." % [c, c * 10] + (" Manure applied." if bool(p.get("manure", false)) else "")
+			return "Choose a growing method, prepare the soil, then plant a seed." + (" Manure applied." if bool(p.get("manure", false)) else "")
 		"dead":
 			return "The %s failed to take. Clear the plot to replant." % _crop_name(str(p["seed_id"]))
 		"ready":
-			return "%s is ready to harvest." % _crop_name(str(p["seed_id"]))
+			return "%s is ready to harvest (+%d%% yield)." % [_crop_name(str(p["seed_id"])), int(p.get("crop_yield_bonus", 0))]
 	var remaining: float = maxf(0.0, float(p["planted_unix"]) + float(p["grow_seconds"]) - float(Time.get_unix_time_from_system()))
 	var pct: int = int(round(_progress_value(index) / maxf(1.0, _progress_max(index)) * 100.0))
 	return "Growing %s — ready in %s (%d%%)." % [_crop_name(str(p["seed_id"])), UIStyle.fmt_duration(remaining), pct]
@@ -300,6 +333,7 @@ func _fill_planter(button: MenuButton, plot_index: int = 0) -> void:
 			label = "%s — %s plots only" % [str(o["name"]), FarmingManager.seed_plot_type(str(o["id"])).capitalize()]
 		var preview: Dictionary = FarmingManager.planting_preview(plot_index, str(o.id))
 		label += " · %.0f%% survival · +%d%% yield · %s" % [float(preview.survival) * 100, int(preview.yield_bonus), UIStyle.fmt_duration(float(preview.seconds))]
+		if bool(preview.rotated): label += " · Rotation bonus"
 		popup.add_icon_item(AssetRegistry.icon("farming", FarmingManager.action_id_for_seed(str(o.id))), label, index)
 		popup.set_item_disabled(index, not bool(o["unlocked"]) or int(o["count"]) <= 0 or not fits)
 		_popup_seeds.append(str(o["id"]))

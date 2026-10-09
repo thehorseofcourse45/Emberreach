@@ -906,8 +906,8 @@ func _test_combat_screen_split(host: Node) -> void:
 	# was assembled.
 	host.call("_refresh_nav")
 	var skill_buttons: Dictionary = host.get("_skill_nav_buttons")
-	_ok(skill_buttons.size() == DataLoader.get_skill_ids().size(),
-		"every skill has a left sidebar entry")
+	_ok(skill_buttons.size() == DataLoader.get_skill_ids().size() - 1 and not skill_buttons.has("township"),
+		"Settlement uses its management entry instead of a duplicate skill link")
 	var sidebar: VBoxContainer = host.get("_sidebar_list")
 	var combat_heading: int = -1
 	var noncombat_heading: int = -1

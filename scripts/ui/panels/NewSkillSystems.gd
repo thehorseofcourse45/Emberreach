@@ -248,9 +248,33 @@ func _caravans() -> void:
 			trips.add_child(UIStyle.label("%s: %s GP%s" % [str(cm.route(str(h.route)).get("name", h.route)), UIStyle.fmt(float(h.revenue)), "" if float(h.loss) <= 0.0 else " (cargo value lost %.0f%%)" % (float(h.loss) * 100.0)], true, UITokens.FONT_SMALL))
 
 func _ranch() -> void:
-	var box := _card("The ranch", "Six pens, two matching animals per pen. Feed keeps production at full speed. Collect produce and XP; breed every six hours.")
-	_button(box, "Build pen · %s GP" % UIStyle.fmt(RanchingManager.pen_price()), func():
-		if not RanchingManager.build_pen(): EventBus.notify("You need more GP or Ranching levels for another pen.", "warn"), RanchingManager.pens.size() < 6)
+	_live_pens.clear()
+	var box := _card("Ranch estate", "Manage your livestock, improve each enclosure and specialize your herds. Produce and breeding progress continue while you are away.")
+	var stats := _flow()
+	box.add_child(stats)
+	var animals: int = 0
+	var ready: int = 0
+	for p in RanchingManager.pens:
+		animals += int(p.animals)
+		ready += 1 if int(p.cycles) > 0 else 0
+	stats.add_child(Widgets.stat_card("Pens", "%d / 6" % RanchingManager.pens.size(), UITokens.GOLD))
+	stats.add_child(Widgets.stat_card("Animals", str(animals), UITokens.TEAL))
+	stats.add_child(Widgets.stat_card("Ready to collect", str(ready), UITokens.GOLD))
+	var upgrades := _flow()
+	box.add_child(upgrades)
+	for upgrade in RanchingManager.PEN_UPGRADES:
+		var card := UIStyle.card()
+		card.custom_minimum_size = Vector2(230, 0)
+		var content := UIStyle.vbox(UITokens.SP_2)
+		card.add_child(content)
+		content.add_child(UIStyle.title(str(upgrade.name), UITokens.FONT_BODY))
+		content.add_child(UIStyle.label("Lv %d · %s GP per pen" % [int(upgrade.level), UIStyle.fmt(float(upgrade.cost))], true, UITokens.FONT_SMALL))
+		var hint := UIStyle.label(str(upgrade.hint), true, UITokens.FONT_SMALL)
+		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(hint)
+		upgrades.add_child(card)
+	_button(box, "Build pen %d · Lv %d · %s GP" % [RanchingManager.pens.size() + 1, 1 + RanchingManager.pens.size() * 15, UIStyle.fmt(RanchingManager.pen_price())], func():
+		if not RanchingManager.build_pen(): EventBus.notify("You need more GP or Ranching levels for another pen.", "warn"), RanchingManager.pens.size() < 6 and PlayerData.get_level("ranching") >= 1 + RanchingManager.pens.size() * 15 and PlayerData.gp >= RanchingManager.pen_price())
 	var crops: Array = []
 	var labels: Array = []
 	for seed in DataLoader.items.values():
@@ -274,27 +298,58 @@ func _ranch() -> void:
 		for index in range(RanchingManager.pens.size()): RanchingManager.collect(index)
 		EventBus.state_refreshed.emit())
 	box.add_child(Widgets.item_rewards({"ranch_feed": BankManager.get_count("ranch_feed")}))
+	var pen_grid := _flow()
+	box.add_child(pen_grid)
 	for index in range(RanchingManager.pens.size()):
 		var p: Dictionary = RanchingManager.pens[index]
 		var def: Dictionary = RanchingManager.species(str(p.species))
-		var pen := UIStyle.section("Pen %d · %s" % [index + 1, str(def.get("name", "Empty"))], "%d / 2 animals · feed %.0f · happiness %.0f%%" % [int(p.animals), float(p.feed), float(p.happiness)])
-		box.add_child(pen)
+		var panel := UIStyle.card(int(p.cycles) > 0)
+		panel.custom_minimum_size = Vector2(320, 0)
+		pen_grid.add_child(panel)
+		var pen := UIStyle.vbox(UITokens.SP_3)
+		panel.add_child(pen)
+		var hero := UIStyle.hbox(UITokens.SP_3)
+		pen.add_child(hero)
+		var pen_icon := UIStyle.icon_texture("items", str(def.get("stock", "ranch_feed")))
+		pen_icon.custom_minimum_size = Vector2(64, 64)
+		pen_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		hero.add_child(pen_icon)
+		var heading := UIStyle.vbox(UITokens.SP_2)
+		hero.add_child(heading)
+		heading.add_child(UIStyle.title("Pen %d · %s" % [index + 1, str(def.get("name", "Empty"))], UITokens.FONT_BODY))
+		heading.add_child(UIStyle.label("%d / %d animals · %s" % [int(p.animals), RanchingManager.capacity(index), "Rare variant" if bool(p.variant) else "Ordinary stock"], true, UITokens.FONT_SMALL))
+		var modes: Array = RanchingManager.MANAGEMENT.keys()
+		var mode_labels: Array = modes.map(func(id): return "%s · Lv %d" % [str(RanchingManager.MANAGEMENT[id].name), int(RanchingManager.MANAGEMENT[id].level)])
+		var choice_mode := _choice(pen, modes, mode_labels)
+		choice_mode.select(modes.find(str(p.get("management", "balanced"))))
+		for m in range(modes.size()):
+			choice_mode.set_item_disabled(m, PlayerData.get_level("ranching") < int(RanchingManager.MANAGEMENT[modes[m]].level))
+			choice_mode.get_popup().set_item_tooltip(m, str(RanchingManager.MANAGEMENT[modes[m]].hint))
+		choice_mode.item_selected.connect(func(selected): RanchingManager.set_management(index, str(modes[selected])))
+		var tier: int = int(p.get("upgrade", 0))
+		pen.add_child(UIStyle.label("Basic enclosure" if tier == 0 else str(RanchingManager.PEN_UPGRADES[tier - 1].name), true, UITokens.FONT_SMALL))
+		if tier < RanchingManager.PEN_UPGRADES.size():
+			var upgrade: Dictionary = RanchingManager.PEN_UPGRADES[tier]
+			_button(pen, "Upgrade · %s GP · Lv %d" % [UIStyle.fmt(float(upgrade.cost)), int(upgrade.level)], func(): RanchingManager.upgrade_pen(index), PlayerData.get_level("ranching") >= int(upgrade.level) and PlayerData.gp >= float(upgrade.cost), str(upgrade.hint))
 		if not def.is_empty():
-			var feed_hour: float = float(def.feed) * int(p.animals) * maxf(0.1, 1.0 - ModifierManager.get_modifier("ranching_feed_reduction_percent") / 100.0)
-			var speed: float = (1.0 + 0.02 * (MasteryManager.get_level("ranching", "raise_" + str(p.species)) - 1)) * (1.0 + ModifierManager.get_modifier("ranching_interval_percent") / 100.0)
-			pen.add_child(UIStyle.label("%s stock · feed ≈ %.1f hours · next produce ≈ %s · breed in %s" % ["Rare (2× produce)" if bool(p.variant) else "Ordinary", float(p.feed) / maxf(0.001, feed_hour), UIStyle.fmt_duration((float(def.seconds) - float(p.progress)) / maxf(0.001, speed * float(p.happiness) / 100.0)), UIStyle.fmt_duration(maxf(0.0, 21600.0 - float(p.breed_seconds)))], true, UITokens.FONT_SMALL))
-			pen.add_child(UIStyle.icon_texture("items", str(def.stock)))
+			var reserve := UIStyle.label("", true, UITokens.FONT_SMALL)
+			pen.add_child(reserve)
 			pen.add_child(Widgets.item_rewards({str(def.produce): int(p.pending.get(str(def.produce), 0)), "ranch_manure": int(p.pending.get("ranch_manure", 0))}))
-			var bar_root := Widgets.progress_bar(float(p.progress), float(def.seconds), UITokens.TEAL, "Next collection cycle", 18)
+			var bar_root := Widgets.progress_bar(float(p.progress), float(def.seconds), UITokens.TEAL, "Produce", 18)
 			pen.add_child(bar_root)
-			_live_pens.append({"index": index, "bar": bar_root})
+			var mood := Widgets.progress_bar(float(p.happiness), 100.0, UITokens.GOLD, "Animal mood", 14)
+			pen.add_child(mood)
+			var breed_bar := Widgets.progress_bar(float(p.breed_seconds), 21600.0, UITokens.PURPLE, "Breeding", 14)
+			pen.add_child(breed_bar)
+			_live_pens.append({"index": index, "bar": bar_root, "mood": mood, "breed": breed_bar, "reserve": reserve})
 		var actions := _flow()
 		pen.add_child(actions)
 		_button(actions, "Feed 100", func(): RanchingManager.feed_pen(index, mini(100, BankManager.get_count("ranch_feed"))), BankManager.get_count("ranch_feed") > 0)
 		_button(actions, "Collect", func(): RanchingManager.collect(index), int(p.cycles) > 0)
-		_button(actions, "Breed", func(): RanchingManager.breed(index), int(p.animals) == 2 and float(p.breed_seconds) >= 21600.0)
+		var breed_action := _button(actions, "Breed", func(): RanchingManager.breed(index), int(p.animals) >= 2 and float(p.breed_seconds) >= 21600.0 and float(p.happiness) >= 50.0)
+		if not def.is_empty(): _live_pens[-1]["breed_button"] = breed_action
 		_button(actions, "Retire one", func(): RanchingManager.retire(index), int(p.animals) > 0, "Collect pending produce, then exchange one animal for meat and hides.")
-		if int(p.animals) < 2:
+		if int(p.animals) < RanchingManager.capacity(index):
 			var ids: Array = []
 			var names: Array = []
 			for animal in DataLoader.new_skill_systems.get("species", []):
@@ -316,6 +371,31 @@ func _ranch() -> void:
 			if BankManager.get_count("golden_hen_stock") > 0 or BankManager.get_count("mooncalf_stock") > 0:
 				_button(row, "Rare stock", func():
 					if not RanchingManager.stock(index, str(ids[choice.selected]), true): EventBus.notify("No matching rare stock, or this pen holds ordinary animals.", "warn"), not ids.is_empty())
+	var catalogue := _card("Livestock catalogue", "A long-term progression from hens to celestial dragons. Matching animals share a pen; rare hens and mooncalves produce twice as much.")
+	var catalogue_grid := _flow()
+	catalogue.add_child(catalogue_grid)
+	for animal in DataLoader.new_skill_systems.get("species", []):
+		var unlocked: bool = PlayerData.get_level("ranching") >= int(animal.level)
+		var card := UIStyle.card()
+		card.custom_minimum_size = Vector2(230, 0)
+		catalogue_grid.add_child(card)
+		var content := UIStyle.vbox(UITokens.SP_3)
+		card.add_child(content)
+		var art := UIStyle.hbox(UITokens.SP_3)
+		content.add_child(art)
+		var animal_icon := UIStyle.icon_texture("items", str(animal.stock))
+		animal_icon.custom_minimum_size = Vector2(64, 64)
+		animal_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		art.add_child(animal_icon)
+		var title := UIStyle.vbox(UITokens.SP_2)
+		art.add_child(title)
+		title.add_child(UIStyle.title(str(animal.name), UITokens.FONT_BODY))
+		title.add_child(Widgets.badge("Available" if unlocked else "Lv %d" % int(animal.level), UITokens.TEAL if unlocked else UITokens.TEXT_DIM, ""))
+		content.add_child(Widgets.item_rewards({str(animal.produce): 1}))
+		content.add_child(UIStyle.label("%s cycle · %d feed/hour" % [UIStyle.fmt_duration(float(animal.seconds)), int(animal.feed)], true, UITokens.FONT_SMALL))
+		_button(content, "Buy stock · owned %d" % BankManager.get_count(str(animal.stock)), func():
+			if not ShopManager.buy_store("store_" + str(animal.stock)): EventBus.notify("You need more GP or storage space.", "warn")
+			EventBus.state_refreshed.emit(), unlocked)
 	var soil := _card("Ranch manure", "+25% crop survival and +10% yield for one crop. Apply before planting.")
 	soil.add_child(UIStyle.icon_texture("items", "ranch_manure"))
 	_button(soil, "Prepare all empty plots", func():
@@ -499,8 +579,14 @@ static func build_events(parent: Control) -> void:
 
 func _process(_delta: float) -> void:
 	for entry in _live_pens:
-		if entry.bar != null and int(entry.index) < RanchingManager.pens.size():
-			entry.bar.value = float(RanchingManager.pens[int(entry.index)].progress)
+		if int(entry.index) >= RanchingManager.pens.size(): continue
+		var pen: Dictionary = RanchingManager.pens[int(entry.index)]
+		var rates: Dictionary = RanchingManager.pen_rates(int(entry.index))
+		entry.bar.value = float(pen.progress)
+		entry.mood.value = float(pen.happiness)
+		entry.breed.value = float(pen.breed_seconds)
+		entry.breed_button.disabled = int(pen.animals) < 2 or float(pen.breed_seconds) < 21600.0 or float(pen.happiness) < 50.0
+		entry.reserve.text = "Feed %.0f · lasts %s · Mood %.0f%%" % [float(pen.feed), UIStyle.fmt_duration(float(pen.feed) / maxf(0.001, float(rates.feed_hour)) * 3600.0), float(pen.happiness)]
 	for entry in _live_caravans:
 		if int(entry.index) < CaravaneeringManager.caravans.size():
 			var c: Dictionary = CaravaneeringManager.caravans[int(entry.index)]

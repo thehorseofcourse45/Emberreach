@@ -188,6 +188,8 @@ func navigate(route: Dictionary) -> void:
 		screen = _screen
 	if screen == "skill":
 		screen = Screens.SKILLS
+	if screen == Screens.SKILLS and str(route.get("skill_id", "")) == "township":
+		screen = Screens.SETTLEMENT
 	if screen == Screens.SKILLS and str(route.get("skill_id", "")) == "prayer":
 		screen = Screens.PRAYERS
 	if screen == Screens.COMBAT and CombatManager.is_expedition(str(route.get("area_id", ""))):
@@ -324,7 +326,7 @@ func _refresh_nav() -> void:
 	for screen in _nav_buttons.keys():
 		var b: Button = _nav_buttons[screen]
 		var badge: int = int(_unlock_badges.get(screen, 0))
-		var label: String = Screens.label_for(screen)
+		var label: String = SidebarNav.skill_nav_text("township") if screen == Screens.SETTLEMENT else Screens.label_for(screen)
 		b.text = label if badge == 0 else "%s  (%d)" % [label, badge]
 		b.tooltip_text = label if badge == 0 else "%s — %d new" % [label, badge]
 		var selected: bool = screen == _screen
@@ -347,9 +349,13 @@ func _refresh_nav() -> void:
 ## Sidebar skill labels carry levels, so the one button whose skill just leveled is relabelled
 ## on the spot instead of rebuilding the whole navigation.
 func _on_skill_level_up(skill_id: String, _level: int) -> void:
-	var button: Button = _skill_nav_buttons.get(skill_id)
+	var button: Button = _nav_buttons.get(Screens.SETTLEMENT) if skill_id == "township" else _skill_nav_buttons.get(skill_id)
 	if button != null and is_instance_valid(button):
 		button.text = SidebarNav.skill_nav_text(skill_id)
+	if skill_id == "township" and is_instance_valid(_drawer):
+		for drawer_button in _drawer.find_children("*", "Button", true, false):
+			if drawer_button.text.begins_with("Settlement"):
+				drawer_button.text = SidebarNav.skill_nav_text(skill_id)
 
 func _bump_badge(screen: String) -> void:
 	if _screen == screen:

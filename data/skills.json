@@ -17,7 +17,7 @@
     "max_level": 120,
     "actions": [],
     "order": 2,
-    "description": "Melee damage output — how hard you hit."
+    "description": "Melee damage output \u2014 how hard you hit."
   },
   "defence": {
     "id": "defence",
@@ -252,7 +252,7 @@
       }
     },
     "order": 9,
-    "description": "Abyssal pact magic — trade safety and sanity for raw power."
+    "description": "Abyssal pact magic \u2014 trade safety and sanity for raw power."
   },
   "woodcutting": {
     "id": "woodcutting",
@@ -5099,7 +5099,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "icon_activity": true
       },
       {
         "id": "craft_sapphire_amulet",
@@ -5367,7 +5368,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "icon_activity": true
       },
       {
         "id": "craft_verdant_cloak",
@@ -5451,7 +5453,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.9
+        "mastery_action_time": 1.9,
+        "icon_activity": true
       },
       {
         "id": "craft_ruby_amulet",
@@ -5494,7 +5497,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "icon_activity": true
       },
       {
         "id": "enchant_stardust_lens",
@@ -5508,7 +5512,8 @@
         "output_items": {
           "topaz": 1
         },
-        "mastery_action_time": 1.9
+        "mastery_action_time": 1.9,
+        "icon_activity": true
       },
       {
         "id": "craft_red_dhide_body",
@@ -5642,7 +5647,8 @@
         "output_items": {
           "rune_essence": 2
         },
-        "mastery_action_time": 1.9
+        "mastery_action_time": 1.9,
+        "icon_activity": true
       },
       {
         "id": "craft_red_dhide_boots",
@@ -5686,7 +5692,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.7
+        "mastery_action_time": 1.7,
+        "icon_activity": true
       },
       {
         "id": "craft_diamond_amulet",
@@ -5786,7 +5793,8 @@
         "output_items": {
           "clockwork_frame": 1
         },
-        "mastery_action_time": 2.2
+        "mastery_action_time": 2.2,
+        "icon_activity": true
       },
       {
         "id": "work_ranch_scale",
@@ -5800,7 +5808,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.9
+        "mastery_action_time": 1.9,
+        "icon_activity": true
       },
       {
         "id": "craft_black_dhide_boots",
@@ -5828,7 +5837,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.9
+        "mastery_action_time": 1.9,
+        "icon_activity": true
       },
       {
         "id": "craft_wyrmforged_torc",
@@ -5885,7 +5895,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.9
+        "mastery_action_time": 1.9,
+        "icon_activity": true
       },
       {
         "id": "craft_archmage_hat",
@@ -5963,7 +5974,8 @@
         "output_items": {
           "rune_essence": 1
         },
-        "mastery_action_time": 1.9
+        "mastery_action_time": 1.9,
+        "icon_activity": true
       },
       {
         "id": "craft_archmage_boots",
@@ -9953,10 +9965,34 @@
     "order": 29,
     "description": "Harvest veins, nodes and wild resources from the landscape.",
     "vein_richness": [
-      { "id": "poor", "name": "Poor vein", "weight": 20, "hp_mult": 0.5, "xp_mult": 1.0 },
-      { "id": "normal", "name": "Vein", "weight": 60, "hp_mult": 1.0, "xp_mult": 1.0 },
-      { "id": "rich", "name": "Rich vein", "weight": 15, "hp_mult": 1.5, "xp_mult": 1.2 },
-      { "id": "motherlode", "name": "Motherlode", "weight": 5, "hp_mult": 2.5, "xp_mult": 1.5 }
+      {
+        "id": "poor",
+        "name": "Poor vein",
+        "weight": 20,
+        "hp_mult": 0.5,
+        "xp_mult": 1.0
+      },
+      {
+        "id": "normal",
+        "name": "Vein",
+        "weight": 60,
+        "hp_mult": 1.0,
+        "xp_mult": 1.0
+      },
+      {
+        "id": "rich",
+        "name": "Rich vein",
+        "weight": 15,
+        "hp_mult": 1.5,
+        "xp_mult": 1.2
+      },
+      {
+        "id": "motherlode",
+        "name": "Motherlode",
+        "weight": 5,
+        "hp_mult": 2.5,
+        "xp_mult": 1.5
+      }
     ]
   },
   "echo_keeping": {
@@ -10001,7 +10037,7 @@
         "level_required": 1,
         "base_interval": 3.0,
         "base_xp": 10,
-        "description": "Push captured traces into a rack in a chosen order. The order is the skill — the sequence is what repeats, not the bonus.",
+        "description": "Push captured traces into a rack in a chosen order. The order is the skill \u2014 the sequence is what repeats, not the bonus.",
         "mastery_action_time": 3.0,
         "input_items": {
           "resonance_trace": 3
@@ -10449,7 +10485,7 @@
         "level_required": 25,
         "base_interval": 3.8,
         "base_xp": 23,
-        "description": "Two anchors from one survey — the cheap way to build a network you will actually use.",
+        "description": "Two anchors from one survey \u2014 the cheap way to build a network you will actually use.",
         "mastery_action_time": 3.8,
         "input_items": {
           "route_survey": 2
@@ -10758,7 +10794,7 @@
         "level_required": 15,
         "base_interval": 3.5,
         "base_xp": 17,
-        "description": "Dry, quick and hungry — a poor friend to seedlings and a good one to anything being cured.",
+        "description": "Dry, quick and hungry \u2014 a poor friend to seedlings and a good one to anything being cured.",
         "mastery_action_time": 3.5,
         "output_items": {
           "weather_starter": 1
@@ -11379,7 +11415,7 @@
       }
     ],
     "order": 33,
-    "description": "Propose and run customs — community traditions with unique rewards."
+    "description": "Propose and run customs \u2014 community traditions with unique rewards."
   },
   "lostfinding": {
     "id": "lostfinding",
@@ -13048,6 +13084,6 @@
       }
     },
     "order": 40,
-    "description": "Outfit caravans and unlock independent trade routes as your Caravaneering level grows. Visit reward stops and navigate danger on each destination’s journey map."
+    "description": "Outfit caravans and unlock independent trade routes as your Caravaneering level grows. Visit reward stops and navigate danger on each destination\u2019s journey map."
   }
 }

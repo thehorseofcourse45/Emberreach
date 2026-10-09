@@ -13,6 +13,17 @@ extends Node
 
 signal plots_changed()
 
+const METHODS := {
+	"balanced": {"name": "Balanced", "survival": 0.0, "yield": 0, "time": 1.0},
+	"careful": {"name": "Careful", "survival": 0.20, "yield": 0, "time": 1.15},
+	"intensive": {"name": "Intensive", "survival": -0.15, "yield": 35, "time": 1.20}
+}
+const UPGRADES := [
+	{"name": "Cultivated beds", "level": 20, "cost": 5000},
+	{"name": "Irrigated beds", "level": 50, "cost": 25000},
+	{"name": "Enchanted soil", "level": 90, "cost": 100000}
+]
+
 const PLOT_COUNTS := {"allotment": 6, "herb": 6, "tree": 3}
 
 # Array of plot dictionaries: {type, seed_id, planted_unix, grow_seconds, compost, alive, harvested}
@@ -107,19 +118,20 @@ func plant(index: int, seed_id: String, consume_from_bank: bool = true) -> bool:
 		return false
 	if consume_from_bank and not BankManager.remove_item(seed_id, 1):
 		return false
-	_occupy(index, seed_id, seed_data)
+	_occupy(index, seed_id)
 	plots_changed.emit()
 	return true
 
-func _occupy(index: int, seed_id: String, seed_data: Dictionary) -> void:
+func _occupy(index: int, seed_id: String) -> void:
 	var plot: Dictionary = plots[index]
+	var preview: Dictionary = planting_preview(index, seed_id)
+	plot["crop_yield_bonus"] = int(preview.yield_bonus)
+	plot["crop_survival"] = float(preview.survival)
 	plot["seed_id"] = seed_id
 	plot["planted_unix"] = Time.get_unix_time_from_system()
-	plot["grow_seconds"] = grow_seconds_for(seed_id)
+	plot["grow_seconds"] = float(preview.seconds)
 	plot["harvested"] = false
-	# Survival chance: base + 10% per compost, capped 100%.
-	var survival: float = clampf(float(seed_data.get("base_survival", 0.5)) + 0.1 * float(plot["compost"]) + (0.25 if bool(plot.get("manure", false)) else 0.0), 0.0, 1.0)
-	plot["alive"] = _rng.randf() <= survival
+	plot["alive"] = _rng.randf() <= float(preview.survival)
 
 ## First empty plot this seed can grow in wins. Returns the plot index, or -1 when nothing was plantable.
 func plant_first_free(seed_id: String, consume_from_bank: bool = true) -> int:
@@ -141,7 +153,7 @@ func apply_manure(plot_index: int) -> bool:
 func apply_compost(plot_index: int) -> bool:
 	if plot_index < 0 or plot_index >= plots.size():
 		return false
-	if str(plots[plot_index].seed_id) != "": return false
+	if str(plots[plot_index].seed_id) != "" or int(plots[plot_index].compost) >= 5: return false
 	if not BankManager.has_item("compost", 1):
 		return false
 	BankManager.remove_item("compost", 1)
@@ -196,9 +208,9 @@ func harvest(plot_index: int, player_modifiers: bool = true, at_time: float = 0.
 	var action_id: String = action_id_for_seed(str(p["seed_id"]))
 	var bonus: Dictionary = _crop_mastery_bonus(action_id) if player_modifiers else {"flat": 0, "doubling": 0.0}
 	var yield_qty: int = maxi(1, _rng.randi_range(int(seed_data.get("min_yield", 1)), int(seed_data.get("max_yield", 3))) + int(bonus["flat"]))
-	if bool(p.get("manure", false)):
-		var extra: float = float(yield_qty) * 0.1
-		yield_qty += floori(extra) + (1 if _rng.randf() < fmod(extra, 1.0) else 0)
+	var yield_pct: int = int(p.get("crop_yield_bonus", 10 if bool(p.get("manure", false)) else 0))
+	var extra: float = float(yield_qty) * float(yield_pct) / 100.0
+	yield_qty += floori(extra) + (1 if _rng.randf() < fmod(extra, 1.0) else 0)
 	# Per-unit doubling, mirroring SkillManager._produce_outputs.
 	var total: int = 0
 	for _i in range(yield_qty):
@@ -211,6 +223,7 @@ func harvest(plot_index: int, player_modifiers: bool = true, at_time: float = 0.
 	if xp > 0.0:
 		PlayerData.add_xp("farming", xp)
 	MasteryManager.add_mastery_xp("farming", action_id, float(p["grow_seconds"]) / 3600.0, 0.0)
+	p["last_seed"] = str(p["seed_id"])
 	p["seed_id"] = ""
 	p["harvested"] = true
 	p["manure"] = false
@@ -247,15 +260,39 @@ func deserialize(d: Dictionary) -> void:
 	if typeof(saved) == TYPE_ARRAY:
 		for p in saved:
 			if typeof(p) == TYPE_DICTIONARY and (p as Dictionary).has("seed_id"):
+				p["upgrade"] = clampi(int(p.get("upgrade", 0)), 0, UPGRADES.size())
+				if not METHODS.has(str(p.get("method", "balanced"))): p["method"] = "balanced"
 				plots.append(p)
 	if plots.is_empty():
 		_build_plots()
+
+func set_method(index: int, method: String) -> bool:
+	if index < 0 or index >= plots.size() or not METHODS.has(method) or str(plots[index].seed_id) != "": return false
+	plots[index]["method"] = method
+	plots_changed.emit()
+	return true
+
+func upgrade_plot(index: int) -> bool:
+	if index < 0 or index >= plots.size() or str(plots[index].seed_id) != "": return false
+	var tier: int = int(plots[index].get("upgrade", 0))
+	if tier >= UPGRADES.size(): return false
+	var next: Dictionary = UPGRADES[tier]
+	if PlayerData.get_level("farming") < int(next.level) or not PlayerData.spend_gp(float(next.cost)): return false
+	plots[index]["upgrade"] = tier + 1
+	plots_changed.emit()
+	return true
 
 func planting_preview(plot_index: int, seed_id: String) -> Dictionary:
 	if plot_index < 0 or plot_index >= plots.size(): return {}
 	var seed: Dictionary = DataLoader.get_item(seed_id)
 	var plot: Dictionary = plots[plot_index]
-	return {"survival": clampf(float(seed.get("base_survival", 0.5)) + int(plot.compost) * 0.1 + (0.25 if bool(plot.get("manure", false)) else 0), 0, 1), "seconds": grow_seconds_for(seed_id), "yield_bonus": 10 if bool(plot.get("manure", false)) else 0}
+	var method: Dictionary = METHODS[str(plot.get("method", "balanced"))]
+	var tier: int = int(plot.get("upgrade", 0))
+	var rotated: bool = str(plot.get("last_seed", "")) != "" and str(plot.last_seed) != seed_id
+	var survival: float = float(seed.get("base_survival", 0.5)) + int(plot.compost) * 0.1
+	survival += (0.25 if bool(plot.get("manure", false)) else 0.0) + float(method.survival) + tier * 0.05 + (0.10 if rotated else 0.0)
+	var yield_bonus: int = (10 if bool(plot.get("manure", false)) else 0) + int(method["yield"]) + tier * 10 + (15 if rotated else 0)
+	return {"survival": clampf(survival, 0, 1), "seconds": grow_seconds_for(seed_id) * float(method.time) * (1.0 - tier * 0.05), "yield_bonus": yield_bonus, "rotated": rotated}
 
 func harvest_replant(plot_index: int) -> bool:
 	if not is_ready(plot_index): return false

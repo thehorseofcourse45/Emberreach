@@ -198,6 +198,6 @@ func worker_preview(index: int) -> Dictionary:
 			var cycles: float = 3600.0 / (float(crop.seconds) + 30.0 / efficiency)
 			cycles_hour += cycles
 			var id: String = str(seed.get("product_item", ""))
-			outputs[id] = float(outputs.get(id, 0)) + cycles * float(crop.survival) * float(int(seed.get("min_yield", 1)) + int(seed.get("max_yield", 3))) / 2.0
+			outputs[id] = float(outputs.get(id, 0)) + cycles * float(crop.survival) * float(int(seed.get("min_yield", 1)) + int(seed.get("max_yield", 3))) / 2.0 * (1.0 + float(crop.yield_bonus) / 100.0)
 		materials = BankManager.get_count(seed_id) / maxf(0.001, cycles_hour)
 	return {"outputs": outputs, "fuel": fuel, "fuel_hours": float(worker.fuel_seconds) / 3600.0 + floorf(float(BankManager.get_count(str(def.fuel))) / fuel), "material_hours": materials, "efficiency": efficiency, "status": str(worker.status)}

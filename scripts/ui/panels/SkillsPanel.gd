@@ -209,6 +209,10 @@ func _rebuild_header() -> void:
 	highlights.add_child(Widgets.stat_card("Mastery pool", "%.1f%%" % MasteryManager.get_pool_percent(_skill_id), UITokens.PURPLE))
 	highlights.add_child(Widgets.stat_card("Activities unlocked", "%d / %d" % [DataLoader.get_unlocked_action_count(_skill_id, level), DataLoader.get_action_count(_skill_id)], UITokens.TEAL))
 	col.add_child(highlights)
+	if _skill_id == "farming":
+		var farm := UIStyle.primary_button("Manage farm · upgrades, rotation & growing methods")
+		farm.pressed.connect(func(): navigated.emit({"screen": Screens.FARM}))
+		col.add_child(farm)
 	head.add_child(col)
 	_header.add_child(hero)
 
