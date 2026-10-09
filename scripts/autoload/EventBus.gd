@@ -38,6 +38,13 @@ signal action_stopped(skill_id: String, action_id: String)
 signal action_tick(skill_id: String, action_id: String, progress: float)
 signal action_completed(skill_id: String, action_id: String, rewards: Dictionary)
 
+# --- Activity events (EventDirector) ---
+## A spawn bonus or a choice card is waiting for the player. Silent runs never emit it.
+signal event_offered(event: Dictionary)
+## An offered card was applied: choice_policy is "safe"/"greedy" — what was ACTUALLY taken,
+## whether by button, stored policy or timeout.
+signal event_resolved(event_id: String, choice_policy: String)
+
 # --- Combat ---
 signal combat_started(context: Dictionary)
 signal combat_ended(context: Dictionary)
@@ -52,6 +59,8 @@ signal status_effect_expired(target: String, effect_id: String)
 signal player_special_attack(sa_id: String)
 signal monster_special_attack(sa_id: String)
 signal monster_phase_entered(monster_id: String, phase_name: String)
+signal ability_triggered(ability_id: String)
+signal strategy_changed(strategy_name: String)
 
 # --- Unlocks & completion ---
 signal pet_unlocked(pet_id: String)

@@ -39,6 +39,11 @@ const DEFAULT_INTERVAL: float = 3.0
 var active_skill: String = ""
 var active_action_id: String = ""
 var running: bool = false
+## EventDirector sets this while an event card waits for the player: the loop freezes in place
+## (no progress, no timers, no completions) and resumes the instant the card resolves — through a
+## button OR through EventDirector's watchdog, so a paused loop always has a deadline on it.
+## start_action/stop_action clear it, so a pause can never leak into the next session.
+var paused: bool = false
 var progress: float = 0.0          ## seconds elapsed on the current action
 var current_interval: float = 0.25
 var last_action_count: int = 0     ## completed actions this session (for stats)
@@ -54,10 +59,25 @@ var node_respawn_timer: float = 0.0
 var node_richness: String = ""   ## vein richness tier id; "" when the skill has no vein_richness
 var stun_timer: float = 0.0
 
+# --- Momentum (activity plan Task 5): one global rule, per-skill persistence ---
+## Consecutive successful attempts before the XP bonus stops growing.
+const MOMENTUM_CAP_ACTIONS: int = 20
+## Percent of bonus XP per streak step (20 steps * 0.5% = +10% at the cap).
+const MOMENTUM_XP_PER_STEP: float = 0.5
+## The ACTIVE skill's streak. Mirrored into PlayerData.momentum[skill_id] on every change and
+## reloaded on session start, so the record lives in exactly one persisted place.
+var momentum_streak: int = 0
+
 var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	_rng.randomize()
+
+## Pin the skill/event stream from tests. Task 4's offline-equivalence check needs two runs of
+## the SAME seed through different drivers (tick loop vs simulate_elapsed), so the seed must be
+## settable instead of only randomizable.
+func seed_rng(seed_value: int) -> void:
+	_rng.seed = seed_value
 
 # =========================================================================
 #  Control
@@ -121,6 +141,9 @@ func start_action(skill_id: String, action_id: String, target_quantity: int = 0)
 	active_action_id = action_id
 	progress = 0.0
 	running = true
+	paused = false
+	# Momentum is per-skill: resume this skill's streak (absent == 0) from the persisted record.
+	momentum_streak = maxi(0, int(PlayerData.momentum.get(skill_id, 0)))
 	stop_reason = StopReason.NONE
 	stop_detail = ""
 	repeat_target = maxi(0, target_quantity)
@@ -131,6 +154,10 @@ func start_action(skill_id: String, action_id: String, target_quantity: int = 0)
 	node_respawn_timer = 0.0
 	stun_timer = 0.0
 	MasteryManager.update_item_mastery_source(skill_id, action_id)
+	# Session hygiene for the event layer: works in silent mode too, where the action_started
+	# signal below is deliberately suppressed. Resolves any card the previous session left and
+	# drops a spawn offer that is not about this action.
+	EventDirector.begin_session(skill_id, action_id)
 	if not SimulationMode.is_silent():
 		EventBus.action_started.emit(skill_id, action_id)
 		EventBus.activity_changed.emit()
@@ -144,6 +171,7 @@ func stop_action(reason: int = StopReason.PLAYER, detail: String = "") -> void:
 	if prev_skill == "enchanting":
 		EnchantingManager.pending = {}
 	running = false
+	paused = false
 	active_skill = ""
 	active_action_id = ""
 	progress = 0.0
@@ -194,7 +222,24 @@ func _process(delta: float) -> void:
 
 func tick(delta: float, emit_progress: bool = true) -> void:
 	if not running:
+		# Leak guard: a stop that happened mid-decision (possibly inside a silent run, where the
+		# action_stopped signal is suppressed) must not leave an unanswered card frozen behind.
+		if not EventDirector.pending_card.is_empty():
+			EventDirector.resolve(EventDirector.pending_card.duplicate(true), "TIMEOUT")
 		return
+	if paused:
+		# An unanswered event card freezes the loop but NOT the game clock: the watchdog rides
+		# this same delta, so EVERY driver gets one timeline — real frames, a test's synchronous
+		# tick loop, and an offline slice all time a walk-away out after exactly
+		# CARD_TIMEOUT_SECONDS and then hand the remainder of the delta back to the loop.
+		# That is also why offline catch-up matches online action counts for the same seed: the
+		# replay reproduces the pause instead of racing past it.
+		var consumed: float = EventDirector.advance_timeout(delta)
+		if paused:
+			return
+		delta -= consumed
+		if delta <= 0.0:
+			return
 	# A stun or respawn pauses the action, but only for the part of delta it actually covers.
 	# Anything left over must continue into progress, or a long offline slice silently loses it.
 	if stun_timer > 0.0:
@@ -212,7 +257,7 @@ func tick(delta: float, emit_progress: bool = true) -> void:
 	progress += delta
 	if emit_progress and not SimulationMode.is_silent():
 		EventBus.action_tick.emit(active_skill, active_action_id, progress / maxf(current_interval, 0.001))
-	while running and progress >= current_interval:
+	while running and not paused and progress >= current_interval:
 		progress -= current_interval
 		perform_action()
 		if not running:
@@ -221,6 +266,10 @@ func tick(delta: float, emit_progress: bool = true) -> void:
 		if current_interval <= 0.0:
 			# Defensive: a modifier must never produce a zero or negative interval.
 			current_interval = 0.25
+		if paused:
+			# The action that just completed offered an event card: freeze here with the fresh
+			# interval already set. EventDirector's watchdog guarantees the pause is bounded.
+			return
 
 func _compute_interval() -> float:
 	var data: Dictionary = get_action_data()
@@ -281,13 +330,19 @@ func perform_action() -> Dictionary:
 			return {"success": false, "stop": "ward_full"}
 
 	# 1) Success roll. Thieving uses stealth vs perception; others use success_chance.
-	if _rng.randf() > _success_chance(data):
+	#    EventDirector claims one-shot card effects here — on a real attempt only, never on an
+	#    early stop — and draws no RNG of its own, so the stream order below is unchanged.
+	var event_mods: Dictionary = EventDirector.begin_action(active_skill, active_action_id)
+	if _rng.randf() > _success_chance(data) + float(event_mods["success_delta"]):
 		var waste: Dictionary = _on_action_failure(data)
 		if not SimulationMode.is_silent():
 			EventBus.action_completed.emit(active_skill, active_action_id,
 				{"success": false, "items": waste})
 		return {"success": false, "stop": "", "items": waste}
 
+	# Momentum: this attempt SUCCEEDED — climb BEFORE granting, so the reward reflects the streak
+	# it just extended (capped). The failure branch above wiped it through _on_action_failure.
+	_apply_momentum(true)
 	# 2) Consume inputs (with preservation chance), then produce outputs (with doubling).
 	_consume_inputs(data, bool(data.get("enchant_job", false)))
 	var produced: Dictionary = _produce_outputs(data)
@@ -297,6 +352,11 @@ func perform_action() -> Dictionary:
 	if data.has("research_unlock"):
 		xp *= 1.0 + ModifierManager.get_modifier("inscription_research_xp_percent") / 100.0
 	xp *= float(richness_tier().get("xp_mult", 1.0))
+	# Event bonuses — an active spawn on ITS target action plus the card claimed above, both as
+	# percentage points. Empty pools make this a no-op multiplication by 1.0.
+	xp *= 1.0 + float(event_mods["xp_percent"]) / 100.0
+	# Momentum: +0.5% per streak step, hard-stopped at MOMENTUM_CAP_ACTIONS.
+	xp *= momentum_xp_multiplier()
 	if xp > 0.0:
 		PlayerData.add_xp(active_skill, xp)
 	var mastery_time: float = float(data.get("mastery_action_time", -1.0))
@@ -332,7 +392,32 @@ func _check_output_space(data: Dictionary) -> Dictionary:
 				"detail": "Storage is full — no room for %s" % DataLoader.get_item(str(item_id)).get("name", item_id)}
 	return {"ok": true, "reason": "", "detail": ""}
 
+## The momentum rule in one place: a success climbs (capped), any failure wipes it. The engine
+## funnels both branches through here (perform_action's success path, _on_action_failure), and
+## tests drive it directly through _apply_momentum_for_test — the plan-mandated hook name.
+## Consumes no RNG: streaks are deterministic from the action history, so offline replay and
+## online play build the same multiplier over the same seed.
+func _apply_momentum(success: bool) -> void:
+	if success:
+		momentum_streak = mini(momentum_streak + 1, MOMENTUM_CAP_ACTIONS)
+	else:
+		momentum_streak = 0
+	if active_skill != "":
+		PlayerData.momentum[active_skill] = momentum_streak
+
+## Task 5's test hook: the plan's suite calls this name directly.
+func _apply_momentum_for_test(success: bool) -> void:
+	_apply_momentum(success)
+
+## The multiplier the XP grant uses: 1.0 cold, +0.5% a step, hard-stopped at the cap (so a
+## hand-set streak beyond 20 cannot print more than +10%).
+func momentum_xp_multiplier() -> float:
+	return 1.0 + mini(momentum_streak, MOMENTUM_CAP_ACTIONS) * (MOMENTUM_XP_PER_STEP / 100.0)
+
 func _on_action_failure(data: Dictionary) -> Dictionary:
+	# One failed attempt breaks the streak — the reset lives here so EVERY failure path (the
+	# success roll, and only the success roll) is covered without a second call site.
+	_apply_momentum(false)
 	var stun: float = float(data.get("stun_seconds", 0.0))
 	if stun > 0.0:
 		stun_timer = stun
@@ -454,6 +539,8 @@ func _post_action(data: Dictionary, action_time: float) -> void:
 	PetManager.roll_for_skill(active_skill, current_interval)
 	if active_skill == "archaeology":
 		ArchaeologyManager.on_excavate(active_action_id)
+	# One line, plan-mandated: the event roll rides the SAME _rng stream, in completion order.
+	EventDirector.roll_post_action(active_skill, active_action_id, _rng)
 
 	if active_skill == "farming":
 		# The seed was paid through input_items; land it in the first free plot.
@@ -575,12 +662,16 @@ func deserialize(d: Dictionary) -> void:
 		running = false
 		active_skill = ""
 		active_action_id = ""
+		momentum_streak = 0
 		return
 	var data: Dictionary = DataLoader.get_action(active_skill, active_action_id)
 	node_richness = str(d.get("node_richness", ""))
 	node_max_hp = _scaled_hp(int(data.get("node_hp", 0)))
 	node_hp = clampi(int(d.get("node_hp", node_max_hp)), 0, maxi(node_max_hp, 0))
 	current_interval = _compute_interval()
+	# SaveManager._apply deserializes PlayerData BEFORE SkillManager, so the per-skill streak
+	# record is already authoritative here — a reload restores the streak with the session.
+	momentum_streak = maxi(0, int(PlayerData.momentum.get(active_skill, 0)))
 	# A save taken mid-action with materials already gone should not silently resume producing.
 	if running:
 		var check: Dictionary = check_action(active_skill, active_action_id)

@@ -15,10 +15,23 @@ extends RefCounted
 const PINNED_SCREENS: Array[String] = [Screens.STORE, Screens.PROVISIONER, Screens.COMBAT, Screens.EQUIPMENT, Screens.BANK]
 
 ## Build the sidebar column into `sidebar_wrap` and the hidden drawer into
-## `host`. Returns {list, scroll, drawer, nav_button, nav_buttons, skill_buttons}.
+## `host`. Returns {list, scroll, drawer, nav_button, nav_buttons, skill_buttons, accent_fx,
+## accent_bar}.
 static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 	var col := UIStyle.vbox(UITokens.SP_4)
 	sidebar_wrap.add_child(col)
+	# The selection accent is an overlay across the panel rather than a row in the column: the
+	# column is a container, so a child of it would be laid out as another entry and could not
+	# slide to a button. The panel fits this overlay to its own rect, and the bar inside it is a
+	# free-positioned child, so slide_accent can put it anywhere.
+	var accent_fx := Control.new()
+	accent_fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sidebar_wrap.add_child(accent_fx)
+	var accent_bar := ColorRect.new()
+	accent_bar.color = UITokens.GOLD_BRIGHT
+	accent_bar.size = Vector2(3, UITokens.H_HEADER)
+	accent_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	accent_fx.add_child(accent_bar)
 	var brand := UIStyle.vbox(UITokens.SP_1)
 	brand.add_child(UIStyle.title("EMBERREACH", UITokens.FONT_SUBHEAD))
 	brand.add_child(UIStyle.label("The Riven Frontier", true, UITokens.FONT_MICRO))
@@ -74,7 +87,25 @@ static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 	host.add_child(drawer)
 	nav_button.pressed.connect(func(): toggle_drawer(host, drawer))
 	return {"list": list, "scroll": scroll, "drawer": drawer, "nav_button": nav_button,
-		"nav_buttons": nav_buttons, "skill_buttons": skill_buttons}
+		"nav_buttons": nav_buttons, "skill_buttons": skill_buttons,
+		"accent_fx": accent_fx, "accent_bar": accent_bar}
+
+## Put the accent bar on the selected row, or hide it when nothing is selected. Measured in global
+## space and re-expressed in the overlay's space, so a scrolled sidebar and the drawer-less compact
+## layout both land on the right row without either knowing about the other.
+static func slide_accent(overlay: Control, bar: ColorRect, target: Button) -> void:
+	if overlay == null or not is_instance_valid(overlay) or bar == null or not is_instance_valid(bar):
+		return
+	if target == null or not is_instance_valid(target):
+		bar.visible = false
+		return
+	bar.visible = true
+	var y: float = target.get_global_rect().position.y - overlay.get_global_rect().position.y
+	if Motion.reduced():
+		bar.position.y = y
+		return
+	var tween := bar.create_tween()
+	tween.tween_property(bar, "position:y", y, UITokens.DUR_NORMAL)
 
 static func toggle_drawer(host: Control, drawer: PanelContainer) -> void:
 	drawer.visible = not drawer.visible

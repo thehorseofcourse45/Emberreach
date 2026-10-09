@@ -23,7 +23,27 @@ const DANGER := UITokens.RED
 #  Style boxes
 # =========================================================================
 
-static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBoxFlat:
+static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBox:
+	# Opt-in: the art is only sliced in when UITokens.NINE_SLICE_ART_ENABLED is flipped on, so an
+	# old-scheme illustration in assets/ui/ can never be stretched behind the whole workspace.
+	var path: String = "res://assets/ui/%s_9slice.png" % kind
+	if UITokens.NINE_SLICE_ART_ENABLED and ResourceLoader.exists(path):
+		var tex: Texture2D = load(path)
+		var sb := StyleBoxTexture.new()
+		sb.texture = tex
+		var m: int = UITokens.NINE_SLICE_MARGINS.get(kind, 12)
+		# The texture margins are what make this a 9-slice: at 0 Godot stretches the whole image,
+		# so the corners and the borders distort with the widget.
+		sb.texture_margin_left = float(m); sb.texture_margin_right = float(m)
+		sb.texture_margin_top = float(m); sb.texture_margin_bottom = float(m)
+		sb.content_margin_left = m; sb.content_margin_right = m
+		sb.content_margin_top = m; sb.content_margin_bottom = m
+		sb.expand_margin_left = m; sb.expand_margin_right = m
+		sb.expand_margin_top = m; sb.expand_margin_bottom = m
+		return sb
+	return _flat_fallback(kind, accent)  # today's StyleBoxFlat body, moved verbatim
+
+static func _flat_fallback(kind: String, accent: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.border_color = UITokens.BORDER
 	sb.set_border_width_all(1)
@@ -72,7 +92,7 @@ static func _inset(sb: StyleBoxFlat, left: int, right: int, top: int, bottom: in
 	sb.content_margin_top = top
 	sb.content_margin_bottom = bottom
 
-static func panel_style(accent := false) -> StyleBoxFlat:
+static func panel_style(accent := false) -> StyleBox:
 	return surface_box("panel", accent)
 
 static func chip_box(fill: Color) -> StyleBoxFlat:
@@ -90,6 +110,13 @@ static func chip_box(fill: Color) -> StyleBoxFlat:
 
 static func build_theme() -> Theme:
 	var th := Theme.new()
+
+	# --- fonts ------------------------------------------------------------
+	# Missing files keep the default font, never crash (pinned by test_identity_theme_builds).
+	if ResourceLoader.exists("res://assets/fonts/ember_display.ttf"):
+		th.set_font("display", "", load("res://assets/fonts/ember_display.ttf"))
+	if ResourceLoader.exists("res://assets/fonts/ember_text.ttf"):
+		th.set_font("text", "", load("res://assets/fonts/ember_text.ttf"))
 
 	# --- containers -------------------------------------------------------
 	th.set_stylebox("panel", "PanelContainer", surface_box("panel"))
@@ -150,9 +177,9 @@ static func build_theme() -> Theme:
 		th.set_stylebox("scroll", cls2, _solid(Color(0, 0, 0, 0.18), UITokens.R_PILL))
 
 	# --- text inputs ------------------------------------------------------
-	var le_normal := surface_box("sunken")
+	var le_normal: StyleBoxFlat = surface_box("sunken")
 	le_normal.set_corner_radius_all(UITokens.R_MD)
-	var le_focus := surface_box("sunken")
+	var le_focus: StyleBoxFlat = surface_box("sunken")
 	le_focus.set_corner_radius_all(UITokens.R_MD)
 	le_focus.border_color = UITokens.GOLD
 	le_focus.set_border_width_all(2)

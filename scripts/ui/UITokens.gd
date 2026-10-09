@@ -54,6 +54,7 @@ const CURRENCY := Color("#fcd34d")       ## real gold, for coin values and legen
 # ---------------------------------------------------------------- rarity (presentation only)
 ## Rarity is a presentation layer derived from data we already have (explicit tier, then sell
 ## value band). It is documented here so nobody mistakes it for a gameplay stat.
+## Legendary/relic keep literal golds: GOLD/GOLD_BRIGHT are the ember accent now.
 const RARITY: Dictionary = {
 	"common": {"label": "Common", "color": Color("#8b88b0")},
 	"uncommon": {"label": "Uncommon", "color": TEAL},
@@ -78,6 +79,17 @@ const R_SM := 5
 const R_MD := 10
 const R_LG := 14
 const R_PILL := 999
+
+# ---------------------------------------------------------------- nine-slice
+## The files in assets/ui/ are old-scheme navy art, not ember art, so consuming them is opt-in:
+## with this off the UI renders the warm code-drawn surfaces (UIStyle.surface_box's flat
+## fallback). Flip it to true once the owner's ember art lands and every
+## assets/ui/<kind>_9slice.png is sliced into the surfaces below. A var, not a const, so a test
+## can flip it (same pattern as Motion.force_reduced).
+static var NINE_SLICE_ART_ENABLED: bool = false
+## Per-kind content/expand inset when 9-slice art exists (see UIStyle.surface_box).
+## Missing kinds fall back to 12; missing art falls back to StyleBoxFlat.
+const NINE_SLICE_MARGINS := {"panel": 12, "button": 8, "chip": 6}
 
 # ---------------------------------------------------------------- type
 const FONT_MICRO := 11

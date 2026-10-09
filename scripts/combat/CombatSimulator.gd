@@ -37,6 +37,12 @@ const ENRAGE_HP_FRACTION: float = 0.25
 const ENRAGE_MULTIPLIER: float = 1.5
 ## The fastest a monster may attack, shared with CombatManager's live loop.
 const MONSTER_INTERVAL_FLOOR: float = 0.25
+## Mirrors CombatManager.ENEMY_RAGE_BONUS_FRACTION / ENEMY_VEIL_BONUS / ENEMY_LEECH_FRACTION:
+## a wounded monster hits harder, a veiled one is harder to hit, and a leeching one knits back a
+## fraction of what it dealt. Literals for the same reason as the regen fraction above.
+const ENEMY_RAGE_BONUS_FRACTION: float = 0.5
+const ENEMY_VEIL_BONUS: int = 15
+const ENEMY_LEECH_FRACTION: float = 0.25
 
 ## Run the whole simulation. `snapshot` must already be flattened — see CombatSimulatorManager.
 ## `trials` is the count; the production UI always passes 10,000.
@@ -52,6 +58,7 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 		"elapsed_seconds": 0.0,
 		"fights": 0,
 		"damage_dealt": 0.0,
+		"ability_fires": 0,
 		"xp": {},
 		"assumptions": _assumptions(snapshot),
 	}
@@ -67,6 +74,7 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 	var elapsed: float = 0.0
 	var fights: int = 0
 	var damage: float = 0.0
+	var fires: int = 0
 
 	for _trial in range(total):
 		var outcome: Dictionary = _run_trial(snapshot, rng, xp)
@@ -74,6 +82,7 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 		elapsed += float(outcome["seconds"])
 		damage += float(outcome["damage"])
 		food += int(outcome["food"])
+		fires += int(outcome["ability_fires"])
 		match str(outcome["result"]):
 			"win":
 				wins += 1
@@ -91,6 +100,8 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 	report["elapsed_seconds"] = elapsed
 	report["fights"] = fights
 	report["damage_dealt"] = damage
+	# How often the loadout actually fired, so a loadout that never triggers is visible.
+	report["ability_fires"] = fires
 	report["xp"] = xp
 	report["death_chance"] = (float(deaths) + float(timeouts)) / float(total)
 	# Rates are per hour of simulated fighting time, not per wall-clock second of the run.
@@ -114,6 +125,7 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 	return report
 
 ## One full trial: the target's monster sequence, from full HP, until the run is won or lost.
+## Ability cooldowns live on the trial, not the fight, as the live counters live on the session.
 static func _run_trial(snapshot: Dictionary, rng: RandomNumberGenerator, xp: Dictionary) -> Dictionary:
 	snapshot = snapshot.duplicate(true) # Fresh finite inventory for each full encounter trial.
 	var player: Dictionary = snapshot.get("player", {})
@@ -124,26 +136,29 @@ static func _run_trial(snapshot: Dictionary, rng: RandomNumberGenerator, xp: Dic
 	var kills: int = 0
 	var food: int = 0
 	var damage: float = 0.0
+	var fires: int = 0
+	var cooldowns: Dictionary = {}
 	var result: String = "win"
 	for monster in monsters:
 		if typeof(monster) != TYPE_DICTIONARY:
 			continue
-		var fight: Dictionary = _run_fight(snapshot, player, monster, max_hp, hp, rng, xp)
+		var fight: Dictionary = _run_fight(snapshot, player, monster, max_hp, hp, rng, xp, cooldowns)
 		seconds += float(fight["seconds"])
 		damage += float(fight["damage"])
 		food += int(fight["food"])
+		fires += int(fight["ability_fires"])
 		if bool(fight["player_died"]):
 			return {"result": "death", "seconds": seconds, "kills": kills, "food": food,
-				"damage": damage, "fights": _fights_so_far(monsters, monster)}
+				"damage": damage, "fights": _fights_so_far(monsters, monster), "ability_fires": fires}
 		hp = float(fight["hp_after"])
 		# A kill is only a kill if the fight was actually won.
 		kills += int(fight["kills"])
 		if bool(fight["timed_out"]):
 			result = "timeout"
 			return {"result": result, "seconds": seconds, "kills": kills, "food": food,
-				"damage": damage, "fights": _fights_so_far(monsters, monster)}
+				"damage": damage, "fights": _fights_so_far(monsters, monster), "ability_fires": fires}
 	return {"result": result, "seconds": seconds, "kills": kills, "food": food,
-		"damage": damage, "fights": monsters.size()}
+		"damage": damage, "fights": monsters.size(), "ability_fires": fires}
 
 ## Index of the monster just fought, plus one, so a trial abandoned mid-way still reports the
 ## fights it actually spent.
@@ -159,7 +174,8 @@ static func _fights_so_far(monsters: Array, monster: Dictionary) -> int:
 ## Monster mechanics (affinities, armored / lifedrain / venomous, boss phases, player status
 ## resistance) come from MonsterMechanics, the rule set the live loop uses.
 static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictionary,
-		max_hp: float, hp_start: float, rng: RandomNumberGenerator, xp: Dictionary) -> Dictionary:
+		max_hp: float, hp_start: float, rng: RandomNumberGenerator, xp: Dictionary,
+		cooldowns: Dictionary = {}) -> Dictionary:
 	var style: String = str(player.get("style", "melee"))
 	# Everything a boss phase can change (style, speed, max hit, passives) lives in the view and is
 	# re-derived whenever a phase fires.
@@ -177,6 +193,14 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 	var crit_mult: float = float(player.get("crit_multiplier", 50.0))
 	var life_steal: float = float(player.get("life_steal", 0.0))
 	var regen_per_attack: float = float(player.get("hp_regen_per_attack", 0.0))
+	var loadout: Array = snapshot.get("loadout", [])
+	var strategy: Dictionary = snapshot.get("strategy", {})
+	var weapon_special: Dictionary = snapshot.get("weapon_special", {})
+	if weapon_special.is_empty():
+		weapon_special = snapshot.get("player_special", {})
+	# A Flurry-class interval_percent is a per-tick speedup: held here, spent on the next step.
+	var ability_interval_percent: float = 0.0
+	var ability_fires: int = 0
 	var hp: float = hp_start
 	var seconds: float = 0.0
 	var food: int = 0
@@ -192,7 +216,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 		steps += 1
 		if steps > MAX_STEPS_PER_FIGHT or seconds >= FIGHT_SECONDS_CEILING:
 			return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage,
-				"kills": kills, "player_died": false, "timed_out": true, "phases_fired": int(view["fired"])}
+				"kills": kills, "player_died": false, "timed_out": true, "phases_fired": int(view["fired"]), "ability_fires": ability_fires}
 		hp -= _tick_statuses(player_effects, STEP_SECONDS)
 		monster_hp -= _tick_statuses(monster_effects, STEP_SECONDS)
 		if hp <= 0: break
@@ -206,8 +230,12 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 		if not _blocked(monster_effects): monster_timer += STEP_SECONDS
 		# Player first: the live loop resolves player attacks before monster attacks in the same
 		# tick, so a monster that would have died this step never gets its swing.
-		if player_timer >= float(view["player_interval"]) and not _blocked(player_effects):
-			player_timer -= float(view["player_interval"])
+		var player_interval: float = maxf(0.1, float(view["player_interval"]) * (1.0 - ability_interval_percent / 100.0))
+		ability_interval_percent = 0.0
+		if player_timer >= player_interval and not _blocked(player_effects):
+			player_timer -= player_interval
+			# Draw order mirrors CombatManager._player_attack: ammo, cooldown drain, weapon special,
+			# to-hit (skipped by an accuracy-ignoring special), abilities, damage, special status.
 			if bool(snapshot.get("finite_supplies", false)):
 				# Roll the shot once, then both test and spend it: the live loop and the simulator must
 				# charge the same ammunition for the same attack.
@@ -215,14 +243,28 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					float(snapshot.get("ammo_preservation", 0.0)))
 				var affordable: bool = float(snapshot.get("prayer_balance", 0)) >= float(snapshot.get("prayer_points", 0))
 				for id in shot: affordable = affordable and int(snapshot.attack_stock.get(id, 0)) >= int(shot[id])
-				if not affordable: return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage, "kills": kills, "player_died": false, "timed_out": true, "phases_fired": int(view["fired"])}
+				if not affordable: return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage, "kills": kills, "player_died": false, "timed_out": true, "phases_fired": int(view["fired"]), "ability_fires": ability_fires}
 				snapshot.prayer_balance = float(snapshot.get("prayer_balance", 0)) - float(snapshot.get("prayer_points", 0))
 				for id in shot: snapshot.attack_stock[id] -= int(shot[id])
-			var roll: Dictionary = CombatFormulas.roll_damage(rng, int(view["min_hit"]), int(view["max_hit"]), monster_dr,
-				crit_chance, crit_mult, "normal")
-			if clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + float(view["player_hit_bonus"]), 0.0, 100.0) > rng.randf() * 100.0:
+			_decrement_cooldowns(cooldowns)
+			var special: Dictionary = _roll_special_attack(rng, weapon_special, str(strategy.get("special_bias", "normal")))
+			var lands: bool = bool(special.get("ignores_accuracy", false)) or clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + float(view["player_hit_bonus"]), 0.0, 100.0) >= rng.randf() * 100.0
+			if lands:
+				# At most one ability takes the swing.
+				var ab: Dictionary = _roll_abilities(loadout, cooldowns, rng)
+				var ab_effect: Dictionary = ab.get("effect", {}) as Dictionary
+				if not ab.is_empty():
+					ability_fires += 1
+					ability_interval_percent += float(ab_effect.get("interval_percent", 0.0))
+					var applied: StatusEffect = _apply_ability_status(rng, ab, view["monster"])
+					if applied != null:
+						monster_effects.append(applied)
+				var swing_max_hit: int = _swing_max_hit(maxi(1, int(player.get("max_hit", 1))),
+					float(ab_effect.get("max_hit_percent", 0.0)), float((view["triangle"] as Dictionary).damage_percent))
+				var roll: Dictionary = CombatFormulas.roll_damage(rng,
+					CombatFormulas.min_hit(swing_max_hit, float(player.get("min_hit_percent", 0.0)), float(player.get("min_hit_flat", 0.0))),
+					swing_max_hit, monster_dr, crit_chance + float(ab_effect.get("crit_chance_percent", 0.0)), crit_mult, "normal")
 				var dealt: float = float(roll["damage"])
-				var special: Dictionary = _special([snapshot.get("player_special", {})], rng)
 				if not special.is_empty():
 					dealt = maxi(1, floori(dealt * float(special.get("damage_multiplier", 1))))
 					hp = minf(max_hp, hp + dealt * float(special.get("heal_fraction", 0)))
@@ -236,6 +278,8 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				for status in snapshot.get("enchant_statuses", []):
 					if rng.randf() < 0.2 and not bool(monster.get("is_immune_to_effects", false)): monster_effects.append(StatusEffect.create(str(status), 4.0, maxf(1, dealt * 0.1) if str(status) == "burn" else 0))
 				dealt = maxf(0.0, dealt)
+				# heal_on_hit_fraction is a fraction of this swing's damage.
+				hp = minf(max_hp, hp + dealt * float(ab_effect.get("heal_on_hit_fraction", 0.0)))
 				monster_hp -= dealt
 				damage += dealt
 				# Phases fire after the hit lands and before thorns, as in apply_damage_to_monster().
@@ -273,6 +317,8 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				var raw_taken: float = float(their_roll["damage"]) * (1.0 + float(against.damage_percent) / 100.0)
 				if passives.has("enrage"):
 					raw_taken *= CombatFormulas.enrage_multiplier(monster_hp / monster_hp_max, ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
+				if passives.has("rage"):
+					raw_taken *= _rage_multiplier(monster_hp, monster_hp_max)
 				# Clamped for the same reason as the live loop: an unbounded reduction would make
 				# the multiplier negative and every hit a heal.
 				var taken: float = raw_taken * (1.0 - clampf(player_dr, 0.0, 90.0) / 100.0)
@@ -291,8 +337,11 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				# Lifedrain: the monster heals a share of what it dealt, capped at its max HP.
 				if landed > 0.0 and monster_hp > 0.0 and passives.has("lifedrain"):
 					monster_hp = minf(monster_hp_max, monster_hp + float(MonsterMechanics.lifedrain_heal(int(landed))))
-				if monster_hp > 0.0 and passives.has("regeneration"):
-					monster_hp = minf(monster_hp_max, monster_hp + maxf(1.0, monster_hp_max * ENEMY_REGEN_FRACTION))
+				if landed > 0.0 and monster_hp > 0.0 and passives.has("leech"):
+					monster_hp = _leech_heal(monster_hp, monster_hp_max, landed)
+			# Regeneration is per own attack, hit or miss, as in CombatManager._monster_attack.
+			if monster_hp > 0.0 and passives.has("regeneration"):
+				monster_hp = minf(monster_hp_max, monster_hp + maxf(1.0, monster_hp_max * ENEMY_REGEN_FRACTION))
 		# Auto Eat is evaluated after attacks, like the live loop.
 		var meal: Dictionary = _auto_eat(snapshot, hp, max_hp)
 		if int(meal["eaten"]) > 0:
@@ -300,7 +349,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			hp = minf(max_hp, hp + float(meal["heal"]))
 		seconds += STEP_SECONDS
 	return {"hp_after": hp, "seconds": seconds, "food": food, "damage": damage,
-		"kills": kills, "player_died": hp <= 0.0, "timed_out": false, "phases_fired": int(view["fired"])}
+		"kills": kills, "player_died": hp <= 0.0, "timed_out": false, "phases_fired": int(view["fired"]), "ability_fires": ability_fires}
 
 ## The live Auto Eat thresholds and efficiencies, mirrored here so the simulator does not read
 ## CombatManager from a worker thread.
@@ -318,8 +367,8 @@ static func _auto_eat(snapshot: Dictionary, hp: float, max_hp: float) -> Diction
 	var foods: Dictionary = snapshot.get("food", {})
 	if tier <= 0 or foods.is_empty():
 		return none
-	var threshold: float = float(AUTO_EAT_THRESHOLDS.get(tier, 0.0)) \
-		+ float(snapshot.get("auto_eat_threshold_percent", 0.0))
+	var threshold: float = _food_threshold_percent(float(AUTO_EAT_THRESHOLDS.get(tier, 0.0)),
+		snapshot.get("strategy", {})) + float(snapshot.get("auto_eat_threshold_percent", 0.0))
 	if threshold <= 0.0:
 		return none
 	if hp / maxf(max_hp, 1.0) * 100.0 > threshold:
@@ -345,11 +394,16 @@ static func _auto_eat(snapshot: Dictionary, hp: float, max_hp: float) -> Diction
 		* (1.0 + float(snapshot.get("food_healing_percent", 0.0)) / 100.0)
 	return {"eaten": 1, "heal": float(chosen) * efficiency}
 
+## Mirrors CombatManager._monster_evasion_for, including the veil passive's flat bonus.
 static func _evasion_for(monster: Dictionary, style: String) -> int:
+	var rating: int = 0
 	match style:
-		"melee": return int(monster.get("melee_evasion", 10))
-		"ranged": return int(monster.get("ranged_evasion", 10))
-		_: return int(monster.get("magic_evasion", 10))
+		"melee": rating = int(monster.get("melee_evasion", 10))
+		"ranged": rating = int(monster.get("ranged_evasion", 10))
+		_: rating = int(monster.get("magic_evasion", 10))
+	if _has_passive(monster, "veil"):
+		rating += ENEMY_VEIL_BONUS
+	return rating
 
 static func _player_evasion(player: Dictionary, monster_style: String) -> int:
 	var evasion: Dictionary = player.get("evasion", {})
@@ -434,6 +488,7 @@ static func _monster_view(snapshot: Dictionary, player: Dictionary, monster: Dic
 			float(current.get("min_hit_percent", 0.0)), float(current.get("min_hit_flat", 0.0))),
 		"player_evasion": maxi(0, int(float(_player_evasion(player, monster_style)) * (1.0 + float(hazard.get("player_evasion_percent", 0.0)) / 100.0))),
 		"monster_triangle": CombatFormulas.triangle(monster_style, style, mode_config),
+		"triangle": triangle,
 	}
 
 ## Fire every boss phase now due at this HP fraction, once each and in order, as
@@ -466,3 +521,156 @@ static func _tick_statuses(effects: Array, seconds: float) -> float:
 		damage += effect.tick(seconds)
 		if effect.is_expired(): effects.erase(effect)
 	return damage
+
+## Mirrors CombatManager._roll_abilities: ONE trigger roll per loadout entry in loadout order,
+## stopping at the first that is off cooldown and lands. A blocked entry is skipped WITHOUT a draw
+## and an entry after the winner is never rolled, which is what makes the number of draws a swing
+## takes part of the balance contract. `cooldowns` is the trial's counter table and is shared by
+## every fight in the trial, exactly as CombatManager's lives across a whole combat session.
+static func _roll_abilities(loadout: Array, cooldowns: Dictionary,
+		rng: RandomNumberGenerator) -> Dictionary:
+	for entry in loadout:
+		var ab: Dictionary = entry as Dictionary
+		if typeof(ab) != TYPE_DICTIONARY or ab.is_empty():
+			continue
+		var ability_id: String = str(ab.get("id", ""))
+		if ability_id == "" or int(cooldowns.get(ability_id, 0)) > 0:
+			continue
+		if rng.randf() * 100.0 > float(ab.get("trigger_chance", 0.0)):
+			continue
+		cooldowns[ability_id] = int(ab.get("cooldown_attacks", 0))
+		return ab
+	return {}
+
+## Mirrors CombatManager._apply_ability_status: the ability's own `apply_status` spelling and its
+## top-level status_duration / status_damage_per_tick siblings, bridged into the special-attack
+## shape the status path takes. The chance is fixed at 100% for an ability — the trigger roll above
+## is the chance — so the draw is still spent and always passes.
+static func _apply_ability_status(rng: RandomNumberGenerator, ab: Dictionary,
+		monster: Dictionary) -> StatusEffect:
+	var status_id: String = str((ab.get("effect", {}) as Dictionary).get("apply_status", ""))
+	if status_id == "":
+		return null
+	return _apply_status(rng, {
+		"applies_status": status_id,
+		"status_chance": 100.0,
+		"status_duration": float(ab.get("status_duration", 0.0)),
+		"status_damage_per_tick": float(ab.get("status_damage_per_tick", 0.0)),
+	}, monster)
+
+## Mirrors CombatManager._apply_special_status and then apply_status: the status-chance draw is
+## spent whenever the record names a status, because a draw that was skipped on a miss would shift
+## every roll after it, and only then do the target's own gates get a say. The gates read the
+## MONSTER RECORD, which is why _monster_record has to carry is_immune_to_effects and
+## can_be_stunned: a gate whose input the snapshot never carried is not a gate, it is a comment.
+static func _apply_status(rng: RandomNumberGenerator, record: Dictionary,
+		monster: Dictionary) -> StatusEffect:
+	var status_id: String = str(record.get("applies_status", ""))
+	if status_id == "":
+		return null
+	if rng.randf() * 100.0 > float(record.get("status_chance", 100.0)):
+		return null
+	if bool(monster.get("is_immune_to_effects", false)):
+		return null
+	var effect: StatusEffect = StatusEffect.create(status_id,
+		float(record.get("status_duration", 3.0)), float(record.get("status_damage_per_tick", 0.0)))
+	if effect.blocks_attack() and not bool(monster.get("can_be_stunned", true)):
+		return null
+	return effect
+
+## Mirrors CombatManager._tick_effects on the monster: advance every status, drop the finished ones,
+## and report the damage they dealt. The DOT damage comes out of StatusEffect.tick() itself, so the
+## per-tick figure and the tick_interval that spaces it are the live ones rather than a re-reading
+## of the ability record.
+static func _tick_effects(effects: Array, delta: float) -> float:
+	var damage: float = 0.0
+	var live: Array = []
+	for entry in effects:
+		var e: StatusEffect = entry as StatusEffect
+		damage += e.tick(delta)
+		if not e.is_expired():
+			live.append(e)
+	effects.assign(live)
+	return damage
+
+## The max hit of ONE swing, and the min hit is derived from it: the player's own max hit with an
+## ability's max_hit_percent folded in, then the combat triangle's damage_percent folded in after
+## it. The order is not interchangeable — the second fold reads the first one's result — and it is
+## the order CombatManager._player_attack folds them in. A function because inlined it was
+## arithmetic no test could reach: a mixed-style matchup (where the triangle is anything but 0.0)
+## was exercised by no fixture at all, which is how a fold of rolled damage could sit here
+## disagreeing with a fold of max hit without a single check going red.
+static func _swing_max_hit(base_max_hit: int, max_hit_percent: float,
+		triangle_damage_percent: float) -> int:
+	var mh: int = maxi(1, int(floor(float(base_max_hit) * (1.0 + max_hit_percent / 100.0))))
+	return maxi(1, int(floor(float(mh) * (1.0 + triangle_damage_percent / 100.0))))
+
+## Mirrors CombatManager._decrement_ability_cooldowns: every counter drains by one on every player
+## attack — blocked or not, landed or whiffed — and stops at zero. THIS is what makes an ability
+## fire once every cooldown_attacks attacks rather than once and then never again, and its absence
+## is invisible in the stream, which is why it has to be pinned by a count and not by a roll.
+## The period is cooldown_attacks and NOT cooldown + 1: the counter is SET when the ability fires
+## and DRAINED at the top of each later attack, so a cooldown of 4 is released by the fourth attack
+## after it fired. TestRunner.gd words the same rule as "blocks the next N-1 attacks and releases on
+## the Nth", and the simulator suite counts 10 fires in a 40-attack fight at a cooldown of 4.
+static func _decrement_cooldowns(cooldowns: Dictionary) -> void:
+	for ability_id in cooldowns.keys():
+		cooldowns[ability_id] = maxi(0, int(cooldowns[ability_id]) - 1)
+
+## The slayer XP a kill is worth, split out because a fight can end in two places — a
+## damage-over-time tick that finished the monster before the swings, or the player's own swing —
+## and the award has to be identical either way.
+static func _award_slayer_xp(xp: Dictionary, monster_hp_max: float, player: Dictionary,
+		snapshot: Dictionary) -> void:
+	_xp(xp, "slayer", CombatFormulas.slayer_xp_for_kill(monster_hp_max,
+		bool(player.get("on_slayer_task", false)), bool(snapshot.get("in_slayer_area", false))))
+
+## Mirrors CombatManager._roll_special_attack: ONE draw, always spent, compared against the biased
+## chance. The strategy scales the number that draw is compared against rather than adding a second
+## draw, so "hold" suppresses the special without shifting the stream an offline replay walks. The
+## draw is taken BEFORE the comparison and the `chance <= 0.0` test comes second, exactly as live
+## orders them: a hold that skipped its draw would spend one fewer value than live on every swing.
+static func _roll_special_attack(rng: RandomNumberGenerator, sa_def: Dictionary,
+		bias: String) -> Dictionary:
+	if sa_def.is_empty():
+		return {}
+	var chance: float = _biased_special_chance(float(sa_def.get("trigger_chance", 10.0)), bias)
+	var roll: float = rng.randf() * 100.0
+	if chance <= 0.0 or roll > chance:
+		return {}
+	return sa_def
+
+## Mirrors CombatManager._biased_special_chance: eager doubles up to the 100% ceiling, hold is a hard
+## zero, and anything else — including an empty or misspelt bias — is the identity. A multiplier on
+## the record's own trigger chance, never a new roll.
+static func _biased_special_chance(base: float, bias: String) -> float:
+	match bias:
+		"eager":
+			return minf(base * 2.0, 100.0)
+		"hold":
+			return 0.0
+		_:
+			return clampf(base, 0.0, 100.0)
+
+## Mirrors CombatManager._food_threshold_percent: the strategy's fraction replaces the auto-eat
+## tier's threshold percent, and 0.0 means "defer to the tier", so a preset nobody edited leaves the
+## tier's own number in place. No draw — this only moves the number the HP comparison is made
+## against.
+static func _food_threshold_percent(tier_threshold: float, strategy: Dictionary) -> float:
+	var override: float = float(strategy.get("food_threshold", 0.0))
+	return override * 100.0 if override > 0.0 else tier_threshold
+
+## Mirrors CombatManager._enemy_rage_multiplier, on the numbers rather than on the live monster:
+## 1.0 at full health, rising to 1.0 + ENEMY_RAGE_BONUS_FRACTION as its health falls.
+static func _rage_multiplier(monster_hp: float, monster_hp_max: float) -> float:
+	var wounded: float = 1.0 - clampf(monster_hp / maxf(1.0, monster_hp_max), 0.0, 1.0)
+	return 1.0 + ENEMY_RAGE_BONUS_FRACTION * wounded
+
+## Mirrors the leech heal in CombatManager._monster_attack: a FRACTION (0..1) of the damage dealt,
+## never nothing at all, and capped at the monster's own maximum. A function so the cap has
+## somewhere to be pinned — the same arithmetic inlined would be a rule no test could reach.
+static func _leech_heal(monster_hp: float, monster_hp_max: float, damage: float) -> float:
+	return minf(monster_hp_max, monster_hp + maxf(1.0, damage * ENEMY_LEECH_FRACTION))
+
+static func _has_passive(monster: Dictionary, passive_id: String) -> bool:
+	return (monster.get("passives", []) as Array).has(passive_id)

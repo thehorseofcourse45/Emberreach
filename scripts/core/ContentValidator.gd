@@ -22,6 +22,19 @@ const VALID_SKILL_TYPES: Array[String] = ["gathering", "artisan", "processing", 
 const VALID_SKILL_CATEGORIES: Array[String] = ["combat", "non_combat"]
 const VALID_MONSTER_ATTACK_TYPES: Array[String] = ["melee", "ranged", "magic"]
 const VALID_ACTION_CATEGORIES: Array[String] = ["gather", "artisan", "support", "combat"]
+## The closed ability vocabulary from data/abilities.json. Tasks 3/5 map each key to a
+## ModifierKeys constant, so a key outside this set has nowhere to go and would be a silent no-op.
+const KNOWN_ABILITY_EFFECTS: Array[String] = ["max_hit_percent", "interval_percent",
+	"crit_chance_percent", "apply_status", "heal_on_hit_fraction"]
+const VALID_ABILITY_STYLES: Array[String] = ["melee", "ranged", "magic", "any"]
+const VALID_SPECIAL_BIAS: Array[String] = ["eager", "normal", "hold"]
+## The activity-events vocabulary (data/events.json). Like KNOWN_ABILITY_EFFECTS, the effect keys
+## are a CLOSED set: EventDirector consumes exactly these, so a key outside the set would ship as a
+## validated-but-inert event — the same silent no-op the ability vocabulary exists to prevent.
+const VALID_EVENT_KINDS: Array[String] = ["spawn", "card"]
+const VALID_EVENT_POLICIES: Array[String] = ["safe", "greedy"]
+const KNOWN_EVENT_EFFECTS: Array[String] = ["xp_percent", "fail_chance"]
+const KNOWN_EVENT_BONUS_EFFECTS: Array[String] = ["xp_percent", "success_penalty"]
 const EQUIPMENT_SLOT_NAMES: Dictionary = {
 	0: "helmet", 1: "platebody", 2: "platelegs", 3: "boots", 4: "gloves", 5: "cape",
 	6: "amulet", 7: "ring", 8: "weapon", 9: "shield", 10: "quiver", 11: "summon_1",
@@ -54,6 +67,8 @@ func validate_all() -> Array:
 	_check_skills_and_recipes()
 	_check_recipe_graph()
 	_check_monsters()
+	_check_abilities()
+	_check_events()
 	_check_regions()
 	_check_shop()
 	_check_game_modes()
@@ -74,7 +89,8 @@ func _add(severity: String, code: String, message: String) -> void:
 func _has_item(id: String) -> bool:
 	return DataLoader.items.has(id)
 
-func _has_skill(id: String) -> bool:
+# Static so the record validators below (which callers use as free functions) can reuse them.
+static func _has_skill(id: String) -> bool:
 	return DataLoader.skills.has(id)
 
 func _err(code: String, msg: String) -> void:
@@ -83,7 +99,7 @@ func _err(code: String, msg: String) -> void:
 func _warn(code: String, msg: String) -> void:
 	_add("warning", code, msg)
 
-func _is_finite_number(v: Variant) -> bool:
+static func _is_finite_number(v: Variant) -> bool:
 	var kind: int = typeof(v)
 	if kind != TYPE_INT and kind != TYPE_FLOAT:
 		return false
@@ -99,7 +115,8 @@ func _check_ids() -> void:
 		["constellation", DataLoader.constellations], ["familiar", DataLoader.familiars],
 		["pet", DataLoader.pets], ["obstacle", DataLoader.obstacles],
 		["dungeon_shop", DataLoader.shop], ["township_building", DataLoader.township_buildings],
-		["special_attack", DataLoader.special_attacks], ["cartography_hex", DataLoader.cartography_hexes],
+		["special_attack", DataLoader.special_attacks], ["ability", DataLoader.abilities],
+		["cartography_hex", DataLoader.cartography_hexes],
 	]:
 		var kind: String = collection[0]
 		var table: Dictionary = collection[1]
@@ -524,6 +541,240 @@ static func validate_monster_mechanics(monster_id: String, m: Dictionary) -> Arr
 				if float(st.get("damage_per_tick", 0.0)) < 0.0:
 					errs.append("%s apply_status damage_per_tick must be >= 0" % plabel)
 	return errs
+
+# ---------------- abilities + strategies ----------------
+
+## Appends one {code, message} failure — the same shape as an `issues` entry, so a code-based
+## consumer of the validation report does not have to sniff message text.
+static func _fail(errs: Array, code: String, message: String) -> void:
+	errs.append({"code": code, "message": message})
+
+## Validates one abilities.json record. Returns {code, message} failures (empty == valid) so the
+## engine tasks can call it on a player-authored loadout without instantiating the validator.
+static func check_ability_record(ab: Dictionary) -> Array:
+	var errs: Array = []
+	var id: String = str(ab.get("id", "")).strip_edges()
+	var label: String = "ability '%s'" % id
+	if id == "":
+		_fail(errs, "invalid_record", "an ability has no id")
+	var style: String = str(ab.get("style", ""))
+	if not VALID_ABILITY_STYLES.has(style):
+		_fail(errs, "invalid_record", "%s has style '%s'" % [label, style])
+	var effect: Variant = ab.get("effect", {})
+	if typeof(effect) != TYPE_DICTIONARY:
+		_fail(errs, "invalid_record", "%s effect is not an object" % label)
+		effect = {}
+	elif (effect as Dictionary).is_empty():
+		_fail(errs, "invalid_record", "%s has an empty effect" % label)
+	for key in (effect as Dictionary).keys():
+		var k: String = str(key)
+		var value: Variant = (effect as Dictionary)[key]
+		if not KNOWN_ABILITY_EFFECTS.has(k):
+			_fail(errs, "invalid_record", "%s effect has unknown key '%s'" % [label, k])
+		elif k == "apply_status":
+			# A status id, not a number: StatusEffect.create would silently no-op on a typo.
+			if typeof(value) != TYPE_STRING or not StatusEffect.TABLE.has(value):
+				_fail(errs, "missing_reference", "%s apply_status '%s' is not a known status" % [label, str(value)])
+		elif not _is_finite_number(value):
+			_fail(errs, "invalid_record", "%s effect '%s' is not a number" % [label, k])
+	# status_duration is CONDITIONAL: the only reader is the apply_status branch, so a record with
+	# one and no apply_status carries a value nothing consumes, and one with apply_status and no
+	# duration would apply an instant-expiry status. Both directions are bugs.
+	var has_status: bool = (effect as Dictionary).has("apply_status")
+	var duration: Variant = ab.get("status_duration", null)
+	if has_status and not _is_finite_number(duration):
+		_fail(errs, "invalid_record", "%s applies a status but has no numeric status_duration" % label)
+	elif has_status and float(duration) <= 0.0:
+		_fail(errs, "invalid_record", "%s status_duration %f must be > 0" % [label, float(duration)])
+	elif not has_status and duration != null:
+		_fail(errs, "invalid_record", "%s has status_duration but no apply_status effect" % label)
+	# Absent is reported as absent, not as the default value: "trigger_chance 0.0" blames a number
+	# the author never wrote.
+	var chance: Variant = ab.get("trigger_chance", null)
+	if chance == null:
+		_fail(errs, "invalid_record", "%s has no trigger_chance" % label)
+	elif not _is_finite_number(chance) or float(chance) <= 0.0 or float(chance) > 100.0:
+		_fail(errs, "invalid_record", "%s trigger_chance %s must be in (0,100]" % [label, str(chance)])
+	var cooldown: Variant = ab.get("cooldown_attacks", null)
+	if cooldown == null:
+		_fail(errs, "invalid_record", "%s has no cooldown_attacks" % label)
+	elif not _is_finite_number(cooldown) or float(cooldown) != float(int(cooldown)) or float(cooldown) < 0.0:
+		_fail(errs, "invalid_record", "%s cooldown_attacks %s must be a non-negative integer" % [label, str(cooldown)])
+	var reqs: Variant = ab.get("req_levels", {})
+	if typeof(reqs) != TYPE_DICTIONARY:
+		_fail(errs, "invalid_record", "%s req_levels is not an object" % label)
+	else:
+		for skill_id in (reqs as Dictionary).keys():
+			var level: Variant = (reqs as Dictionary)[skill_id]
+			if not _has_skill(str(skill_id)):
+				_fail(errs, "missing_reference", "%s requires unknown skill '%s'" % [label, skill_id])
+			elif not _is_finite_number(level) or float(level) != float(int(level)) or int(level) < 1:
+				_fail(errs, "invalid_record", "%s requires %s %s, which is not an integer >= 1" % [label, skill_id, str(level)])
+	return errs
+
+## Validates one combat strategy. Every field the strategy shape declares is required — name,
+## ability_loadout, food_threshold, special_bias, protection_prayer_auto — because a strategy the
+## engine fills in a default for is a decision the player never made, and a loadout id that no
+## longer exists is a dead slot. An EMPTY ability_loadout array is a legal value (the no-abilities
+## default), not a skipped check: the field must be there and must be an array.
+static func check_strategy_record(strategy: Dictionary) -> Array:
+	var errs: Array = []
+	var name_v: Variant = strategy.get("name", "")
+	var label: String = "strategy '%s'" % (str(name_v) if str(name_v).strip_edges() != "" else "?")
+	if typeof(name_v) != TYPE_STRING or str(name_v).strip_edges() == "":
+		_fail(errs, "invalid_record", "%s has no name" % label)
+	var loadout: Variant = strategy.get("ability_loadout", null)
+	if typeof(loadout) != TYPE_ARRAY:
+		_fail(errs, "invalid_record", "%s ability_loadout is not an array" % label)
+	else:
+		for entry in (loadout as Array):
+			if typeof(entry) != TYPE_STRING or not DataLoader.abilities.has(entry):
+				_fail(errs, "missing_reference", "%s ability_loadout references unknown ability '%s'" % [label, str(entry)])
+	var bias: String = str(strategy.get("special_bias", ""))
+	if not VALID_SPECIAL_BIAS.has(bias):
+		_fail(errs, "invalid_record", "%s has special_bias '%s'" % [label, bias])
+	var threshold: Variant = strategy.get("food_threshold", null)
+	if threshold == null:
+		_fail(errs, "invalid_record", "%s has no food_threshold" % label)
+	elif not _is_finite_number(threshold) or float(threshold) < 0.0 or float(threshold) > 1.0:
+		_fail(errs, "invalid_record", "%s food_threshold %s must be in 0..1" % [label, str(threshold)])
+	# "" = no auto-prayer; anything else must name a real prayer, or the strategy silently never
+	# protects the player.
+	var prayer: Variant = strategy.get("protection_prayer_auto", null)
+	if prayer == null:
+		_fail(errs, "invalid_record", "%s has no protection_prayer_auto" % label)
+	elif typeof(prayer) != TYPE_STRING:
+		_fail(errs, "invalid_record", "%s protection_prayer_auto must be a string" % label)
+	elif str(prayer) != "" and not DataLoader.prayers.has(str(prayer)):
+		_fail(errs, "missing_reference", "%s protection_prayer_auto references unknown prayer '%s'" % [label, str(prayer)])
+	return errs
+
+func _check_abilities() -> void:
+	for id in DataLoader.abilities.keys():
+		var ab: Variant = DataLoader.abilities[id]
+		# A non-object row is already reported by _check_ids, which walks the same table.
+		if typeof(ab) != TYPE_DICTIONARY:
+			continue
+		for failure in check_ability_record(ab):
+			_err(str(failure["code"]), str(failure["message"]))
+
+# ---------------- activity events ----------------
+
+## Validates one events.json record. Returns {code, message} failures (empty == valid), the same
+## shape as check_ability_record, so callers never have to sniff message text.
+## `skill_id` is optional: the --validate wiring and the tests pass the pool's skill so a spawn's
+## target_action can be resolved against that skill's REAL action list; without it every other rule
+## still runs and only the reference check is skipped.
+static func check_event_record(ev: Dictionary, skill_id: String = "") -> Array:
+	var errs: Array = []
+	var id: String = str(ev.get("id", "")).strip_edges()
+	var label: String = "event '%s'" % (id if id != "" else "?")
+	if id == "":
+		_fail(errs, "invalid_record", "an event has no id")
+	var kind: String = str(ev.get("kind", ""))
+	if not VALID_EVENT_KINDS.has(kind):
+		_fail(errs, "invalid_record", "%s has kind '%s' (expected spawn or card)" % [label, kind])
+	# Absent is reported as absent: a missing weight is an authoring gap, not "weight 0.0".
+	var weight: Variant = ev.get("weight", null)
+	if weight == null:
+		_fail(errs, "invalid_record", "%s has no weight" % label)
+	elif not _is_finite_number(weight) or float(weight) <= 0.0:
+		_fail(errs, "invalid_record", "%s weight %s must be > 0" % [label, str(weight)])
+	var min_level: Variant = ev.get("min_level", null)
+	if min_level == null:
+		_fail(errs, "invalid_record", "%s has no min_level" % label)
+	elif not _is_finite_number(min_level) or float(min_level) != float(int(min_level)) or int(min_level) < 1:
+		_fail(errs, "invalid_record", "%s min_level %s must be an integer >= 1" % [label, str(min_level)])
+	# Kind-specific rules only run for their own kind, so an unknown kind reports once and a
+	# single-defect fixture can never trip a second branch.
+	if kind == "spawn":
+		_check_spawn_fields(errs, label, ev, skill_id)
+	elif kind == "card":
+		_check_card_fields(errs, label, ev)
+	return errs
+
+## Spawn-only fields. A spawn without a resolvable target_action is a bonus that can never fire.
+static func _check_spawn_fields(errs: Array, label: String, ev: Dictionary, skill_id: String) -> void:
+	var duration: Variant = ev.get("duration_actions", null)
+	if duration == null:
+		_fail(errs, "invalid_record", "%s has no duration_actions" % label)
+	elif not _is_finite_number(duration) or float(duration) != float(int(duration)) or int(duration) < 1:
+		_fail(errs, "invalid_record", "%s duration_actions %s must be an integer >= 1" % [label, str(duration)])
+	var bonus: Variant = ev.get("bonus", null)
+	if typeof(bonus) != TYPE_DICTIONARY:
+		_fail(errs, "invalid_record", "%s bonus is not an object" % label)
+	else:
+		for key in (bonus as Dictionary).keys():
+			var k: String = str(key)
+			if not KNOWN_EVENT_BONUS_EFFECTS.has(k):
+				_fail(errs, "invalid_record", "%s bonus has unknown key '%s'" % [label, k])
+			elif not _is_finite_number((bonus as Dictionary)[key]):
+				_fail(errs, "invalid_record", "%s bonus '%s' is not a number" % [label, k])
+	var target: Variant = ev.get("target_action", null)
+	if target == null or str(target).strip_edges() == "":
+		_fail(errs, "invalid_record", "%s has no target_action" % label)
+	elif skill_id != "" and DataLoader.get_action(skill_id, str(target)).is_empty():
+		_fail(errs, "missing_reference", "%s target_action '%s' is not a %s action" % [label, str(target), skill_id])
+
+## Card-only fields. Exactly two choices is the shape EventDirector's timeout path and the
+## dialog's two buttons are built on; a third choice has nowhere to be clicked.
+static func _check_card_fields(errs: Array, label: String, ev: Dictionary) -> void:
+	var choices: Variant = ev.get("choices", null)
+	if typeof(choices) != TYPE_ARRAY:
+		_fail(errs, "invalid_record", "%s choices is not an array" % label)
+		return
+	if (choices as Array).size() != 2:
+		_fail(errs, "invalid_record", "%s needs exactly 2 choices (found %d)" % [label, (choices as Array).size()])
+	# Do not return: a wrong-count card whose individual choices are also broken should report both.
+	for i in (choices as Array).size():
+		var choice: Variant = (choices as Array)[i]
+		if typeof(choice) != TYPE_DICTIONARY:
+			_fail(errs, "invalid_record", "%s choice %d is not an object" % [label, i])
+			continue
+		var row: Dictionary = choice
+		var text: Variant = row.get("label", null)
+		if typeof(text) != TYPE_STRING or str(text).strip_edges() == "":
+			_fail(errs, "invalid_record", "%s choice %d has no label" % [label, i])
+		var policy: String = str(row.get("policy", ""))
+		if not VALID_EVENT_POLICIES.has(policy):
+			_fail(errs, "invalid_record", "%s choice %d has policy '%s' (expected safe or greedy)" % [label, i, policy])
+		var effect: Variant = row.get("effect", null)
+		if typeof(effect) != TYPE_DICTIONARY:
+			_fail(errs, "invalid_record", "%s choice %d effect is not an object" % [label, i])
+		else:
+			for key in (effect as Dictionary).keys():
+				var k: String = str(key)
+				if not KNOWN_EVENT_EFFECTS.has(k):
+					_fail(errs, "invalid_record", "%s choice %d effect has unknown key '%s'" % [label, i, k])
+				elif not _is_finite_number((effect as Dictionary)[key]):
+					_fail(errs, "invalid_record", "%s choice %d effect '%s' is not a number" % [label, i, k])
+
+## Walks every per-skill pool in data/events.json into the same report --validate prints for the
+## rest of the content. Event ids are unique WITHIN a pool (like action ids within a skill):
+## EventDirector resolves a card by id while it is open, so a second copy would answer for the first.
+func _check_events() -> void:
+	for skill_key in DataLoader.events.keys():
+		var skill_id: String = str(skill_key)
+		var pool: Variant = DataLoader.events[skill_key]
+		if typeof(pool) != TYPE_ARRAY:
+			_err("invalid_record", "event pool '%s' is not an array" % skill_id)
+			continue
+		var skill_known: bool = _has_skill(skill_id)
+		if not skill_known:
+			_err("missing_reference", "event pool '%s' is not a known skill" % skill_id)
+		var seen: Dictionary = {}
+		for ev in (pool as Array):
+			if typeof(ev) != TYPE_DICTIONARY:
+				_err("invalid_record", "event pool '%s' has a non-object event" % skill_id)
+				continue
+			var ev_id: String = str((ev as Dictionary).get("id", ""))
+			if seen.has(ev_id):
+				_err("duplicate_id", "event pool '%s' declares event id '%s' twice" % [skill_id, ev_id])
+			seen[ev_id] = true
+			# Pass the skill id only when it resolves, so an unknown pool key is reported once, at
+			# the pool, instead of once more for every spawn's target_action.
+			for failure in check_event_record(ev, skill_id if skill_known else ""):
+				_err(str(failure["code"]), str(failure["message"]))
 
 # ---------------- regions ----------------
 
