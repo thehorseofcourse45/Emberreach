@@ -2702,15 +2702,18 @@ func test_grimoire_palette() -> void:
 	_eq(UITokens.BG_DEEP, Color("#0d0a09"), "forge background")
 	_eq(UITokens.BORDER_GOLD, Color("#c88c2c"), "gold trim")
 	_eq(UITokens.TEXT, Color("#f1dcb8"), "body ink")
-	var inks: Dictionary = {"TEXT": UITokens.TEXT, "TEXT_MUTED": UITokens.TEXT_MUTED,
+	# The lightest vellum a word can sit on: the top of the gradient, brightened as a selected row.
+	var lightest: Color = Color(UITokens.VELLUM_TOP.r * UIStyle.RAISED_MODULATE, UITokens.VELLUM_TOP.g * UIStyle.RAISED_MODULATE,
+		UITokens.VELLUM_TOP.b * UIStyle.RAISED_MODULATE)
+	var inks: Dictionary = {"TEXT": UITokens.TEXT, "TEXT_MUTED": UITokens.TEXT_MUTED, "TEXT_DIM": UITokens.TEXT_DIM, "GOLD": UITokens.GOLD,
 		"GOLD_BRIGHT": UITokens.GOLD_BRIGHT, "GREEN": UITokens.GREEN, "RED": UITokens.RED,
 		"AMBER": UITokens.AMBER, "TEAL": UITokens.TEAL, "BLUE": UITokens.BLUE, "PURPLE": UITokens.PURPLE}
 	for key in UITokens.RARITY.keys():
 		inks["rarity " + str(key)] = UITokens.RARITY[key]["color"]
 	for name in inks.keys():
 		var c: Color = inks[name]
-		_ok(UITokens.contrast_ratio(c, UITokens.VELLUM_MID) >= 4.5,
-			"%s reads on vellum (%.2f:1)" % [name, UITokens.contrast_ratio(c, UITokens.VELLUM_MID)])
+		_ok(UITokens.contrast_ratio(c, lightest) >= 4.5,
+			"%s reads on the lightest vellum (%.2f:1)" % [name, UITokens.contrast_ratio(c, lightest)])
 		_ok(UITokens.contrast_ratio(c, UITokens.LEATHER_MID) >= 4.5,
 			"%s reads on leather (%.2f:1)" % [name, UITokens.contrast_ratio(c, UITokens.LEATHER_MID)])
 	_ok(UITokens.contrast_ratio(UITokens.DISABLED, UITokens.LEATHER_MID) >= 3.0,

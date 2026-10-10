@@ -28,6 +28,8 @@ static var ART_DIR: String = "res://assets/ui/"
 ## Kinds drawn from a texture (leather or vellum). Anything else ("flat", "sunken", unknown kinds)
 ## stays a StyleBoxFlat.
 const TEXTURED_KINDS: Array[String] = ["panel", "card", "button", "header", "chip", "row", "raised", "overlay", "slot"]
+## How much a selected/hovered row brightens its vellum. Text contrast is tested at this level.
+const RAISED_MODULATE: float = 1.05
 const _LEATHER_KINDS: Array[String] = ["panel", "overlay", "button", "header"]
 ## Inner padding per kind: [left/right, top/bottom].
 const _PADDING: Dictionary = {"panel": [14, 10], "overlay": [14, 12], "card": [12, 10], "header": [10, 6],
@@ -57,7 +59,7 @@ static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBo
 	sb.content_margin_top = float(pad[1])
 	sb.content_margin_bottom = float(pad[1])
 	if kind == "raised":
-		sb.modulate_color = Color(1.25, 1.18, 1.1)
+		sb.modulate_color = Color(RAISED_MODULATE, RAISED_MODULATE, RAISED_MODULATE)
 	elif accent:
 		sb.modulate_color = Color(1.12, 1.08, 1.0)
 	return sb

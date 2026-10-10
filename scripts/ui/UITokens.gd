@@ -17,7 +17,7 @@ const BG_DEEP := Color("#0d0a09")        ## forge, behind everything
 const BG := Color("#1b1512")             ## forge, upper half
 const FORGE_GLOW := Color(1.0, 0.353, 0.078, 0.35)  ## the glow rising from the forge floor
 const SURFACE := Color("#3a1c10")        ## leather panel (mid-tone of the leather gradient)
-const SURFACE_2 := Color("#5a3e28")      ## smoked-vellum card (mid-tone of the vellum gradient)
+const SURFACE_2 := Color("#503726")      ## smoked-vellum card (mid-tone of the vellum gradient)
 const SURFACE_3 := Color("#7a5636")      ## hover / selected row
 const SURFACE_SUNKEN := Color("#2e1f14") ## wells, logs, empty slots
 const BORDER := Color("#a8763a")         ## vellum edge
@@ -27,27 +27,28 @@ const BORDER_GOLD := Color("#c88c2c")    ## gold trim
 const LEATHER_TOP := Color("#4a2414")
 const LEATHER_BOTTOM := Color("#2a140b")
 const LEATHER_MID := Color("#3a1c10")
-const VELLUM_TOP := Color("#6b4a30")
-const VELLUM_BOTTOM := Color("#4a3220")
-const VELLUM_MID := Color("#5a3e28")
+const VELLUM_TOP := Color("#5a3e28")
+const VELLUM_BOTTOM := Color("#45301f")
+const VELLUM_MID := Color("#503726")
 
 # ---------------------------------------------------------------- colour: text
 const TEXT := Color("#f1dcb8")           ## body ink
 const TEXT_STRONG := Color("#fff3dc")
-const TEXT_MUTED := Color("#c9ae86")
-const TEXT_DIM := Color("#9c8468")
+const TEXT_MUTED := Color("#cbb28b")
+const TEXT_DIM := Color("#c2b4a3")
 const TEXT_ON_GOLD := Color("#f3e3bd")   ## text on a filled (oxblood) primary button
 
 # ---------------------------------------------------------------- colour: semantics
-## Every ink below reaches 4.5:1 on both VELLUM_MID and LEATHER_MID (test_grimoire_palette).
-const GOLD := Color("#c88c2c")           ## primary accent: milestones, primary actions, goals
+## Every ink below reaches 4.5:1 on leather and on the lightest vellum, a selected row's brightened top
+## (VELLUM_TOP x UIStyle.RAISED_MODULATE) — pinned by test_grimoire_palette.
+const GOLD := Color("#ddae64")           ## primary accent: milestones, primary actions, goals
 const GOLD_BRIGHT := Color("#f0c870")    ## heading ink and highlighted values
-const TEAL := Color("#5fc3b2")           ## gathering, recovery, positive passive
-const BLUE := Color("#87b6ea")           ## crafting, arcane
-const AMBER := Color("#e0a84d")          ## caution / blocked
-const RED := Color("#ec9d91")            ## danger ink (a light ember-rose: readable on dark vellum)
-const GREEN := Color("#76c27a")          ## success, satisfied requirement
-const PURPLE := Color("#c4a5ea")         ## rare / mastery
+const TEAL := Color("#66c6b6")           ## gathering, recovery, positive passive
+const BLUE := Color("#8ebaeb")           ## crafting, arcane
+const AMBER := Color("#e2ac56")          ## caution / blocked
+const RED := Color("#eda398")            ## danger ink (a light ember-rose: readable on dark vellum)
+const GREEN := Color("#7fc683")          ## success, satisfied requirement
+const PURPLE := Color("#c7a9eb")         ## rare / mastery
 const DISABLED := Color("#7d6a58")
 
 # ---------------------------------------------------------------- colour: forge extras
@@ -58,7 +59,7 @@ const ACCENT_PINK := Color("#b8380f")    ## the far end of the accent gradient (
 const GLOW := Color("#ff7a2a")           ## glow colour around panels and focus
 const BG_GLOW_A := Color("#3a1a0c")
 const BG_GLOW_B := Color("#1b1512")
-const CURRENCY := Color("#ffe08a")       ## real gold, for coin values and relic loot
+const CURRENCY := Color("#ffe39a")       ## real gold, for coin values and relic loot
 const DANGER_FILL := Color("#7a1f12")    ## filled destructive button
 const EMBER_BAR_A := Color("#a12a0b")    ## progress gradient: cold end
 const EMBER_BAR_B := Color("#ff7a2a")
@@ -68,7 +69,7 @@ const EMBER_BAR_C := Color("#ffd27a")    ## progress gradient: hot end
 ## Rarity is a presentation layer derived from data we already have (explicit tier, then sell
 ## value band). It is documented here so nobody mistakes it for a gameplay stat.
 const RARITY: Dictionary = {
-	"common": {"label": "Common", "color": Color("#bcb09b")},
+	"common": {"label": "Common", "color": Color("#c0b5a1")},
 	"uncommon": {"label": "Uncommon", "color": TEAL},
 	"rare": {"label": "Rare", "color": BLUE},
 	"epic": {"label": "Epic", "color": PURPLE},
