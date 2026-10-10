@@ -159,16 +159,20 @@ static func build_theme() -> Theme:
 	th.set_stylebox("panel", "Window", surface_box("overlay"))
 
 	# --- buttons ----------------------------------------------------------
-	var b_normal := _button_box(UITokens.SURFACE_2, UITokens.BORDER)
-	var b_hover := _button_box(Color(1, 1, 1, 0.10), Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.6))
-	var b_pressed := _button_box(UITokens.SURFACE_3, UITokens.GOLD)
-	b_pressed.shadow_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.35)
-	b_pressed.shadow_size = 6
+	# Leather buttons: hover warms them, pressed darkens them and sinks the label 2 px.
+	var b_normal: StyleBoxTexture = surface_box("button")
+	var b_hover: StyleBoxTexture = surface_box("button")
+	b_hover.modulate_color = Color(1.25, 1.12, 1.0)
+	var b_pressed: StyleBoxTexture = surface_box("button")
+	b_pressed.modulate_color = Color(0.85, 0.8, 0.75)
+	b_pressed.content_margin_top += 2.0
+	b_pressed.content_margin_bottom = maxf(0.0, b_pressed.content_margin_bottom - 2.0)
+	var b_disabled: StyleBoxTexture = surface_box("button")
+	b_disabled.modulate_color = Color(0.55, 0.5, 0.48, 0.75)
 	# A visible focus ring is mandatory: keyboard navigation must be legible, and the ring uses
-	# a border *and* a bright colour so it does not rely on hue alone.
-	var b_focus := _button_box(UITokens.SURFACE_3, UITokens.GOLD_BRIGHT)
+	# a border *and* a bright colour so it does not rely on hue alone. Drawn over the leather.
+	var b_focus := _button_box(Color(0, 0, 0, 0), UITokens.GOLD_BRIGHT)
 	b_focus.set_border_width_all(2)
-	var b_disabled := _button_box(Color(1, 1, 1, 0.03), Color(1, 1, 1, 0.06))
 
 	th.set_stylebox("normal", "Button", b_normal)
 	th.set_stylebox("hover", "Button", b_hover)
@@ -234,7 +238,7 @@ static func build_theme() -> Theme:
 
 	# --- progress ---------------------------------------------------------
 	th.set_stylebox("background", "ProgressBar", _solid(Color(0, 0, 0, 0.35), UITokens.R_PILL))
-	th.set_stylebox("fill", "ProgressBar", glow_fill(UITokens.TEAL))
+	th.set_stylebox("fill", "ProgressBar", glow_fill(UITokens.EMBER_BAR_B))
 	th.set_color("font_color", "ProgressBar", UITokens.TEXT)
 	th.set_font_size("font_size", "ProgressBar", UITokens.FONT_MICRO)
 
@@ -321,9 +325,16 @@ static func label(text: String, muted := false, size := UITokens.FONT_BODY) -> L
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return l
 
+## Gold heading ink with a faint ember glow, in the display face when it is installed.
 static func title(text: String, size := UITokens.FONT_HEAD) -> Label:
 	var l := label(text, false, size)
 	l.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
+	l.add_theme_color_override("font_shadow_color", Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.35))
+	l.add_theme_constant_override("shadow_outline_size", 6)
+	l.add_theme_constant_override("shadow_offset_x", 0)
+	l.add_theme_constant_override("shadow_offset_y", 0)
+	if ResourceLoader.exists("res://assets/fonts/ember_display.ttf"):
+		l.add_theme_font_override("font", load("res://assets/fonts/ember_display.ttf"))
 	return l
 
 static func colored_label(text: String, color: Color, size := UITokens.FONT_BODY) -> Label:
@@ -340,12 +351,12 @@ static func section(title_text: String, hint := "") -> VBoxContainer:
 	# already the container, and boxes-inside-boxes was the main source of visual noise.
 	var frame := StyleBoxFlat.new()
 	frame.bg_color = Color(0, 0, 0, 0)
-	frame.border_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.45)
+	frame.border_color = Color(UITokens.BORDER_GOLD.r, UITokens.BORDER_GOLD.g, UITokens.BORDER_GOLD.b, 0.6)
 	frame.set_border_width_all(0)
 	frame.border_width_bottom = 1
 	_inset(frame, UITokens.SP_1, UITokens.SP_5, UITokens.SP_4, UITokens.SP_4)
 	head.add_theme_stylebox_override("normal", frame)
-	head.add_theme_color_override("font_color", UITokens.TEXT_STRONG)
+	head.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
 	box.add_child(head)
 	if hint != "":
 		var h := label(hint, true, UITokens.FONT_MICRO)
@@ -373,12 +384,15 @@ static func primary_button(text: String, tooltip := "") -> Button:
 	var b := button(text, tooltip)
 	b.add_theme_color_override("font_color", UITokens.TEXT_ON_GOLD)
 	b.add_theme_color_override("font_hover_color", UITokens.TEXT_ON_GOLD)
-	var box := _button_box(UITokens.ACCENT_VIOLET, Color(UITokens.ACCENT_PINK.r, UITokens.ACCENT_PINK.g, UITokens.ACCENT_PINK.b, 0.7))
-	box.shadow_color = Color(UITokens.ACCENT_PINK.r, UITokens.ACCENT_PINK.g, UITokens.ACCENT_PINK.b, 0.35)
+	# Oxblood with a gold edge and an ember glow: the one control on a card that says "do this".
+	var box := _button_box(UITokens.ACCENT_VIOLET, UITokens.BORDER_GOLD)
+	box.set_border_width_all(2)
+	box.shadow_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.35)
 	box.shadow_size = 8
 	b.add_theme_stylebox_override("normal", box)
-	var hover := _button_box(Color("#8b4cf7"), UITokens.ACCENT_PINK)
-	hover.shadow_color = Color(UITokens.ACCENT_PINK.r, UITokens.ACCENT_PINK.g, UITokens.ACCENT_PINK.b, 0.55)
+	var hover := _button_box(UITokens.ACCENT_PINK.darkened(0.25), UITokens.GOLD_BRIGHT)
+	hover.set_border_width_all(2)
+	hover.shadow_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.6)
 	hover.shadow_size = 12
 	b.add_theme_stylebox_override("hover", hover)
 	return b
@@ -386,7 +400,7 @@ static func primary_button(text: String, tooltip := "") -> Button:
 static func danger_button(text: String, tooltip := "") -> Button:
 	var b := button(text, tooltip)
 	b.add_theme_color_override("font_color", UITokens.RED)
-	b.add_theme_stylebox_override("normal", _button_box(Color(UITokens.RED.r, UITokens.RED.g, UITokens.RED.b, 0.10), Color(UITokens.RED.r, UITokens.RED.g, UITokens.RED.b, 0.6)))
+	b.add_theme_stylebox_override("normal", _button_box(UITokens.DANGER_FILL, Color(UITokens.RED.r, UITokens.RED.g, UITokens.RED.b, 0.7)))
 	return b
 
 static func panel(accent := false) -> PanelContainer:

@@ -182,6 +182,7 @@ func run_all(host: Node) -> void:
 	test_monster_passives()
 	test_identity_theme_builds()
 	test_grimoire_palette()
+	test_grimoire_buttons()
 	test_surface_box_falls_back()
 	test_surface_textures()
 	test_motion_reduced_disables()
@@ -2701,6 +2702,25 @@ func test_grimoire_palette() -> void:
 			"%s reads on leather (%.2f:1)" % [name, UITokens.contrast_ratio(c, UITokens.LEATHER_MID)])
 	_ok(UITokens.contrast_ratio(UITokens.DISABLED, UITokens.LEATHER_MID) >= 3.0,
 		"disabled ink is still visible on leather")
+
+## Leather buttons that press in, oxblood primary buttons, glowing headings.
+func test_grimoire_buttons() -> void:
+	_heading("Grimoire buttons")
+	var th: Theme = UIStyle.build_theme()
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		_ok(th.get_stylebox(state, "Button") is StyleBoxTexture, "button %s is leather" % state)
+	_eq(th.get_stylebox("pressed", "Button").content_margin_top,
+		th.get_stylebox("normal", "Button").content_margin_top + 2.0, "a pressed button sinks 2 px")
+	var primary: Button = UIStyle.primary_button("Begin")
+	var pbox = primary.get_theme_stylebox("normal")
+	_ok(pbox is StyleBoxFlat and pbox.bg_color == UITokens.ACCENT_VIOLET and pbox.border_color == UITokens.BORDER_GOLD,
+		"the primary button is oxblood with a gold edge")
+	var t: Label = UIStyle.title("Hearthfall Fields")
+	_eq(t.text, "Hearthfall Fields", "a heading keeps its text")
+	_ok(t.has_theme_color_override("font_shadow_color") and t.get_theme_color("font_shadow_color").a > 0.0,
+		"a heading glows")
+	primary.free()
+	t.free()
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
