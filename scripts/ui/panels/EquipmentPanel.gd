@@ -173,7 +173,7 @@ func _rebuild_browser() -> void:
 			var row := HBoxContainer.new()
 			row.add_theme_constant_override("separation", UITokens.SP_4)
 			_browser_box.add_child(row)
-			row.add_child(Widgets.item_icon(item_id))
+			row.add_child(Widgets.item_slot(item_id, int(r["quantity"])))
 			var label := UIStyle.label("%s ×%d" % [_item_name(item_id), int(r["quantity"])],
 				false, UITokens.FONT_SMALL)
 			label.size_flags_horizontal = Control.SIZE_EXPAND_FILL

@@ -161,6 +161,7 @@ func run_all(host: Node) -> void:
 	await test_combat_visual(host)
 	await test_skill_cards(host)
 	await test_report_screens_visual(host)
+	await test_all_screens_fit(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -3001,6 +3002,31 @@ func test_report_screens_visual(host: Node) -> void:
 	detail.show_recipe("woodcutting", str((DataLoader.get_skill("woodcutting")["actions"] as Array)[0]["id"]))
 	_ok(_count_widgets(detail, "stat_chip") >= 3, "a recipe's numbers in the detail card are chips (%d)" % _count_widgets(detail, "stat_chip"))
 	host.call("close_detail")
+
+## Every screen fits all three window widths; storage and the equipment browser show item slots;
+## shop summaries lead with a gold chip.
+func test_all_screens_fit(host: Node) -> void:
+	_heading("All screens fit")
+	BankManager.add_item_guaranteed("shark", 3)
+	BankManager.add_item_guaranteed("bronze_sword", 1)
+	var root: Control = host.get("_root")
+	for width in [1440, 900, 420]:
+		for screen in Screens.ORDER:
+			host.call("_show_screen", str(screen), {})
+			host.call("apply_layout_for_width", width)
+			_ok(root.get_combined_minimum_size().x <= float(width),
+				"%s fits %dpx (needs %dpx)" % [screen, width, int(root.get_combined_minimum_size().x)])
+	host.call("apply_layout_for_width", 1440)
+	host.call("_show_screen", Screens.BANK, {})
+	await host.get_tree().process_frame
+	_ok(_count_widgets((host.get("_panels") as Dictionary)[Screens.BANK], "item_slot") >= 2, "storage entries are item slots")
+	host.call("_show_screen", Screens.EQUIPMENT, {})
+	await host.get_tree().process_frame
+	_ok(_count_widgets((host.get("_panels") as Dictionary)[Screens.EQUIPMENT], "item_slot") >= 1, "the equipment browser shows item slots")
+	for sc in [Screens.STORE, Screens.PROVISIONER, Screens.SETTLEMENT]:
+		host.call("_show_screen", sc, {})
+		await host.get_tree().process_frame
+		_ok(_count_widgets((host.get("_panels") as Dictionary)[sc], "stat_chip") >= 1, "%s leads with chips" % sc)
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
