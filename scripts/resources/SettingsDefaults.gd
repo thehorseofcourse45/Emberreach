@@ -19,6 +19,7 @@ const DEFAULTS: Dictionary = {
 	## Presentation.
 	"reduced_motion": false,
 	"ambient_embers": true,
+	"nav_open_chapter": "combat",
 	"ui_scale": 1.0,
 	"compact_rows": false,
 	## Sound (0..100; zero mutes the bus rather than stopping playback).

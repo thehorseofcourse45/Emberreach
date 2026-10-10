@@ -5,6 +5,7 @@ const ActionQueueTests = preload("res://scripts/tests/ActionQueueTests.gd")
 const LootFilterTests = preload("res://scripts/tests/LootFilterTests.gd")
 const CombatSimulatorTests = preload("res://scripts/tests/CombatSimulatorTests.gd")
 const RuneWards = preload("res://scripts/core/RuneWards.gd")
+const SidebarNav = preload("res://scripts/ui/SidebarNav.gd")
 ## TestRunner — the project's automated verification, wired to `--tests` and `--selftest`.
 ##
 ## Two suites:
@@ -149,6 +150,7 @@ func run_all(host: Node) -> void:
 	_test_general_store_screen(host)
 	await _test_task_feedback_layout(host)
 	_test_combat_screen_split(host)
+	test_chapters(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -1463,25 +1465,12 @@ func _test_combat_screen_split(host: Node) -> void:
 	var skill_buttons: Dictionary = host.get("_skill_nav_buttons")
 	_ok(skill_buttons.size() == DataLoader.get_skill_ids().size() - 1 and not skill_buttons.has("township"),
 		"Settlement uses its management entry instead of a duplicate skill link")
-	var sidebar: VBoxContainer = host.get("_sidebar_list")
-	var combat_heading: int = -1
-	var noncombat_heading: int = -1
-	var divider: int = -1
-	for i in range(sidebar.get_child_count()):
-		var node: Node = sidebar.get_child(i)
-		if node is Label and (node as Label).text == "COMBAT SKILLS":
-			combat_heading = i
-		if node is Label and (node as Label).text == "NON-COMBAT SKILLS":
-			noncombat_heading = i
-		if node is HSeparator:
-			divider = i
-	var bank_idx: int = (host.get("_nav_buttons") as Dictionary)[Screens.BANK].get_index()
-	_ok(combat_heading >= 0 and noncombat_heading > combat_heading and divider > noncombat_heading,
-		"combat and non-combat skills precede a divider and the other screens")
-	_ok(bank_idx < combat_heading, "Storage is pinned above the skills section")
+	var chapters: Dictionary = host.get("_chapters")
+	var bank_button: Button = (host.get("_nav_buttons") as Dictionary)[Screens.BANK]
+	_ok(bank_button.get_parent() == chapters["town"]["body"], "Storage lives in the Town chapter")
 	var prayer_button: Button = skill_buttons["prayer"]
-	_ok(prayer_button.get_index() > combat_heading and prayer_button.get_index() < noncombat_heading,
-		"Prayers sits inside the combat skills section")
+	_ok(prayer_button.get_parent() == chapters["combat"]["body"], "Prayers sits inside the Combat chapter")
+	SidebarNav.open_chapter(host, "combat")
 	prayer_button.pressed.emit()
 	_ok(host.get("_screen") == Screens.PRAYERS, "the combat prayer entry opens the prayer list")
 	var fishing_button: Button = skill_buttons["fishing"]
@@ -2751,6 +2740,44 @@ func test_forge_backdrop(host: Node) -> void:
 	PlayerData.settings["reduced_motion"] = saved_reduced
 	host.call("apply_ambient")
 	_ok(SettingsDefaults.DEFAULTS.get("ambient_embers", null) == true, "embers default to on")
+
+## Collapsible chapters: every skill and screen in exactly one, one open at a time, remembered,
+## following navigation, and an icon-only rail on medium-narrow windows.
+func test_chapters(host: Node) -> void:
+	_heading("Chapters")
+	var seen: Dictionary = {}
+	for ch in SidebarNav.CHAPTERS:
+		for id in (ch["skills"] as Array) + (ch["screens"] as Array):
+			seen[str(id)] = int(seen.get(str(id), 0)) + 1
+	for sid in DataLoader.get_skill_ids():
+		if sid != "township":
+			_eq(int(seen.get(sid, 0)), 1, "%s is in exactly one chapter" % sid)
+	for sc in Screens.ORDER:
+		if not (sc in [Screens.SKILLS, Screens.PRAYERS]):
+			_eq(int(seen.get(sc, 0)), 1, "screen %s is in exactly one chapter" % sc)
+	_eq(SidebarNav.chapter_of("woodcutting"), "gathering", "Timbercraft is a gathering skill")
+	_eq(SidebarNav.chapter_of(Screens.BANK), "town", "Storage is in Town")
+	var chapters: Dictionary = host.get("_chapters")
+	SidebarNav.open_chapter(host, "crafting")
+	for id in chapters.keys():
+		_eq((chapters[id]["body"] as Control).visible, id == "crafting", "only Crafting is open (%s)" % id)
+	_eq(str(PlayerData.settings.get("nav_open_chapter", "")), "crafting", "the open chapter is remembered")
+	host.call("navigate", {"screen": Screens.SKILLS, "skill_id": "woodcutting"})
+	_ok((chapters["gathering"]["body"] as Control).visible, "opening a skill opens its chapter")
+	host.call("navigate", {"screen": Screens.PRAYERS})
+	_ok((chapters["combat"]["body"] as Control).visible, "opening Prayers opens Combat")
+	SidebarNav.open_chapter(host, "character")
+	host.call("navigate", {"screen": Screens.SKILLS})
+	var shown_skill: String = str((host.get("_panels") as Dictionary)[Screens.SKILLS].get("_skill_id"))
+	_ok((chapters[SidebarNav.chapter_of(shown_skill)]["body"] as Control).visible,
+		"opening Skills without a skill opens the chapter of the skill it shows (%s)" % shown_skill)
+	host.call("apply_layout_for_width", 800)
+	for id in chapters.keys():
+		var header: Button = chapters[id]["header"]
+		_ok(header.text == "" and header.icon != null and header.tooltip_text != "", "800px: %s header is an icon" % id)
+	host.call("apply_layout_for_width", 1440)
+	for id in chapters.keys():
+		_ok((chapters[id]["header"] as Button).text != "", "1440px: %s header has its name" % id)
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")

@@ -148,6 +148,7 @@ const ICON_XL := 64
 
 ## Layout breakpoints (viewport width in CSS pixels).
 const BP_NARROW := 760      ## below this: drawer navigation, stacked layout
+const BP_RAIL := 900        ## below this (and above BP_NARROW): icon-only chapter rail
 const BP_MEDIUM := 1080     ## below this: detail panel collapses under the workspace
 
 static func rarity(key: String) -> Dictionary:

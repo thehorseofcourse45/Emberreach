@@ -26,6 +26,8 @@ var _sidebar_scroll: ScrollContainer
 var _workspace: PanelContainer
 var _detail_wrap: PanelContainer
 var _backdrop: ColorRect
+## chapter id -> {header: Button, body: VBoxContainer, label: String} (SidebarNav.build).
+var _chapters: Dictionary = {}
 var _embers: CPUParticles2D = null
 var _detail: DetailPanel
 var _strip: ActivityStrip
@@ -113,6 +115,8 @@ func _build() -> void:
 	_skill_nav_buttons = nav["skill_buttons"]
 	_accent_fx = nav["accent_fx"]
 	_accent_bar = nav["accent_bar"]
+	_chapters = nav["chapters"]
+	SidebarNav.open_chapter(self, str(PlayerData.settings.get("nav_open_chapter", "combat")))
 
 	_workspace = PanelContainer.new()
 	_workspace.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -243,6 +247,12 @@ func _show_screen(screen: String, route: Dictionary) -> void:
 	# A focused route (a specific skill / region / quest) refines the pane it opens.
 	if panel.has_method("focus_route"):
 		panel.call("focus_route", route)
+	var route_skill: String = str(route.get("skill_id", ""))
+	if screen == Screens.SKILLS and route_skill == "":
+		route_skill = str(panel.get("_skill_id")) if "_skill_id" in panel else ""
+	var chapter: String = SidebarNav.chapter_of(route_skill if screen == Screens.SKILLS else screen)
+	if chapter != "":
+		SidebarNav.open_chapter(self, chapter)
 	_refresh_nav()
 	var detail_route: Dictionary = route.duplicate()
 	detail_route["screen"] = screen
@@ -379,6 +389,11 @@ func _refresh_nav() -> void:
 			selected_row = button
 		button.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "flat", selected))
 		button.add_theme_color_override("font_color", UITokens.TEXT_STRONG if selected else UITokens.TEXT_MUTED)
+	# A selected row inside a collapsed chapter is marked on its chapter header instead.
+	if selected_row != null and not (selected_row.get_parent() as Control).visible:
+		for id in _chapters.keys():
+			if _chapters[id]["body"] == selected_row.get_parent():
+				selected_row = _chapters[id]["header"]
 	SidebarNav.slide_accent(_accent_fx, _accent_bar, selected_row)
 
 ## Sidebar skill labels carry levels, so the one button whose skill just leveled is relabelled
@@ -435,7 +450,9 @@ func apply_layout_for_width(width: int) -> void:
 	if _sidebar_wrap == null or _nav_button == null or _detail_wrap == null:
 		return
 	_sidebar_wrap.visible = not _compact
-	_sidebar_wrap.custom_minimum_size = Vector2(UITokens.W_SIDEBAR if not _compact else 0, 0)
+	var rail: bool = not _compact and width < UITokens.BP_RAIL
+	SidebarNav.set_rail(self, rail)
+	_sidebar_wrap.custom_minimum_size = Vector2(0 if _compact else (UITokens.W_SIDEBAR_COMPACT if rail else UITokens.W_SIDEBAR), 0)
 	_nav_button.visible = _compact
 	_detail_wrap.visible = not _medium
 	if _medium:

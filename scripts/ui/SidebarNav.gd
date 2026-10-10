@@ -17,6 +17,65 @@ const PINNED_SCREENS: Array[String] = [Screens.STORE, Screens.PROVISIONER, Scree
 ## Build the sidebar column into `sidebar_wrap` and the hidden drawer into
 ## `host`. Returns {list, scroll, drawer, nav_button, nav_buttons, skill_buttons, accent_fx,
 ## accent_bar}.
+## The sidebar's chapters, in order. Every skill (except township, reached through the Settlement
+## screen) and every screen in Screens.ORDER (except Skills and Prayers, reached through skill rows)
+## belongs to exactly one; test_chapters pins that. `icon` names a skill (skill icon) or a screen.
+const CHAPTERS: Array[Dictionary] = [
+	{"id": "town", "label": "Town", "icon": "store",
+		"screens": ["store", "provisioner", "bank", "settlement", "farm", "action_queue"], "skills": ["caravaneering"]},
+	{"id": "combat", "label": "Combat", "icon": "combat",
+		"screens": ["combat", "expeditions", "raids", "equipment", "combat_simulator"],
+		"skills": ["attack", "strength", "defence", "hitpoints", "ranged", "magic", "prayer", "slayer", "corruption"]},
+	{"id": "gathering", "label": "Gathering", "icon": "woodcutting", "screens": [],
+		"skills": ["woodcutting", "fishing", "mining", "farming", "thieving", "agility", "harvesting", "archaeology", "cartography", "lostfinding", "ranching"]},
+	{"id": "crafting", "label": "Crafting", "icon": "smithing", "screens": [],
+		"skills": ["firemaking", "cooking", "smithing", "fletching", "crafting", "herblore", "fermentation", "customcraft", "engineering", "inscription"]},
+	{"id": "arcane", "label": "Arcane", "icon": "runecrafting", "screens": ["prestige"],
+		"skills": ["runecrafting", "summoning", "astrology", "alt_magic", "echo_keeping", "wayfolding", "enchanting", "dreamwalking"]},
+	{"id": "character", "label": "Character", "icon": "overview",
+		"screens": ["overview", "quests", "achievements", "collection", "stats", "settings"], "skills": []},
+]
+
+## The chapter a skill id or screen id belongs to ("" when none). Prayers counts as the prayer skill.
+static func chapter_of(id: String) -> String:
+	if id == Screens.PRAYERS:
+		id = "prayer"
+	for ch in CHAPTERS:
+		if (ch["skills"] as Array).has(id) or (ch["screens"] as Array).has(id):
+			return str(ch["id"])
+	return ""
+
+## Expand one chapter and collapse the rest; remembered in settings.
+static func open_chapter(host: Control, chapter_id: String) -> void:
+	var chapters: Variant = host.get("_chapters")
+	if typeof(chapters) != TYPE_DICTIONARY or not (chapters as Dictionary).has(chapter_id):
+		return
+	for id in (chapters as Dictionary).keys():
+		var open: bool = id == chapter_id
+		(chapters[id]["body"] as Control).visible = open
+		var header: Button = chapters[id]["header"]
+		header.add_theme_stylebox_override("normal", UIStyle.surface_box("header", open))
+		header.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT if open else UITokens.TEXT_MUTED)
+	PlayerData.settings["nav_open_chapter"] = chapter_id
+
+## Icon-only headers and rows for the medium-narrow rail; names stay in the tooltips.
+static func set_rail(host: Control, rail: bool) -> void:
+	var chapters: Variant = host.get("_chapters")
+	if typeof(chapters) != TYPE_DICTIONARY:
+		return
+	for id in (chapters as Dictionary).keys():
+		(chapters[id]["header"] as Button).text = "" if rail else str(chapters[id]["label"])
+		for row in (chapters[id]["body"] as Control).get_children():
+			var b := row as Button
+			if b == null:
+				continue
+			if rail and not b.has_meta("nav_text"):
+				b.set_meta("nav_text", b.text)
+				b.text = ""
+			elif not rail and b.has_meta("nav_text"):
+				b.text = str(b.get_meta("nav_text"))
+				b.remove_meta("nav_text")
+
 static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 	var col := UIStyle.vbox(UITokens.SP_4)
 	sidebar_wrap.add_child(col)
@@ -45,29 +104,31 @@ static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 	var list := UIStyle.vbox(UITokens.SP_2)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
-	_add_pinned_nav(host, list, nav_buttons, null)
-	list.add_child(HSeparator.new())
-	_add_skill_links(host, list, nav_buttons, skill_buttons, null)
-	list.add_child(HSeparator.new())
-	_add_settlement_nav(host, list, nav_buttons, null)
-	list.add_child(HSeparator.new())
-	list.add_child(UIStyle.label("GAME", true, UITokens.FONT_MICRO))
-
-	for screen in Screens.ORDER:
-		if screen in [Screens.SKILLS, Screens.PRAYERS, Screens.SETTLEMENT] or screen in PINNED_SCREENS:
-			continue
-		var b := Button.new()
-		b.text = Screens.label_for(screen)
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.custom_minimum_size = Vector2(0, UITokens.H_HEADER)
-		b.add_theme_font_size_override("font_size", UITokens.FONT_BODY)
-		b.icon = AssetRegistry.icon(_icon_kind_for(screen), _icon_id_for(screen))
-		b.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
-		b.tooltip_text = Screens.label_for(screen)
-		var target: String = screen
-		b.pressed.connect(func(): host.call("_show_screen", target, {}))
-		list.add_child(b)
-		nav_buttons[screen] = b
+	var chapters: Dictionary = {}
+	for ch in CHAPTERS:
+		var chapter_id: String = str(ch["id"])
+		var header := Button.new()
+		header.text = str(ch["label"])
+		header.tooltip_text = str(ch["label"])
+		header.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		header.custom_minimum_size = Vector2(0, UITokens.H_HEADER)
+		header.add_theme_font_size_override("font_size", UITokens.FONT_SUBHEAD)
+		header.add_theme_constant_override("icon_max_width", UITokens.ICON_MD)
+		var icon_id: String = str(ch["icon"])
+		if DataLoader.get_skill_ids().has(icon_id):
+			header.icon = AssetRegistry.skill_icon(icon_id)
+		else:
+			header.icon = AssetRegistry.icon(_icon_kind_for(icon_id), _icon_id_for(icon_id))
+		header.pressed.connect(func(): open_chapter(host, chapter_id))
+		list.add_child(header)
+		var body := UIStyle.vbox(UITokens.SP_1)
+		body.visible = false
+		list.add_child(body)
+		for screen in ch["screens"]:
+			_add_screen_button(host, body, str(screen), nav_buttons, null)
+		for skill_id in ch["skills"]:
+			_add_skill_row(host, body, str(skill_id), nav_buttons, skill_buttons, null)
+		chapters[chapter_id] = {"header": header, "body": body, "label": str(ch["label"])}
 
 	col.add_child(HSeparator.new())
 	var nav_button := UIStyle.button("Navigation", "Open navigation")
@@ -88,7 +149,7 @@ static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 	nav_button.pressed.connect(func(): toggle_drawer(host, drawer))
 	return {"list": list, "scroll": scroll, "drawer": drawer, "nav_button": nav_button,
 		"nav_buttons": nav_buttons, "skill_buttons": skill_buttons,
-		"accent_fx": accent_fx, "accent_bar": accent_bar}
+		"accent_fx": accent_fx, "accent_bar": accent_bar, "chapters": chapters}
 
 ## Put the accent bar on the selected row, or hide it when nothing is selected. Measured in global
 ## space and re-expressed in the overlay's space, so a scrolled sidebar and the drawer-less compact
@@ -146,22 +207,27 @@ static func populate_drawer(host: Control, drawer: PanelContainer) -> void:
 
 static func _add_pinned_nav(host: Control, container: VBoxContainer, nav_buttons: Dictionary, drawer: PanelContainer = null) -> void:
 	for screen in PINNED_SCREENS:
-		var b := Button.new()
-		b.text = Screens.label_for(screen)
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.custom_minimum_size = Vector2(0, UITokens.H_HEADER)
-		b.add_theme_font_size_override("font_size", UITokens.FONT_BODY)
-		b.icon = AssetRegistry.icon(_icon_kind_for(screen), _icon_id_for(screen))
-		b.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
-		b.tooltip_text = Screens.label_for(screen)
-		var target: String = screen
-		b.pressed.connect(func():
-			if drawer != null:
-				drawer.visible = false
-			host.call("_show_screen", target, {}))
-		container.add_child(b)
-		if drawer == null:
-			nav_buttons[screen] = b
+		_add_screen_button(host, container, screen, nav_buttons, drawer)
+
+## One screen entry. Settlement carries the township level, like a skill row.
+static func _add_screen_button(host: Control, container: VBoxContainer, screen: String, nav_buttons: Dictionary, drawer: PanelContainer = null) -> void:
+	var b := Button.new()
+	b.text = skill_nav_text("township") if screen == Screens.SETTLEMENT else Screens.label_for(screen)
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.clip_text = true
+	b.custom_minimum_size = Vector2(0, 30)
+	b.add_theme_font_size_override("font_size", UITokens.FONT_SMALL)
+	b.icon = AssetRegistry.icon(_icon_kind_for(screen), _icon_id_for(screen))
+	b.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
+	b.tooltip_text = Screens.label_for(screen)
+	var target: String = screen
+	b.pressed.connect(func():
+		if drawer != null:
+			drawer.visible = false
+		host.call("_show_screen", target, {}))
+	container.add_child(b)
+	if drawer == null:
+		nav_buttons[screen] = b
 
 static func _add_settlement_nav(host: Control, container: VBoxContainer, nav_buttons: Dictionary, drawer: PanelContainer = null) -> void:
 	container.add_child(UIStyle.label("SETTLEMENT", true, UITokens.FONT_MICRO))
@@ -197,27 +263,32 @@ static func _add_skill_links(host: Control, container: VBoxContainer, nav_button
 			var skill: Dictionary = DataLoader.get_skill(skill_id)
 			if skill_id == "township" or str(skill.get("category", "")) != category:
 				continue
-			var button := Button.new()
-			# "·" separator: level is visible, not hidden in the tooltip.
-			var skill_name := str(skill.get("name", skill_id))
-			button.text = skill_nav_text(skill_id)
-			button.icon = AssetRegistry.icon("navigation", Screens.PRAYERS) if skill_id == "prayer" else AssetRegistry.skill_icon(skill_id)
-			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			button.clip_text = true
-			button.custom_minimum_size = Vector2(0, 30)
-			button.add_theme_font_size_override("font_size", UITokens.FONT_SMALL)
-			button.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
-			button.tooltip_text = "%s · Level %d" % [skill_name, PlayerData.get_level(skill_id)]
-			var target_skill: String = skill_id
-			button.pressed.connect(func():
-				if drawer != null:
-					drawer.visible = false
-				host.call("navigate", {"screen": Screens.PRAYERS if target_skill == "prayer" else Screens.SKILLS, "skill_id": target_skill}))
-			container.add_child(button)
-			if drawer == null:
-				skill_buttons[skill_id] = button
-				if skill_id == "prayer":
-					nav_buttons[Screens.PRAYERS] = button
+			_add_skill_row(host, container, skill_id, nav_buttons, skill_buttons, drawer)
+
+## One skill entry: icon, name and level; Prayer opens the prayer screen.
+static func _add_skill_row(host: Control, container: VBoxContainer, skill_id: String, nav_buttons: Dictionary, skill_buttons: Dictionary, drawer: PanelContainer = null) -> void:
+	var skill: Dictionary = DataLoader.get_skill(skill_id)
+	var button := Button.new()
+	# "·" separator: level is visible, not hidden in the tooltip.
+	var skill_name := str(skill.get("name", skill_id))
+	button.text = skill_nav_text(skill_id)
+	button.icon = AssetRegistry.icon("navigation", Screens.PRAYERS) if skill_id == "prayer" else AssetRegistry.skill_icon(skill_id)
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.clip_text = true
+	button.custom_minimum_size = Vector2(0, 30)
+	button.add_theme_font_size_override("font_size", UITokens.FONT_SMALL)
+	button.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
+	button.tooltip_text = "%s · Level %d" % [skill_name, PlayerData.get_level(skill_id)]
+	var target_skill: String = skill_id
+	button.pressed.connect(func():
+		if drawer != null:
+			drawer.visible = false
+		host.call("navigate", {"screen": Screens.PRAYERS if target_skill == "prayer" else Screens.SKILLS, "skill_id": target_skill}))
+	container.add_child(button)
+	if drawer == null:
+		skill_buttons[skill_id] = button
+		if skill_id == "prayer":
+			nav_buttons[Screens.PRAYERS] = button
 
 static func _icon_kind_for(screen: String) -> String:
 	match screen:
