@@ -159,6 +159,7 @@ func run_all(host: Node) -> void:
 	test_bars_reskin(host)
 	await test_overview_visual(host)
 	await test_combat_visual(host)
+	await test_skill_cards(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -2946,6 +2947,26 @@ func test_combat_visual(host: Node) -> void:
 	_ok(_count_widgets(panel, "key_value") <= 3, "at most three label/value rows remain (%d)" % _count_widgets(panel, "key_value"))
 	CombatManager.stop_combat("retreat")
 	panel.queue_free()
+
+## Skill actions are vellum cards: icon, time and XP chips, output slots and a mastery meter.
+func test_skill_cards(host: Node) -> void:
+	_heading("Skill cards")
+	for sid in ["woodcutting", "cooking"]:
+		host.call("navigate", {"screen": Screens.SKILLS, "skill_id": sid})
+		await host.get_tree().process_frame
+		var panel: Control = (host.get("_panels") as Dictionary)[Screens.SKILLS]
+		var cards: Array = []
+		for c in panel.find_children("", "Control", true, false):
+			if str((c as Control).get_meta("widget", "")) == "action_card":
+				cards.append(c)
+		var actions: int = (DataLoader.get_skill(sid).get("actions", []) as Array).size()
+		_ok(cards.size() >= mini(actions, 3), "%s actions are cards (%d of %d)" % [sid, cards.size(), actions])
+		if cards.is_empty():
+			continue
+		var first: Control = cards[0]
+		_ok(_count_widgets(first, "stat_chip") >= 2, "%s: a card shows time and XP as chips" % sid)
+		_ok(_count_widgets(first, "item_slot") >= 1, "%s: a card shows what it makes as slots" % sid)
+		_ok(_count_widgets(first, "meter") == 1, "%s: a card has its own mastery meter" % sid)
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")

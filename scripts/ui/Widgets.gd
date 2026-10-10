@@ -442,6 +442,7 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var unlocked: bool = level >= req
 	var mastery: int = MasteryManager.get_level(skill_id, action_id)
 	var card := VBoxContainer.new()
+	card.set_meta("widget", "action_card")
 	card.add_theme_constant_override("separation", UITokens.SP_1)
 	var row := Button.new()
 	row.custom_minimum_size = Vector2(0, 60)
@@ -497,10 +498,24 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 		content.add_child(lock)
 	var estimate: Dictionary = ActionEstimates.for_action(skill_id, action_id)
 	var interval: float = float(estimate.get("effective_interval", action.get("base_interval", 3.0)))
-	var time_label := UIStyle.label("%.1fs\n≈ %s XP/h" % [interval, UIStyle.fmt(float(estimate.get("xp_per_hour", 0)))], true, UITokens.FONT_MICRO)
-	time_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.add_child(time_label)
+	# What it makes, as a slot (the first output), then time and XP as chips.
+	if not outputs.is_empty():
+		var out_id: String = str(outputs.keys()[0])
+		var out_slot: Control = item_slot(out_id, int(outputs[out_id]))
+		out_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		out_slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		content.add_child(out_slot)
+	var numbers := UIStyle.vbox(UITokens.SP_1)
+	numbers.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	numbers.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	numbers.add_child(stat_chip("status", "idle", "%.1fs" % interval, "Time per action"))
+	numbers.add_child(stat_chip("skills", skill_id, "≈ %s XP/h" % UIStyle.fmt(float(estimate.get("xp_per_hour", 0))),
+		"Projected XP per hour", UITokens.TEAL))
+	for chip in numbers.get_children():
+		(chip as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(numbers)
 	row.add_child(content)
+	row.custom_minimum_size = Vector2(0, 64)
 	row.pressed.connect(func(): on_press.call(action_id))
 	var tips: Array[String] = [str(action.get("name", action_id))]
 	if str(action.get("description", "")) != "":
@@ -532,6 +547,10 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 		tips.append("LOCKED — requires %s %d" % [DataLoader.get_skill(skill_id).get("name", skill_id), req])
 	row.tooltip_text = "\n".join(tips)
 	card.add_child(row)
+	# The card's own meter: progress towards the next mastery level of this activity.
+	var mastery_bar := meter(XPTable.level_progress(MasteryManager.get_xp(skill_id, action_id), maxi(1, mastery)), 1.0, "xp", "", 4)
+	mastery_bar.tooltip_text = "Mastery %d — progress to the next mastery level" % mastery
+	card.add_child(mastery_bar)
 	return card
 
 static func _item_list(items: Dictionary) -> String:
