@@ -183,7 +183,7 @@ func run_all(host: Node) -> void:
 	test_identity_theme_builds()
 	test_grimoire_palette()
 	test_surface_box_falls_back()
-	test_surface_box_uses_flat_by_default()
+	test_surface_textures()
 	test_motion_reduced_disables()
 	test_floater_pool_bounded()
 	# Awaited: both new motion pins are coroutines (they need frames for the tween to run and for
@@ -2717,29 +2717,37 @@ func test_surface_box_falls_back() -> void:
 	var sb: StyleBox = UIStyle.surface_box("nonexistent_kind_xyz")
 	_ok(sb is StyleBoxFlat, "missing art must fall back to StyleBoxFlat")
 
-## Task 6a pin: the files in assets/ui/ are old-scheme navy art, not ember art, so the art branch
-## is opt-in. Off by default the warm code-drawn surfaces render even though the art is on disk;
-## on, the box has to be a real 9-slice — the four texture margins carry the token value, because
-## a box with zero texture margins stretches the image instead of slicing it.
-## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
-func test_surface_box_uses_flat_by_default() -> void:
-	_heading("Identity surfaces")
-	UITokens.NINE_SLICE_ART_ENABLED = false
-	_ok(UIStyle.surface_box("panel") is StyleBoxFlat,
-		"with the art flag off the warm flat box is used even though panel_9slice.png exists")
-	if not ResourceLoader.exists("res://assets/ui/panel_9slice.png"):
-		UITokens.NINE_SLICE_ART_ENABLED = false
-		return
-	UITokens.NINE_SLICE_ART_ENABLED = true
-	var art = UIStyle.surface_box("panel")
-	_ok(art is StyleBoxTexture, "enabling the flag consumes assets/ui/<kind>_9slice.png")
-	if art is StyleBoxTexture:
-		var m: float = float(UITokens.NINE_SLICE_MARGINS.get("panel", 12))
-		_eq(art.texture_margin_left, m, "left texture margin slices the art")
-		_eq(art.texture_margin_right, m, "right texture margin slices the art")
-		_eq(art.texture_margin_top, m, "top texture margin slices the art")
-		_eq(art.texture_margin_bottom, m, "bottom texture margin slices the art")
-	UITokens.NINE_SLICE_ART_ENABLED = false
+## Every textured kind is a 9-slice StyleBoxTexture built from the generated leather/vellum; flat
+## kinds stay flat; a failed texture falls back to flat; a painted <kind>_grimoire_9slice.png wins.
+func test_surface_textures() -> void:
+	_heading("Grimoire surfaces")
+	TextureFactory.clear_cache()
+	for kind in UIStyle.TEXTURED_KINDS:
+		_ok(UIStyle.surface_box(kind) is StyleBoxTexture, "%s is a textured 9-slice" % kind)
+	_ok(UIStyle.surface_box("flat") is StyleBoxFlat, "flat list rows stay transparent")
+	_ok(UIStyle.surface_box("sunken") is StyleBoxFlat, "sunken wells stay flat")
+	var panel_box = UIStyle.surface_box("panel")
+	if panel_box is StyleBoxTexture:
+		var m: float = float(UITokens.NINE_SLICE_MARGINS["panel"])
+		_eq(panel_box.texture_margin_left, m, "the panel texture is sliced, not stretched")
+	TextureFactory.fail_for_test = true
+	TextureFactory.clear_cache()
+	_ok(UIStyle.surface_box("panel") is StyleBoxFlat, "a failed texture falls back to flat")
+	TextureFactory.fail_for_test = false
+	TextureFactory.clear_cache()
+	DirAccess.make_dir_recursive_absolute("user://art_test")
+	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
+	img.fill(Color.WHITE)
+	img.save_png("user://art_test/panel_grimoire_9slice.png")
+	var saved_dir: String = UIStyle.ART_DIR
+	UIStyle.ART_DIR = "user://art_test/"
+	var painted = UIStyle.surface_box("panel")
+	_ok(painted is StyleBoxTexture and painted.texture.get_width() == 32,
+		"a painted panel wins over the generated one")
+	UIStyle.ART_DIR = saved_dir
+	DirAccess.remove_absolute("user://art_test/panel_grimoire_9slice.png")
+	_ok(not (UIStyle.surface_box("panel") as StyleBoxTexture).texture.get_width() == 32,
+		"the old navy panel_9slice.png is never loaded")
 
 ## Task 4 pin: Motion helpers are no-ops when reduced motion is on, and the floater
 ## pool reuses hidden Labels instead of growing without bound (never queue_free).

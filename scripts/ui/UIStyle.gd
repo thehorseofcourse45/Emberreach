@@ -23,25 +23,53 @@ const DANGER := UITokens.RED
 #  Style boxes
 # =========================================================================
 
+## Where painted grimoire art is looked up. A var so tests can point it at user://.
+static var ART_DIR: String = "res://assets/ui/"
+## Kinds drawn from a texture (leather or vellum). Anything else ("flat", "sunken", unknown kinds)
+## stays a StyleBoxFlat.
+const TEXTURED_KINDS: Array[String] = ["panel", "card", "button", "header", "chip", "row", "raised", "overlay", "slot"]
+const _LEATHER_KINDS: Array[String] = ["panel", "overlay", "button", "header"]
+## Inner padding per kind: [left/right, top/bottom].
+const _PADDING: Dictionary = {"panel": [14, 10], "overlay": [14, 12], "card": [12, 10], "header": [10, 6],
+	"button": [12, 6], "row": [8, 5], "raised": [8, 5], "chip": [8, 3], "slot": [3, 3]}
+
+## The surface for a kind. Order: painted art (<kind>_grimoire_9slice.png in ART_DIR), then the
+## generated leather/vellum texture, then the flat fallback. The painted name is deliberately not
+## the old navy-era <kind>_9slice.png, so that art stays on disk untouched and is never loaded.
 static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBox:
-	# Opt-in: the art is only sliced in when UITokens.NINE_SLICE_ART_ENABLED is flipped on, so an
-	# old-scheme illustration in assets/ui/ can never be stretched behind the whole workspace.
-	var path: String = "res://assets/ui/%s_9slice.png" % kind
-	if UITokens.NINE_SLICE_ART_ENABLED and ResourceLoader.exists(path):
-		var tex: Texture2D = load(path)
-		var sb := StyleBoxTexture.new()
-		sb.texture = tex
-		var m: int = UITokens.NINE_SLICE_MARGINS.get(kind, 12)
-		# The texture margins are what make this a 9-slice: at 0 Godot stretches the whole image,
-		# so the corners and the borders distort with the widget.
-		sb.texture_margin_left = float(m); sb.texture_margin_right = float(m)
-		sb.texture_margin_top = float(m); sb.texture_margin_bottom = float(m)
-		sb.content_margin_left = m; sb.content_margin_right = m
-		sb.content_margin_top = m; sb.content_margin_bottom = m
-		sb.expand_margin_left = m; sb.expand_margin_right = m
-		sb.expand_margin_top = m; sb.expand_margin_bottom = m
-		return sb
-	return _flat_fallback(kind, accent)  # today's StyleBoxFlat body, moved verbatim
+	if not TEXTURED_KINDS.has(kind):
+		return _flat_fallback(kind, accent)
+	var tex: Texture2D = _painted(kind)
+	if tex == null:
+		tex = TextureFactory.leather() if _LEATHER_KINDS.has(kind) else TextureFactory.vellum()
+	if tex == null:
+		return _flat_fallback(kind, accent)
+	var sb := StyleBoxTexture.new()
+	sb.texture = tex
+	var m: float = float(UITokens.NINE_SLICE_MARGINS.get(kind, 12))
+	sb.texture_margin_left = m
+	sb.texture_margin_right = m
+	sb.texture_margin_top = m
+	sb.texture_margin_bottom = m
+	var pad: Array = _PADDING.get(kind, [10, 6])
+	sb.content_margin_left = float(pad[0])
+	sb.content_margin_right = float(pad[0])
+	sb.content_margin_top = float(pad[1])
+	sb.content_margin_bottom = float(pad[1])
+	if kind == "raised":
+		sb.modulate_color = Color(1.25, 1.18, 1.1)
+	elif accent:
+		sb.modulate_color = Color(1.12, 1.08, 1.0)
+	return sb
+
+static func _painted(kind: String) -> Texture2D:
+	var path: String = "%s%s_grimoire_9slice.png" % [ART_DIR, kind]
+	if path.begins_with("res://"):
+		return load(path) if ResourceLoader.exists(path) else null
+	if not FileAccess.file_exists(path):
+		return null
+	var img := Image.load_from_file(path)
+	return ImageTexture.create_from_image(img) if img != null else null
 
 static func _flat_fallback(kind: String, accent: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
