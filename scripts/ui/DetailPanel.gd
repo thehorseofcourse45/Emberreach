@@ -36,7 +36,9 @@ func _ready() -> void:
 	pin.toggled.connect(func(on: bool): pinned = on)
 	head.add_child(pin)
 	var close := UIStyle.mini_button("Close", "Close the details (Esc)")
-	close.pressed.connect(func(): close_requested.emit())
+	close.pressed.connect(func():
+		pin.button_pressed = false
+		close_requested.emit())
 	head.add_child(close)
 	add_child(head)
 	_title = UIStyle.title("Details", UITokens.FONT_SUBHEAD)

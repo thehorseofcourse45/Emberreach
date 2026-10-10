@@ -66,6 +66,11 @@ static func set_chip_value(chip: Control, value: String) -> void:
 	var room: float = float(CHIP_MAX_W - UITokens.ICON_SM - UITokens.SP_2 - 20)
 	var need: float = ThemeDB.fallback_font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, UITokens.FONT_SMALL).x + 2.0
 	l.custom_minimum_size = Vector2(minf(need, room), 0)
+	if not chip.has_meta("base_tip"):
+		chip.set_meta("base_tip", chip.tooltip_text)
+	var base: String = str(chip.get_meta("base_tip"))
+	chip.tooltip_text = base if need <= room else (value + "
+" + base).strip_edges()
 
 ## A wrapping row of chips.
 static func chip_row(chips: Array) -> HFlowContainer:
@@ -127,11 +132,11 @@ const _METER_STOPS: Dictionary = {
 	"xp": [Color("#8a5a14"), UITokens.GOLD_BRIGHT],
 }
 
-## A bar with a gradient fill: ember (progress), hp, enemy_hp or xp.
-static func meter(value: float, maximum: float, kind: String = "ember", text: String = "", height: int = 14) -> ProgressBar:
-	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, height)
-	bar.set_meta("widget", "meter")
-	bar.tree_entered.connect(func() -> void: Motion.shimmer.call_deferred(bar), Object.CONNECT_ONE_SHOT)
+static var _meter_fills: Dictionary = {}
+
+static func _meter_fill(kind: String) -> StyleBoxTexture:
+	if _meter_fills.has(kind):
+		return _meter_fills[kind]
 	var grad := Gradient.new()
 	var stops: Array = _METER_STOPS.get(kind, _METER_STOPS["ember"])
 	grad.colors = PackedColorArray(stops)
@@ -145,6 +150,15 @@ static func meter(value: float, maximum: float, kind: String = "ember", text: St
 	tex.height = 4
 	var fill := StyleBoxTexture.new()
 	fill.texture = tex
+	_meter_fills[kind] = fill
+	return fill
+
+## A bar with a gradient fill: ember (progress), hp, enemy_hp or xp.
+static func meter(value: float, maximum: float, kind: String = "ember", text: String = "", height: int = 14) -> ProgressBar:
+	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, height)
+	bar.set_meta("widget", "meter")
+	bar.tree_entered.connect(func() -> void: Motion.shimmer.call_deferred(bar), Object.CONNECT_ONE_SHOT)
+	var fill := _meter_fill(kind)
 	bar.add_theme_stylebox_override("fill", fill)
 	var bg := StyleBoxFlat.new()
 	bg.bg_color = UITokens.SURFACE_SUNKEN

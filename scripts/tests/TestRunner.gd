@@ -161,6 +161,7 @@ func run_all(host: Node) -> void:
 	test_chapters(host)
 	await test_detail_popup(host)
 	await test_grimoire_widgets(host)
+	await test_grimoire_final_fixes(host)
 	test_bars_reskin(host)
 	await test_overview_visual(host)
 	await test_combat_visual(host)
@@ -2860,6 +2861,28 @@ func test_detail_popup(host: Node) -> void:
 	host.call("apply_layout_for_width", 1440)
 
 ## Chips, slots, meters and section cards: the building blocks that replace label/value rows.
+func test_grimoire_final_fixes(host: Node) -> void:
+	_heading("Grimoire final fixes")
+	var detail: DetailPanel = host.get("_detail")
+	var drawer: PanelContainer = host.get("_drawer")
+	host.call("open_detail")
+	detail.pinned = true
+	SidebarNav.toggle_drawer(host, drawer)
+	_ok(not bool(host.call("detail_open")), "opening the drawer closes a pinned card")
+	SidebarNav.toggle_drawer(host, drawer)
+	host.call("open_detail")
+	var btns: Array = detail.find_children("*", "Button", true, false)
+	var pin: Button = btns.filter(func(b): return (b as Button).toggle_mode)[0]
+	var close: Button = btns.filter(func(b): return (b as Button).text == "Close")[0]
+	pin.button_pressed = true
+	close.pressed.emit()
+	_ok(not detail.pinned and not pin.button_pressed, "Close also turns Pin off")
+	var chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "Level 120 - Emberpine of the Ashen Crown - Warden", "why")
+	_ok(chip.tooltip_text.contains("Emberpine") and chip.tooltip_text.contains("why"), "a clipped chip value is in its tooltip")
+	Widgets.set_chip_value(chip, "9")
+	_eq(chip.tooltip_text, "why", "a short value restores the plain tooltip")
+	chip.free()
+
 func test_grimoire_widgets(host: Node) -> void:
 	_heading("Grimoire widgets")
 	var chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "1.2B", "Gold carried")
@@ -2900,6 +2923,15 @@ func test_grimoire_widgets(host: Node) -> void:
 	_eq(str(m.get_meta("widget", "")), "meter", "a meter is tagged")
 	_eq(m.max_value, 100.0, "a meter keeps its maximum")
 	m.free()
+	# Rebuilds must not make new gradient textures or re-probe the disk for art every time.
+	var m1: ProgressBar = Widgets.meter(1, 2, "ember")
+	var m2: ProgressBar = Widgets.meter(1, 2, "ember")
+	_ok((m1.get_theme_stylebox("fill") as StyleBoxTexture).texture == (m2.get_theme_stylebox("fill") as StyleBoxTexture).texture,
+		"meters of one kind share one fill texture")
+	m1.free()
+	m2.free()
+	UIStyle.surface_box("chip")
+	_ok(UIStyle._painted_cache.has(UIStyle.ART_DIR + "chip"), "the painted-art lookup is cached per kind")
 	var card: PanelContainer = Widgets.section_card("Supplies", "what you bring")
 	_eq(str(card.get_meta("widget", "")), "section_card", "a section card is tagged")
 	_ok(Widgets.section_body(card) is VBoxContainer, "a section card exposes its body")

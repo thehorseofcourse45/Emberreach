@@ -171,6 +171,8 @@ static func slide_accent(overlay: Control, bar: ColorRect, target: Button) -> vo
 static func toggle_drawer(host: Control, drawer: PanelContainer) -> void:
 	drawer.visible = not drawer.visible
 	if drawer.visible:
+		# A pinned card would otherwise sit over the drawer on a narrow window.
+		host.call("close_detail")
 		populate_drawer(host, drawer)
 
 static func populate_drawer(host: Control, drawer: PanelContainer) -> void:

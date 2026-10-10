@@ -64,7 +64,15 @@ static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBo
 		sb.modulate_color = Color(1.12, 1.08, 1.0)
 	return sb
 
+static var _painted_cache: Dictionary = {}
+
 static func _painted(kind: String) -> Texture2D:
+	var key: String = ART_DIR + kind
+	if not _painted_cache.has(key):
+		_painted_cache[key] = _load_painted(kind)
+	return _painted_cache[key]
+
+static func _load_painted(kind: String) -> Texture2D:
 	var path: String = "%s%s_grimoire_9slice.png" % [ART_DIR, kind]
 	if path.begins_with("res://"):
 		return load(path) if ResourceLoader.exists(path) else null
