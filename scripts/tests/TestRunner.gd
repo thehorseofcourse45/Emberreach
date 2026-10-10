@@ -38,6 +38,8 @@ func run_some(host: Node, names: Array) -> void:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach test subset")
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = true
 	# The full suite builds the shell in _test_responsive_layouts; a subset has to do it itself.
 	if host.has_method("_build") and not bool(host.get("_shell_built")):
 		host.call("_build")
@@ -59,12 +61,15 @@ func run_some(host: Node, names: Array) -> void:
 		else:
 			await call(method)
 	TestSupport.restore_snapshot(snapshot, files)
+	Motion.force_reduced = motion_was
 	_report()
 
 func run_all(host: Node) -> void:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach test suite")
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = true
 	_deterministic(true)
 	GameManager.start_new_game("standard")
 	_ok(PlayerData.get_level("hitpoints") == 1 and PlayerData.get_combat_level() == 1,
@@ -164,6 +169,7 @@ func run_all(host: Node) -> void:
 	await test_all_screens_fit(host)
 	await test_motion_gated(host)
 	await test_reward_moments(host)
+	test_suite_runs_without_motion()
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -220,6 +226,7 @@ func run_all(host: Node) -> void:
 	_test_simulator_monster_mechanics()
 	_test_combat_panel_monster_mechanics(host)
 	TestSupport.restore_snapshot(snapshot, files)
+	Motion.force_reduced = motion_was
 	_report()
 
 ## Regressions from the gameplay audit: each assertion fails on the pre-fix code.
@@ -2730,6 +2737,8 @@ func test_grimoire_buttons() -> void:
 
 ## The forge backdrop: a shader, plus drifting embers that the player (or reduced motion) can stop.
 func test_forge_backdrop(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Forge backdrop")
 	var backdrop = host.get("_backdrop")
 	_ok(backdrop is ColorRect and (backdrop as ColorRect).material is ShaderMaterial, "the forge is painted by a shader")
@@ -2753,6 +2762,7 @@ func test_forge_backdrop(host: Node) -> void:
 	PlayerData.settings["reduced_motion"] = saved_reduced
 	host.call("apply_ambient")
 	_ok(SettingsDefaults.DEFAULTS.get("ambient_embers", null) == true, "embers default to on")
+	Motion.force_reduced = motion_was
 
 ## Collapsible chapters: every skill and screen in exactly one, one open at a time, remembered,
 ## following navigation, and an icon-only rail on medium-narrow windows.
@@ -3033,6 +3043,8 @@ func test_all_screens_fit(host: Node) -> void:
 ## Every Motion effect is gated by reduced motion AND by silent simulation (offline catch-up,
 ## test runs): gated calls land on the final state and create no tween.
 func test_motion_gated(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Motion gating")
 	var tree: SceneTree = host.get_tree()
 	var label := Label.new()
@@ -3059,9 +3071,8 @@ func test_motion_gated(host: Node) -> void:
 	before = tree.get_processed_tweens().size()
 	Motion.page_in(page)
 	_eq(tree.get_processed_tweens().size(), before + 1, "a page transition is one tween")
-	for i in range(20):
-		await tree.process_frame
-	_ok(is_equal_approx(page.modulate.a, 1.0), "the page ends fully visible")
+	await tree.create_timer(0.35).timeout
+	_ok(is_equal_approx(page.modulate.a, 1.0), "the page ends fully visible (alpha %.2f)" % page.modulate.a)
 	var bar := ProgressBar.new()
 	host.add_child(bar)
 	Motion.shimmer(bar)
@@ -3074,10 +3085,13 @@ func test_motion_gated(host: Node) -> void:
 	page.queue_free()
 	bar.queue_free()
 	b.free()
+	Motion.force_reduced = motion_was
 
 ## Level-ups burst with gold runes on the skill's sidebar entry; reward toasts glow in their
 ## colour; reduced motion keeps the toast and drops the burst.
 func test_reward_moments(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Reward moments")
 	var bursts := func() -> int:
 		return host.find_children("", "Control", true, false).filter(func(c): return c.has_meta("rune_burst")).size()
@@ -3101,6 +3115,13 @@ func test_reward_moments(host: Node) -> void:
 	_eq(sb.border_color, UIStyle.item_rarity("shark")["color"], "a rare-drop toast glows in the item's rarity colour")
 	_ok(sb.shadow_size > 0, "and it glows")
 	toasts.clear()
+	Motion.force_reduced = motion_was
+
+## The suites run with motion off: no embers, page tweens, shimmers or bursts while thousands of
+## checks rebuild screens. Motion tests switch it on locally and restore it.
+func test_suite_runs_without_motion() -> void:
+	_heading("Suite motion")
+	_ok(Motion.reduced(), "the test runner runs with motion off")
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
@@ -3153,6 +3174,8 @@ func test_surface_textures() -> void:
 ## pool reuses hidden Labels instead of growing without bound (never queue_free).
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
 func test_motion_reduced_disables() -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Identity motion")
 	Motion.force_reduced = true
 	var c := Control.new()
@@ -3160,13 +3183,17 @@ func test_motion_reduced_disables() -> void:
 	_ok(c.modulate.a == 1.0, "reduced motion must leave alpha untouched")
 	Motion.force_reduced = false
 	c.free()
+	Motion.force_reduced = motion_was
 
 func test_floater_pool_bounded() -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	var parent := Control.new()
 	for i in 40:
 		Motion.spawn_floater(parent, "1", Color.WHITE)
 	_ok(parent.get_child_count() <= 12, "floater pool must stay bounded")
 	parent.free()
+	Motion.force_reduced = motion_was
 
 ## Task 5 review pin: a bar is built by a factory and parented by the caller, so tween_bar almost
 ## always sees it before it is in the tree, where no tween can be created. The value must be right
@@ -3174,6 +3201,8 @@ func test_floater_pool_bounded() -> void:
 ## and the glide must be armed rather than dropped.
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
 func test_tween_bar_defers_until_in_tree(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Identity motion")
 	var holder := Control.new()
 	host.add_child(holder)
@@ -3200,6 +3229,7 @@ func test_tween_bar_defers_until_in_tree(host: Node) -> void:
 	_ok(bar.get_signal_connection_list("tree_entered").is_empty(),
 		"the one-shot is spent, so re-parenting cannot stack a second glide")
 	holder.queue_free()
+	Motion.force_reduced = motion_was
 
 ## Task 5 review pin: the pulse has to pivot on the control's centre. The HP bar pulses on the
 ## frame it is added, when `size` is still (0,0), so a pivot read only at call time lands in the
@@ -3207,6 +3237,8 @@ func test_tween_bar_defers_until_in_tree(host: Node) -> void:
 ## covers a window resize moving the centre mid-pulse.
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
 func test_pulse_sets_center_pivot(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Identity motion")
 	var holder := Control.new()
 	host.add_child(holder)
@@ -3228,6 +3260,7 @@ func test_pulse_sets_center_pivot(host: Node) -> void:
 	_ok(late.pivot_offset == late.size * 0.5,
 		"the pulse re-reads the size once the control is laid out (%s of %s)" % [late.pivot_offset, late.size])
 	holder.queue_free()
+	Motion.force_reduced = motion_was
 
 ## Task 1 pin: abilities.json is a registry like every other data file, and an unknown id must
 ## come back empty rather than crashing a loadout screen that asks for a stale slot.
