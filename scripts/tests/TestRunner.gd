@@ -181,6 +181,7 @@ func run_all(host: Node) -> void:
 	test_strategy_area_and_prayer()
 	test_monster_passives()
 	test_identity_theme_builds()
+	test_grimoire_palette()
 	test_surface_box_falls_back()
 	test_surface_box_uses_flat_by_default()
 	test_motion_reduced_disables()
@@ -2681,6 +2682,26 @@ func _test_game_modes() -> void:
 ## Task 2 pin: build_theme() must return a Theme with the ember display/text fonts
 ## registered (missing files fall back to the default font, never crash).
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+## Grimoire-on-forge palette: spec values, and every ink readable on both vellum and leather.
+func test_grimoire_palette() -> void:
+	_heading("Grimoire palette")
+	_eq(UITokens.BG_DEEP, Color("#0d0a09"), "forge background")
+	_eq(UITokens.BORDER_GOLD, Color("#c88c2c"), "gold trim")
+	_eq(UITokens.TEXT, Color("#f1dcb8"), "body ink")
+	var inks: Dictionary = {"TEXT": UITokens.TEXT, "TEXT_MUTED": UITokens.TEXT_MUTED,
+		"GOLD_BRIGHT": UITokens.GOLD_BRIGHT, "GREEN": UITokens.GREEN, "RED": UITokens.RED,
+		"AMBER": UITokens.AMBER, "TEAL": UITokens.TEAL, "BLUE": UITokens.BLUE, "PURPLE": UITokens.PURPLE}
+	for key in UITokens.RARITY.keys():
+		inks["rarity " + str(key)] = UITokens.RARITY[key]["color"]
+	for name in inks.keys():
+		var c: Color = inks[name]
+		_ok(UITokens.contrast_ratio(c, UITokens.VELLUM_MID) >= 4.5,
+			"%s reads on vellum (%.2f:1)" % [name, UITokens.contrast_ratio(c, UITokens.VELLUM_MID)])
+		_ok(UITokens.contrast_ratio(c, UITokens.LEATHER_MID) >= 4.5,
+			"%s reads on leather (%.2f:1)" % [name, UITokens.contrast_ratio(c, UITokens.LEATHER_MID)])
+	_ok(UITokens.contrast_ratio(UITokens.DISABLED, UITokens.LEATHER_MID) >= 3.0,
+		"disabled ink is still visible on leather")
+
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
 	var theme: Theme = UIStyle.build_theme()
