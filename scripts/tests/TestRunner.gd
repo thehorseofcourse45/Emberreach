@@ -30,6 +30,30 @@ var _section: String = ""
 #  Entry points
 # =========================================================================
 
+## Run only the named test methods (comma-separated on the CLI: `-- --test a,b`). A method that
+## takes the host gets it. Same save backup and fresh game as run_all, so a single test sees the
+## state the full suite would give it at the start.
+func run_some(host: Node, names: Array) -> void:
+	var files: Dictionary = TestSupport.backup_save_files()
+	var snapshot: Dictionary = SaveManager.build_save_data()
+	_begin("Emberreach test subset")
+	_deterministic(true)
+	GameManager.start_new_game("standard")
+	var arity: Dictionary = {}
+	for m in get_script().get_script_method_list():
+		arity[str(m["name"])] = (m["args"] as Array).size()
+	for n in names:
+		var method: String = str(n).strip_edges()
+		if not arity.has(method):
+			_ok(false, "no test method named %s" % method)
+			continue
+		if int(arity[method]) > 0:
+			await call(method, host)
+		else:
+			await call(method)
+	TestSupport.restore_snapshot(snapshot, files)
+	_report()
+
 func run_all(host: Node) -> void:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()

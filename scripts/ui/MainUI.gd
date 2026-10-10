@@ -465,6 +465,12 @@ func _handle_cli() -> bool:
 		var current: bool = _run_docs_check("--fix" in args)
 		get_tree().quit(0 if current else 1)
 		return true
+	if "--test" in args:
+		var idx: int = args.find("--test")
+		var names: Array = (args[idx + 1] if idx + 1 < args.size() else "").split(",", false)
+		await TestRunner.new().run_some(self, names)
+		get_tree().quit()
+		return true
 	if "--tests" in args:
 		# Awaited: run_all() is a coroutine (the UI suites build nodes across frames). An
 		# un-awaited call would suspend at its first await and get_tree().quit() would then run
