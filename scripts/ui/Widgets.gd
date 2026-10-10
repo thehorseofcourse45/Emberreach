@@ -305,6 +305,8 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 		preview.texture = AssetRegistry.item_icon("scribe_" + str(action.research_unlock) + "_inked")
 	elif action.get("icon_activity", false):
 		preview.texture = AssetRegistry.icon(skill_id, action_id)
+	elif action.has("icon_obstacle"):
+		preview.texture = AssetRegistry.icon("obstacles", str(action.icon_obstacle))
 	elif action.has("icon_item"):
 		preview.texture = AssetRegistry.item_icon(str(action.icon_item))
 	elif not outputs.is_empty():

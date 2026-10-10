@@ -23,7 +23,7 @@ func _ready() -> void:
 	var skill_panel = load("res://scripts/ui/panels/SkillsPanel.gd").new()
 	add_child(skill_panel)
 	skill_panel.focus_route({"skill_id": "farming"})
-	verify(skill_panel.find_children("*", "Button", true, false).any(func(button): return button.text.begins_with("Manage farm")), "Husbandry skill links to farm management")
+	verify(skill_panel.find_children("*", "Button", true, false).any(func(button): return button.text.begins_with("Manage farm")), "Cultivation skill links to farm management")
 	skill_panel.queue_free()
 	await get_tree().process_frame
 	GameManager.start_new_game("standard")

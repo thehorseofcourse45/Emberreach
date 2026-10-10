@@ -555,7 +555,7 @@
   "farming_25": {
     "id": "farming_25",
     "name": "First Furrows",
-    "description": "Reach Husbandry level 25. The first real foothold.",
+    "description": "Reach Cultivation level 25. The first real foothold.",
     "category": "gathering",
     "condition": { "kind": "skill_level", "skill_id": "farming", "value": 25 },
     "reward": { "gp": 500, "items": { "normal_log": 25 }, "xp": { "farming": 200 } }
@@ -563,7 +563,7 @@
   "farming_50": {
     "id": "farming_50",
     "name": "The Patient Plot",
-    "description": "Reach Husbandry level 50. Solidly half-way up the discipline.",
+    "description": "Reach Cultivation level 50. Solidly half-way up the discipline.",
     "category": "gathering",
     "condition": { "kind": "skill_level", "skill_id": "farming", "value": 50 },
     "reward": { "gp": 2500, "items": { "normal_log": 25 }, "xp": { "farming": 800 } }
@@ -571,7 +571,7 @@
   "farming_99": {
     "id": "farming_99",
     "name": "Keeper of the Terraces",
-    "description": "Reach Husbandry level 99. A lifetime's practice.",
+    "description": "Reach Cultivation level 99. A lifetime's practice.",
     "category": "gathering",
     "condition": { "kind": "skill_level", "skill_id": "farming", "value": 99 },
     "reward": { "gp": 10000, "items": { "normal_log": 25 }, "xp": { "farming": 2500 } }
@@ -1787,7 +1787,7 @@
   "farming_10": {
     "id": "farming_10",
     "name": "Seedling Care",
-    "description": "Reach Husbandry level 10.",
+    "description": "Reach Cultivation level 10.",
     "category": "gathering",
     "condition": { "kind": "skill_level", "skill_id": "farming", "value": 10 },
     "reward": { "gp": 250, "xp": { "farming": 100 }, "items": { "normal_log": 10 } }
@@ -1795,7 +1795,7 @@
   "farming_75": {
     "id": "farming_75",
     "name": "The Green Ledger",
-    "description": "Reach Husbandry level 75.",
+    "description": "Reach Cultivation level 75.",
     "category": "gathering",
     "condition": { "kind": "skill_level", "skill_id": "farming", "value": 75 },
     "reward": { "gp": 6000, "xp": { "farming": 1800 }, "items": { "normal_log": 75 } }

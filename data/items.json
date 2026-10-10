@@ -5104,7 +5104,7 @@
   },
   "farming_cape": {
     "id": "farming_cape",
-    "name": "Husbandry Skillcape",
+    "name": "Cultivation Skillcape",
     "item_type": "equipment",
     "sell_price": 250000,
     "equipment_slot": 5,
@@ -5119,7 +5119,7 @@
   },
   "farming_cape_superior": {
     "id": "farming_cape_superior",
-    "name": "Superior Husbandry Skillcape",
+    "name": "Superior Cultivation Skillcape",
     "item_type": "equipment",
     "sell_price": 1500000,
     "equipment_slot": 5,
@@ -8916,5 +8916,390 @@
     "potion_effect": {
       "caravaneering_profit_percent": 15
     }
+  },
+  "mosswillow_log": {
+    "id": "mosswillow_log",
+    "name": "Mosswillow Log",
+    "item_type": "resource",
+    "sell_price": 7,
+    "is_stackable": true
+  },
+  "frostcedar_log": {
+    "id": "frostcedar_log",
+    "name": "Frostcedar Log",
+    "item_type": "resource",
+    "sell_price": 55,
+    "is_stackable": true
+  },
+  "stormwood_log": {
+    "id": "stormwood_log",
+    "name": "Stormwood Log",
+    "item_type": "resource",
+    "sell_price": 110,
+    "is_stackable": true
+  },
+  "sunheart_log": {
+    "id": "sunheart_log",
+    "name": "Sunheart Log",
+    "item_type": "resource",
+    "sell_price": 400,
+    "is_stackable": true
+  },
+  "mireheart_staff": {
+    "id": "mireheart_staff",
+    "name": "Mireheart Staff",
+    "item_type": "equipment",
+    "sell_price": 110,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 30,
+    "equipment_stats": {
+      "magic_attack": 23,
+      "magic_damage_percent": 10
+    },
+    "level_requirements": {
+      "magic": 25
+    },
+    "attack_cost_items": {
+      "earth_rune": 1
+    }
+  },
+  "frostcrown_staff": {
+    "id": "frostcrown_staff",
+    "name": "Frostcrown Staff",
+    "item_type": "equipment",
+    "sell_price": 395,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 63,
+    "equipment_stats": {
+      "magic_attack": 75,
+      "magic_damage_percent": 26
+    },
+    "level_requirements": {
+      "magic": 70
+    },
+    "attack_cost_items": {
+      "water_rune": 1
+    }
+  },
+  "stormcaller_staff": {
+    "id": "stormcaller_staff",
+    "name": "Stormcaller Staff",
+    "item_type": "equipment",
+    "sell_price": 615,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 78,
+    "equipment_stats": {
+      "magic_attack": 115,
+      "magic_damage_percent": 34
+    },
+    "level_requirements": {
+      "magic": 90
+    },
+    "attack_cost_items": {
+      "death_rune": 1
+    }
+  },
+  "sunheart_staff": {
+    "id": "sunheart_staff",
+    "name": "Sunheart Staff",
+    "item_type": "equipment",
+    "sell_price": 1600,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 105,
+    "equipment_stats": {
+      "magic_attack": 185,
+      "magic_damage_percent": 47
+    },
+    "level_requirements": {
+      "magic": 118
+    },
+    "attack_cost_items": {
+      "umbral_rune": 1
+    }
+  },
+  "mist_rune": {
+    "id": "mist_rune",
+    "name": "Mist Rune",
+    "item_type": "rune",
+    "sell_price": 6,
+    "is_stackable": true
+  },
+  "mist_wand": {
+    "id": "mist_wand",
+    "name": "Mist Wand",
+    "item_type": "equipment",
+    "sell_price": 44,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 16,
+    "equipment_stats": {
+      "magic_attack": 15,
+      "magic_damage_percent": 6
+    },
+    "level_requirements": {
+      "magic": 8
+    },
+    "attack_cost_items": {
+      "mist_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Mist Rune."
+  },
+  "cinder_rune": {
+    "id": "cinder_rune",
+    "name": "Cinder Rune",
+    "item_type": "rune",
+    "sell_price": 12,
+    "is_stackable": true
+  },
+  "cinder_wand": {
+    "id": "cinder_wand",
+    "name": "Cinder Wand",
+    "item_type": "equipment",
+    "sell_price": 90,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 23,
+    "equipment_stats": {
+      "magic_attack": 23,
+      "magic_damage_percent": 9
+    },
+    "level_requirements": {
+      "magic": 22
+    },
+    "attack_cost_items": {
+      "cinder_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Cinder Rune."
+  },
+  "aether_rune": {
+    "id": "aether_rune",
+    "name": "Aether Rune",
+    "item_type": "rune",
+    "sell_price": 16,
+    "is_stackable": true
+  },
+  "aether_wand": {
+    "id": "aether_wand",
+    "name": "Aether Wand",
+    "item_type": "equipment",
+    "sell_price": 124,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 36,
+    "equipment_stats": {
+      "magic_attack": 38,
+      "magic_damage_percent": 14
+    },
+    "level_requirements": {
+      "magic": 40
+    },
+    "attack_cost_items": {
+      "aether_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Aether Rune."
+  },
+  "bloom_rune": {
+    "id": "bloom_rune",
+    "name": "Bloom Rune",
+    "item_type": "rune",
+    "sell_price": 22,
+    "is_stackable": true
+  },
+  "bloom_wand": {
+    "id": "bloom_wand",
+    "name": "Bloom Wand",
+    "item_type": "equipment",
+    "sell_price": 267,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 48,
+    "equipment_stats": {
+      "magic_attack": 63,
+      "magic_damage_percent": 22
+    },
+    "level_requirements": {
+      "magic": 60
+    },
+    "attack_cost_items": {
+      "bloom_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Bloom Rune."
+  },
+  "rime_rune": {
+    "id": "rime_rune",
+    "name": "Rime Rune",
+    "item_type": "rune",
+    "sell_price": 30,
+    "is_stackable": true
+  },
+  "rime_wand": {
+    "id": "rime_wand",
+    "name": "Rime Wand",
+    "item_type": "equipment",
+    "sell_price": 379,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 59,
+    "equipment_stats": {
+      "magic_attack": 93,
+      "magic_damage_percent": 29
+    },
+    "level_requirements": {
+      "magic": 78
+    },
+    "attack_cost_items": {
+      "rime_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Rime Rune."
+  },
+  "tempest_rune": {
+    "id": "tempest_rune",
+    "name": "Tempest Rune",
+    "item_type": "rune",
+    "sell_price": 42,
+    "is_stackable": true
+  },
+  "tempest_wand": {
+    "id": "tempest_wand",
+    "name": "Tempest Wand",
+    "item_type": "equipment",
+    "sell_price": 563,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 68,
+    "equipment_stats": {
+      "magic_attack": 121,
+      "magic_damage_percent": 35
+    },
+    "level_requirements": {
+      "magic": 92
+    },
+    "attack_cost_items": {
+      "tempest_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Tempest Rune."
+  },
+  "eclipse_rune": {
+    "id": "eclipse_rune",
+    "name": "Eclipse Rune",
+    "item_type": "rune",
+    "sell_price": 60,
+    "is_stackable": true
+  },
+  "eclipse_wand": {
+    "id": "eclipse_wand",
+    "name": "Eclipse Wand",
+    "item_type": "equipment",
+    "sell_price": 1064,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 83,
+    "equipment_stats": {
+      "magic_attack": 166,
+      "magic_damage_percent": 42
+    },
+    "level_requirements": {
+      "magic": 108
+    },
+    "attack_cost_items": {
+      "eclipse_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Eclipse Rune."
+  },
+  "dawn_rune": {
+    "id": "dawn_rune",
+    "name": "Dawn Rune",
+    "item_type": "rune",
+    "sell_price": 80,
+    "is_stackable": true
+  },
+  "dawn_wand": {
+    "id": "dawn_wand",
+    "name": "Dawn Wand",
+    "item_type": "equipment",
+    "sell_price": 1552,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 98,
+    "equipment_stats": {
+      "magic_attack": 210,
+      "magic_damage_percent": 50
+    },
+    "level_requirements": {
+      "magic": 120
+    },
+    "attack_cost_items": {
+      "dawn_rune": 1
+    },
+    "description": "A quick-casting wand. Each cast spends one Dawn Rune."
+  },
+  "tidetender_amulet": {
+    "id": "tidetender_amulet",
+    "name": "Tidetender's Amulet",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "angling_doubling_percent": 3,
+      "cooking_skill_xp_percent": 3
+    },
+    "level_requirements": {
+      "alt_magic": 30
+    },
+    "sell_price": 136,
+    "description": "An amulet enchanted through Runescribing. Its bonuses apply while equipped."
+  },
+  "artisan_amulet": {
+    "id": "artisan_amulet",
+    "name": "Artisan's Amulet",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "smithing_preservation_percent": 3,
+      "crafting_preservation_percent": 3,
+      "runecrafting_preservation_percent": 3
+    },
+    "level_requirements": {
+      "alt_magic": 64
+    },
+    "sell_price": 350,
+    "description": "An amulet enchanted through Runescribing. Its bonuses apply while equipped."
+  },
+  "stormfocus_amulet": {
+    "id": "stormfocus_amulet",
+    "name": "Stormfocus Amulet",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "rune_preservation_percent": 5,
+      "magic_accuracy_percent": 3
+    },
+    "level_requirements": {
+      "alt_magic": 94
+    },
+    "sell_price": 682,
+    "description": "An amulet enchanted through Runescribing. Its bonuses apply while equipped."
+  },
+  "dawnscribe_amulet": {
+    "id": "dawnscribe_amulet",
+    "name": "Dawnscribe's Amulet",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_mastery_xp_percent": 4,
+      "alt_magic_preservation_percent": 5
+    },
+    "level_requirements": {
+      "alt_magic": 114
+    },
+    "sell_price": 1234,
+    "description": "An amulet enchanted through Runescribing. Its bonuses apply while equipped."
   }
 }

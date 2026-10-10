@@ -1194,7 +1194,7 @@
         "kind": "skill_level",
         "skill_id": "farming",
         "required": 5,
-        "label": "Husbandry level 5",
+        "label": "Cultivation level 5",
         "route": {
           "screen": "skills",
           "skill_id": "farming",

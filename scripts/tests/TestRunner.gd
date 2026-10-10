@@ -257,8 +257,18 @@ func _test_audit_fixes() -> void:
 	_ok(StatusEffect.total([StatusEffect.create("slow", 3.0)], "attack_interval_percent") > 0.0, "slow lengthens the swing")
 	# A reset-all drops the Ascendancy; a hand-edited save cannot crash the loaders.
 	PlayerData.prestige = {"ascensions": 2, "points": 5, "nodes": {}}
+	EventDirector.active_spawn = {"skill_id": "woodcutting", "target_action": "x", "actions_left": 5}
 	GameManager.reset_everything("standard")
 	_eq(PrestigeManager.points(), 0, "reset everything also clears Ascendancy points")
+	_ok(EventDirector.active_spawn.is_empty(), "a new run starts with no leftover event offer")
+	# No expedition's roster may outclass its own level range by a whole tier.
+	var outclassed: Array = []
+	for did in DataLoader.dungeons.keys():
+		var top: int = int((DataLoader.dungeons[did].get("level_range", [0, 999]) as Array)[1])
+		for mid in DataLoader.dungeons[did].get("monsters", []):
+			if int(DataLoader.get_monster(str(mid)).get("combat_level", 0)) > top + 15:
+				outclassed.append("%s:%s" % [did, mid])
+	_ok(outclassed.is_empty(), "every expedition monster fits its level range (%s)" % str(outclassed))
 	var quests_before: Dictionary = Quests.serialize()
 	Quests.deserialize({"accepted": [1], "claimed": 5})
 	Quests.deserialize(quests_before)
@@ -1564,14 +1574,14 @@ func _test_prayer_expansion(host: Node) -> void:
 		_ok(AssetRegistry.has_asset("icons/navigation/%s.png" % screen), "%s has its own navigation icon" % screen)
 
 
-## Husbandry: the plot engine, its seed economy and the Farm screen are one loop now.
+## Cultivation: the plot engine, its seed economy and the Farm screen are one loop now.
 ## Planting spends seeds, growth is wall-clock, harvest pays XP and per-crop mastery — and the
 ## skill's plant actions fill plots through the same manager, so both doors stay consistent.
 func _test_husbandry(host: Node) -> void:
-	_heading("Husbandry")
+	_heading("Cultivation")
 	GameManager.start_new_game("standard")
 	var farm: Dictionary = DataLoader.get_skill("farming")
-	_ok((farm.get("actions", []) as Array).size() == 22, "Husbandry lists 22 crops: herbs, allotment and trees")
+	_ok((farm.get("actions", []) as Array).size() == 22, "Cultivation lists 22 crops: herbs, allotment and trees")
 	var seeds_ok: bool = true
 	var gates_ok: bool = true
 	var products_ok: bool = true
@@ -1694,7 +1704,7 @@ func _test_husbandry(host: Node) -> void:
 		return
 	_ok(true, "the Farm screen exists")
 	_ok(panel.call("_plot_count") == 15, "the Farm screen renders all fifteen plots")
-	_ok((panel.get("_summary") as Label).text.contains("Husbandry"), "the summary names the skill")
+	_ok((panel.get("_summary") as Label).text.contains("Cultivation"), "the summary names the skill")
 	var options: Array = panel.call("_seed_options")
 	_ok(options.size() == (DataLoader.get_skill("farming").get("actions", []) as Array).size(), "the seed picker lists every crop")
 	var locked_ok: bool = false
@@ -5526,6 +5536,9 @@ func _test_magic_gear() -> void:
 	for id in DataLoader.items.keys():
 		var it: Dictionary = DataLoader.get_item(str(id))
 		if it.is_empty() or int(it.get("equipment_slot", -1)) != 8:
+			continue
+		# Wands have a separate faster, lower-hit progression checked in GlyphcraftExpansionCheck.
+		if str(id).ends_with("_wand"):
 			continue
 		var req: Dictionary = it.get("level_requirements", {})
 		# Raid shop weapons are bought with raid coins, not crafted, so they sit outside the ladder.

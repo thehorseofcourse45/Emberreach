@@ -1,5 +1,5 @@
 extends VBoxContainer
-## FarmPanel — the Husbandry plots: plant seeds, dress with compost, harvest.
+## FarmPanel — the Cultivation plots: plant seeds, dress with compost, harvest.
 ##
 ## The plot engine (FarmingManager) grew crops by wall-clock time, but nothing in the game
 ## could reach it: no screen planted, no action planted, so the whole skill paid nothing.
@@ -27,7 +27,7 @@ var _dirty: bool = true
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	add_child(UIStyle.title("Husbandry · Farm management", UITokens.FONT_DISPLAY))
+	add_child(UIStyle.title("Cultivation · Farm management", UITokens.FONT_DISPLAY))
 	_summary = UIStyle.label("", true, UITokens.FONT_SMALL)
 	_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_summary)
@@ -96,7 +96,7 @@ func _rebuild() -> void:
 		if str(p["seed_id"]) != "":
 			in_use += 1
 	var ready: int = FarmingManager.ready_count()
-	_summary.text = "Husbandry Lv %d · %d of %d plots in use · %d ready · Compost ×%d" % [
+	_summary.text = "Cultivation Lv %d · %d of %d plots in use · %d ready · Compost ×%d" % [
 		PlayerData.get_level("farming"), in_use, total, ready, BankManager.get_count("compost")]
 	_harvest_button.text = "Harvest all ready (%d)" % ready
 	_harvest_button.disabled = ready == 0

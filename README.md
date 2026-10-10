@@ -127,7 +127,7 @@ table, so reachability is one list; it also lists every skill.
 | **Tasks / Milestones / Collection** | Quests with live objective progress, achievements, and the completion log. |
 | **Stats** | The lifetime record: counters that feed quests, milestones and the collection log. |
 | **Settlement** | Buildings with costs, upgrade path, and links to the systems they improve. |
-| **Farm** | Husbandry plots that grow in real time, planted and harvested by hand. |
+| **Farm** | Cultivation plots that grow in real time, planted and harvested by hand. |
 | **Equipment** | 14 slots, saved sets with ownership checks, aggregated stats. |
 | **Action Queue / Simulator** | Queued skill actions with policy and persistence; win-chance simulation on the real formulas. |
 | **Ascendancy** | The reset layer: lifetime-XP gate, what resets and what survives, additive bonuses. |

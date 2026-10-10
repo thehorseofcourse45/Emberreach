@@ -98,6 +98,8 @@ func start_new_game(mode: String) -> void:
 	Quests.deserialize({})
 	Achievements.deserialize({})
 	Goals.deserialize({})
+	# Event offers belong to the run that earned them; a reset or ascension starts with none.
+	EventDirector._reset_transient()
 	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
 	CombatManager.stop_combat("new game")
 	# Clear every derived modifier category; each owning manager re-registers its own sources.

@@ -318,6 +318,17 @@
         "mastery_action_time": 4.0
       },
       {
+        "id": "mosswillow_tree",
+        "name": "Mosswillow Tree",
+        "level_required": 18,
+        "base_interval": 4.6,
+        "base_xp": 33,
+        "output_items": {
+          "mosswillow_log": 1
+        },
+        "mastery_action_time": 4.6
+      },
+      {
         "id": "willow_tree",
         "name": "Silverleaf Tree",
         "level_required": 25,
@@ -373,6 +384,17 @@
         "mastery_action_time": 9.0
       },
       {
+        "id": "frostcedar_tree",
+        "name": "Frostcedar Tree",
+        "level_required": 65,
+        "base_interval": 10,
+        "base_xp": 140,
+        "output_items": {
+          "frostcedar_log": 1
+        },
+        "mastery_action_time": 10
+      },
+      {
         "id": "magic_tree",
         "name": "Witchpine Tree",
         "level_required": 75,
@@ -382,6 +404,17 @@
           "magic_log": 1
         },
         "mastery_action_time": 12.0
+      },
+      {
+        "id": "stormwood_tree",
+        "name": "Stormwood Tree",
+        "level_required": 85,
+        "base_interval": 14,
+        "base_xp": 230,
+        "output_items": {
+          "stormwood_log": 1
+        },
+        "mastery_action_time": 14
       },
       {
         "id": "redwood_tree",
@@ -415,6 +448,17 @@
           "voidwood_log": 1
         },
         "mastery_action_time": 19.0
+      },
+      {
+        "id": "sunheart_tree",
+        "name": "Sunheart Tree",
+        "level_required": 115,
+        "base_interval": 20,
+        "base_xp": 450,
+        "output_items": {
+          "sunheart_log": 1
+        },
+        "mastery_action_time": 20
       }
     ],
     "order": 10,
@@ -1053,7 +1097,7 @@
   },
   "farming": {
     "id": "farming",
-    "name": "Husbandry",
+    "name": "Cultivation",
     "category": "non_combat",
     "type": "passive",
     "max_level": 120,
@@ -1417,6 +1461,29 @@
         "icon_activity": true
       },
       {
+        "id": "burn_mosswillow_log",
+        "name": "Mosswillow Log",
+        "level_required": 22,
+        "base_interval": 2.0,
+        "base_xp": 38,
+        "input_items": {
+          "mosswillow_log": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "ash",
+            "chance": 0.5
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.4
+          }
+        ],
+        "mastery_action_time": 1.2,
+        "icon_activity": true
+      },
+      {
         "id": "burn_willow_log",
         "name": "Silverleaf Log",
         "level_required": 30,
@@ -1532,6 +1599,29 @@
         "icon_activity": true
       },
       {
+        "id": "burn_frostcedar_log",
+        "name": "Frostcedar Log",
+        "level_required": 75,
+        "base_interval": 2.0,
+        "base_xp": 175,
+        "input_items": {
+          "frostcedar_log": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "ash",
+            "chance": 0.5
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.4
+          }
+        ],
+        "mastery_action_time": 1.2,
+        "icon_activity": true
+      },
+      {
         "id": "burn_magic_log",
         "name": "Sorcery Log",
         "level_required": 80,
@@ -1539,6 +1629,29 @@
         "base_xp": 200,
         "input_items": {
           "magic_log": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "ash",
+            "chance": 0.5
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.4
+          }
+        ],
+        "mastery_action_time": 1.2,
+        "icon_activity": true
+      },
+      {
+        "id": "burn_stormwood_log",
+        "name": "Stormwood Log",
+        "level_required": 85,
+        "base_interval": 2.0,
+        "base_xp": 230,
+        "input_items": {
+          "stormwood_log": 1
         },
         "output_items": {},
         "secondary_outputs": [
@@ -1608,6 +1721,29 @@
         "base_xp": 410,
         "input_items": {
           "voidwood_log": 1
+        },
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "ash",
+            "chance": 0.5
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.5
+          }
+        ],
+        "mastery_action_time": 1.2,
+        "icon_activity": true
+      },
+      {
+        "id": "burn_sunheart_log",
+        "name": "Sunheart Log",
+        "level_required": 115,
+        "base_interval": 2.0,
+        "base_xp": 460,
+        "input_items": {
+          "sunheart_log": 1
         },
         "output_items": {},
         "secondary_outputs": [
@@ -6278,6 +6414,37 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "mist_rune",
+        "name": "Mist Rune",
+        "level_required": 7,
+        "base_interval": 1.7,
+        "base_xp": 10,
+        "input_items": {
+          "rune_essence": 1,
+          "air_rune": 1,
+          "water_rune": 1
+        },
+        "output_items": {
+          "mist_rune": 2
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_mist_wand",
+        "name": "Mist Wand",
+        "level_required": 8,
+        "base_interval": 1.7,
+        "base_xp": 39,
+        "input_items": {
+          "mist_rune": 12,
+          "normal_log": 1
+        },
+        "output_items": {
+          "mist_wand": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "earth_rune",
         "name": "Stone Rune",
         "level_required": 9,
@@ -6321,6 +6488,22 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "cinder_rune",
+        "name": "Cinder Rune",
+        "level_required": 18,
+        "base_interval": 1.7,
+        "base_xp": 17,
+        "input_items": {
+          "rune_essence": 1,
+          "fire_rune": 1,
+          "earth_rune": 1
+        },
+        "output_items": {
+          "cinder_rune": 2
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_earth_staff",
         "name": "Stone Staff",
         "level_required": 20,
@@ -6332,6 +6515,37 @@
         },
         "output_items": {
           "earth_staff": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_cinder_wand",
+        "name": "Cinder Wand",
+        "level_required": 22,
+        "base_interval": 1.7,
+        "base_xp": 54,
+        "input_items": {
+          "cinder_rune": 12,
+          "oak_log": 1
+        },
+        "output_items": {
+          "cinder_wand": 1
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_mireheart_staff",
+        "name": "Mireheart Staff",
+        "level_required": 25,
+        "base_interval": 1.7,
+        "base_xp": 55,
+        "input_items": {
+          "water_rune": 10,
+          "earth_rune": 10,
+          "mosswillow_log": 1
+        },
+        "output_items": {
+          "mireheart_staff": 1
         },
         "mastery_action_time": 1.7
       },
@@ -6380,7 +6594,7 @@
       },
       {
         "id": "craft_mind_staff",
-        "name": "Mind Staff",
+        "name": "Whisper Staff",
         "level_required": 35,
         "base_interval": 2.0,
         "base_xp": 70,
@@ -6390,6 +6604,37 @@
         },
         "output_items": {
           "mind_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "aether_rune",
+        "name": "Aether Rune",
+        "level_required": 38,
+        "base_interval": 1.7,
+        "base_xp": 27,
+        "input_items": {
+          "rune_essence": 1,
+          "air_rune": 1,
+          "cosmic_rune": 1
+        },
+        "output_items": {
+          "aether_rune": 2
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_aether_wand",
+        "name": "Aether Wand",
+        "level_required": 40,
+        "base_interval": 2.0,
+        "base_xp": 84,
+        "input_items": {
+          "aether_rune": 12,
+          "willow_log": 1
+        },
+        "output_items": {
+          "aether_wand": 1
         },
         "mastery_action_time": 2.0
       },
@@ -6409,7 +6654,7 @@
       },
       {
         "id": "craft_cosmic_staff",
-        "name": "Cosmic Staff",
+        "name": "Astral Staff",
         "level_required": 45,
         "base_interval": 2.0,
         "base_xp": 90,
@@ -6438,7 +6683,7 @@
       },
       {
         "id": "craft_chaos_staff",
-        "name": "Chaos Staff",
+        "name": "Rift Staff",
         "level_required": 55,
         "base_interval": 2.0,
         "base_xp": 110,
@@ -6448,6 +6693,37 @@
         },
         "output_items": {
           "chaos_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "bloom_rune",
+        "name": "Bloom Rune",
+        "level_required": 58,
+        "base_interval": 1.7,
+        "base_xp": 37,
+        "input_items": {
+          "rune_essence": 1,
+          "nature_rune": 1,
+          "earth_rune": 1
+        },
+        "output_items": {
+          "bloom_rune": 2
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_bloom_wand",
+        "name": "Bloom Wand",
+        "level_required": 60,
+        "base_interval": 2.0,
+        "base_xp": 127,
+        "input_items": {
+          "bloom_rune": 18,
+          "mahogany_log": 1
+        },
+        "output_items": {
+          "bloom_wand": 1
         },
         "mastery_action_time": 2.0
       },
@@ -6467,7 +6743,7 @@
       },
       {
         "id": "craft_nature_staff",
-        "name": "Nature Staff",
+        "name": "Thornwake Staff",
         "level_required": 65,
         "base_interval": 2.0,
         "base_xp": 130,
@@ -6481,8 +6757,24 @@
         "mastery_action_time": 2.0
       },
       {
+        "id": "craft_frostcrown_staff",
+        "name": "Frostcrown Staff",
+        "level_required": 70,
+        "base_interval": 2,
+        "base_xp": 140,
+        "input_items": {
+          "water_rune": 15,
+          "law_rune": 15,
+          "frostcedar_log": 1
+        },
+        "output_items": {
+          "frostcrown_staff": 1
+        },
+        "mastery_action_time": 2
+      },
+      {
         "id": "craft_law_staff",
-        "name": "Law Staff",
+        "name": "Judgment Staff",
         "level_required": 75,
         "base_interval": 2.0,
         "base_xp": 150,
@@ -6494,6 +6786,22 @@
           "law_staff": 1
         },
         "mastery_action_time": 2.0
+      },
+      {
+        "id": "rime_rune",
+        "name": "Rime Rune",
+        "level_required": 76,
+        "base_interval": 1.7,
+        "base_xp": 54,
+        "input_items": {
+          "pure_essence": 1,
+          "water_rune": 1,
+          "law_rune": 1
+        },
+        "output_items": {
+          "rime_rune": 2
+        },
+        "mastery_action_time": 1.7
       },
       {
         "id": "blood_rune",
@@ -6510,8 +6818,23 @@
         "mastery_action_time": 1.7
       },
       {
+        "id": "craft_rime_wand",
+        "name": "Rime Wand",
+        "level_required": 78,
+        "base_interval": 2.0,
+        "base_xp": 163,
+        "input_items": {
+          "rime_rune": 18,
+          "frostcedar_log": 1
+        },
+        "output_items": {
+          "rime_wand": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
         "id": "craft_death_staff",
-        "name": "Death Staff",
+        "name": "Gravebind Staff",
         "level_required": 85,
         "base_interval": 2.0,
         "base_xp": 175,
@@ -6521,6 +6844,53 @@
         },
         "output_items": {
           "death_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "tempest_rune",
+        "name": "Tempest Rune",
+        "level_required": 88,
+        "base_interval": 1.7,
+        "base_xp": 69,
+        "input_items": {
+          "pure_essence": 1,
+          "air_rune": 1,
+          "death_rune": 1
+        },
+        "output_items": {
+          "tempest_rune": 2
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_stormcaller_staff",
+        "name": "Stormcaller Staff",
+        "level_required": 90,
+        "base_interval": 2,
+        "base_xp": 188,
+        "input_items": {
+          "air_rune": 15,
+          "death_rune": 15,
+          "stormwood_log": 1
+        },
+        "output_items": {
+          "stormcaller_staff": 1
+        },
+        "mastery_action_time": 2
+      },
+      {
+        "id": "craft_tempest_wand",
+        "name": "Tempest Wand",
+        "level_required": 92,
+        "base_interval": 2.0,
+        "base_xp": 203,
+        "input_items": {
+          "tempest_rune": 18,
+          "stormwood_log": 1
+        },
+        "output_items": {
+          "tempest_wand": 1
         },
         "mastery_action_time": 2.0
       },
@@ -6540,7 +6910,7 @@
       },
       {
         "id": "craft_blood_staff",
-        "name": "Blood Staff",
+        "name": "Bloodtithe Staff",
         "level_required": 95,
         "base_interval": 2.0,
         "base_xp": 200,
@@ -6554,8 +6924,24 @@
         "mastery_action_time": 2.0
       },
       {
+        "id": "eclipse_rune",
+        "name": "Eclipse Rune",
+        "level_required": 103,
+        "base_interval": 1.7,
+        "base_xp": 96,
+        "input_items": {
+          "pure_essence": 1,
+          "blood_rune": 1,
+          "soul_rune": 1
+        },
+        "output_items": {
+          "eclipse_rune": 2
+        },
+        "mastery_action_time": 1.7
+      },
+      {
         "id": "craft_soul_staff",
-        "name": "Soul Staff",
+        "name": "Soulharvest Staff",
         "level_required": 105,
         "base_interval": 2.0,
         "base_xp": 230,
@@ -6565,6 +6951,21 @@
         },
         "output_items": {
           "soul_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "craft_eclipse_wand",
+        "name": "Eclipse Wand",
+        "level_required": 108,
+        "base_interval": 2.0,
+        "base_xp": 253,
+        "input_items": {
+          "eclipse_rune": 24,
+          "cinderbark_log": 1
+        },
+        "output_items": {
+          "eclipse_wand": 1
         },
         "mastery_action_time": 2.0
       },
@@ -6595,6 +6996,53 @@
         },
         "output_items": {
           "umbral_staff": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "dawn_rune",
+        "name": "Dawn Rune",
+        "level_required": 117,
+        "base_interval": 1.7,
+        "base_xp": 125,
+        "input_items": {
+          "pure_essence": 1,
+          "fire_rune": 1,
+          "umbral_rune": 1
+        },
+        "output_items": {
+          "dawn_rune": 2
+        },
+        "mastery_action_time": 1.7
+      },
+      {
+        "id": "craft_sunheart_staff",
+        "name": "Sunheart Staff",
+        "level_required": 118,
+        "base_interval": 2,
+        "base_xp": 270,
+        "input_items": {
+          "fire_rune": 20,
+          "umbral_rune": 15,
+          "sunheart_log": 1
+        },
+        "output_items": {
+          "sunheart_staff": 1
+        },
+        "mastery_action_time": 2
+      },
+      {
+        "id": "craft_dawn_wand",
+        "name": "Dawn Wand",
+        "level_required": 120,
+        "base_interval": 2.0,
+        "base_xp": 293,
+        "input_items": {
+          "dawn_rune": 24,
+          "sunheart_log": 1
+        },
+        "output_items": {
+          "dawn_wand": 1
         },
         "mastery_action_time": 2.0
       }
@@ -7624,7 +8072,8 @@
         "base_interval": 3.0,
         "base_xp": 20,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_4_2"
       },
       {
         "id": "hedge_run",
@@ -7633,7 +8082,8 @@
         "base_interval": 3.0,
         "base_xp": 32,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_1_0"
       },
       {
         "id": "trail_run",
@@ -7642,7 +8092,8 @@
         "base_interval": 3.0,
         "base_xp": 45,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_6_0"
       },
       {
         "id": "ridge_run",
@@ -7651,7 +8102,8 @@
         "base_interval": 3.0,
         "base_xp": 65,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_5_1"
       },
       {
         "id": "summit_run",
@@ -7660,7 +8112,8 @@
         "base_interval": 3.0,
         "base_xp": 80,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_8_0"
       },
       {
         "id": "cloudline_run",
@@ -7669,7 +8122,8 @@
         "base_interval": 3.0,
         "base_xp": 98,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_9_0"
       },
       {
         "id": "skyline_run",
@@ -7678,7 +8132,8 @@
         "base_interval": 3.0,
         "base_xp": 120,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_15_2"
       },
       {
         "id": "stormline_run",
@@ -7687,7 +8142,8 @@
         "base_interval": 3.0,
         "base_xp": 160,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_15_1"
       },
       {
         "id": "high_wind_run",
@@ -7696,7 +8152,8 @@
         "base_interval": 3.0,
         "base_xp": 220,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_14_1"
       },
       {
         "id": "herald_ascent",
@@ -7705,7 +8162,8 @@
         "base_interval": 3.0,
         "base_xp": 300,
         "output_items": {},
-        "mastery_action_time": 3.0
+        "mastery_action_time": 3.0,
+        "icon_obstacle": "obstacle_15_0"
       }
     ],
     "mastery_unlocks": {
@@ -8653,6 +9111,23 @@
         "description": "Charm a plain gold ring into a Ring of Prospecting."
       },
       {
+        "id": "purify_essence",
+        "name": "Purify Essence",
+        "level_required": 12,
+        "base_interval": 1.7,
+        "base_xp": 33,
+        "input_items": {
+          "rune_essence": 12,
+          "cinder_rune": 1
+        },
+        "output_items": {
+          "pure_essence": 4
+        },
+        "mastery_action_time": 1.7,
+        "description": "Burn impurities from rune essence to supply advanced Glyphcraft.",
+        "conversion": true
+      },
+      {
         "id": "conjure_coal",
         "name": "Conjure Coal",
         "level_required": 15,
@@ -8668,6 +9143,27 @@
         "conversion": true,
         "mastery_action_time": 1.7,
         "description": "Press earth and fire together into coal for the forge."
+      },
+      {
+        "id": "ward_of_tides",
+        "name": "Ward of Tides",
+        "level_required": 17,
+        "base_interval": 3.0,
+        "base_xp": 32,
+        "input_items": {
+          "mist_rune": 3
+        },
+        "output_items": {},
+        "mastery_action_time": 3.0,
+        "description": "A fishing ward that sometimes doubles your catch.",
+        "ward": {
+          "mods": {
+            "angling_doubling_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "icon_item": "mist_rune"
       },
       {
         "id": "superheat_steel",
@@ -8719,6 +9215,23 @@
         "description": "Bind water magic into a sapphire ring, sharpening mastery."
       },
       {
+        "id": "charcoal_weaving",
+        "name": "Charcoal Weaving",
+        "level_required": 26,
+        "base_interval": 1.7,
+        "base_xp": 49,
+        "input_items": {
+          "oak_log": 4,
+          "cinder_rune": 1
+        },
+        "output_items": {
+          "coal": 3
+        },
+        "mastery_action_time": 1.7,
+        "description": "Turn spare oak into coal through controlled ember magic.",
+        "conversion": true
+      },
+      {
         "id": "ward_of_insight",
         "name": "Ward of Insight",
         "level_required": 28,
@@ -8740,6 +9253,22 @@
         "description": "Weave a ward that quickens all skill learning."
       },
       {
+        "id": "enchant_tidetender_amulet",
+        "name": "Enchant Tidetender's Amulet",
+        "level_required": 30,
+        "base_interval": 1.7,
+        "base_xp": 50,
+        "input_items": {
+          "sapphire_amulet": 1,
+          "mist_rune": 8
+        },
+        "output_items": {
+          "tidetender_amulet": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind a specialised enchantment into a crafted amulet."
+      },
+      {
         "id": "superheat_silver",
         "name": "Superheat Silver",
         "level_required": 32,
@@ -8754,6 +9283,28 @@
         },
         "mastery_action_time": 1.7,
         "description": "Melt silver ore into a bar."
+      },
+      {
+        "id": "ward_of_embers",
+        "name": "Ward of Embers",
+        "level_required": 34,
+        "base_interval": 3.0,
+        "base_xp": 51,
+        "input_items": {
+          "cinder_rune": 3
+        },
+        "output_items": {},
+        "mastery_action_time": 3.0,
+        "description": "Quicken Cookery and Kilncraft while this ward holds a charge.",
+        "ward": {
+          "mods": {
+            "cooking_interval_percent": 5,
+            "firemaking_interval_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "icon_item": "cinder_rune"
       },
       {
         "id": "superheat_gold",
@@ -8804,6 +9355,23 @@
         },
         "mastery_action_time": 1.7,
         "description": "Bind nature magic into an emerald ring, quickening every skill."
+      },
+      {
+        "id": "verdant_compost",
+        "name": "Verdant Compost",
+        "level_required": 44,
+        "base_interval": 1.7,
+        "base_xp": 66,
+        "input_items": {
+          "bones": 10,
+          "bloom_rune": 1
+        },
+        "output_items": {
+          "compost": 5
+        },
+        "mastery_action_time": 1.7,
+        "description": "Return bones to fertile compost for crop plots.",
+        "conversion": true
       },
       {
         "id": "big_bone_offering",
@@ -8881,6 +9449,29 @@
         "description": "Melt mithril ore into a bar without coal."
       },
       {
+        "id": "ward_of_growth",
+        "name": "Ward of Growth",
+        "level_required": 56,
+        "base_interval": 3.0,
+        "base_xp": 78,
+        "input_items": {
+          "bloom_rune": 3,
+          "aether_rune": 1
+        },
+        "output_items": {},
+        "mastery_action_time": 3.0,
+        "description": "Encourage extra timber and ore from gathering.",
+        "ward": {
+          "mods": {
+            "woodcutting_doubling_percent": 5,
+            "mining_doubling_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "icon_item": "bloom_rune"
+      },
+      {
         "id": "enchant_topaz",
         "name": "Enchant Topaz Ring",
         "level_required": 58,
@@ -8919,6 +9510,23 @@
         "description": "Weave a ward that blunts every blow you take."
       },
       {
+        "id": "enchant_artisan_amulet",
+        "name": "Enchant Artisan's Amulet",
+        "level_required": 64,
+        "base_interval": 1.7,
+        "base_xp": 91,
+        "input_items": {
+          "emerald_amulet": 1,
+          "bloom_rune": 8,
+          "aether_rune": 4
+        },
+        "output_items": {
+          "artisan_amulet": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind a specialised enchantment into a crafted amulet."
+      },
+      {
         "id": "superheat_adamantite",
         "name": "Superheat Adamantite",
         "level_required": 65,
@@ -8934,6 +9542,23 @@
         },
         "mastery_action_time": 1.7,
         "description": "Melt adamantite ore into a bar without coal."
+      },
+      {
+        "id": "azure_hide",
+        "name": "Azure Hide",
+        "level_required": 66,
+        "base_interval": 1.7,
+        "base_xp": 94,
+        "input_items": {
+          "green_dragonhide": 1,
+          "rime_rune": 1
+        },
+        "output_items": {
+          "blue_dragonhide": 2
+        },
+        "mastery_action_time": 1.7,
+        "description": "Temper green dragonhide into blue hides for Artifice.",
+        "conversion": true
       },
       {
         "id": "enchant_ruby",
@@ -9048,6 +9673,29 @@
         "description": "Bind a protective ward permanently into a diamond ring."
       },
       {
+        "id": "ward_of_craft",
+        "name": "Ward of Craft",
+        "level_required": 82,
+        "base_interval": 3.0,
+        "base_xp": 126,
+        "input_items": {
+          "rime_rune": 3,
+          "aether_rune": 2
+        },
+        "output_items": {},
+        "mastery_action_time": 3.0,
+        "description": "Sometimes preserve Forgecraft and Artifice ingredients.",
+        "ward": {
+          "mods": {
+            "smithing_preservation_percent": 5,
+            "crafting_preservation_percent": 5
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "icon_item": "rime_rune"
+      },
+      {
         "id": "superheat_runite",
         "name": "Superheat Runite",
         "level_required": 85,
@@ -9103,6 +9751,23 @@
         "description": "Weave a ward that sometimes doubles monster drops."
       },
       {
+        "id": "enchant_stormfocus_amulet",
+        "name": "Enchant Stormfocus Amulet",
+        "level_required": 94,
+        "base_interval": 1.7,
+        "base_xp": 157,
+        "input_items": {
+          "ruby_amulet": 1,
+          "tempest_rune": 8,
+          "rime_rune": 4
+        },
+        "output_items": {
+          "stormfocus_amulet": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind a specialised enchantment into a crafted amulet."
+      },
+      {
         "id": "superheat_dragonite",
         "name": "Superheat Dragonite",
         "level_required": 95,
@@ -9118,6 +9783,23 @@
         },
         "mastery_action_time": 1.7,
         "description": "Melt dragonite ore into a bar without coal."
+      },
+      {
+        "id": "prismatic_distillation",
+        "name": "Prismatic Distillation",
+        "level_required": 98,
+        "base_interval": 1.7,
+        "base_xp": 166,
+        "input_items": {
+          "harvested_essence": 4,
+          "eclipse_rune": 1
+        },
+        "output_items": {
+          "prismatic_essence": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Distil gathered essence into a higher magical material.",
+        "conversion": true
       },
       {
         "id": "arcane_alchemy",
@@ -9170,6 +9852,28 @@
         "description": "Melt umbral ore into a bar without coal."
       },
       {
+        "id": "ward_of_precision",
+        "name": "Ward of Precision",
+        "level_required": 106,
+        "base_interval": 3.0,
+        "base_xp": 192,
+        "input_items": {
+          "tempest_rune": 3,
+          "eclipse_rune": 1
+        },
+        "output_items": {},
+        "mastery_action_time": 3.0,
+        "description": "Steady every combat style with improved accuracy.",
+        "ward": {
+          "mods": {
+            "global_accuracy_percent": 6
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "icon_item": "tempest_rune"
+      },
+      {
         "id": "transmute_herald",
         "name": "Transmute Herald",
         "level_required": 110,
@@ -9187,6 +9891,23 @@
         "description": "Raise an umbral bar into a herald bar."
       },
       {
+        "id": "enchant_dawnscribe_amulet",
+        "name": "Enchant Dawnscribe's Amulet",
+        "level_required": 114,
+        "base_interval": 1.7,
+        "base_xp": 212,
+        "input_items": {
+          "diamond_amulet": 1,
+          "dawn_rune": 8,
+          "eclipse_rune": 4
+        },
+        "output_items": {
+          "dawnscribe_amulet": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Bind a specialised enchantment into a crafted amulet."
+      },
+      {
         "id": "superheat_herald",
         "name": "Superheat Herald",
         "level_required": 115,
@@ -9202,6 +9923,45 @@
         },
         "mastery_action_time": 1.7,
         "description": "Melt herald ore into a bar without coal."
+      },
+      {
+        "id": "ward_of_devotion",
+        "name": "Ward of Devotion",
+        "level_required": 116,
+        "base_interval": 3.0,
+        "base_xp": 220,
+        "input_items": {
+          "dawn_rune": 3,
+          "soul_rune": 2
+        },
+        "output_items": {},
+        "mastery_action_time": 3.0,
+        "description": "Reduce prayer point costs while the ward lasts.",
+        "ward": {
+          "mods": {
+            "prayer_cost_reduction_percent": 8
+          },
+          "seconds": 1800,
+          "max_seconds": 14400
+        },
+        "icon_item": "dawn_rune"
+      },
+      {
+        "id": "herald_awakening",
+        "name": "Herald Awakening",
+        "level_required": 118,
+        "base_interval": 1.7,
+        "base_xp": 228,
+        "input_items": {
+          "umbral_essence": 1,
+          "dawn_rune": 1
+        },
+        "output_items": {
+          "herald_essence": 1
+        },
+        "mastery_action_time": 1.7,
+        "description": "Awaken umbral essence with dawn magic.",
+        "conversion": true
       },
       {
         "id": "ward_of_ascendance",
@@ -9415,6 +10175,49 @@
         "icon_activity": true
       },
       {
+        "id": "riverbank",
+        "name": "Riverbank Dig Site",
+        "level_required": 8,
+        "base_interval": 6.0,
+        "base_xp": 26,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "copper_ore",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "bones",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Recover washed-out pottery and copper fragments from old river mud."
+      },
+      {
         "id": "shallow",
         "name": "Shallow Dig Site",
         "level_required": 15,
@@ -9451,6 +10254,49 @@
         "icon_activity": true
       },
       {
+        "id": "barrow",
+        "name": "Barrow Dig Site",
+        "level_required": 23,
+        "base_interval": 6.0,
+        "base_xp": 39,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "big_bones",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "silver_ore",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Open forgotten burial mounds for grave goods, bones and silver."
+      },
+      {
         "id": "medium",
         "name": "Medium Dig Site",
         "level_required": 30,
@@ -9479,6 +10325,49 @@
         ],
         "mastery_action_time": 6.0,
         "icon_activity": true
+      },
+      {
+        "id": "fungal",
+        "name": "Fungal Dig Site",
+        "level_required": 38,
+        "base_interval": 6.0,
+        "base_xp": 54,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "compost",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "oak_log",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Uncover root-bound ruins beneath luminous fungi; salvage compost and old timber."
       },
       {
         "id": "weathered",
@@ -9517,6 +10406,49 @@
         "icon_activity": true
       },
       {
+        "id": "desert",
+        "name": "Desert Dig Site",
+        "level_required": 53,
+        "base_interval": 6.0,
+        "base_xp": 72,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "gold_ore",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "topaz",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Brush sand from lost caravan ruins to find gold and topaz."
+      },
+      {
         "id": "large",
         "name": "Large Dig Site",
         "level_required": 60,
@@ -9545,6 +10477,49 @@
         ],
         "mastery_action_time": 6.0,
         "icon_activity": true
+      },
+      {
+        "id": "frostbound",
+        "name": "Frostbound Dig Site",
+        "level_required": 65,
+        "base_interval": 6.0,
+        "base_xp": 90,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "frostcedar_log",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "pure_essence",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Excavate frost-sealed ruins for preserved cedar and pure essence."
       },
       {
         "id": "sunken",
@@ -9589,6 +10564,49 @@
         "icon_activity": true
       },
       {
+        "id": "astral",
+        "name": "Astral Dig Site",
+        "level_required": 78,
+        "base_interval": 6.0,
+        "base_xp": 116,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "soul_rune",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "sapphire",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Explore a fallen observatory for rune tablets and sapphire instruments."
+      },
+      {
         "id": "ancient",
         "name": "Ancient Dig Site",
         "level_required": 85,
@@ -9629,6 +10647,49 @@
         ],
         "mastery_action_time": 6.0,
         "icon_activity": true
+      },
+      {
+        "id": "cinder",
+        "name": "Cinder Dig Site",
+        "level_required": 92,
+        "base_interval": 6.0,
+        "base_xp": 151,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_common",
+            "chance": 0.6
+          },
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.3
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.08
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "dragonite_ore",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Sift scorched ruins for dragonite fragments and ancient charcoal."
       },
       {
         "id": "primeval",
@@ -9753,6 +10814,49 @@
         "icon_activity": true
       },
       {
+        "id": "voidglass",
+        "name": "Voidglass Dig Site",
+        "level_required": 110,
+        "base_interval": 6.0,
+        "base_xp": 225,
+        "output_items": {},
+        "secondary_outputs": [
+          {
+            "item_id": "artefact_uncommon",
+            "chance": 0.4
+          },
+          {
+            "item_id": "artefact_rare",
+            "chance": 0.2
+          },
+          {
+            "item_id": "artefact_unique",
+            "chance": 0.05
+          },
+          {
+            "item_id": "artefact_shard",
+            "chance": 0.2,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "umbral_ore",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "umbral_essence",
+            "chance": 0.04,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 6.0,
+        "icon_activity": true,
+        "description": "Recover umbral fragments and relics from a shattered glass citadel."
+      },
+      {
         "id": "throne",
         "name": "Throne Dig Site",
         "level_required": 115,
@@ -9836,6 +10940,29 @@
         "icon_item": "copper_ore"
       },
       {
+        "id": "tin_flecked",
+        "name": "Tin-flecked Vein",
+        "level_required": 8,
+        "base_interval": 4.0,
+        "base_xp": 30,
+        "output_items": {
+          "harvested_essence": 1
+        },
+        "node_hp": 6,
+        "respawn_seconds": 4,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Search pale tin flecks for essence and occasional ore samples.",
+        "secondary_outputs": [
+          {
+            "item_id": "tin_ore",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
+      },
+      {
         "id": "sturdy",
         "name": "Sturdy Vein",
         "level_required": 15,
@@ -9848,6 +10975,29 @@
         "respawn_seconds": 4,
         "mastery_action_time": 4.0,
         "icon_item": "iron_ore"
+      },
+      {
+        "id": "carbon_seam",
+        "name": "Carbon Seam",
+        "level_required": 20,
+        "base_interval": 4.0,
+        "base_xp": 40,
+        "output_items": {
+          "harvested_essence": 1
+        },
+        "node_hp": 8,
+        "respawn_seconds": 4,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Follow coal-rich shale for essence and small fuel finds.",
+        "secondary_outputs": [
+          {
+            "item_id": "coal",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "dense",
@@ -9864,6 +11014,29 @@
         "icon_item": "silver_ore"
       },
       {
+        "id": "argent_seam",
+        "name": "Argent Seam",
+        "level_required": 32,
+        "base_interval": 4.0,
+        "base_xp": 52,
+        "output_items": {
+          "harvested_essence": 1
+        },
+        "node_hp": 9,
+        "respawn_seconds": 5,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Trace branching silver deposits through dense stone.",
+        "secondary_outputs": [
+          {
+            "item_id": "silver_ore",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
+      },
+      {
         "id": "rich",
         "name": "Rich Vein",
         "level_required": 40,
@@ -9876,6 +11049,29 @@
         "respawn_seconds": 6,
         "mastery_action_time": 4.0,
         "icon_item": "gold_ore"
+      },
+      {
+        "id": "gilded_seam",
+        "name": "Gilded Seam",
+        "level_required": 48,
+        "base_interval": 4.0,
+        "base_xp": 71,
+        "output_items": {
+          "harvested_essence": 1
+        },
+        "node_hp": 11,
+        "respawn_seconds": 7,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Uncover gold-threaded rock for essence and scattered ore.",
+        "secondary_outputs": [
+          {
+            "item_id": "gold_ore",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "deep",
@@ -9892,6 +11088,29 @@
         "icon_item": "mithril_ore"
       },
       {
+        "id": "azure_seam",
+        "name": "Azure Seam",
+        "level_required": 60,
+        "base_interval": 4.0,
+        "base_xp": 90,
+        "output_items": {
+          "harvested_essence": 1
+        },
+        "node_hp": 12,
+        "respawn_seconds": 7,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Search blue metallic veins for essence and mithril fragments.",
+        "secondary_outputs": [
+          {
+            "item_id": "mithril_ore",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
+      },
+      {
         "id": "radiant",
         "name": "Radiant Vein",
         "level_required": 65,
@@ -9906,6 +11125,29 @@
         "icon_item": "runite_ore"
       },
       {
+        "id": "frostcrystal_seam",
+        "name": "Frostcrystal Seam",
+        "level_required": 72,
+        "base_interval": 4.0,
+        "base_xp": 109,
+        "output_items": {
+          "harvested_essence": 1
+        },
+        "node_hp": 14,
+        "respawn_seconds": 7,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Probe frost-sealed mineral seams for essence and runite.",
+        "secondary_outputs": [
+          {
+            "item_id": "runite_ore",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
+      },
+      {
         "id": "prismatic",
         "name": "Prismatic Vein",
         "level_required": 80,
@@ -9918,6 +11160,29 @@
         "respawn_seconds": 8,
         "mastery_action_time": 4.0,
         "icon_item": "adamantite_ore"
+      },
+      {
+        "id": "ember_seam",
+        "name": "Ember Seam",
+        "level_required": 88,
+        "base_interval": 4.0,
+        "base_xp": 136,
+        "output_items": {
+          "prismatic_essence": 1
+        },
+        "node_hp": 17,
+        "respawn_seconds": 9,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Follow glowing volcanic seams for prismatic essence and dragonite.",
+        "secondary_outputs": [
+          {
+            "item_id": "dragonite_ore",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "voidtouched",
@@ -9946,6 +11211,29 @@
         "respawn_seconds": 10,
         "mastery_action_time": 4.0,
         "icon_item": "umbral_ore"
+      },
+      {
+        "id": "crownstone_seam",
+        "name": "Crownstone Seam",
+        "level_required": 110,
+        "base_interval": 4.0,
+        "base_xp": 192,
+        "output_items": {
+          "umbral_essence": 1
+        },
+        "node_hp": 21,
+        "respawn_seconds": 10,
+        "mastery_action_time": 4.0,
+        "icon_activity": true,
+        "description": "Trace gold through dark crownstone for umbral essence and herald ore.",
+        "secondary_outputs": [
+          {
+            "item_id": "herald_ore",
+            "chance": 0.08,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ]
       },
       {
         "id": "herald_vein",
@@ -10389,7 +11677,8 @@
         "mastery_action_time": 3.0,
         "output_items": {
           "route_survey": 1
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "place_anchor",
@@ -10404,7 +11693,22 @@
         },
         "output_items": {
           "fold_anchor": 1
-        }
+        },
+        "icon_activity": true
+      },
+      {
+        "id": "survey_marshway",
+        "name": "Survey a Marshway",
+        "level_required": 5,
+        "base_interval": 3.2,
+        "base_xp": 12,
+        "mastery_action_time": 3.2,
+        "input_items": {},
+        "output_items": {
+          "route_survey": 1
+        },
+        "description": "Chart safe stepping stones through flooded ground to produce route surveys.",
+        "icon_activity": true
       },
       {
         "id": "survey_footpath",
@@ -10425,7 +11729,24 @@
           }
         ],
         "mastery_action_time": 3.3,
-        "description": "Short paths, quickly walked."
+        "description": "Short paths, quickly walked.",
+        "icon_activity": true
+      },
+      {
+        "id": "set_waystone",
+        "name": "Set a Waystone",
+        "level_required": 12,
+        "base_interval": 3.4,
+        "base_xp": 16,
+        "mastery_action_time": 3.4,
+        "input_items": {
+          "route_survey": 1
+        },
+        "output_items": {
+          "fold_anchor": 1
+        },
+        "description": "Carve a surveyed crossing into a permanent fold anchor.",
+        "icon_activity": true
       },
       {
         "id": "join_anchors",
@@ -10441,7 +11762,8 @@
         },
         "output_items": {
           "wayfold_link": 1
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "survey_branch",
@@ -10461,7 +11783,8 @@
             "min_qty": 1,
             "max_qty": 2
           }
-        ]
+        ],
+        "icon_activity": true
       },
       {
         "id": "run_manifest",
@@ -10477,7 +11800,8 @@
         },
         "output_items": {
           "freight_manifest": 1
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "place_anchor_pair",
@@ -10492,7 +11816,8 @@
         },
         "output_items": {
           "fold_anchor": 2
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "reinforce_link",
@@ -10508,7 +11833,25 @@
         },
         "output_items": {
           "wayfold_link": 2
-        }
+        },
+        "icon_activity": true
+      },
+      {
+        "id": "bridge_gorge",
+        "name": "Bridge a Gorge",
+        "level_required": 35,
+        "base_interval": 4.15,
+        "base_xp": 32,
+        "mastery_action_time": 4.15,
+        "input_items": {
+          "fold_anchor": 2,
+          "route_survey": 2
+        },
+        "output_items": {
+          "wayfold_link": 2
+        },
+        "description": "Join opposing cliff anchors into a passage across the gorge.",
+        "icon_activity": true
       },
       {
         "id": "survey_cargo",
@@ -10520,7 +11863,8 @@
         "mastery_action_time": 4.3,
         "output_items": {
           "route_survey": 1
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "tie_return",
@@ -10536,7 +11880,8 @@
         },
         "output_items": {
           "wayfold_link": 2
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "batch_contracts",
@@ -10553,7 +11898,8 @@
         "output_items": {
           "freight_manifest": 3
         },
-        "success_chance": 0.95
+        "success_chance": 0.95,
+        "icon_activity": true
       },
       {
         "id": "survey_highway",
@@ -10574,7 +11920,22 @@
           }
         ],
         "mastery_action_time": 4.8,
-        "description": "Busy roads map themselves."
+        "description": "Busy roads map themselves.",
+        "icon_activity": true
+      },
+      {
+        "id": "chart_deepways",
+        "name": "Chart the Deepways",
+        "level_required": 60,
+        "base_interval": 5.0,
+        "base_xp": 74,
+        "mastery_action_time": 5.0,
+        "input_items": {},
+        "output_items": {
+          "route_survey": 3
+        },
+        "description": "Trace underground routes through luminous caverns to supply your network.",
+        "icon_activity": true
       },
       {
         "id": "conditional_link",
@@ -10591,7 +11952,8 @@
         "output_items": {
           "wayfold_link": 3
         },
-        "success_chance": 0.9
+        "success_chance": 0.9,
+        "icon_activity": true
       },
       {
         "id": "chain_links",
@@ -10607,7 +11969,8 @@
           "wayfold_link": 3
         },
         "mastery_action_time": 5.0,
-        "description": "Three links from a single chained line."
+        "description": "Three links from a single chained line.",
+        "icon_activity": true
       },
       {
         "id": "condense_line",
@@ -10626,7 +11989,8 @@
         "output_items": {
           "condensed_route": 1
         },
-        "success_chance": 0.7
+        "success_chance": 0.7,
+        "icon_activity": true
       },
       {
         "id": "express_manifest",
@@ -10643,7 +12007,26 @@
         },
         "success_chance": 0.95,
         "mastery_action_time": 5.0,
-        "description": "Fast freight, four manifests at a time."
+        "description": "Fast freight, four manifests at a time.",
+        "icon_activity": true
+      },
+      {
+        "id": "reroute_freight",
+        "name": "Reroute Freight",
+        "level_required": 90,
+        "base_interval": 5.2,
+        "base_xp": 162,
+        "mastery_action_time": 5.2,
+        "input_items": {
+          "wayfold_link": 3,
+          "fold_anchor": 2
+        },
+        "output_items": {
+          "freight_manifest": 5
+        },
+        "description": "Divert a convoy through spare passages and issue a batch of freight manifests.",
+        "success_chance": 0.9,
+        "icon_activity": true
       },
       {
         "id": "grand_confluence",
@@ -10662,7 +12045,8 @@
         "output_items": {
           "grand_confluence": 1
         },
-        "success_chance": 0.65
+        "success_chance": 0.65,
+        "icon_activity": true
       },
       {
         "id": "survey_skyroad",
@@ -10675,7 +12059,28 @@
           "route_survey": 3
         },
         "mastery_action_time": 5.0,
-        "description": "High routes over the Riven Frontier."
+        "description": "High routes over the Riven Frontier.",
+        "icon_activity": true
+      },
+      {
+        "id": "fold_astral_road",
+        "name": "Fold an Astral Road",
+        "level_required": 108,
+        "base_interval": 6.6,
+        "base_xp": 393,
+        "mastery_action_time": 6.6,
+        "input_items": {
+          "wayfold_link": 6,
+          "fold_anchor": 8,
+          "freight_manifest": 6,
+          "route_survey": 8
+        },
+        "output_items": {
+          "condensed_route": 2
+        },
+        "description": "Condense a distant astral road into two portable routes for advanced folds.",
+        "success_chance": 0.7,
+        "icon_activity": true
       },
       {
         "id": "herald_gate",
@@ -10694,7 +12099,8 @@
         "output_items": {
           "herald_gate": 1
         },
-        "success_chance": 0.6
+        "success_chance": 0.6,
+        "icon_activity": true
       },
       {
         "id": "herald_confluence",
@@ -10712,7 +12118,8 @@
         },
         "success_chance": 0.75,
         "mastery_action_time": 5.0,
-        "description": "Two confluences from condensed herald routes."
+        "description": "Two confluences from condensed herald routes.",
+        "icon_activity": true
       }
     ],
     "order": 31,
@@ -11451,7 +12858,8 @@
         "mastery_action_time": 3.0,
         "output_items": {
           "case_file": 1
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "broad_search",
@@ -11467,7 +12875,24 @@
         "output_items": {
           "trace_evidence": 1
         },
-        "success_chance": 0.95
+        "success_chance": 0.95,
+        "icon_activity": true
+      },
+      {
+        "id": "follow_footprints",
+        "name": "Follow Footprints",
+        "level_required": 5,
+        "base_interval": 3.2,
+        "base_xp": 13,
+        "mastery_action_time": 3.2,
+        "input_items": {
+          "case_file": 1
+        },
+        "output_items": {
+          "trace_evidence": 1
+        },
+        "description": "Track muddy bootprints from a disappearance to its first useful lead.",
+        "icon_activity": true
       },
       {
         "id": "interview_witness",
@@ -11482,7 +12907,24 @@
         },
         "output_items": {
           "witness_timeline": 1
-        }
+        },
+        "icon_activity": true
+      },
+      {
+        "id": "question_ferryman",
+        "name": "Question the Ferryman",
+        "level_required": 15,
+        "base_interval": 3.5,
+        "base_xp": 19,
+        "mastery_action_time": 3.5,
+        "input_items": {
+          "case_file": 2
+        },
+        "output_items": {
+          "witness_timeline": 1
+        },
+        "description": "Rebuild a missing traveller's river crossing from the ferryman's account.",
+        "icon_activity": true
       },
       {
         "id": "recover_object",
@@ -11498,7 +12940,8 @@
         "output_items": {
           "finders_fee": 1
         },
-        "success_chance": 0.85
+        "success_chance": 0.85,
+        "icon_activity": true
       },
       {
         "id": "targeted_search",
@@ -11513,7 +12956,8 @@
         },
         "output_items": {
           "trace_evidence": 2
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "inspect_cargo_records",
@@ -11528,7 +12972,8 @@
         },
         "output_items": {
           "trace_evidence": 2
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "canvass_market",
@@ -11551,7 +12996,8 @@
           }
         ],
         "mastery_action_time": 4.1,
-        "description": "Ask every stall; someone saw something."
+        "description": "Ask every stall; someone saw something.",
+        "icon_activity": true
       },
       {
         "id": "accept_urgent",
@@ -11563,7 +13009,8 @@
         "mastery_action_time": 4.0,
         "output_items": {
           "case_file": 2
-        }
+        },
+        "icon_activity": true
       },
       {
         "id": "close_file",
@@ -11580,7 +13027,24 @@
         "output_items": {
           "finders_fee": 2
         },
-        "success_chance": 0.95
+        "success_chance": 0.95,
+        "icon_activity": true
+      },
+      {
+        "id": "search_watchtower",
+        "name": "Search the Watchtower",
+        "level_required": 45,
+        "base_interval": 4.5,
+        "base_xp": 49,
+        "mastery_action_time": 4.5,
+        "input_items": {
+          "case_file": 2
+        },
+        "output_items": {
+          "trace_evidence": 3
+        },
+        "description": "Search abandoned lookout chambers for traces of a vanished shipment.",
+        "icon_activity": true
       },
       {
         "id": "press_label",
@@ -11597,7 +13061,8 @@
         "output_items": {
           "restored_label": 1
         },
-        "success_chance": 0.95
+        "success_chance": 0.95,
+        "icon_activity": true
       },
       {
         "id": "return_heirloom",
@@ -11614,7 +13079,26 @@
         "output_items": {
           "finders_fee": 2
         },
-        "success_chance": 0.75
+        "success_chance": 0.75,
+        "icon_activity": true
+      },
+      {
+        "id": "decode_cipher",
+        "name": "Decode a Cipher",
+        "level_required": 60,
+        "base_interval": 5.0,
+        "base_xp": 84,
+        "mastery_action_time": 5.0,
+        "input_items": {
+          "trace_evidence": 2,
+          "case_file": 1
+        },
+        "output_items": {
+          "restored_label": 1
+        },
+        "description": "Unravel concealed shipping marks to reveal where the cargo went.",
+        "icon_activity": true,
+        "success_chance": 0.95
       },
       {
         "id": "echo_lens",
@@ -11631,7 +13115,8 @@
         "output_items": {
           "restored_label": 2
         },
-        "success_chance": 0.9
+        "success_chance": 0.9,
+        "icon_activity": true
       },
       {
         "id": "accept_cold_case",
@@ -11644,7 +13129,8 @@
           "case_file": 3
         },
         "mastery_action_time": 5.0,
-        "description": "Old files nobody else will touch."
+        "description": "Old files nobody else will touch.",
+        "icon_activity": true
       },
       {
         "id": "cold_trail",
@@ -11662,7 +13148,8 @@
         "output_items": {
           "cold_trail": 1
         },
-        "success_chance": 0.8
+        "success_chance": 0.8,
+        "icon_activity": true
       },
       {
         "id": "reconstruct_timeline",
@@ -11679,7 +13166,27 @@
         },
         "success_chance": 0.95,
         "mastery_action_time": 5.0,
-        "description": "Evidence alone can rebuild the day."
+        "description": "Evidence alone can rebuild the day.",
+        "icon_activity": true
+      },
+      {
+        "id": "recover_sunken_cache",
+        "name": "Recover a Sunken Cache",
+        "level_required": 90,
+        "base_interval": 6.0,
+        "base_xp": 218,
+        "mastery_action_time": 6.0,
+        "input_items": {
+          "witness_timeline": 2,
+          "trace_evidence": 3,
+          "restored_label": 1
+        },
+        "output_items": {
+          "cold_trail": 1
+        },
+        "description": "Retrieve a sealed cache from the deep and connect its contents to an old case.",
+        "icon_activity": true,
+        "success_chance": 0.8
       },
       {
         "id": "herald_case",
@@ -11697,7 +13204,8 @@
         "output_items": {
           "herald_case": 1
         },
-        "success_chance": 0.75
+        "success_chance": 0.75,
+        "icon_activity": true
       },
       {
         "id": "paper_ghost",
@@ -11715,6 +13223,26 @@
         "output_items": {
           "cold_trail": 1
         },
+        "success_chance": 0.7,
+        "icon_activity": true
+      },
+      {
+        "id": "unmask_phantom",
+        "name": "Unmask the Phantom",
+        "level_required": 110,
+        "base_interval": 6.7,
+        "base_xp": 438,
+        "mastery_action_time": 6.7,
+        "input_items": {
+          "cold_trail": 1,
+          "witness_timeline": 3,
+          "restored_label": 2
+        },
+        "output_items": {
+          "herald_case": 1
+        },
+        "description": "Expose the phantom courier behind a trail of impossible disappearances.",
+        "icon_activity": true,
         "success_chance": 0.7
       },
       {
@@ -11733,7 +13261,8 @@
         "output_items": {
           "herald_case": 2
         },
-        "success_chance": 0.65
+        "success_chance": 0.65,
+        "icon_activity": true
       }
     ],
     "order": 34,

@@ -261,5 +261,173 @@
         "chance": 0.08
       }
     ]
+  },
+  "riverbank": {
+    "id": "riverbank",
+    "name": "Riverbank Dig Site",
+    "level_required": 8,
+    "excavate_xp": 26,
+    "hex": "terrain_-4_-1",
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      }
+    ]
+  },
+  "barrow": {
+    "id": "barrow",
+    "name": "Barrow Dig Site",
+    "level_required": 23,
+    "excavate_xp": 39,
+    "hex": "terrain_1_0",
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      }
+    ]
+  },
+  "fungal": {
+    "id": "fungal",
+    "name": "Fungal Dig Site",
+    "level_required": 38,
+    "excavate_xp": 54,
+    "hex": "terrain_-7_2",
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      }
+    ]
+  },
+  "desert": {
+    "id": "desert",
+    "name": "Desert Dig Site",
+    "level_required": 53,
+    "excavate_xp": 72,
+    "hex": "terrain_0_-3",
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      }
+    ]
+  },
+  "frostbound": {
+    "id": "frostbound",
+    "name": "Frostbound Dig Site",
+    "level_required": 65,
+    "excavate_xp": 90,
+    "hex": "terrain_-1_-6",
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      }
+    ]
+  },
+  "astral": {
+    "id": "astral",
+    "name": "Astral Dig Site",
+    "level_required": 78,
+    "excavate_xp": 116,
+    "hex": "terrain_4_1",
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      }
+    ]
+  },
+  "cinder": {
+    "id": "cinder",
+    "name": "Cinder Dig Site",
+    "level_required": 92,
+    "excavate_xp": 151,
+    "hex": "terrain_5_3",
+    "artefacts": [
+      {
+        "item_id": "artefact_common",
+        "chance": 0.6
+      },
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.3
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.08
+      }
+    ]
+  },
+  "voidglass": {
+    "id": "voidglass",
+    "name": "Voidglass Dig Site",
+    "level_required": 110,
+    "excavate_xp": 225,
+    "hex": "terrain_2_-7",
+    "artefacts": [
+      {
+        "item_id": "artefact_uncommon",
+        "chance": 0.4
+      },
+      {
+        "item_id": "artefact_rare",
+        "chance": 0.2
+      },
+      {
+        "item_id": "artefact_unique",
+        "chance": 0.05
+      }
+    ]
   }
 }

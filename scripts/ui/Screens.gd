@@ -32,7 +32,7 @@ const RECOVERY := "recovery"
 ## screens because both are combat-time systems.
 const PRAYERS := "prayers"
 const RAIDS := "raids"
-## The Farm screen is Husbandry made reachable: plots that grow in real time, planted and
+## The Farm screen is Cultivation made reachable: plots that grow in real time, planted and
 ## harvested by hand. It sits with the other system screens above the task lists.
 const FARM := "farm"
 ## Ascendancy: the reset layer. It is the only screen that can delete a run, so it sits with
