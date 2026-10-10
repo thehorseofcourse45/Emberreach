@@ -351,19 +351,23 @@ func show_recipe(skill_id: String, action_id: String) -> void:
 	var est: Dictionary = ActionEstimates.for_action(skill_id, action_id)
 	if not est.is_empty():
 		_body.add_child(UIStyle.section("Projection", str(est["assumptions"])))
-		_body.add_child(Widgets.key_value("Action time", "%.2fs" % float(est["interval"])))
-		_body.add_child(Widgets.key_value("XP per action", UIStyle.fmt(float(est["xp_per_action"])), UITokens.BLUE))
-		_body.add_child(Widgets.key_value("XP per hour (≈)", UIStyle.fmt(float(est["xp_per_hour"])), UITokens.BLUE))
-		_body.add_child(Widgets.key_value("Success chance", UIStyle.fmt_percent(float(est["success_chance"]))))
+		var chips: Array = [
+			Widgets.stat_chip("status", "idle", "%.2fs" % float(est["interval"]), "Action time"),
+			Widgets.stat_chip("skills", skill_id, UIStyle.fmt(float(est["xp_per_action"])) + " XP", "XP per action", UITokens.BLUE),
+			Widgets.stat_chip("skills", skill_id, "≈ %s XP/h" % UIStyle.fmt(float(est["xp_per_hour"])), "XP per hour (estimate)", UITokens.BLUE),
+			Widgets.stat_chip("status", "ok", UIStyle.fmt_percent(float(est["success_chance"])), "Success chance"),
+		]
 		if float(est.get("output_per_hour", 0.0)) > 0.0:
-			_body.add_child(Widgets.key_value("Output per hour (≈)",
-				"%s %s" % [UIStyle.fmt(float(est["output_per_hour"])), str(est["output_name"])], UITokens.TEAL))
+			chips.append(Widgets.stat_chip("navigation", Screens.BANK, "≈ %s %s/h" % [UIStyle.fmt(float(est["output_per_hour"])), str(est["output_name"])],
+				"Output per hour (estimate)", UITokens.TEAL))
 		if float(est["xp_to_next"]) > 0.0 and float(est["xp_per_hour"]) > 0.0:
-			_body.add_child(Widgets.key_value("Next level in (≈)",
-				UIStyle.fmt_duration(float(est["xp_to_next"]) / maxf(1.0, float(est["xp_per_hour"])) * 3600.0), UITokens.GOLD))
+			chips.append(Widgets.stat_chip("navigation", Screens.STATS,
+				UIStyle.fmt_duration(float(est["xp_to_next"]) / maxf(1.0, float(est["xp_per_hour"])) * 3600.0),
+				"Time to the next level (estimate)", UITokens.GOLD_BRIGHT))
 		if float(est.get("supply_hours", -1.0)) >= 0.0:
-			_body.add_child(Widgets.key_value("Current stock lasts (≈)",
-				UIStyle.fmt_duration(float(est["supply_hours"])), UITokens.AMBER))
+			chips.append(Widgets.stat_chip("status", "warning", UIStyle.fmt_duration(float(est["supply_hours"])),
+				"Your current stock lasts about this long", UITokens.AMBER))
+		_body.add_child(Widgets.chip_row(chips))
 
 	var inputs: Dictionary = action.get("input_items", {})
 	if not inputs.is_empty():

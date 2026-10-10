@@ -239,6 +239,14 @@ func _refresh_results() -> void:
 				"No report yet. Pick a target and press Run.", true, UITokens.FONT_SMALL))
 		return
 	_result_box.add_child(UIStyle.title(str(CombatSimulatorManager.target_label), UITokens.FONT_SUBHEAD))
+	var win: float = 1.0 - float(report.get("death_chance", 0.0))
+	_result_box.add_child(Widgets.chip_row([
+		Widgets.stat_chip("status", "ok", UIStyle.fmt_percent(win) + " win", "Share of trials won",
+			UITokens.GREEN if win >= 0.95 else (UITokens.AMBER if win >= 0.7 else UITokens.RED)),
+		Widgets.stat_chip("skills", "attack", UIStyle.fmt(float(report.get("kills_per_hour", 0.0))) + " kills/h", "Kills per hour of fighting"),
+		Widgets.stat_chip("navigation", Screens.STATS, UIStyle.fmt(float(report.get("xp_per_hour_total", 0.0))) + " XP/h", "XP per hour, all skills", UITokens.TEAL),
+		Widgets.stat_chip("skills", "cooking", UIStyle.fmt(float(report.get("food_per_hour", 0.0))) + " food/h", "Food eaten per hour"),
+	]))
 	for line in CombatSimulatorManager.format_report(report):
 		_result_box.add_child(UIStyle.label(line, false, UITokens.FONT_SMALL))
 	var assumptions: Array = report.get("assumptions", [])

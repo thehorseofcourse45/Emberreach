@@ -160,6 +160,7 @@ func run_all(host: Node) -> void:
 	await test_overview_visual(host)
 	await test_combat_visual(host)
 	await test_skill_cards(host)
+	await test_report_screens_visual(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -2967,6 +2968,39 @@ func test_skill_cards(host: Node) -> void:
 		_ok(_count_widgets(first, "stat_chip") >= 2, "%s: a card shows time and XP as chips" % sid)
 		_ok(_count_widgets(first, "item_slot") >= 1, "%s: a card shows what it makes as slots" % sid)
 		_ok(_count_widgets(first, "meter") == 1, "%s: a card has its own mastery meter" % sid)
+
+## Report-style screens lead with chips; the offline summary shows gains as item slots.
+func test_report_screens_visual(host: Node) -> void:
+	_heading("Report screens visual")
+	var prestige: Control = load("res://scripts/ui/panels/PrestigePanel.gd").new()
+	host.add_child(prestige)
+	await host.get_tree().process_frame
+	_ok(_count_widgets(prestige, "stat_chip") >= 3, "Ascendancy status is chips (%d)" % _count_widgets(prestige, "stat_chip"))
+	prestige.queue_free()
+	var saved_report: Dictionary = CombatSimulatorManager.last_report
+	CombatSimulatorManager.last_report = {"trials": 100, "wins": 90, "deaths": 10, "timeouts": 0, "death_chance": 0.1,
+		"kills_per_hour": 120.0, "xp_per_hour_total": 5000.0, "food_per_hour": 12.0, "xp_per_hour": {}, "assumptions": [],
+		"kills": 90, "food_eaten": 5, "elapsed_seconds": 3600.0, "fights": 100, "damage_dealt": 1.0, "average_fight_seconds": 30.0,
+		"simulated_hours": 1.0, "trials_per_hour": 100.0, "valid": true, "seed": 1, "xp": {}}
+	var sim: Control = load("res://scripts/ui/panels/CombatSimulatorPanel.gd").new()
+	host.add_child(sim)
+	await host.get_tree().process_frame
+	sim.call("_refresh_results")
+	_ok(_count_widgets(sim, "stat_chip") >= 4, "the simulator headline is chips (%d)" % _count_widgets(sim, "stat_chip"))
+	sim.queue_free()
+	CombatSimulatorManager.last_report = saved_report
+	var dialog: OfflineSummaryDialog = OfflineSummaryDialog.new()
+	host.add_child(dialog)
+	dialog.show_summary({"processed_seconds": 3600.0, "elapsed_seconds": 3600.0, "activity": "skill", "skill": "woodcutting",
+		"actions": 1200, "items_gained": {"normal_log": 1200, "bird_nest": 2}, "xp_gained": {"woodcutting": 12000.0}})
+	_ok(_count_widgets(dialog, "stat_chip") >= 2, "offline time and actions are chips (%d)" % _count_widgets(dialog, "stat_chip"))
+	_ok(_count_widgets(dialog, "item_slot") >= 2, "items gained offline are slots (%d)" % _count_widgets(dialog, "item_slot"))
+	dialog.queue_free()
+	var detail: DetailPanel = host.get("_detail")
+	host.call("open_detail")
+	detail.show_recipe("woodcutting", str((DataLoader.get_skill("woodcutting")["actions"] as Array)[0]["id"]))
+	_ok(_count_widgets(detail, "stat_chip") >= 3, "a recipe's numbers in the detail card are chips (%d)" % _count_widgets(detail, "stat_chip"))
+	host.call("close_detail")
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")

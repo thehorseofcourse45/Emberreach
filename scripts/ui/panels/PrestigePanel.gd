@@ -58,11 +58,14 @@ func _clear(box: VBoxContainer) -> void:
 func _rebuild_status() -> void:
 	_clear(_status_box)
 	var n: int = PrestigeManager.ascensions()
-	_status_box.add_child(Widgets.key_value("Ascensions taken", "%d" % n))
-	_status_box.add_child(Widgets.key_value("Ascendancy Points", "%d available · %d earned" % [PrestigeManager.points(), PrestigeManager.points_earned()]))
+	_status_box.add_child(Widgets.chip_row([
+		Widgets.stat_chip("navigation", Screens.PRESTIGE, "%d ascensions" % n, "Ascensions taken", UITokens.GOLD_BRIGHT),
+		Widgets.stat_chip("navigation", Screens.PRESTIGE, "%d points" % PrestigeManager.points(),
+			"Ascendancy Points: %d available · %d earned" % [PrestigeManager.points(), PrestigeManager.points_earned()], UITokens.GOLD_BRIGHT),
+		Widgets.stat_chip("navigation", Screens.STATS, UIStyle.fmt(PrestigeManager.lifetime_xp()) + " XP", "This run's XP"),
+		Widgets.stat_chip("status", "warning", UIStyle.fmt(PrestigeManager.GATE_XP) + " XP", "The gate: this run's XP needed to ascend", UITokens.AMBER),
+	]))
 	_status_box.add_child(Widgets.key_value("Active bonus", PrestigeManager.bonus_summary()))
-	_status_box.add_child(Widgets.key_value("This run’s XP", UIStyle.fmt(PrestigeManager.lifetime_xp())))
-	_status_box.add_child(Widgets.key_value("Gate", "%s this run’s XP" % UIStyle.fmt(PrestigeManager.GATE_XP)))
 	var progress: float = clampf(PrestigeManager.lifetime_xp() / PrestigeManager.GATE_XP, 0.0, 1.0)
 	_status_box.add_child(Widgets.progress_bar(PrestigeManager.lifetime_xp(),
 		PrestigeManager.GATE_XP, UITokens.TEAL,
