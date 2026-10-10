@@ -86,6 +86,10 @@ window/size/min_height=520
 
 enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
 
+[memory]
+
+limits/message_queue/max_size_mb=128
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

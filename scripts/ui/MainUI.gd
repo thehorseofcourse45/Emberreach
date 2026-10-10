@@ -437,7 +437,9 @@ func _clear_badge(screen: String) -> void:
 func _refresh_all() -> void:
 	for screen in _panels.keys():
 		var p: Control = _panels[screen]
-		if is_instance_valid(p) and p.has_method("refresh"):
+		# Off-screen panels catch up through their own state_refreshed subscriptions; rebuilding them
+		# here as well doubled the work of every refresh burst.
+		if is_instance_valid(p) and p.is_inside_tree() and p.has_method("refresh"):
 			p.call("refresh")
 	_strip.refresh()
 	_refresh_nav()
