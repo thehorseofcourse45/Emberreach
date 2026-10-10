@@ -10,6 +10,7 @@ extends RefCounted
 
 ## The narrowest a control may demand before the row containing it becomes the layout problem.
 const MIN_CONTROL_W: int = 148
+const _Nav = preload("res://scripts/ui/SidebarNav.gd")
 
 # =========================================================================
 #  Grimoire building blocks (chips, slots, meters, section cards)
@@ -32,7 +33,12 @@ static func stat_chip(icon_kind: String, icon_id: String, value: String, tooltip
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chip.add_child(row)
 	var icon := TextureRect.new()
-	icon.texture = AssetRegistry.icon(icon_kind, icon_id)
+	# "navigation" ids are screen ids; resolve them the way the sidebar does, since most screens
+	# have no file of their own under icons/navigation.
+	if icon_kind == "navigation":
+		icon.texture = AssetRegistry.icon(_Nav._icon_kind_for(icon_id), _Nav._icon_id_for(icon_id))
+	else:
+		icon.texture = AssetRegistry.icon(icon_kind, icon_id)
 	icon.custom_minimum_size = Vector2(UITokens.ICON_SM, UITokens.ICON_SM)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -46,11 +52,20 @@ static func stat_chip(icon_kind: String, icon_id: String, value: String, tooltip
 	l.clip_text = true
 	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(l)
+	set_chip_value(chip, value)
+	return chip
+
+## Change a chip's value. The value label clips (so a long value cannot widen its row), which
+## means its width is set here from the text rather than measured by the label itself.
+static func set_chip_value(chip: Control, value: String) -> void:
+	var l := chip.find_child("value", true, false) as Label
+	if l == null:
+		return
+	l.text = value
 	var room: float = float(CHIP_MAX_W - UITokens.ICON_SM - UITokens.SP_2 - 20)
 	var need: float = ThemeDB.fallback_font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, UITokens.FONT_SMALL).x + 2.0
 	l.custom_minimum_size = Vector2(minf(need, room), 0)
-	row.add_child(l)
-	return chip
 
 ## A wrapping row of chips.
 static func chip_row(chips: Array) -> HFlowContainer:
@@ -186,6 +201,7 @@ const KEY_WRAP_CHARS: int = 22
 static func key_value(key: String, value: String, value_color: Color = UITokens.TEXT,
 		value_tooltip := "") -> Control:
 	var row := HBoxContainer.new()
+	row.set_meta("widget", "key_value")
 	row.add_theme_constant_override("separation", UITokens.SP_4)
 	var k := UIStyle.label(key, true, UITokens.FONT_SMALL)
 	if key.length() > KEY_WRAP_CHARS:

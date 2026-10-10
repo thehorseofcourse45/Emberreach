@@ -157,6 +157,7 @@ func run_all(host: Node) -> void:
 	await test_detail_popup(host)
 	await test_grimoire_widgets(host)
 	test_bars_reskin(host)
+	await test_overview_visual(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -2851,6 +2852,10 @@ func test_grimoire_widgets(host: Node) -> void:
 	await host.get_tree().process_frame
 	_ok(chip.get_combined_minimum_size().x <= 220.0, "a huge number fits a chip (%dpx)" % int(chip.get_combined_minimum_size().x))
 	_ok(long_chip.get_combined_minimum_size().x <= 220.0, "a long value never widens its chip past 220px (%dpx)" % int(long_chip.get_combined_minimum_size().x))
+	var grow: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "", "x")
+	Widgets.set_chip_value(grow, "Combat 120")
+	_ok((grow.find_child("value", true, false) as Label).custom_minimum_size.x > 40.0, "a chip filled in later is wide enough for its text")
+	grow.free()
 	chip.queue_free()
 	long_chip.queue_free()
 	var row: HFlowContainer = Widgets.chip_row([Widgets.stat_chip("navigation", Screens.COMBAT, "1", "a"), Widgets.stat_chip("navigation", Screens.COMBAT, "2", "b")])
@@ -2899,6 +2904,26 @@ func test_bars_reskin(host: Node) -> void:
 	_eq(str((strip.get("_bar") as Control).get_meta("widget", "")), "meter", "the activity bar is an ember meter")
 	_eq(str((strip.get("_hp_bar") as Control).get_meta("widget", "")), "meter", "the strip's health bar is a meter")
 	_ok(strip.get_combined_minimum_size().y <= 52.0, "the strip stays a thin band (%dpx)" % int(strip.get_combined_minimum_size().y))
+
+## Count widgets of one kind under a node (widgets tag their root with meta "widget").
+func _count_widgets(root: Node, kind: String) -> int:
+	var n: int = 0
+	for c in root.find_children("", "Control", true, false):
+		if c.is_visible_in_tree() and str((c as Control).get_meta("widget", "")) == kind:
+			n += 1
+	return n
+
+## The overview dashboard reads at a glance: chips and meters, almost no label/value rows.
+func test_overview_visual(host: Node) -> void:
+	_heading("Overview visual")
+	SkillManager.start_action("woodcutting", str((DataLoader.get_skill("woodcutting")["actions"] as Array)[0]["id"]), 0)
+	host.call("navigate", {"screen": Screens.OVERVIEW})
+	await host.get_tree().process_frame
+	var panel: Control = (host.get("_panels") as Dictionary)[Screens.OVERVIEW]
+	_ok(_count_widgets(panel, "meter") >= 1, "the current activity has an ember meter")
+	_ok(_count_widgets(panel, "stat_chip") >= 12, "readiness and stats are chips (%d)" % _count_widgets(panel, "stat_chip"))
+	_ok(_count_widgets(panel, "key_value") <= 4, "at most four label/value rows remain (%d)" % _count_widgets(panel, "key_value"))
+	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
