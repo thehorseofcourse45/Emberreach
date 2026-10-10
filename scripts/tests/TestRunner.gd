@@ -155,6 +155,7 @@ func run_all(host: Node) -> void:
 	_test_combat_screen_split(host)
 	test_chapters(host)
 	await test_detail_popup(host)
+	await test_grimoire_widgets(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -2836,6 +2837,49 @@ func test_detail_popup(host: Node) -> void:
 	_eq(int(card.size.x), int((host.get("_workspace") as Control).size.x), "on a narrow window the card fills the workspace width")
 	host.call("close_detail")
 	host.call("apply_layout_for_width", 1440)
+
+## Chips, slots, meters and section cards: the building blocks that replace label/value rows.
+func test_grimoire_widgets(host: Node) -> void:
+	_heading("Grimoire widgets")
+	var chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "1.2B", "Gold carried")
+	_eq(str(chip.get_meta("widget", "")), "stat_chip", "a stat chip is tagged")
+	_eq(chip.tooltip_text, "Gold carried", "the explanation lives in the tooltip")
+	var long_chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "Level 120 · Emberpine of the Ashen Crown", "x")
+	host.add_child(chip)
+	host.add_child(long_chip)
+	await host.get_tree().process_frame
+	_ok(chip.get_combined_minimum_size().x <= 220.0, "a huge number fits a chip (%dpx)" % int(chip.get_combined_minimum_size().x))
+	_ok(long_chip.get_combined_minimum_size().x <= 220.0, "a long value never widens its chip past 220px (%dpx)" % int(long_chip.get_combined_minimum_size().x))
+	chip.queue_free()
+	long_chip.queue_free()
+	var row: HFlowContainer = Widgets.chip_row([Widgets.stat_chip("navigation", Screens.COMBAT, "1", "a"), Widgets.stat_chip("navigation", Screens.COMBAT, "2", "b")])
+	_eq(str(row.get_meta("widget", "")), "chip_row", "a chip row is tagged")
+	_eq(row.get_child_count(), 2, "a chip row holds its chips")
+	row.free()
+	var slot: Control = Widgets.item_slot("shark", 42)
+	_eq(str(slot.get_meta("widget", "")), "item_slot", "an item slot is tagged")
+	var count_texts: Array = []
+	for l in slot.find_children("", "Label", true, false):
+		count_texts.append((l as Label).text)
+	_ok(count_texts.has("42"), "the slot shows its count")
+	_eq(slot.custom_minimum_size, Vector2(48, 48), "slots are 48px squares")
+	slot.free()
+	var empty: Control = Widgets.item_slot("", 0)
+	var textured: int = 0
+	for t in empty.find_children("", "TextureRect", true, false):
+		if (t as TextureRect).texture != null:
+			textured += 1
+	_eq(textured, 0, "an empty slot shows no icon")
+	empty.free()
+	var m: ProgressBar = Widgets.meter(30, 100, "hp")
+	_eq(str(m.get_meta("widget", "")), "meter", "a meter is tagged")
+	_eq(m.max_value, 100.0, "a meter keeps its maximum")
+	m.free()
+	var card: PanelContainer = Widgets.section_card("Supplies", "what you bring")
+	_eq(str(card.get_meta("widget", "")), "section_card", "a section card is tagged")
+	_ok(Widgets.section_body(card) is VBoxContainer, "a section card exposes its body")
+	_ok(card.get_theme_stylebox("panel") is StyleBoxTexture, "a section card is vellum")
+	card.free()
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")

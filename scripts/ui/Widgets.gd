@@ -12,6 +12,151 @@ extends RefCounted
 const MIN_CONTROL_W: int = 148
 
 # =========================================================================
+#  Grimoire building blocks (chips, slots, meters, section cards)
+# =========================================================================
+## Each root is tagged with meta "widget" so screen tests can count what a screen is built from.
+
+const CHIP_MAX_W: int = 220
+const SLOT_SIZE: int = 48
+
+## Icon + value in a vellum pill; the explanation lives in the tooltip. Long values are clipped
+## with an ellipsis rather than widening the row they sit in.
+static func stat_chip(icon_kind: String, icon_id: String, value: String, tooltip: String,
+		color: Color = UITokens.TEXT) -> Control:
+	var chip := PanelContainer.new()
+	chip.set_meta("widget", "stat_chip")
+	chip.add_theme_stylebox_override("panel", UIStyle.surface_box("chip"))
+	chip.tooltip_text = tooltip
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", UITokens.SP_2)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	chip.add_child(row)
+	var icon := TextureRect.new()
+	icon.texture = AssetRegistry.icon(icon_kind, icon_id)
+	icon.custom_minimum_size = Vector2(UITokens.ICON_SM, UITokens.ICON_SM)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(icon)
+	var l := Label.new()
+	l.name = "value"
+	l.text = value
+	l.add_theme_font_size_override("font_size", UITokens.FONT_SMALL)
+	l.add_theme_color_override("font_color", color)
+	l.clip_text = true
+	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var room: float = float(CHIP_MAX_W - UITokens.ICON_SM - UITokens.SP_2 - 20)
+	var need: float = ThemeDB.fallback_font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, UITokens.FONT_SMALL).x + 2.0
+	l.custom_minimum_size = Vector2(minf(need, room), 0)
+	row.add_child(l)
+	return chip
+
+## A wrapping row of chips.
+static func chip_row(chips: Array) -> HFlowContainer:
+	var flow := HFlowContainer.new()
+	flow.set_meta("widget", "chip_row")
+	flow.add_theme_constant_override("h_separation", UITokens.SP_2)
+	flow.add_theme_constant_override("v_separation", UITokens.SP_2)
+	for c in chips:
+		flow.add_child(c)
+	return flow
+
+## A square slot showing one item with its count; empty id = an empty slot.
+static func item_slot(item_id: String, count: int, on_press: Callable = Callable()) -> Control:
+	var slot := Control.new()
+	slot.set_meta("widget", "item_slot")
+	slot.custom_minimum_size = Vector2(SLOT_SIZE, SLOT_SIZE)
+	var bg := Panel.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg.add_theme_stylebox_override("panel", UIStyle.surface_box("slot" if item_id != "" else "sunken"))
+	slot.add_child(bg)
+	if item_id == "":
+		slot.tooltip_text = "Empty slot"
+	else:
+		var icon: Control = item_icon(item_id, UITokens.ICON_LG)
+		icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+		icon.offset_left = 4
+		icon.offset_top = 4
+		icon.offset_right = -4
+		icon.offset_bottom = -4
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(icon)
+		slot.tooltip_text = item_tooltip(item_id)
+		if count > 1:
+			var badge_label := Label.new()
+			badge_label.text = UIStyle.fmt(float(count))
+			badge_label.add_theme_font_size_override("font_size", UITokens.FONT_MICRO)
+			badge_label.add_theme_color_override("font_color", UITokens.TEXT_STRONG)
+			badge_label.add_theme_color_override("font_outline_color", Color.BLACK)
+			badge_label.add_theme_constant_override("outline_size", 4)
+			badge_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+			badge_label.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+			badge_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+			badge_label.offset_right = -3
+			badge_label.offset_bottom = -1
+			badge_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			slot.add_child(badge_label)
+	if on_press.is_valid():
+		slot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		slot.gui_input.connect(func(e: InputEvent):
+			if e is InputEventMouseButton and (e as InputEventMouseButton).pressed and (e as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+				on_press.call())
+	return slot
+
+const _METER_STOPS: Dictionary = {
+	"ember": [UITokens.EMBER_BAR_A, UITokens.EMBER_BAR_B, UITokens.EMBER_BAR_C],
+	"hp": [Color("#2f7a3a"), UITokens.GREEN],
+	"enemy_hp": [Color("#8a1a10"), Color("#ff5a3a")],
+	"xp": [Color("#8a5a14"), UITokens.GOLD_BRIGHT],
+}
+
+## A bar with a gradient fill: ember (progress), hp, enemy_hp or xp.
+static func meter(value: float, maximum: float, kind: String = "ember", text: String = "") -> ProgressBar:
+	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, 14)
+	bar.set_meta("widget", "meter")
+	var grad := Gradient.new()
+	var stops: Array = _METER_STOPS.get(kind, _METER_STOPS["ember"])
+	grad.colors = PackedColorArray(stops)
+	var offsets := PackedFloat32Array()
+	for i in range(stops.size()):
+		offsets.append(float(i) / float(maxi(1, stops.size() - 1)))
+	grad.offsets = offsets
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.width = 64
+	tex.height = 4
+	var fill := StyleBoxTexture.new()
+	fill.texture = tex
+	bar.add_theme_stylebox_override("fill", fill)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = UITokens.SURFACE_SUNKEN
+	bg.border_color = UITokens.BORDER
+	bg.set_border_width_all(1)
+	bg.set_corner_radius_all(UITokens.R_SM)
+	bar.add_theme_stylebox_override("background", bg)
+	return bar
+
+## A vellum card with a gold heading. Add content to section_body(card).
+static func section_card(title: String, hint: String = "") -> PanelContainer:
+	var card := PanelContainer.new()
+	card.set_meta("widget", "section_card")
+	card.add_theme_stylebox_override("panel", UIStyle.surface_box("card"))
+	var body := UIStyle.vbox(UITokens.SP_3)
+	card.add_child(body)
+	body.add_child(UIStyle.title(title, UITokens.FONT_SUBHEAD))
+	if hint != "":
+		var h := UIStyle.label(hint, true, UITokens.FONT_MICRO)
+		h.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		body.add_child(h)
+	card.set_meta("body", body)
+	return card
+
+static func section_body(card: PanelContainer) -> VBoxContainer:
+	return card.get_meta("body") as VBoxContainer
+
+# =========================================================================
 #  Resource chip / status bar items
 # =========================================================================
 
