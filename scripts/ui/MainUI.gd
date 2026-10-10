@@ -24,7 +24,9 @@ var _sidebar_wrap: PanelContainer
 var _sidebar_list: VBoxContainer
 var _sidebar_scroll: ScrollContainer
 var _workspace: PanelContainer
-var _detail_wrap: PanelContainer
+## The detail panel floats over the workspace as a card (see open_detail / close_detail).
+var _detail_card: PanelContainer
+var _layout_width: int = 1440
 var _backdrop: ColorRect
 ## chapter id -> {header: Button, body: VBoxContainer, label: String} (SidebarNav.build).
 var _chapters: Dictionary = {}
@@ -123,16 +125,22 @@ func _build() -> void:
 	_workspace.add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
 	_body.add_child(_workspace)
 
-	_detail_wrap = PanelContainer.new()
-	_detail_wrap.custom_minimum_size = Vector2(UITokens.W_DETAIL, 0)
-	_detail_wrap.add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
-	_body.add_child(_detail_wrap)
 	_detail = DetailPanel.new()
 	_detail.navigated.connect(func(route): navigate(route))
-	_detail_wrap.add_child(_detail)
+	_detail.close_requested.connect(close_detail)
 
 	_strip = ActivityStrip.new()
 	_root.add_child(_strip)
+
+	# Above the shell, below the toasts: the card floats over the workspace's right edge.
+	_detail_card = PanelContainer.new()
+	_detail_card.visible = false
+	_detail_card.add_theme_stylebox_override("panel", UIStyle.surface_box("overlay"))
+	_detail_card.add_child(_detail)
+	add_child(_detail_card)
+	_workspace.resized.connect(func():
+		if detail_open():
+			_place_detail())
 
 	_toasts = ToastStack.new()
 	add_child(_toasts)
@@ -257,7 +265,12 @@ func _show_screen(screen: String, route: Dictionary) -> void:
 	var detail_route: Dictionary = route.duplicate()
 	detail_route["screen"] = screen
 	_detail.set_context(panel, detail_route)
-	_detail_wrap.visible = not _medium
+	# A route that names a thing (an item, a task, a region) opens its details; plain navigation
+	# closes the card unless the player pinned it.
+	if route.has("item_id") or route.has("quest_id") or route.has("area_id"):
+		open_detail()
+	elif not _detail.pinned:
+		close_detail()
 	if _compact:
 		_drawer.visible = false
 	_restore_scroll_position(work, screen)
@@ -316,7 +329,10 @@ func _panel_for(screen: String) -> Control:
 	if panel.has_signal("navigated"):
 		panel.connect("navigated", func(route): navigate(route))
 	if panel.has_signal("context_changed"):
-		panel.connect("context_changed", func(ctx): _detail.set_inline_context(ctx))
+		panel.connect("context_changed", func(ctx):
+			_detail.set_inline_context(ctx)
+			if typeof(ctx) == TYPE_DICTIONARY and not (ctx as Dictionary).is_empty():
+				open_detail())
 	_panels[screen] = panel
 	return panel
 
@@ -447,21 +463,58 @@ func apply_layout_for_width(width: int) -> void:
 	_compact = width < UITokens.BP_NARROW
 	_medium = width < UITokens.BP_MEDIUM
 	# Null-safe: the rules are decidable (and tested) without a built shell.
-	if _sidebar_wrap == null or _nav_button == null or _detail_wrap == null:
+	_layout_width = width
+	if _sidebar_wrap == null or _nav_button == null or _detail_card == null:
 		return
 	_sidebar_wrap.visible = not _compact
 	var rail: bool = not _compact and width < UITokens.BP_RAIL
 	SidebarNav.set_rail(self, rail)
 	_sidebar_wrap.custom_minimum_size = Vector2(0 if _compact else (UITokens.W_SIDEBAR_COMPACT if rail else UITokens.W_SIDEBAR), 0)
 	_nav_button.visible = _compact
-	_detail_wrap.visible = not _medium
-	if _medium:
-		# The detail pane is only reachable as part of the workspace on medium and narrow
-		# layouts, so the two never fight for horizontal space.
-		_detail_wrap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	if _detail_card.visible:
+		_place_detail()
 	_body.add_theme_constant_override("separation", UITokens.SP_2 if _compact else UITokens.SP_5)
 	if _compact:
 		SidebarNav.populate_drawer(self, _drawer)
+
+# =========================================================================
+#  Detail card
+# =========================================================================
+
+func open_detail() -> void:
+	if _detail_card == null:
+		return
+	_detail_card.visible = true
+	_place_detail()
+
+func close_detail() -> void:
+	if _detail_card != null:
+		_detail_card.visible = false
+
+func detail_open() -> bool:
+	return _detail_card != null and _detail_card.visible
+
+## Anchored to the workspace's right edge, the workspace's full height; 380px wide, or the whole
+## workspace width on windows narrower than the chapter-rail breakpoint.
+func _place_detail() -> void:
+	var ws: Rect2 = _workspace.get_global_rect()
+	var w: float = ws.size.x if _layout_width < UITokens.BP_RAIL else minf(float(UITokens.W_DETAIL_CARD), ws.size.x)
+	_detail_card.global_position = Vector2(ws.end.x - w, ws.position.y)
+	_detail_card.size = Vector2(w, ws.size.y)
+
+func _input(event: InputEvent) -> void:
+	if not detail_open() or _detail.pinned:
+		return
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT \
+			and not _detail_card.get_global_rect().has_point(click.global_position):
+		close_detail()
+
+func _unhandled_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key != null and key.pressed and key.keycode == KEY_ESCAPE and detail_open():
+		close_detail()
+		get_viewport().set_input_as_handled()
 
 # =========================================================================
 #  Status

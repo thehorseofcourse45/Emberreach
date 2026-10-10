@@ -141,6 +141,8 @@ const W_SIDEBAR_COMPACT := 56
 ## The contextual detail pane. It was wide enough to compete with the workspace for attention, so
 ## it is deliberately the smaller half of the window: the workspace is where the game is played.
 const W_DETAIL := 260
+## The pop-up detail card on wide windows.
+const W_DETAIL_CARD := 380
 const ICON_SM := 18
 const ICON_MD := 26
 const ICON_LG := 40

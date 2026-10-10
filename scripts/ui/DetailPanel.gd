@@ -14,6 +14,11 @@ class_name DetailPanel
 ## presents advice it cannot take the player to.
 
 signal navigated(route: Dictionary)
+## The card's own close button.
+signal close_requested
+
+## While pinned, the card stays open across navigation and outside clicks.
+var pinned: bool = false
 
 var _title: Label
 var _subtitle: Label
@@ -24,6 +29,16 @@ var _current_payload: Variant = null
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_4)
+	var head := HBoxContainer.new()
+	head.alignment = BoxContainer.ALIGNMENT_END
+	var pin := UIStyle.mini_button("Pin", "Keep this card open while you move around")
+	pin.toggle_mode = true
+	pin.toggled.connect(func(on: bool): pinned = on)
+	head.add_child(pin)
+	var close := UIStyle.mini_button("Close", "Close the details (Esc)")
+	close.pressed.connect(func(): close_requested.emit())
+	head.add_child(close)
+	add_child(head)
 	_title = UIStyle.title("Details", UITokens.FONT_SUBHEAD)
 	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_title)
@@ -46,6 +61,9 @@ func _ready() -> void:
 	EventBus.bank_changed.connect(_refresh_if_goal)
 	EventBus.skill_level_up.connect(func(_s, _l): _refresh_if_goal())
 	EventBus.state_refreshed.connect(_refresh_if_goal)
+
+func has_content() -> bool:
+	return _current_kind != ""
 
 ## The panel is told which screen is showing; screens may also push richer context.
 func set_context(panel: Control, route: Dictionary) -> void:

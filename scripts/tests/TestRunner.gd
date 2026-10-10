@@ -41,6 +41,9 @@ func run_some(host: Node, names: Array) -> void:
 	# The full suite builds the shell in _test_responsive_layouts; a subset has to do it itself.
 	if host.has_method("_build") and not bool(host.get("_shell_built")):
 		host.call("_build")
+		# Let the shell's first-frame boot refresh (it shows the overview) run before any test.
+		await host.get_tree().process_frame
+		await host.get_tree().process_frame
 	_deterministic(true)
 	GameManager.start_new_game("standard")
 	var arity: Dictionary = {}
@@ -151,6 +154,7 @@ func run_all(host: Node) -> void:
 	await _test_task_feedback_layout(host)
 	_test_combat_screen_split(host)
 	test_chapters(host)
+	await test_detail_popup(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -1356,7 +1360,7 @@ func _test_responsive_layouts(host: Node) -> void:
 		shell.call("_build")
 	var nav: Control = shell.get("_nav_button")
 	var sidebar: Control = shell.get("_sidebar_wrap")
-	var detail: Control = shell.get("_detail_wrap")
+	var detail: Control = shell.get("_detail_card")
 	_ok(nav != null and sidebar != null and detail != null,
 		"the shell builds its navigation, sidebar and detail panes")
 	if nav == null or sidebar == null or detail == null:
@@ -1380,7 +1384,7 @@ func _test_responsive_layouts(host: Node) -> void:
 		var medium: bool = width < UITokens.BP_MEDIUM
 		_ok(nav.visible == narrow, "%dpx: the navigation drawer button is %s" % [width, "shown" if narrow else "hidden"])
 		_ok(sidebar.visible == not narrow, "%dpx: the sidebar is %s" % [width, "hidden" if narrow else "shown"])
-		_ok(detail.visible == not medium, "%dpx: the detail pane is %s" % [width, "folded in" if medium else "docked"])
+		_ok(not detail.visible, "%dpx: the detail card stays closed until something is selected" % width)
 		# The whole shell must fit, not just each panel. The status bar, the activity strip and the
 		# panel wrappers all set a floor of their own, and it is the SUM that overflows the window:
 		# measuring panels alone hid a shell whose minimum width was 602px inside a 420px window.
@@ -2778,6 +2782,60 @@ func test_chapters(host: Node) -> void:
 	host.call("apply_layout_for_width", 1440)
 	for id in chapters.keys():
 		_ok((chapters[id]["header"] as Button).text != "", "1440px: %s header has its name" % id)
+
+## The detail panel is a pop-up card: opens on a selection, closes on Escape, an outside click, its
+## close button or navigation (unless pinned); clicks inside it never close it.
+func test_detail_popup(host: Node) -> void:
+	_heading("Detail card")
+	_ok(host.get("_detail_wrap") == null, "there is no permanent detail column any more")
+	var card: Control = host.get("_detail_card")
+	var detail: DetailPanel = host.get("_detail")
+	host.call("apply_layout_for_width", 1440)
+	host.call("navigate", {"screen": Screens.BANK})
+	await host.get_tree().process_frame
+	_ok(not bool(host.call("detail_open")), "navigating alone does not open the card")
+	var bank: Control = (host.get("_panels") as Dictionary)[Screens.BANK]
+	bank.emit_signal("context_changed", {"kind": "item", "item_id": "shark"})
+	await host.get_tree().process_frame
+	_ok(bool(host.call("detail_open")), "selecting an item opens the card")
+	_eq(int(card.size.x), 380, "the card is 380px wide on a wide window")
+	var esc := InputEventKey.new()
+	esc.keycode = KEY_ESCAPE
+	esc.pressed = true
+	host.call("_unhandled_input", esc)
+	_ok(not bool(host.call("detail_open")), "Escape closes it")
+	host.call("open_detail")
+	await host.get_tree().process_frame
+	var inside := InputEventMouseButton.new()
+	inside.button_index = MOUSE_BUTTON_LEFT
+	inside.pressed = true
+	inside.global_position = card.get_global_rect().get_center()
+	inside.position = inside.global_position
+	host.call("_input", inside)
+	_ok(bool(host.call("detail_open")), "a click inside the card keeps it open")
+	var outside := InputEventMouseButton.new()
+	outside.button_index = MOUSE_BUTTON_LEFT
+	outside.pressed = true
+	outside.global_position = (host.get("_sidebar_wrap") as Control).get_global_rect().position + Vector2(8, 8)
+	outside.position = outside.global_position
+	host.call("_input", outside)
+	_ok(not bool(host.call("detail_open")), "a click outside closes it")
+	host.call("open_detail")
+	detail.pinned = true
+	host.call("navigate", {"screen": Screens.COMBAT})
+	_ok(bool(host.call("detail_open")), "a pinned card survives navigation")
+	detail.pinned = false
+	host.call("navigate", {"screen": Screens.BANK})
+	_ok(not bool(host.call("detail_open")), "an unpinned card closes on navigation")
+	host.call("open_detail")
+	detail.close_requested.emit()
+	_ok(not bool(host.call("detail_open")), "its close button closes it")
+	host.call("apply_layout_for_width", 420)
+	host.call("open_detail")
+	await host.get_tree().process_frame
+	_eq(int(card.size.x), int((host.get("_workspace") as Control).size.x), "on a narrow window the card fills the workspace width")
+	host.call("close_detail")
+	host.call("apply_layout_for_width", 1440)
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
