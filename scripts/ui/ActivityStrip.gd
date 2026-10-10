@@ -28,7 +28,7 @@ var _card_dialog: ConfirmDialog = null
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(0, UITokens.H_STRIP - 6)
-	add_theme_stylebox_override("panel", UIStyle.surface_box("raised", true))
+	add_theme_stylebox_override("panel", UIStyle.surface_box("header"))
 	# Flows rather than a plain HBox: the estimate text and the Stop button drop to a second line on
 	# a narrow window instead of forcing it wider than the screen.
 	var row := HFlowContainer.new()
@@ -41,7 +41,20 @@ func _ready() -> void:
 	_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	row.add_child(_icon)
+	# The activity sits in a gold-ringed ember orb.
+	var orb := PanelContainer.new()
+	var ring := StyleBoxFlat.new()
+	ring.bg_color = UITokens.LEATHER_BOTTOM
+	ring.border_color = UITokens.BORDER_GOLD
+	ring.set_border_width_all(2)
+	ring.set_corner_radius_all(UITokens.R_PILL)
+	ring.shadow_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.45)
+	ring.shadow_size = 6
+	ring.set_content_margin_all(2)
+	orb.add_theme_stylebox_override("panel", ring)
+	orb.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	orb.add_child(_icon)
+	row.add_child(orb)
 
 	var col := UIStyle.vbox(UITokens.SP_1)
 	col.custom_minimum_size.x = 148
@@ -50,7 +63,7 @@ func _ready() -> void:
 	_title = UIStyle.label("Idle", false, UITokens.FONT_SMALL)
 	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	col.add_child(_title)
-	_bar = Widgets.progress_bar(0.0, 1.0, UITokens.TEAL, "", 6)
+	_bar = Widgets.meter(0.0, 1.0, "ember", "", 6)
 	col.add_child(_bar)
 
 	var health := UIStyle.hbox(UITokens.SP_3)
@@ -76,7 +89,8 @@ func _ready() -> void:
 	# narrow with the window.
 	_estimates.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	health.add_child(_estimates)
-	_hp_bar = Widgets.progress_bar(0.0, 1.0, UITokens.GREEN, "", 10, "Your health")
+	_hp_bar = Widgets.meter(0.0, 1.0, "hp", "", 10)
+	_hp_bar.tooltip_text = "Your health"
 	_hp_bar.custom_minimum_size.x = 108
 	_hp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_hp_bar.visible = false

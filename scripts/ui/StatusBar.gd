@@ -45,8 +45,9 @@ func _ready() -> void:
 	_add_chip(row, "prayer_points", "prayer_points", "Devotion points — spent per attack while a rite is active")
 	_add_chip(row, "stardust", "stardust", "Stardust spent in Starreading")
 
-	_combat_level = UIStyle.label("", true, UITokens.FONT_SMALL)
-	row.add_child(_combat_level)
+	var level_chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "", "Combat level")
+	row.add_child(level_chip)
+	_combat_level = level_chip.find_child("value", true, false)
 
 	row.add_child(UIStyle.spacer())
 
@@ -87,9 +88,9 @@ func _ready() -> void:
 	refresh()
 
 func _add_chip(parent: Control, icon_id: String, key: String, tooltip: String) -> void:
-	var chip := Widgets.resource_chip("currencies", icon_id, "0", tooltip)
+	var chip: Control = Widgets.stat_chip("items" if key == "stardust" else "currencies", icon_id, "0", tooltip, UITokens.GOLD_BRIGHT)
 	parent.add_child(chip)
-	_chips[key] = chip.get_node("value")
+	_chips[key] = chip.find_child("value", true, false)
 
 func refresh() -> void:
 	_set_chip("gp", PlayerData.gp, "currencies", "gp")

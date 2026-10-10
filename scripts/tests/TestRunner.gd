@@ -156,6 +156,7 @@ func run_all(host: Node) -> void:
 	test_chapters(host)
 	await test_detail_popup(host)
 	await test_grimoire_widgets(host)
+	test_bars_reskin(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -2880,6 +2881,24 @@ func test_grimoire_widgets(host: Node) -> void:
 	_ok(Widgets.section_body(card) is VBoxContainer, "a section card exposes its body")
 	_ok(card.get_theme_stylebox("panel") is StyleBoxTexture, "a section card is vellum")
 	card.free()
+
+## The top bar shows currencies as chips; the activity strip uses ember meters.
+func test_bars_reskin(host: Node) -> void:
+	_heading("Bars reskin")
+	var status: Control = host.get("_status_bar")
+	var chips: int = 0
+	for n in status.find_children("", "Control", true, false):
+		if str((n as Control).get_meta("widget", "")) == "stat_chip":
+			chips += 1
+	_ok(chips >= 6, "the top bar shows currencies and combat level as chips (%d)" % chips)
+	PlayerData.gp = 1234567.0
+	status.call("refresh")
+	var gp_label: Label = (status.get("_chips") as Dictionary)["gp"]
+	_eq(gp_label.text, UIStyle.fmt(1234567.0), "the gold chip shows the formatted amount")
+	var strip: Control = host.get("_strip")
+	_eq(str((strip.get("_bar") as Control).get_meta("widget", "")), "meter", "the activity bar is an ember meter")
+	_eq(str((strip.get("_hp_bar") as Control).get_meta("widget", "")), "meter", "the strip's health bar is a meter")
+	_ok(strip.get_combined_minimum_size().y <= 52.0, "the strip stays a thin band (%dpx)" % int(strip.get_combined_minimum_size().y))
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")

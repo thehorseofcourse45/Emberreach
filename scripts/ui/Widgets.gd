@@ -113,8 +113,8 @@ const _METER_STOPS: Dictionary = {
 }
 
 ## A bar with a gradient fill: ember (progress), hp, enemy_hp or xp.
-static func meter(value: float, maximum: float, kind: String = "ember", text: String = "") -> ProgressBar:
-	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, 14)
+static func meter(value: float, maximum: float, kind: String = "ember", text: String = "", height: int = 14) -> ProgressBar:
+	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, height)
 	bar.set_meta("widget", "meter")
 	var grad := Gradient.new()
 	var stops: Array = _METER_STOPS.get(kind, _METER_STOPS["ember"])
