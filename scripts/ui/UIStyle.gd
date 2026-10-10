@@ -339,6 +339,10 @@ static func title(text: String, size := UITokens.FONT_HEAD) -> Label:
 	l.add_theme_constant_override("shadow_offset_y", 0)
 	if ResourceLoader.exists("res://assets/fonts/ember_display.ttf"):
 		l.add_theme_font_override("font", load("res://assets/fonts/ember_display.ttf"))
+	# The display face is wider than the body face, so a long heading must be able to wrap or it
+	# sets the width of a 420px window on its own.
+	if text.length() > 20:
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return l
 
 static func colored_label(text: String, color: Color, size := UITokens.FONT_BODY) -> Label:
@@ -390,7 +394,7 @@ static func primary_button(text: String, tooltip := "") -> Button:
 	b.add_theme_color_override("font_hover_color", UITokens.TEXT_ON_GOLD)
 	# Oxblood with a gold edge and an ember glow: the one control on a card that says "do this".
 	var box := _button_box(UITokens.ACCENT_VIOLET, UITokens.BORDER_GOLD)
-	box.set_border_width_all(2)
+	box.set_border_width_all(1)
 	box.shadow_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.35)
 	box.shadow_size = 8
 	b.add_theme_stylebox_override("normal", box)
