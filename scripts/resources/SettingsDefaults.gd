@@ -18,6 +18,7 @@ const DEFAULTS: Dictionary = {
 	"offline_auto_repeat": true,
 	## Presentation.
 	"reduced_motion": false,
+	"ambient_embers": true,
 	"ui_scale": 1.0,
 	"compact_rows": false,
 	## Sound (0..100; zero mutes the bus rather than stopping playback).

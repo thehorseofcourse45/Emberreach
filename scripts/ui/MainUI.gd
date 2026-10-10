@@ -25,6 +25,8 @@ var _sidebar_list: VBoxContainer
 var _sidebar_scroll: ScrollContainer
 var _workspace: PanelContainer
 var _detail_wrap: PanelContainer
+var _backdrop: ColorRect
+var _embers: CPUParticles2D = null
 var _detail: DetailPanel
 var _strip: ActivityStrip
 var _toasts: ToastStack
@@ -85,6 +87,7 @@ func _build() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	theme = UIStyle.build_theme()
 	add_child(_build_backdrop())
+	apply_ambient()
 	_root = UIStyle.vbox(UITokens.SP_3)
 	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_root)
@@ -143,43 +146,65 @@ func _build() -> void:
 
 ## The night sky the glass panels float over: a radial violet light top-left fading to near-black,
 ## plus a faint magenta glow bottom-right. Purely decorative and click-through.
+## The forge: a shader-painted ColorRect, with an ember particle layer added by apply_ambient().
 func _build_backdrop() -> Control:
 	var layer := Control.new()
 	layer.name = "Backdrop"
 	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var base := ColorRect.new()
-	base.color = UITokens.BG_DEEP
-	base.set_anchors_preset(Control.PRESET_FULL_RECT)
-	base.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.add_child(base)
-	layer.add_child(_radial_glow(Vector2(0.22, 0.0), Vector2(1.05, 0.95),
-		[UITokens.BG_GLOW_A, UITokens.BG_GLOW_B, Color(UITokens.BG_DEEP, 0.0)], [0.0, 0.45, 1.0]))
-	var pink := UITokens.ACCENT_PINK
-	layer.add_child(_radial_glow(Vector2(0.95, 1.0), Vector2(0.45, 0.45),
-		[Color(pink, 0.16), Color(pink, 0.0)], [0.0, 1.0]))
+	_backdrop = ColorRect.new()
+	_backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://scripts/ui/forge_background.gdshader")
+	mat.set_shader_parameter("top_color", UITokens.BG)
+	mat.set_shader_parameter("bottom_color", UITokens.BG_DEEP)
+	mat.set_shader_parameter("glow_color", UITokens.FORGE_GLOW)
+	_backdrop.material = mat
+	layer.add_child(_backdrop)
 	return layer
 
-func _radial_glow(from: Vector2, to: Vector2, colors: Array, offsets: Array) -> TextureRect:
-	var grad := Gradient.new()
-	grad.colors = PackedColorArray(colors)
-	grad.offsets = PackedFloat32Array(offsets)
-	var tex := GradientTexture2D.new()
-	tex.gradient = grad
-	tex.fill = GradientTexture2D.FILL_RADIAL
-	tex.fill_from = from
-	tex.fill_to = to
-	tex.width = 512
-	tex.height = 512
-	var rect := TextureRect.new()
-	rect.texture = tex
-	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	rect.stretch_mode = TextureRect.STRETCH_SCALE
-	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return rect
+## Embers and the breathing glow follow the "ambient_embers" setting and reduced motion. Called at
+## build time and whenever either setting changes.
+func apply_ambient() -> void:
+	if _backdrop == null:
+		return
+	var on: bool = bool(PlayerData.settings.get("ambient_embers", true)) and not Motion.reduced()
+	(_backdrop.material as ShaderMaterial).set_shader_parameter("pulse", 1.0 if on else 0.0)
+	if not on:
+		if _embers != null:
+			_embers.queue_free()
+			_embers.get_parent().remove_child(_embers)
+		_embers = null
+		return
+	if _embers != null:
+		return
+	_embers = CPUParticles2D.new()
+	_embers.amount = 40
+	_embers.lifetime = 9.0
+	_embers.preprocess = 9.0
+	_embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_embers.direction = Vector2(0, -1)
+	_embers.spread = 25.0
+	_embers.gravity = Vector2(0, -8)
+	_embers.initial_velocity_min = 8.0
+	_embers.initial_velocity_max = 22.0
+	_embers.scale_amount_min = 1.0
+	_embers.scale_amount_max = 2.5
+	var ramp := Gradient.new()
+	ramp.colors = PackedColorArray([Color("#ffd27a"), Color("#ff7a2a"), Color(1.0, 0.48, 0.16, 0.0)])
+	ramp.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
+	_embers.color_ramp = ramp
+	_backdrop.get_parent().add_child(_embers)
+	_place_embers()
 
-
+## Keep the emitter a thin strip along the bottom of the window.
+func _place_embers() -> void:
+	if _embers == null:
+		return
+	var vp: Vector2 = get_viewport_rect().size
+	_embers.position = Vector2(vp.x * 0.5, vp.y + 4.0)
+	_embers.emission_rect_extents = Vector2(vp.x * 0.5, 4.0)
 
 # =========================================================================
 #  Navigation
@@ -395,6 +420,7 @@ func rebuild_current() -> void:
 # =========================================================================
 
 func _apply_responsive() -> void:
+	_place_embers()
 	var width: int = int(size.x)
 	if width <= 0:
 		width = int(get_viewport_rect().size.x)

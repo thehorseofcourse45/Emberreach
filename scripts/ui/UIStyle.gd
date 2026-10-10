@@ -71,6 +71,10 @@ static func _painted(kind: String) -> Texture2D:
 	var img := Image.load_from_file(path)
 	return ImageTexture.create_from_image(img) if img != null else null
 
+## A flat (untextured) box for a kind, for the few callers that recolour its border per state.
+static func flat_box(kind: String = "panel", accent: bool = false) -> StyleBoxFlat:
+	return _flat_fallback(kind, accent)
+
 static func _flat_fallback(kind: String, accent: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.border_color = UITokens.BORDER
@@ -92,7 +96,7 @@ static func _flat_fallback(kind: String, accent: bool) -> StyleBoxFlat:
 		"overlay":
 			# Anything that floats OVER content (drawer, popup, tooltip, dialog) must be opaque,
 			# or the screen underneath bleeds through the glass and the text becomes unreadable.
-			sb.bg_color = Color("#17143a")
+			sb.bg_color = Color("#24120a")
 			sb.border_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.45)
 			sb.shadow_color = Color(0, 0, 0, 0.6)
 			sb.shadow_size = 16
@@ -109,7 +113,7 @@ static func _flat_fallback(kind: String, accent: bool) -> StyleBoxFlat:
 	sb.anti_aliasing = true
 	_inset(sb, UITokens.SP_5, UITokens.SP_5, UITokens.SP_4, UITokens.SP_4)
 	if kind == "panel" and not accent:
-		sb.shadow_color = Color(0.02, 0.0, 0.10, 0.55)
+		sb.shadow_color = Color(0.0, 0.0, 0.0, 0.55)
 		sb.shadow_size = 12
 		sb.shadow_offset = Vector2(0, 3)
 	return sb

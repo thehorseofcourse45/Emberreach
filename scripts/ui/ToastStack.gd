@@ -85,8 +85,8 @@ func _build(text: String, kind: String, skill_id: String = "") -> Control:
 		"success":
 			accent = UITokens.GREEN
 			icon_id = "ok"
-	panel.add_theme_stylebox_override("panel", UIStyle.surface_box("raised", true))
-	var sb: StyleBoxFlat = panel.get_theme_stylebox("panel")
+	var sb: StyleBoxFlat = UIStyle.flat_box("overlay")
+	panel.add_theme_stylebox_override("panel", sb)
 	sb.border_color = accent
 	var row := HBoxContainer.new()
 	row.name = "body"

@@ -37,6 +37,9 @@ func run_some(host: Node, names: Array) -> void:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach test subset")
+	# The full suite builds the shell in _test_responsive_layouts; a subset has to do it itself.
+	if host.has_method("_build") and not bool(host.get("_shell_built")):
+		host.call("_build")
 	_deterministic(true)
 	GameManager.start_new_game("standard")
 	var arity: Dictionary = {}
@@ -183,6 +186,7 @@ func run_all(host: Node) -> void:
 	test_identity_theme_builds()
 	test_grimoire_palette()
 	test_grimoire_buttons()
+	test_forge_backdrop(host)
 	test_surface_box_falls_back()
 	test_surface_textures()
 	test_motion_reduced_disables()
@@ -2721,6 +2725,32 @@ func test_grimoire_buttons() -> void:
 		"a heading glows")
 	primary.free()
 	t.free()
+
+## The forge backdrop: a shader, plus drifting embers that the player (or reduced motion) can stop.
+func test_forge_backdrop(host: Node) -> void:
+	_heading("Forge backdrop")
+	var backdrop = host.get("_backdrop")
+	_ok(backdrop is ColorRect and (backdrop as ColorRect).material is ShaderMaterial, "the forge is painted by a shader")
+	var saved_embers: Variant = PlayerData.settings.get("ambient_embers", true)
+	var saved_reduced: Variant = PlayerData.settings.get("reduced_motion", false)
+	PlayerData.settings["ambient_embers"] = true
+	PlayerData.settings["reduced_motion"] = false
+	host.call("apply_ambient")
+	var embers = host.get("_embers")
+	_ok(embers is CPUParticles2D and (embers as CPUParticles2D).amount == 40, "40 embers drift up from the forge")
+	_eq(float((backdrop as ColorRect).material.get_shader_parameter("pulse")), 1.0, "the forge glow pulses")
+	PlayerData.settings["ambient_embers"] = false
+	host.call("apply_ambient")
+	_ok(host.get("_embers") == null, "turning embers off removes them")
+	_eq(float((backdrop as ColorRect).material.get_shader_parameter("pulse")), 0.0, "and stills the glow")
+	PlayerData.settings["ambient_embers"] = true
+	PlayerData.settings["reduced_motion"] = true
+	host.call("apply_ambient")
+	_ok(host.get("_embers") == null, "reduced motion also removes the embers")
+	PlayerData.settings["ambient_embers"] = saved_embers
+	PlayerData.settings["reduced_motion"] = saved_reduced
+	host.call("apply_ambient")
+	_ok(SettingsDefaults.DEFAULTS.get("ambient_embers", null) == true, "embers default to on")
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
