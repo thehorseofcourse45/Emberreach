@@ -168,16 +168,19 @@ func _rebuild_prep() -> void:
 
 	# Supplies and rules, stated explicitly.
 	var summary: Dictionary = CombatManager.player_combat_summary()
-	_prep_box.add_child(Widgets.key_value("Max hit / accuracy",
-		"%s / %s" % [UIStyle.fmt(float(summary["max_hit"])), UIStyle.fmt(float(summary["accuracy"]))], UITokens.RED))
 	var evasion: Dictionary = summary["evasion"]
-	_prep_box.add_child(Widgets.key_value("Evasion vs melee / ranged / magic",
-		"%s / %s / %s" % [UIStyle.fmt(float(evasion["melee"])), UIStyle.fmt(float(evasion["ranged"])), UIStyle.fmt(float(evasion["magic"]))]))
-	_prep_box.add_child(Widgets.key_value("Damage reduction", UIStyle.fmt_percent(float(summary["damage_reduction"]) / 100.0), UITokens.TEAL))
 	var forecast: Dictionary = PrayerManager.runway()
-	_prep_box.add_child(Widgets.key_value("Prayer supply", "%.0f points · %.1f/min · %s" % [PlayerData.prayer_points, float(forecast.per_minute), "no drain" if is_inf(float(forecast.seconds)) else UIStyle.fmt_duration(float(forecast.seconds))]))
-	for id in EquipmentManager.food_slots:
-		if id != "": _prep_box.add_child(Widgets.key_value(str(DataLoader.get_item(id).get("name", id)), "%d portions · %d HP each (manual)" % [BankManager.get_count(id), int(float(DataLoader.get_item(id).get("heal_amount", 0)) * (1.0 + ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT) / 100.0))]))
+	var you := Widgets.section_card("You", "your numbers for this fight")
+	_prep_box.add_child(you)
+	Widgets.section_body(you).add_child(Widgets.chip_row([
+		Widgets.stat_chip("skills", "strength", UIStyle.fmt(float(summary["max_hit"])), "Your max hit", UITokens.RED),
+		Widgets.stat_chip("skills", "attack", UIStyle.fmt(float(summary["accuracy"])), "Your accuracy rating"),
+		Widgets.stat_chip("slots", "shield", "%s / %s / %s" % [UIStyle.fmt(float(evasion["melee"])), UIStyle.fmt(float(evasion["ranged"])), UIStyle.fmt(float(evasion["magic"]))],
+			"Your evasion against melee / ranged / magic"),
+		Widgets.stat_chip("skills", "defence", UIStyle.fmt_percent(float(summary["damage_reduction"]) / 100.0), "Your damage reduction", UITokens.TEAL),
+		Widgets.stat_chip("skills", "prayer", "%.0f pts" % PlayerData.prayer_points,
+			"Prayer supply: %.1f points per minute · %s" % [float(forecast.per_minute), "no drain" if is_inf(float(forecast.seconds)) else "lasts " + UIStyle.fmt_duration(float(forecast.seconds))]),
+	]))
 	var target: String = CombatManager.current_monster_id
 	if target == "" and _selected_area != "":
 		var place: Dictionary = DataLoader.get_dungeon(_selected_area) if DataLoader.dungeons.has(_selected_area) else DataLoader.areas.get(_selected_area, {})
@@ -189,7 +192,11 @@ func _rebuild_prep() -> void:
 		var chance: float = clampf(CombatFormulas.chance_to_hit(float(summary.accuracy), float(enemy.get(evasion_key, 10))) + float(tri.accuracy_percent) + float(CombatManager._active_hazard().get("player_accuracy_percent", 0)), 0, 100)
 		var mh: int = maxi(1, floori(float(summary.max_hit) * (1.0 + float(tri.damage_percent) / 100.0)))
 		var mn: int = CombatFormulas.min_hit(mh, ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0, ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT))
-		_prep_box.add_child(Widgets.key_value("Expected normal hit vs " + str(enemy.get("name", target)), "≈ %.1f damage · %.1f%% hit chance" % [float(mn + mh) * 0.5 * chance / 100.0 * (1.0 - float(enemy.get("damage_reduction", 0)) / 100.0), chance], UITokens.RED))
+		Widgets.section_body(you).add_child(Widgets.chip_row([
+			Widgets.stat_chip("skills", "attack", "≈ %.1f dmg" % (float(mn + mh) * 0.5 * chance / 100.0 * (1.0 - float(enemy.get("damage_reduction", 0)) / 100.0)),
+				"Expected damage per swing against %s" % str(enemy.get("name", target)), UITokens.RED),
+			Widgets.stat_chip("skills", "ranged", "%.1f%%" % chance, "Your hit chance against %s" % str(enemy.get("name", target)), UITokens.TEAL),
+		]))
 		# Combat-triangle guidance: the relation is already computed above (`tri`), but the
 		# player never sees WHY their numbers are low. State it plainly so a disadvantage is a
 		# choice, not a surprise. melee>ranged>magic>melee.
@@ -212,14 +219,6 @@ func _rebuild_prep() -> void:
 			_:
 				pass
 	var food: int = _food_count()
-	# A count of 0 is not self-evidently a problem, so the glyph states it, not just the red.
-	_prep_box.add_child(Widgets.key_value("Food in storage", "%s %s" % [
-			UIStyle.fmt_exact(float(food)), "✓" if food > 0 else "✗ none"],
-		UITokens.GREEN if food > 0 else UITokens.RED,
-		"Auto-eat: tier %d (threshold %s%%, efficiency %s%%)" % [
-			int(PlayerData.settings.get("auto_eat_tier", 0)),
-			UIStyle.fmt(float(CombatManager.AUTO_EAT.get(int(PlayerData.settings.get("auto_eat_tier", 0)), {}).get("threshold", 0.0))),
-			UIStyle.fmt(float(CombatManager.AUTO_EAT.get(int(PlayerData.settings.get("auto_eat_tier", 0)), {}).get("efficiency", 0.0)))]))
 	if food <= 0:
 		_prep_box.add_child(UIStyle.colored_label(
 			"No food. A defeat ends the fight and, offline, ends the whole session — bring supplies or train Vitality first.",
@@ -232,14 +231,19 @@ func _rebuild_prep() -> void:
 		var cfg: Dictionary = CombatManager.AUTO_EAT[tier]
 		rule = "eats below %s%% HP, heals to %s%% at %s%% efficiency" % [
 			UIStyle.fmt(float(cfg["threshold"])), UIStyle.fmt(float(cfg["heal_to"])), UIStyle.fmt(float(cfg["efficiency"]))]
-	_prep_box.add_child(Widgets.key_value("Auto-eat rule", rule,
-		UITokens.GREEN if tier > 0 else UITokens.AMBER))
+	# A count of 0 is not self-evidently a problem, so the glyph states it, not just the colour.
+	_prep_box.add_child(Widgets.chip_row([
+		Widgets.stat_chip("skills", "cooking", "%s %s" % [UIStyle.fmt_exact(float(food)), "✓" if food > 0 else "✗ none"],
+			"Food in storage", UITokens.GREEN if food > 0 else UITokens.RED),
+		Widgets.stat_chip("skills", "hitpoints", "auto-eat " + ("off" if tier <= 0 else "tier %d" % tier),
+			"Auto-eat rule: " + rule, UITokens.GREEN if tier > 0 else UITokens.AMBER),
+		Widgets.stat_chip("status", "idle", "offline " + ("on" if bool(PlayerData.settings.get("offline_combat_enabled", true)) else "off"),
+			"Offline combat " + ("is enabled and stops at the first defeat" if bool(PlayerData.settings.get("offline_combat_enabled", true)) else "is disabled") + ". Change this in Settings → Offline.",
+			UITokens.TEXT_MUTED),
+	]))
 	_prep_box.add_child(UIStyle.colored_label(
 		"Combat always stops on defeat, and offline combat stops permanently at the first defeat. Endless automatic deaths are impossible.",
 		UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
-	_prep_box.add_child(Widgets.key_value("Offline combat",
-		"enabled — stops on defeat" if bool(PlayerData.settings.get("offline_combat_enabled", true)) else "disabled",
-		UITokens.TEXT_MUTED, "Change this in Settings → Offline"))
 
 func _style_index() -> int:
 	match CombatManager.attack_style:
@@ -287,12 +291,15 @@ func _build_strategy() -> Control:
 	var current: Dictionary = CombatManager.strategy_for("")
 	var bias: String = str(current.get("special_bias", "normal"))
 	var prayer: String = str(current.get("protection_prayer_auto", ""))
-	box.add_child(Widgets.key_value("Special attack bias", bias.capitalize(),
-		UITokens.GOLD_BRIGHT if bias == "eager" else (UITokens.AMBER if bias == "hold" else UITokens.TEXT_MUTED),
-		"eager doubles the special's trigger chance, hold sets it to zero, normal leaves it alone"))
-	box.add_child(Widgets.key_value("Auto-eat threshold", UIStyle.fmt_percent(float(current.get("food_threshold", 0.0)))))
-	box.add_child(Widgets.key_value("Protection prayer",
-		"off" if prayer == "" else str(DataLoader.prayers.get(prayer, {}).get("name", prayer))))
+	box.add_child(Widgets.chip_row([
+		Widgets.stat_chip("skills", "attack", "special: " + bias,
+			"Special attack bias: eager doubles the special's trigger chance, hold sets it to zero, normal leaves it alone",
+			UITokens.GOLD_BRIGHT if bias == "eager" else (UITokens.AMBER if bias == "hold" else UITokens.TEXT_MUTED)),
+		Widgets.stat_chip("skills", "hitpoints", "eat at " + UIStyle.fmt_percent(float(current.get("food_threshold", 0.0))),
+			"Auto-eat threshold set by this preset (0% defers to your auto-eat tier)"),
+		Widgets.stat_chip("navigation", Screens.PRAYERS, "off" if prayer == "" else str(DataLoader.prayers.get(prayer, {}).get("name", prayer)),
+			"Protection prayer this preset switches on"),
+	]))
 
 	var cap: int = CombatManager.ability_slot_cap()
 	var effective: Array[String] = _effective_loadout()
@@ -484,18 +491,22 @@ func _refresh_fight() -> void:
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not cmp.is_empty():
 		col.add_child(UIStyle.title("%s — level %d" % [str(cmp["monster_name"]), int(cmp["monster_level"])], UITokens.FONT_SUBHEAD))
-		_enemy_bar = Widgets.progress_bar(float(CombatManager.monster_hp),
-			maxf(1.0, float(CombatManager.monster_max_hp)), UITokens.RED,
-			"%s / %s" % [UIStyle.fmt(CombatManager.monster_hp), UIStyle.fmt(CombatManager.monster_max_hp)], 14,
-			"Enemy health")
+		_enemy_bar = Widgets.meter(float(CombatManager.monster_hp),
+			maxf(1.0, float(CombatManager.monster_max_hp)), "enemy_hp",
+			"%s / %s" % [UIStyle.fmt(CombatManager.monster_hp), UIStyle.fmt(CombatManager.monster_max_hp)])
+		_enemy_bar.tooltip_text = "Enemy health"
 		_enemy_text = (_enemy_bar.get_child(0) as Label) if _enemy_bar.get_child_count() > 0 else null
 		col.add_child(_enemy_bar)
-		col.add_child(Widgets.key_value("Damage type", str(cmp["monster_damage_type"]).capitalize()))
-		col.add_child(Widgets.key_value("Their max hit", str(int(cmp["monster_max_hit"])), UITokens.RED))
-		col.add_child(Widgets.key_value("Their damage reduction", UIStyle.fmt_percent(float(cmp["monster_damage_reduction"]) / 100.0)))
-		col.add_child(Widgets.key_value("Your hit chance", UIStyle.fmt_percent(float(cmp["your_hit_chance_percent"]) / 100.0), UITokens.TEAL,
-			"Derived from the live combat model, not a separate estimate"))
-		col.add_child(Widgets.key_value("Their hit chance", UIStyle.fmt_percent(float(cmp["their_hit_chance_percent"]) / 100.0), UITokens.AMBER))
+		var dtype: String = str(cmp["monster_damage_type"])
+		col.add_child(Widgets.chip_row([
+			Widgets.stat_chip("skills", {"melee": "attack", "ranged": "ranged", "magic": "magic"}.get(dtype, "attack"), dtype.capitalize(), "It deals %s damage" % dtype),
+			Widgets.stat_chip("skills", "strength", str(int(cmp["monster_max_hit"])), "Its max hit", UITokens.RED),
+			Widgets.stat_chip("skills", "defence", UIStyle.fmt_percent(float(cmp["monster_damage_reduction"]) / 100.0), "Its damage reduction"),
+			Widgets.stat_chip("skills", "attack", UIStyle.fmt_percent(float(cmp["your_hit_chance_percent"]) / 100.0),
+				"Your hit chance against it (from the live combat model)", UITokens.TEAL),
+			Widgets.stat_chip("status", "danger", UIStyle.fmt_percent(float(cmp["their_hit_chance_percent"]) / 100.0),
+				"Its hit chance against you", UITokens.AMBER),
+		]))
 		# The effective record, so a passive a phase adds shows up once that phase has fired.
 		var live: Dictionary = CombatManager.current_monster()
 		var passives: Array = live.get("passives", [])
@@ -510,7 +521,7 @@ func _refresh_fight() -> void:
 	head.add_child(col)
 	_fight_box.add_child(head)
 	var maxhp: float = CombatManager._compute_max_hp()
-	_player_bar = Widgets.progress_bar(CombatManager.player_hp, maxhp, UITokens.GREEN,
+	_player_bar = Widgets.meter(CombatManager.player_hp, maxhp, "hp",
 		"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)], 16)
 	_player_text = (_player_bar.get_child(0) as Label) if _player_bar.get_child_count() > 0 else null
 	var hp_cell := _fx_cell(_player_bar, Vector2(0, 16))
@@ -524,12 +535,12 @@ func _refresh_fight() -> void:
 		var effects: Array[String] = []
 		for e in CombatManager.player_effects:
 			effects.append("%s (%.1fs)" % [str(e.id).replace("_", " "), float(e.duration)])
-		_fight_box.add_child(Widgets.key_value("Active effects on you", ", ".join(effects), UITokens.PURPLE))
+		_fight_box.add_child(Widgets.stat_chip("status", "warning", ", ".join(effects), "Active effects on you", UITokens.PURPLE))
 	if not CombatManager.monster_effects.is_empty():
 		var meffects: Array[String] = []
 		for e in CombatManager.monster_effects:
 			meffects.append("%s (%.1fs)" % [str(e.id).replace("_", " "), float(e.duration)])
-		_fight_box.add_child(Widgets.key_value("Active effects on the enemy", ", ".join(meffects), UITokens.PURPLE))
+		_fight_box.add_child(Widgets.stat_chip("status", "ok", ", ".join(meffects), "Active effects on the enemy", UITokens.PURPLE))
 	var buttons := HBoxContainer.new()
 	buttons.add_theme_constant_override("separation", UITokens.SP_3)
 	var retreat := UIStyle.danger_button("Retreat now", "End the fight immediately. Nothing is lost.")
@@ -840,14 +851,17 @@ func _rebuild_food() -> void:
 		card.add_child(col)
 		col.add_child(UIStyle.label("Food slot %d" % (slot + 1), true, UITokens.FONT_MICRO))
 		if item_id == "":
-			col.add_child(UIStyle.label("Empty", true))
+			var empty_row := UIStyle.hbox()
+			empty_row.add_child(Widgets.item_slot("", 0))
+			empty_row.add_child(UIStyle.label("Empty", true))
+			col.add_child(empty_row)
 			var assign := UIStyle.button("Equip from Storage")
 			assign.pressed.connect(func(): navigated.emit({"screen": Screens.BANK}))
 			col.add_child(assign)
 			continue
 		var item: Dictionary = DataLoader.get_item(item_id)
 		var header := UIStyle.hbox()
-		header.add_child(Widgets.item_icon(item_id, 40))
+		header.add_child(Widgets.item_slot(item_id, BankManager.get_count(item_id)))
 		var name_label := UIStyle.label(str(item.get("name", item_id)))
 		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		header.add_child(name_label)

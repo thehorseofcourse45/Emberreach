@@ -158,6 +158,7 @@ func run_all(host: Node) -> void:
 	await test_grimoire_widgets(host)
 	test_bars_reskin(host)
 	await test_overview_visual(host)
+	await test_combat_visual(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -2924,6 +2925,27 @@ func test_overview_visual(host: Node) -> void:
 	_ok(_count_widgets(panel, "stat_chip") >= 12, "readiness and stats are chips (%d)" % _count_widgets(panel, "stat_chip"))
 	_ok(_count_widgets(panel, "key_value") <= 4, "at most four label/value rows remain (%d)" % _count_widgets(panel, "key_value"))
 	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+
+## The combat screen as cards and chips: portrait and enemy meter, You card, food slots.
+func test_combat_visual(host: Node) -> void:
+	_heading("Combat visual")
+	_mm_fight("golbin")
+	var panel: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
+	host.add_child(panel)
+	await host.get_tree().process_frame
+	_ok(_count_widgets(panel, "meter") >= 2, "the enemy and you each have a health meter (%d)" % _count_widgets(panel, "meter"))
+	var tips: Array[String] = []
+	for c in panel.find_children("", "Control", true, false):
+		if str((c as Control).get_meta("widget", "")) == "stat_chip":
+			tips.append((c as Control).tooltip_text.to_lower())
+	var blob: String = "
+".join(tips)
+	for needle in ["hit chance", "max hit", "damage reduction", "evasion", "accuracy"]:
+		_ok(blob.contains(needle), "a stat chip explains %s" % needle)
+	_ok(_count_widgets(panel, "item_slot") >= 3, "the three food slots are item slots (%d)" % _count_widgets(panel, "item_slot"))
+	_ok(_count_widgets(panel, "key_value") <= 3, "at most three label/value rows remain (%d)" % _count_widgets(panel, "key_value"))
+	CombatManager.stop_combat("retreat")
+	panel.queue_free()
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
