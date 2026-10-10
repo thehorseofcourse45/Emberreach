@@ -116,6 +116,52 @@ static func pulse(control: Control) -> void:
 static func _center_pivot(control: Control) -> void:
 	control.pivot_offset = control.size * 0.5
 
+## A ring of gold runes bursts from `target` (a level-up): a ring that grows and fades over 0.6s and
+## a one-shot spray of sparks, both drawn on `layer` so a scrolled or clipped sidebar cannot cut them.
+static func rune_burst(layer: Control, target: Control) -> void:
+	if _is_reduced() or layer == null or target == null or not is_instance_valid(target) or not target.is_inside_tree():
+		return
+	var burst := Control.new()
+	burst.set_meta("rune_burst", true)
+	burst.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	burst.z_index = UITokens.Z_TOAST
+	layer.add_child(burst)
+	burst.global_position = target.get_global_rect().get_center()
+	var grad := Gradient.new()
+	grad.colors = PackedColorArray([Color(1, 0.8, 0.4, 0.0), Color(1, 0.82, 0.45, 0.9), Color(1, 0.6, 0.2, 0.0)])
+	grad.offsets = PackedFloat32Array([0.55, 0.75, 1.0])
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(1.0, 0.5)
+	tex.width = 96
+	tex.height = 96
+	var ring := TextureRect.new()
+	ring.texture = tex
+	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ring.size = Vector2(96, 96)
+	ring.position = Vector2(-48, -48)
+	ring.pivot_offset = Vector2(48, 48)
+	ring.scale = Vector2(0.6, 0.6)
+	burst.add_child(ring)
+	var sparks := CPUParticles2D.new()
+	sparks.one_shot = true
+	sparks.amount = 16
+	sparks.lifetime = 0.6
+	sparks.explosiveness = 1.0
+	sparks.spread = 180.0
+	sparks.initial_velocity_min = 40.0
+	sparks.initial_velocity_max = 90.0
+	sparks.gravity = Vector2.ZERO
+	sparks.color = UITokens.GOLD_BRIGHT
+	sparks.emitting = true
+	burst.add_child(sparks)
+	var tween: Tween = burst.create_tween().set_parallel(true)
+	tween.tween_property(ring, "scale", Vector2(1.6, 1.6), 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ring, "modulate:a", 0.0, 0.6)
+	tween.chain().tween_callback(burst.queue_free)
+
 ## Count a number up to its new value over 0.4s. Gated or off-tree: the final text at once.
 static func count_up(label: Label, from: float, to: float, formatter: Callable) -> void:
 	if label == null or not is_instance_valid(label):

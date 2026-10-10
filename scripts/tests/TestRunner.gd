@@ -163,6 +163,7 @@ func run_all(host: Node) -> void:
 	await test_report_screens_visual(host)
 	await test_all_screens_fit(host)
 	await test_motion_gated(host)
+	await test_reward_moments(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -3073,6 +3074,33 @@ func test_motion_gated(host: Node) -> void:
 	page.queue_free()
 	bar.queue_free()
 	b.free()
+
+## Level-ups burst with gold runes on the skill's sidebar entry; reward toasts glow in their
+## colour; reduced motion keeps the toast and drops the burst.
+func test_reward_moments(host: Node) -> void:
+	_heading("Reward moments")
+	var bursts := func() -> int:
+		return host.find_children("", "Control", true, false).filter(func(c): return c.has_meta("rune_burst")).size()
+	var saved: Variant = PlayerData.settings.get("reduced_motion", false)
+	PlayerData.settings["reduced_motion"] = false
+	EventBus.skill_level_up.emit("woodcutting", 2)
+	_eq(bursts.call(), 1, "a level-up bursts on its sidebar entry")
+	for i in range(80):
+		await host.get_tree().process_frame
+	_eq(bursts.call(), 0, "the burst cleans itself up")
+	PlayerData.settings["reduced_motion"] = true
+	EventBus.skill_level_up.emit("woodcutting", 3)
+	_eq(bursts.call(), 0, "reduced motion: no burst")
+	PlayerData.settings["reduced_motion"] = saved
+	var toasts: ToastStack = host.get("_toasts")
+	toasts.clear()
+	toasts.push_rare_drop("shark", 1, "test")
+	var column: VBoxContainer = toasts.get("_column")
+	var panel: PanelContainer = column.get_child(column.get_child_count() - 1)
+	var sb: StyleBoxFlat = panel.get_theme_stylebox("panel")
+	_eq(sb.border_color, UIStyle.item_rarity("shark")["color"], "a rare-drop toast glows in the item's rarity colour")
+	_ok(sb.shadow_size > 0, "and it glows")
+	toasts.clear()
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")

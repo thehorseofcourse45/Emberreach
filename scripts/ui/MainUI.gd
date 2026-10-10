@@ -415,6 +415,15 @@ func _refresh_nav() -> void:
 ## Sidebar skill labels carry levels, so the one button whose skill just leveled is relabelled
 ## on the spot instead of rebuilding the whole navigation.
 func _on_skill_level_up(skill_id: String, _level: int) -> void:
+	# The reward moment: gold runes burst on the skill's entry, or on its chapter when collapsed.
+	var row: Control = _skill_nav_buttons.get(skill_id)
+	if row != null and is_instance_valid(row):
+		var target: Control = row
+		if not (row.get_parent() as Control).visible:
+			var chapter: String = SidebarNav.chapter_of(skill_id)
+			if _chapters.has(chapter):
+				target = _chapters[chapter]["header"]
+		Motion.rune_burst(self, target)
 	var button: Button = _nav_buttons.get(Screens.SETTLEMENT) if skill_id == "township" else _skill_nav_buttons.get(skill_id)
 	if button != null and is_instance_valid(button):
 		button.text = SidebarNav.skill_nav_text(skill_id)
