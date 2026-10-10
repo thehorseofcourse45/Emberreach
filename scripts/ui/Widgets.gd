@@ -131,6 +131,7 @@ const _METER_STOPS: Dictionary = {
 static func meter(value: float, maximum: float, kind: String = "ember", text: String = "", height: int = 14) -> ProgressBar:
 	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, height)
 	bar.set_meta("widget", "meter")
+	bar.tree_entered.connect(func() -> void: Motion.shimmer.call_deferred(bar), Object.CONNECT_ONE_SHOT)
 	var grad := Gradient.new()
 	var stops: Array = _METER_STOPS.get(kind, _METER_STOPS["ember"])
 	grad.colors = PackedColorArray(stops)

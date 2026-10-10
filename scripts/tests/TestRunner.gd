@@ -162,6 +162,7 @@ func run_all(host: Node) -> void:
 	await test_skill_cards(host)
 	await test_report_screens_visual(host)
 	await test_all_screens_fit(host)
+	await test_motion_gated(host)
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -3027,6 +3028,51 @@ func test_all_screens_fit(host: Node) -> void:
 		host.call("_show_screen", sc, {})
 		await host.get_tree().process_frame
 		_ok(_count_widgets((host.get("_panels") as Dictionary)[sc], "stat_chip") >= 1, "%s leads with chips" % sc)
+
+## Every Motion effect is gated by reduced motion AND by silent simulation (offline catch-up,
+## test runs): gated calls land on the final state and create no tween.
+func test_motion_gated(host: Node) -> void:
+	_heading("Motion gating")
+	var tree: SceneTree = host.get_tree()
+	var label := Label.new()
+	host.add_child(label)
+	var fmt := func(v: float) -> String: return UIStyle.fmt(v)
+	var saved: Variant = PlayerData.settings.get("reduced_motion", false)
+	PlayerData.settings["reduced_motion"] = true
+	var before: int = tree.get_processed_tweens().size()
+	Motion.count_up(label, 0.0, 1500.0, fmt)
+	_eq(label.text, UIStyle.fmt(1500.0), "reduced motion: count-up shows the final value at once")
+	_eq(tree.get_processed_tweens().size(), before, "reduced motion: no tween is created")
+	PlayerData.settings["reduced_motion"] = false
+	SimulationMode.begin()
+	before = tree.get_processed_tweens().size()
+	Motion.count_up(label, 0.0, 2500.0, fmt)
+	var page := Control.new()
+	host.add_child(page)
+	Motion.page_in(page)
+	_eq(label.text, UIStyle.fmt(2500.0), "silent simulation: count-up shows the final value at once")
+	_eq(tree.get_processed_tweens().size(), before, "silent simulation: no tween is created")
+	_eq(page.modulate.a, 1.0, "silent simulation: a page is shown at once")
+	SimulationMode.end()
+	Motion.force_reduced = false
+	before = tree.get_processed_tweens().size()
+	Motion.page_in(page)
+	_eq(tree.get_processed_tweens().size(), before + 1, "a page transition is one tween")
+	for i in range(20):
+		await tree.process_frame
+	_ok(is_equal_approx(page.modulate.a, 1.0), "the page ends fully visible")
+	var bar := ProgressBar.new()
+	host.add_child(bar)
+	Motion.shimmer(bar)
+	Motion.shimmer(bar)
+	_eq(bar.get_children().filter(func(c): return c.has_meta("shimmer")).size(), 1, "a shimmer never stacks")
+	var b: Button = UIStyle.button("Press me")
+	_ok(b.button_down.get_connections().size() >= 1, "buttons press in")
+	PlayerData.settings["reduced_motion"] = saved
+	label.queue_free()
+	page.queue_free()
+	bar.queue_free()
+	b.free()
 
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")

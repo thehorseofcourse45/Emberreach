@@ -251,7 +251,7 @@ func _show_screen(screen: String, route: Dictionary) -> void:
 			"This screen has not been built. Everything else in the game still works.")
 	var work := _work_area(panel)
 	_workspace.add_child(work)
-	Motion.fade_rise(work)
+	Motion.page_in(work)
 	# A focused route (a specific skill / region / quest) refines the pane it opens.
 	if panel.has_method("focus_route"):
 		panel.call("focus_route", route)

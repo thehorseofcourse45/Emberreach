@@ -111,7 +111,11 @@ func _set_chip(key: String, value: float, _kind: String, _icon_id: String) -> vo
 	if not _chips.has(key):
 		return
 	var label: Label = _chips[key]
+	var shown: float = float(label.get_meta("shown_value", value))
+	label.set_meta("shown_value", value)
+	# Size the chip for the final number, then count up to it.
 	Widgets.set_chip_value(_chip_roots[key], UIStyle.fmt(float(value)))
+	Motion.count_up(label, shown, float(value), func(v: float) -> String: return UIStyle.fmt(v))
 	label.tooltip_text = "%s exact: %s" % [label.text, UIStyle.fmt_exact(float(value))]
 
 ## Save state, stated in words as well as colour.

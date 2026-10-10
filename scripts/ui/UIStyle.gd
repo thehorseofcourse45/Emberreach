@@ -378,6 +378,7 @@ static func button(text: String, tooltip := "") -> Button:
 	b.custom_minimum_size = Vector2(0, UITokens.H_CONTROL)
 	if tooltip != "":
 		b.tooltip_text = tooltip
+	Motion.press(b)
 	return b
 
 ## A compact, low-emphasis control (used inside dense rows).
