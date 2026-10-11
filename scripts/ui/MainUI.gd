@@ -24,7 +24,13 @@ var _sidebar_wrap: PanelContainer
 var _sidebar_list: VBoxContainer
 var _sidebar_scroll: ScrollContainer
 var _workspace: PanelContainer
-var _detail_wrap: PanelContainer
+## The detail panel floats over the workspace as a card (see open_detail / close_detail).
+var _detail_card: PanelContainer
+var _layout_width: int = 1440
+var _backdrop: ColorRect
+## chapter id -> {header: Button, body: VBoxContainer, label: String} (SidebarNav.build).
+var _chapters: Dictionary = {}
+var _embers: CPUParticles2D = null
 var _detail: DetailPanel
 var _strip: ActivityStrip
 var _toasts: ToastStack
@@ -85,6 +91,7 @@ func _build() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	theme = UIStyle.build_theme()
 	add_child(_build_backdrop())
+	apply_ambient()
 	_root = UIStyle.vbox(UITokens.SP_3)
 	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_root)
@@ -110,22 +117,30 @@ func _build() -> void:
 	_skill_nav_buttons = nav["skill_buttons"]
 	_accent_fx = nav["accent_fx"]
 	_accent_bar = nav["accent_bar"]
+	_chapters = nav["chapters"]
+	SidebarNav.open_chapter(self, str(PlayerData.settings.get("nav_open_chapter", "combat")))
 
 	_workspace = PanelContainer.new()
 	_workspace.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_workspace.add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
 	_body.add_child(_workspace)
 
-	_detail_wrap = PanelContainer.new()
-	_detail_wrap.custom_minimum_size = Vector2(UITokens.W_DETAIL, 0)
-	_detail_wrap.add_theme_stylebox_override("panel", UIStyle.surface_box("panel"))
-	_body.add_child(_detail_wrap)
 	_detail = DetailPanel.new()
 	_detail.navigated.connect(func(route): navigate(route))
-	_detail_wrap.add_child(_detail)
+	_detail.close_requested.connect(close_detail)
 
 	_strip = ActivityStrip.new()
 	_root.add_child(_strip)
+
+	# Above the shell, below the toasts: the card floats over the workspace's right edge.
+	_detail_card = PanelContainer.new()
+	_detail_card.visible = false
+	_detail_card.add_theme_stylebox_override("panel", UIStyle.surface_box("overlay"))
+	_detail_card.add_child(_detail)
+	add_child(_detail_card)
+	_workspace.resized.connect(func():
+		if detail_open():
+			_place_detail())
 
 	_toasts = ToastStack.new()
 	add_child(_toasts)
@@ -143,43 +158,65 @@ func _build() -> void:
 
 ## The night sky the glass panels float over: a radial violet light top-left fading to near-black,
 ## plus a faint magenta glow bottom-right. Purely decorative and click-through.
+## The forge: a shader-painted ColorRect, with an ember particle layer added by apply_ambient().
 func _build_backdrop() -> Control:
 	var layer := Control.new()
 	layer.name = "Backdrop"
 	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var base := ColorRect.new()
-	base.color = UITokens.BG_DEEP
-	base.set_anchors_preset(Control.PRESET_FULL_RECT)
-	base.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.add_child(base)
-	layer.add_child(_radial_glow(Vector2(0.22, 0.0), Vector2(1.05, 0.95),
-		[UITokens.BG_GLOW_A, UITokens.BG_GLOW_B, Color(UITokens.BG_DEEP, 0.0)], [0.0, 0.45, 1.0]))
-	var pink := UITokens.ACCENT_PINK
-	layer.add_child(_radial_glow(Vector2(0.95, 1.0), Vector2(0.45, 0.45),
-		[Color(pink, 0.16), Color(pink, 0.0)], [0.0, 1.0]))
+	_backdrop = ColorRect.new()
+	_backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://scripts/ui/forge_background.gdshader")
+	mat.set_shader_parameter("top_color", UITokens.BG)
+	mat.set_shader_parameter("bottom_color", UITokens.BG_DEEP)
+	mat.set_shader_parameter("glow_color", UITokens.FORGE_GLOW)
+	_backdrop.material = mat
+	layer.add_child(_backdrop)
 	return layer
 
-func _radial_glow(from: Vector2, to: Vector2, colors: Array, offsets: Array) -> TextureRect:
-	var grad := Gradient.new()
-	grad.colors = PackedColorArray(colors)
-	grad.offsets = PackedFloat32Array(offsets)
-	var tex := GradientTexture2D.new()
-	tex.gradient = grad
-	tex.fill = GradientTexture2D.FILL_RADIAL
-	tex.fill_from = from
-	tex.fill_to = to
-	tex.width = 512
-	tex.height = 512
-	var rect := TextureRect.new()
-	rect.texture = tex
-	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	rect.stretch_mode = TextureRect.STRETCH_SCALE
-	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return rect
+## Embers and the breathing glow follow the "ambient_embers" setting and reduced motion. Called at
+## build time and whenever either setting changes.
+func apply_ambient() -> void:
+	if _backdrop == null:
+		return
+	var on: bool = bool(PlayerData.settings.get("ambient_embers", true)) and not Motion.reduced()
+	(_backdrop.material as ShaderMaterial).set_shader_parameter("pulse", 1.0 if on else 0.0)
+	if not on:
+		if _embers != null:
+			_embers.queue_free()
+			_embers.get_parent().remove_child(_embers)
+		_embers = null
+		return
+	if _embers != null:
+		return
+	_embers = CPUParticles2D.new()
+	_embers.amount = 40
+	_embers.lifetime = 9.0
+	_embers.preprocess = 9.0
+	_embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_embers.direction = Vector2(0, -1)
+	_embers.spread = 25.0
+	_embers.gravity = Vector2(0, -8)
+	_embers.initial_velocity_min = 8.0
+	_embers.initial_velocity_max = 22.0
+	_embers.scale_amount_min = 1.0
+	_embers.scale_amount_max = 2.5
+	var ramp := Gradient.new()
+	ramp.colors = PackedColorArray([Color("#ffd27a"), Color("#ff7a2a"), Color(1.0, 0.48, 0.16, 0.0)])
+	ramp.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
+	_embers.color_ramp = ramp
+	_backdrop.get_parent().add_child(_embers)
+	_place_embers()
 
-
+## Keep the emitter a thin strip along the bottom of the window.
+func _place_embers() -> void:
+	if _embers == null:
+		return
+	var vp: Vector2 = get_viewport_rect().size
+	_embers.position = Vector2(vp.x * 0.5, vp.y + 4.0)
+	_embers.emission_rect_extents = Vector2(vp.x * 0.5, 4.0)
 
 # =========================================================================
 #  Navigation
@@ -214,15 +251,26 @@ func _show_screen(screen: String, route: Dictionary) -> void:
 			"This screen has not been built. Everything else in the game still works.")
 	var work := _work_area(panel)
 	_workspace.add_child(work)
-	Motion.fade_rise(work)
+	Motion.page_in(work)
 	# A focused route (a specific skill / region / quest) refines the pane it opens.
 	if panel.has_method("focus_route"):
 		panel.call("focus_route", route)
+	var route_skill: String = str(route.get("skill_id", ""))
+	if screen == Screens.SKILLS and route_skill == "":
+		route_skill = str(panel.get("_skill_id")) if "_skill_id" in panel else ""
+	var chapter: String = SidebarNav.chapter_of(route_skill if screen == Screens.SKILLS else screen)
+	if chapter != "":
+		SidebarNav.open_chapter(self, chapter)
 	_refresh_nav()
 	var detail_route: Dictionary = route.duplicate()
 	detail_route["screen"] = screen
 	_detail.set_context(panel, detail_route)
-	_detail_wrap.visible = not _medium
+	# A route that names a thing (an item, a task, a region) opens its details; plain navigation
+	# closes the card unless the player pinned it.
+	if route.has("item_id") or route.has("quest_id") or route.has("area_id"):
+		open_detail()
+	elif not _detail.pinned:
+		close_detail()
 	if _compact:
 		_drawer.visible = false
 	_restore_scroll_position(work, screen)
@@ -281,7 +329,10 @@ func _panel_for(screen: String) -> Control:
 	if panel.has_signal("navigated"):
 		panel.connect("navigated", func(route): navigate(route))
 	if panel.has_signal("context_changed"):
-		panel.connect("context_changed", func(ctx): _detail.set_inline_context(ctx))
+		panel.connect("context_changed", func(ctx):
+			_detail.set_inline_context(ctx)
+			if typeof(ctx) == TYPE_DICTIONARY and not (ctx as Dictionary).is_empty():
+				open_detail())
 	_panels[screen] = panel
 	return panel
 
@@ -354,11 +405,25 @@ func _refresh_nav() -> void:
 			selected_row = button
 		button.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "flat", selected))
 		button.add_theme_color_override("font_color", UITokens.TEXT_STRONG if selected else UITokens.TEXT_MUTED)
+	# A selected row inside a collapsed chapter is marked on its chapter header instead.
+	if selected_row != null and not (selected_row.get_parent() as Control).visible:
+		for id in _chapters.keys():
+			if _chapters[id]["body"] == selected_row.get_parent():
+				selected_row = _chapters[id]["header"]
 	SidebarNav.slide_accent(_accent_fx, _accent_bar, selected_row)
 
 ## Sidebar skill labels carry levels, so the one button whose skill just leveled is relabelled
 ## on the spot instead of rebuilding the whole navigation.
 func _on_skill_level_up(skill_id: String, _level: int) -> void:
+	# The reward moment: gold runes burst on the skill's entry, or on its chapter when collapsed.
+	var row: Control = _skill_nav_buttons.get(skill_id)
+	if row != null and is_instance_valid(row):
+		var target: Control = row
+		if not (row.get_parent() as Control).visible:
+			var chapter: String = SidebarNav.chapter_of(skill_id)
+			if _chapters.has(chapter):
+				target = _chapters[chapter]["header"]
+		Motion.rune_burst(self, target)
 	var button: Button = _nav_buttons.get(Screens.SETTLEMENT) if skill_id == "township" else _skill_nav_buttons.get(skill_id)
 	if button != null and is_instance_valid(button):
 		button.text = SidebarNav.skill_nav_text(skill_id)
@@ -381,7 +446,9 @@ func _clear_badge(screen: String) -> void:
 func _refresh_all() -> void:
 	for screen in _panels.keys():
 		var p: Control = _panels[screen]
-		if is_instance_valid(p) and p.has_method("refresh"):
+		# Off-screen panels catch up through their own state_refreshed subscriptions; rebuilding them
+		# here as well doubled the work of every refresh burst.
+		if is_instance_valid(p) and p.is_inside_tree() and p.has_method("refresh"):
 			p.call("refresh")
 	_strip.refresh()
 	_refresh_nav()
@@ -395,6 +462,7 @@ func rebuild_current() -> void:
 # =========================================================================
 
 func _apply_responsive() -> void:
+	_place_embers()
 	var width: int = int(size.x)
 	if width <= 0:
 		width = int(get_viewport_rect().size.x)
@@ -406,19 +474,58 @@ func apply_layout_for_width(width: int) -> void:
 	_compact = width < UITokens.BP_NARROW
 	_medium = width < UITokens.BP_MEDIUM
 	# Null-safe: the rules are decidable (and tested) without a built shell.
-	if _sidebar_wrap == null or _nav_button == null or _detail_wrap == null:
+	_layout_width = width
+	if _sidebar_wrap == null or _nav_button == null or _detail_card == null:
 		return
 	_sidebar_wrap.visible = not _compact
-	_sidebar_wrap.custom_minimum_size = Vector2(UITokens.W_SIDEBAR if not _compact else 0, 0)
+	var rail: bool = not _compact and width < UITokens.BP_RAIL
+	SidebarNav.set_rail(self, rail)
+	_sidebar_wrap.custom_minimum_size = Vector2(0 if _compact else (UITokens.W_SIDEBAR_COMPACT if rail else UITokens.W_SIDEBAR), 0)
 	_nav_button.visible = _compact
-	_detail_wrap.visible = not _medium
-	if _medium:
-		# The detail pane is only reachable as part of the workspace on medium and narrow
-		# layouts, so the two never fight for horizontal space.
-		_detail_wrap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	if _detail_card.visible:
+		_place_detail()
 	_body.add_theme_constant_override("separation", UITokens.SP_2 if _compact else UITokens.SP_5)
 	if _compact:
 		SidebarNav.populate_drawer(self, _drawer)
+
+# =========================================================================
+#  Detail card
+# =========================================================================
+
+func open_detail() -> void:
+	if _detail_card == null:
+		return
+	_detail_card.visible = true
+	_place_detail()
+
+func close_detail() -> void:
+	if _detail_card != null:
+		_detail_card.visible = false
+
+func detail_open() -> bool:
+	return _detail_card != null and _detail_card.visible
+
+## Anchored to the workspace's right edge, the workspace's full height; 380px wide, or the whole
+## workspace width on windows narrower than the chapter-rail breakpoint.
+func _place_detail() -> void:
+	var ws: Rect2 = _workspace.get_global_rect()
+	var w: float = ws.size.x if _layout_width < UITokens.BP_RAIL else minf(float(UITokens.W_DETAIL_CARD), ws.size.x)
+	_detail_card.global_position = Vector2(ws.end.x - w, ws.position.y)
+	_detail_card.size = Vector2(w, ws.size.y)
+
+func _input(event: InputEvent) -> void:
+	if not detail_open() or _detail.pinned:
+		return
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT \
+			and not _detail_card.get_global_rect().has_point(click.global_position):
+		close_detail()
+
+func _unhandled_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key != null and key.pressed and key.keycode == KEY_ESCAPE and detail_open():
+		close_detail()
+		get_viewport().set_input_as_handled()
 
 # =========================================================================
 #  Status
@@ -464,6 +571,12 @@ func _handle_cli() -> bool:
 	if "--docs" in args:
 		var current: bool = _run_docs_check("--fix" in args)
 		get_tree().quit(0 if current else 1)
+		return true
+	if "--test" in args:
+		var idx: int = args.find("--test")
+		var names: Array = (args[idx + 1] if idx + 1 < args.size() else "").split(",", false)
+		await TestRunner.new().run_some(self, names)
+		get_tree().quit()
 		return true
 	if "--tests" in args:
 		# Awaited: run_all() is a coroutine (the UI suites build nodes across frames). An

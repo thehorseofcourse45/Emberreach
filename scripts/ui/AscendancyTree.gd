@@ -174,7 +174,7 @@ func refresh() -> void:
 		ui.card.tooltip_text = str(DataLoader.ascendancy[id].get("branch", "")) + "\n" + UIStyle.describe_modifier_table(DataLoader.ascendancy[id].modifiers) + " per rank\n"
 		ui.card.tooltip_text += "Requires: " + ", ".join(required) if not required.is_empty() else "Starting upgrade · no prerequisites"
 		var color: Color = UITokens.TEAL if st.rank > 0 else (UITokens.GOLD if st.can_buy else UITokens.BORDER_STRONG)
-		var style := UIStyle.surface_box("raised" if st.rank > 0 else "row")
+		var style := UIStyle.flat_box("raised" if st.rank > 0 else "row")
 		style.border_color = color
 		style.set_border_width_all(2)
 		ui.card.add_theme_stylebox_override("panel", style)

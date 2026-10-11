@@ -7,6 +7,8 @@ class_name StatusBar
 ## progress is on disk without interpreting a colour.
 
 var _chips: Dictionary = {}
+var _chip_roots: Dictionary = {}
+var _level_chip: Control
 var _save_label: Label
 var _playtime: Label
 var _combat_level: Label
@@ -45,8 +47,10 @@ func _ready() -> void:
 	_add_chip(row, "prayer_points", "prayer_points", "Devotion points — spent per attack while a rite is active")
 	_add_chip(row, "stardust", "stardust", "Stardust spent in Starreading")
 
-	_combat_level = UIStyle.label("", true, UITokens.FONT_SMALL)
-	row.add_child(_combat_level)
+	var level_chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "", "Combat level")
+	row.add_child(level_chip)
+	_combat_level = level_chip.find_child("value", true, false)
+	_level_chip = level_chip
 
 	row.add_child(UIStyle.spacer())
 
@@ -87,9 +91,10 @@ func _ready() -> void:
 	refresh()
 
 func _add_chip(parent: Control, icon_id: String, key: String, tooltip: String) -> void:
-	var chip := Widgets.resource_chip("currencies", icon_id, "0", tooltip)
+	var chip: Control = Widgets.stat_chip("items" if key == "stardust" else "currencies", icon_id, "0", tooltip, UITokens.GOLD_BRIGHT)
 	parent.add_child(chip)
-	_chips[key] = chip.get_node("value")
+	_chips[key] = chip.find_child("value", true, false)
+	_chip_roots[key] = chip
 
 func refresh() -> void:
 	_set_chip("gp", PlayerData.gp, "currencies", "gp")
@@ -97,7 +102,7 @@ func refresh() -> void:
 	_set_chip("abyssal_coins", PlayerData.abyssal_coins, "currencies", "abyssal_coins")
 	_set_chip("prayer_points", PlayerData.prayer_points, "currencies", "prayer_points")
 	_set_chip("stardust", BankManager.get_count("stardust"), "items", "stardust")
-	_combat_level.text = "Combat %d" % PlayerData.get_combat_level()
+	Widgets.set_chip_value(_level_chip, "Combat %d" % PlayerData.get_combat_level())
 	_playtime.text = UIStyle.fmt_duration(maxf(0.0, GameManager.playtime_seconds))
 	if BankManager.has_overflow():
 		_playtime.text += "  ·  overflow %d" % BankManager.overflow_count()
@@ -106,7 +111,11 @@ func _set_chip(key: String, value: float, _kind: String, _icon_id: String) -> vo
 	if not _chips.has(key):
 		return
 	var label: Label = _chips[key]
-	label.text = UIStyle.fmt(float(value))
+	var shown: float = float(label.get_meta("shown_value", value))
+	label.set_meta("shown_value", value)
+	# Size the chip for the final number, then count up to it.
+	Widgets.set_chip_value(_chip_roots[key], UIStyle.fmt(float(value)))
+	Motion.count_up(label, shown, float(value), func(v: float) -> String: return UIStyle.fmt(v))
 	label.tooltip_text = "%s exact: %s" % [label.text, UIStyle.fmt_exact(float(value))]
 
 ## Save state, stated in words as well as colour.

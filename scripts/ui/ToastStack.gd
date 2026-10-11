@@ -85,9 +85,17 @@ func _build(text: String, kind: String, skill_id: String = "") -> Control:
 		"success":
 			accent = UITokens.GREEN
 			icon_id = "ok"
-	panel.add_theme_stylebox_override("panel", UIStyle.surface_box("raised", true))
-	var sb: StyleBoxFlat = panel.get_theme_stylebox("panel")
+	if kind == "rare":
+		accent = UIStyle.item_rarity(skill_id)["color"]   # skill_id carries the item id here
+	var sb: StyleBoxFlat = UIStyle.flat_box("overlay")
+	panel.add_theme_stylebox_override("panel", sb)
 	sb.border_color = accent
+	if kind == "level" or kind == "rare":
+		# Reward moments: a gold-trimmed banner that glows in the reward's colour.
+		sb.set_border_width_all(2)
+		sb.shadow_color = Color(accent.r, accent.g, accent.b, 0.5)
+		sb.shadow_size = 14
+		panel.custom_minimum_size.x = 320
 	var row := HBoxContainer.new()
 	row.name = "body"
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE

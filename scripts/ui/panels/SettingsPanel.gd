@@ -156,6 +156,8 @@ func _build_presentation() -> void:
 	add_child(box)
 	box.add_child(_check("reduced_motion", "Reduce motion",
 		"Disables the toast fade-in and shortens interface transitions."))
+	box.add_child(_check("ambient_embers", "Drifting embers",
+		"Embers rising from the forge behind the interface, and its slow glow."))
 	box.add_child(_check("compact_rows", "Compact rows",
 		"Tightens list spacing so more of a screen fits at once."))
 	box.add_child(_check("show_estimates_detail", "Show projection assumptions",
@@ -302,6 +304,8 @@ func _check(key: String, label: String, tooltip: String) -> Control:
 		PlayerData.settings[k] = on
 		if before != on:
 			EventBus.notify("%s %s." % [label, "enabled" if on else "disabled"], "info")
+			if k in ["ambient_embers", "reduced_motion"] and Screens.shell() != null:
+				Screens.shell().call("apply_ambient")
 			SaveManager.save_game())
 	return box
 

@@ -5,6 +5,7 @@ const ActionQueueTests = preload("res://scripts/tests/ActionQueueTests.gd")
 const LootFilterTests = preload("res://scripts/tests/LootFilterTests.gd")
 const CombatSimulatorTests = preload("res://scripts/tests/CombatSimulatorTests.gd")
 const RuneWards = preload("res://scripts/core/RuneWards.gd")
+const SidebarNav = preload("res://scripts/ui/SidebarNav.gd")
 ## TestRunner — the project's automated verification, wired to `--tests` and `--selftest`.
 ##
 ## Two suites:
@@ -30,10 +31,45 @@ var _section: String = ""
 #  Entry points
 # =========================================================================
 
+## Run only the named test methods (comma-separated on the CLI: `-- --test a,b`). A method that
+## takes the host gets it. Same save backup and fresh game as run_all, so a single test sees the
+## state the full suite would give it at the start.
+func run_some(host: Node, names: Array) -> void:
+	var files: Dictionary = TestSupport.backup_save_files()
+	var snapshot: Dictionary = SaveManager.build_save_data()
+	_begin("Emberreach test subset")
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = true
+	# The full suite builds the shell in _test_responsive_layouts; a subset has to do it itself.
+	if host.has_method("_build") and not bool(host.get("_shell_built")):
+		host.call("_build")
+		# Let the shell's first-frame boot refresh (it shows the overview) run before any test.
+		await host.get_tree().process_frame
+		await host.get_tree().process_frame
+	_deterministic(true)
+	GameManager.start_new_game("standard")
+	var arity: Dictionary = {}
+	for m in get_script().get_script_method_list():
+		arity[str(m["name"])] = (m["args"] as Array).size()
+	for n in names:
+		var method: String = str(n).strip_edges()
+		if not arity.has(method):
+			_ok(false, "no test method named %s" % method)
+			continue
+		if int(arity[method]) > 0:
+			await call(method, host)
+		else:
+			await call(method)
+	TestSupport.restore_snapshot(snapshot, files)
+	Motion.force_reduced = motion_was
+	_report()
+
 func run_all(host: Node) -> void:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach test suite")
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = true
 	_deterministic(true)
 	GameManager.start_new_game("standard")
 	_ok(PlayerData.get_level("hitpoints") == 1 and PlayerData.get_combat_level() == 1,
@@ -122,6 +158,19 @@ func run_all(host: Node) -> void:
 	_test_general_store_screen(host)
 	await _test_task_feedback_layout(host)
 	_test_combat_screen_split(host)
+	test_chapters(host)
+	await test_detail_popup(host)
+	await test_grimoire_widgets(host)
+	await test_grimoire_final_fixes(host)
+	test_bars_reskin(host)
+	await test_overview_visual(host)
+	await test_combat_visual(host)
+	await test_skill_cards(host)
+	await test_report_screens_visual(host)
+	await test_all_screens_fit(host)
+	await test_motion_gated(host)
+	await test_reward_moments(host)
+	test_suite_runs_without_motion()
 	_test_prayer_expansion(host)
 	_test_husbandry(host)
 	_test_scroll_position_preserved(host)
@@ -157,8 +206,11 @@ func run_all(host: Node) -> void:
 	test_strategy_area_and_prayer()
 	test_monster_passives()
 	test_identity_theme_builds()
+	test_grimoire_palette()
+	test_grimoire_buttons()
+	test_forge_backdrop(host)
 	test_surface_box_falls_back()
-	test_surface_box_uses_flat_by_default()
+	test_surface_textures()
 	test_motion_reduced_disables()
 	test_floater_pool_bounded()
 	# Awaited: both new motion pins are coroutines (they need frames for the tween to run and for
@@ -175,6 +227,7 @@ func run_all(host: Node) -> void:
 	_test_simulator_monster_mechanics()
 	_test_combat_panel_monster_mechanics(host)
 	TestSupport.restore_snapshot(snapshot, files)
+	Motion.force_reduced = motion_was
 	_report()
 
 ## Regressions from the gameplay audit: each assertion fails on the pre-fix code.
@@ -1334,7 +1387,7 @@ func _test_responsive_layouts(host: Node) -> void:
 		shell.call("_build")
 	var nav: Control = shell.get("_nav_button")
 	var sidebar: Control = shell.get("_sidebar_wrap")
-	var detail: Control = shell.get("_detail_wrap")
+	var detail: Control = shell.get("_detail_card")
 	_ok(nav != null and sidebar != null and detail != null,
 		"the shell builds its navigation, sidebar and detail panes")
 	if nav == null or sidebar == null or detail == null:
@@ -1358,7 +1411,7 @@ func _test_responsive_layouts(host: Node) -> void:
 		var medium: bool = width < UITokens.BP_MEDIUM
 		_ok(nav.visible == narrow, "%dpx: the navigation drawer button is %s" % [width, "shown" if narrow else "hidden"])
 		_ok(sidebar.visible == not narrow, "%dpx: the sidebar is %s" % [width, "hidden" if narrow else "shown"])
-		_ok(detail.visible == not medium, "%dpx: the detail pane is %s" % [width, "folded in" if medium else "docked"])
+		_ok(not detail.visible, "%dpx: the detail card stays closed until something is selected" % width)
 		# The whole shell must fit, not just each panel. The status bar, the activity strip and the
 		# panel wrappers all set a floor of their own, and it is the SUM that overflows the window:
 		# measuring panels alone hid a shell whose minimum width was 602px inside a 420px window.
@@ -1443,25 +1496,12 @@ func _test_combat_screen_split(host: Node) -> void:
 	var skill_buttons: Dictionary = host.get("_skill_nav_buttons")
 	_ok(skill_buttons.size() == DataLoader.get_skill_ids().size() - 1 and not skill_buttons.has("township"),
 		"Settlement uses its management entry instead of a duplicate skill link")
-	var sidebar: VBoxContainer = host.get("_sidebar_list")
-	var combat_heading: int = -1
-	var noncombat_heading: int = -1
-	var divider: int = -1
-	for i in range(sidebar.get_child_count()):
-		var node: Node = sidebar.get_child(i)
-		if node is Label and (node as Label).text == "COMBAT SKILLS":
-			combat_heading = i
-		if node is Label and (node as Label).text == "NON-COMBAT SKILLS":
-			noncombat_heading = i
-		if node is HSeparator:
-			divider = i
-	var bank_idx: int = (host.get("_nav_buttons") as Dictionary)[Screens.BANK].get_index()
-	_ok(combat_heading >= 0 and noncombat_heading > combat_heading and divider > noncombat_heading,
-		"combat and non-combat skills precede a divider and the other screens")
-	_ok(bank_idx < combat_heading, "Storage is pinned above the skills section")
+	var chapters: Dictionary = host.get("_chapters")
+	var bank_button: Button = (host.get("_nav_buttons") as Dictionary)[Screens.BANK]
+	_ok(bank_button.get_parent() == chapters["town"]["body"], "Storage lives in the Town chapter")
 	var prayer_button: Button = skill_buttons["prayer"]
-	_ok(prayer_button.get_index() > combat_heading and prayer_button.get_index() < noncombat_heading,
-		"Prayers sits inside the combat skills section")
+	_ok(prayer_button.get_parent() == chapters["combat"]["body"], "Prayers sits inside the Combat chapter")
+	SidebarNav.open_chapter(host, "combat")
 	prayer_button.pressed.emit()
 	_ok(host.get("_screen") == Screens.PRAYERS, "the combat prayer entry opens the prayer list")
 	var fishing_button: Button = skill_buttons["fishing"]
@@ -2667,6 +2707,467 @@ func _test_game_modes() -> void:
 ## Task 2 pin: build_theme() must return a Theme with the ember display/text fonts
 ## registered (missing files fall back to the default font, never crash).
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
+## Grimoire-on-forge palette: spec values, and every ink readable on both vellum and leather.
+func test_grimoire_palette() -> void:
+	_heading("Grimoire palette")
+	_eq(UITokens.BG_DEEP, Color("#0d0a09"), "forge background")
+	_eq(UITokens.BORDER_GOLD, Color("#c88c2c"), "gold trim")
+	_eq(UITokens.TEXT, Color("#f1dcb8"), "body ink")
+	# The lightest vellum a word can sit on: the top of the gradient, brightened as a selected row.
+	var lightest: Color = Color(UITokens.VELLUM_TOP.r * UIStyle.RAISED_MODULATE, UITokens.VELLUM_TOP.g * UIStyle.RAISED_MODULATE,
+		UITokens.VELLUM_TOP.b * UIStyle.RAISED_MODULATE)
+	var inks: Dictionary = {"TEXT": UITokens.TEXT, "TEXT_MUTED": UITokens.TEXT_MUTED, "TEXT_DIM": UITokens.TEXT_DIM, "GOLD": UITokens.GOLD,
+		"GOLD_BRIGHT": UITokens.GOLD_BRIGHT, "GREEN": UITokens.GREEN, "RED": UITokens.RED,
+		"AMBER": UITokens.AMBER, "TEAL": UITokens.TEAL, "BLUE": UITokens.BLUE, "PURPLE": UITokens.PURPLE}
+	for key in UITokens.RARITY.keys():
+		inks["rarity " + str(key)] = UITokens.RARITY[key]["color"]
+	for name in inks.keys():
+		var c: Color = inks[name]
+		_ok(UITokens.contrast_ratio(c, lightest) >= 4.5,
+			"%s reads on the lightest vellum (%.2f:1)" % [name, UITokens.contrast_ratio(c, lightest)])
+		_ok(UITokens.contrast_ratio(c, UITokens.LEATHER_MID) >= 4.5,
+			"%s reads on leather (%.2f:1)" % [name, UITokens.contrast_ratio(c, UITokens.LEATHER_MID)])
+	_ok(UITokens.contrast_ratio(UITokens.DISABLED, UITokens.LEATHER_MID) >= 3.0,
+		"disabled ink is still visible on leather")
+
+## Leather buttons that press in, oxblood primary buttons, glowing headings.
+func test_grimoire_buttons() -> void:
+	_heading("Grimoire buttons")
+	var th: Theme = UIStyle.build_theme()
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		_ok(th.get_stylebox(state, "Button") is StyleBoxTexture, "button %s is leather" % state)
+	_eq(th.get_stylebox("pressed", "Button").content_margin_top,
+		th.get_stylebox("normal", "Button").content_margin_top + 2.0, "a pressed button sinks 2 px")
+	var primary: Button = UIStyle.primary_button("Begin")
+	var pbox = primary.get_theme_stylebox("normal")
+	_ok(pbox is StyleBoxFlat and pbox.bg_color == UITokens.ACCENT_VIOLET and pbox.border_color == UITokens.BORDER_GOLD,
+		"the primary button is oxblood with a gold edge")
+	var t: Label = UIStyle.title("Hearthfall Fields")
+	_eq(t.text, "Hearthfall Fields", "a heading keeps its text")
+	_ok(t.has_theme_color_override("font_shadow_color") and t.get_theme_color("font_shadow_color").a > 0.0,
+		"a heading glows")
+	primary.free()
+	t.free()
+
+## The forge backdrop: a shader, plus drifting embers that the player (or reduced motion) can stop.
+func test_forge_backdrop(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
+	_heading("Forge backdrop")
+	var backdrop = host.get("_backdrop")
+	_ok(backdrop is ColorRect and (backdrop as ColorRect).material is ShaderMaterial, "the forge is painted by a shader")
+	var saved_embers: Variant = PlayerData.settings.get("ambient_embers", true)
+	var saved_reduced: Variant = PlayerData.settings.get("reduced_motion", false)
+	PlayerData.settings["ambient_embers"] = true
+	PlayerData.settings["reduced_motion"] = false
+	host.call("apply_ambient")
+	var embers = host.get("_embers")
+	_ok(embers is CPUParticles2D and (embers as CPUParticles2D).amount == 40, "40 embers drift up from the forge")
+	_eq(float((backdrop as ColorRect).material.get_shader_parameter("pulse")), 1.0, "the forge glow pulses")
+	PlayerData.settings["ambient_embers"] = false
+	host.call("apply_ambient")
+	_ok(host.get("_embers") == null, "turning embers off removes them")
+	_eq(float((backdrop as ColorRect).material.get_shader_parameter("pulse")), 0.0, "and stills the glow")
+	PlayerData.settings["ambient_embers"] = true
+	PlayerData.settings["reduced_motion"] = true
+	host.call("apply_ambient")
+	_ok(host.get("_embers") == null, "reduced motion also removes the embers")
+	PlayerData.settings["ambient_embers"] = saved_embers
+	PlayerData.settings["reduced_motion"] = saved_reduced
+	host.call("apply_ambient")
+	_ok(SettingsDefaults.DEFAULTS.get("ambient_embers", null) == true, "embers default to on")
+	Motion.force_reduced = motion_was
+
+## Collapsible chapters: every skill and screen in exactly one, one open at a time, remembered,
+## following navigation, and an icon-only rail on medium-narrow windows.
+func test_chapters(host: Node) -> void:
+	_heading("Chapters")
+	var seen: Dictionary = {}
+	for ch in SidebarNav.CHAPTERS:
+		for id in (ch["skills"] as Array) + (ch["screens"] as Array):
+			seen[str(id)] = int(seen.get(str(id), 0)) + 1
+	for sid in DataLoader.get_skill_ids():
+		if sid != "township":
+			_eq(int(seen.get(sid, 0)), 1, "%s is in exactly one chapter" % sid)
+	for sc in Screens.ORDER:
+		if not (sc in [Screens.SKILLS, Screens.PRAYERS]):
+			_eq(int(seen.get(sc, 0)), 1, "screen %s is in exactly one chapter" % sc)
+	_eq(SidebarNav.chapter_of("woodcutting"), "gathering", "Timbercraft is a gathering skill")
+	_eq(SidebarNav.chapter_of(Screens.BANK), "town", "Storage is in Town")
+	var chapters: Dictionary = host.get("_chapters")
+	SidebarNav.open_chapter(host, "crafting")
+	for id in chapters.keys():
+		_eq((chapters[id]["body"] as Control).visible, id == "crafting", "only Crafting is open (%s)" % id)
+	_eq(str(PlayerData.settings.get("nav_open_chapter", "")), "crafting", "the open chapter is remembered")
+	host.call("navigate", {"screen": Screens.SKILLS, "skill_id": "woodcutting"})
+	_ok((chapters["gathering"]["body"] as Control).visible, "opening a skill opens its chapter")
+	host.call("navigate", {"screen": Screens.PRAYERS})
+	_ok((chapters["combat"]["body"] as Control).visible, "opening Prayers opens Combat")
+	SidebarNav.open_chapter(host, "character")
+	host.call("navigate", {"screen": Screens.SKILLS})
+	var shown_skill: String = str((host.get("_panels") as Dictionary)[Screens.SKILLS].get("_skill_id"))
+	_ok((chapters[SidebarNav.chapter_of(shown_skill)]["body"] as Control).visible,
+		"opening Skills without a skill opens the chapter of the skill it shows (%s)" % shown_skill)
+	host.call("apply_layout_for_width", 800)
+	for id in chapters.keys():
+		var header: Button = chapters[id]["header"]
+		_ok(header.text == "" and header.icon != null and header.tooltip_text != "", "800px: %s header is an icon" % id)
+	host.call("apply_layout_for_width", 1440)
+	for id in chapters.keys():
+		_ok((chapters[id]["header"] as Button).text != "", "1440px: %s header has its name" % id)
+
+## The detail panel is a pop-up card: opens on a selection, closes on Escape, an outside click, its
+## close button or navigation (unless pinned); clicks inside it never close it.
+func test_detail_popup(host: Node) -> void:
+	_heading("Detail card")
+	_ok(host.get("_detail_wrap") == null, "there is no permanent detail column any more")
+	var card: Control = host.get("_detail_card")
+	var detail: DetailPanel = host.get("_detail")
+	host.call("apply_layout_for_width", 1440)
+	host.call("navigate", {"screen": Screens.BANK})
+	await host.get_tree().process_frame
+	_ok(not bool(host.call("detail_open")), "navigating alone does not open the card")
+	var bank: Control = (host.get("_panels") as Dictionary)[Screens.BANK]
+	bank.emit_signal("context_changed", {"kind": "item", "item_id": "shark"})
+	await host.get_tree().process_frame
+	_ok(bool(host.call("detail_open")), "selecting an item opens the card")
+	_eq(int(card.size.x), 380, "the card is 380px wide on a wide window")
+	var esc := InputEventKey.new()
+	esc.keycode = KEY_ESCAPE
+	esc.pressed = true
+	host.call("_unhandled_input", esc)
+	_ok(not bool(host.call("detail_open")), "Escape closes it")
+	host.call("open_detail")
+	await host.get_tree().process_frame
+	var inside := InputEventMouseButton.new()
+	inside.button_index = MOUSE_BUTTON_LEFT
+	inside.pressed = true
+	inside.global_position = card.get_global_rect().get_center()
+	inside.position = inside.global_position
+	host.call("_input", inside)
+	_ok(bool(host.call("detail_open")), "a click inside the card keeps it open")
+	var outside := InputEventMouseButton.new()
+	outside.button_index = MOUSE_BUTTON_LEFT
+	outside.pressed = true
+	outside.global_position = (host.get("_sidebar_wrap") as Control).get_global_rect().position + Vector2(8, 8)
+	outside.position = outside.global_position
+	host.call("_input", outside)
+	_ok(not bool(host.call("detail_open")), "a click outside closes it")
+	host.call("open_detail")
+	detail.pinned = true
+	host.call("navigate", {"screen": Screens.COMBAT})
+	_ok(bool(host.call("detail_open")), "a pinned card survives navigation")
+	detail.pinned = false
+	host.call("navigate", {"screen": Screens.BANK})
+	_ok(not bool(host.call("detail_open")), "an unpinned card closes on navigation")
+	host.call("open_detail")
+	detail.close_requested.emit()
+	_ok(not bool(host.call("detail_open")), "its close button closes it")
+	host.call("apply_layout_for_width", 420)
+	host.call("open_detail")
+	await host.get_tree().process_frame
+	_eq(int(card.size.x), int((host.get("_workspace") as Control).size.x), "on a narrow window the card fills the workspace width")
+	host.call("close_detail")
+	host.call("apply_layout_for_width", 1440)
+
+## Chips, slots, meters and section cards: the building blocks that replace label/value rows.
+func test_grimoire_final_fixes(host: Node) -> void:
+	_heading("Grimoire final fixes")
+	var detail: DetailPanel = host.get("_detail")
+	var drawer: PanelContainer = host.get("_drawer")
+	host.call("open_detail")
+	detail.pinned = true
+	SidebarNav.toggle_drawer(host, drawer)
+	_ok(not bool(host.call("detail_open")), "opening the drawer closes a pinned card")
+	SidebarNav.toggle_drawer(host, drawer)
+	host.call("open_detail")
+	var btns: Array = detail.find_children("*", "Button", true, false)
+	var pin: Button = btns.filter(func(b): return (b as Button).toggle_mode)[0]
+	var close: Button = btns.filter(func(b): return (b as Button).text == "Close")[0]
+	pin.button_pressed = true
+	close.pressed.emit()
+	_ok(not detail.pinned and not pin.button_pressed, "Close also turns Pin off")
+	var chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "Level 120 - Emberpine of the Ashen Crown - Warden", "why")
+	_ok(chip.tooltip_text.contains("Emberpine") and chip.tooltip_text.contains("why"), "a clipped chip value is in its tooltip")
+	Widgets.set_chip_value(chip, "9")
+	_eq(chip.tooltip_text, "why", "a short value restores the plain tooltip")
+	chip.free()
+
+func test_grimoire_widgets(host: Node) -> void:
+	_heading("Grimoire widgets")
+	var chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "1.2B", "Gold carried")
+	_eq(str(chip.get_meta("widget", "")), "stat_chip", "a stat chip is tagged")
+	_eq(chip.tooltip_text, "Gold carried", "the explanation lives in the tooltip")
+	var long_chip: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "Level 120 · Emberpine of the Ashen Crown", "x")
+	host.add_child(chip)
+	host.add_child(long_chip)
+	await host.get_tree().process_frame
+	_ok(chip.get_combined_minimum_size().x <= 220.0, "a huge number fits a chip (%dpx)" % int(chip.get_combined_minimum_size().x))
+	_ok(long_chip.get_combined_minimum_size().x <= 220.0, "a long value never widens its chip past 220px (%dpx)" % int(long_chip.get_combined_minimum_size().x))
+	var grow: Control = Widgets.stat_chip("navigation", Screens.COMBAT, "", "x")
+	Widgets.set_chip_value(grow, "Combat 120")
+	_ok((grow.find_child("value", true, false) as Label).custom_minimum_size.x > 40.0, "a chip filled in later is wide enough for its text")
+	grow.free()
+	chip.queue_free()
+	long_chip.queue_free()
+	var row: HFlowContainer = Widgets.chip_row([Widgets.stat_chip("navigation", Screens.COMBAT, "1", "a"), Widgets.stat_chip("navigation", Screens.COMBAT, "2", "b")])
+	_eq(str(row.get_meta("widget", "")), "chip_row", "a chip row is tagged")
+	_eq(row.get_child_count(), 2, "a chip row holds its chips")
+	row.free()
+	var slot: Control = Widgets.item_slot("shark", 42)
+	_eq(str(slot.get_meta("widget", "")), "item_slot", "an item slot is tagged")
+	var count_texts: Array = []
+	for l in slot.find_children("", "Label", true, false):
+		count_texts.append((l as Label).text)
+	_ok(count_texts.has("42"), "the slot shows its count")
+	_eq(slot.custom_minimum_size, Vector2(48, 48), "slots are 48px squares")
+	slot.free()
+	var empty: Control = Widgets.item_slot("", 0)
+	var textured: int = 0
+	for t in empty.find_children("", "TextureRect", true, false):
+		if (t as TextureRect).texture != null:
+			textured += 1
+	_eq(textured, 0, "an empty slot shows no icon")
+	empty.free()
+	var m: ProgressBar = Widgets.meter(30, 100, "hp")
+	_eq(str(m.get_meta("widget", "")), "meter", "a meter is tagged")
+	_eq(m.max_value, 100.0, "a meter keeps its maximum")
+	m.free()
+	# Rebuilds must not make new gradient textures or re-probe the disk for art every time.
+	var m1: ProgressBar = Widgets.meter(1, 2, "ember")
+	var m2: ProgressBar = Widgets.meter(1, 2, "ember")
+	_ok((m1.get_theme_stylebox("fill") as StyleBoxTexture).texture == (m2.get_theme_stylebox("fill") as StyleBoxTexture).texture,
+		"meters of one kind share one fill texture")
+	m1.free()
+	m2.free()
+	UIStyle.surface_box("chip")
+	_ok(UIStyle._painted_cache.has(UIStyle.ART_DIR + "chip"), "the painted-art lookup is cached per kind")
+	var card: PanelContainer = Widgets.section_card("Supplies", "what you bring")
+	_eq(str(card.get_meta("widget", "")), "section_card", "a section card is tagged")
+	_ok(Widgets.section_body(card) is VBoxContainer, "a section card exposes its body")
+	_ok(card.get_theme_stylebox("panel") is StyleBoxTexture, "a section card is vellum")
+	card.free()
+
+## The top bar shows currencies as chips; the activity strip uses ember meters.
+func test_bars_reskin(host: Node) -> void:
+	_heading("Bars reskin")
+	var status: Control = host.get("_status_bar")
+	var chips: int = 0
+	for n in status.find_children("", "Control", true, false):
+		if str((n as Control).get_meta("widget", "")) == "stat_chip":
+			chips += 1
+	_ok(chips >= 6, "the top bar shows currencies and combat level as chips (%d)" % chips)
+	PlayerData.gp = 1234567.0
+	status.call("refresh")
+	var gp_label: Label = (status.get("_chips") as Dictionary)["gp"]
+	_eq(gp_label.text, UIStyle.fmt(1234567.0), "the gold chip shows the formatted amount")
+	var strip: Control = host.get("_strip")
+	_eq(str((strip.get("_bar") as Control).get_meta("widget", "")), "meter", "the activity bar is an ember meter")
+	_eq(str((strip.get("_hp_bar") as Control).get_meta("widget", "")), "meter", "the strip's health bar is a meter")
+	_ok(strip.get_combined_minimum_size().y <= 52.0, "the strip stays a thin band (%dpx)" % int(strip.get_combined_minimum_size().y))
+
+## Count widgets of one kind under a node (widgets tag their root with meta "widget").
+func _count_widgets(root: Node, kind: String) -> int:
+	var n: int = 0
+	for c in root.find_children("", "Control", true, false):
+		if c.is_visible_in_tree() and str((c as Control).get_meta("widget", "")) == kind:
+			n += 1
+	return n
+
+## The overview dashboard reads at a glance: chips and meters, almost no label/value rows.
+func test_overview_visual(host: Node) -> void:
+	_heading("Overview visual")
+	SkillManager.start_action("woodcutting", str((DataLoader.get_skill("woodcutting")["actions"] as Array)[0]["id"]), 0)
+	host.call("navigate", {"screen": Screens.OVERVIEW})
+	await host.get_tree().process_frame
+	var panel: Control = (host.get("_panels") as Dictionary)[Screens.OVERVIEW]
+	_ok(_count_widgets(panel, "meter") >= 1, "the current activity has an ember meter")
+	_ok(_count_widgets(panel, "stat_chip") >= 12, "readiness and stats are chips (%d)" % _count_widgets(panel, "stat_chip"))
+	_ok(_count_widgets(panel, "key_value") <= 4, "at most four label/value rows remain (%d)" % _count_widgets(panel, "key_value"))
+	SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+
+## The combat screen as cards and chips: portrait and enemy meter, You card, food slots.
+func test_combat_visual(host: Node) -> void:
+	_heading("Combat visual")
+	_mm_fight("golbin")
+	var panel: Control = load("res://scripts/ui/panels/CombatPanel.gd").new()
+	host.add_child(panel)
+	await host.get_tree().process_frame
+	_ok(_count_widgets(panel, "meter") >= 2, "the enemy and you each have a health meter (%d)" % _count_widgets(panel, "meter"))
+	var tips: Array[String] = []
+	for c in panel.find_children("", "Control", true, false):
+		if str((c as Control).get_meta("widget", "")) == "stat_chip":
+			tips.append((c as Control).tooltip_text.to_lower())
+	var blob: String = "
+".join(tips)
+	for needle in ["hit chance", "max hit", "damage reduction", "evasion", "accuracy"]:
+		_ok(blob.contains(needle), "a stat chip explains %s" % needle)
+	_ok(_count_widgets(panel, "item_slot") >= 3, "the three food slots are item slots (%d)" % _count_widgets(panel, "item_slot"))
+	_ok(_count_widgets(panel, "key_value") <= 3, "at most three label/value rows remain (%d)" % _count_widgets(panel, "key_value"))
+	CombatManager.stop_combat("retreat")
+	panel.queue_free()
+
+## Skill actions are vellum cards: icon, time and XP chips, output slots and a mastery meter.
+func test_skill_cards(host: Node) -> void:
+	_heading("Skill cards")
+	for sid in ["woodcutting", "cooking"]:
+		host.call("navigate", {"screen": Screens.SKILLS, "skill_id": sid})
+		await host.get_tree().process_frame
+		var panel: Control = (host.get("_panels") as Dictionary)[Screens.SKILLS]
+		var cards: Array = []
+		for c in panel.find_children("", "Control", true, false):
+			if str((c as Control).get_meta("widget", "")) == "action_card":
+				cards.append(c)
+		var actions: int = (DataLoader.get_skill(sid).get("actions", []) as Array).size()
+		_ok(cards.size() >= mini(actions, 3), "%s actions are cards (%d of %d)" % [sid, cards.size(), actions])
+		if cards.is_empty():
+			continue
+		var first: Control = cards[0]
+		_ok(_count_widgets(first, "stat_chip") >= 2, "%s: a card shows time and XP as chips" % sid)
+		_ok(_count_widgets(first, "item_slot") >= 1, "%s: a card shows what it makes as slots" % sid)
+		_ok(_count_widgets(first, "meter") == 1, "%s: a card has its own mastery meter" % sid)
+
+## Report-style screens lead with chips; the offline summary shows gains as item slots.
+func test_report_screens_visual(host: Node) -> void:
+	_heading("Report screens visual")
+	var prestige: Control = load("res://scripts/ui/panels/PrestigePanel.gd").new()
+	host.add_child(prestige)
+	await host.get_tree().process_frame
+	_ok(_count_widgets(prestige, "stat_chip") >= 3, "Ascendancy status is chips (%d)" % _count_widgets(prestige, "stat_chip"))
+	prestige.queue_free()
+	var saved_report: Dictionary = CombatSimulatorManager.last_report
+	CombatSimulatorManager.last_report = {"trials": 100, "wins": 90, "deaths": 10, "timeouts": 0, "death_chance": 0.1,
+		"kills_per_hour": 120.0, "xp_per_hour_total": 5000.0, "food_per_hour": 12.0, "xp_per_hour": {}, "assumptions": [],
+		"kills": 90, "food_eaten": 5, "elapsed_seconds": 3600.0, "fights": 100, "damage_dealt": 1.0, "average_fight_seconds": 30.0,
+		"simulated_hours": 1.0, "trials_per_hour": 100.0, "valid": true, "seed": 1, "xp": {}}
+	var sim: Control = load("res://scripts/ui/panels/CombatSimulatorPanel.gd").new()
+	host.add_child(sim)
+	await host.get_tree().process_frame
+	sim.call("_refresh_results")
+	_ok(_count_widgets(sim, "stat_chip") >= 4, "the simulator headline is chips (%d)" % _count_widgets(sim, "stat_chip"))
+	sim.queue_free()
+	CombatSimulatorManager.last_report = saved_report
+	var dialog: OfflineSummaryDialog = OfflineSummaryDialog.new()
+	host.add_child(dialog)
+	dialog.show_summary({"processed_seconds": 3600.0, "elapsed_seconds": 3600.0, "activity": "skill", "skill": "woodcutting",
+		"actions": 1200, "items_gained": {"normal_log": 1200, "bird_nest": 2}, "xp_gained": {"woodcutting": 12000.0}})
+	_ok(_count_widgets(dialog, "stat_chip") >= 2, "offline time and actions are chips (%d)" % _count_widgets(dialog, "stat_chip"))
+	_ok(_count_widgets(dialog, "item_slot") >= 2, "items gained offline are slots (%d)" % _count_widgets(dialog, "item_slot"))
+	dialog.queue_free()
+	var detail: DetailPanel = host.get("_detail")
+	host.call("open_detail")
+	detail.show_recipe("woodcutting", str((DataLoader.get_skill("woodcutting")["actions"] as Array)[0]["id"]))
+	_ok(_count_widgets(detail, "stat_chip") >= 3, "a recipe's numbers in the detail card are chips (%d)" % _count_widgets(detail, "stat_chip"))
+	host.call("close_detail")
+
+## Every screen fits all three window widths; storage and the equipment browser show item slots;
+## shop summaries lead with a gold chip.
+func test_all_screens_fit(host: Node) -> void:
+	_heading("All screens fit")
+	BankManager.add_item_guaranteed("shark", 3)
+	BankManager.add_item_guaranteed("bronze_sword", 1)
+	var root: Control = host.get("_root")
+	for width in [1440, 900, 420]:
+		for screen in Screens.ORDER:
+			host.call("_show_screen", str(screen), {})
+			host.call("apply_layout_for_width", width)
+			_ok(root.get_combined_minimum_size().x <= float(width),
+				"%s fits %dpx (needs %dpx)" % [screen, width, int(root.get_combined_minimum_size().x)])
+	host.call("apply_layout_for_width", 1440)
+	host.call("_show_screen", Screens.BANK, {})
+	await host.get_tree().process_frame
+	_ok(_count_widgets((host.get("_panels") as Dictionary)[Screens.BANK], "item_slot") >= 2, "storage entries are item slots")
+	host.call("_show_screen", Screens.EQUIPMENT, {})
+	await host.get_tree().process_frame
+	_ok(_count_widgets((host.get("_panels") as Dictionary)[Screens.EQUIPMENT], "item_slot") >= 1, "the equipment browser shows item slots")
+	for sc in [Screens.STORE, Screens.PROVISIONER, Screens.SETTLEMENT]:
+		host.call("_show_screen", sc, {})
+		await host.get_tree().process_frame
+		_ok(_count_widgets((host.get("_panels") as Dictionary)[sc], "stat_chip") >= 1, "%s leads with chips" % sc)
+
+## Every Motion effect is gated by reduced motion AND by silent simulation (offline catch-up,
+## test runs): gated calls land on the final state and create no tween.
+func test_motion_gated(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
+	_heading("Motion gating")
+	var tree: SceneTree = host.get_tree()
+	var label := Label.new()
+	host.add_child(label)
+	var fmt := func(v: float) -> String: return UIStyle.fmt(v)
+	var saved: Variant = PlayerData.settings.get("reduced_motion", false)
+	PlayerData.settings["reduced_motion"] = true
+	var before: int = tree.get_processed_tweens().size()
+	Motion.count_up(label, 0.0, 1500.0, fmt)
+	_eq(label.text, UIStyle.fmt(1500.0), "reduced motion: count-up shows the final value at once")
+	_eq(tree.get_processed_tweens().size(), before, "reduced motion: no tween is created")
+	PlayerData.settings["reduced_motion"] = false
+	SimulationMode.begin()
+	before = tree.get_processed_tweens().size()
+	Motion.count_up(label, 0.0, 2500.0, fmt)
+	var page := Control.new()
+	host.add_child(page)
+	Motion.page_in(page)
+	_eq(label.text, UIStyle.fmt(2500.0), "silent simulation: count-up shows the final value at once")
+	_eq(tree.get_processed_tweens().size(), before, "silent simulation: no tween is created")
+	_eq(page.modulate.a, 1.0, "silent simulation: a page is shown at once")
+	SimulationMode.end()
+	Motion.force_reduced = false
+	before = tree.get_processed_tweens().size()
+	Motion.page_in(page)
+	_eq(tree.get_processed_tweens().size(), before + 1, "a page transition is one tween")
+	await tree.create_timer(0.35).timeout
+	_ok(is_equal_approx(page.modulate.a, 1.0), "the page ends fully visible (alpha %.2f)" % page.modulate.a)
+	var bar := ProgressBar.new()
+	host.add_child(bar)
+	Motion.shimmer(bar)
+	Motion.shimmer(bar)
+	_eq(bar.get_children().filter(func(c): return c.has_meta("shimmer")).size(), 1, "a shimmer never stacks")
+	var b: Button = UIStyle.button("Press me")
+	_ok(b.button_down.get_connections().size() >= 1, "buttons press in")
+	PlayerData.settings["reduced_motion"] = saved
+	label.queue_free()
+	page.queue_free()
+	bar.queue_free()
+	b.free()
+	Motion.force_reduced = motion_was
+
+## Level-ups burst with gold runes on the skill's sidebar entry; reward toasts glow in their
+## colour; reduced motion keeps the toast and drops the burst.
+func test_reward_moments(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
+	_heading("Reward moments")
+	var bursts := func() -> int:
+		return host.find_children("", "Control", true, false).filter(func(c): return c.has_meta("rune_burst")).size()
+	var saved: Variant = PlayerData.settings.get("reduced_motion", false)
+	PlayerData.settings["reduced_motion"] = false
+	EventBus.skill_level_up.emit("woodcutting", 2)
+	_eq(bursts.call(), 1, "a level-up bursts on its sidebar entry")
+	for i in range(80):
+		await host.get_tree().process_frame
+	_eq(bursts.call(), 0, "the burst cleans itself up")
+	PlayerData.settings["reduced_motion"] = true
+	EventBus.skill_level_up.emit("woodcutting", 3)
+	_eq(bursts.call(), 0, "reduced motion: no burst")
+	PlayerData.settings["reduced_motion"] = saved
+	var toasts: ToastStack = host.get("_toasts")
+	toasts.clear()
+	toasts.push_rare_drop("shark", 1, "test")
+	var column: VBoxContainer = toasts.get("_column")
+	var panel: PanelContainer = column.get_child(column.get_child_count() - 1)
+	var sb: StyleBoxFlat = panel.get_theme_stylebox("panel")
+	_eq(sb.border_color, UIStyle.item_rarity("shark")["color"], "a rare-drop toast glows in the item's rarity colour")
+	_ok(sb.shadow_size > 0, "and it glows")
+	toasts.clear()
+	Motion.force_reduced = motion_was
+
+## The suites run with motion off: no embers, page tweens, shimmers or bursts while thousands of
+## checks rebuild screens. Motion tests switch it on locally and restore it.
+func test_suite_runs_without_motion() -> void:
+	_heading("Suite motion")
+	_ok(Motion.reduced(), "the test runner runs with motion off")
+
 func test_identity_theme_builds() -> void:
 	_heading("Identity theme")
 	var theme: Theme = UIStyle.build_theme()
@@ -2682,34 +3183,44 @@ func test_surface_box_falls_back() -> void:
 	var sb: StyleBox = UIStyle.surface_box("nonexistent_kind_xyz")
 	_ok(sb is StyleBoxFlat, "missing art must fall back to StyleBoxFlat")
 
-## Task 6a pin: the files in assets/ui/ are old-scheme navy art, not ember art, so the art branch
-## is opt-in. Off by default the warm code-drawn surfaces render even though the art is on disk;
-## on, the box has to be a real 9-slice — the four texture margins carry the token value, because
-## a box with zero texture margins stretches the image instead of slicing it.
-## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
-func test_surface_box_uses_flat_by_default() -> void:
-	_heading("Identity surfaces")
-	UITokens.NINE_SLICE_ART_ENABLED = false
-	_ok(UIStyle.surface_box("panel") is StyleBoxFlat,
-		"with the art flag off the warm flat box is used even though panel_9slice.png exists")
-	if not ResourceLoader.exists("res://assets/ui/panel_9slice.png"):
-		UITokens.NINE_SLICE_ART_ENABLED = false
-		return
-	UITokens.NINE_SLICE_ART_ENABLED = true
-	var art = UIStyle.surface_box("panel")
-	_ok(art is StyleBoxTexture, "enabling the flag consumes assets/ui/<kind>_9slice.png")
-	if art is StyleBoxTexture:
-		var m: float = float(UITokens.NINE_SLICE_MARGINS.get("panel", 12))
-		_eq(art.texture_margin_left, m, "left texture margin slices the art")
-		_eq(art.texture_margin_right, m, "right texture margin slices the art")
-		_eq(art.texture_margin_top, m, "top texture margin slices the art")
-		_eq(art.texture_margin_bottom, m, "bottom texture margin slices the art")
-	UITokens.NINE_SLICE_ART_ENABLED = false
+## Every textured kind is a 9-slice StyleBoxTexture built from the generated leather/vellum; flat
+## kinds stay flat; a failed texture falls back to flat; a painted <kind>_grimoire_9slice.png wins.
+func test_surface_textures() -> void:
+	_heading("Grimoire surfaces")
+	TextureFactory.clear_cache()
+	for kind in UIStyle.TEXTURED_KINDS:
+		_ok(UIStyle.surface_box(kind) is StyleBoxTexture, "%s is a textured 9-slice" % kind)
+	_ok(UIStyle.surface_box("flat") is StyleBoxFlat, "flat list rows stay transparent")
+	_ok(UIStyle.surface_box("sunken") is StyleBoxFlat, "sunken wells stay flat")
+	var panel_box = UIStyle.surface_box("panel")
+	if panel_box is StyleBoxTexture:
+		var m: float = float(UITokens.NINE_SLICE_MARGINS["panel"])
+		_eq(panel_box.texture_margin_left, m, "the panel texture is sliced, not stretched")
+	TextureFactory.fail_for_test = true
+	TextureFactory.clear_cache()
+	_ok(UIStyle.surface_box("panel") is StyleBoxFlat, "a failed texture falls back to flat")
+	TextureFactory.fail_for_test = false
+	TextureFactory.clear_cache()
+	DirAccess.make_dir_recursive_absolute("user://art_test")
+	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
+	img.fill(Color.WHITE)
+	img.save_png("user://art_test/panel_grimoire_9slice.png")
+	var saved_dir: String = UIStyle.ART_DIR
+	UIStyle.ART_DIR = "user://art_test/"
+	var painted = UIStyle.surface_box("panel")
+	_ok(painted is StyleBoxTexture and painted.texture.get_width() == 32,
+		"a painted panel wins over the generated one")
+	UIStyle.ART_DIR = saved_dir
+	DirAccess.remove_absolute("user://art_test/panel_grimoire_9slice.png")
+	_ok(not (UIStyle.surface_box("panel") as StyleBoxTexture).texture.get_width() == 32,
+		"the old navy panel_9slice.png is never loaded")
 
 ## Task 4 pin: Motion helpers are no-ops when reduced motion is on, and the floater
 ## pool reuses hidden Labels instead of growing without bound (never queue_free).
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
 func test_motion_reduced_disables() -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Identity motion")
 	Motion.force_reduced = true
 	var c := Control.new()
@@ -2717,13 +3228,17 @@ func test_motion_reduced_disables() -> void:
 	_ok(c.modulate.a == 1.0, "reduced motion must leave alpha untouched")
 	Motion.force_reduced = false
 	c.free()
+	Motion.force_reduced = motion_was
 
 func test_floater_pool_bounded() -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	var parent := Control.new()
 	for i in 40:
 		Motion.spawn_floater(parent, "1", Color.WHITE)
 	_ok(parent.get_child_count() <= 12, "floater pool must stay bounded")
 	parent.free()
+	Motion.force_reduced = motion_was
 
 ## Task 5 review pin: a bar is built by a factory and parented by the caller, so tween_bar almost
 ## always sees it before it is in the tree, where no tween can be created. The value must be right
@@ -2731,6 +3246,8 @@ func test_floater_pool_bounded() -> void:
 ## and the glide must be armed rather than dropped.
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
 func test_tween_bar_defers_until_in_tree(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Identity motion")
 	var holder := Control.new()
 	host.add_child(holder)
@@ -2757,6 +3274,7 @@ func test_tween_bar_defers_until_in_tree(host: Node) -> void:
 	_ok(bar.get_signal_connection_list("tree_entered").is_empty(),
 		"the one-shot is spent, so re-parenting cannot stack a second glide")
 	holder.queue_free()
+	Motion.force_reduced = motion_was
 
 ## Task 5 review pin: the pulse has to pivot on the control's centre. The HP bar pulses on the
 ## frame it is added, when `size` is still (0,0), so a pivot read only at call time lands in the
@@ -2764,6 +3282,8 @@ func test_tween_bar_defers_until_in_tree(host: Node) -> void:
 ## covers a window resize moving the centre mid-pulse.
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
 func test_pulse_sets_center_pivot(host: Node) -> void:
+	var motion_was: bool = Motion.force_reduced
+	Motion.force_reduced = false
 	_heading("Identity motion")
 	var holder := Control.new()
 	host.add_child(holder)
@@ -2785,6 +3305,7 @@ func test_pulse_sets_center_pivot(host: Node) -> void:
 	_ok(late.pivot_offset == late.size * 0.5,
 		"the pulse re-reads the size once the control is laid out (%s of %s)" % [late.pivot_offset, late.size])
 	holder.queue_free()
+	Motion.force_reduced = motion_was
 
 ## Task 1 pin: abilities.json is a registry like every other data file, and an unknown id must
 ## come back empty rather than crashing a loadout screen that asks for a stale slot.

@@ -31,8 +31,9 @@ func show_summary(summary: Dictionary) -> void:
 
 	_content.add_child(UIStyle.title("While you were away", UITokens.FONT_DISPLAY))
 	var processed: float = float(summary.get("processed_seconds", 0.0))
-	_content.add_child(Widgets.key_value("Time processed", UIStyle.fmt_duration(processed),
-		UITokens.TEXT_STRONG))
+	var headline: Array = [Widgets.stat_chip("status", "idle", UIStyle.fmt_duration(processed), "Time processed", UITokens.TEXT_STRONG)]
+	var headline_row: HFlowContainer = Widgets.chip_row(headline)
+	_content.add_child(headline_row)
 	var capped: float = float(summary.get("capped_seconds", 0.0))
 	if capped > 1.0:
 		_content.add_child(Widgets.key_value("Excluded by your cap", UIStyle.fmt_duration(capped),
@@ -48,15 +49,14 @@ func show_summary(summary: Dictionary) -> void:
 
 	var activity: String = str(summary.get("activity", "none"))
 	if activity == "skill":
-		_content.add_child(Widgets.key_value("Activity",
-			"%s · %s" % [DataLoader.get_skill(str(summary.get("skill", ""))).get("name", "?"),
-				str(summary.get("action", ""))], UITokens.TEAL))
-		_content.add_child(Widgets.key_value("Actions completed", UIStyle.fmt_exact(float(summary.get("actions", 0)))))
+		headline_row.add_child(Widgets.stat_chip("skills", str(summary.get("skill", "")), str(DataLoader.get_skill(str(summary.get("skill", ""))).get("name", "?")),
+			"Activity: %s" % str(summary.get("action", "")), UITokens.TEAL))
+		headline_row.add_child(Widgets.stat_chip("status", "ok", UIStyle.fmt_exact(float(summary.get("actions", 0))) + " actions", "Actions completed"))
 	elif activity == "combat":
 		var combat: Dictionary = summary.get("combat", {})
-		_content.add_child(Widgets.key_value("Activity", "Expedition", UITokens.RED))
-		_content.add_child(Widgets.key_value("Victories", UIStyle.fmt_exact(float(combat.get("kills", 0)))))
-		_content.add_child(Widgets.key_value("Defeats", UIStyle.fmt_exact(float(combat.get("deaths", 0))),
+		headline_row.add_child(Widgets.stat_chip("navigation", Screens.COMBAT, "Combat", "Activity: combat", UITokens.RED))
+		headline_row.add_child(Widgets.stat_chip("skills", "attack", UIStyle.fmt_exact(float(combat.get("kills", 0))) + " won", "Victories"))
+		headline_row.add_child(Widgets.stat_chip("status", "danger", UIStyle.fmt_exact(float(combat.get("deaths", 0))) + " lost", "Defeats",
 			UITokens.RED if int(combat.get("deaths", 0)) > 0 else UITokens.TEXT))
 		if int(combat.get("dungeons", 0)) > 0:
 			_content.add_child(Widgets.key_value("Expeditions cleared", UIStyle.fmt_exact(float(combat["dungeons"])), UITokens.GOLD))
@@ -131,10 +131,14 @@ func _add_item_table(heading: String, table: Dictionary, _color: Color) -> void:
 	_content.add_child(UIStyle.section(heading))
 	var keys: Array = table.keys()
 	keys.sort_custom(func(a, b): return float(table[a]) > float(table[b]))
+	var slots := HFlowContainer.new()
+	slots.add_theme_constant_override("h_separation", UITokens.SP_2)
+	slots.add_theme_constant_override("v_separation", UITokens.SP_2)
+	_content.add_child(slots)
 	var shown: int = 0
 	for item_id in keys:
-		if shown >= 14:
+		if shown >= 24:
 			_content.add_child(UIStyle.label("…and %d more" % (keys.size() - shown), true, UITokens.FONT_MICRO))
 			break
-		_content.add_child(Widgets.item_row(str(item_id), int(table[item_id])))
+		slots.add_child(Widgets.item_slot(str(item_id), int(table[item_id])))
 		shown += 1

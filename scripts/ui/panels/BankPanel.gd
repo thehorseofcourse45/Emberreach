@@ -403,7 +403,7 @@ func _item_row(r: Dictionary) -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", UITokens.SP_4)
 	col.add_child(row)
-	row.add_child(Widgets.item_icon(item_id))
+	row.add_child(Widgets.item_slot(item_id, int(r["quantity"])))
 	var text := UIStyle.vbox(UITokens.SP_1)
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	# A flow container, for the same reason the actions row below is one: an HBoxContainer

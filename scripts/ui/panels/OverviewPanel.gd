@@ -380,31 +380,36 @@ func _rebuild_activity() -> void:
 	head.add_child(text)
 	col.add_child(head)
 	var progress: float = float(activity.get("progress", 0.0))
-	col.add_child(Widgets.progress_bar(progress, 1.0,
-		UITokens.RED if str(activity.get("kind", "")) == "combat" else UITokens.TEAL,
-		UIStyle.fmt_percent(progress), 14))
+	col.add_child(Widgets.meter(progress, 1.0,
+		"enemy_hp" if str(activity.get("kind", "")) == "combat" else "ember", UIStyle.fmt_percent(progress)))
 	var kind: String = str(activity.get("kind", "idle"))
 	if kind == "skill":
 		var est: Dictionary = ActionEstimates.for_action(str(activity.get("id", "")), str(activity.get("action_id", "")))
 		if not est.is_empty():
-			col.add_child(Widgets.key_value("Projection",
-				"≈ %s XP/h · ≈ %s %s/h" % [UIStyle.fmt(float(est["xp_per_hour"])),
-					UIStyle.fmt(float(est.get("output_per_hour", 0.0))), str(est.get("output_name", ""))],
-				UITokens.TEAL, "Assumptions: %s" % str(est["assumptions"])))
+			var skill_id: String = str(activity.get("id", ""))
+			var chips: Array = [
+				Widgets.stat_chip("skills", skill_id, "≈ %s XP/h" % UIStyle.fmt(float(est["xp_per_hour"])),
+					"Projected XP per hour. Assumptions: %s" % str(est["assumptions"]), UITokens.TEAL),
+				Widgets.stat_chip("navigation", Screens.BANK, "≈ %s %s/h" % [UIStyle.fmt(float(est.get("output_per_hour", 0.0))), str(est.get("output_name", ""))],
+					"Projected output per hour", UITokens.TEXT),
+				Widgets.stat_chip("status", "idle", UIStyle.fmt_duration(float(est["hours_to_next_level"]) * 3600.0),
+					"Time to the next level at this rate", UITokens.GOLD_BRIGHT),
+			]
 			if float(est.get("supply_hours", -1.0)) >= 0.0:
-				col.add_child(Widgets.key_value("Stock lasts about",
-					UIStyle.fmt_duration(float(est["supply_hours"])), UITokens.AMBER,
-					"At the current rate with no interruptions"))
-			col.add_child(Widgets.key_value("Time to next level (≈)",
-				UIStyle.fmt_duration(float(est["hours_to_next_level"]) * 3600.0), UITokens.GOLD))
+				chips.append(Widgets.stat_chip("status", "warning", UIStyle.fmt_duration(float(est["supply_hours"])),
+					"Your stock lasts about this long at the current rate", UITokens.AMBER))
+			col.add_child(Widgets.chip_row(chips))
 	elif kind == "combat":
 		var cmp: Dictionary = CombatManager.target_comparison()
 		if not cmp.is_empty():
-			col.add_child(Widgets.key_value("Target", "%s (Lv %d · %s, max hit %d)" % [
-				str(cmp["monster_name"]), int(cmp["monster_level"]), str(cmp["monster_damage_type"]),
-				int(cmp["monster_max_hit"])]))
-			col.add_child(Widgets.key_value("Your hit chance", UIStyle.fmt_percent(float(cmp["your_hit_chance_percent"]) / 100.0), UITokens.TEAL))
-			col.add_child(Widgets.key_value("Their hit chance", UIStyle.fmt_percent(float(cmp["their_hit_chance_percent"]) / 100.0), UITokens.RED))
+			col.add_child(Widgets.chip_row([
+				Widgets.stat_chip("navigation", Screens.COMBAT, "%s · Lv %d" % [str(cmp["monster_name"]), int(cmp["monster_level"])],
+					"Target: %s, %s damage, max hit %d" % [str(cmp["monster_name"]), str(cmp["monster_damage_type"]), int(cmp["monster_max_hit"])]),
+				Widgets.stat_chip("skills", "attack", UIStyle.fmt_percent(float(cmp["your_hit_chance_percent"]) / 100.0),
+					"Your hit chance against it", UITokens.TEAL),
+				Widgets.stat_chip("skills", "defence", UIStyle.fmt_percent(float(cmp["their_hit_chance_percent"]) / 100.0),
+					"Its hit chance against you", UITokens.RED),
+			]))
 	elif kind == "stopped":
 		var reason := UIStyle.label(str(activity.get("detail", "")), true, UITokens.FONT_SMALL)
 		reason.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -653,31 +658,27 @@ func _rebuild_loadout() -> void:
 	for slot in EquipmentManager.slots.keys():
 		if str(EquipmentManager.slots[slot]) != "":
 			filled += 1
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", UITokens.SP_5)
-	var col := UIStyle.vbox(UITokens.SP_2)
-	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	col.add_child(Widgets.key_value("Slots filled", "%d of %d" % [filled, EquipmentManager.SLOT_COUNT],
-		UITokens.GREEN if filled >= 5 else UITokens.AMBER))
-	col.add_child(Widgets.key_value("Max hit", UIStyle.fmt(float(summary["max_hit"])), UITokens.RED))
-	col.add_child(Widgets.key_value("Accuracy rating", UIStyle.fmt(float(summary["accuracy"]))))
-	col.add_child(Widgets.key_value("Attack interval", "%.2fs" % float(summary["attack_interval"])))
-	col.add_child(Widgets.key_value("Damage reduction", UIStyle.fmt_percent(float(summary["damage_reduction"]) / 100.0), UITokens.TEAL))
 	var evasion: Dictionary = summary["evasion"]
-	col.add_child(Widgets.key_value("Evasion (melee / ranged / magic)",
-		"%s / %s / %s" % [UIStyle.fmt(float(evasion["melee"])), UIStyle.fmt(float(evasion["ranged"])), UIStyle.fmt(float(evasion["magic"]))]))
-	col.add_child(Widgets.key_value("Active rites", str(PlayerData.active_prayers.size())))
-	col.add_child(Widgets.key_value("Active potion", str(DataLoader.get_item(PlayerData.active_potion).get("name", "none")),
-		UITokens.TEXT if PlayerData.active_potion != "" else UITokens.TEXT_MUTED,
-		"%d charges remaining" % PlayerData.potion_charges))
 	var food: int = _food_count()
-	col.add_child(Widgets.key_value("Food in store", UIStyle.fmt_exact(float(food)),
-		UITokens.GREEN if food > 0 else UITokens.AMBER,
-		"Auto-eat tier %d" % int(PlayerData.settings.get("auto_eat_tier", 0))))
-	col.add_child(Widgets.key_value("Storage", "%d / %d stacks" % [BankManager.get_used_slots(), BankManager.get_slot_limit()],
-		UITokens.AMBER if BankManager.is_full() else UITokens.TEXT))
-	row.add_child(col)
-	_loadout_box.add_child(row)
+	_loadout_box.add_child(Widgets.chip_row([
+		Widgets.stat_chip("slots", "platebody", "%d / %d" % [filled, EquipmentManager.SLOT_COUNT], "Equipment slots filled",
+			UITokens.GREEN if filled >= 5 else UITokens.AMBER),
+		Widgets.stat_chip("skills", "strength", UIStyle.fmt(float(summary["max_hit"])), "Max hit", UITokens.RED),
+		Widgets.stat_chip("skills", "attack", UIStyle.fmt(float(summary["accuracy"])), "Accuracy rating"),
+		Widgets.stat_chip("status", "slow", "%.2fs" % float(summary["attack_interval"]), "Attack interval"),
+		Widgets.stat_chip("skills", "defence", UIStyle.fmt_percent(float(summary["damage_reduction"]) / 100.0), "Damage reduction", UITokens.TEAL),
+		Widgets.stat_chip("slots", "shield", "%s / %s / %s" % [UIStyle.fmt(float(evasion["melee"])), UIStyle.fmt(float(evasion["ranged"])), UIStyle.fmt(float(evasion["magic"]))],
+			"Evasion against melee / ranged / magic"),
+		Widgets.stat_chip("navigation", Screens.PRAYERS, str(PlayerData.active_prayers.size()), "Active rites"),
+		Widgets.stat_chip("slots", "consumable", str(DataLoader.get_item(PlayerData.active_potion).get("name", "none")),
+			"Active potion · %d charges remaining" % PlayerData.potion_charges,
+			UITokens.TEXT if PlayerData.active_potion != "" else UITokens.TEXT_MUTED),
+		Widgets.stat_chip("skills", "cooking", UIStyle.fmt_exact(float(food)),
+			"Food in storage · auto-eat tier %d" % int(PlayerData.settings.get("auto_eat_tier", 0)),
+			UITokens.GREEN if food > 0 else UITokens.AMBER),
+		Widgets.stat_chip("navigation", Screens.BANK, "%d / %d" % [BankManager.get_used_slots(), BankManager.get_slot_limit()],
+			"Storage stacks used", UITokens.AMBER if BankManager.is_full() else UITokens.TEXT),
+	]))
 	_loadout_box.add_child(UIStyle.label(
 		"Readiness is preparation, not reflexes: the fight runs itself once you commit.",
 		true, UITokens.FONT_MICRO))
@@ -703,24 +704,21 @@ func _rebuild_stats() -> void:
 	var ready_ach: int = Achievements.ready_count()
 	var claimed_ach: int = Achievements.claimed_count()
 	var claimed: int = Quests.claimed_count()
-	_stats_box.add_child(Widgets.key_value("Playtime", UIStyle.fmt_duration(GameManager.playtime_seconds)))
-	_stats_box.add_child(Widgets.key_value("Total skill levels", UIStyle.fmt_exact(float(total_level))))
-	_stats_box.add_child(Widgets.key_value("Combat level", str(PlayerData.get_combat_level())))
-	_stats_box.add_child(Widgets.key_value("Tasks completed", "%d of %d" % [claimed, Quests.count()]))
-	_stats_box.add_child(Widgets.key_value("Milestones", "%d of %d" % [claimed_ach, Achievements.count()],
-		UITokens.GOLD_BRIGHT if ready_ach > 0 else UITokens.TEXT,
-		"%d ready to claim" % ready_ach if ready_ach > 0 else ""))
-	_stats_box.add_child(Widgets.key_value("Items discovered",
-		"%d of %d" % [(PlayerData.completion_log.get("items", {}) as Dictionary).size(), DataLoader.items.size()]))
-	_stats_box.add_child(Widgets.key_value("Enemies defeated (distinct)",
-		"%d of %d" % [(PlayerData.completion_log.get("monsters", {}) as Dictionary).size(), DataLoader.monsters.size()]))
-	_stats_box.add_child(Widgets.key_value("Expeditions cleared (distinct)",
-		"%d of %d" % [(PlayerData.completion_log.get("dungeons", {}) as Dictionary).size(), DataLoader.dungeons.size()]))
-	_stats_box.add_child(Widgets.key_value("Offline time processed",
-		UIStyle.fmt_duration(PlayerData.get_stat("offline_seconds_processed")), UITokens.TEXT_MUTED,
-		"Total time the simulation has caught up on your behalf"))
-	_stats_box.add_child(Widgets.key_value("Defeats", UIStyle.fmt_exact(PlayerData.get_stat("deaths")),
-		UITokens.TEXT_MUTED))
+	_stats_box.add_child(Widgets.chip_row([
+		Widgets.stat_chip("status", "idle", UIStyle.fmt_duration(GameManager.playtime_seconds), "Playtime"),
+		Widgets.stat_chip("navigation", Screens.STATS, UIStyle.fmt_exact(float(total_level)), "Total skill levels", UITokens.GOLD_BRIGHT),
+		Widgets.stat_chip("navigation", Screens.COMBAT, str(PlayerData.get_combat_level()), "Combat level"),
+		Widgets.stat_chip("navigation", Screens.QUESTS, "%d / %d" % [claimed, Quests.count()], "Tasks completed"),
+		Widgets.stat_chip("navigation", Screens.ACHIEVEMENTS, "%d / %d" % [claimed_ach, Achievements.count()],
+			"Milestones claimed" + (" · %d ready to claim" % ready_ach if ready_ach > 0 else ""),
+			UITokens.GOLD_BRIGHT if ready_ach > 0 else UITokens.TEXT),
+		Widgets.stat_chip("navigation", Screens.COLLECTION, "%d / %d" % [(PlayerData.completion_log.get("items", {}) as Dictionary).size(), DataLoader.items.size()], "Items discovered"),
+		Widgets.stat_chip("navigation", Screens.EXPEDITIONS, "%d / %d" % [(PlayerData.completion_log.get("dungeons", {}) as Dictionary).size(), DataLoader.dungeons.size()], "Expeditions cleared (distinct)"),
+		Widgets.stat_chip("skills", "slayer", "%d / %d" % [(PlayerData.completion_log.get("monsters", {}) as Dictionary).size(), DataLoader.monsters.size()], "Enemies defeated (distinct)"),
+		Widgets.stat_chip("status", "ok", UIStyle.fmt_duration(PlayerData.get_stat("offline_seconds_processed")),
+			"Offline time the simulation has caught up on your behalf", UITokens.TEXT_MUTED),
+		Widgets.stat_chip("status", "danger", UIStyle.fmt_exact(PlayerData.get_stat("deaths")), "Defeats", UITokens.TEXT_MUTED),
+	]))
 
 # =========================================================================
 #  Event log

@@ -225,8 +225,8 @@ func _rebuild_summary() -> void:
 			owned += 1
 	_summary.add_child(Widgets.progress_bar(float(owned), float(maxi(total, 1)), UITokens.BLUE,
 		"%d / %d owned" % [owned, total], 14, "Provisioner purchases you have already made"))
-	_summary.add_child(Widgets.key_value("Available gold", "%s GP" % UIStyle.fmt_exact(PlayerData.gp),
-		UITokens.GOLD_BRIGHT, "Gold is earned by selling goods and completing expeditions"))
+	_summary.add_child(Widgets.stat_chip("currencies", "gp", "%s GP" % UIStyle.fmt_exact(PlayerData.gp),
+		"Available gold — earned by selling goods and completing expeditions", UITokens.GOLD_BRIGHT))
 
 func _upgrade_card(upgrade_id: String, state: String) -> Control:
 	var u: Dictionary = DataLoader.shop[upgrade_id]

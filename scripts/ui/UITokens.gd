@@ -6,63 +6,86 @@ extends RefCounted
 ## changes it everywhere, which is what makes a large game feel like one product instead of a
 ## collection of unrelated panels.
 ##
-## Direction: Arcane Glass. A deep violet night behind everything (painted by MainUI as a radial
-## gradient), frosted translucent panels floating over it, soft coloured glows instead of hard
-## borders, and a violet→magenta accent reserved for primary actions and milestones. Cyan marks
-## gathering/recovery, rose marks danger. The legacy token NAMES are kept (GOLD = "the primary
-## accent", BORDER_GOLD = "the accent edge") so every panel inherits the look with no edits.
+## Direction: Grimoire on the Forge. A dark ember forge behind everything (MainUI's backdrop
+## shader), oxblood leather panels with gold trim floating over it, and smoked-vellum cards inside
+## them for content. Ember orange marks progress; gold ink marks headings and highlights. The token
+## NAMES are the long-standing ones (GOLD = "the primary accent", SURFACE_2 = "a card on a panel"),
+## so every panel inherits the look with no edits.
 
 # ---------------------------------------------------------------- colour: ground & surface
-const BG_DEEP := Color("#07071a")        ## app background, behind everything
-const BG := Color("#0c0b24")             ## workspace background
-## Surfaces are translucent on purpose: the gradient behind them shows through, which is what
-## makes the panels read as glass rather than flat cards.
-const SURFACE := Color("#1a1842c4")      ## raised panel (glass)
-const SURFACE_2 := Color("#ffffff0f")    ## raised row / input, layered on a panel
-const SURFACE_3 := Color("#8b5cf633")    ## hover / selected row (violet tint)
-const SURFACE_SUNKEN := Color("#0000004d") ## wells, logs, code-like blocks
-const BORDER := Color("#ffffff1c")
-const BORDER_STRONG := Color("#ffffff3d")
-const BORDER_GOLD := Color("#a78bfa")    ## accent edge (violet)
+const BG_DEEP := Color("#0d0a09")        ## forge, behind everything
+const BG := Color("#1b1512")             ## forge, upper half
+const FORGE_GLOW := Color(1.0, 0.353, 0.078, 0.35)  ## the glow rising from the forge floor
+const SURFACE := Color("#3a1c10")        ## leather panel (mid-tone of the leather gradient)
+const SURFACE_2 := Color("#503726")      ## smoked-vellum card (mid-tone of the vellum gradient)
+const SURFACE_3 := Color("#7a5636")      ## hover / selected row
+const SURFACE_SUNKEN := Color("#2e1f14") ## wells, logs, empty slots
+const BORDER := Color("#a8763a")         ## vellum edge
+const BORDER_STRONG := Color("#c88c2c")
+const BORDER_GOLD := Color("#c88c2c")    ## gold trim
+## Gradient stops the generated textures are painted from; the *_MID values are what text sits on.
+const LEATHER_TOP := Color("#4a2414")
+const LEATHER_BOTTOM := Color("#2a140b")
+const LEATHER_MID := Color("#3a1c10")
+const VELLUM_TOP := Color("#5a3e28")
+const VELLUM_BOTTOM := Color("#45301f")
+const VELLUM_MID := Color("#503726")
 
 # ---------------------------------------------------------------- colour: text
-const TEXT := Color("#e4e2f5")
-const TEXT_STRONG := Color("#ffffff")
-const TEXT_MUTED := Color("#b9b6d6")
-const TEXT_DIM := Color("#8b88b0")
-const TEXT_ON_GOLD := Color("#ffffff")   ## text on a filled primary button
+const TEXT := Color("#f1dcb8")           ## body ink
+const TEXT_STRONG := Color("#fff3dc")
+const TEXT_MUTED := Color("#cbb28b")
+const TEXT_DIM := Color("#c2b4a3")
+const TEXT_ON_GOLD := Color("#f3e3bd")   ## text on a filled (oxblood) primary button
 
 # ---------------------------------------------------------------- colour: semantics
-const GOLD := Color("#a78bfa")           ## primary accent: milestones, primary actions, goals
-const GOLD_BRIGHT := Color("#d8ccff")    ## headings and highlighted values
-const TEAL := Color("#22d3ee")           ## gathering, recovery, positive passive
-const BLUE := Color("#60a5fa")           ## crafting, arcane
-const AMBER := Color("#fbbf24")          ## caution / blocked
-const RED := Color("#ef4444")            ## danger, combat, destructive (a saturated red; 5.1:1 on BG, and far from GREEN under red-green colour blindness)
-const GREEN := Color("#5eead4")          ## success, satisfied requirement (light mint: stays apart from RED under red-green colour blindness)
-const PURPLE := Color("#e879f9")         ## rare / mastery
-const DISABLED := Color("#5d5a7d")
+## Every ink below reaches 4.5:1 on leather and on the lightest vellum, a selected row's brightened top
+## (VELLUM_TOP x UIStyle.RAISED_MODULATE) — pinned by test_grimoire_palette.
+const GOLD := Color("#ddae64")           ## primary accent: milestones, primary actions, goals
+const GOLD_BRIGHT := Color("#f0c870")    ## heading ink and highlighted values
+const TEAL := Color("#66c6b6")           ## gathering, recovery, positive passive
+const BLUE := Color("#8ebaeb")           ## crafting, arcane
+const AMBER := Color("#e2ac56")          ## caution / blocked
+const RED := Color("#eda398")            ## danger ink (a light ember-rose: readable on dark vellum)
+const GREEN := Color("#7fc683")          ## success, satisfied requirement
+const PURPLE := Color("#c7a9eb")         ## rare / mastery
+const DISABLED := Color("#7d6a58")
 
-# ---------------------------------------------------------------- colour: glass extras
-const ACCENT_VIOLET := Color("#7c3aed")  ## filled primary button
-const ACCENT_PINK := Color("#db2777")    ## the far end of the accent gradient
-const GLOW := Color("#8b5cf6")           ## shadow colour that makes panels glow
-const BG_GLOW_A := Color("#2b1d6e")      ## background gradient: light source
-const BG_GLOW_B := Color("#120f35")      ## background gradient: mid
-const CURRENCY := Color("#fcd34d")       ## real gold, for coin values and legendary loot
+# ---------------------------------------------------------------- colour: forge extras
+## Kept names from the glass era, remapped: callers that asked for "the accent fill" or "the glow"
+## get the forge equivalent.
+const ACCENT_VIOLET := Color("#6b1f12")  ## filled primary button (oxblood)
+const ACCENT_PINK := Color("#b8380f")    ## the far end of the accent gradient (ember)
+const GLOW := Color("#ff7a2a")           ## glow colour around panels and focus
+const BG_GLOW_A := Color("#3a1a0c")
+const BG_GLOW_B := Color("#1b1512")
+const CURRENCY := Color("#ffe39a")       ## real gold, for coin values and relic loot
+const DANGER_FILL := Color("#7a1f12")    ## filled destructive button
+const EMBER_BAR_A := Color("#a12a0b")    ## progress gradient: cold end
+const EMBER_BAR_B := Color("#ff7a2a")
+const EMBER_BAR_C := Color("#ffd27a")    ## progress gradient: hot end
 
 # ---------------------------------------------------------------- rarity (presentation only)
 ## Rarity is a presentation layer derived from data we already have (explicit tier, then sell
 ## value band). It is documented here so nobody mistakes it for a gameplay stat.
-## Legendary/relic keep literal golds: GOLD/GOLD_BRIGHT are the ember accent now.
 const RARITY: Dictionary = {
-	"common": {"label": "Common", "color": Color("#8b88b0")},
+	"common": {"label": "Common", "color": Color("#c0b5a1")},
 	"uncommon": {"label": "Uncommon", "color": TEAL},
 	"rare": {"label": "Rare", "color": BLUE},
 	"epic": {"label": "Epic", "color": PURPLE},
-	"legendary": {"label": "Legendary", "color": Color("#fbbf24")},
+	"legendary": {"label": "Legendary", "color": Color("#ffc845")},
 	"relic": {"label": "Relic", "color": CURRENCY},
 }
+
+## WCAG 2 contrast ratio between two opaque colours (1.0 .. 21.0).
+static func contrast_ratio(a: Color, b: Color) -> float:
+	var la: float = _luminance(a)
+	var lb: float = _luminance(b)
+	return (maxf(la, lb) + 0.05) / (minf(la, lb) + 0.05)
+
+static func _luminance(c: Color) -> float:
+	var ch := func(v: float) -> float: return v / 12.92 if v <= 0.03928 else pow((v + 0.055) / 1.055, 2.4)
+	return 0.2126 * ch.call(c.r) + 0.7152 * ch.call(c.g) + 0.0722 * ch.call(c.b)
 
 # ---------------------------------------------------------------- spacing
 const SP_1 := 2
@@ -81,15 +104,9 @@ const R_LG := 14
 const R_PILL := 999
 
 # ---------------------------------------------------------------- nine-slice
-## The files in assets/ui/ are old-scheme navy art, not ember art, so consuming them is opt-in:
-## with this off the UI renders the warm code-drawn surfaces (UIStyle.surface_box's flat
-## fallback). Flip it to true once the owner's ember art lands and every
-## assets/ui/<kind>_9slice.png is sliced into the surfaces below. A var, not a const, so a test
-## can flip it (same pattern as Motion.force_reduced).
-static var NINE_SLICE_ART_ENABLED: bool = false
-## Per-kind content/expand inset when 9-slice art exists (see UIStyle.surface_box).
-## Missing kinds fall back to 12; missing art falls back to StyleBoxFlat.
-const NINE_SLICE_MARGINS := {"panel": 12, "button": 8, "chip": 6}
+## Texture margin per surface kind: how much of each edge is the frame that must not stretch.
+const NINE_SLICE_MARGINS := {"panel": 12, "overlay": 12, "button": 8, "header": 10, "card": 10,
+	"chip": 6, "row": 6, "raised": 8, "slot": 6}
 
 # ---------------------------------------------------------------- type
 const FONT_MICRO := 11
@@ -125,6 +142,8 @@ const W_SIDEBAR_COMPACT := 56
 ## The contextual detail pane. It was wide enough to compete with the workspace for attention, so
 ## it is deliberately the smaller half of the window: the workspace is where the game is played.
 const W_DETAIL := 260
+## The pop-up detail card on wide windows.
+const W_DETAIL_CARD := 380
 const ICON_SM := 18
 const ICON_MD := 26
 const ICON_LG := 40
@@ -132,6 +151,7 @@ const ICON_XL := 64
 
 ## Layout breakpoints (viewport width in CSS pixels).
 const BP_NARROW := 760      ## below this: drawer navigation, stacked layout
+const BP_RAIL := 900        ## below this (and above BP_NARROW): icon-only chapter rail
 const BP_MEDIUM := 1080     ## below this: detail panel collapses under the workspace
 
 static func rarity(key: String) -> Dictionary:

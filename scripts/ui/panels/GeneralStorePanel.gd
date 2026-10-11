@@ -127,8 +127,8 @@ func _rebuild_summary() -> void:
 	_summary.add_child(Widgets.progress_bar(float(buyable), float(offers.size()), UITokens.GOLD,
 		"%d of %d lines affordable now" % [buyable, offers.size()], 14,
 		"Stock you can buy with the gold you are holding"))
-	_summary.add_child(Widgets.key_value("Available gold", "%s GP" % UIStyle.fmt_exact(PlayerData.gp),
-		UITokens.GOLD_BRIGHT, "Gold is earned by selling goods and completing expeditions"))
+	_summary.add_child(Widgets.stat_chip("currencies", "gp", "%s GP" % UIStyle.fmt_exact(PlayerData.gp),
+		"Available gold — earned by selling goods and completing expeditions", UITokens.GOLD_BRIGHT))
 	if gated > 0:
 		_summary.add_child(UIStyle.colored_label(
 			"%d line%s stay shut until you have trained the skill that makes the item" % [gated, "" if gated == 1 else "s"],

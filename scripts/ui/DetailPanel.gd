@@ -14,6 +14,11 @@ class_name DetailPanel
 ## presents advice it cannot take the player to.
 
 signal navigated(route: Dictionary)
+## The card's own close button.
+signal close_requested
+
+## While pinned, the card stays open across navigation and outside clicks.
+var pinned: bool = false
 
 var _title: Label
 var _subtitle: Label
@@ -24,6 +29,18 @@ var _current_payload: Variant = null
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_4)
+	var head := HBoxContainer.new()
+	head.alignment = BoxContainer.ALIGNMENT_END
+	var pin := UIStyle.mini_button("Pin", "Keep this card open while you move around")
+	pin.toggle_mode = true
+	pin.toggled.connect(func(on: bool): pinned = on)
+	head.add_child(pin)
+	var close := UIStyle.mini_button("Close", "Close the details (Esc)")
+	close.pressed.connect(func():
+		pin.button_pressed = false
+		close_requested.emit())
+	head.add_child(close)
+	add_child(head)
 	_title = UIStyle.title("Details", UITokens.FONT_SUBHEAD)
 	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_title)
@@ -46,6 +63,9 @@ func _ready() -> void:
 	EventBus.bank_changed.connect(_refresh_if_goal)
 	EventBus.skill_level_up.connect(func(_s, _l): _refresh_if_goal())
 	EventBus.state_refreshed.connect(_refresh_if_goal)
+
+func has_content() -> bool:
+	return _current_kind != ""
 
 ## The panel is told which screen is showing; screens may also push richer context.
 func set_context(panel: Control, route: Dictionary) -> void:
@@ -333,19 +353,23 @@ func show_recipe(skill_id: String, action_id: String) -> void:
 	var est: Dictionary = ActionEstimates.for_action(skill_id, action_id)
 	if not est.is_empty():
 		_body.add_child(UIStyle.section("Projection", str(est["assumptions"])))
-		_body.add_child(Widgets.key_value("Action time", "%.2fs" % float(est["interval"])))
-		_body.add_child(Widgets.key_value("XP per action", UIStyle.fmt(float(est["xp_per_action"])), UITokens.BLUE))
-		_body.add_child(Widgets.key_value("XP per hour (≈)", UIStyle.fmt(float(est["xp_per_hour"])), UITokens.BLUE))
-		_body.add_child(Widgets.key_value("Success chance", UIStyle.fmt_percent(float(est["success_chance"]))))
+		var chips: Array = [
+			Widgets.stat_chip("status", "idle", "%.2fs" % float(est["interval"]), "Action time"),
+			Widgets.stat_chip("skills", skill_id, UIStyle.fmt(float(est["xp_per_action"])) + " XP", "XP per action", UITokens.BLUE),
+			Widgets.stat_chip("skills", skill_id, "≈ %s XP/h" % UIStyle.fmt(float(est["xp_per_hour"])), "XP per hour (estimate)", UITokens.BLUE),
+			Widgets.stat_chip("status", "ok", UIStyle.fmt_percent(float(est["success_chance"])), "Success chance"),
+		]
 		if float(est.get("output_per_hour", 0.0)) > 0.0:
-			_body.add_child(Widgets.key_value("Output per hour (≈)",
-				"%s %s" % [UIStyle.fmt(float(est["output_per_hour"])), str(est["output_name"])], UITokens.TEAL))
+			chips.append(Widgets.stat_chip("navigation", Screens.BANK, "≈ %s %s/h" % [UIStyle.fmt(float(est["output_per_hour"])), str(est["output_name"])],
+				"Output per hour (estimate)", UITokens.TEAL))
 		if float(est["xp_to_next"]) > 0.0 and float(est["xp_per_hour"]) > 0.0:
-			_body.add_child(Widgets.key_value("Next level in (≈)",
-				UIStyle.fmt_duration(float(est["xp_to_next"]) / maxf(1.0, float(est["xp_per_hour"])) * 3600.0), UITokens.GOLD))
+			chips.append(Widgets.stat_chip("navigation", Screens.STATS,
+				UIStyle.fmt_duration(float(est["xp_to_next"]) / maxf(1.0, float(est["xp_per_hour"])) * 3600.0),
+				"Time to the next level (estimate)", UITokens.GOLD_BRIGHT))
 		if float(est.get("supply_hours", -1.0)) >= 0.0:
-			_body.add_child(Widgets.key_value("Current stock lasts (≈)",
-				UIStyle.fmt_duration(float(est["supply_hours"])), UITokens.AMBER))
+			chips.append(Widgets.stat_chip("status", "warning", UIStyle.fmt_duration(float(est["supply_hours"])),
+				"Your current stock lasts about this long", UITokens.AMBER))
+		_body.add_child(Widgets.chip_row(chips))
 
 	var inputs: Dictionary = action.get("input_items", {})
 	if not inputs.is_empty():

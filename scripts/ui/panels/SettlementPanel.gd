@@ -76,9 +76,12 @@ func _rebuild_resources() -> void:
 		row.add_child(Widgets.badge(TownshipManager.resource_role(res_id), UITokens.BLUE,
 			"What this resource is for"))
 		_resources_box.add_child(row)
-	_resources_box.add_child(Widgets.key_value("Residents", str(TownshipManager.productions_population()), UITokens.TEXT_MUTED,
-		"Homes raise the settlement's population; population gates larger structures"))
-	_resources_box.add_child(Widgets.key_value("Settlement XP / hour", UIStyle.fmt(TownshipManager.xp_per_hour()), UITokens.GOLD, "Earned each production tick from residents, online or offline"))
+	_resources_box.add_child(Widgets.chip_row([
+		Widgets.stat_chip("navigation", Screens.SETTLEMENT, "%s residents" % str(TownshipManager.productions_population()),
+			"Homes raise the settlement's population; population gates larger structures"),
+		Widgets.stat_chip("skills", "township", "%s XP/h" % UIStyle.fmt(TownshipManager.xp_per_hour()),
+			"Settlement XP per hour, earned each production tick from residents, online or offline", UITokens.GOLD_BRIGHT),
+	]))
 	_ticks.text = "Next production tick in %s  ·  total stored %s" % [
 		UIStyle.fmt_duration(TownshipManager.seconds_to_next_tick()), UIStyle.fmt(total)]
 

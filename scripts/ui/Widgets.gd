@@ -10,6 +10,181 @@ extends RefCounted
 
 ## The narrowest a control may demand before the row containing it becomes the layout problem.
 const MIN_CONTROL_W: int = 148
+const _Nav = preload("res://scripts/ui/SidebarNav.gd")
+
+# =========================================================================
+#  Grimoire building blocks (chips, slots, meters, section cards)
+# =========================================================================
+## Each root is tagged with meta "widget" so screen tests can count what a screen is built from.
+
+const CHIP_MAX_W: int = 220
+const SLOT_SIZE: int = 48
+
+## Icon + value in a vellum pill; the explanation lives in the tooltip. Long values are clipped
+## with an ellipsis rather than widening the row they sit in.
+static func stat_chip(icon_kind: String, icon_id: String, value: String, tooltip: String,
+		color: Color = UITokens.TEXT) -> Control:
+	var chip := PanelContainer.new()
+	chip.set_meta("widget", "stat_chip")
+	chip.add_theme_stylebox_override("panel", UIStyle.surface_box("chip"))
+	chip.tooltip_text = tooltip
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", UITokens.SP_2)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	chip.add_child(row)
+	var icon := TextureRect.new()
+	# "navigation" ids are screen ids; resolve them the way the sidebar does, since most screens
+	# have no file of their own under icons/navigation.
+	if icon_kind == "navigation":
+		icon.texture = AssetRegistry.icon(_Nav._icon_kind_for(icon_id), _Nav._icon_id_for(icon_id))
+	else:
+		icon.texture = AssetRegistry.icon(icon_kind, icon_id)
+	icon.custom_minimum_size = Vector2(UITokens.ICON_SM, UITokens.ICON_SM)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(icon)
+	var l := Label.new()
+	l.name = "value"
+	l.text = value
+	l.add_theme_font_size_override("font_size", UITokens.FONT_SMALL)
+	l.add_theme_color_override("font_color", color)
+	l.clip_text = true
+	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(l)
+	set_chip_value(chip, value)
+	return chip
+
+## Change a chip's value. The value label clips (so a long value cannot widen its row), which
+## means its width is set here from the text rather than measured by the label itself.
+static func set_chip_value(chip: Control, value: String) -> void:
+	var l := chip.find_child("value", true, false) as Label
+	if l == null:
+		return
+	l.text = value
+	var room: float = float(CHIP_MAX_W - UITokens.ICON_SM - UITokens.SP_2 - 20)
+	var need: float = ThemeDB.fallback_font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, UITokens.FONT_SMALL).x + 2.0
+	l.custom_minimum_size = Vector2(minf(need, room), 0)
+	if not chip.has_meta("base_tip"):
+		chip.set_meta("base_tip", chip.tooltip_text)
+	var base: String = str(chip.get_meta("base_tip"))
+	chip.tooltip_text = base if need <= room else (value + "
+" + base).strip_edges()
+
+## A wrapping row of chips.
+static func chip_row(chips: Array) -> HFlowContainer:
+	var flow := HFlowContainer.new()
+	flow.set_meta("widget", "chip_row")
+	flow.add_theme_constant_override("h_separation", UITokens.SP_2)
+	flow.add_theme_constant_override("v_separation", UITokens.SP_2)
+	for c in chips:
+		flow.add_child(c)
+	return flow
+
+## A square slot showing one item with its count; empty id = an empty slot.
+static func item_slot(item_id: String, count: int, on_press: Callable = Callable()) -> Control:
+	var slot := Control.new()
+	slot.set_meta("widget", "item_slot")
+	slot.custom_minimum_size = Vector2(SLOT_SIZE, SLOT_SIZE)
+	var bg := Panel.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg.add_theme_stylebox_override("panel", UIStyle.surface_box("slot" if item_id != "" else "sunken"))
+	slot.add_child(bg)
+	if item_id == "":
+		slot.tooltip_text = "Empty slot"
+	else:
+		var icon: Control = item_icon(item_id, UITokens.ICON_LG)
+		icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+		icon.offset_left = 4
+		icon.offset_top = 4
+		icon.offset_right = -4
+		icon.offset_bottom = -4
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(icon)
+		slot.tooltip_text = item_tooltip(item_id)
+		if count > 1:
+			var badge_label := Label.new()
+			badge_label.text = UIStyle.fmt(float(count))
+			badge_label.add_theme_font_size_override("font_size", UITokens.FONT_MICRO)
+			badge_label.add_theme_color_override("font_color", UITokens.TEXT_STRONG)
+			badge_label.add_theme_color_override("font_outline_color", Color.BLACK)
+			badge_label.add_theme_constant_override("outline_size", 4)
+			badge_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+			badge_label.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+			badge_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+			badge_label.offset_right = -3
+			badge_label.offset_bottom = -1
+			badge_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			slot.add_child(badge_label)
+	if on_press.is_valid():
+		slot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		slot.gui_input.connect(func(e: InputEvent):
+			if e is InputEventMouseButton and (e as InputEventMouseButton).pressed and (e as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+				on_press.call())
+	return slot
+
+const _METER_STOPS: Dictionary = {
+	"ember": [UITokens.EMBER_BAR_A, UITokens.EMBER_BAR_B, UITokens.EMBER_BAR_C],
+	"hp": [Color("#2f7a3a"), UITokens.GREEN],
+	"enemy_hp": [Color("#8a1a10"), Color("#ff5a3a")],
+	"xp": [Color("#8a5a14"), UITokens.GOLD_BRIGHT],
+}
+
+static var _meter_fills: Dictionary = {}
+
+static func _meter_fill(kind: String) -> StyleBoxTexture:
+	if _meter_fills.has(kind):
+		return _meter_fills[kind]
+	var grad := Gradient.new()
+	var stops: Array = _METER_STOPS.get(kind, _METER_STOPS["ember"])
+	grad.colors = PackedColorArray(stops)
+	var offsets := PackedFloat32Array()
+	for i in range(stops.size()):
+		offsets.append(float(i) / float(maxi(1, stops.size() - 1)))
+	grad.offsets = offsets
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.width = 64
+	tex.height = 4
+	var fill := StyleBoxTexture.new()
+	fill.texture = tex
+	_meter_fills[kind] = fill
+	return fill
+
+## A bar with a gradient fill: ember (progress), hp, enemy_hp or xp.
+static func meter(value: float, maximum: float, kind: String = "ember", text: String = "", height: int = 14) -> ProgressBar:
+	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, height)
+	bar.set_meta("widget", "meter")
+	bar.tree_entered.connect(func() -> void: Motion.shimmer.call_deferred(bar), Object.CONNECT_ONE_SHOT)
+	var fill := _meter_fill(kind)
+	bar.add_theme_stylebox_override("fill", fill)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = UITokens.SURFACE_SUNKEN
+	bg.border_color = UITokens.BORDER
+	bg.set_border_width_all(1)
+	bg.set_corner_radius_all(UITokens.R_SM)
+	bar.add_theme_stylebox_override("background", bg)
+	return bar
+
+## A vellum card with a gold heading. Add content to section_body(card).
+static func section_card(title: String, hint: String = "") -> PanelContainer:
+	var card := PanelContainer.new()
+	card.set_meta("widget", "section_card")
+	card.add_theme_stylebox_override("panel", UIStyle.surface_box("card"))
+	var body := UIStyle.vbox(UITokens.SP_3)
+	card.add_child(body)
+	body.add_child(UIStyle.title(title, UITokens.FONT_SUBHEAD))
+	if hint != "":
+		var h := UIStyle.label(hint, true, UITokens.FONT_MICRO)
+		h.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		body.add_child(h)
+	card.set_meta("body", body)
+	return card
+
+static func section_body(card: PanelContainer) -> VBoxContainer:
+	return card.get_meta("body") as VBoxContainer
 
 # =========================================================================
 #  Resource chip / status bar items
@@ -41,6 +216,7 @@ const KEY_WRAP_CHARS: int = 22
 static func key_value(key: String, value: String, value_color: Color = UITokens.TEXT,
 		value_tooltip := "") -> Control:
 	var row := HBoxContainer.new()
+	row.set_meta("widget", "key_value")
 	row.add_theme_constant_override("separation", UITokens.SP_4)
 	var k := UIStyle.label(key, true, UITokens.FONT_SMALL)
 	if key.length() > KEY_WRAP_CHARS:
@@ -281,6 +457,7 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var unlocked: bool = level >= req
 	var mastery: int = MasteryManager.get_level(skill_id, action_id)
 	var card := VBoxContainer.new()
+	card.set_meta("widget", "action_card")
 	card.add_theme_constant_override("separation", UITokens.SP_1)
 	var row := Button.new()
 	row.custom_minimum_size = Vector2(0, 60)
@@ -338,10 +515,24 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 		content.add_child(lock)
 	var estimate: Dictionary = ActionEstimates.for_action(skill_id, action_id)
 	var interval: float = float(estimate.get("effective_interval", action.get("base_interval", 3.0)))
-	var time_label := UIStyle.label("%.1fs\n≈ %s XP/h" % [interval, UIStyle.fmt(float(estimate.get("xp_per_hour", 0)))], true, UITokens.FONT_MICRO)
-	time_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.add_child(time_label)
+	# What it makes, as a slot (the first output), then time and XP as chips.
+	if not outputs.is_empty():
+		var out_id: String = str(outputs.keys()[0])
+		var out_slot: Control = item_slot(out_id, int(outputs[out_id]))
+		out_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		out_slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		content.add_child(out_slot)
+	var numbers := UIStyle.vbox(UITokens.SP_1)
+	numbers.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	numbers.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	numbers.add_child(stat_chip("status", "idle", "%.1fs" % interval, "Time per action"))
+	numbers.add_child(stat_chip("skills", skill_id, "≈ %s XP/h" % UIStyle.fmt(float(estimate.get("xp_per_hour", 0))),
+		"Projected XP per hour", UITokens.TEAL))
+	for chip in numbers.get_children():
+		(chip as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(numbers)
 	row.add_child(content)
+	row.custom_minimum_size = Vector2(0, 64)
 	row.pressed.connect(func(): on_press.call(action_id))
 	var tips: Array[String] = [str(action.get("name", action_id))]
 	if str(action.get("description", "")) != "":
@@ -373,6 +564,10 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 		tips.append("LOCKED — requires %s %d" % [DataLoader.get_skill(skill_id).get("name", skill_id), req])
 	row.tooltip_text = "\n".join(tips)
 	card.add_child(row)
+	# The card's own meter: progress towards the next mastery level of this activity.
+	var mastery_bar := meter(XPTable.level_progress(MasteryManager.get_xp(skill_id, action_id), maxi(1, mastery)), 1.0, "xp", "", 4)
+	mastery_bar.tooltip_text = "Mastery %d — progress to the next mastery level" % mastery
+	card.add_child(mastery_bar)
 	return card
 
 static func _item_list(items: Dictionary) -> String:
