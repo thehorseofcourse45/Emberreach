@@ -521,5 +521,196 @@
         "hitpoints": 400
       }
     }
+  },
+  "mythic_sanctum_sweep": {
+    "id": "mythic_sanctum_sweep",
+    "name": "Mythic: Sanctum Sweep",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "The Astral Sanctum stirs again. Clear it before the stars turn.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 3,
+        "label": "Clear Astral Sanctum 3 times",
+        "dungeon_id": "astral_sanctum",
+        "route": {
+          "screen": "combat",
+          "area_id": "astral_sanctum"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
+  },
+  "mythic_citadel_sweep": {
+    "id": "mythic_citadel_sweep",
+    "name": "Mythic: Citadel Sweep",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Storm Citadel's gates open for a short while.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 3,
+        "label": "Clear Storm Citadel 3 times",
+        "dungeon_id": "storm_citadel",
+        "route": {
+          "screen": "combat",
+          "area_id": "storm_citadel"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 6000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
+  },
+  "mythic_crown_sweep": {
+    "id": "mythic_crown_sweep",
+    "name": "Mythic: Crown Sweep",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "The Crown of Embers burns hot this window.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear Crown of Embers twice",
+        "dungeon_id": "crown_of_embers",
+        "route": {
+          "screen": "combat",
+          "area_id": "crown_of_embers"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 8000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
+  },
+  "mythic_archive_sweep": {
+    "id": "mythic_archive_sweep",
+    "name": "Mythic: Archive Sweep",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "The Last Librarian is recalling overdue pages.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear the Archive of the Unwritten twice",
+        "dungeon_id": "archive_of_the_unwritten",
+        "route": {
+          "screen": "combat",
+          "area_id": "archive_of_the_unwritten"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 10000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
+  },
+  "mythic_tidekeeper_hunt": {
+    "id": "mythic_tidekeeper_hunt",
+    "name": "Mythic: Tidekeeper Hunt",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Hunt the Celestial Tidekeeper down.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat the Celestial Tidekeeper 5 times",
+        "monster_id": "astral_sanctum_boss",
+        "route": {
+          "screen": "combat",
+          "area_id": "astral_sanctum"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
+  },
+  "mythic_librarian_hunt": {
+    "id": "mythic_librarian_hunt",
+    "name": "Mythic: Librarian Hunt",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "End the Last Librarian's long vigil.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat the Last Librarian 5 times",
+        "monster_id": "archive_boss",
+        "route": {
+          "screen": "combat",
+          "area_id": "archive_of_the_unwritten"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 10000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
+  },
+  "mythic_sealwright": {
+    "id": "mythic_sealwright",
+    "name": "Mythic: Sealwright",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Bring the settlement's seal-presses to full output.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 4,
+        "label": "Gather 4 Masterwork Seals",
+        "item_id": "masterwork_seal"
+      }
+    ],
+    "reward": {
+      "gp": 4000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
+  },
+  "mythic_fortune": {
+    "id": "mythic_fortune",
+    "name": "Mythic: Dragon's Hoard",
+    "difficulty": "hard",
+    "region": "farmlands",
+    "description": "Prove the treasury can bear the Archive's costs.",
+    "objectives": [
+      {
+        "kind": "gp_total",
+        "required": 500000000,
+        "label": "Earn 500,000,000 GP"
+      }
+    ],
+    "reward": {
+      "gp": 20000000,
+      "items": {
+        "masterwork_seal": 1
+      }
+    }
   }
 }

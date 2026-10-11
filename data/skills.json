@@ -4789,6 +4789,32 @@
         }
       },
       {
+        "id": "assemble_sunforged_aegis",
+        "name": "Assemble Sunforged Aegis",
+        "level_required": 120,
+        "base_interval": 30.0,
+        "base_xp": 2600,
+        "mastery_action_time": 30.0,
+        "input_items": {
+          "worldheart_ore": 12,
+          "herald_bar": 250,
+          "masterwork_ingot": 2,
+          "ash_depth_shard": 30,
+          "sundered_sigil": 3,
+          "masterwork_seal": 4
+        },
+        "output_items": {
+          "sunforged_aegis": 1
+        },
+        "requires_building": {
+          "wonder_masterwork_forge": 3
+        },
+        "requires_skills": {
+          "enchanting": 115,
+          "wayfolding": 105
+        }
+      },
+      {
         "id": "forge_nightweaver_frame",
         "name": "Forge Nightweaver Frame",
         "level_required": 115,
@@ -5250,6 +5276,32 @@
         },
         "requires_skills": {
           "enchanting": 115
+        }
+      },
+      {
+        "id": "assemble_nightweaver_mantle",
+        "name": "Assemble Nightweaver Mantle",
+        "level_required": 120,
+        "base_interval": 30.0,
+        "base_xp": 22154,
+        "mastery_action_time": 30.0,
+        "input_items": {
+          "nightveil_silk": 12,
+          "herald_bar": 250,
+          "masterwork_ingot": 2,
+          "tide_depth_shard": 30,
+          "tidal_sigil": 3,
+          "masterwork_seal": 4
+        },
+        "output_items": {
+          "nightweaver_mantle": 1
+        },
+        "requires_building": {
+          "wonder_masterwork_forge": 3
+        },
+        "requires_skills": {
+          "enchanting": 115,
+          "lostfinding": 105
         }
       }
     ],
@@ -7281,6 +7333,32 @@
         },
         "requires_skills": {
           "enchanting": 115
+        }
+      },
+      {
+        "id": "assemble_starbound_vestments",
+        "name": "Assemble Starbound Vestments",
+        "level_required": 120,
+        "base_interval": 30.0,
+        "base_xp": 4395,
+        "mastery_action_time": 30.0,
+        "input_items": {
+          "stormglass_cargo": 12,
+          "herald_bar": 250,
+          "masterwork_ingot": 2,
+          "star_depth_shard": 30,
+          "march_sigil": 3,
+          "masterwork_seal": 4
+        },
+        "output_items": {
+          "starbound_vestments": 1
+        },
+        "requires_building": {
+          "wonder_masterwork_forge": 3
+        },
+        "requires_skills": {
+          "enchanting": 115,
+          "echo_keeping": 110
         }
       }
     ],
@@ -14482,7 +14560,11 @@
       }
     },
     "order": 36,
-    "description": "Scribe paper and ink into quality texts, equippable tomes and active glyphs."
+    "description": "Scribe paper and ink into quality texts, equippable tomes and active glyphs.",
+    "mastery_challenge_reward": {
+      "masterwork_seal": 1,
+      "masterwork_codex": 1
+    }
   },
   "engineering": {
     "id": "engineering",
@@ -14983,6 +15065,57 @@
         },
         "requires_skills": {
           "dreamwalking": 110
+        }
+      },
+      {
+        "id": "attune_worldheart_signet",
+        "name": "Attune Worldheart Signet",
+        "level_required": 118,
+        "base_interval": 30.0,
+        "base_xp": 2790,
+        "mastery_action_time": 30.0,
+        "input_items": {
+          "choir_core": 2,
+          "astral_core": 2,
+          "sovereign_core": 2,
+          "enchant_catalyst": 40,
+          "tide_depth_shard": 15,
+          "masterwork_seal": 3
+        },
+        "output_items": {
+          "worldheart_signet": 1
+        },
+        "requires_building": {
+          "wonder_archive_echoes": 3
+        },
+        "requires_skills": {
+          "customcraft": 105
+        }
+      },
+      {
+        "id": "attune_sovereign_locket",
+        "name": "Attune Sovereign's Locket",
+        "level_required": 120,
+        "base_interval": 30.0,
+        "base_xp": 2790,
+        "mastery_action_time": 30.0,
+        "input_items": {
+          "sovereign_core": 4,
+          "march_sigil": 5,
+          "tidal_sigil": 5,
+          "sundered_sigil": 5,
+          "enchant_catalyst": 40,
+          "star_depth_shard": 15,
+          "masterwork_seal": 3
+        },
+        "output_items": {
+          "sovereign_locket": 1
+        },
+        "requires_building": {
+          "wonder_archive_echoes": 3
+        },
+        "requires_skills": {
+          "inscription": 110
         }
       },
       {

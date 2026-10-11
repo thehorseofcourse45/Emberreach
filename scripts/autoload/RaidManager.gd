@@ -25,6 +25,9 @@ func difficulty_cfg() -> Dictionary:
 func start_raid(diff: String = "normal") -> bool:
     if active or not DataLoader.raid_shop.get("difficulties", {}).has(diff) or CombatManager.state != CombatManager.State.IDLE:
         return false
+    if locked_reason(diff) != "":
+        EventBus.notification.emit("Raid locked: %s" % locked_reason(diff), "warn")
+        return false
     difficulty = diff
     active = true
     coins_this_raid = 0.0
@@ -35,6 +38,14 @@ func start_raid(diff: String = "normal") -> bool:
     wave = maxi(0, int(ModifierManager.get_modifier(ModifierKeys.RAID_WAVE_SKIP)))
     _start_wave()
     return true
+
+## Why a difficulty cannot be started yet ("" when it can): its `requires` skill levels.
+func locked_reason(diff: String) -> String:
+    var reqs: Dictionary = DataLoader.raid_shop.get("difficulties", {}).get(diff, {}).get("requires", {})
+    for skill_id in reqs:
+        if PlayerData.get_level(str(skill_id)) < int(reqs[skill_id]):
+            return "Reach %s %d" % [str(DataLoader.get_skill(str(skill_id)).get("name", skill_id)), int(reqs[skill_id])]
+    return ""
 
 func _wave_size(w: int) -> int:
     return int(floor(2.0 + float(w) / 4.0))
@@ -47,8 +58,15 @@ func enemy_hp_mult() -> float:
 func _start_wave() -> void:
     wave += 1
     var list: Array = []
-    for _i in range(_wave_size(wave)):
-        list.append(WAVE_ENEMY)
+    var cfg: Dictionary = difficulty_cfg()
+    var boss_every: int = int(cfg.get("boss_every", 0))
+    var bosses: Array = cfg.get("bosses", [])
+    if boss_every > 0 and wave % boss_every == 0 and not bosses.is_empty():
+        # Boss waves: a single named boss, cycling through the configured roster.
+        list.append(str(bosses[(floori(float(wave) / float(boss_every)) - 1) % bosses.size()]))
+    else:
+        for _i in range(_wave_size(wave)):
+            list.append(str(cfg.get("enemy", WAVE_ENEMY)))
     EventBus.notification.emit("Golbin Raid — wave %d" % wave, "info")
     CombatManager.start_combat({"type": "raid", "id": "golbin_raid", "monsters": list,
         "endless": false, "raid": true})
@@ -64,6 +82,10 @@ func _on_combat_ended(ctx: Dictionary) -> void:
     coins_this_raid += earned
     if not PlayerData.stats.get("raid_waves_cleared", {}).has(str(wave)): PlayerData.record_unlock("raid", str(wave), "First clear: Raid wave %d (+%d coins)" % [wave, int(earned)])
     PlayerData.bump_stat("raid_waves_cleared", str(wave), 1)
+    var seal_every: int = int(difficulty_cfg().get("seal_every", 0))
+    if seal_every > 0 and wave % seal_every == 0:
+        BankManager.add_item_guaranteed("masterwork_seal", 1)
+        EventBus.notification.emit("Raid milestone: +1 Masterwork Seal", "success")
     pending_choices = _roll_choices()
     EventBus.notification.emit("Wave %d cleared (+%d raid coins) — choose an upgrade" % [wave, int(earned)], "success")
 

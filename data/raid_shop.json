@@ -45,6 +45,23 @@
     "hard": {
       "coin_mult": 1.5,
       "hp_mult": 1.25
+    },
+    "mythic": {
+      "coin_mult": 4.0,
+      "hp_mult": 0.5,
+      "enemy": "astral_sanctum_guardian_melee",
+      "boss_every": 5,
+      "bosses": [
+        "astral_sanctum_boss",
+        "storm_citadel_boss",
+        "crown_of_embers_boss",
+        "archive_boss"
+      ],
+      "seal_every": 10,
+      "requires": {
+        "slayer": 110,
+        "hitpoints": 115
+      }
     }
   }
 }

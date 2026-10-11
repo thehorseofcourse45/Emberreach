@@ -9702,5 +9702,208 @@
     "icon_id": "heralds_sigil",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
+  },
+  "sunforged_aegis": {
+    "id": "sunforged_aegis",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Sunforged Aegis",
+    "equipment_slot": 1,
+    "icon_id": "throneguard_cuirass",
+    "equipment_stats": {
+      "melee_defence": 58,
+      "ranged_defence": 52,
+      "magic_defence": 52,
+      "melee_strength": 12,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "defence": 120,
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "melee_max_hit_percent": 6
+    },
+    "description": "Legendary masterwork body armour. Forged in the Masterwork Forge from worldheart ore and endless-dungeon shards.",
+    "is_boss_drop": false,
+    "legendary": true
+  },
+  "nightweaver_mantle": {
+    "id": "nightweaver_mantle",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Nightweaver Mantle",
+    "equipment_slot": 1,
+    "icon_id": "blighted_cloak",
+    "equipment_stats": {
+      "ranged_defence": 60,
+      "melee_defence": 46,
+      "magic_defence": 46,
+      "ranged_attack": 40,
+      "ranged_strength": 22,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "ranged": 120,
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "ranged_max_hit_percent": 6
+    },
+    "description": "Legendary masterwork body armour. Woven from nightveil silk and endless-dungeon shards.",
+    "is_boss_drop": false,
+    "legendary": true
+  },
+  "starbound_vestments": {
+    "id": "starbound_vestments",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Starbound Vestments",
+    "equipment_slot": 1,
+    "icon_id": "archmage_robe",
+    "equipment_stats": {
+      "magic_defence": 60,
+      "melee_defence": 46,
+      "ranged_defence": 46,
+      "magic_attack": 45,
+      "magic_damage_percent": 8,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "magic": 120,
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "magic_max_hit_percent": 6
+    },
+    "description": "Legendary masterwork robes. Glyphed from stormglass cargo and endless-dungeon shards.",
+    "is_boss_drop": false,
+    "legendary": true
+  },
+  "worldheart_signet": {
+    "id": "worldheart_signet",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Worldheart Signet",
+    "equipment_slot": 7,
+    "icon_id": "charmed_gold_ring",
+    "equipment_stats": {
+      "damage_reduction": 2
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 4,
+      "global_mastery_xp_percent": 4
+    },
+    "description": "Legendary ring. Attuned in the Archive of Echoes from dream cores and masterwork seals.",
+    "is_boss_drop": false,
+    "legendary": true
+  },
+  "sovereign_locket": {
+    "id": "sovereign_locket",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Sovereign's Locket",
+    "equipment_slot": 6,
+    "icon_id": "artisan_amulet",
+    "equipment_stats": {
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "auto_eat_efficiency_percent": 10,
+      "food_healing_percent": 10
+    },
+    "description": "Legendary amulet. Attuned in the Archive of Echoes from sovereign cores and sigils.",
+    "is_boss_drop": false,
+    "legendary": true
+  },
+  "archivist_crown": {
+    "id": "archivist_crown",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Archivist's Crown",
+    "equipment_slot": 0,
+    "icon_id": "air_god_helmet",
+    "is_boss_drop": true,
+    "equipment_stats": {
+      "melee_defence": 42,
+      "ranged_defence": 42,
+      "magic_defence": 42,
+      "magic_attack": 20,
+      "ranged_attack": 20,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 6,
+      "crit_chance_percent": 3
+    },
+    "description": "Awarded for the first clear of the Archive of the Unwritten.",
+    "legendary": true
+  },
+  "completionist_cape": {
+    "id": "completionist_cape",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Completionist Cape",
+    "equipment_slot": 5,
+    "icon_id": "caravaneering_skillcape",
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_skill_xp_percent": 5,
+      "global_mastery_xp_percent": 5
+    },
+    "description": "Awarded for reaching level 99 in every skill.",
+    "is_boss_drop": false,
+    "legendary": false
+  },
+  "completionist_cape_superior": {
+    "id": "completionist_cape_superior",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "name": "Superior Completionist Cape",
+    "equipment_slot": 5,
+    "icon_id": "caravaneering_skillcape",
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_skill_xp_percent": 10,
+      "global_mastery_xp_percent": 10,
+      "global_gp_percent": 5
+    },
+    "description": "Awarded for reaching level 120 in every skill.",
+    "is_boss_drop": false,
+    "legendary": false
+  },
+  "masterwork_codex": {
+    "id": "masterwork_codex",
+    "name": "Masterwork Codex",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "enchant_catalyst",
+    "description": "Final specialist material for the Archive of Echoes. Awarded by a Scribing mastery challenge."
+  },
+  "trophy_archivist": {
+    "id": "trophy_archivist",
+    "name": "Archivist Trophy",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "diamond_ring",
+    "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
+    "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   }
 }

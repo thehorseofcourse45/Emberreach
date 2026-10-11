@@ -6109,7 +6109,7 @@ func _test_magic_gear() -> void:
 		if it.is_empty():
 			continue
 		var req: Dictionary = it.get("level_requirements", {})
-		if not req.has("magic") or int(it.get("equipment_slot", -1)) == 8 or bool(it.get("is_boss_drop", false)):
+		if not req.has("magic") or int(it.get("equipment_slot", -1)) == 8 or bool(it.get("is_boss_drop", false)) or bool(it.get("legendary", false)):
 			continue
 		tiers[int(req["magic"])] = int(tiers.get(int(req["magic"]), 0)) + 1
 	var robe_levels: Array = tiers.keys()

@@ -1133,5 +1133,66 @@
       }
     },
     "rewards_first_clear": {}
+  },
+  "archive_of_the_unwritten": {
+    "id": "archive_of_the_unwritten",
+    "name": "Archive of the Unwritten",
+    "level_range": [
+      395,
+      420
+    ],
+    "legendary": true,
+    "monsters": [
+      "archive_guardian_melee",
+      "archive_guardian_ranged",
+      "archive_guardian_magic",
+      "archive_guardian_melee",
+      "archive_guardian_ranged",
+      "archive_guardian_magic",
+      "archive_guardian_melee",
+      "archive_guardian_ranged",
+      "archive_guardian_magic",
+      "archive_guardian_melee",
+      "archive_guardian_ranged",
+      "archive_guardian_magic",
+      "archive_guardian_melee",
+      "archive_guardian_ranged",
+      "archive_guardian_magic",
+      "archive_guardian_melee",
+      "archive_guardian_ranged",
+      "archive_guardian_magic",
+      "archive_guardian_melee",
+      "archive_guardian_ranged",
+      "archive_guardian_magic",
+      "archive_guardian_melee",
+      "archive_boss"
+    ],
+    "requires": {
+      "slayer": 115,
+      "hitpoints": 120
+    },
+    "requires_dungeon": "crown_of_embers",
+    "requires_building": {
+      "wonder_archive_echoes": 3
+    },
+    "entry_items": {
+      "shark": 55,
+      "potion_dr_3": 5
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 150000000,
+      "items": {
+        "herald_bar": 45,
+        "enchant_catalyst": 8
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "archivist_crown": 1
+      }
+    },
+    "flavour": "Legendary expedition. Entry provisions are consumed once per attempt, including a retreat or defeat. Repeated clears provide crafting materials.",
+    "hex": "terrain_7_4"
   }
 }

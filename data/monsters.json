@@ -6482,5 +6482,178 @@
       }
     ],
     "is_boss": true
+  },
+  "archive_guardian_melee": {
+    "id": "archive_guardian_melee",
+    "name": "Archive Bladekeeper",
+    "combat_level": 395,
+    "hitpoints": 10010,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 356,
+    "accuracy_rating": 32216,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A keeper of pages that were never written.",
+    "phases": []
+  },
+  "archive_guardian_ranged": {
+    "id": "archive_guardian_ranged",
+    "name": "Archive Quillshot",
+    "combat_level": 407,
+    "hitpoints": 10010,
+    "attack_type": "ranged",
+    "attack_speed": 3.2,
+    "max_hit": 356,
+    "accuracy_rating": 32216,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A keeper of pages that were never written.",
+    "phases": []
+  },
+  "archive_guardian_magic": {
+    "id": "archive_guardian_magic",
+    "name": "Archive Glyphweaver",
+    "combat_level": 407,
+    "hitpoints": 10010,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 356,
+    "accuracy_rating": 32216,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A keeper of pages that were never written.",
+    "phases": []
+  },
+  "archive_boss": {
+    "id": "archive_boss",
+    "name": "The Last Librarian",
+    "combat_level": 420,
+    "hitpoints": 17875,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 427,
+    "accuracy_rating": 32216,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 65,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A keeper of pages that were never written.",
+    "phases": [
+      {
+        "at_hp_percent": 65,
+        "name": "The seal breaks",
+        "effects": {
+          "attack_type": "ranged",
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Last stand",
+        "effects": {
+          "attack_type": "melee",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
   }
 }

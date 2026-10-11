@@ -84,7 +84,9 @@ func _start_section() -> Control:
 		text.add_child(UIStyle.label(str(d).capitalize(), false, UITokens.FONT_BODY))
 		text.add_child(UIStyle.label("coins ×%.1f · enemy HP ×%.1f" % [
 			float(cfg.get("coin_mult", 1.0)), float(cfg.get("hp_mult", 1.0))], true, UITokens.FONT_SMALL))
-		var start := UIStyle.button("Begin raid", "Fight waves of golbins")
+		var lock: String = RaidManager.locked_reason(str(d))
+		var start := UIStyle.button("Begin raid" if lock == "" else lock, "Fight waves of golbins" if lock == "" else "Locked: " + lock)
+		start.disabled = lock != ""
 		start.pressed.connect(func():
 			# The single activity slot: a raid takes the slot, so clear whatever holds it.
 			if CombatManager.state != CombatManager.State.IDLE:

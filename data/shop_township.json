@@ -354,5 +354,48 @@
     "project_final_items": {
       "masterwork_ingot": 1
     }
+  },
+  "wonder_archive_echoes": {
+    "id": "wonder_archive_echoes",
+    "name": "Archive of Echoes",
+    "type": "township_building",
+    "is_wonder": true,
+    "description": "A permanent three-stage wonder. Complete Foundations, Construction, then Awakening. Each stage consumes the displayed settlement stores and bank materials.",
+    "requires": {
+      "echo_keeping": 110,
+      "lostfinding": 105,
+      "wayfolding": 105,
+      "customcraft": 105,
+      "inscription": 110,
+      "township": 115
+    },
+    "cost": {
+      "stone": 7000,
+      "goods": 2000,
+      "faith": 800
+    },
+    "cost_growth": 1.6,
+    "project_items": {
+      "flawless_echo": 150,
+      "herald_case": 200,
+      "grand_confluence": 150,
+      "herald_craft": 200,
+      "masterwork_seal": 1
+    },
+    "project_gp": 60000000,
+    "max_level": 3,
+    "stage_names": [
+      "Foundations",
+      "Construction",
+      "Awakening"
+    ],
+    "production": {
+      "faith": 12
+    },
+    "unlocks": "Archive of the Unwritten legendary expedition at stage 3",
+    "effect_note": "Stages increase hourly production; the final stage opens a new expedition.",
+    "project_final_items": {
+      "masterwork_codex": 1
+    }
   }
 }

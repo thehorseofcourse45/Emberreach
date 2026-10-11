@@ -13295,5 +13295,546 @@
       }
     },
     "category": "collection"
+  },
+  "path_of_completion": {
+    "id": "path_of_completion",
+    "name": "Path of Completion",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Reach level 99 in every skill. The Completionist Cape is the proof.",
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "attack",
+        "required": 99,
+        "label": "Bladework 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "strength",
+        "required": 99,
+        "label": "Might 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "defence",
+        "required": 99,
+        "label": "Warding 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "hitpoints",
+        "required": 99,
+        "label": "Vitality 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "ranged",
+        "required": 99,
+        "label": "Marksmanship 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "magic",
+        "required": 99,
+        "label": "Sorcery 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "prayer",
+        "required": 99,
+        "label": "Devotion 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "slayer",
+        "required": 99,
+        "label": "Huntsman 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "corruption",
+        "required": 99,
+        "label": "Blight 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "woodcutting",
+        "required": 99,
+        "label": "Timbercraft 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "fishing",
+        "required": 99,
+        "label": "Angling 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "mining",
+        "required": 99,
+        "label": "Delving 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "farming",
+        "required": 99,
+        "label": "Cultivation 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "firemaking",
+        "required": 99,
+        "label": "Kilncraft 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "cooking",
+        "required": 99,
+        "label": "Cookery 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "smithing",
+        "required": 99,
+        "label": "Forgecraft 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "fletching",
+        "required": 99,
+        "label": "Bowyering 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "crafting",
+        "required": 99,
+        "label": "Artifice 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "runecrafting",
+        "required": 99,
+        "label": "Glyphcraft 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "herblore",
+        "required": 99,
+        "label": "Apothecary 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "thieving",
+        "required": 99,
+        "label": "Larceny 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "agility",
+        "required": 99,
+        "label": "Wayfaring 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "summoning",
+        "required": 99,
+        "label": "Beastbinding 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "astrology",
+        "required": 99,
+        "label": "Starreading 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "alt_magic",
+        "required": 99,
+        "label": "Runescribing 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "township",
+        "required": 99,
+        "label": "Settlement 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "cartography",
+        "required": 99,
+        "label": "Surveying 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "archaeology",
+        "required": 99,
+        "label": "Excavation 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "harvesting",
+        "required": 99,
+        "label": "Prospecting 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "echo_keeping",
+        "required": 99,
+        "label": "Echo Keeping 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "wayfolding",
+        "required": 99,
+        "label": "Wayfolding 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "fermentation",
+        "required": 99,
+        "label": "Fermentation 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "customcraft",
+        "required": 99,
+        "label": "Customcraft 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "lostfinding",
+        "required": 99,
+        "label": "Lostfinding 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "ranching",
+        "required": 99,
+        "label": "Husbandry 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "inscription",
+        "required": 99,
+        "label": "Scribing 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "engineering",
+        "required": 99,
+        "label": "Engineering 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "enchanting",
+        "required": 99,
+        "label": "Attunement 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "dreamwalking",
+        "required": 99,
+        "label": "Dreamwalking 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "caravaneering",
+        "required": 99,
+        "label": "Caravaneering 99"
+      }
+    ],
+    "reward": {
+      "items": {
+        "completionist_cape": 1
+      }
+    }
+  },
+  "path_of_mastery": {
+    "id": "path_of_mastery",
+    "name": "Path of Mastery",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Reach level 120 in every skill. The Superior Completionist Cape is the proof.",
+    "prerequisites": [
+      "path_of_completion"
+    ],
+    "objectives": [
+      {
+        "kind": "skill_level",
+        "skill_id": "attack",
+        "required": 120,
+        "label": "Bladework 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "strength",
+        "required": 120,
+        "label": "Might 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "defence",
+        "required": 120,
+        "label": "Warding 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "hitpoints",
+        "required": 120,
+        "label": "Vitality 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "ranged",
+        "required": 120,
+        "label": "Marksmanship 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "magic",
+        "required": 120,
+        "label": "Sorcery 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "prayer",
+        "required": 120,
+        "label": "Devotion 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "slayer",
+        "required": 120,
+        "label": "Huntsman 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "corruption",
+        "required": 120,
+        "label": "Blight 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "woodcutting",
+        "required": 120,
+        "label": "Timbercraft 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "fishing",
+        "required": 120,
+        "label": "Angling 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "mining",
+        "required": 120,
+        "label": "Delving 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "farming",
+        "required": 120,
+        "label": "Cultivation 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "firemaking",
+        "required": 120,
+        "label": "Kilncraft 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "cooking",
+        "required": 120,
+        "label": "Cookery 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "smithing",
+        "required": 120,
+        "label": "Forgecraft 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "fletching",
+        "required": 120,
+        "label": "Bowyering 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "crafting",
+        "required": 120,
+        "label": "Artifice 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "runecrafting",
+        "required": 120,
+        "label": "Glyphcraft 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "herblore",
+        "required": 120,
+        "label": "Apothecary 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "thieving",
+        "required": 120,
+        "label": "Larceny 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "agility",
+        "required": 120,
+        "label": "Wayfaring 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "summoning",
+        "required": 120,
+        "label": "Beastbinding 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "astrology",
+        "required": 120,
+        "label": "Starreading 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "alt_magic",
+        "required": 120,
+        "label": "Runescribing 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "township",
+        "required": 120,
+        "label": "Settlement 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "cartography",
+        "required": 120,
+        "label": "Surveying 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "archaeology",
+        "required": 120,
+        "label": "Excavation 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "harvesting",
+        "required": 120,
+        "label": "Prospecting 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "echo_keeping",
+        "required": 120,
+        "label": "Echo Keeping 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "wayfolding",
+        "required": 120,
+        "label": "Wayfolding 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "fermentation",
+        "required": 120,
+        "label": "Fermentation 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "customcraft",
+        "required": 120,
+        "label": "Customcraft 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "lostfinding",
+        "required": 120,
+        "label": "Lostfinding 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "ranching",
+        "required": 120,
+        "label": "Husbandry 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "inscription",
+        "required": 120,
+        "label": "Scribing 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "engineering",
+        "required": 120,
+        "label": "Engineering 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "enchanting",
+        "required": 120,
+        "label": "Attunement 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "dreamwalking",
+        "required": 120,
+        "label": "Dreamwalking 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "caravaneering",
+        "required": 120,
+        "label": "Caravaneering 120"
+      }
+    ],
+    "reward": {
+      "items": {
+        "completionist_cape_superior": 1,
+        "masterwork_seal": 5
+      }
+    }
+  },
+  "collection_archivist": {
+    "id": "collection_archivist",
+    "name": "Archivist · Collection pursuit",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Discover each listed item at least once. Selling, spending or equipping it keeps collection credit. Claim the trophy and three Masterwork Seals once.",
+    "objectives": [
+      {
+        "kind": "discover_set",
+        "item_ids": [
+          "sunforged_aegis",
+          "nightweaver_mantle",
+          "starbound_vestments",
+          "worldheart_signet",
+          "sovereign_locket",
+          "archivist_crown"
+        ],
+        "required": 6,
+        "label": "Discover every item in this collection"
+      }
+    ],
+    "reward": {
+      "items": {
+        "trophy_archivist": 1,
+        "masterwork_seal": 3
+      }
+    },
+    "category": "collection"
   }
 }

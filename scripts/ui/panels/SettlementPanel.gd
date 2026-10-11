@@ -121,7 +121,7 @@ func _rebuild_buildings() -> void:
 		var head := HBoxContainer.new()
 		head.add_theme_constant_override("separation", UITokens.SP_4)
 		if is_wonder:
-			var icon_id: String = {"wonder_astral_observatory": "astrology", "wonder_skyport": "caravaneering", "wonder_masterwork_forge": "smithing"}.get(building_id, "township")
+			var icon_id: String = {"wonder_astral_observatory": "astrology", "wonder_skyport": "caravaneering", "wonder_masterwork_forge": "smithing", "wonder_archive_echoes": "echo_keeping"}.get(building_id, "township")
 			head.add_child(UIStyle.icon_texture("skills", icon_id))
 		var title := UIStyle.title(str(b.get("name", building_id)), UITokens.FONT_SUBHEAD)
 		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
