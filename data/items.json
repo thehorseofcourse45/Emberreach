@@ -9560,7 +9560,8 @@
     },
     "level_requirements": {
       "hitpoints": 120,
-      "strength": 120
+      "strength": 120,
+      "attack": 120
     },
     "icon_id": "herald_godsword",
     "is_boss_drop": false,
@@ -9636,7 +9637,7 @@
     "spell_max_hit": 113,
     "equipment_stats": {
       "magic_attack": 241,
-      "magic_damage_percent": 57
+      "magic_damage_percent": 54
     },
     "level_requirements": {
       "hitpoints": 120,

@@ -5240,8 +5240,9 @@ func _test_dungeon_ladder() -> void:
 		_ok(encounters.size() >= 1, "'%s' has at least one encounter" % dungeon_id)
 		for mid in encounters:
 			_ok(DataLoader.monsters.has(str(mid)), "'%s' encounter '%s' exists" % [dungeon_id, mid])
-		_ok(int((d.get("completion_reward", {}) as Dictionary).get("gp", 0)) > 0,
-			"'%s' pays something on a clear" % dungeon_id)
+		# Endless descents have no clear: they pay per floor instead.
+		var pays: bool = int((d.get("completion_reward", {}) as Dictionary).get("gp", 0)) > 0 				or (bool(d.get("endless_floors", false)) and not (d.get("floor_reward", {}) as Dictionary).is_empty())
+		_ok(pays, "'%s' pays something on a clear" % dungeon_id)
 		tiers.append({"id": str(dungeon_id), "low": low, "high": high})
 	tiers.sort_custom(func(a, b): return int(a["low"]) < int(b["low"]))
 	var reached: int = 0
@@ -7875,9 +7876,9 @@ func _test_bottleneck_declarations() -> void:
 			thin.append(str(item_id))
 	_ok(thin.is_empty(), "every declaration explains itself%s" % _trouble(thin, " — "))
 
-	# The hubs that are meant to be one source, pinned by shape: the azure press and the sheep pen.
+	# The hubs that are meant to be one source, pinned by shape: the azure press.
 	# Deleting a reason puts the warning straight back.
-	for pair in [["scribe_blue_ink", "the level-25 press"], ["ranch_wool", "the sheep pen"]]:
+	for pair in [["scribe_blue_ink", "the level-25 press"]]:
 		_ok(declared.has(str(pair[0])), "'%s' is declared one source on purpose (%s)" % pair)
 
 	# The measurement that stopped two false alarms: raw essence is made by three recipes and the

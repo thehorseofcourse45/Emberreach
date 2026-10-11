@@ -1193,7 +1193,7 @@
       "level": 118,
       "hours": 20,
       "risk": 100,
-      "multiplier": 4.0,
+      "multiplier": 5.1,
       "demand": [
         "herald_bar",
         "redwood_log"
@@ -1215,7 +1215,7 @@
       "level": 120,
       "hours": 24,
       "risk": 110,
-      "multiplier": 4.0,
+      "multiplier": 6.2,
       "demand": [
         "herald_bar",
         "redwood_log"

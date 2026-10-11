@@ -6267,6 +6267,14 @@
           "max_hit_multiplier": 1.15,
           "attack_type": "magic"
         }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Last stand",
+        "effects": {
+          "max_hit_multiplier": 1.1,
+          "attack_speed_multiplier": 1.1
+        }
       }
     ],
     "is_boss": true
@@ -6308,6 +6316,14 @@
         "effects": {
           "max_hit_multiplier": 1.15,
           "attack_type": "ranged"
+        }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Last stand",
+        "effects": {
+          "max_hit_multiplier": 1.1,
+          "attack_speed_multiplier": 1.1
         }
       }
     ],
@@ -6352,6 +6368,14 @@
           "max_hit_multiplier": 1.15,
           "attack_type": "melee"
         }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Last stand",
+        "effects": {
+          "max_hit_multiplier": 1.1,
+          "attack_speed_multiplier": 1.1
+        }
       }
     ],
     "is_boss": true
@@ -6393,6 +6417,14 @@
         "effects": {
           "max_hit_multiplier": 1.15,
           "attack_type": "ranged"
+        }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Last stand",
+        "effects": {
+          "max_hit_multiplier": 1.1,
+          "attack_speed_multiplier": 1.1
         }
       }
     ],
@@ -6436,6 +6468,14 @@
           "max_hit_multiplier": 1.15,
           "attack_type": "melee"
         }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Last stand",
+        "effects": {
+          "max_hit_multiplier": 1.1,
+          "attack_speed_multiplier": 1.1
+        }
       }
     ],
     "is_boss": true
@@ -6478,6 +6518,14 @@
         "effects": {
           "max_hit_multiplier": 1.15,
           "attack_type": "magic"
+        }
+      },
+      {
+        "at_hp_percent": 20,
+        "name": "Last stand",
+        "effects": {
+          "max_hit_multiplier": 1.1,
+          "attack_speed_multiplier": 1.1
         }
       }
     ],
