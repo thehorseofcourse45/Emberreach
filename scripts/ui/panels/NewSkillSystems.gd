@@ -110,7 +110,7 @@ func _caravans() -> void:
 		route_icons.append(_caravan_thumbnails.get(image_path, AssetRegistry.icon("skills", "caravaneering")))
 		var note: String = ""
 		if level < int(r.level): note = " · unlocks at level %d" % int(r.level)
-		route_names.append("%s · %.1fh%s" % [str(r.name), float(r.hours), note])
+		route_names.append("%s · %.1fh · Mastery %d / 120%s" % [str(r.name), float(r.hours), MasteryManager.get_level("caravaneering", str(r.id)), note])
 	var route_choice := _choice(plan, route_ids, route_names, route_icons)
 	var destination := UIStyle.label("", true, UITokens.FONT_SMALL)
 	destination.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -184,6 +184,8 @@ func _caravans() -> void:
 			row.add_child(label)
 		returns_box.add_child(UIStyle.label("Specialty goods brought home", true, UITokens.FONT_SMALL))
 		returns_box.add_child(Widgets.item_rewards(selected_route.get("specialty", {})))
+		if selected_route.has("danger_severity"):
+			returns_box.add_child(UIStyle.colored_label("Dangerous destination: each mishap loses 10–18% cargo value (more with bold orders), up to 75%. Damage also reduces specialty goods. Weather risk is at least 40% before your approach.", UITokens.AMBER, UITokens.FONT_SMALL))
 		var capacity: int = cm.capacity(_cv_wagon)
 		var parts: Array = []
 		for id in _cv_cargo:
@@ -191,7 +193,7 @@ func _caravans() -> void:
 		cargo_label.text = "Cargo %d / %d: %s" % [cm.load_of(_cv_cargo), capacity, "empty" if parts.is_empty() else ", ".join(parts)]
 		var p: Dictionary = cm.preview(_cv_route, _cv_wagon, _cv_guard, _cv_cargo)
 		var why: String = cm.can_dispatch(_cv_route, _cv_wagon, _cv_guard, _cv_cargo)
-		preview_label.text = "Balanced forecast (stop rewards extra): ≈ %s GP back for %s GP of goods and %s GP wages (profit ≈ %s), %.1f hours, %.0f%% unguarded risk, ≈ %s XP. Weather has at least 15%% risk before your approach; journey choices change the outcome.%s" % [UIStyle.fmt(float(p.expected_revenue)), UIStyle.fmt(float(p.base_value)), UIStyle.fmt(float(p.wages)), UIStyle.fmt(float(p.profit)), float(p.hours), float(p.loss_risk) * 100.0, UIStyle.fmt(float(p.xp)), "" if why == "" else "  Cannot dispatch yet: " + why]
+		preview_label.text = "Balanced forecast (stop rewards extra): ≈ %s GP back for %s GP of goods and %s GP wages (profit ≈ %s), %.1f hours, %.0f%% unguarded risk, ≈ %s XP. Weather risk depends on the route; journey choices change the outcome.%s" % [UIStyle.fmt(float(p.expected_revenue)), UIStyle.fmt(float(p.base_value)), UIStyle.fmt(float(p.wages)), UIStyle.fmt(float(p.profit)), float(p.hours), float(p.loss_risk) * 100.0, UIStyle.fmt(float(p.xp)), "" if why == "" else "  Cannot dispatch yet: " + why]
 		for button in dispatch_buttons:
 			button.disabled = why != ""
 			button.tooltip_text = why if why != "" else "Cargo and guard wages are paid on departure; rewards arrive on return."
@@ -391,6 +393,7 @@ func _ranch() -> void:
 		art.add_child(title)
 		title.add_child(UIStyle.title(str(animal.name), UITokens.FONT_BODY))
 		title.add_child(Widgets.badge("Available" if unlocked else "Lv %d" % int(animal.level), UITokens.TEAL if unlocked else UITokens.TEXT_DIM, ""))
+		content.add_child(Widgets.mastery_progress("ranching", "raise_" + str(animal.id)))
 		content.add_child(Widgets.item_rewards({str(animal.produce): 1}))
 		content.add_child(UIStyle.label("%s cycle · %d feed/hour" % [UIStyle.fmt_duration(float(animal.seconds)), int(animal.feed)], true, UITokens.FONT_SMALL))
 		_button(content, "Buy stock · owned %d" % BankManager.get_count(str(animal.stock)), func():
@@ -514,7 +517,7 @@ func _dreams() -> void:
 		var open: bool = PlayerData.get_level("dreamwalking") >= int(def.level)
 		ids.append(str(def.id))
 		locked.append(not open)
-		names.append(("%s · %s XP/hour" % [def.name, UIStyle.fmt(float(def.xp_hour))]) if open else ("%s · unlocks at level %d" % [def.name, int(def.level)]))
+		names.append("%s · Mastery %d / 120%s" % [str(def.name), MasteryManager.get_level("dreamwalking", str(def.id)), "" if open else " · unlocks at level %d" % int(def.level)])
 	var choice := _choice(box, ids, names, ids.map(func(id): return AssetRegistry.icon("dreams", str(id))))
 	for i in range(ids.size()):
 		if locked[i]:
@@ -546,6 +549,24 @@ func _dreams() -> void:
 	update.call()
 	if DreamwalkingManager.next_essence_bonus > 0:
 		box.add_child(UIStyle.label("Lucid Draught ready: +15% Essence for your next dream.", true, UITokens.FONT_SMALL))
+	var bosses := _card("Dreamland bosses", "Dream in each land for 24 cumulative hours, then challenge its guardian awake. Essence is spent per attempt. Cores bind legendary weapons.")
+	for did in DataLoader.dungeons:
+		var def: Dictionary = DataLoader.get_dungeon(str(did))
+		if not def.has("dreamland"): continue
+		var land: String = str(def.dreamland)
+		var row := UIStyle.section(str(def.name), "%s · Dreamwalking %d" % [DreamwalkingManager.dream(land).name, int(def.requires.dreamwalking)])
+		bosses.add_child(row)
+		var portrait := TextureRect.new()
+		portrait.texture = AssetRegistry.monster_sprite(str(def.monsters[-1]))
+		portrait.custom_minimum_size = Vector2(72, 72)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		row.add_child(portrait)
+		row.add_child(Widgets.meter(PlayerData.get_stat("dream_seconds", land) / 3600.0, float(def.dream_hours), "mastery", "%.1f / %d hours dreamed" % [PlayerData.get_stat("dream_seconds", land) / 3600.0, int(def.dream_hours)], 16))
+		var why: String = CombatManager.dungeon_lock_reason(str(did))
+		row.add_child(UIStyle.label(why if why != "" else "Ready to challenge", true, UITokens.FONT_SMALL))
+		_button(row, "View boss encounter", func(): navigated.emit({"screen": Screens.EXPEDITIONS, "area_id": str(did)}))
 	build_events(self)
 	var all_lands := _card("Every dreamland", "Each dreamland has its own twist. Locked ones show the level that opens them.")
 	for def in DataLoader.new_skill_systems.get("dreams", []):

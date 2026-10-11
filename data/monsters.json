@@ -5832,5 +5832,655 @@
     "can_be_stunned": true,
     "is_immune_to_effects": false,
     "flavour": "The first shadow the Deep sends up. Where it stands, the light thins."
+  },
+  "astral_sanctum_guardian_melee": {
+    "id": "astral_sanctum_guardian_melee",
+    "name": "Astral Sanctum Melee Sentinel",
+    "combat_level": 335,
+    "hitpoints": 5850,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 290,
+    "accuracy_rating": 16809,
+    "melee_evasion": 1216,
+    "ranged_evasion": 1216,
+    "magic_evasion": 1216,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 6400,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": []
+  },
+  "astral_sanctum_guardian_ranged": {
+    "id": "astral_sanctum_guardian_ranged",
+    "name": "Astral Sanctum Ranged Sentinel",
+    "combat_level": 347,
+    "hitpoints": 5850,
+    "attack_type": "ranged",
+    "attack_speed": 3.2,
+    "max_hit": 290,
+    "accuracy_rating": 16809,
+    "melee_evasion": 1216,
+    "ranged_evasion": 1216,
+    "magic_evasion": 1216,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 6400,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": []
+  },
+  "astral_sanctum_boss": {
+    "id": "astral_sanctum_boss",
+    "name": "Celestial Tidekeeper",
+    "combat_level": 359,
+    "hitpoints": 9750,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 335,
+    "accuracy_rating": 16809,
+    "melee_evasion": 1216,
+    "ranged_evasion": 1216,
+    "magic_evasion": 1216,
+    "damage_reduction": 65,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 6400,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "at_hp_percent": 65,
+        "name": "The seal breaks",
+        "effects": {
+          "attack_type": "ranged",
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Last stand",
+        "effects": {
+          "attack_type": "melee",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
+  },
+  "storm_citadel_guardian_melee": {
+    "id": "storm_citadel_guardian_melee",
+    "name": "Storm Citadel Melee Sentinel",
+    "combat_level": 355,
+    "hitpoints": 7475,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 310,
+    "accuracy_rating": 15294,
+    "melee_evasion": 1120,
+    "ranged_evasion": 1120,
+    "magic_evasion": 1120,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5440,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": []
+  },
+  "storm_citadel_guardian_ranged": {
+    "id": "storm_citadel_guardian_ranged",
+    "name": "Storm Citadel Ranged Sentinel",
+    "combat_level": 367,
+    "hitpoints": 7475,
+    "attack_type": "ranged",
+    "attack_speed": 3.4,
+    "max_hit": 310,
+    "accuracy_rating": 15294,
+    "melee_evasion": 1120,
+    "ranged_evasion": 1120,
+    "magic_evasion": 1120,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5440,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": []
+  },
+  "storm_citadel_boss": {
+    "id": "storm_citadel_boss",
+    "name": "Tempest Marshal",
+    "combat_level": 379,
+    "hitpoints": 13000,
+    "attack_type": "magic",
+    "attack_speed": 3.4,
+    "max_hit": 365,
+    "accuracy_rating": 15294,
+    "melee_evasion": 1120,
+    "ranged_evasion": 1120,
+    "magic_evasion": 1120,
+    "damage_reduction": 65,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5440,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "at_hp_percent": 65,
+        "name": "The seal breaks",
+        "effects": {
+          "attack_type": "ranged",
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Last stand",
+        "effects": {
+          "attack_type": "melee",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
+  },
+  "crown_of_embers_guardian_melee": {
+    "id": "crown_of_embers_guardian_melee",
+    "name": "Crown of Embers Melee Sentinel",
+    "combat_level": 375,
+    "hitpoints": 9100,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 330,
+    "accuracy_rating": 30682,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": []
+  },
+  "crown_of_embers_guardian_ranged": {
+    "id": "crown_of_embers_guardian_ranged",
+    "name": "Crown of Embers Ranged Sentinel",
+    "combat_level": 387,
+    "hitpoints": 9100,
+    "attack_type": "ranged",
+    "attack_speed": 3.2,
+    "max_hit": 330,
+    "accuracy_rating": 30682,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 55,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": false,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": []
+  },
+  "crown_of_embers_boss": {
+    "id": "crown_of_embers_boss",
+    "name": "The Last Forgemaster",
+    "combat_level": 399,
+    "hitpoints": 16250,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 395,
+    "accuracy_rating": 30682,
+    "melee_evasion": 2080,
+    "ranged_evasion": 2080,
+    "magic_evasion": 2080,
+    "damage_reduction": 65,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "is_boss": true,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "at_hp_percent": 65,
+        "name": "The seal breaks",
+        "effects": {
+          "attack_type": "ranged",
+          "max_hit_multiplier": 1.1
+        }
+      },
+      {
+        "at_hp_percent": 30,
+        "name": "Last stand",
+        "effects": {
+          "attack_type": "melee",
+          "attack_speed_multiplier": 1.1
+        }
+      }
+    ]
+  },
+  "sundered_tyrant": {
+    "id": "sundered_tyrant",
+    "name": "The Sundered Tyrant",
+    "combat_level": 245,
+    "hitpoints": 3000,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 200,
+    "accuracy_rating": 10000,
+    "melee_evasion": 800,
+    "ranged_evasion": 800,
+    "magic_evasion": 800,
+    "damage_reduction": 35,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "sundered_sigil",
+        "quantity": 1,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 6400,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "name": "Unbound",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.15,
+          "attack_type": "magic"
+        }
+      }
+    ],
+    "is_boss": true
+  },
+  "drowned_leviathan": {
+    "id": "drowned_leviathan",
+    "name": "Drowned Leviathan",
+    "combat_level": 275,
+    "hitpoints": 4250,
+    "attack_type": "magic",
+    "attack_speed": 3.4,
+    "max_hit": 235,
+    "accuracy_rating": 11050,
+    "melee_evasion": 920,
+    "ranged_evasion": 920,
+    "magic_evasion": 920,
+    "damage_reduction": 40,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "tidal_sigil",
+        "quantity": 1,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5440,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "name": "Unbound",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.15,
+          "attack_type": "ranged"
+        }
+      }
+    ],
+    "is_boss": true
+  },
+  "march_warlord": {
+    "id": "march_warlord",
+    "name": "Warlord of the March",
+    "combat_level": 305,
+    "hitpoints": 5500,
+    "attack_type": "ranged",
+    "attack_speed": 3.2,
+    "max_hit": 270,
+    "accuracy_rating": 12100,
+    "melee_evasion": 1040,
+    "ranged_evasion": 1040,
+    "magic_evasion": 1040,
+    "damage_reduction": 45,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "march_sigil",
+        "quantity": 1,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "name": "Unbound",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.15,
+          "attack_type": "melee"
+        }
+      }
+    ],
+    "is_boss": true
+  },
+  "dream_choir": {
+    "id": "dream_choir",
+    "name": "The Sunken Choir",
+    "combat_level": 260,
+    "hitpoints": 3500,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 220,
+    "accuracy_rating": 10525,
+    "melee_evasion": 860,
+    "ranged_evasion": 860,
+    "magic_evasion": 860,
+    "damage_reduction": 40,
+    "special_attacks": [
+      "tidal_wave"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "choir_core",
+        "quantity": 1,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 6400,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "name": "Unbound",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.15,
+          "attack_type": "ranged"
+        }
+      }
+    ],
+    "is_boss": true
+  },
+  "dream_tide": {
+    "id": "dream_tide",
+    "name": "The Astral Devourer",
+    "combat_level": 290,
+    "hitpoints": 5500,
+    "attack_type": "ranged",
+    "attack_speed": 3.4,
+    "max_hit": 250,
+    "accuracy_rating": 11575,
+    "melee_evasion": 980,
+    "ranged_evasion": 980,
+    "magic_evasion": 980,
+    "damage_reduction": 45,
+    "special_attacks": [
+      "abyssal_corruption"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "astral_core",
+        "quantity": 1,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 5440,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "name": "Unbound",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.15,
+          "attack_type": "melee"
+        }
+      }
+    ],
+    "is_boss": true
+  },
+  "dream_sovereign": {
+    "id": "dream_sovereign",
+    "name": "The Sleeping Sovereign",
+    "combat_level": 320,
+    "hitpoints": 7500,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 280,
+    "accuracy_rating": 12625,
+    "melee_evasion": 1100,
+    "ranged_evasion": 1100,
+    "magic_evasion": 1100,
+    "damage_reduction": 50,
+    "special_attacks": [
+      "abyssal_corruption",
+      "mist_touch"
+    ],
+    "passives": [],
+    "loot_table": [
+      {
+        "item_id": "sovereign_core",
+        "quantity": 1,
+        "chance": 1.0
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 9600,
+    "respawn_time": 8.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": true,
+    "flavour": "A guardian awakened beyond the old frontier.",
+    "phases": [
+      {
+        "name": "Unbound",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.15,
+          "attack_type": "magic"
+        }
+      }
+    ],
+    "is_boss": true
   }
 }

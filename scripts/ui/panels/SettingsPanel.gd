@@ -203,7 +203,7 @@ func _volume_slider(key: String, label: String, tooltip: String) -> Control:
 	slider.min_value = 0.0
 	slider.max_value = 100.0
 	slider.step = 5.0
-	slider.value = float(PlayerData.settings.get(key, 50.0))
+	slider.value = float(PlayerData.settings.get(key, SettingsDefaults.get_default(key, 20.0)))
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	slider.tooltip_text = tooltip
 	var readout := UIStyle.label("%d%%" % int(slider.value), true, UITokens.FONT_SMALL)

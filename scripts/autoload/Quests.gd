@@ -343,6 +343,12 @@ func describe_objective(obj: Dictionary) -> Dictionary:
 			current = float((PlayerData.completion_log.get("items", {}) as Dictionary).size())
 			lifetime = true
 			hint = "Distinct items discovered"
+		"discover_set":
+			var seen: Dictionary = PlayerData.completion_log.get("items", {})
+			for item_id in obj.get("item_ids", []):
+				if seen.has(str(item_id)): current += 1.0
+			lifetime = true
+			hint = "Each item discovered at least once; using or selling it keeps credit"
 		"chart_hexes":
 			current = float(CartographyManager.discovered.size())
 			lifetime = true

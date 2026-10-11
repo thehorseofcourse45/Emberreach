@@ -6,37 +6,36 @@ extends RefCounted
 ## changes it everywhere, which is what makes a large game feel like one product instead of a
 ## collection of unrelated panels.
 ##
-## Direction: Grimoire on the Forge. A dark ember forge behind everything (MainUI's backdrop
-## shader), oxblood leather panels with gold trim floating over it, and smoked-vellum cards inside
-## them for content. Ember orange marks progress; gold ink marks headings and highlights. The token
+## Direction: Midnight slate. Quiet blue surfaces, fine texture and restrained gold trim.
+## Cool blue marks progress; warm gold marks headings and milestones. The token
 ## NAMES are the long-standing ones (GOLD = "the primary accent", SURFACE_2 = "a card on a panel"),
 ## so every panel inherits the look with no edits.
 
 # ---------------------------------------------------------------- colour: ground & surface
-const BG_DEEP := Color("#0d0a09")        ## forge, behind everything
-const BG := Color("#1b1512")             ## forge, upper half
-const FORGE_GLOW := Color(1.0, 0.353, 0.078, 0.35)  ## the glow rising from the forge floor
-const SURFACE := Color("#3a1c10")        ## leather panel (mid-tone of the leather gradient)
-const SURFACE_2 := Color("#503726")      ## smoked-vellum card (mid-tone of the vellum gradient)
-const SURFACE_3 := Color("#7a5636")      ## hover / selected row
-const SURFACE_SUNKEN := Color("#2e1f14") ## wells, logs, empty slots
-const BORDER := Color("#a8763a")         ## vellum edge
-const BORDER_STRONG := Color("#c88c2c")
-const BORDER_GOLD := Color("#c88c2c")    ## gold trim
+const BG_DEEP := Color("#0b1220")        ## forge, behind everything
+const BG := Color("#121e30")             ## forge, upper half
+const FORGE_GLOW := Color(0.22, 0.40, 0.60, 0.10)  ## the glow rising from the forge floor
+const SURFACE := Color("#15263a")        ## leather panel (mid-tone of the leather gradient)
+const SURFACE_2 := Color("#1c3047")      ## smoked-vellum card (mid-tone of the vellum gradient)
+const SURFACE_3 := Color("#29435e")      ## hover / selected row
+const SURFACE_SUNKEN := Color("#101d2e") ## wells, logs, empty slots
+const BORDER := Color("#3a526d")         ## vellum edge
+const BORDER_STRONG := Color("#b79758")
+const BORDER_GOLD := Color("#b79758")    ## gold trim
 ## Gradient stops the generated textures are painted from; the *_MID values are what text sits on.
-const LEATHER_TOP := Color("#4a2414")
-const LEATHER_BOTTOM := Color("#2a140b")
-const LEATHER_MID := Color("#3a1c10")
-const VELLUM_TOP := Color("#5a3e28")
-const VELLUM_BOTTOM := Color("#45301f")
-const VELLUM_MID := Color("#503726")
+const LEATHER_TOP := Color("#1a2c42")
+const LEATHER_BOTTOM := Color("#122136")
+const LEATHER_MID := Color("#15263a")
+const VELLUM_TOP := Color("#20354b")
+const VELLUM_BOTTOM := Color("#192b40")
+const VELLUM_MID := Color("#1c3047")
 
 # ---------------------------------------------------------------- colour: text
-const TEXT := Color("#f1dcb8")           ## body ink
-const TEXT_STRONG := Color("#fff3dc")
-const TEXT_MUTED := Color("#cbb28b")
-const TEXT_DIM := Color("#c2b4a3")
-const TEXT_ON_GOLD := Color("#f3e3bd")   ## text on a filled (oxblood) primary button
+const TEXT := Color("#dce6ef")           ## body ink
+const TEXT_STRONG := Color("#f3f6fb")
+const TEXT_MUTED := Color("#adbed0")
+const TEXT_DIM := Color("#a1b3c7")
+const TEXT_ON_GOLD := Color("#f3e8ce")   ## text on a filled (oxblood) primary button
 
 # ---------------------------------------------------------------- colour: semantics
 ## Every ink below reaches 4.5:1 on leather and on the lightest vellum, a selected row's brightened top
@@ -49,21 +48,21 @@ const AMBER := Color("#e2ac56")          ## caution / blocked
 const RED := Color("#eda398")            ## danger ink (a light ember-rose: readable on dark vellum)
 const GREEN := Color("#7fc683")          ## success, satisfied requirement
 const PURPLE := Color("#c7a9eb")         ## rare / mastery
-const DISABLED := Color("#7d6a58")
+const DISABLED := Color("#8b9bb0")
 
 # ---------------------------------------------------------------- colour: forge extras
 ## Kept names from the glass era, remapped: callers that asked for "the accent fill" or "the glow"
 ## get the forge equivalent.
-const ACCENT_VIOLET := Color("#6b1f12")  ## filled primary button (oxblood)
-const ACCENT_PINK := Color("#b8380f")    ## the far end of the accent gradient (ember)
-const GLOW := Color("#ff7a2a")           ## glow colour around panels and focus
-const BG_GLOW_A := Color("#3a1a0c")
-const BG_GLOW_B := Color("#1b1512")
+const ACCENT_VIOLET := Color("#294058")  ## filled primary button (oxblood)
+const ACCENT_PINK := Color("#3c617e")    ## the far end of the accent gradient (ember)
+const GLOW := Color("#83a7c6")           ## glow colour around panels and focus
+const BG_GLOW_A := Color("#1c344d")
+const BG_GLOW_B := Color("#121e30")
 const CURRENCY := Color("#ffe39a")       ## real gold, for coin values and relic loot
-const DANGER_FILL := Color("#7a1f12")    ## filled destructive button
-const EMBER_BAR_A := Color("#a12a0b")    ## progress gradient: cold end
-const EMBER_BAR_B := Color("#ff7a2a")
-const EMBER_BAR_C := Color("#ffd27a")    ## progress gradient: hot end
+const DANGER_FILL := Color("#562831")    ## filled destructive button
+const EMBER_BAR_A := Color("#355b7c")    ## progress gradient: cold end
+const EMBER_BAR_B := Color("#83b7d7")
+const EMBER_BAR_C := Color("#e1cf96")    ## progress gradient: hot end
 
 # ---------------------------------------------------------------- rarity (presentation only)
 ## Rarity is a presentation layer derived from data we already have (explicit tier, then sell

@@ -103,6 +103,9 @@ func check_action(skill_id: String, action_id: String) -> Dictionary:
 	if PlayerData.get_level(skill_id) < int(data.get("level_required", 1)):
 		return {"ok": false, "reason": "level",
 			"detail": "Requires %s %d" % [DataLoader.get_skill(skill_id).get("name", skill_id), int(data.get("level_required", 1))]}
+	var project_gate: String = project_blocker(data)
+	if project_gate != "":
+		return {"ok": false, "reason": "project", "detail": project_gate}
 	var req_tool: String = str(data.get("required_tool", ""))
 	if req_tool != "" and not PlayerData.shop_upgrades.has(req_tool):
 		return {"ok": false, "reason": "tool",
@@ -127,6 +130,15 @@ func check_action(skill_id: String, action_id: String) -> Dictionary:
 	return {"ok": true, "reason": "", "detail": ""}
 
 ## Backwards-compatible boolean form.
+func project_blocker(data: Dictionary) -> String:
+	for skill_id in data.get("requires_skills", {}):
+		if PlayerData.get_level(str(skill_id)) < int(data.requires_skills[skill_id]):
+			return "Requires %s %d" % [DataLoader.get_skill(str(skill_id)).get("name", skill_id), int(data.requires_skills[skill_id])]
+	for bid in data.get("requires_building", {}):
+		if TownshipManager.level_of(str(bid)) < int(data.requires_building[bid]):
+			return "Complete %s" % DataLoader.township_buildings.get(bid, {}).get("name", bid)
+	return ""
+
 func can_perform(skill_id: String, action_id: String) -> bool:
 	return bool(check_action(skill_id, action_id)["ok"])
 
@@ -291,6 +303,11 @@ func perform_action() -> Dictionary:
 	if data.is_empty():
 		stop_action(StopReason.PLAYER)
 		return {}
+
+	var project_gate: String = project_blocker(data)
+	if project_gate != "":
+		stop_action(StopReason.TOOL_LOST, project_gate)
+		return {"success": false, "stop": "project"}
 	# Requirement re-validation: the ONLY correct place for this check is here, because it
 	# must hold for the 500th action as well as the first.
 	if PlayerData.get_level(active_skill) < int(data.get("level_required", 1)):

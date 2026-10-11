@@ -1,750 +1,1137 @@
 {
-	"_comment": "3 reference dungeons. 'monsters' is the fixed fight sequence ending in a boss. Equipment/food are locked during a run unless the shop upgrade is owned.",
-	"chicken_coop": {
-		"id": "chicken_coop",
-		"hex": "terrain_0_1",
-		"name": "The Plucked Roost",
-		"level_range": [
-			1,
-			10
-		],
-		"monsters": [
-			"chicken",
-			"chicken",
-			"chicken",
-			"chicken",
-			"golbin_chief"
-		],
-		"requires": {},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 500,
-			"items": {
-				"bronze_platebody": 1,
-				"iron_ore": 2,
-				"air_rune": 6
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"gold_ring": 1
-			}
-		},
-		"flavour": "Something has been taking the settlement's fowl for weeks. It is bigger than a fox."
-	},
-	"undead_graveyard": {
-		"id": "undead_graveyard",
-		"hex": "terrain_1_-2",
-		"name": "Barrow of Names",
-		"level_range": [
-			10,
-			45
-		],
-		"monsters": [
-			"zombie_hand",
-			"skeleton",
-			"skeleton",
-			"skeleton",
-			"moss_giant"
-		],
-		"requires": {
-			"slayer": 1
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 5000,
-			"items": {
-				"iron_scimitar": 1,
-				"mithril_ore": 2,
-				"chaos_rune": 6
-			}
-		},
-		"flavour": "The barrows of Hearthfall have opened. The dead want their names back."
-	},
-	"spider_forest": {
-		"id": "spider_forest",
-		"hex": "terrain_-4_3",
-		"name": "Broodweb Warren",
-		"level_range": [
-			25,
-			65
-		],
-		"monsters": [
-			"spider",
-			"spider",
-			"spider",
-			"bandit",
-			"bandit",
-			"shale_stalker"
-		],
-		"requires": {
-			"slayer": 20
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 25000,
-			"items": {
-				"ring_of_power": 1,
-				"mithril_ore": 3,
-				"chaos_rune": 9
-			}
-		},
-		"flavour": "Reedwrack Fen's heart, and the nest that keeps restocking it."
-	},
-	"air_god_dungeon": {
-		"id": "air_god_dungeon",
-		"hex": "terrain_6_-1",
-		"name": "Observatory of Gales",
-		"level_range": [
-			110,
-			160
-		],
-		"monsters": [
-			"air_elemental",
-			"air_elemental",
-			"air_elemental",
-			"air_god"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 1000000,
-			"items": {
-				"dragon_bones": 4,
-				"summoning_shard_green": 8,
-				"dragonite_ore": 8,
-				"prismatic_essence": 8
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"air_god_helmet": 1
-			}
-		},
-		"shard_item": "shard_air",
-		"flavour": "The summit observatory's instruments still turn. Their keeper never left."
-	},
-	"water_god_dungeon": {
-		"id": "water_god_dungeon",
-		"hex": "terrain_-5_-1",
-		"name": "Tidal Reliquary",
-		"level_range": [
-			120,
-			170
-		],
-		"monsters": [
-			"water_elemental",
-			"water_elemental",
-			"water_elemental",
-			"water_god"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "air_god_dungeon",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 1500000,
-			"items": {
-				"dragon_bones": 6,
-				"summoning_shard_green": 10,
-				"dragonite_ore": 8,
-				"prismatic_essence": 8
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"water_god_helmet": 1
-			}
-		},
-		"shard_item": "shard_water",
-		"flavour": "A drowned shrine that surfaces once a season, and never with the same rooms."
-	},
-	"earth_god_dungeon": {
-		"id": "earth_god_dungeon",
-		"hex": "terrain_4_3",
-		"name": "Deepstone Sanctum",
-		"level_range": [
-			130,
-			180
-		],
-		"monsters": [
-			"earth_elemental",
-			"earth_elemental",
-			"earth_elemental",
-			"earth_god"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "water_god_dungeon",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 2000000,
-			"items": {
-				"dragon_bones": 8,
-				"summoning_shard_green": 12,
-				"dragonite_ore": 9,
-				"prismatic_essence": 9
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"earth_god_helmet": 1
-			}
-		},
-		"shard_item": "shard_earth",
-		"flavour": "The mine that broke the ridge. It goes further down than any survey admits."
-	},
-	"fire_god_dungeon": {
-		"id": "fire_god_dungeon",
-		"hex": "terrain_3_5",
-		"name": "Emberthrone Kiln",
-		"level_range": [
-			140,
-			190
-		],
-		"monsters": [
-			"fire_elemental",
-			"fire_elemental",
-			"fire_elemental",
-			"fire_god"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "earth_god_dungeon",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 3000000,
-			"items": {
-				"dragon_bones": 10,
-				"summoning_shard_green": 16,
-				"dragonite_ore": 9,
-				"prismatic_essence": 9
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"fire_god_helmet": 1
-			}
-		},
-		"shard_item": "shard_fire",
-		"flavour": "The furnace at the root of the ashfall. It is still burning, and it is fed."
-	},
-	"into_the_mist": {
-		"id": "into_the_mist",
-		"hex": "terrain_-5_7",
-		"name": "Into the Murk",
-		"level_range": [
-			150,
-			200
-		],
-		"monsters": [
-			"mist_wraith",
-			"mist_wraith",
-			"mist_wraith",
-			"the_mist"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 5000000,
-			"items": {
-				"dragon_bones": 12,
-				"summoning_shard_green": 20,
-				"red_dragonhide": 4,
-				"umbral_ore": 10,
-				"umbral_essence": 10
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"ancient_sword": 1
-			}
-		},
-		"flavour": "Follow the ash upstream. The Murk does not let you arrive where you aimed."
-	},
-	"impending_darkness": {
-		"id": "impending_darkness",
-		"hex": "terrain_-4_7",
-		"name": "The Long Dusk",
-		"level_range": [
-			180,
-			220
-		],
-		"monsters": [
-			"mist_wraith",
-			"drowned_sailor",
-			"dark_herald"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "into_the_mist",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 8000000,
-			"items": {
-				"dragon_bones": 16,
-				"summoning_shard_green": 24,
-				"red_dragonhide": 6,
-				"umbral_ore": 11,
-				"umbral_essence": 11
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"umbral_pendant": 1
-			}
-		},
-		"flavour": "Nightfall that never lifts. Cut a path through it or be part of it."
-	},
-	"underwater_city": {
-		"id": "underwater_city",
-		"hex": "terrain_-6_-3",
-		"name": "Nhalassar, the Drowned City",
-		"level_range": [
-			180,
-			230
-		],
-		"monsters": [
-			"drowned_sailor",
-			"drowned_sailor",
-			"underwater_king"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "impending_darkness",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 10000000,
-			"items": {
-				"dragon_bones": 20,
-				"summoning_shard_green": 30,
-				"umbral_ore": 11,
-				"umbral_essence": 11
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"chapeau_noir": 1
-			}
-		},
-		"flavour": "A city that chose the water over the fire. It is still lit below."
-	},
-	"throne_of_the_herald": {
-		"id": "throne_of_the_herald",
-		"hex": "terrain_-5_-5",
-		"name": "Seat of the Herald",
-		"level_range": [
-			250,
-			310
-		],
-		"monsters": [
-			"abyssal_imp",
-			"abyssal_fiend",
-			"the_herald"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "underwater_city",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 50000000,
-			"items": {
-				"dragon_bones": 40,
-				"summoning_shard_green": 60,
-				"herald_ore": 15,
-				"soul_rune": 45
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"abyssal_whip": 1
-			}
-		},
-		"flavour": "Where the ashfall was decided. Everything you have built is the price of stopping it."
-	},
-	"cinderkin_forge": {
-		"id": "cinderkin_forge",
-		"hex": "terrain_-1_2",
-		"name": "Cinderkin Forge",
-		"level_range": [
-			4,
-			18
-		],
-		"monsters": [
-			"golbin",
-			"cinderkin_scout",
-			"cinderkin_scout",
-			"golbin_chief"
-		],
-		"requires": {
-			"slayer": 5
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 1500,
-			"items": {
-				"iron_ore": 2,
-				"air_rune": 6
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"steel_platebody": 1
-			}
-		},
-		"flavour": "Beneath the warrens, stolen iron is hammered into weapons for the next raid."
-	},
-	"drowned_causeway": {
-		"id": "drowned_causeway",
-		"hex": "terrain_-3_1",
-		"name": "Drowned Causeway",
-		"level_range": [
-			20,
-			35
-		],
-		"monsters": [
-			"drowned_wayfarer",
-			"drowned_wayfarer",
-			"barrow_wraith"
-		],
-		"requires": {
-			"slayer": 15
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 8500,
-			"items": {
-				"mithril_ore": 2,
-				"chaos_rune": 6
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"gold_ring": 1
-			}
-		},
-		"flavour": "The sunken road descends beneath the tide and ends at a barrow that should be inland."
-	},
-	"rook_viaduct": {
-		"id": "rook_viaduct",
-		"hex": "terrain_2_-3",
-		"name": "Rook's Viaduct",
-		"level_range": [
-			23,
-			60
-		],
-		"monsters": [
-			"bandit",
-			"rook_marksman",
-			"rook_marksman",
-			"guard"
-		],
-		"requires": {
-			"slayer": 25
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 20000,
-			"items": {
-				"mithril_ore": 3,
-				"chaos_rune": 9
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"mithril_platebody": 1
-			}
-		},
-		"flavour": "The Rooks have fortified the broken viaduct and hired a Sunderhold veteran to hold it."
-	},
-	"frostfang_den": {
-		"id": "frostfang_den",
-		"hex": "terrain_-3_4",
-		"name": "Frostfang Den",
-		"level_range": [
-			42,
-			70
-		],
-		"monsters": [
-			"moss_giant",
-			"guard",
-			"frostfang_wolf",
-			"frostfang_wolf"
-		],
-		"requires": {
-			"slayer": 35
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 42000,
-			"items": {
-				"runite_ore": 3,
-				"death_rune": 9
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"runite_bar": 1
-			}
-		},
-		"flavour": "A wind-scoured cave shelters the pack that patrols Frostbound Reach."
-	},
-	"greyharrow_deep": {
-		"id": "greyharrow_deep",
-		"hex": "terrain_2_-5",
-		"name": "Greyharrow Deep",
-		"level_range": [
-			43,
-			60
-		],
-		"monsters": [
-			"greyharrow_husk",
-			"shale_stalker",
-			"quarry_echo",
-			"greyharrow_husk",
-			"shale_stalker",
-			"slag_golem"
-		],
-		"requires": {
-			"slayer": 40
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 35000,
-			"items": {
-				"adamantite_bar": 2,
-				"mithril_ore": 3,
-				"chaos_rune": 9
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"mithril_shield": 1
-			}
-		},
-		"flavour": "The deep cut goes past the last supported floor. The foreman's lamp is still lit down there."
-	},
-	"sunderhold_undercroft": {
-		"id": "sunderhold_undercroft",
-		"hex": "terrain_-5_4",
-		"name": "Sunderhold Undercroft",
-		"level_range": [
-			71,
-			105
-		],
-		"monsters": [
-			"rune_knight",
-			"sunderhold_centurion",
-			"sunderhold_ballistarius"
-		],
-		"requires": {
-			"slayer": 50
-		},
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 120000,
-			"items": {
-				"summoning_shard_green": 6,
-				"big_bones": 4,
-				"runite_ore": 5,
-				"death_rune": 15
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"dragonite_bar": 2
-			}
-		},
-		"flavour": "Beneath the Keep the garrison walled off a floor it could not clear, and left the centurion's banner on the wrong side of the door."
-	},
-	"ashen_bastion_keep": {
-		"id": "ashen_bastion_keep",
-		"hex": "terrain_3_6",
-		"name": "The Ashen Keep",
-		"level_range": [
-			225,
-			250
-		],
-		"monsters": [
-			"bastion_sentinel",
-			"cinder_archer",
-			"bastion_sentinel",
-			"bastion_warden"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "impending_darkness",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 20000000,
-			"items": {
-				"dragon_bones": 24,
-				"summoning_shard_green": 36,
-				"umbral_ore": 12,
-				"umbral_essence": 12
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"potion_dr_3": 5,
-				"umbral_dhide_vambraces": 1
-			}
-		},
-		"flavour": "The garrison sealed itself in. The seal held; the garrison did not."
-	},
-	"gloamreach_sink": {
-		"id": "gloamreach_sink",
-		"hex": "terrain_-3_-7",
-		"name": "The Gloam Sink",
-		"level_range": [
-			260,
-			300
-		],
-		"monsters": [
-			"marsh_hulk",
-			"gloam_witch",
-			"marsh_hulk",
-			"gloam_matron"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "ashen_bastion_keep",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 35000000,
-			"items": {
-				"dragon_bones": 32,
-				"summoning_shard_green": 48,
-				"herald_ore": 15,
-				"soul_rune": 45
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"potion_dr_3": 8,
-				"herald_bulwark": 1
-			}
-		},
-		"flavour": "Where the marsh keeps what it has swallowed. It is not finished."
-	},
-	"the_silent_gate": {
-		"id": "the_silent_gate",
-		"hex": "terrain_-5_-6",
-		"name": "The Silent Gate",
-		"level_range": [
-			300,
-			340
-		],
-		"monsters": [
-			"silent_pilgrim",
-			"hush_stalker",
-			"echoless_cantor",
-			"warden_of_the_hush"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "throne_of_the_herald",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 80000000,
-			"items": {
-				"dragon_bones": 48,
-				"summoning_shard_green": 72,
-				"herald_ore": 17,
-				"soul_rune": 51
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"enchant_catalyst": 5,
-				"herald_godsword": 1
-			}
-		},
-		"flavour": "A gate the Herald never walked through, because he was already on the other side."
-	},
-	"the_hollow_throne": {
-		"id": "the_hollow_throne",
-		"hex": "terrain_5_7",
-		"name": "The Hollow Throne",
-		"level_range": [
-			345,
-			380
-		],
-		"monsters": [
-			"hollow_brute",
-			"static_seer",
-			"hollow_brute",
-			"the_silence"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "the_silent_gate",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 140000000,
-			"items": {
-				"dragon_bones": 64,
-				"summoning_shard_green": 96,
-				"herald_ore": 19,
-				"soul_rune": 57
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"enchant_catalyst": 10,
-				"hush_plate_cuirass": 1
-			}
-		},
-		"flavour": "The seat that was never the Herald's. It was only kept warm."
-	},
-	"ascendant_trials": {
-		"id": "ascendant_trials",
-		"hex": "terrain_-4_-7",
-		"name": "The Ascendant Trials",
-		"level_range": [
-			300,
-			350
-		],
-		"monsters": [
-			"ascendant_dark_herald",
-			"ascendant_tidewrack_king",
-			"ascendant_the_herald"
-		],
-		"requires": {
-			"slayer": 60
-		},
-		"requires_dungeon": "throne_of_the_herald",
-		"equipment_locked": true,
-		"completion_reward": {
-			"gp": 100000000,
-			"items": {
-				"dragon_bones": 60,
-				"summoning_shard_green": 90,
-				"enchant_catalyst": 3,
-				"herald_ore": 17,
-				"soul_rune": 51
-			}
-		},
-		"rewards_first_clear": {
-			"items": {
-				"enchant_catalyst": 8,
-				"heralds_sigil": 1
-			}
-		},
-		"flavour": "Every boss you beat, back and better. Repeat as desired."
-	}
+  "_comment": "3 reference dungeons. 'monsters' is the fixed fight sequence ending in a boss. Equipment/food are locked during a run unless the shop upgrade is owned.",
+  "chicken_coop": {
+    "id": "chicken_coop",
+    "hex": "terrain_0_1",
+    "name": "The Plucked Roost",
+    "level_range": [
+      1,
+      10
+    ],
+    "monsters": [
+      "chicken",
+      "chicken",
+      "chicken",
+      "chicken",
+      "golbin_chief"
+    ],
+    "requires": {},
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 500,
+      "items": {
+        "bronze_platebody": 1,
+        "iron_ore": 2,
+        "air_rune": 6
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "gold_ring": 1
+      }
+    },
+    "flavour": "Something has been taking the settlement's fowl for weeks. It is bigger than a fox."
+  },
+  "undead_graveyard": {
+    "id": "undead_graveyard",
+    "hex": "terrain_1_-2",
+    "name": "Barrow of Names",
+    "level_range": [
+      10,
+      45
+    ],
+    "monsters": [
+      "zombie_hand",
+      "skeleton",
+      "skeleton",
+      "skeleton",
+      "moss_giant"
+    ],
+    "requires": {
+      "slayer": 1
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 5000,
+      "items": {
+        "iron_scimitar": 1,
+        "mithril_ore": 2,
+        "chaos_rune": 6
+      }
+    },
+    "flavour": "The barrows of Hearthfall have opened. The dead want their names back."
+  },
+  "spider_forest": {
+    "id": "spider_forest",
+    "hex": "terrain_-4_3",
+    "name": "Broodweb Warren",
+    "level_range": [
+      25,
+      65
+    ],
+    "monsters": [
+      "spider",
+      "spider",
+      "spider",
+      "bandit",
+      "bandit",
+      "shale_stalker"
+    ],
+    "requires": {
+      "slayer": 20
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 25000,
+      "items": {
+        "ring_of_power": 1,
+        "mithril_ore": 3,
+        "chaos_rune": 9
+      }
+    },
+    "flavour": "Reedwrack Fen's heart, and the nest that keeps restocking it."
+  },
+  "air_god_dungeon": {
+    "id": "air_god_dungeon",
+    "hex": "terrain_6_-1",
+    "name": "Observatory of Gales",
+    "level_range": [
+      110,
+      160
+    ],
+    "monsters": [
+      "air_elemental",
+      "air_elemental",
+      "air_elemental",
+      "air_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 1000000,
+      "items": {
+        "dragon_bones": 4,
+        "summoning_shard_green": 8,
+        "dragonite_ore": 8,
+        "prismatic_essence": 8
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "air_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_air",
+    "flavour": "The summit observatory's instruments still turn. Their keeper never left."
+  },
+  "water_god_dungeon": {
+    "id": "water_god_dungeon",
+    "hex": "terrain_-5_-1",
+    "name": "Tidal Reliquary",
+    "level_range": [
+      120,
+      170
+    ],
+    "monsters": [
+      "water_elemental",
+      "water_elemental",
+      "water_elemental",
+      "water_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "air_god_dungeon",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 1500000,
+      "items": {
+        "dragon_bones": 6,
+        "summoning_shard_green": 10,
+        "dragonite_ore": 8,
+        "prismatic_essence": 8
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "water_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_water",
+    "flavour": "A drowned shrine that surfaces once a season, and never with the same rooms."
+  },
+  "earth_god_dungeon": {
+    "id": "earth_god_dungeon",
+    "hex": "terrain_4_3",
+    "name": "Deepstone Sanctum",
+    "level_range": [
+      130,
+      180
+    ],
+    "monsters": [
+      "earth_elemental",
+      "earth_elemental",
+      "earth_elemental",
+      "earth_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "water_god_dungeon",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 2000000,
+      "items": {
+        "dragon_bones": 8,
+        "summoning_shard_green": 12,
+        "dragonite_ore": 9,
+        "prismatic_essence": 9
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "earth_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_earth",
+    "flavour": "The mine that broke the ridge. It goes further down than any survey admits."
+  },
+  "fire_god_dungeon": {
+    "id": "fire_god_dungeon",
+    "hex": "terrain_3_5",
+    "name": "Emberthrone Kiln",
+    "level_range": [
+      140,
+      190
+    ],
+    "monsters": [
+      "fire_elemental",
+      "fire_elemental",
+      "fire_elemental",
+      "fire_god"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "earth_god_dungeon",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 3000000,
+      "items": {
+        "dragon_bones": 10,
+        "summoning_shard_green": 16,
+        "dragonite_ore": 9,
+        "prismatic_essence": 9
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "fire_god_helmet": 1
+      }
+    },
+    "shard_item": "shard_fire",
+    "flavour": "The furnace at the root of the ashfall. It is still burning, and it is fed."
+  },
+  "into_the_mist": {
+    "id": "into_the_mist",
+    "hex": "terrain_-5_7",
+    "name": "Into the Murk",
+    "level_range": [
+      150,
+      200
+    ],
+    "monsters": [
+      "mist_wraith",
+      "mist_wraith",
+      "mist_wraith",
+      "the_mist"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 5000000,
+      "items": {
+        "dragon_bones": 12,
+        "summoning_shard_green": 20,
+        "red_dragonhide": 4,
+        "umbral_ore": 10,
+        "umbral_essence": 10
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "ancient_sword": 1
+      }
+    },
+    "flavour": "Follow the ash upstream. The Murk does not let you arrive where you aimed."
+  },
+  "impending_darkness": {
+    "id": "impending_darkness",
+    "hex": "terrain_-4_7",
+    "name": "The Long Dusk",
+    "level_range": [
+      180,
+      220
+    ],
+    "monsters": [
+      "mist_wraith",
+      "drowned_sailor",
+      "dark_herald"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "into_the_mist",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 8000000,
+      "items": {
+        "dragon_bones": 16,
+        "summoning_shard_green": 24,
+        "red_dragonhide": 6,
+        "umbral_ore": 11,
+        "umbral_essence": 11
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "umbral_pendant": 1
+      }
+    },
+    "flavour": "Nightfall that never lifts. Cut a path through it or be part of it."
+  },
+  "underwater_city": {
+    "id": "underwater_city",
+    "hex": "terrain_-6_-3",
+    "name": "Nhalassar, the Drowned City",
+    "level_range": [
+      180,
+      230
+    ],
+    "monsters": [
+      "drowned_sailor",
+      "drowned_sailor",
+      "underwater_king"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "impending_darkness",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 10000000,
+      "items": {
+        "dragon_bones": 20,
+        "summoning_shard_green": 30,
+        "umbral_ore": 11,
+        "umbral_essence": 11
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "chapeau_noir": 1
+      }
+    },
+    "flavour": "A city that chose the water over the fire. It is still lit below."
+  },
+  "throne_of_the_herald": {
+    "id": "throne_of_the_herald",
+    "hex": "terrain_-5_-5",
+    "name": "Seat of the Herald",
+    "level_range": [
+      250,
+      310
+    ],
+    "monsters": [
+      "abyssal_imp",
+      "abyssal_fiend",
+      "the_herald"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "underwater_city",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 50000000,
+      "items": {
+        "dragon_bones": 40,
+        "summoning_shard_green": 60,
+        "herald_ore": 15,
+        "soul_rune": 45
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "abyssal_whip": 1
+      }
+    },
+    "flavour": "Where the ashfall was decided. Everything you have built is the price of stopping it."
+  },
+  "cinderkin_forge": {
+    "id": "cinderkin_forge",
+    "hex": "terrain_-1_2",
+    "name": "Cinderkin Forge",
+    "level_range": [
+      4,
+      18
+    ],
+    "monsters": [
+      "golbin",
+      "cinderkin_scout",
+      "cinderkin_scout",
+      "golbin_chief"
+    ],
+    "requires": {
+      "slayer": 5
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 1500,
+      "items": {
+        "iron_ore": 2,
+        "air_rune": 6
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "steel_platebody": 1
+      }
+    },
+    "flavour": "Beneath the warrens, stolen iron is hammered into weapons for the next raid."
+  },
+  "drowned_causeway": {
+    "id": "drowned_causeway",
+    "hex": "terrain_-3_1",
+    "name": "Drowned Causeway",
+    "level_range": [
+      20,
+      35
+    ],
+    "monsters": [
+      "drowned_wayfarer",
+      "drowned_wayfarer",
+      "barrow_wraith"
+    ],
+    "requires": {
+      "slayer": 15
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 8500,
+      "items": {
+        "mithril_ore": 2,
+        "chaos_rune": 6
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "gold_ring": 1
+      }
+    },
+    "flavour": "The sunken road descends beneath the tide and ends at a barrow that should be inland."
+  },
+  "rook_viaduct": {
+    "id": "rook_viaduct",
+    "hex": "terrain_2_-3",
+    "name": "Rook's Viaduct",
+    "level_range": [
+      23,
+      60
+    ],
+    "monsters": [
+      "bandit",
+      "rook_marksman",
+      "rook_marksman",
+      "guard"
+    ],
+    "requires": {
+      "slayer": 25
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 20000,
+      "items": {
+        "mithril_ore": 3,
+        "chaos_rune": 9
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "mithril_platebody": 1
+      }
+    },
+    "flavour": "The Rooks have fortified the broken viaduct and hired a Sunderhold veteran to hold it."
+  },
+  "frostfang_den": {
+    "id": "frostfang_den",
+    "hex": "terrain_-3_4",
+    "name": "Frostfang Den",
+    "level_range": [
+      42,
+      70
+    ],
+    "monsters": [
+      "moss_giant",
+      "guard",
+      "frostfang_wolf",
+      "frostfang_wolf"
+    ],
+    "requires": {
+      "slayer": 35
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 42000,
+      "items": {
+        "runite_ore": 3,
+        "death_rune": 9
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "runite_bar": 1
+      }
+    },
+    "flavour": "A wind-scoured cave shelters the pack that patrols Frostbound Reach."
+  },
+  "greyharrow_deep": {
+    "id": "greyharrow_deep",
+    "hex": "terrain_2_-5",
+    "name": "Greyharrow Deep",
+    "level_range": [
+      43,
+      60
+    ],
+    "monsters": [
+      "greyharrow_husk",
+      "shale_stalker",
+      "quarry_echo",
+      "greyharrow_husk",
+      "shale_stalker",
+      "slag_golem"
+    ],
+    "requires": {
+      "slayer": 40
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 35000,
+      "items": {
+        "adamantite_bar": 2,
+        "mithril_ore": 3,
+        "chaos_rune": 9
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "mithril_shield": 1
+      }
+    },
+    "flavour": "The deep cut goes past the last supported floor. The foreman's lamp is still lit down there."
+  },
+  "sunderhold_undercroft": {
+    "id": "sunderhold_undercroft",
+    "hex": "terrain_-5_4",
+    "name": "Sunderhold Undercroft",
+    "level_range": [
+      71,
+      105
+    ],
+    "monsters": [
+      "rune_knight",
+      "sunderhold_centurion",
+      "sunderhold_ballistarius"
+    ],
+    "requires": {
+      "slayer": 50
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 120000,
+      "items": {
+        "summoning_shard_green": 6,
+        "big_bones": 4,
+        "runite_ore": 5,
+        "death_rune": 15
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "dragonite_bar": 2
+      }
+    },
+    "flavour": "Beneath the Keep the garrison walled off a floor it could not clear, and left the centurion's banner on the wrong side of the door."
+  },
+  "ashen_bastion_keep": {
+    "id": "ashen_bastion_keep",
+    "hex": "terrain_3_6",
+    "name": "The Ashen Keep",
+    "level_range": [
+      225,
+      250
+    ],
+    "monsters": [
+      "bastion_sentinel",
+      "cinder_archer",
+      "bastion_sentinel",
+      "bastion_warden"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "impending_darkness",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 20000000,
+      "items": {
+        "dragon_bones": 24,
+        "summoning_shard_green": 36,
+        "umbral_ore": 12,
+        "umbral_essence": 12
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "potion_dr_3": 5,
+        "umbral_dhide_vambraces": 1
+      }
+    },
+    "flavour": "The garrison sealed itself in. The seal held; the garrison did not."
+  },
+  "gloamreach_sink": {
+    "id": "gloamreach_sink",
+    "hex": "terrain_-3_-7",
+    "name": "The Gloam Sink",
+    "level_range": [
+      260,
+      300
+    ],
+    "monsters": [
+      "marsh_hulk",
+      "gloam_witch",
+      "marsh_hulk",
+      "gloam_matron"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "ashen_bastion_keep",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 35000000,
+      "items": {
+        "dragon_bones": 32,
+        "summoning_shard_green": 48,
+        "herald_ore": 15,
+        "soul_rune": 45
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "potion_dr_3": 8,
+        "herald_bulwark": 1
+      }
+    },
+    "flavour": "Where the marsh keeps what it has swallowed. It is not finished."
+  },
+  "the_silent_gate": {
+    "id": "the_silent_gate",
+    "hex": "terrain_-5_-6",
+    "name": "The Silent Gate",
+    "level_range": [
+      300,
+      340
+    ],
+    "monsters": [
+      "silent_pilgrim",
+      "hush_stalker",
+      "echoless_cantor",
+      "warden_of_the_hush"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "throne_of_the_herald",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 80000000,
+      "items": {
+        "dragon_bones": 48,
+        "summoning_shard_green": 72,
+        "herald_ore": 17,
+        "soul_rune": 51
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "enchant_catalyst": 5,
+        "herald_godsword": 1
+      }
+    },
+    "flavour": "A gate the Herald never walked through, because he was already on the other side."
+  },
+  "the_hollow_throne": {
+    "id": "the_hollow_throne",
+    "hex": "terrain_5_7",
+    "name": "The Hollow Throne",
+    "level_range": [
+      345,
+      380
+    ],
+    "monsters": [
+      "hollow_brute",
+      "static_seer",
+      "hollow_brute",
+      "the_silence"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "the_silent_gate",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 140000000,
+      "items": {
+        "dragon_bones": 64,
+        "summoning_shard_green": 96,
+        "herald_ore": 19,
+        "soul_rune": 57
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "enchant_catalyst": 10,
+        "hush_plate_cuirass": 1
+      }
+    },
+    "flavour": "The seat that was never the Herald's. It was only kept warm."
+  },
+  "ascendant_trials": {
+    "id": "ascendant_trials",
+    "hex": "terrain_-4_-7",
+    "name": "The Ascendant Trials",
+    "level_range": [
+      300,
+      350
+    ],
+    "monsters": [
+      "ascendant_dark_herald",
+      "ascendant_tidewrack_king",
+      "ascendant_the_herald"
+    ],
+    "requires": {
+      "slayer": 60
+    },
+    "requires_dungeon": "throne_of_the_herald",
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 100000000,
+      "items": {
+        "dragon_bones": 60,
+        "summoning_shard_green": 90,
+        "enchant_catalyst": 3,
+        "herald_ore": 17,
+        "soul_rune": 51
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "enchant_catalyst": 8,
+        "heralds_sigil": 1
+      }
+    },
+    "flavour": "Every boss you beat, back and better. Repeat as desired."
+  },
+  "astral_sanctum": {
+    "id": "astral_sanctum",
+    "name": "Astral Sanctum",
+    "level_range": [
+      335,
+      360
+    ],
+    "legendary": true,
+    "monsters": [
+      "astral_sanctum_guardian_melee",
+      "astral_sanctum_guardian_ranged",
+      "astral_sanctum_guardian_melee",
+      "astral_sanctum_guardian_ranged",
+      "astral_sanctum_guardian_melee",
+      "astral_sanctum_guardian_ranged",
+      "astral_sanctum_guardian_melee",
+      "astral_sanctum_guardian_ranged",
+      "astral_sanctum_guardian_melee",
+      "astral_sanctum_guardian_ranged",
+      "astral_sanctum_boss"
+    ],
+    "requires": {
+      "slayer": 100,
+      "hitpoints": 110
+    },
+    "requires_dungeon": "ascendant_trials",
+    "requires_building": {
+      "wonder_astral_observatory": 3
+    },
+    "entry_items": {
+      "shark": 25,
+      "potion_dr_3": 2
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 50000000,
+      "items": {
+        "herald_bar": 15,
+        "enchant_catalyst": 3
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "astral_pendant": 1
+      }
+    },
+    "flavour": "Legendary expedition. Entry provisions are consumed once per attempt, including a retreat or defeat. Repeated clears provide crafting materials.",
+    "hex": "terrain_7_6"
+  },
+  "storm_citadel": {
+    "id": "storm_citadel",
+    "name": "Storm Citadel",
+    "level_range": [
+      355,
+      380
+    ],
+    "legendary": true,
+    "monsters": [
+      "storm_citadel_guardian_melee",
+      "storm_citadel_guardian_ranged",
+      "storm_citadel_guardian_melee",
+      "storm_citadel_guardian_ranged",
+      "storm_citadel_guardian_melee",
+      "storm_citadel_guardian_ranged",
+      "storm_citadel_guardian_melee",
+      "storm_citadel_guardian_ranged",
+      "storm_citadel_guardian_melee",
+      "storm_citadel_guardian_ranged",
+      "storm_citadel_guardian_melee",
+      "storm_citadel_guardian_ranged",
+      "storm_citadel_guardian_melee",
+      "storm_citadel_guardian_ranged",
+      "storm_citadel_boss"
+    ],
+    "requires": {
+      "slayer": 105,
+      "hitpoints": 115
+    },
+    "requires_dungeon": "astral_sanctum",
+    "requires_building": {
+      "wonder_skyport": 3
+    },
+    "entry_items": {
+      "shark": 35,
+      "potion_dr_3": 3
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 75000000,
+      "items": {
+        "herald_bar": 25,
+        "enchant_catalyst": 4
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "tempest_cloak": 1
+      }
+    },
+    "flavour": "Legendary expedition. Entry provisions are consumed once per attempt, including a retreat or defeat. Repeated clears provide crafting materials.",
+    "hex": "terrain_7_5"
+  },
+  "crown_of_embers": {
+    "id": "crown_of_embers",
+    "name": "Crown of Embers",
+    "level_range": [
+      375,
+      400
+    ],
+    "legendary": true,
+    "monsters": [
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_guardian_melee",
+      "crown_of_embers_guardian_ranged",
+      "crown_of_embers_boss"
+    ],
+    "requires": {
+      "slayer": 110,
+      "hitpoints": 120
+    },
+    "requires_dungeon": "storm_citadel",
+    "requires_building": {
+      "wonder_masterwork_forge": 3
+    },
+    "entry_items": {
+      "shark": 45,
+      "potion_dr_3": 4
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 100000000,
+      "items": {
+        "herald_bar": 35,
+        "enchant_catalyst": 5
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "embercrown_blade": 1
+      }
+    },
+    "flavour": "Legendary expedition. Entry provisions are consumed once per attempt, including a retreat or defeat. Repeated clears provide crafting materials.",
+    "hex": "terrain_7_3"
+  },
+  "threat_sundered_reaches": {
+    "id": "threat_sundered_reaches",
+    "name": "The Sundered Tyrant · Lair",
+    "level_range": [
+      245,
+      260
+    ],
+    "monsters": [
+      "fire_elemental",
+      "fire_elemental",
+      "fire_elemental",
+      "sundered_tyrant"
+    ],
+    "hex": "terrain_-7_-1",
+    "requires": {
+      "slayer": 90,
+      "hitpoints": 100
+    },
+    "completion_reward": {
+      "gp": 500000
+    },
+    "flavour": "Regional threat. Break its siege through Tasks to enter. Defeat the boss and claim the victory task to pacify the region.",
+    "requires_quest": "threat_sundered_reaches_patrol"
+  },
+  "threat_drowned_reach": {
+    "id": "threat_drowned_reach",
+    "name": "Drowned Leviathan · Lair",
+    "level_range": [
+      275,
+      290
+    ],
+    "monsters": [
+      "tidebound_revenant",
+      "tidebound_revenant",
+      "tidebound_revenant",
+      "drowned_leviathan"
+    ],
+    "hex": "terrain_-5_-3",
+    "requires": {
+      "slayer": 95,
+      "hitpoints": 105
+    },
+    "completion_reward": {
+      "gp": 500000
+    },
+    "flavour": "Regional threat. Break its siege through Tasks to enter. Defeat the boss and claim the victory task to pacify the region.",
+    "requires_quest": "threat_drowned_reach_patrol"
+  },
+  "threat_heralds_march": {
+    "id": "threat_heralds_march",
+    "name": "Warlord of the March · Lair",
+    "level_range": [
+      305,
+      320
+    ],
+    "monsters": [
+      "umbral_harbinger",
+      "umbral_harbinger",
+      "umbral_harbinger",
+      "march_warlord"
+    ],
+    "hex": "terrain_-7_-2",
+    "requires": {
+      "slayer": 100,
+      "hitpoints": 110
+    },
+    "completion_reward": {
+      "gp": 500000
+    },
+    "flavour": "Regional threat. Break its siege through Tasks to enter. Defeat the boss and claim the victory task to pacify the region.",
+    "requires_quest": "threat_heralds_march_patrol"
+  },
+  "dream_choir": {
+    "id": "dream_choir",
+    "name": "The Sunken Choir",
+    "level_range": [
+      260,
+      275
+    ],
+    "monsters": [
+      "dream_choir"
+    ],
+    "hex": "terrain_7_6",
+    "requires": {
+      "dreamwalking": 100,
+      "hitpoints": 100
+    },
+    "completion_reward": {
+      "gp": 500000
+    },
+    "flavour": "Dreamland boss. Dream here for 24 cumulative hours; Essence is spent on every attempt. The core is guaranteed on victory.",
+    "dreamland": "cathedral",
+    "dream_hours": 24,
+    "entry_items": {
+      "dream_essence": 500
+    }
+  },
+  "dream_tide": {
+    "id": "dream_tide",
+    "name": "The Astral Devourer",
+    "level_range": [
+      290,
+      305
+    ],
+    "monsters": [
+      "dream_tide"
+    ],
+    "hex": "terrain_7_6",
+    "requires": {
+      "dreamwalking": 110,
+      "hitpoints": 105
+    },
+    "completion_reward": {
+      "gp": 500000
+    },
+    "flavour": "Dreamland boss. Dream here for 24 cumulative hours; Essence is spent on every attempt. The core is guaranteed on victory.",
+    "dreamland": "astral",
+    "dream_hours": 24,
+    "entry_items": {
+      "dream_essence": 750
+    }
+  },
+  "dream_sovereign": {
+    "id": "dream_sovereign",
+    "name": "The Sleeping Sovereign",
+    "level_range": [
+      320,
+      335
+    ],
+    "monsters": [
+      "dream_sovereign"
+    ],
+    "hex": "terrain_7_6",
+    "requires": {
+      "dreamwalking": 120,
+      "hitpoints": 110
+    },
+    "completion_reward": {
+      "gp": 500000
+    },
+    "flavour": "Dreamland boss. Dream here for 24 cumulative hours; Essence is spent on every attempt. The core is guaranteed on victory.",
+    "dreamland": "crown",
+    "dream_hours": 24,
+    "entry_items": {
+      "dream_essence": 1000
+    }
+  },
+  "endless_ashes": {
+    "id": "endless_ashes",
+    "name": "Endless Ashen Descent",
+    "level_range": [
+      195,
+      222
+    ],
+    "monsters": [
+      "cinder_colossus",
+      "umbral_harbinger",
+      "cinder_colossus"
+    ],
+    "hex": "terrain_7_5",
+    "requires": {
+      "slayer": 100,
+      "hitpoints": 110
+    },
+    "completion_reward": {},
+    "flavour": "Automatic descent until retreat or defeat. Every floor increases enemy HP by 12% and damage by 4%. Every tenth floor grants five extra shards. Loot is banked immediately; a new attempt starts at floor 1.",
+    "endless_floors": true,
+    "floor_reward": {
+      "items": {
+        "ash_depth_shard": 1
+      }
+    },
+    "rewards_first_clear": {}
+  },
+  "endless_tides": {
+    "id": "endless_tides",
+    "name": "Endless Tidal Descent",
+    "level_range": [
+      165,
+      180
+    ],
+    "monsters": [
+      "tidebound_revenant",
+      "stormglass_warden",
+      "tidebound_revenant"
+    ],
+    "hex": "terrain_7_5",
+    "requires": {
+      "slayer": 105,
+      "hitpoints": 110
+    },
+    "completion_reward": {},
+    "flavour": "Automatic descent until retreat or defeat. Every floor increases enemy HP by 12% and damage by 4%. Every tenth floor grants five extra shards. Loot is banked immediately; a new attempt starts at floor 1.",
+    "endless_floors": true,
+    "floor_reward": {
+      "items": {
+        "tide_depth_shard": 1
+      }
+    },
+    "rewards_first_clear": {}
+  },
+  "endless_stars": {
+    "id": "endless_stars",
+    "name": "Endless Astral Descent",
+    "level_range": [
+      335,
+      347
+    ],
+    "monsters": [
+      "astral_sanctum_guardian_melee",
+      "astral_sanctum_guardian_ranged",
+      "astral_sanctum_guardian_melee"
+    ],
+    "hex": "terrain_7_5",
+    "requires": {
+      "slayer": 110,
+      "hitpoints": 110
+    },
+    "completion_reward": {},
+    "flavour": "Automatic descent until retreat or defeat. Every floor increases enemy HP by 12% and damage by 4%. Every tenth floor grants five extra shards. Loot is banked immediately; a new attempt starts at floor 1.",
+    "endless_floors": true,
+    "floor_reward": {
+      "items": {
+        "star_depth_shard": 1
+      }
+    },
+    "rewards_first_clear": {}
+  }
 }

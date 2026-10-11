@@ -46,7 +46,7 @@ func play_sfx(sound_id: String, throttle_key: String = "", throttle_ms: int = 0)
 	if SimulationMode.is_silent(): return false
 	if str(sound_id) == "":
 		return false
-	if float(PlayerData.settings.get("sfx_volume", 80.0)) <= 0.0:
+	if float(PlayerData.settings.get("sfx_volume", SettingsDefaults.DEFAULTS["sfx_volume"])) <= 0.0:
 		return false
 	if throttle_key != "" and throttle_ms > 0:
 		var now: int = Time.get_ticks_msec()
@@ -66,7 +66,7 @@ func play_sfx(sound_id: String, throttle_key: String = "", throttle_ms: int = 0)
 ## Push the SFX volume setting onto its bus. Called at boot, on load and whenever
 ## the Settings slider moves.
 func apply_volumes() -> void:
-	_set_bus_volume(BUS_SFX, float(PlayerData.settings.get("sfx_volume", 80.0)))
+	_set_bus_volume(BUS_SFX, float(PlayerData.settings.get("sfx_volume", SettingsDefaults.DEFAULTS["sfx_volume"])))
 
 # ==========================================================================
 #  Synthesis (pure; callable from tests without touching playback)

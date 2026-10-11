@@ -447,6 +447,10 @@ func sources_for_item(item_id: String) -> Array:
 	var out: Array = []
 	if item_id == "" or not DataLoader.items.has(item_id):
 		return out
+	for sid in DataLoader.get_skill_ids():
+		var rewards: Dictionary = DataLoader.get_skill(str(sid)).get("mastery_challenge_reward", {"masterwork_seal": 1})
+		if not MasteryManager.activities(str(sid)).is_empty() and rewards.has(item_id):
+			out.append({"kind": "mastery", "label": str(DataLoader.get_skill(str(sid)).get("name", sid)) + " mastery challenge", "detail": "Activity mastery 120, then six hours training that activity. Claim in Mastery & bonuses.", "level_required": 0, "unlocked": true, "route": {"screen": "skills", "skill_id": sid}})
 	# Special systems use the same source card contract as recipes and drops.
 	for sid in DataLoader.get_skill_ids():
 		for action in DataLoader.get_skill_actions(str(sid)):
@@ -580,13 +584,13 @@ func sources_for_item(item_id: String) -> Array:
 	for dungeon_id in DataLoader.dungeons.keys():
 		var d: Dictionary = DataLoader.dungeons[dungeon_id]
 		var is_reward: bool = false
-		for bundle in [d.get("completion_reward", {}), d.get("rewards_first_clear", {})]:
+		for bundle in [d.get("completion_reward", {}), d.get("rewards_first_clear", {}), d.get("floor_reward", {})]:
 			if (bundle.get("items", {}) as Dictionary).has(item_id):
 				is_reward = true
 		var is_shard: bool = str(d.get("shard_item", "")) == item_id
 		if is_reward or is_shard:
 			out.append({"kind": "reward", "label": str(d.get("name", dungeon_id)),
-				"detail": "Dungeon clear reward" if is_reward else "Granted by every kill inside",
+				"detail": ("Reward per floor; extra shards every tenth floor" if bool(d.get("endless_floors", false)) else "Dungeon clear reward") if is_reward else "Granted by every kill inside",
 				"level_required": 0, "unlocked": true,
 				"route": {"screen": "combat", "area_id": dungeon_id}})
 	# 5. Shop and mastery stall stock.

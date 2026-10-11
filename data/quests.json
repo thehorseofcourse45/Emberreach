@@ -12984,5 +12984,316 @@
     "prerequisites": [
       "frontier_charts_25"
     ]
+  },
+  "threat_sundered_reaches_patrol": {
+    "id": "threat_sundered_reaches_patrol",
+    "name": "The Sundered Tyrant · Break the siege",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Defeat 100 regional enemies to reveal the threat’s lair. Claim this task to unlock the hunt.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "fire_elemental",
+        "required": 100
+      }
+    ],
+    "reward": {
+      "items": {
+        "masterwork_seal": 1
+      }
+    },
+    "category": "regional_threat",
+    "region": "sundered_reaches",
+    "requires": {
+      "skill_level": {
+        "slayer": 90
+      }
+    }
+  },
+  "threat_sundered_reaches_victory": {
+    "id": "threat_sundered_reaches_victory",
+    "name": "The Sundered Tyrant · Region secured",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Claim to permanently remove this region’s environmental combat hazard. The boss remains repeatable for crafting sigils.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "threat_sundered_reaches",
+        "required": 1
+      }
+    ],
+    "reward": {
+      "items": {
+        "sundered_sigil": 3,
+        "masterwork_seal": 2
+      }
+    },
+    "category": "regional_threat",
+    "region": "sundered_reaches",
+    "prerequisites": [
+      "threat_sundered_reaches_patrol"
+    ]
+  },
+  "threat_drowned_reach_patrol": {
+    "id": "threat_drowned_reach_patrol",
+    "name": "Drowned Leviathan · Break the siege",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Defeat 100 regional enemies to reveal the threat’s lair. Claim this task to unlock the hunt.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "tidebound_revenant",
+        "required": 100
+      }
+    ],
+    "reward": {
+      "items": {
+        "masterwork_seal": 1
+      }
+    },
+    "category": "regional_threat",
+    "region": "drowned_reach",
+    "requires": {
+      "skill_level": {
+        "slayer": 95
+      }
+    }
+  },
+  "threat_drowned_reach_victory": {
+    "id": "threat_drowned_reach_victory",
+    "name": "Drowned Leviathan · Region secured",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Claim to permanently remove this region’s environmental combat hazard. The boss remains repeatable for crafting sigils.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "threat_drowned_reach",
+        "required": 1
+      }
+    ],
+    "reward": {
+      "items": {
+        "tidal_sigil": 3,
+        "masterwork_seal": 2
+      }
+    },
+    "category": "regional_threat",
+    "region": "drowned_reach",
+    "prerequisites": [
+      "threat_drowned_reach_patrol"
+    ]
+  },
+  "threat_heralds_march_patrol": {
+    "id": "threat_heralds_march_patrol",
+    "name": "Warlord of the March · Break the siege",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Defeat 100 regional enemies to reveal the threat’s lair. Claim this task to unlock the hunt.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "umbral_harbinger",
+        "required": 100
+      }
+    ],
+    "reward": {
+      "items": {
+        "masterwork_seal": 1
+      }
+    },
+    "category": "regional_threat",
+    "region": "heralds_march",
+    "requires": {
+      "skill_level": {
+        "slayer": 100
+      }
+    }
+  },
+  "threat_heralds_march_victory": {
+    "id": "threat_heralds_march_victory",
+    "name": "Warlord of the March · Region secured",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Claim to permanently remove this region’s environmental combat hazard. The boss remains repeatable for crafting sigils.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "threat_heralds_march",
+        "required": 1
+      }
+    ],
+    "reward": {
+      "items": {
+        "march_sigil": 3,
+        "masterwork_seal": 2
+      }
+    },
+    "category": "regional_threat",
+    "region": "heralds_march",
+    "prerequisites": [
+      "threat_heralds_march_patrol"
+    ]
+  },
+  "collection_gemkeeper": {
+    "id": "collection_gemkeeper",
+    "name": "Gemkeeper · Collection pursuit",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Discover each listed item at least once. Selling, spending or equipping it keeps collection credit. Claim the trophy and three Masterwork Seals once.",
+    "objectives": [
+      {
+        "kind": "discover_set",
+        "item_ids": [
+          "sapphire_ring_of_focus",
+          "emerald_ring_of_study",
+          "topaz_ring_of_the_hawk",
+          "ruby_ring_of_fury",
+          "diamond_ring_of_warding"
+        ],
+        "required": 5,
+        "label": "Discover every item in this collection"
+      }
+    ],
+    "reward": {
+      "items": {
+        "trophy_gemkeeper": 1,
+        "masterwork_seal": 3
+      }
+    },
+    "category": "collection"
+  },
+  "collection_threatbreaker": {
+    "id": "collection_threatbreaker",
+    "name": "Threatbreaker · Collection pursuit",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Discover each listed item at least once. Selling, spending or equipping it keeps collection credit. Claim the trophy and three Masterwork Seals once.",
+    "objectives": [
+      {
+        "kind": "discover_set",
+        "item_ids": [
+          "sundered_sigil",
+          "tidal_sigil",
+          "march_sigil"
+        ],
+        "required": 3,
+        "label": "Discover every item in this collection"
+      }
+    ],
+    "reward": {
+      "items": {
+        "trophy_threatbreaker": 1,
+        "masterwork_seal": 3
+      }
+    },
+    "category": "collection"
+  },
+  "collection_dreamhunter": {
+    "id": "collection_dreamhunter",
+    "name": "Dreamhunter · Collection pursuit",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Discover each listed item at least once. Selling, spending or equipping it keeps collection credit. Claim the trophy and three Masterwork Seals once.",
+    "objectives": [
+      {
+        "kind": "discover_set",
+        "item_ids": [
+          "choir_core",
+          "astral_core",
+          "sovereign_core"
+        ],
+        "required": 3,
+        "label": "Discover every item in this collection"
+      }
+    ],
+    "reward": {
+      "items": {
+        "trophy_dreamhunter": 1,
+        "masterwork_seal": 3
+      }
+    },
+    "category": "collection"
+  },
+  "collection_far_traveller": {
+    "id": "collection_far_traveller",
+    "name": "Far Traveller · Collection pursuit",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Discover each listed item at least once. Selling, spending or equipping it keeps collection credit. Claim the trophy and three Masterwork Seals once.",
+    "objectives": [
+      {
+        "kind": "discover_set",
+        "item_ids": [
+          "stormglass_cargo",
+          "nightveil_silk",
+          "worldheart_ore"
+        ],
+        "required": 3,
+        "label": "Discover every item in this collection"
+      }
+    ],
+    "reward": {
+      "items": {
+        "trophy_far_traveller": 1,
+        "masterwork_seal": 3
+      }
+    },
+    "category": "collection"
+  },
+  "collection_master_artisan": {
+    "id": "collection_master_artisan",
+    "name": "Master Artisan · Collection pursuit",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Discover each listed item at least once. Selling, spending or equipping it keeps collection credit. Claim the trophy and three Masterwork Seals once.",
+    "objectives": [
+      {
+        "kind": "discover_set",
+        "item_ids": [
+          "sunforged_weapon",
+          "nightweaver_weapon",
+          "starbound_weapon"
+        ],
+        "required": 3,
+        "label": "Discover every item in this collection"
+      }
+    ],
+    "reward": {
+      "items": {
+        "trophy_master_artisan": 1,
+        "masterwork_seal": 3
+      }
+    },
+    "category": "collection"
+  },
+  "collection_legendary_explorer": {
+    "id": "collection_legendary_explorer",
+    "name": "Legendary Explorer · Collection pursuit",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "Discover each listed item at least once. Selling, spending or equipping it keeps collection credit. Claim the trophy and three Masterwork Seals once.",
+    "objectives": [
+      {
+        "kind": "discover_set",
+        "item_ids": [
+          "astral_pendant",
+          "tempest_cloak",
+          "embercrown_blade"
+        ],
+        "required": 3,
+        "label": "Discover every item in this collection"
+      }
+    ],
+    "reward": {
+      "items": {
+        "trophy_legendary_explorer": 1,
+        "masterwork_seal": 3
+      }
+    },
+    "category": "collection"
   }
 }

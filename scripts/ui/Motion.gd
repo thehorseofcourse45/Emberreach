@@ -208,7 +208,7 @@ static func shimmer(bar: ProgressBar) -> void:
 	glint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	glint.anchor_top = 0.0
 	glint.anchor_bottom = 1.0
-	glint.size = Vector2(32, bar.size.y)
+	glint.offset_right = 32.0
 	bar.clip_contents = true
 	bar.add_child(glint)
 	var tween: Tween = glint.create_tween().set_loops()

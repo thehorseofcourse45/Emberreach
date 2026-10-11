@@ -98,7 +98,7 @@ func trip_seconds(route_id: String) -> float:
 	return float(def.get("hours", 0.0)) * 3600.0 * (1.0 - cut / 100.0)
 
 func loss_chance(route_id: String, guard_id: String) -> float:
-	return clampf(float(route(route_id).get("risk", 0)) - float(guard(guard_id).get("power", 0)), 0.0, 100.0) / 100.0
+	return clampf(float(route(route_id).get("risk", 0)) - float(guard(guard_id).get("power", 0)), 0.0, 80.0) / 100.0
 
 func preview(route_id: String, wagon_id: String, guard_id: String, cargo: Dictionary) -> Dictionary:
 	var day: int = today()
@@ -110,8 +110,10 @@ func preview(route_id: String, wagon_id: String, guard_id: String, cargo: Dictio
 		revenue += float(sale_value(route_id, str(item_id), qty, day))
 	var chance: float = loss_chance(route_id, guard_id)
 	# Balanced journey forecast: five independent stops; weather has a minimum risk.
-	var hazards: float = chance + 2.0 * maxf(chance, 0.15)
-	var expected_loss: float = 5.0 * 0.06 * hazards / 6.0
+	var r: Dictionary = route(route_id)
+	var hazards: float = minf(chance, 0.8) + 2.0 * maxf(minf(chance, 0.8), float(r.get("hazard_floor", 0.15)))
+	var severity: Array = r.get("danger_severity", [0.04, 0.08])
+	var expected_loss: float = 5.0 * (float(severity[0]) + float(severity[1])) * 0.5 * hazards / 6.0
 	var safe_trip: float = pow(1.0 - hazards / 6.0, 5.0)
 	var expected: float = revenue * (1.0 - expected_loss + 0.05 * safe_trip)
 	var stop_rewards: float = 5.0 * maxi(1, floori(float(route(route_id).get("xp", 0)) * 0.001)) * (8.0 - hazards) / 6.0
@@ -291,6 +293,7 @@ func _complete(index: int) -> bool:
 	var found: Dictionary = {}
 	for item_id in (r.get("specialty", {}) as Dictionary):
 		var qty: int = int(r.specialty[item_id]) * (2 if _rng.randf() < doubling else 1)
+		if r.has("danger_severity"): qty = maxi(1, floori(float(qty) * (1.0 - loss)))
 		BankManager.add_item_guaranteed(str(item_id), qty)
 		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, str(item_id), qty)
 		found[str(item_id)] = qty

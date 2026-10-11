@@ -154,10 +154,15 @@ static func _meter_fill(kind: String) -> StyleBoxTexture:
 	return fill
 
 ## A bar with a gradient fill: ember (progress), hp, enemy_hp or xp.
-static func meter(value: float, maximum: float, kind: String = "ember", text: String = "", height: int = 14) -> ProgressBar:
-	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, height)
+static func meter(value: float, maximum: float, kind: String = "ember", text: String = "", height: int = 14, animate: bool = true) -> ProgressBar:
+	var bar := progress_bar(value, maximum, UITokens.EMBER_BAR_B, text, height, "", animate)
 	bar.set_meta("widget", "meter")
-	bar.tree_entered.connect(func() -> void: Motion.shimmer.call_deferred(bar), Object.CONNECT_ONE_SHOT)
+	var weak_bar: WeakRef = weakref(bar)
+	var shimmer := func() -> void:
+		var live_bar = weak_bar.get_ref()
+		if is_instance_valid(live_bar) and not live_bar.is_queued_for_deletion():
+			Motion.shimmer(live_bar)
+	bar.tree_entered.connect(func() -> void: shimmer.call_deferred(), Object.CONNECT_ONE_SHOT)
 	var fill := _meter_fill(kind)
 	bar.add_theme_stylebox_override("fill", fill)
 	var bg := StyleBoxFlat.new()
@@ -247,13 +252,14 @@ static func badge(text: String, color: Color, tooltip := "") -> Control:
 ## A labelled bar. `color` communicates category; the numeric label carries the same
 ## information in text so nothing depends on colour alone.
 static func progress_bar(value: float, maximum: float, color: Color, text := "",
-		height := 14, tooltip := "") -> ProgressBar:
+		height := 14, tooltip := "", animate := true) -> ProgressBar:
 	var bar := ProgressBar.new()
 	bar.max_value = maxf(1.0, maximum)
 	bar.value = clampf(value, 0.0, maxf(1.0, maximum))
 	# Set-then-tween: the value above is authoritative (the tween is a full no-op
 	# when reduced motion is on), Motion only adds the visual glide.
-	Motion.tween_bar(bar, bar.value)
+	if animate:
+		Motion.tween_bar(bar, bar.value)
 	bar.show_percentage = false
 	bar.custom_minimum_size = Vector2(0, maxi(height, 18) if text != "" else height)
 	bar.add_theme_stylebox_override("fill", UIStyle.glow_fill(color))
@@ -504,10 +510,6 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	if not unlocked:
 		name_label.add_theme_color_override("font_color", UITokens.DISABLED)
 	content.add_child(name_label)
-	if mastery > 0:
-		var m := badge("M%d" % mastery, UITokens.PURPLE, "Activity mastery %d — improves this activity only" % mastery)
-		m.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		content.add_child(m)
 	if not unlocked:
 		var lock := badge("Lv %d" % req, UITokens.AMBER, "Requires %s %d — you are %d" % [
 			DataLoader.get_skill(skill_id).get("name", skill_id), req, level])
@@ -564,10 +566,7 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 		tips.append("LOCKED — requires %s %d" % [DataLoader.get_skill(skill_id).get("name", skill_id), req])
 	row.tooltip_text = "\n".join(tips)
 	card.add_child(row)
-	# The card's own meter: progress towards the next mastery level of this activity.
-	var mastery_bar := meter(XPTable.level_progress(MasteryManager.get_xp(skill_id, action_id), maxi(1, mastery)), 1.0, "xp", "", 4)
-	mastery_bar.tooltip_text = "Mastery %d — progress to the next mastery level" % mastery
-	card.add_child(mastery_bar)
+	card.add_child(mastery_progress(skill_id, action_id))
 	return card
 
 static func _item_list(items: Dictionary) -> String:
@@ -738,3 +737,8 @@ static func item_rewards(items: Dictionary) -> Control:
 		chip.tooltip_text = item_tooltip(str(item_id))
 		flow.add_child(chip)
 	return flow
+
+static func mastery_progress(skill_id: String, action_id: String) -> Control:
+	var readout = preload("res://scripts/ui/ActivityMastery.gd").new()
+	readout.configure(skill_id, action_id)
+	return readout

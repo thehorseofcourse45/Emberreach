@@ -19,6 +19,7 @@ const TOKEN_POOL_FRACTION: float = 0.001
 
 # skill_id -> { action_id: xp }
 var _mastery_xp: Dictionary = {}
+var _challenges: Dictionary = {}
 # skill_id -> pool xp (float)
 var _pools: Dictionary = {}
 # skill_id -> Array[bool] state of each checkpoint (index-aligned with POOL_CHECKPOINTS)
@@ -28,6 +29,8 @@ func _ready() -> void:
     EventBus.mastery_level_up.connect(_on_mastery_level_up)
 
 func _on_mastery_level_up(skill_id: String, action_id: String, _level: int) -> void:
+    if not DataLoader.get_skill_actions(skill_id).is_empty() and (SkillManager.active_skill != skill_id or SkillManager.active_action_id != action_id):
+        return
     update_item_mastery_source(skill_id, action_id)
 
 ## Register the modifier source granted by the active action's ITEM mastery unlocks
@@ -51,6 +54,17 @@ func update_item_mastery_source(skill_id: String, action_id: String) -> void:
         ModifierManager.register("mastery_item:%s" % skill_id, mods, ITEM_UNLOCK_CATEGORY,
             "%s mastery" % skill_id)
 
+## Authored recipes plus activities owned by their dedicated systems.
+func activities(skill_id: String) -> Array:
+    var actions: Array = DataLoader.get_skill_actions(skill_id)
+    if not actions.is_empty():
+        return actions
+    var key: String = {"ranching": "species", "dreamwalking": "dreams", "caravaneering": "caravan_routes"}.get(skill_id, "")
+    var result: Array = []
+    for entry in DataLoader.new_skill_systems.get(key, []):
+        result.append({"id": ("raise_" if skill_id == "ranching" else "") + str(entry.id), "name": str(entry.name), "level_required": int(entry.level)})
+    return result
+
 # ---------------- Mastery levels ----------------
 func get_xp(skill_id: String, action_id: String) -> float:
     var m: Dictionary = _mastery_xp.get(skill_id, {})
@@ -61,19 +75,22 @@ func get_level(skill_id: String, action_id: String) -> int:
 
 func get_skill_total_mastery_levels(skill_id: String) -> float:
     ## Sum of every action's mastery LEVEL in the skill (PlayerTotalMastery).
-    var m: Dictionary = _mastery_xp.get(skill_id, {})
     var total: float = 0.0
-    for action_id in m.keys():
-        total += float(XPTable.level_for_xp(float(m[action_id])))
+    for action in activities(skill_id):
+        total += float(get_level(skill_id, str(action.id)))
     return total
 
 ## Compute the mastery XP granted by one action completion (before pool split).
 func compute_mxp(skill_id: String, action_id: String, action_time: float, bonus: float = 0.0) -> float:
-    var total_items: float = float(DataLoader.get_action_count(skill_id))
+    var catalog: Array = activities(skill_id)
+    var total_items: float = float(catalog.size())
     if total_items <= 0.0:
         return 0.0
     var skill_level: int = PlayerData.get_level(skill_id)
-    var unlocked: float = float(DataLoader.get_unlocked_action_count(skill_id, skill_level))
+    var unlocked: float = 0.0
+    for action in catalog:
+        if int(action.level_required) <= skill_level:
+            unlocked += 1.0
     var player_total: float = get_skill_total_mastery_levels(skill_id)
     var total_mastery_for_skill: float = total_items * float(XPTable.MAX_LEVEL)
     var item_level: float = float(get_level(skill_id, action_id))
@@ -86,6 +103,10 @@ func add_mastery_xp(skill_id: String, action_id: String, action_time: float, bon
     if mxp <= 0.0:
         return {"mxp": 0.0, "pool_gain": 0.0, "level_up": false, "level": get_level(skill_id, action_id)}
     var before_level: int = get_level(skill_id, action_id)
+    if before_level >= XPTable.MAX_LEVEL and is_finite(action_time) and action_time > 0.0:
+        var key: String = skill_id + ":" + action_id
+        if not _challenges.has(key): _challenges[key] = {"seconds": 0.0, "claimed": false}
+        _challenges[key].seconds = minf(CHALLENGE_SECONDS, float(_challenges[key].seconds) + action_time)
     if not _mastery_xp.has(skill_id):
         _mastery_xp[skill_id] = {}
     _mastery_xp[skill_id][action_id] = get_xp(skill_id, action_id) + mxp
@@ -101,7 +122,7 @@ func add_mastery_xp(skill_id: String, action_id: String, action_time: float, bon
 
 # ---------------- Pools ----------------
 func get_pool_cap(skill_id: String) -> float:
-    return POOL_PER_ITEM * float(DataLoader.get_action_count(skill_id))
+    return POOL_PER_ITEM * float(activities(skill_id).size())
 
 func get_pool_xp(skill_id: String) -> float:
     return float(_pools.get(skill_id, 0.0))
@@ -121,34 +142,32 @@ func add_pool_xp(skill_id: String, amount: float) -> void:
 
 ## Spend pool XP to level an item's mastery 1:1 (spec).
 func spend_pool_xp(skill_id: String, action_id: String, amount: float) -> bool:
-    if get_pool_xp(skill_id) < amount:
+    if not is_finite(amount) or amount <= 0.0 or not activities(skill_id).any(func(a): return str(a.id) == action_id):
         return false
-    _pools[skill_id] = get_pool_xp(skill_id) - amount
+    var before_level: int = get_level(skill_id, action_id)
+    var needed: float = maxf(0.0, XPTable.xp_for_level(XPTable.MAX_LEVEL) - get_xp(skill_id, action_id))
+    var spent: float = minf(amount, needed)
+    if spent <= 0.0 or get_pool_xp(skill_id) < spent:
+        return false
+    _pools[skill_id] = get_pool_xp(skill_id) - spent
     if not _mastery_xp.has(skill_id):
         _mastery_xp[skill_id] = {}
-    _mastery_xp[skill_id][action_id] = get_xp(skill_id, action_id) + amount
+    _mastery_xp[skill_id][action_id] = get_xp(skill_id, action_id) + spent
+    EventBus.mastery_xp_gained.emit(skill_id, action_id, spent)
+    if get_level(skill_id, action_id) > before_level:
+        EventBus.mastery_level_up.emit(skill_id, action_id, get_level(skill_id, action_id))
     EventBus.mastery_pool_changed.emit(skill_id, _pools[skill_id])
     _evaluate_checkpoints(skill_id)
     return true
 
-## Spend pool XP to raise an item by whole levels (returns XP actually spent).
+## Spend only what is available, up to the requested level and the 120 cap.
 func spend_pool_xp_for_levels(skill_id: String, action_id: String, levels: int) -> float:
-    var target_xp: float = get_xp(skill_id, action_id)
-    var cur_level: int = XPTable.level_for_xp(target_xp)
-    var want: int = mini(cur_level + levels, XPTable.MAX_LEVEL)
-    var needed: float = float(XPTable.xp_for_level(want)) - target_xp
-    if needed <= 0.0:
+    if levels <= 0:
         return 0.0
-    var affordable: float = minf(needed, get_pool_xp(skill_id))
-    if affordable <= 0.0:
-        return 0.0
-    _pools[skill_id] = get_pool_xp(skill_id) - affordable
-    if not _mastery_xp.has(skill_id): _mastery_xp[skill_id] = {}
-    _mastery_xp[skill_id][action_id] = target_xp + affordable
-    EventBus.mastery_pool_changed.emit(skill_id, _pools[skill_id])
-    EventBus.mastery_level_up.emit(skill_id, action_id, get_level(skill_id, action_id))
-    _evaluate_checkpoints(skill_id)
-    return affordable
+    var target: int = mini(get_level(skill_id, action_id) + levels, XPTable.MAX_LEVEL)
+    var needed: float = maxf(0.0, XPTable.xp_for_level(target) - get_xp(skill_id, action_id))
+    var spent: float = minf(needed, get_pool_xp(skill_id))
+    return spent if spend_pool_xp(skill_id, action_id, spent) else 0.0
 
 func claim_mastery_token(skill_id: String) -> void:
     add_pool_xp(skill_id, get_pool_cap(skill_id) * TOKEN_POOL_FRACTION)
@@ -183,9 +202,19 @@ func is_checkpoint_active(skill_id: String, percent: float) -> bool:
 
 # ---------------- Persistence ----------------
 func serialize() -> Dictionary:
-    return {"mastery_xp": _mastery_xp.duplicate(true), "pools": _pools.duplicate(true)}
+    return {"mastery_xp": _mastery_xp.duplicate(true), "pools": _pools.duplicate(true), "challenges": _challenges.duplicate(true)}
 
 func deserialize(data: Dictionary) -> void:
+    _challenges.clear()
+    var saved: Variant = data.get("challenges", {})
+    if saved is Dictionary:
+        for key in saved:
+            var parts: PackedStringArray = str(key).split(":")
+            var row: Variant = saved[key]
+            if parts.size() != 2 or not row is Dictionary or not activities(parts[0]).any(func(a): return str(a.id) == parts[1]): continue
+            var seconds: float = float(row.get("seconds", 0.0))
+            _challenges[str(key)] = {"seconds": clampf(seconds, 0.0, CHALLENGE_SECONDS) if is_finite(seconds) else 0.0, "claimed": bool(row.get("claimed", false))}
+
     _mastery_xp = data.get("mastery_xp", {})
     _pools = data.get("pools", {})
     _checkpoint_state.clear()
@@ -220,3 +249,22 @@ func next_checkpoint(skill_id: String) -> String:
         if get_pool_percent(skill_id) < float(threshold):
             return "Next pool checkpoint %s%%: %s XP remaining · %s" % [str(threshold), UIStyle.fmt(get_pool_cap(skill_id) * float(threshold) / 100.0 - get_pool_xp(skill_id)), UIStyle.describe_modifier_table(DataLoader.get_skill(skill_id).pool_checkpoints[threshold])]
     return "All authored pool bonuses active. Keeping XP preserves these bonuses; spending can deactivate them."
+
+const CHALLENGE_SECONDS: float = 21600.0
+
+## Six hours of this activity after mastery 120. Existing pre-120 work never counts.
+func challenge(skill_id: String, action_id: String) -> Dictionary:
+    var row: Dictionary = _challenges.get(skill_id + ":" + action_id, {})
+    var reward: Dictionary = DataLoader.get_skill(skill_id).get("mastery_challenge_reward", {"masterwork_seal": 1})
+    return {"unlocked": get_level(skill_id, action_id) >= XPTable.MAX_LEVEL, "seconds": float(row.get("seconds", 0.0)), "required": CHALLENGE_SECONDS, "claimed": bool(row.get("claimed", false)), "reward": reward}
+
+func claim_challenge(skill_id: String, action_id: String) -> bool:
+    if not activities(skill_id).any(func(a): return str(a.id) == action_id): return false
+    var c: Dictionary = challenge(skill_id, action_id)
+    if not c.unlocked or c.claimed or float(c.seconds) < CHALLENGE_SECONDS: return false
+    _challenges[skill_id + ":" + action_id].claimed = true
+    for id in c.reward:
+        BankManager.add_item_guaranteed(str(id), int(c.reward[id]))
+    EventBus.notify("Mastery challenge complete! Rewards delivered to storage.", "success")
+    EventBus.state_refreshed.emit()
+    return true

@@ -720,7 +720,22 @@ func _rebuild_places() -> void:
 		if locked:
 			col.add_child(UIStyle.colored_label("Locked — %s" % CombatManager.dungeon_lock_reason(_selected_area),
 				UITokens.AMBER, UITokens.FONT_SMALL))
-		_fight_button.disabled = locked or (expeditions_only and CombatManager.expedition_unlock_reason() != "")
+		for bid in place.get("requires_building", {}):
+			col.add_child(Widgets.requirement_row(str(DataLoader.township_buildings.get(bid, {}).get("name", bid)), TownshipManager.level_of(str(bid)), int(place.requires_building[bid]), TownshipManager.level_of(str(bid)) >= int(place.requires_building[bid])))
+		if not place.get("entry_items", {}).is_empty():
+			col.add_child(UIStyle.label("Entry provisions (spent each attempt)", true, UITokens.FONT_SMALL))
+			for item_id in place.entry_items:
+				col.add_child(Widgets.requirement_row(str(DataLoader.get_item(str(item_id)).get("name", item_id)), BankManager.get_count(str(item_id)), int(place.entry_items[item_id]), BankManager.has_item(str(item_id), int(place.entry_items[item_id]))))
+		if place.has("requires_quest"):
+			var task := UIStyle.mini_button("Open regional threat tasks")
+			task.pressed.connect(func(): navigated.emit({"screen": Screens.QUESTS, "quest_id": str(place.requires_quest)}))
+			col.add_child(task)
+		if bool(place.get("endless_floors", false)):
+			col.add_child(UIStyle.title("Best floor: %d" % int(PlayerData.get_stat("endless_best", _selected_area)), UITokens.FONT_BODY))
+			col.add_child(UIStyle.label("+12% enemy HP / +4% damage per floor. Loot is banked each floor; ten-floor milestones pay six shards. Retreat whenever you want. Simulator previews floor 1.", true, UITokens.FONT_SMALL))
+		var reason: String = CombatManager.dungeon_lock_reason(_selected_area)
+		if reason != "" and not locked: col.add_child(UIStyle.colored_label(reason, UITokens.AMBER, UITokens.FONT_SMALL))
+		_fight_button.disabled = reason != "" or (expeditions_only and CombatManager.expedition_unlock_reason() != "")
 		var reward: Dictionary = place.get("rewards_first_clear", {})
 		if not reward.is_empty():
 			var parts: Array[String] = []
@@ -730,7 +745,7 @@ func _rebuild_places() -> void:
 				parts.append("%s ×%s" % [str(DataLoader.get_item(str(item_id)).get("name", item_id)),
 					UIStyle.fmt_exact(float(reward["items"][item_id]))])
 			col.add_child(Widgets.key_value("First clear", " · ".join(parts), UITokens.GOLD_BRIGHT))
-		col.add_child(UIStyle.colored_label("Dungeons run their encounter list in order and stop at the end.",
+		col.add_child(UIStyle.colored_label("Endless descent continues automatically until retreat or defeat." if bool(place.get("endless_floors", false)) else "Dungeons run their encounter list in order and stop at the end.",
 			UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
 	else:
 		col.add_child(UIStyle.colored_label("Regions spawn endlessly from their enemy pool until you retreat.",

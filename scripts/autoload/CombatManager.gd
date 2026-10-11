@@ -177,9 +177,17 @@ func _sig_monster_phase(monster_id: String, phase_name: String) -> void:
 ## DataLoader.get_monster() instead where the unmodified record is meant (loot, slayer, death).
 func current_monster() -> Dictionary:
 	var record: Dictionary = DataLoader.get_monster(current_monster_id)
-	if monster_phases_fired <= 0:
-		return record  # callers only read it; avoid a deep copy per call
-	return MonsterMechanics.effective(record, monster_phases_fired)
+	if monster_phases_fired > 0:
+		record = MonsterMechanics.effective(record, monster_phases_fired)
+	if endless_floor() > 0:
+		record = record.duplicate(true)
+		record["max_hit"] = roundi(float(record.get("max_hit", 1)) * (1.0 + 0.04 * float(endless_floor() - 1)))
+	return record
+
+func endless_floor() -> int:
+	if str(context.get("type", "")) != "dungeon" or not bool(DataLoader.get_dungeon(str(context.get("id", ""))).get("endless_floors", false)):
+		return 0
+	return clampi(int(context.get("floor", 1)), 1, 1000000)
 
 func _sig_status(target: String, effect_id: String, applied: bool) -> void:
 	if SimulationMode.is_silent():
@@ -230,6 +238,18 @@ func dungeon_lock_reason(dungeon_id: String) -> String:
 		var needed: int = int(reqs[skill_id])
 		if PlayerData.get_level(str(skill_id)) < needed:
 			return "Reach %s %d" % [str(DataLoader.get_skill(str(skill_id)).get("name", skill_id)), needed]
+	var task: String = str(dungeon.get("requires_quest", ""))
+	if task != "" and not Quests.is_claimed(task):
+		return "Claim task: %s" % Quests.get_quest(task).get("name", task)
+	var land: String = str(dungeon.get("dreamland", ""))
+	if land != "" and PlayerData.get_stat("dream_seconds", land) < float(dungeon.get("dream_hours", 24)) * 3600.0:
+		return "Dream in %s for %d hours (%d so far)" % [DreamwalkingManager.dream(land).get("name", land), int(dungeon.get("dream_hours", 24)), int(PlayerData.get_stat("dream_seconds", land) / 3600.0)]
+	for building_id in dungeon.get("requires_building", {}):
+		if TownshipManager.level_of(str(building_id)) < int(dungeon.requires_building[building_id]):
+			return "Complete %s" % DataLoader.township_buildings.get(building_id, {}).get("name", building_id)
+	for item_id in dungeon.get("entry_items", {}):
+		if not BankManager.has_item(str(item_id), int(dungeon.entry_items[item_id])):
+			return "Entry requires %s x%d" % [DataLoader.get_item(str(item_id)).get("name", item_id), int(dungeon.entry_items[item_id])]
 	var prev: String = str(dungeon.get("requires_dungeon", ""))
 	if prev != "" and not (PlayerData.completion_log.get("dungeons", {}) as Dictionary).has(prev):
 		return "Clear %s" % str(DataLoader.get_dungeon(prev).get("name", prev))
@@ -253,7 +273,14 @@ func start_combat(ctx: Dictionary) -> bool:
 	if (ctx.get("monsters", []) as Array).is_empty():
 		EventBus.notify("Nothing to fight here yet.", "warn")
 		return false
-	context = ctx
+	# Consume entry provisions only after every start check has passed.
+	if str(ctx.get("type", "")) == "dungeon":
+		var dungeon: Dictionary = DataLoader.get_dungeon(str(ctx.get("id", "")))
+		for item_id in dungeon.get("entry_items", {}):
+			BankManager.remove_item(str(item_id), int(dungeon.entry_items[item_id]))
+	context = ctx.duplicate(true)
+	if bool(DataLoader.get_dungeon(str(context.get("id", ""))).get("endless_floors", false)):
+		context["floor"] = 1
 	context["index"] = 0
 	attack_style = str(ctx.get("attack_style", attack_style))
 	melee_style = str(ctx.get("melee_style", melee_style))
@@ -323,6 +350,8 @@ func _spawn_monster(monster_id: String) -> void:
 	# through here, so this is the one place the multiplier has to be applied.
 	if _in_raid():
 		monster_max_hp = maxi(1, int(round(float(monster_max_hp) * RaidManager.enemy_hp_mult())))
+	if endless_floor() > 0:
+		monster_max_hp = maxi(1, roundi(float(monster_max_hp) * (1.0 + 0.12 * float(endless_floor() - 1))))
 	monster_hp = monster_max_hp
 	monster_attack_interval = maxf(CombatSimulator.MONSTER_INTERVAL_FLOOR, float(m.get("attack_speed", 3.0)))
 	monster_attack_timer = 0.0
@@ -775,7 +804,13 @@ func _regen_after_attack() -> void:
 func _active_hazard() -> Dictionary:
 	if str(context.get("type", "")) != "area":
 		return {}
-	return ModifierManager.negated_hazard(DataLoader.areas.get(str(context.get("id", "")), {}).get("hazard", {}))
+	return region_hazard(str(context.get("id", "")))
+
+func region_hazard(area_id: String) -> Dictionary:
+	var area: Dictionary = DataLoader.areas.get(area_id, {})
+	if str(area.get("pacified_by", "")) != "" and Quests.is_claimed(str(area.pacified_by)):
+		return {}
+	return ModifierManager.negated_hazard(area.get("hazard", {}))
 
 ## True while a raid is running. RaidManager marks the fight by context "type" only, so every
 ## raid-specific rule in the engine asks here rather than reading a key that is never set.
@@ -1000,6 +1035,25 @@ func _lose_one_item() -> String:
 	return item_id
 
 func _complete_combat() -> void:
+	var floor: int = endless_floor()
+	if floor > 0:
+		var did: String = str(context.id)
+		var dungeon: Dictionary = DataLoader.get_dungeon(did)
+		if floor == 1:
+			PlayerData.discover_dungeon(did)
+			ProgressTracker.record_dungeon_clear(did)
+		PlayerData.bump_stat("endless_floors", did, 1)
+		PlayerData.stats["endless_best"][did] = maxf(PlayerData.get_stat("endless_best", did), float(floor))
+		_grant_reward(dungeon.get("floor_reward", {}))
+		if floor % 10 == 0:
+			for _bonus in range(5): _grant_reward(dungeon.get("floor_reward", {}))
+		context["floor"] = mini(1000000, floor + 1)
+		context["index"] = 0
+		_spawn_current()
+		# Save-on-clear observes the committed next floor, preventing a replay of floor 1.
+		if floor == 1: _sig_dungeon_completed(did)
+		if not SimulationMode.is_silent(): EventBus.notify("%s · floor %d (best %d)" % [dungeon.name, floor + 1, int(PlayerData.get_stat("endless_best", did))], "success")
+		return
 	if str(context.get("type", "")) == "dungeon":
 		var dungeon_id: String = str(context.get("id", ""))
 		var d: Dictionary = DataLoader.get_dungeon(dungeon_id)

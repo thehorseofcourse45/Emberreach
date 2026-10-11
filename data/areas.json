@@ -217,9 +217,10 @@
     "hazard": {
       "enemy_damage_percent": 10.0,
       "player_accuracy_percent": -3.0,
-      "label": "Wild elements: enemies +10% damage, \u22123 accuracy"
+      "label": "Wild elements: enemies +10% damage, −3 accuracy"
     },
-    "flavour": "Where the four god-shrines leak, the land never settled on one element. The wisps they shed wander free."
+    "flavour": "Where the four god-shrines leak, the land never settled on one element. The wisps they shed wander free.",
+    "pacified_by": "threat_sundered_reaches_victory"
   },
   "drowned_reach": {
     "id": "drowned_reach",
@@ -241,9 +242,10 @@
     "hazard": {
       "enemy_damage_percent": 10.0,
       "player_evasion_percent": -10.0,
-      "label": "Storm surf: enemies +10% damage, \u221210% evasion"
+      "label": "Storm surf: enemies +10% damage, −10% evasion"
     },
-    "flavour": "The old causeway runs on under the sea. At low tide you can walk it, and the crew that drowned there walks it with you."
+    "flavour": "The old causeway runs on under the sea. At low tide you can walk it, and the crew that drowned there walks it with you.",
+    "pacified_by": "threat_drowned_reach_victory"
   },
   "heralds_march": {
     "id": "heralds_march",
@@ -265,9 +267,10 @@
     "hazard": {
       "enemy_damage_percent": 15.0,
       "player_accuracy_percent": -3.0,
-      "label": "Ash wind: enemies +15% damage, \u22123 accuracy"
+      "label": "Ash wind: enemies +15% damage, −3 accuracy"
     },
-    "flavour": "The road to the Herald's throne, kept by the things that serve it. Nobody built it. It was burned flat."
+    "flavour": "The road to the Herald's throne, kept by the things that serve it. Nobody built it. It was burned flat.",
+    "pacified_by": "threat_heralds_march_victory"
   },
   "spider_slayer_area": {
     "id": "spider_slayer_area",

@@ -51,6 +51,7 @@ func advance_offline(seconds: float, advance_buffs: bool = false) -> Dictionary:
 		return result
 	seconds = minf(seconds, OfflineProgression.MAX_CAP_HOURS * 3600.0)
 	result.seconds = seconds
+	PlayerData.bump_stat("dream_seconds", dreamscape, seconds)
 	var mastery: int = MasteryManager.get_level("dreamwalking", dreamscape)
 	var tw: Dictionary = twist(dreamscape)
 	var depth_cap: float = 12.0 * (1.0 + ModifierManager.get_modifier("dreamwalking_depth_percent") / 100.0) + float(mastery - 1) / 99.0

@@ -2619,7 +2619,7 @@ func _test_audio() -> void:
 	# Volume keys exist so old saves migrate them in, and applying zero mutes the bus.
 	_ok(SettingsDefaults.DEFAULTS.has("sfx_volume") and not SettingsDefaults.DEFAULTS.has("music_volume"),
 		"volume settings have declared defaults")
-	var saved_sfx: float = float(PlayerData.settings.get("sfx_volume", 80.0))
+	var saved_sfx: float = float(PlayerData.settings.get("sfx_volume", SettingsDefaults.DEFAULTS["sfx_volume"]))
 	PlayerData.settings["sfx_volume"] = 0.0
 	AudioManager.apply_volumes()
 	var sfx_bus: int = AudioServer.get_bus_index("SFX")
@@ -2710,9 +2710,9 @@ func _test_game_modes() -> void:
 ## Grimoire-on-forge palette: spec values, and every ink readable on both vellum and leather.
 func test_grimoire_palette() -> void:
 	_heading("Grimoire palette")
-	_eq(UITokens.BG_DEEP, Color("#0d0a09"), "forge background")
-	_eq(UITokens.BORDER_GOLD, Color("#c88c2c"), "gold trim")
-	_eq(UITokens.TEXT, Color("#f1dcb8"), "body ink")
+	_eq(UITokens.BG_DEEP, Color("#0b1220"), "forge background")
+	_eq(UITokens.BORDER_GOLD, Color("#b79758"), "gold trim")
+	_eq(UITokens.TEXT, Color("#dce6ef"), "body ink")
 	# The lightest vellum a word can sit on: the top of the gradient, brightened as a selected row.
 	var lightest: Color = Color(UITokens.VELLUM_TOP.r * UIStyle.RAISED_MODULATE, UITokens.VELLUM_TOP.g * UIStyle.RAISED_MODULATE,
 		UITokens.VELLUM_TOP.b * UIStyle.RAISED_MODULATE)
@@ -3184,7 +3184,7 @@ func test_surface_box_falls_back() -> void:
 	_ok(sb is StyleBoxFlat, "missing art must fall back to StyleBoxFlat")
 
 ## Every textured kind is a 9-slice StyleBoxTexture built from the generated leather/vellum; flat
-## kinds stay flat; a failed texture falls back to flat; a painted <kind>_grimoire_9slice.png wins.
+## kinds stay flat; a failed texture falls back to flat; a painted <kind>_slate_9slice.png wins.
 func test_surface_textures() -> void:
 	_heading("Grimoire surfaces")
 	TextureFactory.clear_cache()
@@ -3204,14 +3204,14 @@ func test_surface_textures() -> void:
 	DirAccess.make_dir_recursive_absolute("user://art_test")
 	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
 	img.fill(Color.WHITE)
-	img.save_png("user://art_test/panel_grimoire_9slice.png")
+	img.save_png("user://art_test/panel_slate_9slice.png")
 	var saved_dir: String = UIStyle.ART_DIR
 	UIStyle.ART_DIR = "user://art_test/"
 	var painted = UIStyle.surface_box("panel")
 	_ok(painted is StyleBoxTexture and painted.texture.get_width() == 32,
 		"a painted panel wins over the generated one")
 	UIStyle.ART_DIR = saved_dir
-	DirAccess.remove_absolute("user://art_test/panel_grimoire_9slice.png")
+	DirAccess.remove_absolute("user://art_test/panel_slate_9slice.png")
 	_ok(not (UIStyle.surface_box("panel") as StyleBoxTexture).texture.get_width() == 32,
 		"the old navy panel_9slice.png is never loaded")
 
@@ -5347,7 +5347,10 @@ func _test_township_has_no_dead_ends() -> void:
 	var saved_resources: Dictionary = TownshipManager.resources.duplicate()
 	for id in DataLoader.township_buildings.keys():
 		var b: Dictionary = DataLoader.township_buildings[id]
-		if str(b.get("unlocks", "")) != "" and not str(id).ends_with("observatory"):
+		if bool(b.get("is_wonder", false)):
+			var unlocked: Array = DataLoader.dungeons.values().filter(func(d): return int(d.get("requires_building", {}).get(id, 0)) == TownshipManager.max_level_of(str(id)))
+			_ok(not unlocked.is_empty(), "%s backs its unlock with a gated expedition" % str(b.name))
+		elif str(b.get("unlocks", "")) != "" and not str(id).ends_with("observatory"):
 			_ok(not (b.get("modifiers", {}) as Dictionary).is_empty(),
 				"%s backs its unlock with a real bonus" % str(b.get("name", id)))
 	var spent: Dictionary = {}

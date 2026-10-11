@@ -7129,8 +7129,7 @@
     "name": "Wool",
     "item_type": "resource",
     "sell_price": 10,
-    "is_stackable": true,
-    "bottleneck_reason": "the sheep pen is wool's only supply: the sixteen robe recipes are what make the level-30 animal worth raising"
+    "is_stackable": true
   },
   "ranch_boar": {
     "id": "ranch_boar",
@@ -9244,8 +9243,8 @@
     "equipment_slot": 6,
     "equipment_stats": {},
     "passive_modifiers": {
-      "angling_doubling_percent": 3,
-      "cooking_skill_xp_percent": 3
+      "cooking_skill_xp_percent": 3,
+      "fishing_doubling_percent": 3
     },
     "level_requirements": {
       "alt_magic": 30
@@ -9301,5 +9300,407 @@
     },
     "sell_price": 1234,
     "description": "An amulet enchanted through Runescribing. Its bonuses apply while equipped."
+  },
+  "masterwork_seal": {
+    "id": "masterwork_seal",
+    "name": "Masterwork Seal",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 0,
+    "icon_id": "enchant_catalyst",
+    "description": "Earned once per activity by completing its mastery-120 challenge. Used to construct settlement wonders."
+  },
+  "astral_pendant": {
+    "id": "astral_pendant",
+    "name": "Celestial Pendant",
+    "item_type": "equipment",
+    "sell_price": 2085,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 27,
+      "slash": 27,
+      "block": 27,
+      "ranged_attack": 27,
+      "magic_attack": 27,
+      "melee_strength": 19,
+      "ranged_strength": 19,
+      "magic_damage_percent": 10,
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20
+    },
+    "passive_modifiers": {
+      "magic_damage_percent": 14,
+      "prayer_cost_reduction_percent": 10
+    },
+    "level_requirements": {
+      "hitpoints": 115
+    },
+    "description": "Awarded for the first clear of Astral Sanctum.",
+    "icon_id": "heralds_sigil",
+    "is_boss_drop": true
+  },
+  "tempest_cloak": {
+    "id": "tempest_cloak",
+    "name": "Tempest Cloak",
+    "item_type": "equipment",
+    "sell_price": 2085,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "ranged_attack": 25,
+      "ranged_strength": 18,
+      "melee_defence": 20,
+      "ranged_defence": 25,
+      "magic_defence": 20
+    },
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 12,
+      "food_healing_percent": 15
+    },
+    "level_requirements": {
+      "hitpoints": 115
+    },
+    "description": "Awarded for the first clear of Storm Citadel.",
+    "icon_id": "blighted_cloak",
+    "is_boss_drop": true
+  },
+  "embercrown_blade": {
+    "id": "embercrown_blade",
+    "name": "Embercrown Blade",
+    "item_type": "equipment",
+    "sell_price": 12177,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 70,
+      "melee_strength": 95,
+      "melee_defence": 12
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "herald_godsword",
+    "is_boss_drop": true,
+    "description": "Awarded for the first clear of Crown of Embers.",
+    "passive_modifiers": {
+      "melee_accuracy_percent": 12,
+      "damage_to_monsters_percent": 5
+    }
+  },
+  "legendary_crownfin": {
+    "id": "legendary_crownfin",
+    "name": "Legendary Crownfin",
+    "item_type": "food",
+    "is_stackable": true,
+    "sell_price": 0,
+    "icon_id": "shark",
+    "description": "Claimed from Angling activity mastery challenges.",
+    "heal_amount": 650
+  },
+  "masterwork_feast": {
+    "id": "masterwork_feast",
+    "name": "Masterwork Feast",
+    "item_type": "food",
+    "is_stackable": true,
+    "sell_price": 0,
+    "icon_id": "shark",
+    "description": "Claimed from Cookery activity mastery challenges.",
+    "heal_amount": 600
+  },
+  "masterwork_relic": {
+    "id": "masterwork_relic",
+    "name": "Pristine Astral Relic",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 0,
+    "icon_id": "enchant_catalyst",
+    "description": "Claimed from Excavation activity mastery challenges."
+  },
+  "masterwork_gyro": {
+    "id": "masterwork_gyro",
+    "name": "Perfect Sky Gyroscope",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Claimed from Engineering activity mastery challenges."
+  },
+  "masterwork_ingot": {
+    "id": "masterwork_ingot",
+    "name": "Flawless Masterwork Ingot",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Claimed from Forgecraft activity mastery challenges."
+  },
+  "sundered_sigil": {
+    "id": "sundered_sigil",
+    "name": "Sundered Sigil",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Earned from this regional threat; used in legendary crafting."
+  },
+  "tidal_sigil": {
+    "id": "tidal_sigil",
+    "name": "Tidal Sigil",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "dream_essence",
+    "description": "Earned from this regional threat; used in legendary crafting."
+  },
+  "march_sigil": {
+    "id": "march_sigil",
+    "name": "March Sigil",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_essence",
+    "description": "Earned from this regional threat; used in legendary crafting."
+  },
+  "stormglass_cargo": {
+    "id": "stormglass_cargo",
+    "name": "Stormglass Cargo",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Dangerous caravan cargo used for legendary equipment. Cargo damage reduces the haul."
+  },
+  "nightveil_silk": {
+    "id": "nightveil_silk",
+    "name": "Nightveil Silk",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "ranch_wool",
+    "description": "Dangerous caravan cargo used for legendary equipment. Cargo damage reduces the haul."
+  },
+  "worldheart_ore": {
+    "id": "worldheart_ore",
+    "name": "Worldheart Ore",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_ore",
+    "description": "Dangerous caravan cargo used for legendary equipment. Cargo damage reduces the haul."
+  },
+  "choir_core": {
+    "id": "choir_core",
+    "name": "Choir Core",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "dream_essence",
+    "description": "Dream boss core used to bind legendary equipment."
+  },
+  "astral_core": {
+    "id": "astral_core",
+    "name": "Astral Core",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "dream_essence",
+    "description": "Dream boss core used to bind legendary equipment."
+  },
+  "sovereign_core": {
+    "id": "sovereign_core",
+    "name": "Sovereign Core",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "dream_essence",
+    "description": "Dream boss core used to bind legendary equipment."
+  },
+  "ash_depth_shard": {
+    "id": "ash_depth_shard",
+    "name": "Ash Depth Shard",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "summoning_shard_gold",
+    "description": "Awarded for every completed floor. Legendary crafting consumes these shards."
+  },
+  "tide_depth_shard": {
+    "id": "tide_depth_shard",
+    "name": "Tide Depth Shard",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "summoning_shard_gold",
+    "description": "Awarded for every completed floor. Legendary crafting consumes these shards."
+  },
+  "star_depth_shard": {
+    "id": "star_depth_shard",
+    "name": "Star Depth Shard",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "summoning_shard_gold",
+    "description": "Awarded for every completed floor. Legendary crafting consumes these shards."
+  },
+  "sunforged_frame": {
+    "id": "sunforged_frame",
+    "name": "Sunforged Frame",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Forgecraft component for a legendary weapon."
+  },
+  "sunforged_focus": {
+    "id": "sunforged_focus",
+    "name": "Sunforged Focus",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "enchant_catalyst",
+    "description": "Attuned component for a legendary weapon."
+  },
+  "sunforged_weapon": {
+    "id": "sunforged_weapon",
+    "name": "Sunforged Greatblade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 80,
+      "melee_strength": 109,
+      "melee_defence": 14
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "strength": 120
+    },
+    "icon_id": "herald_godsword",
+    "is_boss_drop": false,
+    "description": "Legendary masterwork. Forge a frame, bind a focus, then assemble with seals and endless-dungeon shards.",
+    "passive_modifiers": {
+      "melee_accuracy_percent": 12,
+      "damage_to_monsters_percent": 5
+    }
+  },
+  "nightweaver_frame": {
+    "id": "nightweaver_frame",
+    "name": "Nightweaver Frame",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Forgecraft component for a legendary weapon."
+  },
+  "nightweaver_focus": {
+    "id": "nightweaver_focus",
+    "name": "Nightweaver Focus",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "enchant_catalyst",
+    "description": "Attuned component for a legendary weapon."
+  },
+  "nightweaver_weapon": {
+    "id": "nightweaver_weapon",
+    "name": "Nightweaver Bow",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": false,
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "ranged_attack": 150,
+      "ranged_strength": 103
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "ranged": 120
+    },
+    "description": "Legendary masterwork. Forge a frame, bind a focus, then assemble with seals and endless-dungeon shards.",
+    "attack_speed": 3.4,
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    },
+    "icon_id": "echobound_bow"
+  },
+  "starbound_frame": {
+    "id": "starbound_frame",
+    "name": "Starbound Frame",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Forgecraft component for a legendary weapon."
+  },
+  "starbound_focus": {
+    "id": "starbound_focus",
+    "name": "Starbound Focus",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "enchant_catalyst",
+    "description": "Attuned component for a legendary weapon."
+  },
+  "starbound_weapon": {
+    "id": "starbound_weapon",
+    "name": "Starbound Sceptre",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 113,
+    "equipment_stats": {
+      "magic_attack": 241,
+      "magic_damage_percent": 57
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "magic": 120
+    },
+    "attack_cost_items": {
+      "dawn_rune": 1
+    },
+    "description": "Legendary masterwork. Forge a frame, bind a focus, then assemble with seals and endless-dungeon shards.",
+    "icon_id": "dawn_wand",
+    "is_boss_drop": false
+  },
+  "trophy_gemkeeper": {
+    "id": "trophy_gemkeeper",
+    "name": "Gemkeeper Trophy",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "diamond_ring",
+    "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
+    "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
+  },
+  "trophy_threatbreaker": {
+    "id": "trophy_threatbreaker",
+    "name": "Threatbreaker Trophy",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_bulwark",
+    "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
+    "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
+  },
+  "trophy_dreamhunter": {
+    "id": "trophy_dreamhunter",
+    "name": "Dreamhunter Trophy",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "dream_essence",
+    "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
+    "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
+  },
+  "trophy_far_traveller": {
+    "id": "trophy_far_traveller",
+    "name": "Far Traveller Trophy",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "clockwork_gear",
+    "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
+    "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
+  },
+  "trophy_master_artisan": {
+    "id": "trophy_master_artisan",
+    "name": "Master Artisan Trophy",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "herald_bar",
+    "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
+    "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
+  },
+  "trophy_legendary_explorer": {
+    "id": "trophy_legendary_explorer",
+    "name": "Legendary Explorer Trophy",
+    "item_type": "resource",
+    "sell_price": 0,
+    "icon_id": "heralds_sigil",
+    "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
+    "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   }
 }

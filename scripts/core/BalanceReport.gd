@@ -127,6 +127,14 @@ static func _xp_per_hour(action: Dictionary) -> float:
 ## suite all read it, so a channel can only go missing in one place.
 static func consumed_item_ids() -> Dictionary:
 	var used: Dictionary = {}
+	for bid in DataLoader.township_buildings:
+		var materials: Dictionary = DataLoader.township_buildings[bid].get("project_items", {}).duplicate()
+		materials.merge(DataLoader.township_buildings[bid].get("project_final_items", {}))
+		for id in materials:
+			_mark_used(used, id, "wonder:" + str(bid))
+	for did in DataLoader.dungeons:
+		for id in DataLoader.dungeons[did].get("entry_items", {}):
+			_mark_used(used, id, "expedition:" + str(did))
 	for skill_id in DataLoader.skills.keys():
 		for action in DataLoader.get_skill_actions(str(skill_id)):
 			if typeof(action) != TYPE_DICTIONARY:
@@ -266,12 +274,18 @@ static func demand_rows() -> Array:
 		for drop in (DataLoader.monsters[monster_id].get("loot_table", []) as Array):
 			if typeof(drop) == TYPE_DICTIONARY and not bool((drop as Dictionary).get("is_currency", false)):
 				_add_source(sources, (drop as Dictionary).get("item_id", ""), "loot")
+	for sid in DataLoader.get_skill_ids():
+		if not MasteryManager.activities(str(sid)).is_empty():
+			for id in DataLoader.get_skill(str(sid)).get("mastery_challenge_reward", {"masterwork_seal": 1}):
+				_add_source(sources, id, "mastery:" + str(sid))
 	for dungeon_id in DataLoader.dungeons.keys():
 		var dungeon: Dictionary = DataLoader.dungeons[dungeon_id]
 		_add_source(sources, dungeon.get("shard_item", ""), "loot")
-		for bundle in [dungeon.get("completion_reward", {}), dungeon.get("rewards_first_clear", {})]:
+		for bundle in [dungeon.get("completion_reward", {}), dungeon.get("rewards_first_clear", {}), dungeon.get("floor_reward", {})]:
 			for item_id in ((bundle as Dictionary).get("items", {}) as Dictionary).keys():
 				_add_source(sources, item_id, "loot")
+	for route in DataLoader.new_skill_systems.get("caravan_routes", []):
+		for item_id in route.get("specialty", {}): _add_source(sources, item_id, "caravan:" + str(route.id))
 	# The General Store, the slayer shop and the settlement trader all sell for something the
 	# player can grind, so they are one kind of route: buyable.
 	for stock_id in DataLoader.shop_store.keys():

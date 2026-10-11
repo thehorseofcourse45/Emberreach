@@ -117,6 +117,9 @@ static func default_stats() -> Dictionary:
         "raid_waves_cleared": {},
         "raid_choices_taken": 0,
         "raid_coins_banked": 0.0,
+        "dream_seconds": {},
+        "endless_floors": {},
+        "endless_best": {},
         "dungeons_cleared": {},      # dungeon_id -> lifetime clears
         "actions": {},               # "skill:action" -> lifetime completions
         "region_visits": {},         # area/dungeon id -> visited flag

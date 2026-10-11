@@ -212,14 +212,14 @@ func current_activity() -> Dictionary:
 		var m: Dictionary = DataLoader.get_monster(CombatManager.current_monster_id)
 		return {
 			"kind": "combat",
-			"label": "Fighting %s" % str(m.get("name", "an enemy")),
+			"label": "Fighting %s%s" % [str(m.get("name", "an enemy")), " · Floor %d" % CombatManager.endless_floor() if CombatManager.endless_floor() > 0 else ""],
 			"detail": "HP %d / %d" % [int(CombatManager.player_hp), int(CombatManager._compute_max_hp())],
 			"screen": "expeditions" if CombatManager.is_expedition(str(CombatManager.context.get("id", ""))) else "combat",
 			"id": str(CombatManager.context.get("id", "")),
 			"progress": 1.0 - float(CombatManager.monster_hp) / maxf(1.0, float(CombatManager.monster_max_hp)),
 		}
 	if CombatManager.state == CombatManager.State.RESPAWNING:
-		return {"kind": "combat", "label": "Waiting for the next enemy", "detail": "",
+		return {"kind": "combat", "label": "Waiting for the next enemy" + (" · Floor %d" % CombatManager.endless_floor() if CombatManager.endless_floor() > 0 else ""), "detail": "",
 			"screen": "expeditions" if CombatManager.is_expedition(str(CombatManager.context.get("id", ""))) else "combat", "id": str(CombatManager.context.get("id", "")), "progress": 0.0}
 	if SkillManager.running:
 		var data: Dictionary = SkillManager.get_action_data()

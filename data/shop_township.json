@@ -5,9 +5,13 @@
     "name": "Lumber Yard",
     "type": "township_building",
     "description": "Sawpits and drying racks. The yard is what lets the settlement pay its own timber bills without taking you off the frontier.",
-    "cost": { "wood": 20 },
+    "cost": {
+      "wood": 20
+    },
     "cost_growth": 1.6,
-    "production": { "wood": 8 },
+    "production": {
+      "wood": 8
+    },
     "max_level": 5,
     "unlocks": "",
     "effect_note": "Relieves the early timber bottleneck for construction and Kilncraft"
@@ -17,9 +21,13 @@
     "name": "Terrace Farm",
     "type": "township_building",
     "description": "Ash-heavy soil terraced into strips. Not good land, but it is land.",
-    "cost": { "wood": 30 },
+    "cost": {
+      "wood": 30
+    },
     "cost_growth": 1.6,
-    "production": { "food": 6 },
+    "production": {
+      "food": 6
+    },
     "max_level": 5,
     "unlocks": "",
     "effect_note": "Food supports population and the trader's crates"
@@ -29,9 +37,13 @@
     "name": "Homes",
     "type": "township_building",
     "description": "Roofs, walls and a hearth. The settlement exists because people agreed to sleep here.",
-    "cost": { "wood": 50 },
+    "cost": {
+      "wood": 50
+    },
     "cost_growth": 1.7,
-    "production": { "population": 4 },
+    "production": {
+      "population": 4
+    },
     "max_level": 6,
     "unlocks": "",
     "effect_note": "Population is the gate on every larger structure"
@@ -41,9 +53,15 @@
     "name": "Quarry Adit",
     "type": "township_building",
     "description": "A short adit into the ridge, shored with whatever the lumber yard could spare.",
-    "cost": { "wood": 40, "stone": 20 },
+    "cost": {
+      "wood": 40,
+      "stone": 20
+    },
     "cost_growth": 1.7,
-    "production": { "stone": 6, "metal": 3 },
+    "production": {
+      "stone": 6,
+      "metal": 3
+    },
     "max_level": 5,
     "unlocks": "",
     "effect_note": "Stone unlocks larger construction; metal feeds the smelter"
@@ -53,9 +71,13 @@
     "name": "Smelter",
     "type": "township_building",
     "description": "A stone kiln that runs on settlement labour rather than your own attention.",
-    "cost": { "stone": 60 },
+    "cost": {
+      "stone": 60
+    },
     "cost_growth": 1.7,
-    "production": { "metal": 6 },
+    "production": {
+      "metal": 6
+    },
     "max_level": 5,
     "unlocks": "",
     "effect_note": "Bulk metal for Forgecraft inputs"
@@ -65,12 +87,19 @@
     "name": "Workshop",
     "type": "township_building",
     "description": "Benches, tools and a first honest attempt at quality control.",
-    "cost": { "wood": 80, "metal": 30 },
+    "cost": {
+      "wood": 80,
+      "metal": 30
+    },
     "cost_growth": 1.8,
-    "production": { "goods": 4 },
+    "production": {
+      "goods": 4
+    },
     "max_level": 5,
     "unlocks": "+1% chance per level to keep Artifice materials",
-    "modifiers": { "crafting_preservation_percent": 1 },
+    "modifiers": {
+      "crafting_preservation_percent": 1
+    },
     "effect_note": "Produces trade goods the trader exchanges for crates"
   },
   "township_building_apothecary": {
@@ -78,12 +107,20 @@
     "name": "Apothecary",
     "type": "township_building",
     "description": "Drying racks, a still and a locked cabinet. The marsh supplies the rest.",
-    "cost": { "wood": 60, "stone": 40, "goods": 20 },
+    "cost": {
+      "wood": 60,
+      "stone": 40,
+      "goods": 20
+    },
     "cost_growth": 1.8,
-    "production": { "reagents": 4 },
+    "production": {
+      "reagents": 4
+    },
     "max_level": 4,
     "unlocks": "+2% chance per level to keep Apothecary herbs",
-    "modifiers": { "herblore_preservation_percent": 2 },
+    "modifiers": {
+      "herblore_preservation_percent": 2
+    },
     "effect_note": "Reagents reduce the herb bottleneck in Apothecary work"
   },
   "township_building_training_grounds": {
@@ -91,12 +128,20 @@
     "name": "Training Grounds",
     "type": "township_building",
     "description": "A staked yard, practice arms and a board of everything that has gone wrong so far.",
-    "cost": { "wood": 120, "metal": 60, "goods": 30 },
+    "cost": {
+      "wood": 120,
+      "metal": 60,
+      "goods": 30
+    },
     "cost_growth": 1.9,
-    "production": { "drills": 3 },
+    "production": {
+      "drills": 3
+    },
     "max_level": 4,
     "unlocks": "+1% accuracy with every combat style per level",
-    "modifiers": { "global_accuracy_percent": 1 },
+    "modifiers": {
+      "global_accuracy_percent": 1
+    },
     "effect_note": "Drills are traded for Huntsman coins; the grounds sharpen every style's aim"
   },
   "township_building_storehouse": {
@@ -104,12 +149,19 @@
     "name": "Storehouse",
     "type": "township_building",
     "description": "Dry, shelved and guarded. The frontier's real bottleneck is almost always space.",
-    "cost": { "wood": 100, "stone": 80 },
+    "cost": {
+      "wood": 100,
+      "stone": 80
+    },
     "cost_growth": 1.9,
-    "production": { "goods": 2 },
+    "production": {
+      "goods": 2
+    },
     "max_level": 5,
     "unlocks": "+5 storage stacks per level",
-    "modifiers": { "bank_space_flat": 5 },
+    "modifiers": {
+      "bank_space_flat": 5
+    },
     "effect_note": "Raises your storage capacity directly"
   },
   "township_building_lodge": {
@@ -117,12 +169,20 @@
     "name": "Expedition Lodge",
     "type": "township_building",
     "description": "Maps on the wall, packs on the floor. Everything a party needs before it leaves.",
-    "cost": { "wood": 150, "metal": 80, "goods": 60 },
+    "cost": {
+      "wood": 150,
+      "metal": 80,
+      "goods": 60
+    },
     "cost_growth": 1.9,
-    "production": { "supplies": 3 },
+    "production": {
+      "supplies": 3
+    },
     "max_level": 4,
     "unlocks": "+3% food healing per level",
-    "modifiers": { "food_healing_percent": 3 },
+    "modifiers": {
+      "food_healing_percent": 3
+    },
     "effect_note": "Supplies are packed into combat draughts; the lodge stretches every meal"
   },
   "township_building_temple": {
@@ -130,12 +190,19 @@
     "name": "Shrine",
     "type": "township_building",
     "description": "The old rite, kept honestly. Every name accounted for, every debt settled.",
-    "cost": { "stone": 180, "goods": 60 },
+    "cost": {
+      "stone": 180,
+      "goods": 60
+    },
     "cost_growth": 2.0,
-    "production": { "faith": 2 },
+    "production": {
+      "faith": 2
+    },
     "max_level": 3,
     "unlocks": "Faith for the Observance; -2% Devotion point cost per level",
-    "modifiers": { "prayer_cost_reduction_percent": 2 },
+    "modifiers": {
+      "prayer_cost_reduction_percent": 2
+    },
     "effect_note": "Faith converts to prayer points, easing long Devotion sessions"
   },
   "township_building_school": {
@@ -143,9 +210,15 @@
     "name": "Schoolhouse",
     "type": "township_building",
     "description": "Slate boards and a bell. Residents who know a trade teach it to anyone who will sit still.",
-    "cost": { "wood": 140, "stone": 100, "goods": 40 },
+    "cost": {
+      "wood": 140,
+      "stone": 100,
+      "goods": 40
+    },
     "cost_growth": 1.9,
-    "production": { "goods": 1 },
+    "production": {
+      "goods": 1
+    },
     "max_level": 5,
     "unlocks": "",
     "effect_note": "Pick one skill for the residents to study; it earns XP every hour, online or offline"
@@ -155,11 +228,131 @@
     "name": "Starreading Terrace",
     "type": "township_building",
     "description": "A flat plinth above the ash line, levelled for instruments the settlement cannot yet build.",
-    "cost": { "stone": 260, "goods": 120, "faith": 40 },
+    "cost": {
+      "stone": 260,
+      "goods": 120,
+      "faith": 40
+    },
     "cost_growth": 2.0,
-    "production": { "astral_dust": 2 },
+    "production": {
+      "astral_dust": 2
+    },
     "max_level": 3,
     "unlocks": "Starreading dust income",
     "effect_note": "The trader sifts astral dust into Starreading dust, removing that grind bottleneck"
+  },
+  "wonder_astral_observatory": {
+    "id": "wonder_astral_observatory",
+    "name": "Astral Observatory",
+    "type": "township_building",
+    "is_wonder": true,
+    "description": "A permanent three-stage wonder. Complete Foundations, Construction, then Awakening. Each stage consumes the displayed settlement stores and bank materials.",
+    "requires": {
+      "astrology": 90,
+      "runecrafting": 90,
+      "township": 90
+    },
+    "cost": {
+      "stone": 3000,
+      "astral_dust": 125,
+      "faith": 300
+    },
+    "cost_growth": 1.6,
+    "project_items": {
+      "magic_log": 2500,
+      "soul_rune": 3000,
+      "masterwork_seal": 1
+    },
+    "project_gp": 15000000,
+    "max_level": 3,
+    "stage_names": [
+      "Foundations",
+      "Construction",
+      "Awakening"
+    ],
+    "production": {
+      "astral_dust": 8
+    },
+    "unlocks": "Astral Sanctum legendary expedition at stage 3",
+    "effect_note": "Stages increase hourly production; the final stage opens a new expedition.",
+    "project_final_items": {
+      "masterwork_relic": 1
+    }
+  },
+  "wonder_skyport": {
+    "id": "wonder_skyport",
+    "name": "Frontier Skyport",
+    "type": "township_building",
+    "is_wonder": true,
+    "description": "A permanent three-stage wonder. Complete Foundations, Construction, then Awakening. Each stage consumes the displayed settlement stores and bank materials.",
+    "requires": {
+      "caravaneering": 95,
+      "engineering": 90,
+      "township": 100
+    },
+    "cost": {
+      "wood": 4500,
+      "metal": 2000,
+      "goods": 875
+    },
+    "cost_growth": 1.6,
+    "project_items": {
+      "redwood_log": 3500,
+      "umbral_bar": 1000,
+      "masterwork_seal": 1
+    },
+    "project_gp": 30000000,
+    "max_level": 3,
+    "stage_names": [
+      "Foundations",
+      "Construction",
+      "Awakening"
+    ],
+    "production": {
+      "supplies": 12
+    },
+    "unlocks": "Storm Citadel legendary expedition at stage 3",
+    "effect_note": "Stages increase hourly production; the final stage opens a new expedition.",
+    "project_final_items": {
+      "masterwork_gyro": 1
+    }
+  },
+  "wonder_masterwork_forge": {
+    "id": "wonder_masterwork_forge",
+    "name": "Masterwork Forge",
+    "type": "township_building",
+    "is_wonder": true,
+    "description": "A permanent three-stage wonder. Complete Foundations, Construction, then Awakening. Each stage consumes the displayed settlement stores and bank materials.",
+    "requires": {
+      "smithing": 105,
+      "enchanting": 100,
+      "township": 110
+    },
+    "cost": {
+      "stone": 6000,
+      "metal": 3500,
+      "reagents": 1000
+    },
+    "cost_growth": 1.6,
+    "project_items": {
+      "herald_bar": 1200,
+      "enchant_catalyst": 150,
+      "masterwork_seal": 1
+    },
+    "project_gp": 45000000,
+    "max_level": 3,
+    "stage_names": [
+      "Foundations",
+      "Construction",
+      "Awakening"
+    ],
+    "production": {
+      "metal": 10
+    },
+    "unlocks": "Crown of Embers legendary expedition at stage 3",
+    "effect_note": "Stages increase hourly production; the final stage opens a new expedition.",
+    "project_final_items": {
+      "masterwork_ingot": 1
+    }
   }
 }

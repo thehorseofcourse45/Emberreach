@@ -9,6 +9,7 @@ signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
 var _resources_box: VBoxContainer
+var _wonders_box: VBoxContainer
 var _buildings_box: VBoxContainer
 var _trader_box: VBoxContainer
 var _worship_box: VBoxContainer
@@ -24,24 +25,35 @@ func _ready() -> void:
 	add_child(UIStyle.label(
 		"A settlement produces on the hour, online or offline, from real elapsed time. Structures unlock systems as well as rates.",
 		true, UITokens.FONT_SMALL))
+	var tabs := HBoxContainer.new()
+	var town := UIStyle.mini_button("Town", "Structures, stores and residents")
+	var wonders := UIStyle.mini_button("Wonders", "Permanent endgame projects")
+	town.pressed.connect(func(): _show_wonders(false))
+	wonders.pressed.connect(func(): _show_wonders(true))
+	tabs.add_child(town)
+	tabs.add_child(wonders)
+	add_child(tabs)
 	_ticks = UIStyle.label("", true, UITokens.FONT_MICRO)
 	add_child(_ticks)
 	_resources_box = UIStyle.section("Stores", "produced every hour")
 	add_child(_resources_box)
 	_buildings_box = UIStyle.section("Structures", "cost, effect and what it feeds")
 	add_child(_buildings_box)
+	_wonders_box = UIStyle.section("Settlement wonders", "Three permanent stages; bank materials and settlement stores unlock legendary expeditions")
+	add_child(_wonders_box)
 	_trader_box = UIStyle.section("Trader", "spend stores on what the frontier cannot make")
 	add_child(_trader_box)
 	_worship_box = UIStyle.section("Patron", "one blessing at a time, deepened by the Shrine")
 	add_child(_worship_box)
 	_study_box = UIStyle.section("Schoolhouse", "residents study one skill")
 	add_child(_study_box)
+	_show_wonders(false)
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.bank_changed.connect(_refresh_costs)
 	refresh()
 
-func focus_route(_route: Dictionary) -> void:
-	pass
+func focus_route(route: Dictionary) -> void:
+	_show_wonders(bool(route.get("wonders", false)))
 
 func detail_context() -> Dictionary:
 	return {"kind": "text", "title": "Settlement",
@@ -86,6 +98,9 @@ func _rebuild_resources() -> void:
 		UIStyle.fmt_duration(TownshipManager.seconds_to_next_tick()), UIStyle.fmt(total)]
 
 func _rebuild_buildings() -> void:
+	for c in _wonders_box.get_children():
+		_wonders_box.remove_child(c)
+		c.queue_free()
 	for c in _buildings_box.get_children():
 		_buildings_box.remove_child(c)
 		c.queue_free()
@@ -93,10 +108,11 @@ func _rebuild_buildings() -> void:
 	candidates.sort_custom(func(a, b): return float(TownshipManager.build_preview(str(a)).wait_hours) < float(TownshipManager.build_preview(str(b)).wait_hours))
 	var next_id: String = ""
 	for candidate in candidates:
-		if not TownshipManager.is_max_level(str(candidate)): next_id = str(candidate); break
+		if not DataLoader.township_buildings[candidate].get("is_wonder", false) and not TownshipManager.is_max_level(str(candidate)): next_id = str(candidate); break
 	if next_id != "": _buildings_box.add_child(UIStyle.label("Next structure: " + str(DataLoader.township_buildings[next_id].name), true, UITokens.FONT_SMALL))
 	for building_id in candidates:
 		var b: Dictionary = DataLoader.township_buildings[building_id]
+		var is_wonder: bool = bool(b.get("is_wonder", false))
 		var level: int = int(TownshipManager.buildings.get(building_id, 0))
 		var max_level: int = int(b.get("max_level", 5))
 		var card := UIStyle.card(level >= max_level)
@@ -104,12 +120,21 @@ func _rebuild_buildings() -> void:
 		card.add_child(col)
 		var head := HBoxContainer.new()
 		head.add_theme_constant_override("separation", UITokens.SP_4)
+		if is_wonder:
+			var icon_id: String = {"wonder_astral_observatory": "astrology", "wonder_skyport": "caravaneering", "wonder_masterwork_forge": "smithing"}.get(building_id, "township")
+			head.add_child(UIStyle.icon_texture("skills", icon_id))
 		var title := UIStyle.title(str(b.get("name", building_id)), UITokens.FONT_SUBHEAD)
 		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		head.add_child(title)
 		head.add_child(Widgets.badge("Level %d / %d" % [level, max_level],
 			UITokens.GREEN if level > 0 else UITokens.TEXT_MUTED, "Structure level"))
 		col.add_child(head)
+		if is_wonder:
+			col.add_child(Widgets.meter(level, max_level, "xp", "Stage %d / %d" % [level, max_level], 14, false))
+			if level < max_level: col.add_child(UIStyle.colored_label("Next: " + str(b.stage_names[level]), UITokens.GOLD, UITokens.FONT_SMALL))
+			for sid in b.get("requires", {}):
+				var need: int = int(b.requires[sid])
+				col.add_child(Widgets.requirement_row(str(DataLoader.get_skill(str(sid)).get("name", sid)), PlayerData.get_level(str(sid)), need, PlayerData.get_level(str(sid)) >= need))
 		if str(b.get("description", "")) != "":
 			var d := UIStyle.label(str(b["description"]), true, UITokens.FONT_SMALL)
 			d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -136,9 +161,16 @@ func _rebuild_buildings() -> void:
 					affordable = false
 				col.add_child(Widgets.requirement_row(TownshipManager.resource_name(str(res_id)),
 					have, need, have >= need, "produced every hour"))
-			var build := UIStyle.primary_button("Build")
+			for item_id in TownshipManager.project_item_cost(building_id):
+				var need: int = int(TownshipManager.project_item_cost(building_id)[item_id])
+				col.add_child(Widgets.requirement_row(str(DataLoader.get_item(str(item_id)).get("name", item_id)), BankManager.get_count(str(item_id)), need, BankManager.has_item(str(item_id), need)))
+			if TownshipManager.project_gp_cost(building_id) > 0:
+				col.add_child(Widgets.requirement_row("Gold", PlayerData.gp, TownshipManager.project_gp_cost(building_id), PlayerData.gp >= TownshipManager.project_gp_cost(building_id)))
+			var check: Dictionary = TownshipManager.can_build(building_id)
+			affordable = bool(check.ok)
+			var build := UIStyle.primary_button("Build stage" if is_wonder else "Build")
 			build.disabled = not affordable
-			build.tooltip_text = "Construct the next level of this structure" if affordable else "Not enough stored resources yet"
+			build.tooltip_text = "Construct the next stage" if affordable else str(check.reason)
 			var bid: String = building_id
 			build.pressed.connect(func():
 				if TownshipManager.build(bid):
@@ -146,7 +178,7 @@ func _rebuild_buildings() -> void:
 			col.add_child(build)
 		else:
 			col.add_child(UIStyle.colored_label("Fully built.", UITokens.GREEN, UITokens.FONT_MICRO))
-		_buildings_box.add_child(card)
+		(_wonders_box if is_wonder else _buildings_box).add_child(card)
 
 ## Stores in, useful items out. Without this the settlement's resources would only ever feed
 ## more construction, which is exactly the disconnected-currency trap to avoid.
@@ -264,3 +296,8 @@ func _rebuild_study() -> void:
 func _refresh_costs() -> void:
 	if _built:
 		_rebuild_buildings()
+
+func _show_wonders(on: bool) -> void:
+	_wonders_box.visible = on
+	for box in [_resources_box, _buildings_box, _trader_box, _worship_box, _study_box]:
+		box.visible = not on

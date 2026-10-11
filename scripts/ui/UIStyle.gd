@@ -35,7 +35,7 @@ const _LEATHER_KINDS: Array[String] = ["panel", "overlay", "button", "header"]
 const _PADDING: Dictionary = {"panel": [14, 10], "overlay": [14, 12], "card": [12, 10], "header": [10, 6],
 	"button": [12, 6], "row": [8, 5], "raised": [8, 5], "chip": [8, 3], "slot": [3, 3]}
 
-## The surface for a kind. Order: painted art (<kind>_grimoire_9slice.png in ART_DIR), then the
+## The surface for a kind. Order: painted art (<kind>_slate_9slice.png in ART_DIR), then the
 ## generated leather/vellum texture, then the flat fallback. The painted name is deliberately not
 ## the old navy-era <kind>_9slice.png, so that art stays on disk untouched and is never loaded.
 static func surface_box(kind: String = "panel", accent: bool = false) -> StyleBox:
@@ -73,7 +73,7 @@ static func _painted(kind: String) -> Texture2D:
 	return _painted_cache[key]
 
 static func _load_painted(kind: String) -> Texture2D:
-	var path: String = "%s%s_grimoire_9slice.png" % [ART_DIR, kind]
+	var path: String = "%s%s_slate_9slice.png" % [ART_DIR, kind]
 	if path.begins_with("res://"):
 		return load(path) if ResourceLoader.exists(path) else null
 	if not FileAccess.file_exists(path):
@@ -106,7 +106,7 @@ static func _flat_fallback(kind: String, accent: bool) -> StyleBoxFlat:
 		"overlay":
 			# Anything that floats OVER content (drawer, popup, tooltip, dialog) must be opaque,
 			# or the screen underneath bleeds through the glass and the text becomes unreadable.
-			sb.bg_color = Color("#24120a")
+			sb.bg_color = UITokens.SURFACE_SUNKEN
 			sb.border_color = Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.45)
 			sb.shadow_color = Color(0, 0, 0, 0.6)
 			sb.shadow_size = 16
@@ -176,13 +176,13 @@ static func build_theme() -> Theme:
 	# Leather buttons: hover warms them, pressed darkens them and sinks the label 2 px.
 	var b_normal: StyleBoxTexture = surface_box("button")
 	var b_hover: StyleBoxTexture = surface_box("button")
-	b_hover.modulate_color = Color(1.25, 1.12, 1.0)
+	b_hover.modulate_color = Color(1.12, 1.14, 1.16)
 	var b_pressed: StyleBoxTexture = surface_box("button")
-	b_pressed.modulate_color = Color(0.85, 0.8, 0.75)
+	b_pressed.modulate_color = Color(0.85, 0.85, 0.85)
 	b_pressed.content_margin_top += 2.0
 	b_pressed.content_margin_bottom = maxf(0.0, b_pressed.content_margin_bottom - 2.0)
 	var b_disabled: StyleBoxTexture = surface_box("button")
-	b_disabled.modulate_color = Color(0.55, 0.5, 0.48, 0.75)
+	b_disabled.modulate_color = Color(0.70, 0.70, 0.70, 1.0)
 	# A visible focus ring is mandatory: keyboard navigation must be legible, and the ring uses
 	# a border *and* a bright colour so it does not rely on hue alone. Drawn over the leather.
 	var b_focus := _button_box(Color(0, 0, 0, 0), UITokens.GOLD_BRIGHT)

@@ -16,18 +16,19 @@ static func create(route_id: String, seed: int) -> Dictionary:
 	chosen.sort_custom(func(a, b): return float(a.x) < float(b.x))
 	chosen.push_front(landscape.start)
 	chosen.append(landscape.end)
+	var danger: Array = CaravaneeringManager.route(route_id).get("danger_severity", [0.04, 0.08])
 	var points: Array = []
 	for i in range(7):
 		points.append({"x": float(chosen[i].x), "y": float(chosen[i].y), "name": str(chosen[i].name),
 			"event": 0 if i == 0 or i == 6 else rng.randi_range(0, EVENTS.size() - 1),
-			"roll": rng.randf(), "severity": rng.randf_range(0.04, 0.08), "approach": "balanced"})
+			"roll": rng.randf(), "severity": rng.randf_range(float(danger[0]), float(danger[1])), "approach": "balanced"})
 	return {"seed": seed, "next_stop": 1, "loss": 0.0, "bonus_gp": 0, "points": points, "log": []}
 
 static func restore(route_id: String, raw: Dictionary) -> Dictionary:
 	var journey: Dictionary = create(route_id, maxi(1, int(raw.get("seed", 1))))
 	journey.next_stop = clampi(int(raw.get("next_stop", 1)), 1, 6)
 	var loss: float = float(raw.get("loss", 0.0))
-	journey.loss = clampf(loss if is_finite(loss) else 0.0, 0.0, 0.4)
+	journey.loss = clampf(loss if is_finite(loss) else 0.0, 0.0, float(CaravaneeringManager.route(route_id).get("max_loss", 0.4)))
 	journey.bonus_gp = maxi(0, int(raw.get("bonus_gp", 0)))
 	var points: Variant = raw.get("points", [])
 	if points is Array and points.size() == 7:
@@ -49,7 +50,7 @@ static func resolve(c: Dictionary, stop: int, route: Dictionary, guard_power: fl
 	var risk: float = clampf((float(route.risk) - guard_power) / 100.0, 0.0, 0.8)
 	var event: int = int(point.event)
 	# Weather and damaged roads remain dangerous even with a veteran guard.
-	if event == 2 or event == 3: risk = maxf(risk, 0.15)
+	if event == 2 or event == 3: risk = maxf(risk, float(route.get("hazard_floor", 0.15)))
 	if choice == "cautious":
 		risk *= 0.4
 		reward = maxi(1, reward / 2)
@@ -60,7 +61,7 @@ static func resolve(c: Dictionary, stop: int, route: Dictionary, guard_power: fl
 	if event in [1, 2, 3]:
 		if float(point.roll) < risk:
 			var before: float = float(j.loss)
-			j.loss = minf(0.4, before + float(point.severity) * (1.5 if choice == "bold" else 1.0))
+			j.loss = minf(float(route.get("max_loss", 0.4)), before + float(point.severity) * (1.5 if choice == "bold" else 1.0))
 			reward = 0
 			text += " · cargo value lost %.0f%%" % ((float(j.loss) - before) * 100.0)
 		else: text += " · passed safely"

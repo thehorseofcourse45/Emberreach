@@ -1164,6 +1164,72 @@
         "herald_bar": 1
       },
       "xp": 1349216
+    },
+    {
+      "id": "glassstorm_crossing",
+      "name": "Glassstorm Crossing",
+      "level": 115,
+      "hours": 16,
+      "risk": 90,
+      "multiplier": 4.0,
+      "demand": [
+        "herald_bar",
+        "redwood_log"
+      ],
+      "specialty": {
+        "stormglass_cargo": 4
+      },
+      "xp": 1920000,
+      "danger_severity": [
+        0.1,
+        0.18
+      ],
+      "max_loss": 0.75,
+      "hazard_floor": 0.4
+    },
+    {
+      "id": "nightveil_passage",
+      "name": "Nightveil Passage",
+      "level": 118,
+      "hours": 20,
+      "risk": 100,
+      "multiplier": 4.0,
+      "demand": [
+        "herald_bar",
+        "redwood_log"
+      ],
+      "specialty": {
+        "nightveil_silk": 4
+      },
+      "xp": 2400000,
+      "danger_severity": [
+        0.1,
+        0.18
+      ],
+      "max_loss": 0.75,
+      "hazard_floor": 0.4
+    },
+    {
+      "id": "worlds_end_convoy",
+      "name": "World’s End Convoy",
+      "level": 120,
+      "hours": 24,
+      "risk": 110,
+      "multiplier": 4.0,
+      "demand": [
+        "herald_bar",
+        "redwood_log"
+      ],
+      "specialty": {
+        "worldheart_ore": 4
+      },
+      "xp": 2880000,
+      "danger_severity": [
+        0.1,
+        0.18
+      ],
+      "max_loss": 0.75,
+      "hazard_floor": 0.4
     }
   ],
   "caravan_goods": [

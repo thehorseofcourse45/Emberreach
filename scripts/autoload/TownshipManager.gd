@@ -132,6 +132,15 @@ func can_build(building_id: String) -> Dictionary:
 		return {"ok": false, "reason": "Unknown structure"}
 	if is_max_level(building_id):
 		return {"ok": false, "reason": "Fully built"}
+	var def: Dictionary = buildings_data()[building_id]
+	for skill_id in def.get("requires", {}):
+		if PlayerData.get_level(str(skill_id)) < int(def.requires[skill_id]):
+			return {"ok": false, "reason": "Reach %s %d" % [DataLoader.get_skill(str(skill_id)).get("name", skill_id), int(def.requires[skill_id])]}
+	for item_id in project_item_cost(building_id):
+		if not BankManager.has_item(str(item_id), int(project_item_cost(building_id)[item_id])):
+			return {"ok": false, "reason": "Needs %s" % DataLoader.get_item(str(item_id)).get("name", item_id)}
+	if PlayerData.gp < project_gp_cost(building_id):
+		return {"ok": false, "reason": "Not enough gold"}
 	var cost: Dictionary = scaled_cost(building_id)
 	for res_id in cost.keys():
 		var have: float = float(resources.get(res_id, 0.0))
@@ -204,6 +213,9 @@ func build(building_id: String) -> bool:
 	var cost: Dictionary = scaled_cost(building_id)
 	for res in cost.keys():
 		resources[res] = float(resources.get(res, 0.0)) - float(cost[res])
+	for item_id in project_item_cost(building_id):
+		BankManager.remove_item(str(item_id), int(project_item_cost(building_id)[item_id]))
+	PlayerData.spend_gp(project_gp_cost(building_id))
 	buildings[building_id] = level_of(building_id) + 1
 	PlayerData.add_xp("township", 25.0 * float(level_of(building_id)) * ModifierManager.get_skill_xp_multiplier("township"))
 	population = int(productions_population())
@@ -416,3 +428,18 @@ func build_preview(building_id: String) -> Dictionary:
 		if hours > wait: wait = hours; bottleneck = resource_name(str(id))
 		if float(output.get(id, 0)) > 0: payoff = maxf(payoff, float(cost[id]) / float(output[id]))
 	return {"wait_hours": wait, "bottleneck": bottleneck, "payoff_hours": payoff, "affordable": bool(can_build(building_id).ok)}
+
+## Wonder materials scale alongside the displayed settlement cost.
+func project_item_cost(building_id: String) -> Dictionary:
+	var def: Dictionary = buildings_data().get(building_id, {})
+	var out: Dictionary = {}
+	var factor: float = pow(float(def.get("cost_growth", 1.0)), level_of(building_id))
+	for id in def.get("project_items", {}):
+		out[str(id)] = ceili(float(def.project_items[id]) * factor)
+	if level_of(building_id) == max_level_of(building_id) - 1:
+		for id in def.get("project_final_items", {}): out[str(id)] = int(def.project_final_items[id])
+	return out
+
+func project_gp_cost(building_id: String) -> float:
+	var def: Dictionary = buildings_data().get(building_id, {})
+	return ceil(float(def.get("project_gp", 0.0)) * pow(float(def.get("cost_growth", 1.0)), level_of(building_id)))

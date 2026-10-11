@@ -74,7 +74,7 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		"prayer_points": PrayerManager.cost_per_attack(),
 		"mode_config": DataLoader.game_modes.get(str(PlayerData.game_mode), {}),
 		"in_slayer_area": str(DataLoader.areas.get(place_id, {}).get("type", "area")) == "slayer_area",
-		"hazard": ModifierManager.negated_hazard(DataLoader.areas.get(place_id, {}).get("hazard", {})) if place_type == "area" else {},
+		"hazard": CombatManager.region_hazard(place_id) if place_type == "area" else {},
 		"on_slayer_task": false,
 		"target_type": place_type,
 		"target_id": place_id,
@@ -100,6 +100,14 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		var prayer: Dictionary = PrayerManager.get_prayer(id)
 		if str(prayer.get("type", "")) == "protect": snapshot.protection_styles.append(str(prayer.get("style", "")))
 	for id in snapshot.food: snapshot.food_counts[id] = BankManager.get_count(str(id))
+	if finite_supplies and place_type == "dungeon":
+		for id in DataLoader.get_dungeon(place_id).get("entry_items", {}):
+			var need: int = int(DataLoader.get_dungeon(place_id).entry_items[id])
+			if BankManager.get_count(str(id)) < need:
+				last_error = "Entry requires %s x%d" % [DataLoader.get_item(str(id)).get("name", id), need]
+				return {}
+			if snapshot.food_counts.has(id): snapshot.food_counts[id] -= need
+			snapshot.attack_stock[id] = maxi(0, int(snapshot.attack_stock.get(id, 0)) - need)
 	if finite_supplies:
 		var equipped_food: Dictionary = {}
 		for id in EquipmentManager.food_slots:

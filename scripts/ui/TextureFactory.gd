@@ -12,20 +12,20 @@ static var _cache: Dictionary = {}
 static func clear_cache() -> void:
 	_cache.clear()
 
-## Oxblood leather with a fine grain and a gold trim frame painted on its edge.
+## Legacy surface API: quiet slate with a restrained gold edge.
 static func leather(size: Vector2i = Vector2i(96, 96)) -> Texture2D:
-	return _cached("leather", size, func(): return _paint(size, UITokens.LEATHER_TOP, UITokens.LEATHER_BOTTOM, 0.06, 0.0, true))
+	return _cached("leather", size, func(): return _paint(size, UITokens.LEATHER_TOP, UITokens.LEATHER_BOTTOM, 0.008, 0.0, true))
 
-## Smoked vellum: umber paper grain, a darker vignette at the edge and a thin vellum-coloured rim.
+## Legacy card API: a slightly lighter blue surface with fine texture.
 static func vellum(size: Vector2i = Vector2i(64, 64)) -> Texture2D:
-	return _cached("vellum", size, func(): return _paint(size, UITokens.VELLUM_TOP, UITokens.VELLUM_BOTTOM, 0.05, 0.18, false))
+	return _cached("vellum", size, func(): return _paint(size, UITokens.VELLUM_TOP, UITokens.VELLUM_BOTTOM, 0.006, 0.05, false))
 
 ## A standalone gold trim frame with a transparent centre (24 x 24).
 static func gold_trim() -> Texture2D:
 	return _cached("trim", Vector2i(24, 24), func():
 		var img := Image.create(24, 24, false, Image.FORMAT_RGBA8)
 		img.fill(Color(0, 0, 0, 0))
-		_frame(img, Color("#1a0d07"), Color("#c88c2c"), Color("#f0c870"))
+		_frame(img, UITokens.BG_DEEP, UITokens.BORDER_GOLD, UITokens.BORDER)
 		return ImageTexture.create_from_image(img))
 
 static func _cached(kind: String, size: Vector2i, build: Callable) -> Texture2D:
@@ -54,7 +54,7 @@ static func _paint(size: Vector2i, top: Color, bottom: Color, grain: float, vign
 				c = c.darkened(vignette * (1.0 - clampf(edge, 0.0, 1.0)))
 			img.set_pixel(x, y, c)
 	if trimmed:
-		_frame(img, Color("#1a0d07"), Color("#c88c2c"), Color("#f0c870"))
+		_frame(img, UITokens.BG_DEEP, UITokens.BORDER_GOLD, UITokens.BORDER)
 	else:
 		_rect_outline(img, 0, UITokens.BORDER)
 	return ImageTexture.create_from_image(img)
@@ -63,8 +63,7 @@ static func _paint(size: Vector2i, top: Color, bottom: Color, grain: float, vign
 static func _frame(img: Image, outer: Color, gold: Color, highlight: Color) -> void:
 	_rect_outline(img, 0, outer)
 	_rect_outline(img, 1, gold)
-	_rect_outline(img, 2, gold)
-	_rect_outline(img, 3, highlight)
+	_rect_outline(img, 2, Color(highlight.r, highlight.g, highlight.b, 1.0))
 
 static func _rect_outline(img: Image, inset: int, color: Color) -> void:
 	var w: int = img.get_width()

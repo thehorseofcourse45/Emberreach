@@ -23,7 +23,7 @@ func _ready() -> void:
 	add_child(_search)
 	_tabs_box = HFlowContainer.new()
 	add_child(_tabs_box)
-	for entry in [["items", "Items"], ["monsters", "Enemies"], ["dungeons", "Expeditions"], ["pets", "Companions"], ["history", "Unlock history"]]:
+	for entry in [["pursuits", "Pursuits"], ["items", "Items"], ["monsters", "Enemies"], ["dungeons", "Expeditions"], ["pets", "Companions"], ["history", "Unlock history"]]:
 		var b := UIStyle.mini_button(str(entry[1]))
 		var key: String = str(entry[0])
 		b.pressed.connect(func():
@@ -76,6 +76,9 @@ func _rebuild_list(_depth: int) -> void:
 		_list.remove_child(c)
 		c.queue_free()
 	var query: String = _search.text.to_lower().strip_edges()
+	if _tab == "pursuits":
+		_rebuild_pursuits(query)
+		return
 	if _tab == "history":
 		var entries: Array = PlayerData.unlock_history.duplicate()
 		entries.reverse()
@@ -192,3 +195,33 @@ func _area_for_monster(monster_id: String) -> String:
 		if (DataLoader.areas[area_id].get("monsters", []) as Array).has(monster_id):
 			return str(area_id)
 	return ""
+
+func _rebuild_pursuits(query: String) -> void:
+	for qid in Quests.all_quest_ids():
+		var q: Dictionary = Quests.get_quest(qid)
+		if str(q.get("category", "")) != "collection" or (query != "" and not str(q.name).to_lower().contains(query)): continue
+		var card := UIStyle.section(str(q.name), str(q.description))
+		_list.add_child(card)
+		var state: Dictionary = Quests.progress(qid)
+		var progress: Dictionary = state.objectives[0]
+		card.add_child(Widgets.meter(float(progress.current), float(progress.required), "mastery", "%d / %d discovered" % [int(progress.current), int(progress.required)], 16))
+		var entries := HFlowContainer.new()
+		card.add_child(entries)
+		for iid in q.objectives[0].item_ids:
+			var found: bool = PlayerData.completion_log.get("items", {}).has(str(iid))
+			var row := UIStyle.hbox(UITokens.SP_2)
+			entries.add_child(row)
+			var icon := Widgets.item_icon(str(iid), 32)
+			icon.modulate.a = 1.0 if found else 0.3
+			row.add_child(icon)
+			row.add_child(UIStyle.label(("✓ " if found else "• ") + str(DataLoader.get_item(str(iid)).get("name", iid)), true, UITokens.FONT_SMALL))
+			var source := UIStyle.mini_button("Find")
+			source.pressed.connect(func(): navigated.emit({"screen": Screens.BANK, "item_id": str(iid)}))
+			row.add_child(source)
+		card.add_child(Widgets.item_rewards(q.reward.items))
+		var claim := UIStyle.button("Trophy collected" if Quests.is_claimed(qid) else "Claim pursuit rewards")
+		claim.disabled = Quests.is_claimed(qid) or not bool(state.all_satisfied)
+		claim.pressed.connect(func():
+			Quests.claim(qid)
+			_rebuild())
+		card.add_child(claim)

@@ -72,6 +72,7 @@ func validate_all() -> Array:
 	_check_regions()
 	_check_shop()
 	_check_game_modes()
+	_check_endgame()
 	_check_side_systems()
 	_check_new_skill_systems()
 	_check_ascendancy()
@@ -1187,10 +1188,17 @@ func _check_objective(label: String, obj: Variant) -> void:
 	var kind: String = str(o.get("kind", ""))
 	var known: Array[String] = ["have_item", "gain_item", "skill_level", "combat_level", "mastery_level", "kill_monster",
 		"defeat_boss", "complete_dungeon", "craft_item", "do_actions", "reach_region",
-		"buy_upgrade", "build_structure", "gp_total", "unlock_pet", "discover_items", "chart_hexes"]
+		"buy_upgrade", "build_structure", "gp_total", "unlock_pet", "discover_items", "discover_set", "chart_hexes"]
 	if not known.has(kind):
 		_err("invalid_objective", "%s objective kind '%s' is unknown" % [label, kind])
 		return
+	if kind == "discover_set":
+		var ids: Array = o.get("item_ids", [])
+		if ids.is_empty() or float(o.get("required", 0)) != float(ids.size()): _err("invalid_objective", "%s collection must require every listed item" % label)
+		var seen: Dictionary = {}
+		for iid in ids:
+			if not _has_item(str(iid)) or seen.has(str(iid)): _err("missing_reference", "%s collection contains unknown or repeated item %s" % [label, iid])
+			seen[str(iid)] = true
 	if o.has("item_id") and not _has_item(str(o["item_id"])):
 		_err("missing_reference", "%s objective references unknown item '%s'" % [label, str(o["item_id"])])
 	if o.has("monster_id") and not DataLoader.monsters.has(str(o["monster_id"])):
@@ -1275,9 +1283,13 @@ func _check_acquisition_coverage() -> void:
 		for drop in (DataLoader.monsters[monster_id].get("loot_table", []) as Array):
 			if typeof(drop) == TYPE_DICTIONARY and not bool(drop.get("is_currency", false)):
 				sources[str(drop.get("item_id", ""))] = true
+	for sid in DataLoader.get_skill_ids():
+		if not MasteryManager.activities(str(sid)).is_empty():
+			for id in DataLoader.get_skill(str(sid)).get("mastery_challenge_reward", {"masterwork_seal": 1}):
+				sources[str(id)] = true
 	for dungeon_id in DataLoader.dungeons.keys():
 		var d: Dictionary = DataLoader.dungeons[dungeon_id]
-		for bundle in [d.get("completion_reward", {}), d.get("rewards_first_clear", {})]:
+		for bundle in [d.get("completion_reward", {}), d.get("rewards_first_clear", {}), d.get("floor_reward", {})]:
 			for item_id in (bundle.get("items", {}) as Dictionary).keys():
 				sources[str(item_id)] = true
 		# The signature shard a dungeon grants on every clear.
@@ -1316,6 +1328,8 @@ func _check_acquisition_coverage() -> void:
 		if typeof(offer) == TYPE_DICTIONARY:
 			for item_id in ((offer as Dictionary).get("items", {}) as Dictionary).keys():
 				sources[str(item_id)] = true
+	for route in DataLoader.new_skill_systems.get("caravan_routes", []):
+		for item_id in route.get("specialty", {}): sources[str(item_id)] = true
 	# Farming: a harvested crop is defined by the SEED item's product_item.
 	for item_id in DataLoader.items.keys():
 		var seed_item: Dictionary = DataLoader.items[item_id]
@@ -1622,3 +1636,43 @@ func _check_new_skill_systems() -> void:
 			var found: bool = false
 			for research in DataLoader.get_skill_actions("inscription"): found = found or str(research.get("research_unlock", "")) == str(action.requires_research)
 			if not found: _err("missing_reference", "scribe recipe '%s' has unknown research" % action.id)
+
+func _check_endgame() -> void:
+	for bid in DataLoader.township_buildings:
+		var b: Dictionary = DataLoader.township_buildings[bid]
+		_check_region_requirements("wonder", str(bid), b)
+		var materials: Dictionary = b.get("project_items", {}).duplicate()
+		materials.merge(b.get("project_final_items", {}))
+		for id in materials:
+			if not DataLoader.items.has(str(id)) or float(materials[id]) <= 0:
+				_err("invalid_record", "Wonder %s has invalid material %s" % [bid, id])
+	for did in DataLoader.dungeons:
+		var d: Dictionary = DataLoader.dungeons[did]
+		if d.has("requires_quest") and Quests.get_quest(str(d.requires_quest)).is_empty():
+			_err("missing_reference", "Dungeon %s requires an unknown task" % did)
+		if d.has("dreamland"):
+			if DreamwalkingManager.dream(str(d.dreamland)).is_empty() or float(d.get("dream_hours", 0)) <= 0:
+				_err("invalid_record", "Dungeon %s has invalid dream requirements" % did)
+		if bool(d.get("endless_floors", false)):
+			if d.get("floor_reward", {}).is_empty(): _err("invalid_record", "Endless dungeon %s needs floor rewards" % did)
+			_check_reward("Endless dungeon " + str(did), d.get("floor_reward", {}))
+		for bid in d.get("requires_building", {}):
+			if not DataLoader.township_buildings.has(bid) or int(d.requires_building[bid]) > TownshipManager.max_level_of(str(bid)) or int(d.requires_building[bid]) < 1:
+				_err("invalid_record", "Expedition %s has invalid wonder requirement %s" % [did, bid])
+		for id in d.get("entry_items", {}):
+			if not DataLoader.items.has(str(id)) or int(d.entry_items[id]) <= 0:
+				_err("invalid_record", "Expedition %s has invalid entry material %s" % [did, id])
+	for area_id in DataLoader.areas:
+		var area: Dictionary = DataLoader.areas[area_id]
+		if area.has("pacified_by") and Quests.get_quest(str(area.pacified_by)).is_empty(): _err("missing_reference", "Region %s has unknown pacification task" % area_id)
+	for sid in DataLoader.get_skill_ids():
+		for action in DataLoader.get_skill(str(sid)).get("actions", []):
+			for req in action.get("requires_skills", {}):
+				if not _has_skill(str(req)) or int(action.requires_skills[req]) < 1 or int(action.requires_skills[req]) > 120:
+					_err("invalid_record", "Recipe %s has invalid secondary skill requirement" % action.id)
+			for bid in action.get("requires_building", {}):
+				if not DataLoader.township_buildings.has(str(bid)) or int(action.requires_building[bid]) < 1 or int(action.requires_building[bid]) > TownshipManager.max_level_of(str(bid)):
+					_err("invalid_record", "Recipe %s has invalid wonder requirement" % action.id)
+		for id in DataLoader.get_skill(str(sid)).get("mastery_challenge_reward", {}):
+			if not DataLoader.items.has(str(id)) or int(DataLoader.get_skill(str(sid)).mastery_challenge_reward[id]) <= 0:
+				_err("invalid_record", "Mastery challenge %s has invalid reward %s" % [sid, id])

@@ -23,7 +23,7 @@ const DEFAULTS: Dictionary = {
 	"ui_scale": 1.0,
 	"compact_rows": false,
 	## Sound (0..100; zero mutes the bus rather than stopping playback).
-	"sfx_volume": 80.0,
+	"sfx_volume": 20.0,
 	"confirm_sell_all": true,
 	"confirm_reset": true,
 	"tooltip_delay": 0.25,

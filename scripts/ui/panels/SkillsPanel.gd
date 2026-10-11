@@ -19,6 +19,7 @@ const SkillSystemsView = preload("res://scripts/ui/panels/SkillSystems.gd")
 
 var _skill_id: String = ""
 var _selected_action: String = ""
+var _system_mastery_action: String = ""
 var _header: VBoxContainer
 var _main_grid: GridContainer
 var _activities_card: PanelContainer
@@ -207,7 +208,9 @@ func _rebuild_header() -> void:
 	highlights.add_theme_constant_override("h_separation", UITokens.SP_4)
 	highlights.add_theme_constant_override("v_separation", UITokens.SP_4)
 	highlights.add_child(Widgets.stat_card("Mastery pool", "%.1f%%" % MasteryManager.get_pool_percent(_skill_id), UITokens.PURPLE))
-	highlights.add_child(Widgets.stat_card("Activities unlocked", "%d / %d" % [DataLoader.get_unlocked_action_count(_skill_id, level), DataLoader.get_action_count(_skill_id)], UITokens.TEAL))
+	var mastery_activities: Array = MasteryManager.activities(_skill_id)
+	var unlocked: int = mastery_activities.filter(func(a): return int(a.level_required) <= level).size()
+	highlights.add_child(Widgets.stat_card("Activities unlocked", "%d / %d" % [unlocked, mastery_activities.size()], UITokens.TEAL))
 	col.add_child(highlights)
 	if _skill_id == "farming":
 		var farm := UIStyle.primary_button("Manage farm · upgrades, rotation & growing methods")
@@ -459,13 +462,39 @@ func _on_start() -> void:
 
 func _refresh_mastery() -> void:
 	_clear(_mastery_box)
-	if _selected_action == "":
-		_mastery_box.add_child(UIStyle.label("Select an activity to raise its mastery.", true, UITokens.FONT_SMALL))
+	var mastery_action: String = _selected_action
+	var catalog: Array = MasteryManager.activities(_skill_id)
+	if mastery_action == "" and not catalog.is_empty():
+		if not catalog.any(func(a): return str(a.id) == _system_mastery_action):
+			_system_mastery_action = str(catalog[0].id)
+		mastery_action = _system_mastery_action
+		var picker := OptionButton.new()
+		for action in catalog:
+			picker.add_item("%s · Mastery %d / 120" % [str(action.name), MasteryManager.get_level(_skill_id, str(action.id))])
+			if str(action.id) == mastery_action: picker.selected = picker.item_count - 1
+		picker.item_selected.connect(func(index):
+			_system_mastery_action = str(catalog[index].id)
+			_refresh_mastery())
+		_mastery_box.add_child(picker)
+	if mastery_action == "":
+		_mastery_box.add_child(UIStyle.label("This skill has no activity mastery.", true, UITokens.FONT_SMALL))
 		return
-	var level: int = MasteryManager.get_level(_skill_id, _selected_action)
-	var xp: float = MasteryManager.get_xp(_skill_id, _selected_action)
+	var level: int = MasteryManager.get_level(_skill_id, mastery_action)
+	var xp: float = MasteryManager.get_xp(_skill_id, mastery_action)
+	_mastery_box.add_child(Widgets.mastery_progress(_skill_id, mastery_action))
+	var challenge: Dictionary = MasteryManager.challenge(_skill_id, mastery_action)
+	_mastery_box.add_child(UIStyle.section("Mastery challenge", "Unlock at activity mastery 120; train this activity for six more hours, online or offline. One reward per activity."))
+	if bool(challenge.unlocked):
+		_mastery_box.add_child(Widgets.meter(float(challenge.seconds), float(challenge.required), "xp", "%s / 6h" % UIStyle.fmt_duration(float(challenge.seconds)), 14, false))
+		_mastery_box.add_child(Widgets.item_rewards(challenge.reward))
+		var claim := UIStyle.primary_button("Claimed" if challenge.claimed else "Claim challenge reward")
+		claim.disabled = bool(challenge.claimed) or float(challenge.seconds) < float(challenge.required)
+		claim.pressed.connect(func(): MasteryManager.claim_challenge(_skill_id, mastery_action))
+		_mastery_box.add_child(claim)
+	else:
+		_mastery_box.add_child(UIStyle.label("Reach mastery 120 to begin. Earlier work does not count toward the challenge.", true, UITokens.FONT_SMALL))
 	var pool_pct: float = MasteryManager.get_pool_percent(_skill_id)
-	_mastery_box.add_child(Widgets.key_value("Activity mastery", "level %d" % level, UITokens.PURPLE,
+	_mastery_box.add_child(Widgets.key_value("Activity mastery", "level %d / 120" % level, UITokens.PURPLE,
 		"Mastery affects this activity only: shorter actions, better yield, better rare-drop odds"))
 	_mastery_box.add_child(Widgets.key_value("Mastery XP", UIStyle.fmt_exact(xp), UITokens.PURPLE))
 	_mastery_box.add_child(Widgets.progress_bar(pool_pct, 100.0, UITokens.PURPLE, "%.1f%%" % pool_pct, 14,
@@ -492,16 +521,16 @@ func _refresh_mastery() -> void:
 	for n in [1, 5, 25]:
 		var b := UIStyle.mini_button("+%d mastery" % n, "Spend pool XP to raise this activity by %d levels" % n)
 		var count: int = n
-		var preview: Dictionary = MasteryManager.spend_preview(_skill_id, _selected_action, n)
+		var preview: Dictionary = MasteryManager.spend_preview(_skill_id, mastery_action, n)
 		b.tooltip_text = "Cost %s pool XP; pool %.1f%% → %.1f%%. Lost bonuses: %s" % [UIStyle.fmt(float(preview.cost)), float(preview.before), float(preview.after), UIStyle.describe_modifier_table(preview.lost)]
 		b.disabled = float(preview.cost) <= 0 or MasteryManager.get_pool_xp(_skill_id) < float(preview.cost)
 		b.pressed.connect(func():
-			var spent: float = MasteryManager.spend_pool_xp_for_levels(_skill_id, _selected_action, count)
+			var spent: float = MasteryManager.spend_pool_xp_for_levels(_skill_id, mastery_action, count)
 			if spent <= 0.0:
 				EventBus.notify("Not enough pool XP.", "warn")
 			else:
 				EventBus.notify("Spent %s pool XP on %s." % [UIStyle.fmt(spent),
-					str(DataLoader.get_action(_skill_id, _selected_action).get("name", ""))], "success")
+					str(catalog.filter(func(a): return str(a.id) == mastery_action)[0].name)], "success")
 			refresh())
 		spend.add_child(b)
 	_mastery_box.add_child(spend)
