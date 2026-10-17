@@ -108,24 +108,27 @@ func _ready() -> void:
 		for action in DataLoader.get_skill(sid).actions:
 			if not action.has("requires_building"): continue
 			supplies(action)
+			var wonder_id: String = str(action.requires_building.keys()[0])
+			TownshipManager.buildings[wonder_id]=0
 			check(not SkillManager.check_action(sid,str(action.id)).ok, "unbuilt Forge locks recipe")
-			TownshipManager.buildings["wonder_masterwork_forge"]=3
+			TownshipManager.buildings[wonder_id]=3
 			var req: String = str(action.requires_skills.keys()[0])
 			PlayerData.set_level(req,1)
 			check(not SkillManager.check_action(sid,str(action.id)).ok, "secondary skill gates legendary recipe")
 			PlayerData.set_level(req,120)
 			check(SkillManager.start_action(sid,str(action.id),1), "legendary recipe starts")
-			TownshipManager.buildings["wonder_masterwork_forge"]=0
+			TownshipManager.buildings[wonder_id]=0
 			var first: String = str(action.input_items.keys()[0])
 			var before := BankManager.get_count(first)
 			check(SkillManager.perform_action().get("stop", "")=="project" and BankManager.get_count(first)==before, "continued recipe revalidates gate before spending")
-			TownshipManager.buildings["wonder_masterwork_forge"]=3
+			TownshipManager.buildings[wonder_id]=3
 			check(SkillManager.start_action(sid,str(action.id),1), "reopened recipe starts")
 			var result: Dictionary = SkillManager.perform_action()
 			check(bool(result.get("success",false)), "legendary recipe produces output")
-			check(BankManager.get_count(str(action.output_items.keys()[0]))>0, "crafted component or weapon in bank")
+			var produced_id: String = str(result.get("items", {}).keys()[0]) if (result.get("items", {}) as Dictionary).size() > 0 else str(action.output_items.keys()[0])
+			check(BankManager.get_count(produced_id) > 0, "crafted component or weapon in bank")
 			SkillManager.stop_action()
-			TownshipManager.buildings["wonder_masterwork_forge"]=0
+			TownshipManager.buildings[wonder_id]=0
 	for id in ["glassstorm_crossing","nightveil_passage","worlds_end_convoy"]:
 		var route: Dictionary = CaravaneeringManager.route(id)
 		var journey: Dictionary = CaravanJourney.create(id,73)

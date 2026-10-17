@@ -41,13 +41,29 @@ func record_item_gained(item_id: String, quantity: int) -> void:
 	if item_id == "" or quantity <= 0:
 		return
 	PlayerData.bump_stat("items_gained", item_id, float(quantity))
+	_record_quality_base("items_gained", item_id, quantity)
 	mark_dirty()
 
 func record_item_crafted(item_id: String, quantity: int) -> void:
 	if item_id == "" or quantity <= 0:
 		return
 	PlayerData.bump_stat("items_crafted", item_id, float(quantity))
+	_record_quality_base("items_crafted", item_id, quantity)
 	mark_dirty()
+
+## A Fine or affixed piece is still a bronze platebody for work-order purposes.
+## Preserve the exact variant counter as well for collection and future goals.
+func _record_quality_base(counter: String, item_id: String, quantity: int) -> void:
+	if not DataLoader.get_item(item_id).has("crafted_quality"):
+		return
+	var split_at: int = item_id.find("__quality_")
+	if split_at < 0:
+		split_at = item_id.find("__affix_")
+	if split_at < 0:
+		return
+	var base_id: String = item_id.substr(0, split_at)
+	if DataLoader.items.has(base_id):
+		PlayerData.bump_stat(counter, base_id, float(quantity))
 
 func record_item_sold(item_id: String, quantity: int) -> void:
 	if item_id == "" or quantity <= 0:

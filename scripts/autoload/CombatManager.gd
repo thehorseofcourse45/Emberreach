@@ -263,6 +263,10 @@ func start_combat(ctx: Dictionary) -> bool:
 			if reason != "":
 				EventBus.notify("Expedition locked: %s" % reason, "warn")
 				return false
+		var authored: Dictionary = DataLoader.get_dungeon(dungeon_id)
+		if bool(authored.get("stronghold", false)) and (ctx.get("monsters", []) != authored.get("monsters", []) or bool(ctx.get("endless", false))):
+			EventBus.notify("Strongholds must run their complete authored stage sequence.", "warn")
+			return false
 		var gate: String = dungeon_lock_reason(dungeon_id)
 		if gate != "":
 			EventBus.notify("%s is locked: %s" % [str(DataLoader.get_dungeon(dungeon_id).get("name", dungeon_id)), gate], "warn")
@@ -279,6 +283,7 @@ func start_combat(ctx: Dictionary) -> bool:
 		for item_id in dungeon.get("entry_items", {}):
 			BankManager.remove_item(str(item_id), int(dungeon.entry_items[item_id]))
 	context = ctx.duplicate(true)
+	DungeonModifierManager.begin_attempt(context)
 	if bool(DataLoader.get_dungeon(str(context.get("id", ""))).get("endless_floors", false)):
 		context["floor"] = 1
 	context["index"] = 0
@@ -298,7 +303,10 @@ func start_combat(ctx: Dictionary) -> bool:
 	_activate_strategy_prayer()
 	ProgressTracker.record_region_visit(str(ctx.get("id", "")))
 	_sig_combat_started(ctx)
-	EventBus.activity_changed.emit()
+	# Silent runs skip the UI rebuild like _spawn_monster does: with no frames in between, the
+	# rebuilt nodes' queue_free never runs. state_refreshed redraws once the run ends.
+	if not SimulationMode.is_silent():
+		EventBus.activity_changed.emit()
 	_spawn_current()
 	return true
 
@@ -309,6 +317,7 @@ func stop_combat(reason: String = "") -> void:
 	state = State.IDLE
 	current_monster_id = ""
 	context = {}
+	DungeonModifierManager.end_attempt()
 	player_effects.clear()
 	monster_effects.clear()
 	# A speedup still waiting to be spent belongs to the fight that earned it.
@@ -316,7 +325,8 @@ func stop_combat(reason: String = "") -> void:
 	respawn_timer = 0.0
 	if was_active:
 		_sig_combat_ended("retreat" if reason == "" else reason, completed)
-		EventBus.activity_changed.emit()
+		if not SimulationMode.is_silent():
+			EventBus.activity_changed.emit()
 
 func _monster_sequence() -> Array:
 	return context.get("monsters", [])
@@ -346,6 +356,7 @@ func _spawn_monster(monster_id: String) -> void:
 	monster_phases_fired = 0
 	var m: Dictionary = DataLoader.get_monster(monster_id)
 	monster_max_hp = maxi(1, int(m.get("hitpoints", 10)))
+	monster_max_hp = maxi(1, roundi(float(monster_max_hp) * (1.0 + DungeonModifierManager.modifier("enemy_hp_percent") / 100.0)))
 	# A raid difficulty's hp_mult makes its golbins actually tankier. Every raid enemy is spawned
 	# through here, so this is the one place the multiplier has to be applied.
 	if _in_raid():
@@ -414,6 +425,7 @@ func _tick_fighting(delta: float) -> void:
 	if _in_raid():
 		player_attack_interval *= 0.5   # everyone attacks at 2x speed in the raid
 	monster_attack_interval = maxf(CombatSimulator.MONSTER_INTERVAL_FLOOR, float(current_monster().get("attack_speed", 3.0)))
+	monster_attack_interval *= maxf(0.25, 1.0 - DungeonModifierManager.modifier("enemy_attack_speed_percent") / 100.0)
 	player_attack_interval *= 1.0 + StatusEffect.total(player_effects, "attack_interval_percent") / 100.0
 	monster_attack_interval *= 1.0 + StatusEffect.total(monster_effects, "attack_interval_percent") / 100.0
 	if not _is_player_stunned(): player_attack_timer += delta
@@ -528,7 +540,7 @@ func _player_accuracy(style: String, selected_melee: String = "") -> int:
 		"magic":
 			eff = _player_effective("magic")
 	return CombatFormulas.accuracy_rating(eff, EquipmentManager.get_attack_bonus(attack_key),
-		ModifierManager.get_accuracy_percent(style))
+		ModifierManager.get_accuracy_percent(style) + ArcaneSkills.accuracy_percent(style))
 
 ## Every magic attack casts the spell of the equipped staff, and the spell's base max hit is what
 ## makes a better staff hit harder. Weapons that declare no spell keep the old fixed base of 10.
@@ -536,7 +548,7 @@ const DEFAULT_SPELL_MAX_HIT: float = 10.0
 
 func _spell_max_hit() -> float:
 	var weapon: Dictionary = DataLoader.get_item(EquipmentManager.get_equipped(ItemData.EquipmentSlot.WEAPON))
-	return float(weapon.get("spell_max_hit", DEFAULT_SPELL_MAX_HIT))
+	return float(weapon.get("spell_max_hit", DEFAULT_SPELL_MAX_HIT)) * ArcaneSkills.damage_multiplier()
 
 func _player_max_hit(style: String) -> int:
 	if style == "magic":
@@ -586,7 +598,7 @@ func player_combat_summary(style: String = "", selected_melee: String = "") -> D
 		"melee_style": use_melee,
 		"accuracy": _player_accuracy(use_style, use_melee),
 		"max_hit": _player_max_hit(use_style),
-		"attack_interval": maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed())),
+		"attack_interval": maxf(0.25, ModifierManager.get_attack_interval(EquipmentManager.get_weapon_attack_speed(use_style))),
 		"damage_reduction": clampf(ModifierManager.get_damage_reduction() + EquipmentManager.get_damage_reduction(), 0.0, 90.0),
 		"evasion": {
 			"melee": _player_evasion_for("melee"),
@@ -648,6 +660,7 @@ func _player_attack() -> void:
 	hit_chance = clampf(hit_chance + float(tri["accuracy_percent"]), 0.0, 100.0)
 	# Open-region hazard: hostile ground costs accuracy.
 	hit_chance = clampf(hit_chance + float(_active_hazard().get("player_accuracy_percent", 0.0)), 0.0, 100.0)
+	hit_chance = clampf(hit_chance + DungeonModifierManager.modifier("player_accuracy_percent"), 0.0, 100.0)
 	# Specials roll first so an accuracy-ignoring one can land through a miss.
 	var sa: Dictionary = _roll_special_attack(EquipmentManager.get_weapon_special_attack())
 	if not bool(sa.get("ignores_accuracy", false)) and _rng.randf() * 100.0 > hit_chance:
@@ -676,6 +689,7 @@ func _player_attack() -> void:
 		ModifierManager.get_crit_chance() + float(ab_effect.get("crit_chance_percent", 0.0)),
 		ModifierManager.get_crit_multiplier())
 	var dmg: int = int(res["damage"])
+	dmg = maxi(0, roundi(float(dmg) * (1.0 + DungeonModifierManager.modifier("player_damage_percent") / 100.0)))
 	var is_crit: bool = bool(res["is_crit"])
 	# Weapon special attack: replaces the normal attack and may apply a status.
 	if not sa.is_empty():
@@ -732,6 +746,7 @@ func _monster_swing() -> void:
 	# Open-region hazard: fouled footing costs evasion rating.
 	eva = maxi(0, int(float(eva) * (1.0 + float(_active_hazard().get("player_evasion_percent", 0.0)) / 100.0)))
 	var hit_chance: float = CombatFormulas.chance_to_hit(acc, float(eva))
+	hit_chance *= 1.0 + DungeonModifierManager.modifier("enemy_accuracy_percent") / 100.0
 	var mode_cfg: Dictionary = DataLoader.game_modes.get(PlayerData.game_mode, {})
 	var tri: Dictionary = CombatFormulas.triangle(m_style, attack_style, mode_cfg)
 	hit_chance = clampf(hit_chance + float(tri["accuracy_percent"]), 0.0, 100.0)
@@ -750,6 +765,9 @@ func _monster_swing() -> void:
 			ENRAGE_HP_FRACTION, ENRAGE_MULTIPLIER)
 	# Open-region hazard: hostile ground hits harder.
 	raw *= (1.0 + float(_active_hazard().get("enemy_damage_percent", 0.0)) / 100.0)
+	raw *= (1.0 + DungeonModifierManager.modifier("enemy_damage_percent") / 100.0)
+	if str(context.get("type", "")) == "area":
+		raw *= RegionalEventsManager.enemy_damage_multiplier(str(context.get("id", "")))
 	# Rage: a wounded monster hits harder, scaled off its CURRENT hp, so a monster that regenerates
 	# or leechs is never free damage. Sits after the triangle and the hazard because both of those
 	# are properties of WHERE the fight happens; this one is a property of the monster.
@@ -758,6 +776,7 @@ func _monster_swing() -> void:
 	# _combine multiplies out and can exceed 100%, which would make the multiplier negative and
 	# turn every hit into a heal.
 	var dr: float = clampf(ModifierManager.get_damage_reduction() + EquipmentManager.get_damage_reduction(), 0.0, 90.0)
+	dr = maxf(0.0, dr - DungeonModifierManager.modifier("ignore_dr_percent"))
 	var dmg: int = maxi(0, int(floor(raw * (1.0 - dr / 100.0))))
 	var sa: Dictionary = _roll_special_attack_from_ids(m.get("special_attacks", []))
 	if not sa.is_empty():
@@ -1005,8 +1024,8 @@ func _player_death(killer: String) -> void:
 	SimulationMode.bump(SimulationMode.BUCKET_DEATHS, "defeat", 1.0)
 	var lost: String = _lose_one_item()
 	_sig_player_died({"lost_item": lost, "killer": killer})
-	EventBus.activity_changed.emit()
 	if not SimulationMode.is_silent():
+		EventBus.activity_changed.emit()
 		EventBus.notify("Defeated by %s.%s" % [killer, "" if lost == "" else " You dropped %s (returned to storage)." % lost], "error")
 	stop_combat("defeat")
 
@@ -1044,9 +1063,9 @@ func _complete_combat() -> void:
 			ProgressTracker.record_dungeon_clear(did)
 		PlayerData.bump_stat("endless_floors", did, 1)
 		PlayerData.stats["endless_best"][did] = maxf(PlayerData.get_stat("endless_best", did), float(floor))
-		_grant_reward(dungeon.get("floor_reward", {}))
+		_grant_reward(dungeon.get("floor_reward", {}), DungeonModifierManager.reward_multiplier())
 		if floor % 10 == 0:
-			for _bonus in range(5): _grant_reward(dungeon.get("floor_reward", {}))
+			for _bonus in range(5): _grant_reward(dungeon.get("floor_reward", {}), DungeonModifierManager.reward_multiplier())
 		context["floor"] = mini(1000000, floor + 1)
 		context["index"] = 0
 		_spawn_current()
@@ -1061,24 +1080,27 @@ func _complete_combat() -> void:
 		PlayerData.discover_dungeon(dungeon_id)
 		ProgressTracker.record_dungeon_clear(dungeon_id)
 		SimulationMode.bump(SimulationMode.BUCKET_DUNGEONS, dungeon_id, 1.0)
-		_grant_reward(d.get("completion_reward", {}))
+		_grant_reward(d.get("completion_reward", {}), DungeonModifierManager.reward_multiplier())
 		if first_clear:
 			_grant_reward(d.get("rewards_first_clear", {}))
 		# A direct call, not the EventBus signal: _sig_dungeon_completed is muted during a silent
 		# offline simulation, and an offline expedition clear must still grant its pet.
 		PetManager.on_dungeon_cleared(dungeon_id)
 		SlayerManager.on_dungeon_cleared(dungeon_id)
+		# A save triggered by the clear signal must capture an already-finished siege.
+		if bool(d.get("stronghold", false)):
+			stop_combat("complete")
 		_sig_dungeon_completed(dungeon_id)
 		if not SimulationMode.is_silent():
-			EventBus.notify("Expedition complete: %s" % d.get("name", dungeon_id), "success")
+			EventBus.notify(("Stronghold conquered: %s" if bool(d.get("stronghold", false)) else "Expedition complete: %s") % d.get("name", dungeon_id), "success")
 	stop_combat("complete")
 
 ## Grant a {gp, items:{id:qty}} reward bundle. Rewards use the guaranteed path.
-func _grant_reward(reward: Dictionary) -> void:
+func _grant_reward(reward: Dictionary, reward_multiplier: float = 1.0) -> void:
 	if reward.is_empty():
 		return
 	if reward.has("gp"):
-		PlayerData.add_gp(float(reward["gp"]))
+		PlayerData.add_gp(float(reward["gp"]) * reward_multiplier)
 	for item_id in (reward.get("items", {}) as Dictionary).keys():
 		BankManager.add_item_guaranteed(str(item_id), int(reward["items"][item_id]))
 
@@ -1190,6 +1212,7 @@ func consume_food(food_id: String, efficiency: float = 100.0, source: String = "
 	if heal <= 0.0:
 		return ""
 	heal *= (efficiency / 100.0) * (1.0 + ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT) / 100.0)
+	heal *= maxf(0.0, 1.0 + DungeonModifierManager.modifier("healing_percent") / 100.0)
 	if heal <= 0.0 or not BankManager.remove_item(food_id, 1):
 		return ""
 	player_hp = minf(player_hp + heal, _compute_max_hp())

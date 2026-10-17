@@ -13,6 +13,7 @@ signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
 const ROTATING_TAB: String = "rotating"
+const CONTRACT_TAB: String = "contracts"
 ## Tier colours follow the house semantics: green/teal/blue read as progress, purple as rare
 ## mastery, red as danger — a readable ramp from Easy to Nightmare.
 const DIFFICULTY_COLORS: Dictionary = {
@@ -46,9 +47,10 @@ func _ready() -> void:
 	# Difficulty sub-tabs (plus the rotating window) are the primary way tasks are scanned.
 	_tab_ids = Quests.DIFFICULTIES.duplicate()
 	_tab_ids.append(ROTATING_TAB)
+	_tab_ids.append(CONTRACT_TAB)
 	var labels: Array[String] = []
 	for tab_id in _tab_ids:
-		labels.append("Rotating" if tab_id == ROTATING_TAB else tab_id.capitalize())
+		labels.append("Rotating" if tab_id == ROTATING_TAB else "Contracts & factions" if tab_id == CONTRACT_TAB else tab_id.capitalize())
 	var strip: Dictionary = Widgets.tab_flow(labels, func(index): _select_tab(_tab_ids[index]))
 	_tabs_root = strip["root"] as HFlowContainer
 	_tab_buttons.assign(strip["buttons"])
@@ -70,10 +72,14 @@ func _ready() -> void:
 	_rotation_timer.autostart = true
 	_rotation_timer.timeout.connect(_on_rotation_tick)
 	add_child(_rotation_timer)
-	EventBus.quest_objective_progress.connect(func(_q, _i, _c, _r): _rebuild())
+	EventBus.quest_objective_progress.connect(func(_q, _i, _c, _r): Widgets.rebuild_once_per_frame(_rebuild))
 	EventBus.quest_reward_claimed.connect(func(_q): _rebuild())
-	EventBus.bank_changed.connect(_rebuild)
+	EventBus.bank_changed.connect(func(): Widgets.rebuild_once_per_frame(_rebuild))
 	EventBus.state_refreshed.connect(_rebuild)
+	ContractManager.board_changed.connect(_rebuild)
+	ContractManager.contract_progress_changed.connect(func(_slot): _rebuild())
+	FactionManager.faction_changed.connect(func(_id): _rebuild())
+	FactionManager.reputation_changed.connect(func(_id, _reputation): _rebuild())
 	_update_tab_buttons()
 	_rebuild()
 
@@ -96,7 +102,7 @@ func _update_tab_buttons() -> void:
 		_tab_buttons[i].button_pressed = _tab_ids[i] == _active_tab
 
 func _rebuild() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
 		return
 	for c in _list.get_children():
 		_list.remove_child(c)
@@ -104,7 +110,9 @@ func _rebuild() -> void:
 	_rotation_label = null
 	var filter: String = _filter_keys[clampi(_filter.selected, 0, _filter_keys.size() - 1)]
 	_last_window = Quests.rotation_window()
-	if _active_tab == ROTATING_TAB:
+	if _active_tab == CONTRACT_TAB:
+		_rebuild_contracts()
+	elif _active_tab == ROTATING_TAB:
 		_rebuild_rotating(filter)
 	else:
 		_rebuild_difficulty(filter)
@@ -127,6 +135,66 @@ func _rebuild_difficulty(filter: String) -> void:
 			"Show all", func():
 				_filter.selected = 5
 				_rebuild()))
+
+func _rebuild_contracts() -> void:
+	_list.add_child(UIStyle.section("Faction allegiances", "Pledge allegiance to one faction at a time; reputation is retained when switching"))
+	for faction_id in FactionManager.all_faction_ids():
+		var id: String = str(faction_id)
+		var faction: Dictionary = FactionManager.get_faction(id)
+		var current: bool = FactionManager.selected_faction == id
+		var card := UIStyle.card(current)
+		var content := UIStyle.vbox(UITokens.SP_2)
+		card.add_child(content)
+		content.add_child(UIStyle.title(str(faction.get("name", id)), UITokens.FONT_SUBHEAD))
+		content.add_child(UIStyle.label(str(faction.get("description", "")), true, UITokens.FONT_SMALL))
+		content.add_child(UIStyle.label("%s · %d reputation" % [FactionManager.get_rank_name(id), FactionManager.get_reputation(id)], true, UITokens.FONT_SMALL))
+		var next: Dictionary = FactionManager.get_next_rank(id)
+		if not next.is_empty():
+			content.add_child(UIStyle.label("Next: %s at %d reputation" % [str(next.get("name", "")), int(next.get("reputation", 0))], true, UITokens.FONT_MICRO))
+		var join := UIStyle.button("Pledged" if current else "Pledge allegiance")
+		join.disabled = current
+		join.pressed.connect(func(): FactionManager.select_faction(id))
+		content.add_child(join)
+		for vendor_offer in FactionManager.vendor_offers(id):
+			var reward_id: String = str(vendor_offer.get("id", ""))
+			var owned: bool = FactionManager.vendor_purchased(id, reward_id)
+			var blocker: String = FactionManager.vendor_blocker(id, reward_id)
+			content.add_child(UIStyle.label(str(vendor_offer.get("name", reward_id)) + " — " + str(vendor_offer.get("description", "")), true, UITokens.FONT_MICRO))
+			var buy := UIStyle.button("Purchased" if owned else "Buy for %s GP" % UIStyle.fmt(float(vendor_offer.get("cost_gp", 0))))
+			buy.disabled = blocker != ""
+			buy.tooltip_text = blocker if blocker != "" else "Buy this permanent faction perk"
+			buy.pressed.connect(func(): FactionManager.purchase_vendor_reward(id, reward_id))
+			content.add_child(buy)
+		_list.add_child(card)
+	_list.add_child(UIStyle.section("Contract board", "Three fresh-work objectives; complete them for GP, XP and faction reputation"))
+	for index in range(ContractManager.get_offers().size()):
+		var offer: Dictionary = ContractManager.get_offer(index)
+		var progress: Dictionary = ContractManager.progress(index)
+		var ready: bool = bool(progress.get("satisfied", false))
+		var card := UIStyle.card(ready)
+		var col := UIStyle.vbox(UITokens.SP_3)
+		card.add_child(col)
+		col.add_child(UIStyle.title("%s · %s" % [str(offer.get("tier_name", "Bronze")), str(offer.get("name", "Contract"))], UITokens.FONT_SUBHEAD))
+		col.add_child(UIStyle.label(str(offer.get("description", "")), true, UITokens.FONT_SMALL))
+		col.add_child(UIStyle.label("%s: %d / %d" % [str(offer.get("objective", {}).get("label", "Work")), int(progress.current), int(progress.required)], true, UITokens.FONT_SMALL))
+		col.add_child(Widgets.progress_bar(float(progress.current), maxf(1.0, float(progress.required)), UITokens.TEAL, "%d / %d" % [int(progress.current), int(progress.required)]))
+		col.add_child(UIStyle.label("Reward: " + ContractManager.describe_reward(index), true, UITokens.FONT_MICRO))
+		var claim := UIStyle.primary_button("Claim reward" if ready else "In progress")
+		claim.disabled = not ready
+		var slot: int = index
+		claim.pressed.connect(func(): ContractManager.claim_contract(slot))
+		col.add_child(claim)
+		var route: Dictionary = offer.get("objective", {}).get("route", {})
+		if not route.is_empty():
+			var go := UIStyle.button("Go to activity")
+			go.pressed.connect(func(): navigated.emit(route))
+			col.add_child(go)
+		_list.add_child(card)
+	var refresh := UIStyle.button("Refresh contracts · %d GP" % ContractManager.get_refresh_cost())
+	refresh.disabled = PlayerData.gp < float(ContractManager.get_refresh_cost())
+	refresh.tooltip_text = "Replace all three contracts; unfinished progress on the current offers is lost."
+	refresh.pressed.connect(func(): ContractManager.refresh_board())
+	_list.add_child(refresh)
 
 func _rebuild_rotating(filter: String) -> void:
 	_rotation_label = UIStyle.colored_label(_rotation_headline(), UITokens.GOLD_BRIGHT, UITokens.FONT_SMALL)

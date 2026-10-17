@@ -20,8 +20,6 @@ const DEFAULT_CAP_HOURS: float = 24.0
 const MIN_CAP_HOURS: float = 1.0
 const MAX_CAP_HOURS: float = 168.0
 ## Simulated seconds processed per outer chunk, so the progress indicator moves.
-# ponytail: 30s is the slice granularity, so a queued "gather until N" can overshoot by at most
-# one slice. Thread a target predicate into simulate_elapsed if that ever matters.
 const CHUNK_SECONDS: float = 30.0
 ## Wall-clock budget spent per frame on catch-up before yielding.
 const FRAME_BUDGET_MSEC: float = 8.0
@@ -144,48 +142,116 @@ func _step_chunk() -> bool:
 	_chunks_done += 1
 	# Stretch the chunk so the whole window fits in MAX_TOTAL_CHUNKS instead of losing its tail.
 	var slice: float = minf(maxf(CHUNK_SECONDS, target / float(MAX_TOTAL_CHUNKS)), target - processed)
-	_advance_passive_clocks(slice)
-	# ONE activity slot: combat takes precedence when a fight is in progress, otherwise the
-	# selected skill action runs. This mirrors online play exactly.
-	if CombatManager.state != CombatManager.State.IDLE:
-		if bool(PlayerData.settings.get("offline_combat_enabled", true)):
-			var res: Dictionary = CombatManager.simulate_elapsed(slice)
-			ActionQueueManager.after_simulation_slice()
-			summary["activity"] = "combat"
-			processed += float(res["seconds_processed"])
-			if bool(res["stopped"]):
-				summary["stopped_reason"] = str(res["reason"])
+	# A temporary bonus runs out on the passive clock, which used to be advanced BEFORE the
+	# work it was supposed to be paying for — the whole slice was then simulated at the
+	# post-expiry rate and a short bonus bought nothing at all. Split the slice where a bonus
+	# expires: run the part that still sits under the bonus, let it expire, then run the rest.
+	var left: float = slice
+	while left > 0.000001:
+		var boundary: float = _buff_boundary(left)
+		if boundary <= 0.0:
+			# Nothing expires in what is left: passive clocks first, then the work — the
+			# original order, untouched.
+			_advance_passive_clocks(left)
+			var tail: Dictionary = _run_active(left, summary)
+			processed += float(tail["seconds"])
+			left = 0.0
+			if bool(tail["stopped"]):
+				_job["processed"] = processed
+				_finish()
+				return false
+			if bool(tail["exhausted"]):
+				processed = target
 				_job["processed"] = processed
 				_finish()
 				return false
 		else:
-			summary["activity"] = "combat"
-			summary["stopped_reason"] = "Offline combat is disabled in settings"
-			_job["processed"] = processed
-			_finish()
-			return false
-	elif SkillManager.running:
-		var res2: Dictionary = SkillManager.simulate_elapsed(slice)
-		ActionQueueManager.after_simulation_slice()
-		summary["activity"] = "skill"
-		summary["skill"] = SkillManager.active_skill
-		summary["action"] = SkillManager.active_action_id
-		processed += float(res2["seconds_processed"])
-		summary["actions"] = int(summary.get("actions", 0)) + int(res2["actions"])
-		if bool(res2["stopped"]):
-			summary["stopped_reason"] = str(res2["stop_reason"])
-			_job["processed"] = processed
-			_finish()
-			return false
-	else:
-		summary["activity"] = "none"
-		summary["stopped_reason"] = "Nothing was running"
-		processed = target
-		_job["processed"] = processed
-		_finish()
-		return false
+			# Work first, while the bonus is still on the clock; it expires only afterwards.
+			var head: Dictionary = _run_active(boundary, summary)
+			var took: float = float(head["seconds"])
+			processed += took
+			_advance_passive_clocks(took)
+			left = maxf(0.0, left - took)
+			if bool(head["stopped"]):
+				_job["processed"] = processed
+				_finish()
+				return false
+			if bool(head["exhausted"]):
+				processed = target
+				_job["processed"] = processed
+				_finish()
+				return false
+			if took <= 0.000001:
+				break   # no simulation progress is possible; yield this chunk instead of spinning
 	_job["processed"] = processed
 	return true
+
+## Simulate the active slot for up to `seconds`, folding the result into the summary.
+## "stopped" means the activity ended and nothing else could take over from it;
+## "exhausted" means there was no activity at all, which spends the whole window.
+##
+## A step that runs out resolves the queue HERE rather than at the end of the frame. The
+## queue's normal transition is deferred, and during catch-up that deferred call would land
+## after the catch-up had already stopped — so the next queued step would start with none of
+## the offline window left and earn nothing from it. Resolving synchronously lets the window
+## continue on the next eligible step, while a queued FIGHT still waits for the player.
+func _run_active(seconds: float, summary: Dictionary) -> Dictionary:
+	var left: float = seconds
+	var total: float = 0.0
+	var guard: int = 0
+	while left > 0.000001 and guard < 64:
+		guard += 1
+		# ONE activity slot: combat takes precedence when a fight is in progress, otherwise
+		# the selected skill action runs. This mirrors online play exactly.
+		if CombatManager.state != CombatManager.State.IDLE:
+			if not bool(PlayerData.settings.get("offline_combat_enabled", true)):
+				summary["activity"] = "combat"
+				summary["stopped_reason"] = "Offline combat is disabled in settings"
+				return {"seconds": total, "stopped": true, "exhausted": false}
+			var res: Dictionary = CombatManager.simulate_elapsed(left)
+			ActionQueueManager.after_simulation_slice()
+			summary["activity"] = "combat"
+			var took: float = float(res["seconds_processed"])
+			total += took
+			left -= took
+			if bool(res["stopped"]):
+				# A fight that ends leaves the queue in its explicit waiting state; the
+				# player's Continue/Skip decides what follows, offline as well as online.
+				summary["stopped_reason"] = str(res["reason"])
+				return {"seconds": total, "stopped": true, "exhausted": false}
+		elif SkillManager.running:
+			var res2: Dictionary = SkillManager.simulate_elapsed(left)
+			ActionQueueManager.after_simulation_slice()
+			summary["activity"] = "skill"
+			summary["skill"] = SkillManager.active_skill
+			summary["action"] = SkillManager.active_action_id
+			var took2: float = float(res2["seconds_processed"])
+			total += took2
+			left -= took2
+			summary["actions"] = int(summary.get("actions", 0)) + int(res2["actions"])
+			if bool(res2["stopped"]):
+				if ActionQueueManager.resolve_transition_now() and SkillManager.running:
+					continue   # the next queued step inherits the rest of this window
+				summary["stopped_reason"] = str(res2["stop_reason"])
+				return {"seconds": total, "stopped": true, "exhausted": false}
+		else:
+			summary["activity"] = "none"
+			summary["stopped_reason"] = "Nothing was running"
+			return {"seconds": seconds, "stopped": true, "exhausted": true}
+	return {"seconds": total, "stopped": false, "exhausted": false}
+
+## How much of `seconds` runs while every active temporary bonus is still on the clock: the
+## shortest remaining buff, which is the exact point the slice has to be cut at. Returns 0
+## when no bonus runs out inside `seconds`, so the caller keeps the ordinary order.
+func _buff_boundary(seconds: float) -> float:
+	var boundary: float = INF
+	for buff in InscriptionManager.buffs.values():
+		boundary = minf(boundary, maxf(0.0, float((buff as Dictionary).get("remaining", 0.0))))
+		if boundary <= 0.0:
+			# Already expired: let the passive advance drop it before any work is simulated.
+			return 0.0
+	# Below a millisecond the split would cost more than the bonus it protects.
+	return 0.0 if boundary > seconds or boundary < 0.001 else boundary
 
 # =========================================================================
 #  Finish
@@ -255,6 +321,7 @@ func _advance_passive_clocks(seconds: float) -> void:
 			slice = minf(slice, maxf(0.001, float(buff.remaining)))
 		var end_time: float = float(_job.get("now", Time.get_unix_time_from_system())) - float((_job.get("summary", {}) as Dictionary).get("elapsed_seconds", 0.0)) + float(_job.get("passive_seconds", 0.0)) + slice
 		InscriptionManager.advance(slice)
+		RegionalEventsManager.advance_offline(slice, end_time)
 		_job["township_ticks"] = int(_job.get("township_ticks", 0)) + TownshipManager.advance_offline(slice)
 		RanchingManager.advance(slice)
 		EngineeringManager.advance(slice, end_time)

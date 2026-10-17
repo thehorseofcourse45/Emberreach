@@ -178,18 +178,18 @@ func active_ammo() -> String:
 
 ## What one attack with the equipped weapon spends: its attack_cost_items, with the ammunition
 ## entry swapped for the arrow active_ammo() picked. Live combat and the simulator both read this.
-func get_attack_cost() -> Dictionary:
+func get_attack_cost(style: String = "") -> Dictionary:
     var cost: Dictionary = (DataLoader.get_item(get_equipped(ItemData.EquipmentSlot.WEAPON)).get("attack_cost_items", {}) as Dictionary).duplicate()
     var ammo: String = active_ammo()
     if ammo == "":
-        return cost
+        return ArcaneSkills.add_cast_cost(cost, style)
     var out: Dictionary = {}
     for item_id in cost.keys():
         if str(DataLoader.get_item(str(item_id)).get("item_type", "")) == "ammo":
             out[ammo] = int(out.get(ammo, 0)) + int(cost[item_id])
         else:
             out[item_id] = cost[item_id]
-    return out
+    return ArcaneSkills.add_cast_cost(out, style)
 
 func get_defence_bonus(style: String) -> int:
     var key: String = {"melee": "melee_defence", "ranged": "ranged_defence", "magic": "magic_defence"}.get(style, "melee_defence")
@@ -216,13 +216,15 @@ func get_status_resistance(family: String) -> float:
         total += float(DataLoader.get_item(slots[slot]).get("equipment_stats", {}).get(key, 0))
     return total
 
-func get_weapon_attack_speed() -> float:
+func get_weapon_attack_speed(style: String = "") -> float:
     var weapon: String = get_equipped(ItemData.EquipmentSlot.WEAPON)
     if weapon == "":
         return 3.0
-    return float(DataLoader.get_item(weapon).get("attack_speed", 3.0))
+    return float(DataLoader.get_item(weapon).get("attack_speed", 3.0)) * ArcaneSkills.interval_multiplier(style)
 
-func get_weapon_special_attack() -> Dictionary:
+func get_weapon_special_attack(style: String = "") -> Dictionary:
+    if not ArcaneSkills.active_pattern(style).is_empty():
+        return ArcaneSkills.special(style)
     var weapon: String = get_equipped(ItemData.EquipmentSlot.WEAPON)
     if weapon == "":
         return {}

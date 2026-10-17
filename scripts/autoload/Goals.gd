@@ -105,7 +105,7 @@ func _resolve_item(item_id: String, target: int) -> Dictionary:
 	if item.is_empty():
 		return {"ok": false, "problem": "Unknown item '%s'" % item_id, "kind": "item", "id": item_id}
 	var want: int = target if target > 0 else 1
-	var have: int = BankManager.get_count(item_id)
+	var have: int = BankManager.count_with_variants(item_id)
 	var equipped: int = 1 if EquipmentManager.is_equipped(item_id) else 0
 	var out: Dictionary = {
 		"ok": true,
@@ -436,6 +436,24 @@ func _producer_recipes(item_id: String) -> Array:
 					"byproduct": true,
 					"chance": clampf(float((sec as Dictionary).get("chance", 1.0)), 0.0, 1.0),
 					"max_qty": maxi(1, int((sec as Dictionary).get("max_qty", 1)))})
+			for loot in (action.get("pickpocket_loot", []) as Array):
+				if typeof(loot) != TYPE_DICTIONARY or str(loot.get("item_id", "")) != item_id:
+					continue
+				var loot_chance: float = clampf(float(loot.get("chance", 0.0)), 0.0, 1.0)
+				var combined: bool = false
+				for producer in out:
+					if str(producer.get("skill_id", "")) == str(skill_id) \
+						and str(producer.get("action_id", "")) == str(action.get("id", "")):
+						# The same item can be both the primary steal and an independent
+						# bonus seed. Show one source with the chance of at least one.
+						producer["chance"] = 1.0 - (1.0 - float(producer["chance"])) * (1.0 - loot_chance)
+						producer["max_qty"] = int(producer["max_qty"]) + int(loot.get("max_qty", 1))
+						combined = true
+						break
+				if not combined:
+					out.append({"skill_id": skill_id, "action_id": str(action.get("id", "")), "action": action,
+						"byproduct": true, "chance": loot_chance,
+						"max_qty": maxi(1, int(loot.get("max_qty", 1)))})
 	out.sort_custom(func(x, y):
 		return int(x["action"].get("level_required", 1)) < int(y["action"].get("level_required", 1)))
 	return out
@@ -445,8 +463,16 @@ func _producer_recipes(item_id: String) -> Array:
 ## Every place an item can be obtained from, most actionable first.
 func sources_for_item(item_id: String) -> Array:
 	var out: Array = []
-	if item_id == "" or not DataLoader.items.has(item_id):
+	if item_id == "" or DataLoader.get_item(item_id).is_empty():
 		return out
+	# Quality-crafted gear inherits the acquisition routes for the underlying recipe.
+	# The tier is rolled during crafting; there is no separate recipe to navigate to.
+	if DataLoader.get_item(item_id).has("crafted_quality"):
+		var quality_split: int = item_id.find("__quality_")
+		var affix_split: int = item_id.find("__affix_")
+		var base_end: int = quality_split if quality_split >= 0 else affix_split
+		var base_id: String = item_id.substr(0, base_end)
+		return sources_for_item(base_id)
 	for sid in DataLoader.get_skill_ids():
 		var rewards: Dictionary = DataLoader.get_skill(str(sid)).get("mastery_challenge_reward", {"masterwork_seal": 1})
 		if not MasteryManager.activities(str(sid)).is_empty() and rewards.has(item_id):
@@ -461,18 +487,16 @@ func sources_for_item(item_id: String) -> Array:
 		# What a pen hands over: the produce you collect, the stock you breed, and the hide and
 		# meat that come off each collection. Only the first two used to be listed, so hides and
 		# meat read as unobtainable on the card even though RanchingManager grants both.
-		var harvested: Array[String] = [str(animal.stock), str(animal.produce), str(animal.get("hide", ""))]
+		var harvested: Array[String] = [str(animal.stock), str(animal.produce), str(animal.get("hide", "")), str(animal.get("rare_stock", ""))]
 		if int(animal.get("meat", 0)) > 0:
 			harvested.append("ranch_meat")
 		if not harvested.has(item_id):
 			continue
-		out.append({"kind": "passive", "label": str(animal.name) + " ranch", "detail": "Collect produce, hide and meat; breed a happy pair every six hours for stock (rare hen/cow variants possible).", "level_required": int(animal.level), "unlocked": PlayerData.get_level("ranching") >= int(animal.level), "route": {"screen": "skills", "skill_id": "ranching"}})
+		out.append({"kind": "passive", "label": str(animal.name) + " ranch", "detail": "Collect produce, hide and meat; breed a happy pair every six hours for stock (rare variants possible).", "level_required": int(animal.level), "unlocked": PlayerData.get_level("ranching") >= int(animal.level), "route": {"screen": "skills", "skill_id": "ranching"}})
 	# The ranching system's own consumables: feed is rendered from crops, manure falls out of the
 	# pen's cycle, and the two rare breeding variants are named by the tables that roll them.
 	for system_item in [["ranch_feed", "Rendered from crops at the ranch, ten bags per crop"],
-			["ranch_manure", "Cleaned out of a pen as its cycles complete"],
-			["golden_hen_stock", "The rare variant a hen pen can breed"],
-			["mooncalf_stock", "The rare variant a cow pen can breed"]]:
+			["ranch_manure", "Cleaned out of a pen as its cycles complete"]]:
 		if item_id != str(system_item[0]) or not DataLoader.items.has(str(system_item[0])):
 			continue
 		out.append({"kind": "passive", "label": "Ranching", "detail": str(system_item[1]), "level_required": 1, "unlocked": true, "route": {"screen": "skills", "skill_id": "ranching"}})

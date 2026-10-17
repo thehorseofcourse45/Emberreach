@@ -1,0 +1,6 @@
+{
+  "fortunate": {"name": "Fortune", "chance": 0.04, "min_level": 25, "modifiers": {"global_gp_percent": 2}},
+  "diligent": {"name": "Diligence", "chance": 0.04, "min_level": 40, "modifiers": {"global_skill_xp_percent": 1}},
+  "warded": {"name": "Warding", "chance": 0.025, "min_level": 65, "modifiers": {"damage_reduction_percent": 1}},
+  "resourceful": {"name": "Abundance", "chance": 0.025, "min_level": 90, "modifiers": {"global_double_loot_percent": 1}}
+}

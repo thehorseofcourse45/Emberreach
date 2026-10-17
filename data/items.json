@@ -3137,7 +3137,8 @@
     "name": "Stone Rune",
     "item_type": "rune",
     "sell_price": 6,
-    "is_stackable": true
+    "is_stackable": true,
+    "bottleneck_reason": "Glyphcraft is the deliberate source of elemental casting and arcane crafting runes."
   },
   "mind_rune": {
     "id": "mind_rune",
@@ -7817,7 +7818,8 @@
     "name": "Clockwork Gear",
     "item_type": "resource",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "bottleneck_reason": "Deliberate common assembly component: gears take two seconds to forge and are paid once per reusable device. Uninstalling returns the intact device; operation consumes fuel and work materials, not additional gears."
   },
   "clockwork_frame": {
     "id": "clockwork_frame",
@@ -7831,7 +7833,8 @@
     "name": "Clockwork Spring",
     "item_type": "resource",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "bottleneck_reason": "Deliberate common assembly component: springs take two seconds to forge and are paid once per reusable device. Uninstalling returns the intact device; operation consumes fuel and work materials, not additional springs."
   },
   "device_lumberjack": {
     "id": "device_lumberjack",
@@ -9906,5 +9909,2008 @@
     "icon_id": "diamond_ring",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
+  },
+  "aether_candle_fracture": {
+    "id": "aether_candle_fracture",
+    "name": "Candle Fracture Aether",
+    "item_type": "resource",
+    "sell_price": 5,
+    "description": "Harvested with Riftkeeping. Used to weave Ember Dart."
+  },
+  "woven_ember_dart_pattern": {
+    "id": "woven_ember_dart_pattern",
+    "name": "Ember Dart Pattern",
+    "item_type": "resource",
+    "sell_price": 40,
+    "description": "Crafting this pattern once permanently teaches Ember Dart. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_brook_tear": {
+    "id": "aether_brook_tear",
+    "name": "Brook Tear Aether",
+    "item_type": "resource",
+    "sell_price": 17,
+    "description": "Harvested with Riftkeeping. Used to weave Tidal Lance."
+  },
+  "woven_tidal_lance_pattern": {
+    "id": "woven_tidal_lance_pattern",
+    "name": "Tidal Lance Pattern",
+    "item_type": "resource",
+    "sell_price": 100,
+    "description": "Crafting this pattern once permanently teaches Tidal Lance. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_storm_seam": {
+    "id": "aether_storm_seam",
+    "name": "Storm Seam Aether",
+    "item_type": "resource",
+    "sell_price": 29,
+    "description": "Harvested with Riftkeeping. Used to weave Storm Chain."
+  },
+  "woven_storm_chain_pattern": {
+    "id": "woven_storm_chain_pattern",
+    "name": "Storm Chain Pattern",
+    "item_type": "resource",
+    "sell_price": 160,
+    "description": "Crafting this pattern once permanently teaches Storm Chain. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_verdant_fold": {
+    "id": "aether_verdant_fold",
+    "name": "Verdant Fold Aether",
+    "item_type": "resource",
+    "sell_price": 41,
+    "description": "Harvested with Riftkeeping. Used to weave Thorn Spiral."
+  },
+  "woven_thorn_spiral_pattern": {
+    "id": "woven_thorn_spiral_pattern",
+    "name": "Thorn Spiral Pattern",
+    "item_type": "resource",
+    "sell_price": 220,
+    "description": "Crafting this pattern once permanently teaches Thorn Spiral. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_cinder_fissure": {
+    "id": "aether_cinder_fissure",
+    "name": "Cinder Fissure Aether",
+    "item_type": "resource",
+    "sell_price": 53,
+    "description": "Harvested with Riftkeeping. Used to weave Cinder Beam."
+  },
+  "woven_cinder_beam_pattern": {
+    "id": "woven_cinder_beam_pattern",
+    "name": "Cinder Beam Pattern",
+    "item_type": "resource",
+    "sell_price": 280,
+    "description": "Crafting this pattern once permanently teaches Cinder Beam. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_rime_breach": {
+    "id": "aether_rime_breach",
+    "name": "Rime Breach Aether",
+    "item_type": "resource",
+    "sell_price": 65,
+    "description": "Harvested with Riftkeeping. Used to weave Rime Snare."
+  },
+  "woven_rime_snare_pattern": {
+    "id": "woven_rime_snare_pattern",
+    "name": "Rime Snare Pattern",
+    "item_type": "resource",
+    "sell_price": 340,
+    "description": "Crafting this pattern once permanently teaches Rime Snare. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_prismatic_rift": {
+    "id": "aether_prismatic_rift",
+    "name": "Prismatic Rift Aether",
+    "item_type": "resource",
+    "sell_price": 77,
+    "description": "Harvested with Riftkeeping. Used to weave Prism Fan."
+  },
+  "woven_prism_fan_pattern": {
+    "id": "woven_prism_fan_pattern",
+    "name": "Prism Fan Pattern",
+    "item_type": "resource",
+    "sell_price": 400,
+    "description": "Crafting this pattern once permanently teaches Prism Fan. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_gravity_well": {
+    "id": "aether_gravity_well",
+    "name": "Gravity Well Aether",
+    "item_type": "resource",
+    "sell_price": 89,
+    "description": "Harvested with Riftkeeping. Used to weave Gravity Pulse."
+  },
+  "woven_gravity_pulse_pattern": {
+    "id": "woven_gravity_pulse_pattern",
+    "name": "Gravity Pulse Pattern",
+    "item_type": "resource",
+    "sell_price": 460,
+    "description": "Crafting this pattern once permanently teaches Gravity Pulse. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_nightveil_breach": {
+    "id": "aether_nightveil_breach",
+    "name": "Nightveil Breach Aether",
+    "item_type": "resource",
+    "sell_price": 101,
+    "description": "Harvested with Riftkeeping. Used to weave Nightveil Needle."
+  },
+  "woven_nightveil_needle_pattern": {
+    "id": "woven_nightveil_needle_pattern",
+    "name": "Nightveil Needle Pattern",
+    "item_type": "resource",
+    "sell_price": 520,
+    "description": "Crafting this pattern once permanently teaches Nightveil Needle. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_sunscar_rift": {
+    "id": "aether_sunscar_rift",
+    "name": "Sunscar Rift Aether",
+    "item_type": "resource",
+    "sell_price": 113,
+    "description": "Harvested with Riftkeeping. Used to weave Sunburst."
+  },
+  "woven_sunburst_pattern": {
+    "id": "woven_sunburst_pattern",
+    "name": "Sunburst Pattern",
+    "item_type": "resource",
+    "sell_price": 580,
+    "description": "Crafting this pattern once permanently teaches Sunburst. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_astral_gate": {
+    "id": "aether_astral_gate",
+    "name": "Astral Gate Aether",
+    "item_type": "resource",
+    "sell_price": 125,
+    "description": "Harvested with Riftkeeping. Used to weave Astral Cascade."
+  },
+  "woven_astral_cascade_pattern": {
+    "id": "woven_astral_cascade_pattern",
+    "name": "Astral Cascade Pattern",
+    "item_type": "resource",
+    "sell_price": 640,
+    "description": "Crafting this pattern once permanently teaches Astral Cascade. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_worldheart_rupture": {
+    "id": "aether_worldheart_rupture",
+    "name": "Worldheart Rupture Aether",
+    "item_type": "resource",
+    "sell_price": 137,
+    "description": "Harvested with Riftkeeping. Used to weave Worldheart Nova."
+  },
+  "woven_worldheart_nova_pattern": {
+    "id": "woven_worldheart_nova_pattern",
+    "name": "Worldheart Nova Pattern",
+    "item_type": "resource",
+    "sell_price": 700,
+    "description": "Crafting this pattern once permanently teaches Worldheart Nova. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_copperglow_slit": {
+    "id": "aether_copperglow_slit",
+    "name": "Copperglow Slit Aether",
+    "item_type": "resource",
+    "sell_price": 10,
+    "description": "Riftkeeping aether used to weave Spark Needle."
+  },
+  "woven_spark_needle_pattern": {
+    "id": "woven_spark_needle_pattern",
+    "name": "Spark Needle Pattern",
+    "item_type": "resource",
+    "sell_price": 70,
+    "description": "Crafting this pattern once permanently teaches Spark Needle. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_saltglass_window": {
+    "id": "aether_saltglass_window",
+    "name": "Saltglass Window Aether",
+    "item_type": "resource",
+    "sell_price": 20,
+    "description": "Riftkeeping aether used to weave Brine Bolt."
+  },
+  "woven_brine_bolt_pattern": {
+    "id": "woven_brine_bolt_pattern",
+    "name": "Brine Bolt Pattern",
+    "item_type": "resource",
+    "sell_price": 125,
+    "description": "Crafting this pattern once permanently teaches Brine Bolt. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_rootbound_scar": {
+    "id": "aether_rootbound_scar",
+    "name": "Rootbound Scar Aether",
+    "item_type": "resource",
+    "sell_price": 30,
+    "description": "Riftkeeping aether used to weave Briar Fang."
+  },
+  "woven_briar_fang_pattern": {
+    "id": "woven_briar_fang_pattern",
+    "name": "Briar Fang Pattern",
+    "item_type": "resource",
+    "sell_price": 182,
+    "description": "Crafting this pattern once permanently teaches Briar Fang. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_ashen_mirror": {
+    "id": "aether_ashen_mirror",
+    "name": "Ashen Mirror Aether",
+    "item_type": "resource",
+    "sell_price": 40,
+    "description": "Riftkeeping aether used to weave Ash Comet."
+  },
+  "woven_ash_comet_pattern": {
+    "id": "woven_ash_comet_pattern",
+    "name": "Ash Comet Pattern",
+    "item_type": "resource",
+    "sell_price": 250,
+    "description": "Crafting this pattern once permanently teaches Ash Comet. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_clockwork_aperture": {
+    "id": "aether_clockwork_aperture",
+    "name": "Clockwork Aperture Aether",
+    "item_type": "resource",
+    "sell_price": 50,
+    "description": "Riftkeeping aether used to weave Clockbolt."
+  },
+  "woven_clockbolt_pattern": {
+    "id": "woven_clockbolt_pattern",
+    "name": "Clockbolt Pattern",
+    "item_type": "resource",
+    "sell_price": 310,
+    "description": "Crafting this pattern once permanently teaches Clockbolt. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_mistbound_hollow": {
+    "id": "aether_mistbound_hollow",
+    "name": "Mistbound Hollow Aether",
+    "item_type": "resource",
+    "sell_price": 60,
+    "description": "Riftkeeping aether used to weave Fog Needle."
+  },
+  "woven_fog_needle_pattern": {
+    "id": "woven_fog_needle_pattern",
+    "name": "Fog Needle Pattern",
+    "item_type": "resource",
+    "sell_price": 370,
+    "description": "Crafting this pattern once permanently teaches Fog Needle. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_bonewhite_breach": {
+    "id": "aether_bonewhite_breach",
+    "name": "Bonewhite Breach Aether",
+    "item_type": "resource",
+    "sell_price": 70,
+    "description": "Riftkeeping aether used to weave Grave Lance."
+  },
+  "woven_grave_lance_pattern": {
+    "id": "woven_grave_lance_pattern",
+    "name": "Grave Lance Pattern",
+    "item_type": "resource",
+    "sell_price": 430,
+    "description": "Crafting this pattern once permanently teaches Grave Lance. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_gilded_nexus": {
+    "id": "aether_gilded_nexus",
+    "name": "Gilded Nexus Aether",
+    "item_type": "resource",
+    "sell_price": 75,
+    "description": "Riftkeeping aether used to weave Gilded Verdict."
+  },
+  "woven_gilded_verdict_pattern": {
+    "id": "woven_gilded_verdict_pattern",
+    "name": "Gilded Verdict Pattern",
+    "item_type": "resource",
+    "sell_price": 460,
+    "description": "Crafting this pattern once permanently teaches Gilded Verdict. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_bloodmoon_cleft": {
+    "id": "aether_bloodmoon_cleft",
+    "name": "Bloodmoon Cleft Aether",
+    "item_type": "resource",
+    "sell_price": 85,
+    "description": "Riftkeeping aether used to weave Crimson Brand."
+  },
+  "woven_crimson_brand_pattern": {
+    "id": "woven_crimson_brand_pattern",
+    "name": "Crimson Brand Pattern",
+    "item_type": "resource",
+    "sell_price": 520,
+    "description": "Crafting this pattern once permanently teaches Crimson Brand. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_thunderhead_rift": {
+    "id": "aether_thunderhead_rift",
+    "name": "Thunderhead Rift Aether",
+    "item_type": "resource",
+    "sell_price": 95,
+    "description": "Riftkeeping aether used to weave Thunder Seal."
+  },
+  "woven_thunder_seal_pattern": {
+    "id": "woven_thunder_seal_pattern",
+    "name": "Thunder Seal Pattern",
+    "item_type": "resource",
+    "sell_price": 580,
+    "description": "Crafting this pattern once permanently teaches Thunder Seal. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_soulglass_crossing": {
+    "id": "aether_soulglass_crossing",
+    "name": "Soulglass Crossing Aether",
+    "item_type": "resource",
+    "sell_price": 100,
+    "description": "Riftkeeping aether used to weave Spirit Pin."
+  },
+  "woven_spirit_pin_pattern": {
+    "id": "woven_spirit_pin_pattern",
+    "name": "Spirit Pin Pattern",
+    "item_type": "resource",
+    "sell_price": 610,
+    "description": "Crafting this pattern once permanently teaches Spirit Pin. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "aether_umbral_crown_gate": {
+    "id": "aether_umbral_crown_gate",
+    "name": "Umbral Crown Gate Aether",
+    "item_type": "resource",
+    "sell_price": 120,
+    "description": "Riftkeeping aether used to weave Eclipse Spear."
+  },
+  "woven_eclipse_spear_pattern": {
+    "id": "woven_eclipse_spear_pattern",
+    "name": "Eclipse Spear Pattern",
+    "item_type": "resource",
+    "sell_price": 730,
+    "description": "Crafting this pattern once permanently teaches Eclipse Spear. Select it in Spellweaving to cast with a magic weapon. Extra copies can be sold.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; further copies train mastery and can be sold."
+  },
+  "ironveil_aegis": {
+    "id": "ironveil_aegis",
+    "name": "Ironveil Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 58,
+      "ranged_defence": 58,
+      "magic_defence": 58,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 3,
+      "damage_to_monsters_percent": 2
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on your first clear of Ironveil Bastion."
+  },
+  "frostglass_mantle": {
+    "id": "frostglass_mantle",
+    "name": "Frostglass Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 61,
+      "ranged_defence": 61,
+      "magic_defence": 61,
+      "damage_reduction": 3,
+      "stun_resistance": 25,
+      "burn_resistance": 15
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 4,
+      "damage_to_monsters_percent": 2
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on your first clear of Frostglass Citadel."
+  },
+  "blightroot_cuirass": {
+    "id": "blightroot_cuirass",
+    "name": "Blightroot Cuirass",
+    "item_type": "equipment",
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 64,
+      "ranged_defence": 64,
+      "magic_defence": 64,
+      "damage_reduction": 6,
+      "poison_resistance": 25
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 5,
+      "damage_to_monsters_percent": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on your first clear of Blightroot Hold."
+  },
+  "dominion_sigil": {
+    "id": "dominion_sigil",
+    "name": "Sigil of the Dominion",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "melee_defence": 67,
+      "ranged_defence": 67,
+      "magic_defence": 67,
+      "damage_reduction": 2,
+      "slash": 30,
+      "stab": 30,
+      "block": 30,
+      "melee_strength": 22,
+      "ranged_attack": 30,
+      "ranged_strength": 22,
+      "magic_attack": 30,
+      "magic_damage_percent": 12
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 6,
+      "damage_to_monsters_percent": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on your first clear of Sunken Dominion."
+  },
+  "eclipse_diadem": {
+    "id": "eclipse_diadem",
+    "name": "Eclipse Diadem",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 4,
+      "magic_attack": 28,
+      "ranged_attack": 28
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 7,
+      "damage_to_monsters_percent": 4
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on your first clear of Eclipse Throne."
+  },
+  "copperleaf_log": {
+    "id": "copperleaf_log",
+    "name": "Copperleaf Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 2,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "malachite_mineral": {
+    "id": "malachite_mineral",
+    "name": "Malachite Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 5,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "copper_mint": {
+    "id": "copper_mint",
+    "name": "Copper Mint",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 5,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "copper_mint_seed": {
+    "id": "copper_mint_seed",
+    "name": "Copper Mint Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 3,
+    "icon_id": "copper_mint",
+    "grow_seconds": 3660,
+    "base_survival": 0.6,
+    "product_item": "copper_mint",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 1484,
+    "plot_type": "herb"
+  },
+  "ranch_duck": {
+    "id": "ranch_duck",
+    "name": "Duck Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 10,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "copperleaf_shortbow": {
+    "id": "copperleaf_shortbow",
+    "name": "Copperleaf Shortbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 8,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 4,
+      "ranged_strength": 3
+    },
+    "level_requirements": {
+      "ranged": 5
+    },
+    "ammo_tier_max": 1,
+    "attack_cost_items": {
+      "bronze_arrow": 1
+    }
+  },
+  "device_resin_tapper": {
+    "id": "device_resin_tapper",
+    "name": "Resin Tapper",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 30,
+    "description": "Install in Engineering to automate Timbercraft actions with prepaid fuel."
+  },
+  "potion_fieldhand_tonic": {
+    "id": "potion_fieldhand_tonic",
+    "name": "Fieldhand Tonic",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 10,
+    "charges": 20,
+    "potion_effect": {
+      "farming_interval_percent": 5
+    }
+  },
+  "aether_lantern_splinter": {
+    "id": "aether_lantern_splinter",
+    "name": "Lantern Splinter Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 5,
+    "description": "Riftkeeping aether used to weave Wickshot."
+  },
+  "woven_wickshot_pattern": {
+    "id": "woven_wickshot_pattern",
+    "name": "Wickshot Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 40,
+    "description": "Craft once to permanently learn Wickshot. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "silver_birch_log": {
+    "id": "silver_birch_log",
+    "name": "Silver Birch Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 7,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "hematite_mineral": {
+    "id": "hematite_mineral",
+    "name": "Hematite Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 13,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "honeycap": {
+    "id": "honeycap",
+    "name": "Honeycap",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 10,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "honeycap_seed": {
+    "id": "honeycap_seed",
+    "name": "Honeycap Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 6,
+    "icon_id": "honeycap",
+    "grow_seconds": 4200,
+    "base_survival": 0.6,
+    "product_item": "honeycap",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 2119,
+    "plot_type": "herb"
+  },
+  "ranch_goat": {
+    "id": "ranch_goat",
+    "name": "Goat Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 30,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "silver_birch_longbow": {
+    "id": "silver_birch_longbow",
+    "name": "Silver Birch Longbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 23,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 12,
+      "ranged_strength": 8
+    },
+    "level_requirements": {
+      "ranged": 12
+    },
+    "ammo_tier_max": 2,
+    "attack_cost_items": {
+      "iron_arrow": 1
+    }
+  },
+  "device_seam_surveyor": {
+    "id": "device_seam_surveyor",
+    "name": "Seam Surveyor",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 45,
+    "description": "Install in Engineering to automate Delving actions with prepaid fuel."
+  },
+  "potion_nestkeeper_elixir": {
+    "id": "potion_nestkeeper_elixir",
+    "name": "Nestkeeper Elixir",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 20,
+    "charges": 22,
+    "potion_effect": {
+      "ranching_interval_percent": 8
+    },
+    "charge_scope": "ranching:collection"
+  },
+  "aether_reedwater_scar": {
+    "id": "aether_reedwater_scar",
+    "name": "Reedwater Scar Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 8,
+    "description": "Riftkeeping aether used to weave Reedwater Coil."
+  },
+  "woven_reedwater_coil_pattern": {
+    "id": "woven_reedwater_coil_pattern",
+    "name": "Reedwater Coil Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 55,
+    "description": "Craft once to permanently learn Reedwater Coil. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "amber_acacia_log": {
+    "id": "amber_acacia_log",
+    "name": "Amber Acacia Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 12,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "fluorite_mineral": {
+    "id": "fluorite_mineral",
+    "name": "Fluorite Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 21,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "frost_pea": {
+    "id": "frost_pea",
+    "name": "Frost Pea",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 15,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "frost_pea_seed": {
+    "id": "frost_pea_seed",
+    "name": "Frost Pea Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 9,
+    "icon_id": "frost_pea",
+    "grow_seconds": 2700,
+    "base_survival": 0.6,
+    "product_item": "frost_pea",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 1615,
+    "plot_type": "allotment"
+  },
+  "ranch_alpaca": {
+    "id": "ranch_alpaca",
+    "name": "Alpaca Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 50,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "amber_acacia_shortbow": {
+    "id": "amber_acacia_shortbow",
+    "name": "Amber Acacia Shortbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 30,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 9,
+      "ranged_strength": 6
+    },
+    "level_requirements": {
+      "ranged": 22
+    },
+    "ammo_tier_max": 2,
+    "attack_cost_items": {
+      "iron_arrow": 1
+    }
+  },
+  "device_rune_sorter": {
+    "id": "device_rune_sorter",
+    "name": "Rune Sorter",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 60,
+    "description": "Install in Engineering to automate Glyphcraft actions with prepaid fuel."
+  },
+  "potion_veinseeker_tonic": {
+    "id": "potion_veinseeker_tonic",
+    "name": "Veinseeker Tonic",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 30,
+    "charges": 24,
+    "potion_effect": {
+      "mining_node_preservation_percent": 8
+    }
+  },
+  "aether_amber_fault": {
+    "id": "aether_amber_fault",
+    "name": "Amber Fault Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 11,
+    "description": "Riftkeeping aether used to weave Amber Shards."
+  },
+  "woven_amber_shards_pattern": {
+    "id": "woven_amber_shards_pattern",
+    "name": "Amber Shards Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 70,
+    "description": "Craft once to permanently learn Amber Shards. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "duskwillow_log": {
+    "id": "duskwillow_log",
+    "name": "Duskwillow Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 17,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "citrine_mineral": {
+    "id": "citrine_mineral",
+    "name": "Citrine Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 29,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "sun_saffron": {
+    "id": "sun_saffron",
+    "name": "Sun Saffron",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 20,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "sun_saffron_seed": {
+    "id": "sun_saffron_seed",
+    "name": "Sun Saffron Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 12,
+    "icon_id": "sun_saffron",
+    "grow_seconds": 18000,
+    "base_survival": 0.6,
+    "product_item": "sun_saffron",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 10450,
+    "plot_type": "herb"
+  },
+  "ranch_bristleback": {
+    "id": "ranch_bristleback",
+    "name": "Bristleback Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 70,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "duskwillow_longbow": {
+    "id": "duskwillow_longbow",
+    "name": "Duskwillow Longbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 45,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 21,
+      "ranged_strength": 14
+    },
+    "level_requirements": {
+      "ranged": 32
+    },
+    "ammo_tier_max": 3,
+    "attack_cost_items": {
+      "steel_arrow": 1
+    }
+  },
+  "device_herb_still": {
+    "id": "device_herb_still",
+    "name": "Herb Still",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 75,
+    "description": "Install in Engineering to automate Apothecary actions with prepaid fuel."
+  },
+  "potion_bowyer_focus": {
+    "id": "potion_bowyer_focus",
+    "name": "Bowyer Focus",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 40,
+    "charges": 26,
+    "potion_effect": {
+      "fletching_doubling_percent": 8
+    }
+  },
+  "aether_thistle_window": {
+    "id": "aether_thistle_window",
+    "name": "Thistle Window Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 14,
+    "description": "Riftkeeping aether used to weave Thistle Volley."
+  },
+  "woven_thistle_volley_pattern": {
+    "id": "woven_thistle_volley_pattern",
+    "name": "Thistle Volley Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 85,
+    "description": "Craft once to permanently learn Thistle Volley. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "sequoia_log": {
+    "id": "sequoia_log",
+    "name": "Sequoia Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 22,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "lapis_mineral": {
+    "id": "lapis_mineral",
+    "name": "Lapis Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 37,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "sageberry": {
+    "id": "sageberry",
+    "name": "Sageberry",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 25,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "sageberry_seed": {
+    "id": "sageberry_seed",
+    "name": "Sageberry Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 15,
+    "icon_id": "sageberry",
+    "grow_seconds": 6000,
+    "base_survival": 0.6,
+    "product_item": "sageberry",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 4239,
+    "plot_type": "allotment"
+  },
+  "ranch_silkwyrm": {
+    "id": "ranch_silkwyrm",
+    "name": "Silkwyrm Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 90,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "sequoia_shortbow": {
+    "id": "sequoia_shortbow",
+    "name": "Sequoia Shortbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 45,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 15,
+      "ranged_strength": 10
+    },
+    "level_requirements": {
+      "ranged": 42
+    },
+    "ammo_tier_max": 3,
+    "attack_cost_items": {
+      "steel_arrow": 1
+    }
+  },
+  "device_arrow_fletcher": {
+    "id": "device_arrow_fletcher",
+    "name": "Arrow Fletcher",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 90,
+    "description": "Install in Engineering to automate Bowyering actions with prepaid fuel."
+  },
+  "potion_stoneward_tonic": {
+    "id": "potion_stoneward_tonic",
+    "name": "Stoneward Tonic",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 50,
+    "charges": 28,
+    "potion_effect": {
+      "damage_reduction_percent": 3
+    },
+    "charge_scope": "combat"
+  },
+  "aether_ironwind_tear": {
+    "id": "aether_ironwind_tear",
+    "name": "Ironwind Tear Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 17,
+    "description": "Riftkeeping aether used to weave Ironwind Disc."
+  },
+  "woven_ironwind_disc_pattern": {
+    "id": "woven_ironwind_disc_pattern",
+    "name": "Ironwind Disc Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 100,
+    "description": "Craft once to permanently learn Ironwind Disc. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "jade_cypress_log": {
+    "id": "jade_cypress_log",
+    "name": "Jade Cypress Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 27,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "tourmaline_mineral": {
+    "id": "tourmaline_mineral",
+    "name": "Tourmaline Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 45,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "glass_lily": {
+    "id": "glass_lily",
+    "name": "Glass Lily",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 30,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "glass_lily_seed": {
+    "id": "glass_lily_seed",
+    "name": "Glass Lily Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 18,
+    "icon_id": "glass_lily",
+    "grow_seconds": 21600,
+    "base_survival": 0.6,
+    "product_item": "glass_lily",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 19000,
+    "plot_type": "herb"
+  },
+  "ranch_sun_peacock": {
+    "id": "ranch_sun_peacock",
+    "name": "Sun Peacock Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 110,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "jade_cypress_longbow": {
+    "id": "jade_cypress_longbow",
+    "name": "Jade Cypress Longbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 83,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 38,
+      "ranged_strength": 25
+    },
+    "level_requirements": {
+      "ranged": 52
+    },
+    "ammo_tier_max": 4,
+    "attack_cost_items": {
+      "mithril_arrow": 1
+    }
+  },
+  "potion_gearsmith_elixir": {
+    "id": "potion_gearsmith_elixir",
+    "name": "Gearsmith Elixir",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 60,
+    "charges": 30,
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 12
+    },
+    "charge_scope": "engineering:fuel"
+  },
+  "aether_hailglass_fold": {
+    "id": "aether_hailglass_fold",
+    "name": "Hailglass Fold Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 20,
+    "description": "Riftkeeping aether used to weave Hailglass Spear."
+  },
+  "woven_hailglass_spear_pattern": {
+    "id": "woven_hailglass_spear_pattern",
+    "name": "Hailglass Spear Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 115,
+    "description": "Craft once to permanently learn Hailglass Spear. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "bloodthorn_log": {
+    "id": "bloodthorn_log",
+    "name": "Bloodthorn Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 32,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "garnet_mineral": {
+    "id": "garnet_mineral",
+    "name": "Garnet Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 53,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "blood_ginger": {
+    "id": "blood_ginger",
+    "name": "Blood Ginger",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 35,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "blood_ginger_seed": {
+    "id": "blood_ginger_seed",
+    "name": "Blood Ginger Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 21,
+    "icon_id": "blood_ginger",
+    "grow_seconds": 4800,
+    "base_survival": 0.6,
+    "product_item": "blood_ginger",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 3800,
+    "plot_type": "allotment"
+  },
+  "ranch_crystal_tortoise": {
+    "id": "ranch_crystal_tortoise",
+    "name": "Crystal Tortoise Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 130,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "bloodthorn_shortbow": {
+    "id": "bloodthorn_shortbow",
+    "name": "Bloodthorn Shortbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 98,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 30,
+      "ranged_strength": 20
+    },
+    "level_requirements": {
+      "ranged": 62
+    },
+    "ammo_tier_max": 4,
+    "attack_cost_items": {
+      "mithril_arrow": 1
+    }
+  },
+  "device_fold_surveyor": {
+    "id": "device_fold_surveyor",
+    "name": "Fold Surveyor",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 120,
+    "description": "Install in Engineering to automate Wayfolding actions with prepaid fuel."
+  },
+  "potion_rootkeeper_tonic": {
+    "id": "potion_rootkeeper_tonic",
+    "name": "Rootkeeper Tonic",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 70,
+    "charges": 32,
+    "potion_effect": {
+      "farming_doubling_percent": 10
+    }
+  },
+  "aether_gloomroot_breach": {
+    "id": "aether_gloomroot_breach",
+    "name": "Gloomroot Breach Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 23,
+    "description": "Riftkeeping aether used to weave Gloomroot Bind."
+  },
+  "woven_gloomroot_bind_pattern": {
+    "id": "woven_gloomroot_bind_pattern",
+    "name": "Gloomroot Bind Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 130,
+    "description": "Craft once to permanently learn Gloomroot Bind. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "moonbark_log": {
+    "id": "moonbark_log",
+    "name": "Moonbark Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 37,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "moonstone_mineral": {
+    "id": "moonstone_mineral",
+    "name": "Moonstone Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 61,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "moon_lotus": {
+    "id": "moon_lotus",
+    "name": "Moon Lotus",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 40,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "moon_lotus_seed": {
+    "id": "moon_lotus_seed",
+    "name": "Moon Lotus Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 24,
+    "icon_id": "moon_lotus",
+    "grow_seconds": 7800,
+    "base_survival": 0.6,
+    "product_item": "moon_lotus",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 6358,
+    "plot_type": "herb"
+  },
+  "ranch_ember_salamander": {
+    "id": "ranch_ember_salamander",
+    "name": "Ember Salamander Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 150,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "moonbark_longbow": {
+    "id": "moonbark_longbow",
+    "name": "Moonbark Longbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 113,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 55,
+      "ranged_strength": 36
+    },
+    "level_requirements": {
+      "ranged": 72
+    },
+    "ammo_tier_max": 5,
+    "attack_cost_items": {
+      "adamantite_arrow": 1
+    }
+  },
+  "device_weather_tender": {
+    "id": "device_weather_tender",
+    "name": "Weather Tender",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 135,
+    "description": "Install in Engineering to automate Fermentation actions with prepaid fuel."
+  },
+  "potion_moonlit_insight": {
+    "id": "potion_moonlit_insight",
+    "name": "Moonlit Insight",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 80,
+    "charges": 34,
+    "potion_effect": {
+      "global_mastery_xp_percent": 8
+    }
+  },
+  "aether_moonwake_crossing": {
+    "id": "aether_moonwake_crossing",
+    "name": "Moonwake Crossing Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 26,
+    "description": "Riftkeeping aether used to weave Moonwake Arc."
+  },
+  "woven_moonwake_arc_pattern": {
+    "id": "woven_moonwake_arc_pattern",
+    "name": "Moonwake Arc Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 145,
+    "description": "Craft once to permanently learn Moonwake Arc. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "thunder_ash_log": {
+    "id": "thunder_ash_log",
+    "name": "Thunder Ash Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 42,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "storm_opal_mineral": {
+    "id": "storm_opal_mineral",
+    "name": "Storm Opal Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 69,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "storm_lavender": {
+    "id": "storm_lavender",
+    "name": "Storm Lavender",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 45,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "storm_lavender_seed": {
+    "id": "storm_lavender_seed",
+    "name": "Storm Lavender Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 27,
+    "icon_id": "storm_lavender",
+    "grow_seconds": 6000,
+    "base_survival": 0.6,
+    "product_item": "storm_lavender",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 6840,
+    "plot_type": "herb"
+  },
+  "ranch_cloud_roc": {
+    "id": "ranch_cloud_roc",
+    "name": "Cloud Roc Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 170,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "thunder_ash_shortbow": {
+    "id": "thunder_ash_shortbow",
+    "name": "Thunder Ash Shortbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 128,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 45,
+      "ranged_strength": 30
+    },
+    "level_requirements": {
+      "ranged": 82
+    },
+    "ammo_tier_max": 5,
+    "attack_cost_items": {
+      "adamantite_arrow": 1
+    }
+  },
+  "device_case_archivist": {
+    "id": "device_case_archivist",
+    "name": "Case Archivist",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 150,
+    "description": "Install in Engineering to automate Lostfinding actions with prepaid fuel."
+  },
+  "potion_stormrunner_elixir": {
+    "id": "potion_stormrunner_elixir",
+    "name": "Stormrunner Elixir",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 90,
+    "charges": 36,
+    "potion_effect": {
+      "global_skill_interval_percent": 5
+    }
+  },
+  "aether_stormforge_cleft": {
+    "id": "aether_stormforge_cleft",
+    "name": "Stormforge Cleft Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 29,
+    "description": "Riftkeeping aether used to weave Stormforge Hammer."
+  },
+  "woven_stormforge_hammer_pattern": {
+    "id": "woven_stormforge_hammer_pattern",
+    "name": "Stormforge Hammer Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 160,
+    "description": "Craft once to permanently learn Stormforge Hammer. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "obsidian_mangrove_log": {
+    "id": "obsidian_mangrove_log",
+    "name": "Obsidian Mangrove Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 47,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "obsidian_mineral": {
+    "id": "obsidian_mineral",
+    "name": "Obsidian Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 77,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "night_pepper": {
+    "id": "night_pepper",
+    "name": "Night Pepper",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 50,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "night_pepper_seed": {
+    "id": "night_pepper_seed",
+    "name": "Night Pepper Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 30,
+    "icon_id": "night_pepper",
+    "grow_seconds": 36000,
+    "base_survival": 0.6,
+    "product_item": "night_pepper",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 61750,
+    "plot_type": "allotment"
+  },
+  "ranch_dusk_kirin": {
+    "id": "ranch_dusk_kirin",
+    "name": "Dusk Kirin Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 190,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "obsidian_mangrove_longbow": {
+    "id": "obsidian_mangrove_longbow",
+    "name": "Obsidian Mangrove Longbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 143,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 72,
+      "ranged_strength": 48
+    },
+    "level_requirements": {
+      "ranged": 92
+    },
+    "ammo_tier_max": 6,
+    "attack_cost_items": {
+      "runite_arrow": 1
+    }
+  },
+  "device_essence_tuner": {
+    "id": "device_essence_tuner",
+    "name": "Essence Tuner",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 165,
+    "description": "Install in Engineering to automate Attunement actions with prepaid fuel."
+  },
+  "potion_riftward_tonic": {
+    "id": "potion_riftward_tonic",
+    "name": "Riftward Tonic",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 100,
+    "charges": 38,
+    "potion_effect": {
+      "riftkeeping_doubling_percent": 12
+    }
+  },
+  "aether_obsidian_aperture": {
+    "id": "aether_obsidian_aperture",
+    "name": "Obsidian Aperture Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 32,
+    "description": "Riftkeeping aether used to weave Obsidian Rain."
+  },
+  "woven_obsidian_rain_pattern": {
+    "id": "woven_obsidian_rain_pattern",
+    "name": "Obsidian Rain Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 175,
+    "description": "Craft once to permanently learn Obsidian Rain. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "astral_ebony_log": {
+    "id": "astral_ebony_log",
+    "name": "Astral Ebony Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 52,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "astralite_mineral": {
+    "id": "astralite_mineral",
+    "name": "Astralite Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 85,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "astral_fennel": {
+    "id": "astral_fennel",
+    "name": "Astral Fennel",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 55,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "astral_fennel_seed": {
+    "id": "astral_fennel_seed",
+    "name": "Astral Fennel Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 33,
+    "icon_id": "astral_fennel",
+    "grow_seconds": 10500,
+    "base_survival": 0.6,
+    "product_item": "astral_fennel",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 24130,
+    "plot_type": "herb"
+  },
+  "ranch_phoenix": {
+    "id": "ranch_phoenix",
+    "name": "Phoenix Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 210,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "astral_ebony_shortbow": {
+    "id": "astral_ebony_shortbow",
+    "name": "Astral Ebony Shortbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 158,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "equipment_stats": {
+      "ranged_attack": 78,
+      "ranged_strength": 52
+    },
+    "level_requirements": {
+      "ranged": 104
+    },
+    "ammo_tier_max": 7,
+    "attack_cost_items": {
+      "dragonite_arrow": 1
+    }
+  },
+  "device_rift_extractor": {
+    "id": "device_rift_extractor",
+    "name": "Rift Extractor",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 180,
+    "description": "Install in Engineering to automate Riftkeeping actions with prepaid fuel."
+  },
+  "potion_astral_lucidity": {
+    "id": "potion_astral_lucidity",
+    "name": "Astral Lucidity",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 110,
+    "charges": 40,
+    "potion_effect": {
+      "global_skill_xp_percent": 8
+    }
+  },
+  "aether_starling_nexus": {
+    "id": "aether_starling_nexus",
+    "name": "Starling Nexus Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 35,
+    "description": "Riftkeeping aether used to weave Starling Spiral."
+  },
+  "woven_starling_spiral_pattern": {
+    "id": "woven_starling_spiral_pattern",
+    "name": "Starling Spiral Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 190,
+    "description": "Craft once to permanently learn Starling Spiral. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "dawnbloom_log": {
+    "id": "dawnbloom_log",
+    "name": "Dawnbloom Log",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 57,
+    "description": "Cut with Timbercraft; burn with Kilncraft or shape into a bow."
+  },
+  "dawn_prism_mineral": {
+    "id": "dawn_prism_mineral",
+    "name": "Dawn Prism Mineral",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 93,
+    "description": "Delved mineral used in Engineering devices and Attunement."
+  },
+  "dawn_orchid": {
+    "id": "dawn_orchid",
+    "name": "Dawn Orchid",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 60,
+    "description": "Cultivated ingredient for Apothecary and Fermentation; can also be made into ranch feed."
+  },
+  "dawn_orchid_seed": {
+    "id": "dawn_orchid_seed",
+    "name": "Dawn Orchid Seed",
+    "item_type": "seed",
+    "is_stackable": true,
+    "sell_price": 36,
+    "icon_id": "dawn_orchid",
+    "grow_seconds": 11400,
+    "base_survival": 0.6,
+    "product_item": "dawn_orchid",
+    "min_yield": 3,
+    "max_yield": 6,
+    "harvest_xp": 34953,
+    "plot_type": "herb"
+  },
+  "ranch_aurora_drake": {
+    "id": "ranch_aurora_drake",
+    "name": "Aurora Drake Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 230,
+    "description": "Stock one animal in a Husbandry pen; matching pairs can breed."
+  },
+  "dawnbloom_longbow": {
+    "id": "dawnbloom_longbow",
+    "name": "Dawnbloom Longbow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 173,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 112,
+      "ranged_strength": 75
+    },
+    "level_requirements": {
+      "ranged": 118
+    },
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    }
+  },
+  "device_pattern_loom": {
+    "id": "device_pattern_loom",
+    "name": "Pattern Loom",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 195,
+    "description": "Install in Engineering to automate Spellweaving actions with prepaid fuel."
+  },
+  "potion_dawnweaver_elixir": {
+    "id": "potion_dawnweaver_elixir",
+    "name": "Dawnweaver Elixir",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 120,
+    "charges": 42,
+    "potion_effect": {
+      "global_doubling_percent": 12
+    }
+  },
+  "aether_dawnheart_seam": {
+    "id": "aether_dawnheart_seam",
+    "name": "Dawnheart Seam Aether",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 38,
+    "description": "Riftkeeping aether used to weave Dawnheart Lance."
+  },
+  "woven_dawnheart_lance_pattern": {
+    "id": "woven_dawnheart_lance_pattern",
+    "name": "Dawnheart Lance Pattern",
+    "item_type": "resource",
+    "is_stackable": true,
+    "sell_price": 205,
+    "description": "Craft once to permanently learn Dawnheart Lance. Select in Spellweaving with a magic weapon.",
+    "terminal_reason": "Crafting teaches a permanent spell; further copies train mastery and can be sold."
+  },
+  "device_prospectors_sifter": {
+    "id": "device_prospectors_sifter",
+    "name": "Prospector's Sifter",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 105,
+    "description": "Install in Engineering to automate Prospecting actions with prepaid fuel."
+  },
+  "frost_pea_soup": {
+    "id": "frost_pea_soup",
+    "name": "Frost Pea Soup",
+    "item_type": "food",
+    "sell_price": 20,
+    "is_stackable": true,
+    "heal_amount": 100,
+    "description": "A cooling pea soup with a swirl of ranch cream."
+  },
+  "sageberry_crumble": {
+    "id": "sageberry_crumble",
+    "name": "Sageberry Crumble",
+    "item_type": "food",
+    "sell_price": 30,
+    "is_stackable": true,
+    "heal_amount": 155,
+    "description": "A golden crumble filled with fragrant sageberries."
+  },
+  "bloodginger_braise": {
+    "id": "bloodginger_braise",
+    "name": "Bloodginger Braise",
+    "item_type": "food",
+    "sell_price": 22,
+    "is_stackable": true,
+    "heal_amount": 240,
+    "description": "A warming braise with a peppery crimson glaze."
+  },
+  "stuffed_night_peppers": {
+    "id": "stuffed_night_peppers",
+    "name": "Stuffed Night Peppers",
+    "item_type": "food",
+    "sell_price": 57,
+    "is_stackable": true,
+    "heal_amount": 270,
+    "description": "Violet peppers baked with rich ranch cheese."
+  },
+  "rare_ranch_duck": {
+    "id": "rare_ranch_duck",
+    "name": "Silverwing Duck Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 20,
+    "description": "Rare Duck bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_duck"
+  },
+  "rare_ranch_goat": {
+    "id": "rare_ranch_goat",
+    "name": "Amberhorn Goat Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 60,
+    "description": "Rare Goat bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_goat"
+  },
+  "rare_ranch_alpaca": {
+    "id": "rare_ranch_alpaca",
+    "name": "Cloudfleece Alpaca Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 100,
+    "description": "Rare Alpaca bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_alpaca"
+  },
+  "rare_ranch_sheep": {
+    "id": "rare_ranch_sheep",
+    "name": "Silverfleece Sheep Stock",
+    "item_type": "consumable",
+    "sell_price": 20,
+    "is_stackable": true,
+    "description": "Rare Sheep bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_sheep"
+  },
+  "rare_ranch_bristleback": {
+    "id": "rare_ranch_bristleback",
+    "name": "Ironbristle Bristleback Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 140,
+    "description": "Rare Bristleback bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_bristleback"
+  },
+  "rare_ranch_silkwyrm": {
+    "id": "rare_ranch_silkwyrm",
+    "name": "Moonspun Silkwyrm Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 180,
+    "description": "Rare Silkwyrm bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_silkwyrm"
+  },
+  "rare_ranch_boar": {
+    "id": "rare_ranch_boar",
+    "name": "Gildedtusk Boar Stock",
+    "item_type": "consumable",
+    "sell_price": 20,
+    "is_stackable": true,
+    "description": "Rare Boar bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_boar"
+  },
+  "rare_ranch_sun_peacock": {
+    "id": "rare_ranch_sun_peacock",
+    "name": "Solar Crown Peacock Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 220,
+    "description": "Rare Sun Peacock bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_sun_peacock"
+  },
+  "rare_ranch_moonstag": {
+    "id": "rare_ranch_moonstag",
+    "name": "Eclipse Moonstag Stock",
+    "item_type": "consumable",
+    "sell_price": 20,
+    "is_stackable": true,
+    "description": "Rare Moonstag bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_moonstag"
+  },
+  "rare_ranch_crystal_tortoise": {
+    "id": "rare_ranch_crystal_tortoise",
+    "name": "Prismatic Tortoise Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 260,
+    "description": "Rare Crystal Tortoise bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_crystal_tortoise"
+  },
+  "rare_ranch_ember_salamander": {
+    "id": "rare_ranch_ember_salamander",
+    "name": "Whiteflame Salamander Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 300,
+    "description": "Rare Ember Salamander bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_ember_salamander"
+  },
+  "rare_ranch_griffin": {
+    "id": "rare_ranch_griffin",
+    "name": "Royal Griffin Stock",
+    "item_type": "consumable",
+    "sell_price": 20,
+    "is_stackable": true,
+    "description": "Rare Griffin bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_griffin"
+  },
+  "rare_ranch_cloud_roc": {
+    "id": "rare_ranch_cloud_roc",
+    "name": "Thundercrest Roc Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 340,
+    "description": "Rare Cloud Roc bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_cloud_roc"
+  },
+  "rare_ranch_wyvern": {
+    "id": "rare_ranch_wyvern",
+    "name": "Jadecrest Wyvern Stock",
+    "item_type": "consumable",
+    "sell_price": 20,
+    "is_stackable": true,
+    "description": "Rare Wyvern bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_wyvern"
+  },
+  "rare_ranch_dusk_kirin": {
+    "id": "rare_ranch_dusk_kirin",
+    "name": "Starveil Kirin Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 380,
+    "description": "Rare Dusk Kirin bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_dusk_kirin"
+  },
+  "rare_ranch_phoenix": {
+    "id": "rare_ranch_phoenix",
+    "name": "Dawnfire Phoenix Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 420,
+    "description": "Rare Phoenix bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_phoenix"
+  },
+  "rare_ranch_dragon": {
+    "id": "rare_ranch_dragon",
+    "name": "Crownflame Dragon Stock",
+    "item_type": "consumable",
+    "sell_price": 20,
+    "is_stackable": true,
+    "description": "Rare Dragon bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_dragon"
+  },
+  "rare_ranch_celestial_dragon": {
+    "id": "rare_ranch_celestial_dragon",
+    "name": "Astral Sovereign Dragon Stock",
+    "item_type": "consumable",
+    "sell_price": 20,
+    "is_stackable": true,
+    "description": "Rare Celestial Dragon bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_celestial_dragon"
+  },
+  "rare_ranch_aurora_drake": {
+    "id": "rare_ranch_aurora_drake",
+    "name": "Rainbowcrest Drake Stock",
+    "item_type": "consumable",
+    "is_stackable": true,
+    "sell_price": 460,
+    "description": "Rare Aurora Drake bred from a happy matching pair. Stock in a separate pen for twice the produce.",
+    "icon_id": "ranch_aurora_drake"
+  },
+  "metallic_essence": {
+    "id": "metallic_essence",
+    "name": "Metallic Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 8–20). Refine in Attunement into Martial Essence."
+  },
+  "argent_essence": {
+    "id": "argent_essence",
+    "name": "Argent Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 25–32). Refine in Attunement into Warding Essence."
+  },
+  "gilded_essence": {
+    "id": "gilded_essence",
+    "name": "Gilded Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 40–48). Refine in Attunement into Martial Essence."
+  },
+  "azure_essence": {
+    "id": "azure_essence",
+    "name": "Azure Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 55–60). Refine in Attunement into Arcane Essence."
+  },
+  "frost_essence": {
+    "id": "frost_essence",
+    "name": "Frost Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 65–72). Refine in Attunement into Warding Essence."
+  },
+  "ember_essence": {
+    "id": "ember_essence",
+    "name": "Ember Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 88). Refine in Attunement into Martial Essence."
+  },
+  "void_essence": {
+    "id": "void_essence",
+    "name": "Void Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 95). Refine in Attunement into Arcane Essence."
+  },
+  "crown_essence": {
+    "id": "crown_essence",
+    "name": "Crown Essence",
+    "item_type": "resource",
+    "sell_price": 1,
+    "is_stackable": true,
+    "description": "Specialist essence from Prospecting veins (levels 110). Refine in Attunement into Warding Essence."
   }
 }

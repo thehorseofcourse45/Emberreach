@@ -180,10 +180,11 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 	# Everything a boss phase can change (style, speed, max hit, passives) lives in the view and is
 	# re-derived whenever a phase fires.
 	var view: Dictionary = _monster_view(snapshot, player, monster, 0)
+	var challenge: Dictionary = snapshot.get("challenge_effects", {})
 	var accuracy: float = float(player.get("accuracy", 10))
 	var monster_accuracy: float = float(monster.get("accuracy_rating", 10))
 	var monster_dr: float = float(monster.get("damage_reduction", 0.0))
-	var monster_hp_max: float = maxf(1.0, float(monster.get("hitpoints", 10)))
+	var monster_hp_max: float = maxf(1.0, float(monster.get("hitpoints", 10)) * (1.0 + float(challenge.get("enemy_hp_percent", 0.0)) / 100.0))
 	var monster_hp: float = monster_hp_max
 	var evasion: int = _evasion_for(monster, style)
 	var player_dr: float = float(player.get("damage_reduction", 0.0))
@@ -248,7 +249,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 				for id in shot: snapshot.attack_stock[id] -= int(shot[id])
 			_decrement_cooldowns(cooldowns)
 			var special: Dictionary = _roll_special_attack(rng, weapon_special, str(strategy.get("special_bias", "normal")))
-			var lands: bool = bool(special.get("ignores_accuracy", false)) or clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + float(view["player_hit_bonus"]), 0.0, 100.0) >= rng.randf() * 100.0
+			var lands: bool = bool(special.get("ignores_accuracy", false)) or clampf(CombatFormulas.chance_to_hit(accuracy, float(evasion)) + float(view["player_hit_bonus"]) + float(challenge.get("player_accuracy_percent", 0.0)), 0.0, 100.0) >= rng.randf() * 100.0
 			if lands:
 				# At most one ability takes the swing.
 				var ab: Dictionary = _roll_abilities(loadout, cooldowns, rng)
@@ -265,6 +266,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					CombatFormulas.min_hit(swing_max_hit, float(player.get("min_hit_percent", 0.0)), float(player.get("min_hit_flat", 0.0))),
 					swing_max_hit, monster_dr, crit_chance + float(ab_effect.get("crit_chance_percent", 0.0)), crit_mult, "normal")
 				var dealt: float = float(roll["damage"])
+				dealt = maxf(0.0, roundf(dealt * (1.0 + float(challenge.get("player_damage_percent", 0.0)) / 100.0)))
 				if not special.is_empty():
 					dealt = maxi(1, floori(dealt * float(special.get("damage_multiplier", 1))))
 					hp = minf(max_hp, hp + dealt * float(special.get("heal_fraction", 0)))
@@ -311,7 +313,7 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 			var passives: Array = view["passives"]
 			var their_roll: Dictionary = CombatFormulas.roll_damage(rng, int(view["monster_min_hit"]),
 				int(view["monster_max_hit"]), 0.0, 0.0, 0.0, "normal")
-			if clampf(CombatFormulas.chance_to_hit(monster_accuracy, float(view["player_evasion"])) + float(against.accuracy_percent), 0, 100) > rng.randf() * 100.0 and (not snapshot.get("protection_styles", []).has(monster_style) or rng.randf() >= 0.8):
+			if clampf(CombatFormulas.chance_to_hit(monster_accuracy, float(view["player_evasion"])) * (1.0 + float(challenge.get("enemy_accuracy_percent", 0.0)) / 100.0) + float(against.accuracy_percent), 0, 100) > rng.randf() * 100.0 and (not snapshot.get("protection_styles", []).has(monster_style) or rng.randf() >= 0.8):
 				# A raging monster hits harder as it nears death (applied before DR, like the live
 				# loop) — gated on the passive, exactly as CombatManager gates it.
 				var raw_taken: float = float(their_roll["damage"]) * (1.0 + float(against.damage_percent) / 100.0)
@@ -321,8 +323,9 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					raw_taken *= _rage_multiplier(monster_hp, monster_hp_max)
 				# Clamped for the same reason as the live loop: an unbounded reduction would make
 				# the multiplier negative and every hit a heal.
-				var taken: float = raw_taken * (1.0 - clampf(player_dr, 0.0, 90.0) / 100.0)
+				var taken: float = raw_taken * (1.0 - clampf(player_dr - float(challenge.get("ignore_dr_percent", 0.0)), 0.0, 90.0) / 100.0)
 				taken *= (1.0 + float(hazard.get("enemy_damage_percent", 0.0)) / 100.0)
+				taken *= (1.0 + float(challenge.get("enemy_damage_percent", 0.0)) / 100.0)
 				var special: Dictionary = _special(monster.get("specials", []), rng)
 				if not special.is_empty():
 					taken = maxi(1, floori(taken * float(special.get("damage_multiplier", 1))))
@@ -392,7 +395,8 @@ static func _auto_eat(snapshot: Dictionary, hp: float, max_hp: float) -> Diction
 	if bool(snapshot.get("finite_supplies", false)): snapshot.food_counts[chosen_id] -= 1
 	var efficiency: float = (float(AUTO_EAT_EFFICIENCY.get(tier, 1.0)) + float(snapshot.get("auto_eat_efficiency_percent", 0)) / 100.0) \
 		* (1.0 + float(snapshot.get("food_healing_percent", 0.0)) / 100.0)
-	return {"eaten": 1, "heal": float(chosen) * efficiency}
+	var challenge: Dictionary = snapshot.get("challenge_effects", {})
+	return {"eaten": 1, "heal": float(chosen) * efficiency * maxf(0.0, 1.0 + float(challenge.get("healing_percent", 0.0)) / 100.0)}
 
 ## Mirrors CombatManager._monster_evasion_for, including the veil passive's flat bonus.
 static func _evasion_for(monster: Dictionary, style: String) -> int:
@@ -482,7 +486,7 @@ static func _monster_view(snapshot: Dictionary, player: Dictionary, monster: Dic
 		"min_hit": CombatFormulas.min_hit(max_hit, float(player.get("min_hit_percent", 0.0)),
 			float(player.get("min_hit_flat", 0.0))),
 		"player_interval": maxf(0.1, float(player.get("attack_interval", 3.0))),
-		"monster_interval": maxf(MONSTER_INTERVAL_FLOOR, float(current.get("attack_speed", 3.0))),
+		"monster_interval": maxf(MONSTER_INTERVAL_FLOOR, float(current.get("attack_speed", 3.0)) * maxf(0.25, 1.0 - float((snapshot.get("challenge_effects", {}) as Dictionary).get("enemy_attack_speed_percent", 0.0)) / 100.0)),
 		"monster_max_hit": monster_max_hit,
 		"monster_min_hit": CombatFormulas.min_hit(monster_max_hit,
 			float(current.get("min_hit_percent", 0.0)), float(current.get("min_hit_flat", 0.0))),

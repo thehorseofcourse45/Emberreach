@@ -225,6 +225,20 @@ func get_count(item_id: String) -> int:
 func get_total_owned(item_id: String) -> int:
 	return get_count(item_id) + int(overflow.get(item_id, 0))
 
+## Held count including the item's quality-crafted and affixed variants, which sit in their own
+## stacks: a Fine platebody still is a platebody. For "do you have N" checks only — consuming
+## stays exact-id, so a recipe never silently eats a Masterwork piece.
+# ponytail: scans the bank per call; index variants by base id if banks grow into the thousands.
+func count_with_variants(item_id: String, include_overflow: bool = false) -> int:
+	var total: int = get_total_owned(item_id) if include_overflow else get_count(item_id)
+	var quality_prefix: String = item_id + CraftingQuality.SEPARATOR
+	var affix_prefix: String = item_id + CraftingQuality.AFFIX_SEPARATOR
+	for source in ([items, overflow] if include_overflow else [items]):
+		for id in source:
+			if str(id).begins_with(quality_prefix) or str(id).begins_with(affix_prefix):
+				total += int(source[id])
+	return total
+
 func has_item(item_id: String, quantity: int = 1) -> bool:
 	return get_count(item_id) >= quantity
 
@@ -485,7 +499,7 @@ func _sanitize_ledger(source: Variant) -> Dictionary:
 	if typeof(source) != TYPE_DICTIONARY:
 		return out
 	for item_id in (source as Dictionary).keys():
-		if not DataLoader.items.has(str(item_id)):
+		if DataLoader.get_item(str(item_id)).is_empty():
 			continue
 		var qty: int = int((source as Dictionary)[item_id])
 		if qty > 0:

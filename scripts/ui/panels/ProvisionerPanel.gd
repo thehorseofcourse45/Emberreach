@@ -64,7 +64,7 @@ func detail_context() -> Dictionary:
 		"body": "Purchases are permanent and applied as modifiers. The cost shown is the exact amount that will be deducted, and prerequisites are listed with your current standing."}
 
 func _rebuild() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
 		return
 	_rebuild_summary()
 	_rebuild_stall()

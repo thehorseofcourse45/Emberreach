@@ -19,7 +19,13 @@ enum BootState { NEW, LOADED, LOAD_FAILED }
 
 var is_paused: bool = false
 var game_speed: float = 1.0
-var playtime_seconds: float = 0.0
+## Total time played, in seconds. Read-only view of the ONE counter, which lives on
+## PlayerData because that is what the save carries: a second counter here kept its own
+## value across a load, so the next tick overwrote the loaded playtime with it and a
+## two-hour save came back as one second. New games and resets zero it in PlayerData.
+var playtime_seconds: float:
+	get:
+		return PlayerData.playtime_seconds
 var boot_state: int = BootState.NEW
 ## Set by the headless CLI entry points (--tests, --smoke, --offline, …) before anything awaits.
 ## Those modes drive the singletons deliberately and restore them afterwards, so the normal
@@ -70,6 +76,10 @@ func start_new_game(mode: String) -> void:
 		mode = "standard"
 	PlayerData.game_mode = mode
 	PlayerData.initialize_new_game()
+	FactionManager.reset()
+	ContractManager.reset()
+	DungeonModifierManager.deserialize({})
+	RegionalEventsManager.deserialize({})
 	PlayerData.settings = SettingsDefaults.with_defaults(PlayerData.settings)
 	BankManager.deserialize({})
 	LootFilterManager.deserialize({})
@@ -118,7 +128,7 @@ func start_new_game(mode: String) -> void:
 ## Also used before restoring a save, so an import cannot inherit the previous character's bonuses.
 func clear_derived_modifiers() -> void:
 	for category in ["prayer", "potion", "shop", "agility", "astrology", "summoning",
-			"pet", "poi", "raid", "township", "mastery_item", "equipment", "goals"]:
+			"pet", "poi", "raid", "township", "mastery_item", "equipment", "goals", "faction", "regional_events", "dungeon_modifiers"]:
 		ModifierManager.clear_category(category)
 
 ## A confirmed "reset all progress": a new game that also drops the Ascendancy, which
@@ -143,8 +153,7 @@ func _process(delta: float) -> void:
 	if is_paused or boot_state == BootState.LOAD_FAILED:
 		return
 	var scaled: float = delta / maxf(0.001, Engine.time_scale)
-	playtime_seconds += scaled
-	PlayerData.playtime_seconds = playtime_seconds
+	PlayerData.playtime_seconds += scaled
 
 func set_paused(p: bool) -> void:
 	is_paused = p

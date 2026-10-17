@@ -31,6 +31,7 @@ enum StopReason {
 }
 
 const RuneWards = preload("res://scripts/core/RuneWards.gd")
+const CraftQualityScript = preload("res://scripts/core/CraftingQuality.gd")
 
 const SIM_SLICE: float = 60.0
 const MAX_SIM_ACTIONS: int = 200_000
@@ -399,6 +400,8 @@ func perform_action() -> Dictionary:
 		stop_action(StopReason.TARGET_REACHED, "Research complete" if data.has("research_unlock") else "Enchantment work complete")
 	elif repeat_target > 0 and total_action_count >= repeat_target:
 		stop_action(StopReason.TARGET_REACHED, "%s ×%d complete" % [str(data.get("name", active_action_id)), repeat_target])
+	elif ActionQueueManager.skill_target_reached(active_skill, active_action_id):
+		stop_action(StopReason.TARGET_REACHED, "Queue target reached")
 	return rewards
 
 ## Refuse an action whose output cannot be stored, rather than creating then deleting items.
@@ -511,12 +514,37 @@ func _produce_outputs(data: Dictionary) -> Dictionary:
 			var n: int = 2 if _rng.randf() * 100.0 < doubling else 1
 			total += n
 		if total > 0:
-			var stored: int = BankManager.add_item(str(item_id), total)
-			if stored > 0:
-				produced[str(item_id)] = stored
+			var stored: int = 0
+			# Each crafted equipment piece receives its own quality roll. Distinct variants
+			# have unique item IDs, so banking, equipping and saves preserve the result.
+			if is_artisan and str(DataLoader.get_item(str(item_id)).get("item_type", "")) == "equipment":
+				for _piece in range(total):
+					var result_id: String = CraftQualityScript.roll(str(item_id), PlayerData.get_level(active_skill), _rng, DataLoader.items, DataLoader.crafting_quality, DataLoader.crafting_affixes)
+					var accepted: int = BankManager.add_item(result_id, 1)
+					if accepted > 0:
+						produced[result_id] = int(produced.get(result_id, 0)) + accepted
+					stored += accepted
+			else:
+				stored = BankManager.add_item(str(item_id), total)
+				if stored > 0:
+					produced[str(item_id)] = int(produced.get(str(item_id), 0)) + stored
 			if is_artisan:
 				ProgressTracker.record_item_crafted(str(item_id), stored)
-			SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, str(item_id), float(stored))
+				SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, str(item_id), float(stored))
+	# Each successful Larceny attempt draws exactly one target-specific reward.
+	# The item and quantity are rolled once. Storage overflow remains authoritative if full.
+	if active_skill == "thieving" and data.get("pickpocket_loot", null) is Array:
+		var stolen: Dictionary = preload("res://scripts/core/PickpocketLoot.gd").roll(data["pickpocket_loot"], _rng)
+		var stolen_id: String = str(stolen.get("item_id", ""))
+		if stolen_id != "" and DataLoader.items.has(stolen_id):
+			var stolen_qty: int = int(stolen.get("quantity", 0))
+			var accepted: int = BankManager.add_item(stolen_id, stolen_qty)
+			if accepted > 0:
+				produced[stolen_id] = int(produced.get(stolen_id, 0)) + accepted
+				SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, stolen_id, float(accepted))
+				if float(stolen.get("chance", 1.0)) <= SimulationMode.RARE_DROP_CHANCE_THRESHOLD:
+					SimulationMode.bump(SimulationMode.BUCKET_RARE_DROPS, stolen_id, float(accepted))
+					PlayerData.record_rare_drop(stolen_id, accepted, active_skill)
 	for sec in data.get("secondary_outputs", []):
 		if typeof(sec) != TYPE_DICTIONARY:
 			continue

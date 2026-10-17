@@ -4,12 +4,12 @@ const MANAGEMENT := {
 	"balanced": {"name": "Balanced", "level": 1, "feed": 1.0, "speed": 1.0, "breed": 1.0, "rare": 0.0, "hint": "Normal feed, produce and breeding."},
 	"pasture": {"name": "Pasture", "level": 1, "feed": 0.75, "speed": 0.9, "breed": 1.0, "rare": 0.0, "hint": "25% less feed; 10% slower produce."},
 	"production": {"name": "Production", "level": 25, "feed": 1.5, "speed": 1.2, "breed": 0.8, "rare": 0.0, "hint": "20% faster produce; 50% more feed; 20% slower breeding."},
-	"breeding": {"name": "Breeding", "level": 45, "feed": 1.2, "speed": 0.8, "breed": 1.5, "rare": 0.03, "hint": "50% faster breeding; +3% rare chance; 20% slower produce and 20% more feed."}
+	"breeding": {"name": "Breeding", "level": 45, "feed": 1.2, "speed": 0.8, "breed": 1.5, "rare": 0.03, "hint": "50% faster breeding; +3% rare chance, for species that HAVE a rare variant; 20% slower produce and 20% more feed."}
 }
 const PEN_UPGRADES := [
 	{"name": "Feeding trough", "level": 10, "cost": 1000, "hint": "20% less feed for this pen."},
 	{"name": "Spacious enclosure", "level": 35, "cost": 7500, "hint": "Room for four matching animals instead of two."},
-	{"name": "Sanctuary", "level": 70, "cost": 40000, "hint": "10% faster produce, 25% faster breeding, +3% rare chance; mood never drops below 50%."}
+	{"name": "Sanctuary", "level": 70, "cost": 40000, "hint": "10% faster produce, 25% faster breeding, +3% rare chance (only for species that have a rare variant); mood never drops below 50%."}
 ]
 var pens: Array = []
 var _rng := RandomNumberGenerator.new()
@@ -22,6 +22,13 @@ func species(id: String) -> Dictionary:
 		if str(entry.id) == id:
 			return entry
 	return {}
+
+## The rare variant a species can breed, or "" when it has none. Eligibility lives in the
+## species data (`rare_stock`), not in a hardcoded list of names here: the roll, stocking and
+## the catalogue all ask this one question, so a species with no rare variant can no longer
+## be advertised one, and adding a variant later is a data change rather than a code change.
+func rare_stock_id(id: String) -> String:
+	return str(species(id).get("rare_stock", ""))
 
 func pen_price() -> float:
 	return 500.0 * pow(float(pens.size() + 1), 2.0)
@@ -44,7 +51,7 @@ func stock(index: int, id: String, variant: bool = false) -> bool:
 		return false
 	var stock_id: String = str(def.stock)
 	if variant:
-		stock_id = "golden_hen_stock" if id == "hen" else "mooncalf_stock" if id == "cow" else ""
+		stock_id = rare_stock_id(id)
 	if stock_id == "" or not BankManager.has_item(stock_id, 1):
 		return false
 	BankManager.remove_item(stock_id, 1)
@@ -189,8 +196,11 @@ func breed(index: int) -> bool:
 	var mastery: int = MasteryManager.get_level("ranching", "raise_" + str(pen.species))
 	chance += 0.02 if mastery >= 50 else 0.0
 	chance += 0.05 if mastery >= 99 else 0.0
-	var rare: bool = _rng.randf() < chance and str(pen.species) in ["hen", "cow"]
-	BankManager.add_item_guaranteed(("golden_hen_stock" if str(pen.species) == "hen" else "mooncalf_stock") if rare else str(def.stock), 1)
+	# The roll is taken for every pen so the odds stay honest, but only a species that actually
+	# HAS a rare variant can land it — the reward and the eligibility come from the same field.
+	var rare_stock: String = rare_stock_id(str(pen.species))
+	var rare: bool = _rng.randf() < chance and rare_stock != ""
+	BankManager.add_item_guaranteed(rare_stock if rare else str(def.stock), 1)
 	EventBus.notify("Breeding produced " + ("a rare variant!" if rare else str(def.name) + " stock."), "success")
 	EventBus.state_refreshed.emit()
 	return true

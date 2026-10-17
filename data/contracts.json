@@ -1,0 +1,270 @@
+{
+  "_comment": "Fifteen templates with three difficulty variants each = 45 contracts. Baseline lifetime counters at offer creation; tiers unlock via the sponsoring faction's reputation.",
+  "tiers": [
+    {
+      "id": "bronze",
+      "name": "Bronze",
+      "quantity_multiplier": 1,
+      "gp": 300,
+      "xp": 150,
+      "reputation": 20,
+      "unlock": ""
+    },
+    {
+      "id": "silver",
+      "name": "Silver",
+      "quantity_multiplier": 3,
+      "gp": 1100,
+      "xp": 500,
+      "reputation": 50,
+      "unlock": "silver_contracts"
+    },
+    {
+      "id": "gold",
+      "name": "Gold",
+      "quantity_multiplier": 8,
+      "gp": 3500,
+      "xp": 1500,
+      "reputation": 115,
+      "unlock": "gold_contracts"
+    }
+  ],
+  "refresh_gp": 150,
+  "templates": [
+    {
+      "id": "copper_consignment",
+      "faction": "ledger",
+      "name": "Copper Consignment",
+      "description": "Supply the metalworkers with newly mined copper.",
+      "kind": "gain_item",
+      "item_id": "copper_ore",
+      "target": "Copper Ore",
+      "required": 30,
+      "xp_skill": "mining",
+      "route": {
+        "screen": "skills",
+        "skill_id": "mining",
+        "action_id": "copper_ore"
+      }
+    },
+    {
+      "id": "iron_consignment",
+      "faction": "ledger",
+      "name": "Iron Consignment",
+      "description": "Stock the forges for the coming season.",
+      "kind": "gain_item",
+      "item_id": "iron_ore",
+      "target": "Iron Ore",
+      "required": 25,
+      "xp_skill": "mining",
+      "route": {
+        "screen": "skills",
+        "skill_id": "mining",
+        "action_id": "iron_ore"
+      }
+    },
+    {
+      "id": "rune_reserve",
+      "faction": "ledger",
+      "name": "Rune Reserve",
+      "description": "The guild is buying fresh glyph essence.",
+      "kind": "gain_item",
+      "item_id": "rune_essence",
+      "target": "Glyph Essence",
+      "required": 35,
+      "xp_skill": "mining",
+      "route": {
+        "screen": "skills",
+        "skill_id": "mining",
+        "action_id": "rune_essence"
+      }
+    },
+    {
+      "id": "foundry_commission",
+      "faction": "ledger",
+      "name": "Foundry Commission",
+      "description": "Produce new bars to fulfill a local trade order.",
+      "kind": "craft_item",
+      "item_id": "iron_bar",
+      "target": "Iron Bars",
+      "required": 15,
+      "xp_skill": "smithing",
+      "route": {
+        "screen": "skills",
+        "skill_id": "smithing",
+        "action_id": "smelt_iron_bar"
+      }
+    },
+    {
+      "id": "arrow_contract",
+      "faction": "ledger",
+      "name": "Arrow Contract",
+      "description": "Fletch replacement ammunition for the caravans.",
+      "kind": "craft_item",
+      "item_id": "bronze_arrow",
+      "target": "Bronze Arrows",
+      "required": 80,
+      "xp_skill": "fletching",
+      "route": {
+        "screen": "skills",
+        "skill_id": "fletching",
+        "action_id": "fletch_bronze_arrow"
+      }
+    },
+    {
+      "id": "timber_permit",
+      "faction": "wardens",
+      "name": "Timber Permit",
+      "description": "Harvest fresh logs from permitted trees.",
+      "kind": "gain_item",
+      "item_id": "normal_log",
+      "target": "Emberpine Logs",
+      "required": 30,
+      "xp_skill": "woodcutting",
+      "route": {
+        "screen": "skills",
+        "skill_id": "woodcutting",
+        "action_id": "normal_tree"
+      }
+    },
+    {
+      "id": "marsh_fisher",
+      "faction": "wardens",
+      "name": "Marsh Fisher",
+      "description": "Keep the riverside camps fed with fresh shrimp.",
+      "kind": "gain_item",
+      "item_id": "raw_shrimp",
+      "target": "Raw Marsh Shrimp",
+      "required": 30,
+      "xp_skill": "fishing",
+      "route": {
+        "screen": "skills",
+        "skill_id": "fishing",
+        "action_id": "shrimp"
+      }
+    },
+    {
+      "id": "sardine_run",
+      "faction": "wardens",
+      "name": "Sardine Run",
+      "description": "Fish the new shoals beyond the shallows.",
+      "kind": "gain_item",
+      "item_id": "raw_sardine",
+      "target": "Raw Sardines",
+      "required": 25,
+      "xp_skill": "fishing",
+      "route": {
+        "screen": "skills",
+        "skill_id": "fishing",
+        "action_id": "sardine"
+      }
+    },
+    {
+      "id": "essence_harvest",
+      "faction": "wardens",
+      "name": "Essence Harvest",
+      "description": "Gather wild essence for regrowth rituals.",
+      "kind": "gain_item",
+      "item_id": "harvested_essence",
+      "target": "Harvested Essence",
+      "required": 25,
+      "xp_skill": "harvesting",
+      "route": {
+        "screen": "skills",
+        "skill_id": "harvesting",
+        "action_id": "basic"
+      }
+    },
+    {
+      "id": "camp_rations",
+      "faction": "wardens",
+      "name": "Camp Rations",
+      "description": "Cook a new batch of provisions for the trail.",
+      "kind": "craft_item",
+      "item_id": "shrimp",
+      "target": "Cooked Marsh Shrimp",
+      "required": 20,
+      "xp_skill": "cooking",
+      "route": {
+        "screen": "skills",
+        "skill_id": "cooking",
+        "action_id": "cook_shrimp"
+      }
+    },
+    {
+      "id": "pasture_patrol",
+      "faction": "vanguard",
+      "name": "Pasture Patrol",
+      "description": "Clear aggressive longhorns from the pasture path.",
+      "kind": "kill_monster",
+      "monster_id": "cow",
+      "target": "Longhorn Steers",
+      "required": 15,
+      "xp_skill": "attack",
+      "route": {
+        "screen": "combat",
+        "area_id": "farmlands"
+      }
+    },
+    {
+      "id": "raider_sweep",
+      "faction": "vanguard",
+      "name": "Raider Sweep",
+      "description": "Break up raids before supply wagons arrive.",
+      "kind": "kill_monster",
+      "monster_id": "golbin",
+      "target": "Cinderkin Raiders",
+      "required": 15,
+      "xp_skill": "strength",
+      "route": {
+        "screen": "combat",
+        "area_id": "golbin_village"
+      }
+    },
+    {
+      "id": "web_clearing",
+      "faction": "vanguard",
+      "name": "Web Clearing",
+      "description": "Drive the fen spinners away from the road.",
+      "kind": "kill_monster",
+      "monster_id": "spider",
+      "target": "Fen Spinners",
+      "required": 12,
+      "xp_skill": "defence",
+      "route": {
+        "screen": "combat",
+        "area_id": "wet_forest"
+      }
+    },
+    {
+      "id": "bone_collection",
+      "faction": "vanguard",
+      "name": "Bone Collection",
+      "description": "Salvage remains from enemy patrol routes.",
+      "kind": "gain_item",
+      "item_id": "bones",
+      "target": "Bones",
+      "required": 35,
+      "xp_skill": "prayer",
+      "route": {
+        "screen": "combat",
+        "area_id": "graveyard"
+      }
+    },
+    {
+      "id": "roost_inspection",
+      "faction": "vanguard",
+      "name": "Roost Inspection",
+      "description": "Clear the roost so its gate can reopen.",
+      "kind": "complete_dungeon",
+      "dungeon_id": "chicken_coop",
+      "target": "Plucked Roost Clearances",
+      "required": 1,
+      "xp_skill": "slayer",
+      "route": {
+        "screen": "combat",
+        "area_id": "chicken_coop"
+      }
+    }
+  ]
+}

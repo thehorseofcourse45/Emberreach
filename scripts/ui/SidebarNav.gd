@@ -31,7 +31,7 @@ const CHAPTERS: Array[Dictionary] = [
 	{"id": "crafting", "label": "Crafting", "icon": "smithing", "screens": [],
 		"skills": ["firemaking", "cooking", "smithing", "fletching", "crafting", "herblore", "fermentation", "customcraft", "engineering", "inscription"]},
 	{"id": "arcane", "label": "Arcane", "icon": "runecrafting", "screens": ["prestige"],
-		"skills": ["runecrafting", "summoning", "astrology", "alt_magic", "echo_keeping", "wayfolding", "enchanting", "dreamwalking"]},
+		"skills": ["runecrafting", "summoning", "astrology", "alt_magic", "echo_keeping", "wayfolding", "enchanting", "dreamwalking", "riftkeeping", "spellweaving"]},
 	{"id": "character", "label": "Character", "icon": "overview",
 		"screens": ["overview", "quests", "achievements", "collection", "stats", "settings"], "skills": []},
 ]

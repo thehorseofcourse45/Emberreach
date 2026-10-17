@@ -125,7 +125,8 @@ func _fill_places() -> void:
 	dungeon_ids.sort()
 	for dungeon_id in dungeon_ids:
 		_places.append({"type": "dungeon", "id": str(dungeon_id)})
-		_place_picker.add_item("Expedition · %s" % str(DataLoader.dungeons[dungeon_id].get("name", dungeon_id)))
+		var prefix: String = "Stronghold · " if bool(DataLoader.dungeons[dungeon_id].get("stronghold", false)) else "Expedition · "
+		_place_picker.add_item(prefix + str(DataLoader.dungeons[dungeon_id].get("name", dungeon_id)))
 	if _place_picker.item_count > 0:
 		_place_picker.select(0)
 		_on_target_changed()

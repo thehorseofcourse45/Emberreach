@@ -286,7 +286,7 @@ func describe_objective(obj: Dictionary) -> Dictionary:
 	match kind:
 		"have_item":
 			var item_id: String = str(obj.get("item_id", ""))
-			current = float(BankManager.get_count(item_id))
+			current = float(BankManager.count_with_variants(item_id))
 			hint = "Held in your stores right now"
 		"gain_item":
 			var item_id2: String = str(obj.get("item_id", ""))

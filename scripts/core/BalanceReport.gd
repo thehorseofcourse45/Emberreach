@@ -171,7 +171,8 @@ static func consumed_item_ids() -> Dictionary:
 	for species_def in (DataLoader.new_skill_systems.get("species", []) as Array):
 		if typeof(species_def) != TYPE_DICTIONARY:
 			continue
-		_mark_used(used, (species_def as Dictionary).get("stock", ""), "pen:%s" % (species_def as Dictionary).get("id", ""))
+		for field in ["stock", "rare_stock"]:
+			_mark_used(used, (species_def as Dictionary).get(field, ""), "pen:%s" % (species_def as Dictionary).get("id", ""))
 	for literal in ["ranch_feed", "ranch_manure", "golden_hen_stock", "mooncalf_stock"]:
 		_mark_used(used, literal, "ranching")
 	# Farming spends compost and manure on a plot.
@@ -313,7 +314,7 @@ static func demand_rows() -> Array:
 		if typeof(species_def) != TYPE_DICTIONARY:
 			continue
 		var animal: Dictionary = species_def
-		for field in ["stock", "produce", "hide", "feed"]:
+		for field in ["stock", "rare_stock", "produce", "hide", "feed"]:
 			_add_source(sources, animal.get(field, ""), "ranched")
 		if int(animal.get("meat", 0)) > 0:
 			_add_source(sources, "ranch_meat", "ranched")

@@ -103,19 +103,23 @@ func _start_section() -> Control:
 
 func _active_run() -> Control:
 	var box := UIStyle.vbox(UITokens.SP_3)
-	box.add_child(UIStyle.label("Wave %d in progress" % RaidManager.wave, false, UITokens.FONT_BODY))
-	if not RaidManager.pending_choices.is_empty():
-		box.add_child(UIStyle.label("Wave cleared — take one:", false, UITokens.FONT_BODY))
+	box.add_child(UIStyle.label("Wave %d · %s" % [RaidManager.wave, RaidManager.run_stage.capitalize()], false, UITokens.FONT_BODY))
+	box.add_child(UIStyle.label("Unbanked coins: %s · Best %s: wave %d" % [UIStyle.fmt(RaidManager.coins_this_raid), RaidManager.difficulty.capitalize(), int(RaidManager.best_wave.get(RaidManager.difficulty, 0))], true, UITokens.FONT_SMALL))
+	if RaidManager.run_stage == "combat":
+		var encounter: Dictionary = RaidManager.current_encounter
+		box.add_child(UIStyle.label(str(encounter.get("name", "Patrol")), false, UITokens.FONT_BODY))
+		box.add_child(UIStyle.label(str(encounter.get("description", "Defeat the enemies to continue.")), true, UITokens.FONT_SMALL))
+	if RaidManager.run_stage == "reward":
+		box.add_child(UIStyle.label("Wave cleared — select a relic or supply:", false, UITokens.FONT_BODY))
 		for i in range(RaidManager.pending_choices.size()):
 			var choice: String = str(RaidManager.pending_choices[i])
 			var row := UIStyle.hbox(UITokens.SP_3)
-			var label: String = choice
+			var info: Dictionary = RaidManager.choice_info(choice)
+			var label: String = str(info.get("name", choice))
 			if DataLoader.raid_shop.get("alt_items", []).has(choice):
-				label = str(DataLoader.get_item(choice).get("name", choice))
 				row.add_child(UIStyle.icon_texture("items", choice))
-			elif DataLoader.raid_shop.get("upgrades", {}).has(choice):
-				label = str(DataLoader.raid_shop["upgrades"][choice].get("name", choice))
-			var name_label := UIStyle.label(label, false, UITokens.FONT_BODY)
+			var description: String = str(info.get("description", ""))
+			var name_label := UIStyle.label(label + (" · " + description if description != "" else ""), true, UITokens.FONT_SMALL)
 			name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(name_label)
 			var take := UIStyle.mini_button("Take")
@@ -124,8 +128,31 @@ func _active_run() -> Control:
 				_rebuild())
 			row.add_child(take)
 			box.add_child(row)
-	else:
+	elif RaidManager.run_stage == "route":
+		box.add_child(UIStyle.label("Choose your next encounter", false, UITokens.FONT_BODY))
+		for i in range(RaidManager.pending_routes.size()):
+			var route: Dictionary = RaidManager.pending_routes[i]
+			var row := UIStyle.hbox(UITokens.SP_3)
+			var info := UIStyle.label("%s · %s risk · %s. %s" % [str(route.get("name", "Route")), str(route.get("risk", "Low")), str(route.get("reward", "")), str(route.get("description", ""))], true, UITokens.FONT_SMALL)
+			info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(info)
+			var enter := UIStyle.mini_button("Enter")
+			enter.pressed.connect(func():
+				RaidManager.choose_route(i)
+				_rebuild())
+			row.add_child(enter)
+			box.add_child(row)
+	elif RaidManager.run_stage == "combat":
 		box.add_child(UIStyle.label("Fight the current wave to continue.", true, UITokens.FONT_SMALL))
+	if not RaidManager.run_relics.is_empty():
+		box.add_child(UIStyle.label("Run relics", false, UITokens.FONT_BODY))
+		for relic_id in RaidManager.run_relics:
+			var relic: Dictionary = RaidManager.relic_catalog().get(relic_id, {})
+			box.add_child(UIStyle.label("%s ×%d · %s" % [str(relic.get("name", relic_id)), int(RaidManager.run_relics[relic_id]), str(relic.get("description", ""))], true, UITokens.FONT_SMALL))
+	if not RaidManager.run_history.is_empty():
+		box.add_child(UIStyle.label("Recent clears", false, UITokens.FONT_BODY))
+		for entry in RaidManager.run_history.slice(-4):
+			box.add_child(UIStyle.label("Wave %d · %s · +%d coins" % [int(entry.get("wave", 0)), str(entry.get("encounter", "Patrol")), int(entry.get("coins", 0))], true, UITokens.FONT_SMALL))
 	var end := UIStyle.danger_button("End raid and bank coins", "Retreat and keep the coins earned so far")
 	end.pressed.connect(func():
 		RaidManager.end_raid()
@@ -146,7 +173,10 @@ func _shop_row(entry: Dictionary) -> Control:
 	row.add_child(text)
 	text.add_child(UIStyle.label(str(entry.get("name", item_id)), false, UITokens.FONT_BODY))
 	text.add_child(UIStyle.label("%s raid coins" % UIStyle.fmt(cost), true, UITokens.FONT_SMALL))
-	var affordable: bool = PlayerData.raid_coins >= cost
+	var affordable: bool = PlayerData.raid_coins >= cost and not RaidManager.active
+	if int(entry.get("max_level", 0)) > 0:
+		text.add_child(UIStyle.label("Permanent rank %d/%d" % [int(entry.get("level", 0)), int(entry.get("max_level", 0))], true, UITokens.FONT_SMALL))
+		affordable = affordable and int(entry.get("level", 0)) < int(entry.get("max_level", 0))
 	var buy := UIStyle.mini_button("Buy")
 	buy.disabled = not affordable
 	if affordable:
@@ -154,6 +184,6 @@ func _shop_row(entry: Dictionary) -> Control:
 			RaidManager.buy(item_id)
 			_rebuild())
 	else:
-		buy.tooltip_text = "Not enough raid coins"
+		buy.tooltip_text = "Finish the active raid, reach the required coins, and check upgrade rank"
 	row.add_child(buy)
 	return card

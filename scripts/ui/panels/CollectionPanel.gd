@@ -46,6 +46,8 @@ func detail_context() -> Dictionary:
 		"body": "Recorded on first acquisition or first defeat. Undiscovered entries are listed as unknown so you can see how much content remains."}
 
 func _rebuild() -> void:
+	if Widgets.defer_offscreen_rebuild(self, _rebuild):
+		return
 	_rebuild_summary()
 	_rebuild_list(0)
 

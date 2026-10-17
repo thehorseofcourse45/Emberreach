@@ -12,6 +12,30 @@ extends RefCounted
 const MIN_CONTROL_W: int = 148
 const _Nav = preload("res://scripts/ui/SidebarNav.gd")
 
+## True when `panel` is a cached screen that is off-screen (built, then detached by the shell):
+## the caller skips its rebuild, which instead runs once when the panel is next shown. Off-screen
+## panels stay subscribed, and the nodes a rebuild replaces are only freed when a frame ends, so a
+## burst of bank or state signals with no frame between them piled up gigabytes of dead screens.
+static func defer_offscreen_rebuild(panel: Node, rebuild: Callable) -> bool:
+	if panel.is_inside_tree() or not panel.is_node_ready():
+		return false
+	if not panel.tree_entered.is_connected(rebuild):
+		panel.tree_entered.connect(rebuild, Object.CONNECT_ONE_SHOT)
+	return true
+
+## Runs `rebuild` (a panel method) once at the end of the frame however many times this is called
+## before then. For signals that fire in bursts (an action start that stops the previous one, a
+## loop of starts): each rebuild replaces hundreds of nodes, freed only when the frame ends.
+static func rebuild_once_per_frame(rebuild: Callable) -> void:
+	var owner: Object = rebuild.get_object()
+	var key: StringName = StringName("_queued_" + str(rebuild.get_method()))
+	if owner.has_meta(key):
+		return
+	owner.set_meta(key, true)
+	# Bound methods, not a lambda: the queue drops both if the panel is freed first.
+	owner.remove_meta.call_deferred(key)
+	rebuild.call_deferred()
+
 # =========================================================================
 #  Grimoire building blocks (chips, slots, meters, section cards)
 # =========================================================================
@@ -527,7 +551,7 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 	var numbers := UIStyle.vbox(UITokens.SP_1)
 	numbers.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	numbers.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	numbers.add_child(stat_chip("status", "idle", "%.1fs" % interval, "Time per action"))
+	numbers.add_child(stat_chip("status", "action_time", "%.1fs" % interval, "Time per action"))
 	numbers.add_child(stat_chip("skills", skill_id, "≈ %s XP/h" % UIStyle.fmt(float(estimate.get("xp_per_hour", 0))),
 		"Projected XP per hour", UITokens.TEAL))
 	for chip in numbers.get_children():
@@ -546,6 +570,13 @@ static func activity_row(skill_id: String, action: Dictionary, selected: bool,
 		tips.append("Consumes: " + _item_list(action["input_items"]))
 	if not (action.get("output_items", {}) as Dictionary).is_empty():
 		tips.append("Produces: " + _item_list(action["output_items"]))
+	if not (action.get("pickpocket_loot", []) as Array).is_empty():
+		var loot_names: Array[String] = []
+		for drop in (action.get("pickpocket_loot", []) as Array):
+			loot_names.append("%s %.1f%%" % [
+				str(DataLoader.get_item(str(drop.get("item_id", ""))).get("name", drop.get("item_id", ""))),
+				float(drop.get("chance", 0.0)) * 100.0])
+		tips.append("Pickpocket pool (one item per success): " + ", ".join(loot_names))
 	if not (action.get("secondary_outputs", []) as Array).is_empty():
 		var sec_parts: Array[String] = []
 		for sec in action["secondary_outputs"]:

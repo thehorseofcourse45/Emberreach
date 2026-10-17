@@ -1,0 +1,2544 @@
+{
+  "added": {
+    "woodcutting": [
+      "copperleaf_tree",
+      "silver_birch_tree",
+      "amber_acacia_tree",
+      "duskwillow_tree",
+      "sequoia_tree",
+      "jade_cypress_tree",
+      "bloodthorn_tree",
+      "moonbark_tree",
+      "thunder_ash_tree",
+      "obsidian_mangrove_tree",
+      "astral_ebony_tree",
+      "dawnbloom_tree"
+    ],
+    "firemaking": [
+      "burn_copperleaf_log",
+      "burn_silver_birch_log",
+      "burn_amber_acacia_log",
+      "burn_duskwillow_log",
+      "burn_sequoia_log",
+      "burn_jade_cypress_log",
+      "burn_bloodthorn_log",
+      "burn_moonbark_log",
+      "burn_thunder_ash_log",
+      "burn_obsidian_mangrove_log",
+      "burn_astral_ebony_log",
+      "burn_dawnbloom_log"
+    ],
+    "mining": [
+      "mine_malachite",
+      "mine_hematite",
+      "mine_fluorite",
+      "mine_citrine",
+      "mine_lapis",
+      "mine_tourmaline",
+      "mine_garnet",
+      "mine_moonstone",
+      "mine_storm_opal",
+      "mine_obsidian",
+      "mine_astralite",
+      "mine_dawn_prism"
+    ],
+    "farming": [
+      "plant_copper_mint",
+      "plant_honeycap",
+      "plant_frost_pea",
+      "plant_sun_saffron",
+      "plant_sageberry",
+      "plant_glass_lily",
+      "plant_blood_ginger",
+      "plant_moon_lotus",
+      "plant_storm_lavender",
+      "plant_night_pepper",
+      "plant_astral_fennel",
+      "plant_dawn_orchid"
+    ],
+    "ranching": [
+      "raise_duck",
+      "raise_goat",
+      "raise_alpaca",
+      "raise_bristleback",
+      "raise_silkwyrm",
+      "raise_sun_peacock",
+      "raise_crystal_tortoise",
+      "raise_ember_salamander",
+      "raise_cloud_roc",
+      "raise_dusk_kirin",
+      "raise_phoenix",
+      "raise_aurora_drake"
+    ],
+    "fletching": [
+      "fletch_copperleaf_shortbow",
+      "fletch_silver_birch_longbow",
+      "fletch_amber_acacia_shortbow",
+      "fletch_duskwillow_longbow",
+      "fletch_sequoia_shortbow",
+      "fletch_jade_cypress_longbow",
+      "fletch_bloodthorn_shortbow",
+      "fletch_moonbark_longbow",
+      "fletch_thunder_ash_shortbow",
+      "fletch_obsidian_mangrove_longbow",
+      "fletch_astral_ebony_shortbow",
+      "fletch_dawnbloom_longbow"
+    ],
+    "engineering": [
+      "assemble_device_resin_tapper",
+      "assemble_device_seam_surveyor",
+      "assemble_device_rune_sorter",
+      "assemble_device_herb_still",
+      "assemble_device_arrow_fletcher",
+      "assemble_device_prospectors_sifter",
+      "assemble_device_fold_surveyor",
+      "assemble_device_weather_tender",
+      "assemble_device_case_archivist",
+      "assemble_device_essence_tuner",
+      "assemble_device_rift_extractor",
+      "assemble_device_pattern_loom"
+    ],
+    "herblore": [
+      "brew_fieldhand_tonic",
+      "brew_nestkeeper_elixir",
+      "brew_veinseeker_tonic",
+      "brew_bowyer_focus",
+      "brew_stoneward_tonic",
+      "brew_gearsmith_elixir",
+      "brew_rootkeeper_tonic",
+      "brew_moonlit_insight",
+      "brew_stormrunner_elixir",
+      "brew_riftward_tonic",
+      "brew_astral_lucidity",
+      "brew_dawnweaver_elixir"
+    ],
+    "enchanting": [
+      "resonate_malachite",
+      "resonate_hematite",
+      "resonate_fluorite",
+      "resonate_citrine",
+      "resonate_lapis",
+      "resonate_tourmaline",
+      "resonate_garnet",
+      "resonate_moonstone",
+      "resonate_storm_opal",
+      "resonate_obsidian",
+      "resonate_astralite",
+      "resonate_dawn_prism"
+    ],
+    "riftkeeping": [
+      "lantern_splinter",
+      "reedwater_scar",
+      "amber_fault",
+      "thistle_window",
+      "ironwind_tear",
+      "hailglass_fold",
+      "gloomroot_breach",
+      "moonwake_crossing",
+      "stormforge_cleft",
+      "obsidian_aperture",
+      "starling_nexus",
+      "dawnheart_seam"
+    ],
+    "spellweaving": [
+      "wickshot",
+      "reedwater_coil",
+      "amber_shards",
+      "thistle_volley",
+      "ironwind_disc",
+      "hailglass_spear",
+      "gloomroot_bind",
+      "moonwake_arc",
+      "stormforge_hammer",
+      "obsidian_rain",
+      "starling_spiral",
+      "dawnheart_lance"
+    ],
+    "wayfolding": [
+      "fold_reedspan_crossing",
+      "fold_cairn_switchback",
+      "fold_lantern_causeway",
+      "fold_rootway_gate",
+      "fold_quarry_lift",
+      "fold_tidal_return",
+      "fold_mirror_junction",
+      "fold_skyhook_span",
+      "fold_stormglass_tunnel",
+      "fold_night_freight",
+      "fold_astral_interchange",
+      "fold_dawn_meridian"
+    ],
+    "customcraft": [
+      "celebrate_village_lanterns",
+      "celebrate_seed_exchange",
+      "celebrate_founders_supper",
+      "celebrate_river_blessing",
+      "celebrate_artisan_circle",
+      "celebrate_midsummer_revel",
+      "celebrate_ancestor_vigil",
+      "celebrate_harvest_charter",
+      "celebrate_stormwatch_oath",
+      "celebrate_night_market_pact",
+      "celebrate_starfall_jubilee",
+      "celebrate_dawn_coronation"
+    ],
+    "fermentation": [
+      "ferment_dewglass_starter",
+      "ferment_honeywind_culture",
+      "ferment_frostpea_mash",
+      "ferment_saffron_sunbrew",
+      "ferment_sageberry_mother",
+      "ferment_glasslily_distillate",
+      "ferment_bloodginger_cask",
+      "ferment_moonlotus_reserve",
+      "ferment_stormlavender_brew",
+      "ferment_nightpepper_barrel",
+      "ferment_astral_solera",
+      "ferment_dawnorchid_vintage"
+    ],
+    "archaeology": [
+      "potters_midden",
+      "saltmarsh_burial",
+      "glassmaker_ruins",
+      "amber_catacomb",
+      "flooded_athenaeum",
+      "verdant_ossuary",
+      "frostwatch_crypt",
+      "moonwell_sanctuary",
+      "stormspire_foundations",
+      "obsidian_necropolis",
+      "astral_observatory",
+      "dawn_throne_vault"
+    ],
+    "lostfinding": [
+      "investigate_the_missing_satchel",
+      "investigate_the_miller_ledger",
+      "investigate_the_counterfeit_seal",
+      "investigate_the_vanished_courier",
+      "investigate_the_empty_reliquary",
+      "investigate_the_clocktower_alibi",
+      "investigate_the_sunken_testament",
+      "investigate_the_moonlit_witness",
+      "investigate_the_stormglass_cipher",
+      "investigate_the_nameless_portrait",
+      "investigate_the_astral_disappearance",
+      "investigate_the_last_coronation"
+    ]
+  },
+  "new_items": [
+    "copperleaf_log",
+    "malachite_mineral",
+    "copper_mint",
+    "copper_mint_seed",
+    "ranch_duck",
+    "copperleaf_shortbow",
+    "device_resin_tapper",
+    "potion_fieldhand_tonic",
+    "aether_lantern_splinter",
+    "woven_wickshot_pattern",
+    "silver_birch_log",
+    "hematite_mineral",
+    "honeycap",
+    "honeycap_seed",
+    "ranch_goat",
+    "silver_birch_longbow",
+    "device_seam_surveyor",
+    "potion_nestkeeper_elixir",
+    "aether_reedwater_scar",
+    "woven_reedwater_coil_pattern",
+    "amber_acacia_log",
+    "fluorite_mineral",
+    "frost_pea",
+    "frost_pea_seed",
+    "ranch_alpaca",
+    "amber_acacia_shortbow",
+    "device_rune_sorter",
+    "potion_veinseeker_tonic",
+    "aether_amber_fault",
+    "woven_amber_shards_pattern",
+    "duskwillow_log",
+    "citrine_mineral",
+    "sun_saffron",
+    "sun_saffron_seed",
+    "ranch_bristleback",
+    "duskwillow_longbow",
+    "device_herb_still",
+    "potion_bowyer_focus",
+    "aether_thistle_window",
+    "woven_thistle_volley_pattern",
+    "sequoia_log",
+    "lapis_mineral",
+    "sageberry",
+    "sageberry_seed",
+    "ranch_silkwyrm",
+    "sequoia_shortbow",
+    "device_arrow_fletcher",
+    "potion_stoneward_tonic",
+    "aether_ironwind_tear",
+    "woven_ironwind_disc_pattern",
+    "jade_cypress_log",
+    "tourmaline_mineral",
+    "glass_lily",
+    "glass_lily_seed",
+    "ranch_sun_peacock",
+    "jade_cypress_longbow",
+    "device_prospectors_sifter",
+    "potion_gearsmith_elixir",
+    "aether_hailglass_fold",
+    "woven_hailglass_spear_pattern",
+    "bloodthorn_log",
+    "garnet_mineral",
+    "blood_ginger",
+    "blood_ginger_seed",
+    "ranch_crystal_tortoise",
+    "bloodthorn_shortbow",
+    "device_fold_surveyor",
+    "potion_rootkeeper_tonic",
+    "aether_gloomroot_breach",
+    "woven_gloomroot_bind_pattern",
+    "moonbark_log",
+    "moonstone_mineral",
+    "moon_lotus",
+    "moon_lotus_seed",
+    "ranch_ember_salamander",
+    "moonbark_longbow",
+    "device_weather_tender",
+    "potion_moonlit_insight",
+    "aether_moonwake_crossing",
+    "woven_moonwake_arc_pattern",
+    "thunder_ash_log",
+    "storm_opal_mineral",
+    "storm_lavender",
+    "storm_lavender_seed",
+    "ranch_cloud_roc",
+    "thunder_ash_shortbow",
+    "device_case_archivist",
+    "potion_stormrunner_elixir",
+    "aether_stormforge_cleft",
+    "woven_stormforge_hammer_pattern",
+    "obsidian_mangrove_log",
+    "obsidian_mineral",
+    "night_pepper",
+    "night_pepper_seed",
+    "ranch_dusk_kirin",
+    "obsidian_mangrove_longbow",
+    "device_essence_tuner",
+    "potion_riftward_tonic",
+    "aether_obsidian_aperture",
+    "woven_obsidian_rain_pattern",
+    "astral_ebony_log",
+    "astralite_mineral",
+    "astral_fennel",
+    "astral_fennel_seed",
+    "ranch_phoenix",
+    "astral_ebony_shortbow",
+    "device_rift_extractor",
+    "potion_astral_lucidity",
+    "aether_starling_nexus",
+    "woven_starling_spiral_pattern",
+    "dawnbloom_log",
+    "dawn_prism_mineral",
+    "dawn_orchid",
+    "dawn_orchid_seed",
+    "ranch_aurora_drake",
+    "dawnbloom_longbow",
+    "device_pattern_loom",
+    "potion_dawnweaver_elixir",
+    "aether_dawnheart_seam",
+    "woven_dawnheart_lance_pattern",
+    "frost_pea_soup",
+    "sageberry_crumble",
+    "bloodginger_braise",
+    "stuffed_night_peppers"
+  ],
+  "art": [
+    {
+      "id": "woodcutting__copperleaf_tree",
+      "skill": "woodcutting",
+      "action": "copperleaf_tree",
+      "name": "Copperleaf Tree",
+      "subject": "one rounded copper orange leaves, pale trunk fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/copperleaf_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_copperleaf_log",
+      "skill": "firemaking",
+      "action": "burn_copperleaf_log",
+      "name": "Burn Copperleaf Log",
+      "subject": "one copperleaf log with distinctive copper flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_copperleaf_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_malachite",
+      "skill": "mining",
+      "action": "mine_malachite",
+      "name": "Mine Malachite",
+      "subject": "one rough banded vivid green copper mineral ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_malachite.png",
+        "assets/icons/items/malachite_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_copper_mint",
+      "skill": "farming",
+      "action": "plant_copper_mint",
+      "name": "Copper Mint",
+      "subject": "one copper tipped green mint sprig, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_copper_mint.png",
+        "assets/icons/items/copper_mint.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_duck",
+      "skill": "ranching",
+      "action": "raise_duck",
+      "name": "Duck",
+      "subject": "one white brown duck with orange beak and feet, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_duck.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_copperleaf_shortbow",
+      "skill": "fletching",
+      "action": "fletch_copperleaf_shortbow",
+      "name": "Fletch Copperleaf Shortbow",
+      "subject": "one copperleaf shortbow, diagonal lower left to upper right, dark wood grain, copper bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_copperleaf_shortbow.png",
+        "assets/icons/items/copperleaf_shortbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_resin_tapper",
+      "skill": "engineering",
+      "action": "assemble_device_resin_tapper",
+      "name": "Assemble Resin Tapper",
+      "subject": "one small brass clockwork resin tapper automaton, malachite crystal core, functional fantasy machine with gears and tap spout",
+      "paths": [
+        "assets/icons/engineering/assemble_device_resin_tapper.png",
+        "assets/icons/items/device_resin_tapper.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_fieldhand_tonic",
+      "skill": "herblore",
+      "action": "brew_fieldhand_tonic",
+      "name": "Brew Fieldhand Tonic",
+      "subject": "one slender corked fantasy potion bottle, copper green liquid, brass trim and small copper mint emblem",
+      "paths": [
+        "assets/icons/herblore/brew_fieldhand_tonic.png",
+        "assets/icons/items/potion_fieldhand_tonic.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_malachite",
+      "skill": "enchanting",
+      "action": "resonate_malachite",
+      "name": "Resonate Malachite",
+      "subject": "one rough banded vivid green copper mineral gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_malachite.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__lantern_splinter",
+      "skill": "riftkeeping",
+      "action": "lantern_splinter",
+      "name": "Lantern Splinter",
+      "subject": "one tiny warm gold split in space, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/lantern_splinter.png",
+        "assets/icons/items/aether_lantern_splinter.png"
+      ]
+    },
+    {
+      "id": "spellweaving__wickshot",
+      "skill": "spellweaving",
+      "action": "wickshot",
+      "name": "Weave Wickshot",
+      "subject": "one small gold fiery dart, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/wickshot.png",
+        "assets/icons/items/woven_wickshot_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_reedspan_crossing",
+      "skill": "wayfolding",
+      "action": "fold_reedspan_crossing",
+      "name": "Fold Reedspan Crossing",
+      "subject": "one small wooden footbridge over blue water, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_reedspan_crossing.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_village_lanterns",
+      "skill": "customcraft",
+      "action": "celebrate_village_lanterns",
+      "name": "Celebrate Village Lanterns",
+      "subject": "one cluster of colorful village paper lanterns, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_village_lanterns.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_dewglass_starter",
+      "skill": "fermentation",
+      "action": "ferment_dewglass_starter",
+      "name": "Dewglass Starter",
+      "subject": "one clear blue dew filled fermentation jar, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_dewglass_starter.png"
+      ]
+    },
+    {
+      "id": "archaeology__potters_midden",
+      "skill": "archaeology",
+      "action": "potters_midden",
+      "name": "Potters Midden",
+      "subject": "one broken clay pots half buried in earth, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/potters_midden.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_missing_satchel",
+      "skill": "lostfinding",
+      "action": "investigate_the_missing_satchel",
+      "name": "Investigate The Missing Satchel",
+      "subject": "one leather satchel and magnifying glass, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_missing_satchel.png"
+      ]
+    },
+    {
+      "id": "woodcutting__silver_birch_tree",
+      "skill": "woodcutting",
+      "action": "silver_birch_tree",
+      "name": "Silver Birch Tree",
+      "subject": "one white birch bark, silver green leaves fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/silver_birch_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_silver_birch_log",
+      "skill": "firemaking",
+      "action": "burn_silver_birch_log",
+      "name": "Burn Silver Birch Log",
+      "subject": "one silver birch log with distinctive silver flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_silver_birch_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_hematite",
+      "skill": "mining",
+      "action": "mine_hematite",
+      "name": "Mine Hematite",
+      "subject": "one metallic dark red iron mineral ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_hematite.png",
+        "assets/icons/items/hematite_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_honeycap",
+      "skill": "farming",
+      "action": "plant_honeycap",
+      "name": "Honeycap",
+      "subject": "one golden honey colored mushroom cluster, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_honeycap.png",
+        "assets/icons/items/honeycap.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_goat",
+      "skill": "ranching",
+      "action": "raise_goat",
+      "name": "Goat",
+      "subject": "one cream mountain goat with curved horns, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_goat.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_silver_birch_longbow",
+      "skill": "fletching",
+      "action": "fletch_silver_birch_longbow",
+      "name": "Fletch Silver Birch Longbow",
+      "subject": "one silver birch longbow, diagonal lower left to upper right, dark wood grain, silver bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_silver_birch_longbow.png",
+        "assets/icons/items/silver_birch_longbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_seam_surveyor",
+      "skill": "engineering",
+      "action": "assemble_device_seam_surveyor",
+      "name": "Assemble Seam Surveyor",
+      "subject": "one small brass clockwork seam surveyor automaton, hematite crystal core, functional fantasy machine with gears and pickaxe",
+      "paths": [
+        "assets/icons/engineering/assemble_device_seam_surveyor.png",
+        "assets/icons/items/device_seam_surveyor.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_nestkeeper_elixir",
+      "skill": "herblore",
+      "action": "brew_nestkeeper_elixir",
+      "name": "Brew Nestkeeper Elixir",
+      "subject": "one slender corked fantasy potion bottle, honey gold liquid, brass trim and small honeycap emblem",
+      "paths": [
+        "assets/icons/herblore/brew_nestkeeper_elixir.png",
+        "assets/icons/items/potion_nestkeeper_elixir.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_hematite",
+      "skill": "enchanting",
+      "action": "resonate_hematite",
+      "name": "Resonate Hematite",
+      "subject": "one metallic dark red iron mineral gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_hematite.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__reedwater_scar",
+      "skill": "riftkeeping",
+      "action": "reedwater_scar",
+      "name": "Reedwater Scar",
+      "subject": "one turquoise watery crescent rift, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/reedwater_scar.png",
+        "assets/icons/items/aether_reedwater_scar.png"
+      ]
+    },
+    {
+      "id": "spellweaving__reedwater_coil",
+      "skill": "spellweaving",
+      "action": "reedwater_coil",
+      "name": "Weave Reedwater Coil",
+      "subject": "one coiled turquoise water serpent spell, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/reedwater_coil.png",
+        "assets/icons/items/woven_reedwater_coil_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_cairn_switchback",
+      "skill": "wayfolding",
+      "action": "fold_cairn_switchback",
+      "name": "Fold Cairn Switchback",
+      "subject": "one winding stony path around a cairn, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_cairn_switchback.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_seed_exchange",
+      "skill": "customcraft",
+      "action": "celebrate_seed_exchange",
+      "name": "Celebrate Seed Exchange",
+      "subject": "one woven basket of seeds and ribbon, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_seed_exchange.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_honeywind_culture",
+      "skill": "fermentation",
+      "action": "ferment_honeywind_culture",
+      "name": "Honeywind Culture",
+      "subject": "one amber honey swirling in corked jar, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_honeywind_culture.png"
+      ]
+    },
+    {
+      "id": "archaeology__saltmarsh_burial",
+      "skill": "archaeology",
+      "action": "saltmarsh_burial",
+      "name": "Saltmarsh Burial",
+      "subject": "one barnacle covered burial urn in muddy reeds, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/saltmarsh_burial.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_miller_ledger",
+      "skill": "lostfinding",
+      "action": "investigate_the_miller_ledger",
+      "name": "Investigate The Miller Ledger",
+      "subject": "one flour dusted open ledger and quill, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_miller_ledger.png"
+      ]
+    },
+    {
+      "id": "woodcutting__amber_acacia_tree",
+      "skill": "woodcutting",
+      "action": "amber_acacia_tree",
+      "name": "Amber Acacia Tree",
+      "subject": "one flat canopy of amber leaves and twisted dark trunk fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/amber_acacia_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_amber_acacia_log",
+      "skill": "firemaking",
+      "action": "burn_amber_acacia_log",
+      "name": "Burn Amber Acacia Log",
+      "subject": "one amber acacia log with distinctive amber flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_amber_acacia_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_fluorite",
+      "skill": "mining",
+      "action": "mine_fluorite",
+      "name": "Mine Fluorite",
+      "subject": "one violet and green cubic crystals ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_fluorite.png",
+        "assets/icons/items/fluorite_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_frost_pea",
+      "skill": "farming",
+      "action": "plant_frost_pea",
+      "name": "Frost Pea",
+      "subject": "one icy blue pea pods on curling vine, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_frost_pea.png",
+        "assets/icons/items/frost_pea.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_alpaca",
+      "skill": "ranching",
+      "action": "raise_alpaca",
+      "name": "Alpaca",
+      "subject": "one fluffy tan alpaca with long neck, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_alpaca.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_amber_acacia_shortbow",
+      "skill": "fletching",
+      "action": "fletch_amber_acacia_shortbow",
+      "name": "Fletch Amber Acacia Shortbow",
+      "subject": "one amber acacia shortbow, diagonal lower left to upper right, dark wood grain, amber bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_amber_acacia_shortbow.png",
+        "assets/icons/items/amber_acacia_shortbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_rune_sorter",
+      "skill": "engineering",
+      "action": "assemble_device_rune_sorter",
+      "name": "Assemble Rune Sorter",
+      "subject": "one small brass clockwork rune sorter automaton, fluorite crystal core, functional fantasy machine with gears and rune trays",
+      "paths": [
+        "assets/icons/engineering/assemble_device_rune_sorter.png",
+        "assets/icons/items/device_rune_sorter.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_veinseeker_tonic",
+      "skill": "herblore",
+      "action": "brew_veinseeker_tonic",
+      "name": "Brew Veinseeker Tonic",
+      "subject": "one slender corked fantasy potion bottle, ice blue liquid, brass trim and small frost pea emblem",
+      "paths": [
+        "assets/icons/herblore/brew_veinseeker_tonic.png",
+        "assets/icons/items/potion_veinseeker_tonic.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_fluorite",
+      "skill": "enchanting",
+      "action": "resonate_fluorite",
+      "name": "Resonate Fluorite",
+      "subject": "one violet and green cubic crystals gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_fluorite.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__amber_fault",
+      "skill": "riftkeeping",
+      "action": "amber_fault",
+      "name": "Amber Fault",
+      "subject": "one amber stone edged rift, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/amber_fault.png",
+        "assets/icons/items/aether_amber_fault.png"
+      ]
+    },
+    {
+      "id": "spellweaving__amber_shards",
+      "skill": "spellweaving",
+      "action": "amber_shards",
+      "name": "Weave Amber Shards",
+      "subject": "one fan of amber magic crystal shards, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/amber_shards.png",
+        "assets/icons/items/woven_amber_shards_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_lantern_causeway",
+      "skill": "wayfolding",
+      "action": "fold_lantern_causeway",
+      "name": "Fold Lantern Causeway",
+      "subject": "one lantern lit stone causeway, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_lantern_causeway.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_founders_supper",
+      "skill": "customcraft",
+      "action": "celebrate_founders_supper",
+      "name": "Celebrate Founders Supper",
+      "subject": "one communal bread platter with candle, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_founders_supper.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_frostpea_mash",
+      "skill": "fermentation",
+      "action": "ferment_frostpea_mash",
+      "name": "Frostpea Mash",
+      "subject": "one icy blue crop mash in small stone crock, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_frostpea_mash.png"
+      ]
+    },
+    {
+      "id": "archaeology__glassmaker_ruins",
+      "skill": "archaeology",
+      "action": "glassmaker_ruins",
+      "name": "Glassmaker Ruins",
+      "subject": "one broken green glass kiln and pottery, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/glassmaker_ruins.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_counterfeit_seal",
+      "skill": "lostfinding",
+      "action": "investigate_the_counterfeit_seal",
+      "name": "Investigate The Counterfeit Seal",
+      "subject": "one broken red wax seal and brass stamp, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_counterfeit_seal.png"
+      ]
+    },
+    {
+      "id": "woodcutting__duskwillow_tree",
+      "skill": "woodcutting",
+      "action": "duskwillow_tree",
+      "name": "Duskwillow Tree",
+      "subject": "one drooping violet willow branches fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/duskwillow_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_duskwillow_log",
+      "skill": "firemaking",
+      "action": "burn_duskwillow_log",
+      "name": "Burn Duskwillow Log",
+      "subject": "one duskwillow log with distinctive violet flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_duskwillow_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_citrine",
+      "skill": "mining",
+      "action": "mine_citrine",
+      "name": "Mine Citrine",
+      "subject": "one golden yellow quartz crystal cluster ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_citrine.png",
+        "assets/icons/items/citrine_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_sun_saffron",
+      "skill": "farming",
+      "action": "plant_sun_saffron",
+      "name": "Sun Saffron",
+      "subject": "one orange saffron flowers and red stamens, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_sun_saffron.png",
+        "assets/icons/items/sun_saffron.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_bristleback",
+      "skill": "ranching",
+      "action": "raise_bristleback",
+      "name": "Bristleback",
+      "subject": "one small armoured brown bristleback boar, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_bristleback.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_duskwillow_longbow",
+      "skill": "fletching",
+      "action": "fletch_duskwillow_longbow",
+      "name": "Fletch Duskwillow Longbow",
+      "subject": "one duskwillow longbow, diagonal lower left to upper right, dark wood grain, violet bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_duskwillow_longbow.png",
+        "assets/icons/items/duskwillow_longbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_herb_still",
+      "skill": "engineering",
+      "action": "assemble_device_herb_still",
+      "name": "Assemble Herb Still",
+      "subject": "one small brass clockwork herb still automaton, citrine crystal core, functional fantasy machine with gears and glass alembic",
+      "paths": [
+        "assets/icons/engineering/assemble_device_herb_still.png",
+        "assets/icons/items/device_herb_still.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_bowyer_focus",
+      "skill": "herblore",
+      "action": "brew_bowyer_focus",
+      "name": "Brew Bowyer Focus",
+      "subject": "one slender corked fantasy potion bottle, orange red liquid, brass trim and small sun saffron emblem",
+      "paths": [
+        "assets/icons/herblore/brew_bowyer_focus.png",
+        "assets/icons/items/potion_bowyer_focus.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_citrine",
+      "skill": "enchanting",
+      "action": "resonate_citrine",
+      "name": "Resonate Citrine",
+      "subject": "one golden yellow quartz crystal cluster gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_citrine.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__thistle_window",
+      "skill": "riftkeeping",
+      "action": "thistle_window",
+      "name": "Thistle Window",
+      "subject": "one thorny emerald portal, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/thistle_window.png",
+        "assets/icons/items/aether_thistle_window.png"
+      ]
+    },
+    {
+      "id": "spellweaving__thistle_volley",
+      "skill": "spellweaving",
+      "action": "thistle_volley",
+      "name": "Weave Thistle Volley",
+      "subject": "one spiral of green thorn arrows, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/thistle_volley.png",
+        "assets/icons/items/woven_thistle_volley_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_rootway_gate",
+      "skill": "wayfolding",
+      "action": "fold_rootway_gate",
+      "name": "Fold Rootway Gate",
+      "subject": "one arched tree root gate with green magic, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_rootway_gate.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_river_blessing",
+      "skill": "customcraft",
+      "action": "celebrate_river_blessing",
+      "name": "Celebrate River Blessing",
+      "subject": "one flower wreath floating in a bowl, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_river_blessing.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_saffron_sunbrew",
+      "skill": "fermentation",
+      "action": "ferment_saffron_sunbrew",
+      "name": "Saffron Sunbrew",
+      "subject": "one orange saffron brew in round glass bottle, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_saffron_sunbrew.png"
+      ]
+    },
+    {
+      "id": "archaeology__amber_catacomb",
+      "skill": "archaeology",
+      "action": "amber_catacomb",
+      "name": "Amber Catacomb",
+      "subject": "one amber lit stone tomb with old skull, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/amber_catacomb.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_vanished_courier",
+      "skill": "lostfinding",
+      "action": "investigate_the_vanished_courier",
+      "name": "Investigate The Vanished Courier",
+      "subject": "one discarded courier cap and sealed letter, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_vanished_courier.png"
+      ]
+    },
+    {
+      "id": "woodcutting__sequoia_tree",
+      "skill": "woodcutting",
+      "action": "sequoia_tree",
+      "name": "Sequoia Tree",
+      "subject": "one thick red trunk and towering dark green canopy fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/sequoia_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_sequoia_log",
+      "skill": "firemaking",
+      "action": "burn_sequoia_log",
+      "name": "Burn Sequoia Log",
+      "subject": "one sequoia log with distinctive red flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_sequoia_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_lapis",
+      "skill": "mining",
+      "action": "mine_lapis",
+      "name": "Mine Lapis",
+      "subject": "one deep blue gold flecked lapis stone ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_lapis.png",
+        "assets/icons/items/lapis_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_sageberry",
+      "skill": "farming",
+      "action": "plant_sageberry",
+      "name": "Sageberry",
+      "subject": "one sage green leaves and indigo berry cluster, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_sageberry.png",
+        "assets/icons/items/sageberry.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_silkwyrm",
+      "skill": "ranching",
+      "action": "raise_silkwyrm",
+      "name": "Silkwyrm",
+      "subject": "one large jade silk moth larva curled around a branch, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_silkwyrm.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_sequoia_shortbow",
+      "skill": "fletching",
+      "action": "fletch_sequoia_shortbow",
+      "name": "Fletch Sequoia Shortbow",
+      "subject": "one sequoia shortbow, diagonal lower left to upper right, dark wood grain, red bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_sequoia_shortbow.png",
+        "assets/icons/items/sequoia_shortbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_arrow_fletcher",
+      "skill": "engineering",
+      "action": "assemble_device_arrow_fletcher",
+      "name": "Assemble Arrow Fletcher",
+      "subject": "one small brass clockwork arrow fletcher automaton, lapis crystal core, functional fantasy machine with gears and arrow feeder",
+      "paths": [
+        "assets/icons/engineering/assemble_device_arrow_fletcher.png",
+        "assets/icons/items/device_arrow_fletcher.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_stoneward_tonic",
+      "skill": "herblore",
+      "action": "brew_stoneward_tonic",
+      "name": "Brew Stoneward Tonic",
+      "subject": "one slender corked fantasy potion bottle, indigo liquid, brass trim and small sageberry emblem",
+      "paths": [
+        "assets/icons/herblore/brew_stoneward_tonic.png",
+        "assets/icons/items/potion_stoneward_tonic.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_lapis",
+      "skill": "enchanting",
+      "action": "resonate_lapis",
+      "name": "Resonate Lapis",
+      "subject": "one deep blue gold flecked lapis stone gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_lapis.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__ironwind_tear",
+      "skill": "riftkeeping",
+      "action": "ironwind_tear",
+      "name": "Ironwind Tear",
+      "subject": "one silver grey whirlwind rift, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/ironwind_tear.png",
+        "assets/icons/items/aether_ironwind_tear.png"
+      ]
+    },
+    {
+      "id": "spellweaving__ironwind_disc",
+      "skill": "spellweaving",
+      "action": "ironwind_disc",
+      "name": "Weave Ironwind Disc",
+      "subject": "one silver spinning wind disc, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/ironwind_disc.png",
+        "assets/icons/items/woven_ironwind_disc_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_quarry_lift",
+      "skill": "wayfolding",
+      "action": "fold_quarry_lift",
+      "name": "Fold Quarry Lift",
+      "subject": "one stone platform floating over quarry, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_quarry_lift.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_artisan_circle",
+      "skill": "customcraft",
+      "action": "celebrate_artisan_circle",
+      "name": "Celebrate Artisan Circle",
+      "subject": "one joined wooden hands around gold craft emblem, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_artisan_circle.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_sageberry_mother",
+      "skill": "fermentation",
+      "action": "ferment_sageberry_mother",
+      "name": "Sageberry Mother",
+      "subject": "one purple berry ferment in glazed green crock, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_sageberry_mother.png"
+      ]
+    },
+    {
+      "id": "archaeology__flooded_athenaeum",
+      "skill": "archaeology",
+      "action": "flooded_athenaeum",
+      "name": "Flooded Athenaeum",
+      "subject": "one waterlogged stone bookshelves and scroll, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/flooded_athenaeum.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_empty_reliquary",
+      "skill": "lostfinding",
+      "action": "investigate_the_empty_reliquary",
+      "name": "Investigate The Empty Reliquary",
+      "subject": "one open small silver reliquary with footprints, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_empty_reliquary.png"
+      ]
+    },
+    {
+      "id": "woodcutting__jade_cypress_tree",
+      "skill": "woodcutting",
+      "action": "jade_cypress_tree",
+      "name": "Jade Cypress Tree",
+      "subject": "one slender jade green conifer fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/jade_cypress_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_jade_cypress_log",
+      "skill": "firemaking",
+      "action": "burn_jade_cypress_log",
+      "name": "Burn Jade Cypress Log",
+      "subject": "one jade cypress log with distinctive jade flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_jade_cypress_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_tourmaline",
+      "skill": "mining",
+      "action": "mine_tourmaline",
+      "name": "Mine Tourmaline",
+      "subject": "one pink green elongated crystal ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_tourmaline.png",
+        "assets/icons/items/tourmaline_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_glass_lily",
+      "skill": "farming",
+      "action": "plant_glass_lily",
+      "name": "Glass Lily",
+      "subject": "one translucent cyan lily flower, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_glass_lily.png",
+        "assets/icons/items/glass_lily.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_sun_peacock",
+      "skill": "ranching",
+      "action": "raise_sun_peacock",
+      "name": "Sun Peacock",
+      "subject": "one gold turquoise peacock with fan tail, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_sun_peacock.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_jade_cypress_longbow",
+      "skill": "fletching",
+      "action": "fletch_jade_cypress_longbow",
+      "name": "Fletch Jade Cypress Longbow",
+      "subject": "one jade cypress longbow, diagonal lower left to upper right, dark wood grain, jade bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_jade_cypress_longbow.png",
+        "assets/icons/items/jade_cypress_longbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_prospectors_sifter",
+      "skill": "engineering",
+      "action": "assemble_device_prospectors_sifter",
+      "name": "Assemble Prospector's Sifter",
+      "subject": "one small brass clockwork ore sifter automaton, tourmaline crystal core, fine mesh sieve, gears and mineral tray",
+      "paths": [
+        "assets/icons/engineering/assemble_device_prospectors_sifter.png",
+        "assets/icons/items/device_prospectors_sifter.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_gearsmith_elixir",
+      "skill": "herblore",
+      "action": "brew_gearsmith_elixir",
+      "name": "Brew Gearsmith Elixir",
+      "subject": "one slender corked fantasy potion bottle, cyan liquid, brass trim and small glass lily emblem",
+      "paths": [
+        "assets/icons/herblore/brew_gearsmith_elixir.png",
+        "assets/icons/items/potion_gearsmith_elixir.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_tourmaline",
+      "skill": "enchanting",
+      "action": "resonate_tourmaline",
+      "name": "Resonate Tourmaline",
+      "subject": "one pink green elongated crystal gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_tourmaline.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__hailglass_fold",
+      "skill": "riftkeeping",
+      "action": "hailglass_fold",
+      "name": "Hailglass Fold",
+      "subject": "one icy blue cracked portal, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/hailglass_fold.png",
+        "assets/icons/items/aether_hailglass_fold.png"
+      ]
+    },
+    {
+      "id": "spellweaving__hailglass_spear",
+      "skill": "spellweaving",
+      "action": "hailglass_spear",
+      "name": "Weave Hailglass Spear",
+      "subject": "one long icy blue spear spell, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/hailglass_spear.png",
+        "assets/icons/items/woven_hailglass_spear_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_tidal_return",
+      "skill": "wayfolding",
+      "action": "fold_tidal_return",
+      "name": "Fold Tidal Return",
+      "subject": "one turquoise spiral portal above stepping stones, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_tidal_return.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_midsummer_revel",
+      "skill": "customcraft",
+      "action": "celebrate_midsummer_revel",
+      "name": "Celebrate Midsummer Revel",
+      "subject": "one flower crowned festival mask, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_midsummer_revel.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_glasslily_distillate",
+      "skill": "fermentation",
+      "action": "ferment_glasslily_distillate",
+      "name": "Glasslily Distillate",
+      "subject": "one cyan floral distillate in narrow alembic, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_glasslily_distillate.png"
+      ]
+    },
+    {
+      "id": "archaeology__verdant_ossuary",
+      "skill": "archaeology",
+      "action": "verdant_ossuary",
+      "name": "Verdant Ossuary",
+      "subject": "one mossy bones beneath tangled roots, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/verdant_ossuary.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_clocktower_alibi",
+      "skill": "lostfinding",
+      "action": "investigate_the_clocktower_alibi",
+      "name": "Investigate The Clocktower Alibi",
+      "subject": "one brass pocket watch on witness note, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_clocktower_alibi.png"
+      ]
+    },
+    {
+      "id": "woodcutting__bloodthorn_tree",
+      "skill": "woodcutting",
+      "action": "bloodthorn_tree",
+      "name": "Bloodthorn Tree",
+      "subject": "one thorny crimson red foliage fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/bloodthorn_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_bloodthorn_log",
+      "skill": "firemaking",
+      "action": "burn_bloodthorn_log",
+      "name": "Burn Bloodthorn Log",
+      "subject": "one bloodthorn log with distinctive crimson flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_bloodthorn_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_garnet",
+      "skill": "mining",
+      "action": "mine_garnet",
+      "name": "Mine Garnet",
+      "subject": "one deep crimson faceted crystal in dark stone ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_garnet.png",
+        "assets/icons/items/garnet_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_blood_ginger",
+      "skill": "farming",
+      "action": "plant_blood_ginger",
+      "name": "Blood Ginger",
+      "subject": "one red ginger root and green shoot, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_blood_ginger.png",
+        "assets/icons/items/blood_ginger.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_crystal_tortoise",
+      "skill": "ranching",
+      "action": "raise_crystal_tortoise",
+      "name": "Crystal Tortoise",
+      "subject": "one blue crystal shelled fantasy tortoise, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_crystal_tortoise.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_bloodthorn_shortbow",
+      "skill": "fletching",
+      "action": "fletch_bloodthorn_shortbow",
+      "name": "Fletch Bloodthorn Shortbow",
+      "subject": "one bloodthorn shortbow, diagonal lower left to upper right, dark wood grain, crimson bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_bloodthorn_shortbow.png",
+        "assets/icons/items/bloodthorn_shortbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_fold_surveyor",
+      "skill": "engineering",
+      "action": "assemble_device_fold_surveyor",
+      "name": "Assemble Fold Surveyor",
+      "subject": "one small brass clockwork fold surveyor automaton, garnet crystal core, functional fantasy machine with gears and portal compass",
+      "paths": [
+        "assets/icons/engineering/assemble_device_fold_surveyor.png",
+        "assets/icons/items/device_fold_surveyor.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_rootkeeper_tonic",
+      "skill": "herblore",
+      "action": "brew_rootkeeper_tonic",
+      "name": "Brew Rootkeeper Tonic",
+      "subject": "one slender corked fantasy potion bottle, crimson liquid, brass trim and small blood ginger emblem",
+      "paths": [
+        "assets/icons/herblore/brew_rootkeeper_tonic.png",
+        "assets/icons/items/potion_rootkeeper_tonic.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_garnet",
+      "skill": "enchanting",
+      "action": "resonate_garnet",
+      "name": "Resonate Garnet",
+      "subject": "one deep crimson faceted crystal in dark stone gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_garnet.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__gloomroot_breach",
+      "skill": "riftkeeping",
+      "action": "gloomroot_breach",
+      "name": "Gloomroot Breach",
+      "subject": "one dark green roots around purple rift, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/gloomroot_breach.png",
+        "assets/icons/items/aether_gloomroot_breach.png"
+      ]
+    },
+    {
+      "id": "spellweaving__gloomroot_bind",
+      "skill": "spellweaving",
+      "action": "gloomroot_bind",
+      "name": "Weave Gloomroot Bind",
+      "subject": "one violet tendrils and green roots spell, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/gloomroot_bind.png",
+        "assets/icons/items/woven_gloomroot_bind_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_mirror_junction",
+      "skill": "wayfolding",
+      "action": "fold_mirror_junction",
+      "name": "Fold Mirror Junction",
+      "subject": "one two mirrored violet portals connected by ribbon, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_mirror_junction.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_ancestor_vigil",
+      "skill": "customcraft",
+      "action": "celebrate_ancestor_vigil",
+      "name": "Celebrate Ancestor Vigil",
+      "subject": "one bronze memorial candle and ivory locket, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_ancestor_vigil.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_bloodginger_cask",
+      "skill": "fermentation",
+      "action": "ferment_bloodginger_cask",
+      "name": "Bloodginger Cask",
+      "subject": "one crimson ginger cask with brass tap, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_bloodginger_cask.png"
+      ]
+    },
+    {
+      "id": "archaeology__frostwatch_crypt",
+      "skill": "archaeology",
+      "action": "frostwatch_crypt",
+      "name": "Frostwatch Crypt",
+      "subject": "one ice covered stone sarcophagus, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/frostwatch_crypt.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_sunken_testament",
+      "skill": "lostfinding",
+      "action": "investigate_the_sunken_testament",
+      "name": "Investigate The Sunken Testament",
+      "subject": "one waterlogged sealed scroll and pearl, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_sunken_testament.png"
+      ]
+    },
+    {
+      "id": "woodcutting__moonbark_tree",
+      "skill": "woodcutting",
+      "action": "moonbark_tree",
+      "name": "Moonbark Tree",
+      "subject": "one luminous ivory trunk and indigo canopy fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/moonbark_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_moonbark_log",
+      "skill": "firemaking",
+      "action": "burn_moonbark_log",
+      "name": "Burn Moonbark Log",
+      "subject": "one moonbark log with distinctive blue flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_moonbark_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_moonstone",
+      "skill": "mining",
+      "action": "mine_moonstone",
+      "name": "Mine Moonstone",
+      "subject": "one milky blue iridescent stone ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_moonstone.png",
+        "assets/icons/items/moonstone_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_moon_lotus",
+      "skill": "farming",
+      "action": "plant_moon_lotus",
+      "name": "Moon Lotus",
+      "subject": "one silver white lotus with blue center, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_moon_lotus.png",
+        "assets/icons/items/moon_lotus.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_ember_salamander",
+      "skill": "ranching",
+      "action": "raise_ember_salamander",
+      "name": "Ember Salamander",
+      "subject": "one red orange salamander with ember spots, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_ember_salamander.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_moonbark_longbow",
+      "skill": "fletching",
+      "action": "fletch_moonbark_longbow",
+      "name": "Fletch Moonbark Longbow",
+      "subject": "one moonbark longbow, diagonal lower left to upper right, dark wood grain, blue bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_moonbark_longbow.png",
+        "assets/icons/items/moonbark_longbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_weather_tender",
+      "skill": "engineering",
+      "action": "assemble_device_weather_tender",
+      "name": "Assemble Weather Tender",
+      "subject": "one small brass clockwork weather tender automaton, moonstone crystal core, functional fantasy machine with gears and culture jar",
+      "paths": [
+        "assets/icons/engineering/assemble_device_weather_tender.png",
+        "assets/icons/items/device_weather_tender.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_moonlit_insight",
+      "skill": "herblore",
+      "action": "brew_moonlit_insight",
+      "name": "Brew Moonlit Insight",
+      "subject": "one slender corked fantasy potion bottle, silver blue liquid, brass trim and small moon lotus emblem",
+      "paths": [
+        "assets/icons/herblore/brew_moonlit_insight.png",
+        "assets/icons/items/potion_moonlit_insight.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_moonstone",
+      "skill": "enchanting",
+      "action": "resonate_moonstone",
+      "name": "Resonate Moonstone",
+      "subject": "one milky blue iridescent stone gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_moonstone.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__moonwake_crossing",
+      "skill": "riftkeeping",
+      "action": "moonwake_crossing",
+      "name": "Moonwake Crossing",
+      "subject": "one silver blue crescent portal, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/moonwake_crossing.png",
+        "assets/icons/items/aether_moonwake_crossing.png"
+      ]
+    },
+    {
+      "id": "spellweaving__moonwake_arc",
+      "skill": "spellweaving",
+      "action": "moonwake_arc",
+      "name": "Weave Moonwake Arc",
+      "subject": "one silver blue sweeping crescent beam, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/moonwake_arc.png",
+        "assets/icons/items/woven_moonwake_arc_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_skyhook_span",
+      "skill": "wayfolding",
+      "action": "fold_skyhook_span",
+      "name": "Fold Skyhook Span",
+      "subject": "one suspended golden bridge between floating rocks, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_skyhook_span.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_harvest_charter",
+      "skill": "customcraft",
+      "action": "celebrate_harvest_charter",
+      "name": "Celebrate Harvest Charter",
+      "subject": "one green gold harvest charter scroll, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_harvest_charter.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_moonlotus_reserve",
+      "skill": "fermentation",
+      "action": "ferment_moonlotus_reserve",
+      "name": "Moonlotus Reserve",
+      "subject": "one silver moon lotus etched blue bottle, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_moonlotus_reserve.png"
+      ]
+    },
+    {
+      "id": "archaeology__moonwell_sanctuary",
+      "skill": "archaeology",
+      "action": "moonwell_sanctuary",
+      "name": "Moonwell Sanctuary",
+      "subject": "one silver moon well surrounded by ruins, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/moonwell_sanctuary.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_moonlit_witness",
+      "skill": "lostfinding",
+      "action": "investigate_the_moonlit_witness",
+      "name": "Investigate The Moonlit Witness",
+      "subject": "one silver crescent lantern and witness silhouette, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_moonlit_witness.png"
+      ]
+    },
+    {
+      "id": "woodcutting__thunder_ash_tree",
+      "skill": "woodcutting",
+      "action": "thunder_ash_tree",
+      "name": "Thunder Ash Tree",
+      "subject": "one electric blue leaves, gnarled ash trunk fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/thunder_ash_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_thunder_ash_log",
+      "skill": "firemaking",
+      "action": "burn_thunder_ash_log",
+      "name": "Burn Thunder Ash Log",
+      "subject": "one thunder ash log with distinctive electric blue flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_thunder_ash_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_storm_opal",
+      "skill": "mining",
+      "action": "mine_storm_opal",
+      "name": "Mine Storm Opal",
+      "subject": "one electric blue iridescent opal in grey stone ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_storm_opal.png",
+        "assets/icons/items/storm_opal_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_storm_lavender",
+      "skill": "farming",
+      "action": "plant_storm_lavender",
+      "name": "Storm Lavender",
+      "subject": "one electric violet lavender flowering stalks, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_storm_lavender.png",
+        "assets/icons/items/storm_lavender.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_cloud_roc",
+      "skill": "ranching",
+      "action": "raise_cloud_roc",
+      "name": "Cloud Roc",
+      "subject": "one white blue giant roc bird with golden beak, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_cloud_roc.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_thunder_ash_shortbow",
+      "skill": "fletching",
+      "action": "fletch_thunder_ash_shortbow",
+      "name": "Fletch Thunder Ash Shortbow",
+      "subject": "one thunder ash shortbow, diagonal lower left to upper right, dark wood grain, electric blue bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_thunder_ash_shortbow.png",
+        "assets/icons/items/thunder_ash_shortbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_case_archivist",
+      "skill": "engineering",
+      "action": "assemble_device_case_archivist",
+      "name": "Assemble Case Archivist",
+      "subject": "one small brass clockwork case archivist automaton, storm opal crystal core, functional fantasy machine with gears and filing cabinet",
+      "paths": [
+        "assets/icons/engineering/assemble_device_case_archivist.png",
+        "assets/icons/items/device_case_archivist.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_stormrunner_elixir",
+      "skill": "herblore",
+      "action": "brew_stormrunner_elixir",
+      "name": "Brew Stormrunner Elixir",
+      "subject": "one slender corked fantasy potion bottle, violet liquid, brass trim and small storm lavender emblem",
+      "paths": [
+        "assets/icons/herblore/brew_stormrunner_elixir.png",
+        "assets/icons/items/potion_stormrunner_elixir.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_storm_opal",
+      "skill": "enchanting",
+      "action": "resonate_storm_opal",
+      "name": "Resonate Storm Opal",
+      "subject": "one electric blue iridescent opal in grey stone gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_storm_opal.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__stormforge_cleft",
+      "skill": "riftkeeping",
+      "action": "stormforge_cleft",
+      "name": "Stormforge Cleft",
+      "subject": "one gold blue electric tear in stone, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/stormforge_cleft.png",
+        "assets/icons/items/aether_stormforge_cleft.png"
+      ]
+    },
+    {
+      "id": "spellweaving__stormforge_hammer",
+      "skill": "spellweaving",
+      "action": "stormforge_hammer",
+      "name": "Weave Stormforge Hammer",
+      "subject": "one gold blue spectral lightning hammer, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/stormforge_hammer.png",
+        "assets/icons/items/woven_stormforge_hammer_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_stormglass_tunnel",
+      "skill": "wayfolding",
+      "action": "fold_stormglass_tunnel",
+      "name": "Fold Stormglass Tunnel",
+      "subject": "one blue glass tunnel through dark storm cloud, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_stormglass_tunnel.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_stormwatch_oath",
+      "skill": "customcraft",
+      "action": "celebrate_stormwatch_oath",
+      "name": "Celebrate Stormwatch Oath",
+      "subject": "one blue shield and lightning oath ribbon, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_stormwatch_oath.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_stormlavender_brew",
+      "skill": "fermentation",
+      "action": "ferment_stormlavender_brew",
+      "name": "Stormlavender Brew",
+      "subject": "one violet electric ferment inside blue jar, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_stormlavender_brew.png"
+      ]
+    },
+    {
+      "id": "archaeology__stormspire_foundations",
+      "skill": "archaeology",
+      "action": "stormspire_foundations",
+      "name": "Stormspire Foundations",
+      "subject": "one broken blue spire base with lightning gem, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/stormspire_foundations.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_stormglass_cipher",
+      "skill": "lostfinding",
+      "action": "investigate_the_stormglass_cipher",
+      "name": "Investigate The Stormglass Cipher",
+      "subject": "one cracked blue lens above cipher scroll, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_stormglass_cipher.png"
+      ]
+    },
+    {
+      "id": "woodcutting__obsidian_mangrove_tree",
+      "skill": "woodcutting",
+      "action": "obsidian_mangrove_tree",
+      "name": "Obsidian Mangrove Tree",
+      "subject": "one black tangled roots and teal leaves fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/obsidian_mangrove_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_obsidian_mangrove_log",
+      "skill": "firemaking",
+      "action": "burn_obsidian_mangrove_log",
+      "name": "Burn Obsidian Mangrove Log",
+      "subject": "one obsidian mangrove log with distinctive purple flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_obsidian_mangrove_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_obsidian",
+      "skill": "mining",
+      "action": "mine_obsidian",
+      "name": "Mine Obsidian",
+      "subject": "one sharp black volcanic glass with purple highlights ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_obsidian.png",
+        "assets/icons/items/obsidian_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_night_pepper",
+      "skill": "farming",
+      "action": "plant_night_pepper",
+      "name": "Night Pepper",
+      "subject": "one purple black chili peppers, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_night_pepper.png",
+        "assets/icons/items/night_pepper.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_dusk_kirin",
+      "skill": "ranching",
+      "action": "raise_dusk_kirin",
+      "name": "Dusk Kirin",
+      "subject": "one violet scaled horse unicorn with silver antlers, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_dusk_kirin.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_obsidian_mangrove_longbow",
+      "skill": "fletching",
+      "action": "fletch_obsidian_mangrove_longbow",
+      "name": "Fletch Obsidian Mangrove Longbow",
+      "subject": "one obsidian mangrove longbow, diagonal lower left to upper right, dark wood grain, purple bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_obsidian_mangrove_longbow.png",
+        "assets/icons/items/obsidian_mangrove_longbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_essence_tuner",
+      "skill": "engineering",
+      "action": "assemble_device_essence_tuner",
+      "name": "Assemble Essence Tuner",
+      "subject": "one small brass clockwork essence tuner automaton, obsidian crystal core, functional fantasy machine with gears and tuning forks",
+      "paths": [
+        "assets/icons/engineering/assemble_device_essence_tuner.png",
+        "assets/icons/items/device_essence_tuner.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_riftward_tonic",
+      "skill": "herblore",
+      "action": "brew_riftward_tonic",
+      "name": "Brew Riftward Tonic",
+      "subject": "one slender corked fantasy potion bottle, dark purple liquid, brass trim and small night pepper emblem",
+      "paths": [
+        "assets/icons/herblore/brew_riftward_tonic.png",
+        "assets/icons/items/potion_riftward_tonic.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_obsidian",
+      "skill": "enchanting",
+      "action": "resonate_obsidian",
+      "name": "Resonate Obsidian",
+      "subject": "one sharp black volcanic glass with purple highlights gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_obsidian.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__obsidian_aperture",
+      "skill": "riftkeeping",
+      "action": "obsidian_aperture",
+      "name": "Obsidian Aperture",
+      "subject": "one black red triangular portal, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/obsidian_aperture.png",
+        "assets/icons/items/aether_obsidian_aperture.png"
+      ]
+    },
+    {
+      "id": "spellweaving__obsidian_rain",
+      "skill": "spellweaving",
+      "action": "obsidian_rain",
+      "name": "Weave Obsidian Rain",
+      "subject": "one falling black red glass shards spell, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/obsidian_rain.png",
+        "assets/icons/items/woven_obsidian_rain_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_night_freight",
+      "skill": "wayfolding",
+      "action": "fold_night_freight",
+      "name": "Fold Night Freight",
+      "subject": "one tiny purple freight wagon entering portal, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_night_freight.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_night_market_pact",
+      "skill": "customcraft",
+      "action": "celebrate_night_market_pact",
+      "name": "Celebrate Night Market Pact",
+      "subject": "one violet market lantern and sealed coin purse, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_night_market_pact.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_nightpepper_barrel",
+      "skill": "fermentation",
+      "action": "ferment_nightpepper_barrel",
+      "name": "Nightpepper Barrel",
+      "subject": "one dark violet pepper ferment barrel, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_nightpepper_barrel.png"
+      ]
+    },
+    {
+      "id": "archaeology__obsidian_necropolis",
+      "skill": "archaeology",
+      "action": "obsidian_necropolis",
+      "name": "Obsidian Necropolis",
+      "subject": "one black volcanic tomb and red relic, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/obsidian_necropolis.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_nameless_portrait",
+      "skill": "lostfinding",
+      "action": "investigate_the_nameless_portrait",
+      "name": "Investigate The Nameless Portrait",
+      "subject": "one violet portrait frame with obscured face, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_nameless_portrait.png"
+      ]
+    },
+    {
+      "id": "woodcutting__astral_ebony_tree",
+      "skill": "woodcutting",
+      "action": "astral_ebony_tree",
+      "name": "Astral Ebony Tree",
+      "subject": "one dark ebony trunk and starry lavender canopy fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/astral_ebony_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_astral_ebony_log",
+      "skill": "firemaking",
+      "action": "burn_astral_ebony_log",
+      "name": "Burn Astral Ebony Log",
+      "subject": "one astral ebony log with distinctive lavender flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_astral_ebony_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_astralite",
+      "skill": "mining",
+      "action": "mine_astralite",
+      "name": "Mine Astralite",
+      "subject": "one star flecked lavender crystalline ore ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_astralite.png",
+        "assets/icons/items/astralite_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_astral_fennel",
+      "skill": "farming",
+      "action": "plant_astral_fennel",
+      "name": "Astral Fennel",
+      "subject": "one pale lavender feathery fennel fronds, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_astral_fennel.png",
+        "assets/icons/items/astral_fennel.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_phoenix",
+      "skill": "ranching",
+      "action": "raise_phoenix",
+      "name": "Phoenix",
+      "subject": "one radiant crimson gold phoenix bird, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_phoenix.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_astral_ebony_shortbow",
+      "skill": "fletching",
+      "action": "fletch_astral_ebony_shortbow",
+      "name": "Fletch Astral Ebony Shortbow",
+      "subject": "one astral ebony shortbow, diagonal lower left to upper right, dark wood grain, lavender bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_astral_ebony_shortbow.png",
+        "assets/icons/items/astral_ebony_shortbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_rift_extractor",
+      "skill": "engineering",
+      "action": "assemble_device_rift_extractor",
+      "name": "Assemble Rift Extractor",
+      "subject": "one small brass clockwork rift extractor automaton, astralite crystal core, functional fantasy machine with gears and rift pincers",
+      "paths": [
+        "assets/icons/engineering/assemble_device_rift_extractor.png",
+        "assets/icons/items/device_rift_extractor.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_astral_lucidity",
+      "skill": "herblore",
+      "action": "brew_astral_lucidity",
+      "name": "Brew Astral Lucidity",
+      "subject": "one slender corked fantasy potion bottle, lavender liquid, brass trim and small astral fennel emblem",
+      "paths": [
+        "assets/icons/herblore/brew_astral_lucidity.png",
+        "assets/icons/items/potion_astral_lucidity.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_astralite",
+      "skill": "enchanting",
+      "action": "resonate_astralite",
+      "name": "Resonate Astralite",
+      "subject": "one star flecked lavender crystalline ore gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_astralite.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__starling_nexus",
+      "skill": "riftkeeping",
+      "action": "starling_nexus",
+      "name": "Starling Nexus",
+      "subject": "one violet gold star shaped rift, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/starling_nexus.png",
+        "assets/icons/items/aether_starling_nexus.png"
+      ]
+    },
+    {
+      "id": "spellweaving__starling_spiral",
+      "skill": "spellweaving",
+      "action": "starling_spiral",
+      "name": "Weave Starling Spiral",
+      "subject": "one spiral of violet gold bird shaped stars, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/starling_spiral.png",
+        "assets/icons/items/woven_starling_spiral_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_astral_interchange",
+      "skill": "wayfolding",
+      "action": "fold_astral_interchange",
+      "name": "Fold Astral Interchange",
+      "subject": "one starry violet linked portal junction, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_astral_interchange.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_starfall_jubilee",
+      "skill": "customcraft",
+      "action": "celebrate_starfall_jubilee",
+      "name": "Celebrate Starfall Jubilee",
+      "subject": "one star shaped festival lantern with violet ribbons, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_starfall_jubilee.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_astral_solera",
+      "skill": "fermentation",
+      "action": "ferment_astral_solera",
+      "name": "Astral Solera",
+      "subject": "one violet starry layered vintage in crystal vessel, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_astral_solera.png"
+      ]
+    },
+    {
+      "id": "archaeology__astral_observatory",
+      "skill": "archaeology",
+      "action": "astral_observatory",
+      "name": "Astral Observatory",
+      "subject": "one ruined violet telescope and star chart, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/astral_observatory.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_astral_disappearance",
+      "skill": "lostfinding",
+      "action": "investigate_the_astral_disappearance",
+      "name": "Investigate The Astral Disappearance",
+      "subject": "one star map and silver magnifying glass, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_astral_disappearance.png"
+      ]
+    },
+    {
+      "id": "woodcutting__dawnbloom_tree",
+      "skill": "woodcutting",
+      "action": "dawnbloom_tree",
+      "name": "Dawnbloom Tree",
+      "subject": "one gold pink blossoms and warm white bark fantasy tree, full tree with roots visible",
+      "paths": [
+        "assets/icons/woodcutting/dawnbloom_tree.png"
+      ]
+    },
+    {
+      "id": "firemaking__burn_dawnbloom_log",
+      "skill": "firemaking",
+      "action": "burn_dawnbloom_log",
+      "name": "Burn Dawnbloom Log",
+      "subject": "one dawnbloom log with distinctive gold flames, charred bark and embers",
+      "paths": [
+        "assets/icons/firemaking/burn_dawnbloom_log.png"
+      ]
+    },
+    {
+      "id": "mining__mine_dawn_prism",
+      "skill": "mining",
+      "action": "mine_dawn_prism",
+      "name": "Mine Dawn Prism",
+      "subject": "one gold white radiant prismatic crystal ore cluster",
+      "paths": [
+        "assets/icons/mining/mine_dawn_prism.png",
+        "assets/icons/items/dawn_prism_mineral.png"
+      ]
+    },
+    {
+      "id": "farming__plant_dawn_orchid",
+      "skill": "farming",
+      "action": "plant_dawn_orchid",
+      "name": "Dawn Orchid",
+      "subject": "one white gold orchid flower, fantasy crop ingredient",
+      "paths": [
+        "assets/icons/farming/plant_dawn_orchid.png",
+        "assets/icons/items/dawn_orchid.png"
+      ]
+    },
+    {
+      "id": "ranching__raise_aurora_drake",
+      "skill": "ranching",
+      "action": "raise_aurora_drake",
+      "name": "Aurora Drake",
+      "subject": "one teal violet aurora dragon with luminous wings, full body three quarter view, friendly ranch livestock",
+      "paths": [
+        "assets/icons/items/ranch_aurora_drake.png"
+      ]
+    },
+    {
+      "id": "fletching__fletch_dawnbloom_longbow",
+      "skill": "fletching",
+      "action": "fletch_dawnbloom_longbow",
+      "name": "Fletch Dawnbloom Longbow",
+      "subject": "one dawnbloom longbow, diagonal lower left to upper right, dark wood grain, gold bindings, taut pale bowstring",
+      "paths": [
+        "assets/icons/fletching/fletch_dawnbloom_longbow.png",
+        "assets/icons/items/dawnbloom_longbow.png"
+      ]
+    },
+    {
+      "id": "engineering__assemble_device_pattern_loom",
+      "skill": "engineering",
+      "action": "assemble_device_pattern_loom",
+      "name": "Assemble Pattern Loom",
+      "subject": "one small brass clockwork pattern loom automaton, dawn prism crystal core, functional fantasy machine with gears and shuttle loom",
+      "paths": [
+        "assets/icons/engineering/assemble_device_pattern_loom.png",
+        "assets/icons/items/device_pattern_loom.png"
+      ]
+    },
+    {
+      "id": "herblore__brew_dawnweaver_elixir",
+      "skill": "herblore",
+      "action": "brew_dawnweaver_elixir",
+      "name": "Brew Dawnweaver Elixir",
+      "subject": "one slender corked fantasy potion bottle, white gold liquid, brass trim and small dawn orchid emblem",
+      "paths": [
+        "assets/icons/herblore/brew_dawnweaver_elixir.png",
+        "assets/icons/items/potion_dawnweaver_elixir.png"
+      ]
+    },
+    {
+      "id": "enchanting__resonate_dawn_prism",
+      "skill": "enchanting",
+      "action": "resonate_dawn_prism",
+      "name": "Resonate Dawn Prism",
+      "subject": "one gold white radiant prismatic crystal gem held between two glowing gold tuning prongs, arcane resonance ring",
+      "paths": [
+        "assets/icons/enchanting/resonate_dawn_prism.png"
+      ]
+    },
+    {
+      "id": "riftkeeping__dawnheart_seam",
+      "skill": "riftkeeping",
+      "action": "dawnheart_seam",
+      "name": "Dawnheart Seam",
+      "subject": "one white gold radiant fissure, small floating reality fissure with rocky fragments",
+      "paths": [
+        "assets/icons/riftkeeping/dawnheart_seam.png",
+        "assets/icons/items/aether_dawnheart_seam.png"
+      ]
+    },
+    {
+      "id": "spellweaving__dawnheart_lance",
+      "skill": "spellweaving",
+      "action": "dawnheart_lance",
+      "name": "Weave Dawnheart Lance",
+      "subject": "one white gold radiant lance spell, vivid arcane spell effect with bold silhouette",
+      "paths": [
+        "assets/icons/spellweaving/dawnheart_lance.png",
+        "assets/icons/items/woven_dawnheart_lance_pattern.png"
+      ]
+    },
+    {
+      "id": "wayfolding__fold_dawn_meridian",
+      "skill": "wayfolding",
+      "action": "fold_dawn_meridian",
+      "name": "Fold Dawn Meridian",
+      "subject": "one golden sunrise ring portal and white waystones, fantasy route miniature",
+      "paths": [
+        "assets/icons/wayfolding/fold_dawn_meridian.png"
+      ]
+    },
+    {
+      "id": "customcraft__celebrate_dawn_coronation",
+      "skill": "customcraft",
+      "action": "celebrate_dawn_coronation",
+      "name": "Celebrate Dawn Coronation",
+      "subject": "one sunburst ceremonial crown on gold cloth, richly detailed ceremonial item",
+      "paths": [
+        "assets/icons/customcraft/celebrate_dawn_coronation.png"
+      ]
+    },
+    {
+      "id": "fermentation__ferment_dawnorchid_vintage",
+      "skill": "fermentation",
+      "action": "ferment_dawnorchid_vintage",
+      "name": "Dawnorchid Vintage",
+      "subject": "one gold white orchid vintage in gilded cask, fantasy fermentation vessel",
+      "paths": [
+        "assets/icons/fermentation/ferment_dawnorchid_vintage.png"
+      ]
+    },
+    {
+      "id": "archaeology__dawn_throne_vault",
+      "skill": "archaeology",
+      "action": "dawn_throne_vault",
+      "name": "Dawn Throne Vault",
+      "subject": "one white gold ancient throne half buried, compact isometric excavation site with soil mound",
+      "paths": [
+        "assets/icons/archaeology/dawn_throne_vault.png"
+      ]
+    },
+    {
+      "id": "lostfinding__investigate_the_last_coronation",
+      "skill": "lostfinding",
+      "action": "investigate_the_last_coronation",
+      "name": "Investigate The Last Coronation",
+      "subject": "one gold crown over torn royal case file, fantasy investigation clue",
+      "paths": [
+        "assets/icons/lostfinding/investigate_the_last_coronation.png"
+      ]
+    },
+    {
+      "id": "timber_resources__copperleaf_log",
+      "skill": "woodcutting",
+      "action": "copperleaf_log",
+      "name": "Copperleaf Logs",
+      "subject": "one compact bundle of two freshly cut copperleaf logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/copperleaf_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__silver_birch_log",
+      "skill": "woodcutting",
+      "action": "silver_birch_log",
+      "name": "Silver Birch Logs",
+      "subject": "one compact bundle of two freshly cut silver birch logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/silver_birch_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__amber_acacia_log",
+      "skill": "woodcutting",
+      "action": "amber_acacia_log",
+      "name": "Amber Acacia Logs",
+      "subject": "one compact bundle of two freshly cut amber acacia logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/amber_acacia_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__duskwillow_log",
+      "skill": "woodcutting",
+      "action": "duskwillow_log",
+      "name": "Duskwillow Logs",
+      "subject": "one compact bundle of two freshly cut duskwillow logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/duskwillow_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__sequoia_log",
+      "skill": "woodcutting",
+      "action": "sequoia_log",
+      "name": "Sequoia Logs",
+      "subject": "one compact bundle of two freshly cut sequoia logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/sequoia_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__jade_cypress_log",
+      "skill": "woodcutting",
+      "action": "jade_cypress_log",
+      "name": "Jade Cypress Logs",
+      "subject": "one compact bundle of two freshly cut jade cypress logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/jade_cypress_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__bloodthorn_log",
+      "skill": "woodcutting",
+      "action": "bloodthorn_log",
+      "name": "Bloodthorn Logs",
+      "subject": "one compact bundle of two freshly cut bloodthorn logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/bloodthorn_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__moonbark_log",
+      "skill": "woodcutting",
+      "action": "moonbark_log",
+      "name": "Moonbark Logs",
+      "subject": "one compact bundle of two freshly cut moonbark logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/moonbark_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__thunder_ash_log",
+      "skill": "woodcutting",
+      "action": "thunder_ash_log",
+      "name": "Thunder Ash Logs",
+      "subject": "one compact bundle of two freshly cut thunder ash logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/thunder_ash_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__obsidian_mangrove_log",
+      "skill": "woodcutting",
+      "action": "obsidian_mangrove_log",
+      "name": "Obsidian Mangrove Logs",
+      "subject": "one compact bundle of two freshly cut obsidian mangrove logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/obsidian_mangrove_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__astral_ebony_log",
+      "skill": "woodcutting",
+      "action": "astral_ebony_log",
+      "name": "Astral Ebony Logs",
+      "subject": "one compact bundle of two freshly cut astral ebony logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/astral_ebony_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "timber_resources__dawnbloom_log",
+      "skill": "woodcutting",
+      "action": "dawnbloom_log",
+      "name": "Dawnbloom Logs",
+      "subject": "one compact bundle of two freshly cut dawnbloom logs, large visible end grain, distinctive bark and small matching leaf sprig; logs not a standing tree",
+      "paths": [
+        "assets/icons/items/dawnbloom_log.png"
+      ],
+      "resource_only": true
+    },
+    {
+      "id": "cooking__cook_frost_pea_soup",
+      "skill": "cooking",
+      "action": "cook_frost_pea_soup",
+      "name": "Frost Pea Soup",
+      "subject": "A cooling pea soup with a swirl of ranch cream.",
+      "paths": [
+        "assets/icons/cooking/cook_frost_pea_soup.png",
+        "assets/icons/items/frost_pea_soup.png"
+      ]
+    },
+    {
+      "id": "cooking__cook_sageberry_crumble",
+      "skill": "cooking",
+      "action": "cook_sageberry_crumble",
+      "name": "Sageberry Crumble",
+      "subject": "A golden crumble filled with fragrant sageberries.",
+      "paths": [
+        "assets/icons/cooking/cook_sageberry_crumble.png",
+        "assets/icons/items/sageberry_crumble.png"
+      ]
+    },
+    {
+      "id": "cooking__cook_bloodginger_braise",
+      "skill": "cooking",
+      "action": "cook_bloodginger_braise",
+      "name": "Bloodginger Braise",
+      "subject": "A warming braise with a peppery crimson glaze.",
+      "paths": [
+        "assets/icons/cooking/cook_bloodginger_braise.png",
+        "assets/icons/items/bloodginger_braise.png"
+      ]
+    },
+    {
+      "id": "cooking__cook_stuffed_night_peppers",
+      "skill": "cooking",
+      "action": "cook_stuffed_night_peppers",
+      "name": "Stuffed Night Peppers",
+      "subject": "Violet peppers baked with rich ranch cheese.",
+      "paths": [
+        "assets/icons/cooking/cook_stuffed_night_peppers.png",
+        "assets/icons/items/stuffed_night_peppers.png"
+      ]
+    }
+  ],
+  "supporting": {
+    "cooking": [
+      "cook_frost_pea_soup",
+      "cook_sageberry_crumble",
+      "cook_bloodginger_braise",
+      "cook_stuffed_night_peppers"
+    ]
+  }
+}

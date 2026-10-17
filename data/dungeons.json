@@ -1194,5 +1194,501 @@
     },
     "flavour": "Legendary expedition. Entry provisions are consumed once per attempt, including a retreat or defeat. Repeated clears provide crafting materials.",
     "hex": "terrain_7_4"
+  },
+  "ironveil_bastion": {
+    "id": "ironveil_bastion",
+    "name": "Ironveil Bastion",
+    "stronghold": true,
+    "level_range": [
+      345,
+      375
+    ],
+    "monsters": [
+      "ironveil_bulwark",
+      "cinder_artillerist",
+      "king_of_the_furnace"
+    ],
+    "stages": [
+      {
+        "name": "Outer ward",
+        "monster": "ironveil_bulwark",
+        "briefing": "Melee attacker; weak to magic, resists ranged. Applies burn. Armour absorbs part of every hit. At 50% HP: Furnace ignition."
+      },
+      {
+        "name": "Inner sanctum",
+        "monster": "cinder_artillerist",
+        "briefing": "Ranged attacker; weak to melee, resists magic. Applies burn. At 50% HP: Furnace ignition."
+      },
+      {
+        "name": "Throne chamber",
+        "monster": "king_of_the_furnace",
+        "briefing": "Magic attacker; weak to ranged, resists melee. Applies burn. Reflects a portion of your hits. At 60% HP: Furnace ignition. At 25%: Molten coronation."
+      }
+    ],
+    "requires": {
+      "slayer": 110,
+      "hitpoints": 115
+    },
+    "requires_dungeon": "crown_of_embers",
+    "equipment_locked": true,
+    "entry_items": {
+      "shark": 25,
+      "potion_dr_3": 2
+    },
+    "completion_reward": {
+      "gp": 25000000,
+      "items": {
+        "herald_bar": 25,
+        "enchant_catalyst": 4,
+        "masterwork_seal": 1,
+        "ash_depth_shard": 3,
+        "tide_depth_shard": 3,
+        "star_depth_shard": 3
+      }
+    },
+    "rewards_first_clear": {
+      "gp": 50000000,
+      "items": {
+        "ironveil_aegis": 1
+      }
+    },
+    "hex": "terrain_7_3",
+    "flavour": "Stronghold siege: three unique boss stages, persistent health and supplies, locked equipment, and no automatic restart. Study affinities and phase mechanics before entry. Retreat or defeat forfeits the full-clear bonus; defeated enemies keep their loot. Provisions are spent once per attempt."
+  },
+  "frostglass_citadel": {
+    "id": "frostglass_citadel",
+    "name": "Frostglass Citadel",
+    "stronghold": true,
+    "level_range": [
+      365,
+      395
+    ],
+    "monsters": [
+      "shardfang",
+      "whiteout_oracle",
+      "the_glacial_regent"
+    ],
+    "stages": [
+      {
+        "name": "Outer ward",
+        "monster": "shardfang",
+        "briefing": "Ranged attacker; weak to melee, resists magic. Applies slow. At 50% HP: Whiteout."
+      },
+      {
+        "name": "Inner sanctum",
+        "monster": "whiteout_oracle",
+        "briefing": "Magic attacker; weak to ranged, resists melee. Applies stun. Shrouded evasion. At 50% HP: Whiteout."
+      },
+      {
+        "name": "Throne chamber",
+        "monster": "the_glacial_regent",
+        "briefing": "Melee attacker; weak to magic, resists ranged. Applies stun. At 60% HP: Whiteout. At 25%: Absolute winter."
+      }
+    ],
+    "requires": {
+      "slayer": 115,
+      "hitpoints": 120
+    },
+    "requires_dungeon": "ironveil_bastion",
+    "equipment_locked": true,
+    "entry_items": {
+      "shark": 30,
+      "potion_dr_3": 2
+    },
+    "completion_reward": {
+      "gp": 35000000,
+      "items": {
+        "herald_bar": 35,
+        "enchant_catalyst": 6,
+        "masterwork_seal": 1,
+        "ash_depth_shard": 4,
+        "tide_depth_shard": 4,
+        "star_depth_shard": 4
+      }
+    },
+    "rewards_first_clear": {
+      "gp": 75000000,
+      "items": {
+        "frostglass_mantle": 1
+      }
+    },
+    "hex": "terrain_7_4",
+    "flavour": "Stronghold siege: three unique boss stages, persistent health and supplies, locked equipment, and no automatic restart. Study affinities and phase mechanics before entry. Retreat or defeat forfeits the full-clear bonus; defeated enemies keep their loot. Provisions are spent once per attempt."
+  },
+  "blightroot_hold": {
+    "id": "blightroot_hold",
+    "name": "Blightroot Hold",
+    "stronghold": true,
+    "level_range": [
+      390,
+      420
+    ],
+    "monsters": [
+      "venomroot_behemoth",
+      "rotveil_matriarch",
+      "the_heart_of_rot"
+    ],
+    "stages": [
+      {
+        "name": "Outer ward",
+        "monster": "venomroot_behemoth",
+        "briefing": "Melee attacker; weak to magic, resists ranged. Applies poison. Venom adds poison pressure. At 50% HP: Blighted bloom."
+      },
+      {
+        "name": "Inner sanctum",
+        "monster": "rotveil_matriarch",
+        "briefing": "Magic attacker; weak to ranged, resists melee. Applies poison. Reflects a portion of your hits. At 50% HP: Blighted bloom."
+      },
+      {
+        "name": "Throne chamber",
+        "monster": "the_heart_of_rot",
+        "briefing": "Ranged attacker; weak to melee, resists magic. Applies poison. At 60% HP: Blighted bloom. At 25%: Roots drink deep."
+      }
+    ],
+    "requires": {
+      "slayer": 115,
+      "hitpoints": 120
+    },
+    "requires_dungeon": "frostglass_citadel",
+    "equipment_locked": true,
+    "entry_items": {
+      "shark": 35,
+      "potion_dr_3": 3
+    },
+    "completion_reward": {
+      "gp": 50000000,
+      "items": {
+        "herald_bar": 45,
+        "enchant_catalyst": 8,
+        "masterwork_seal": 2,
+        "ash_depth_shard": 5,
+        "tide_depth_shard": 5,
+        "star_depth_shard": 5
+      }
+    },
+    "rewards_first_clear": {
+      "gp": 100000000,
+      "items": {
+        "blightroot_cuirass": 1
+      }
+    },
+    "hex": "terrain_-7_-1",
+    "flavour": "Stronghold siege: three unique boss stages, persistent health and supplies, locked equipment, and no automatic restart. Study affinities and phase mechanics before entry. Retreat or defeat forfeits the full-clear bonus; defeated enemies keep their loot. Provisions are spent once per attempt."
+  },
+  "sunken_dominion": {
+    "id": "sunken_dominion",
+    "name": "Sunken Dominion",
+    "stronghold": true,
+    "level_range": [
+      410,
+      440
+    ],
+    "monsters": [
+      "drowned_spearmarshal",
+      "tideglass_harrier",
+      "queen_of_the_abyss"
+    ],
+    "stages": [
+      {
+        "name": "Outer ward",
+        "monster": "drowned_spearmarshal",
+        "briefing": "Melee attacker; weak to magic, resists ranged. Applies bleed. At 50% HP: Crushing depths."
+      },
+      {
+        "name": "Inner sanctum",
+        "monster": "tideglass_harrier",
+        "briefing": "Ranged attacker; weak to melee, resists magic. Applies slow. At 50% HP: Crushing depths."
+      },
+      {
+        "name": "Throne chamber",
+        "monster": "queen_of_the_abyss",
+        "briefing": "Magic attacker; weak to ranged, resists melee. Applies silence. Shrouded evasion. At 60% HP: Crushing depths. At 25%: Rising undertow."
+      }
+    ],
+    "requires": {
+      "slayer": 120,
+      "hitpoints": 120
+    },
+    "requires_dungeon": "blightroot_hold",
+    "equipment_locked": true,
+    "entry_items": {
+      "shark": 40,
+      "potion_dr_3": 3
+    },
+    "completion_reward": {
+      "gp": 75000000,
+      "items": {
+        "herald_bar": 55,
+        "enchant_catalyst": 10,
+        "masterwork_seal": 2,
+        "ash_depth_shard": 6,
+        "tide_depth_shard": 6,
+        "star_depth_shard": 6
+      }
+    },
+    "rewards_first_clear": {
+      "gp": 125000000,
+      "items": {
+        "dominion_sigil": 1
+      }
+    },
+    "hex": "terrain_-5_-3",
+    "flavour": "Stronghold siege: three unique boss stages, persistent health and supplies, locked equipment, and no automatic restart. Study affinities and phase mechanics before entry. Retreat or defeat forfeits the full-clear bonus; defeated enemies keep their loot. Provisions are spent once per attempt."
+  },
+  "eclipse_throne": {
+    "id": "eclipse_throne",
+    "name": "Eclipse Throne",
+    "stronghold": true,
+    "level_range": [
+      435,
+      465
+    ],
+    "monsters": [
+      "voidglass_duelist",
+      "sunless_hierophant",
+      "the_eclipse_sovereign"
+    ],
+    "stages": [
+      {
+        "name": "Outer ward",
+        "monster": "voidglass_duelist",
+        "briefing": "Ranged attacker; weak to melee, resists magic. Applies slow. Shrouded evasion. At 50% HP: Shattered horizon."
+      },
+      {
+        "name": "Inner sanctum",
+        "monster": "sunless_hierophant",
+        "briefing": "Magic attacker; weak to ranged, resists melee. Applies silence. At 50% HP: Shattered horizon."
+      },
+      {
+        "name": "Throne chamber",
+        "monster": "the_eclipse_sovereign",
+        "briefing": "Melee attacker; weak to magic, resists ranged. Applies stun. Reflects a portion of your hits. At 60% HP: Shattered horizon. At 25%: Total eclipse."
+      }
+    ],
+    "requires": {
+      "slayer": 120,
+      "hitpoints": 120
+    },
+    "requires_dungeon": "sunken_dominion",
+    "equipment_locked": true,
+    "entry_items": {
+      "shark": 45,
+      "potion_dr_3": 4
+    },
+    "completion_reward": {
+      "gp": 100000000,
+      "items": {
+        "herald_bar": 65,
+        "enchant_catalyst": 12,
+        "masterwork_seal": 3,
+        "ash_depth_shard": 7,
+        "tide_depth_shard": 7,
+        "star_depth_shard": 7
+      }
+    },
+    "rewards_first_clear": {
+      "gp": 150000000,
+      "items": {
+        "eclipse_diadem": 1
+      }
+    },
+    "hex": "terrain_7_6",
+    "flavour": "Stronghold siege: three unique boss stages, persistent health and supplies, locked equipment, and no automatic restart. Study affinities and phase mechanics before entry. Retreat or defeat forfeits the full-clear bonus; defeated enemies keep their loot. Provisions are spent once per attempt."
+  },
+  "scarecrow_cellar": {
+    "id": "scarecrow_cellar",
+    "hex": "terrain_-1_0",
+    "name": "Scarecrow Cellar",
+    "level_range": [
+      1,
+      6
+    ],
+    "monsters": [
+      "reedbank_field_rat",
+      "reedbank_slinger",
+      "lantern_moth",
+      "strawbound_warden"
+    ],
+    "requires": {
+      "hitpoints": 1
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 250,
+      "items": {
+        "leather": 3,
+        "bones": 3
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "iron_scimitar": 1
+      }
+    },
+    "flavour": "Clear four encounters beneath the old farm. A forgiving first dungeon with leather and bones for supplies. Final encounter: Strawbound Warden."
+  },
+  "ashwood_nest": {
+    "id": "ashwood_nest",
+    "hex": "terrain_-3_2",
+    "name": "Ashwood Nest",
+    "level_range": [
+      8,
+      34
+    ],
+    "monsters": [
+      "sootfang_fox",
+      "ashwood_spitter",
+      "embercap_shaman",
+      "cinderweb_broodmother"
+    ],
+    "requires": {
+      "hitpoints": 10
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 3500,
+      "items": {
+        "leather": 5,
+        "air_rune": 12
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "steel_scimitar": 1
+      }
+    },
+    "flavour": "Sweep the outer webs before confronting the brood hunter. Bring food for sustained poison pressure. Final encounter: Cinderweb Broodmother."
+  },
+  "barrow_chapel": {
+    "id": "barrow_chapel",
+    "hex": "terrain_-3_0",
+    "name": "Barrow Chapel",
+    "level_range": [
+      12,
+      35
+    ],
+    "monsters": [
+      "grave_sentinel",
+      "moor_bonearcher",
+      "mourning_lantern",
+      "bellkeeper_wraith"
+    ],
+    "requires": {
+      "hitpoints": 15
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 8000,
+      "items": {
+        "bones": 10,
+        "water_rune": 15
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "steel_platelegs": 1
+      }
+    },
+    "flavour": "A broken chapel shelters a mixed undead procession. The final wraith tests your defence against magic. Final encounter: Bellkeeper Wraith."
+  },
+  "rookwatch_tower": {
+    "id": "rookwatch_tower",
+    "hex": "terrain_1_1",
+    "name": "Rookwatch Tower",
+    "level_range": [
+      23,
+      60
+    ],
+    "monsters": [
+      "tollway_cutthroat",
+      "rookwood_crossbowman",
+      "thornhex_trickster",
+      "rookwood_crossbowman",
+      "rookwatch_captain"
+    ],
+    "requires": {
+      "hitpoints": 25
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 18000,
+      "items": {
+        "coal": 6,
+        "silver_bar": 2
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "mithril_scimitar": 1
+      }
+    },
+    "flavour": "Fight up the watchtower through melee raiders and ranged sentries to reach the armoured captain. Final encounter: Rookwatch Captain."
+  },
+  "shaleheart_vault": {
+    "id": "shaleheart_vault",
+    "hex": "terrain_3_0",
+    "name": "Shaleheart Vault",
+    "level_range": [
+      42,
+      58
+    ],
+    "monsters": [
+      "rubble_mauler",
+      "flintback_skitterer",
+      "shale_crystal_wisp",
+      "flintback_skitterer",
+      "vaultheart_colossus"
+    ],
+    "requires": {
+      "hitpoints": 35
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 30000,
+      "items": {
+        "mithril_bar": 2,
+        "mithril_ore": 4
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "adamantite_shield": 1
+      }
+    },
+    "flavour": "A compact stone siege across three attack styles, ending with the slag golem at the sealed vault. Final encounter: Vaultheart Colossus."
+  },
+  "saltglass_catacombs": {
+    "id": "saltglass_catacombs",
+    "hex": "terrain_-5_-3",
+    "name": "Saltglass Catacombs",
+    "level_range": [
+      28,
+      76
+    ],
+    "monsters": [
+      "mourning_lantern",
+      "saltclaw_brute",
+      "cliffside_harpooner",
+      "saltclaw_brute",
+      "saltglass_oracle"
+    ],
+    "requires": {
+      "hitpoints": 45
+    },
+    "equipment_locked": true,
+    "completion_reward": {
+      "gp": 55000,
+      "items": {
+        "adamantite_bar": 2,
+        "water_rune": 30,
+        "big_bones": 6
+      }
+    },
+    "rewards_first_clear": {
+      "items": {
+        "runite_scimitar": 1
+      }
+    },
+    "flavour": "The flooded crypt alternates spectral magic and brutal melee before the tidewrack hag. Prepare a sustained loadout. Final encounter: Saltglass Oracle."
   }
 }

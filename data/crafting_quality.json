@@ -1,0 +1,6 @@
+{
+  "fine": {"name": "Fine", "chance": 0.13, "stat_bonus_percent": 5, "value_bonus_percent": 20, "min_level": 10},
+  "superior": {"name": "Superior", "chance": 0.065, "stat_bonus_percent": 11, "value_bonus_percent": 45, "min_level": 35},
+  "masterwork": {"name": "Masterwork", "chance": 0.025, "stat_bonus_percent": 19, "value_bonus_percent": 85, "min_level": 70},
+  "legendary": {"name": "Legendary", "chance": 0.006, "stat_bonus_percent": 30, "value_bonus_percent": 150, "min_level": 105}
+}

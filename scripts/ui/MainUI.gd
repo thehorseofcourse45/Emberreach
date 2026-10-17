@@ -16,6 +16,7 @@ extends Control
 ## `--smoke`, `--selftest`, `--offline N`), so one command surface covers the whole project.
 
 const SidebarNav = preload("res://scripts/ui/SidebarNav.gd")
+const LootPopupScript = preload("res://scripts/ui/LootPopupStack.gd")
 
 var _root: VBoxContainer
 var _status_bar: Control
@@ -34,6 +35,7 @@ var _embers: CPUParticles2D = null
 var _detail: DetailPanel
 var _strip: ActivityStrip
 var _toasts: ToastStack
+var _loot_popups: Control
 var _nav_button: Button
 var _drawer: PanelContainer
 var _recovery_panel: Control
@@ -144,6 +146,8 @@ func _build() -> void:
 
 	_toasts = ToastStack.new()
 	add_child(_toasts)
+	_loot_popups = LootPopupScript.new()
+	add_child(_loot_popups)
 
 	# Loading / blocked states get their own screen instead of a silent failure.
 	_recovery_panel = load("res://scripts/ui/panels/RecoveryPanel.gd").new()
@@ -559,14 +563,14 @@ func _handle_cli() -> bool:
 	# Verification and screenshot runs drive the singletons themselves. A normal launch must
 	# leave deferred boot enabled so GameManager loads the player's save.
 	GameManager.cli_mode = false
-	for flag in ["--validate", "--tests", "--smoke", "--selftest", "--assetreport",
+	for flag in ["--validate", "--test", "--tests", "--smoke", "--selftest", "--assetreport",
 			"--offline", "--balance", "--shot", "--docs"]:
 		if flag in args:
 			GameManager.cli_mode = true
 			break
 	if "--validate" in args:
-		_run_validation()
-		get_tree().quit()
+		# Content errors are a failed verification, so they exit nonzero like every other check.
+		get_tree().quit(0 if _run_validation() == 0 else 1)
 		return true
 	if "--docs" in args:
 		var current: bool = _run_docs_check("--fix" in args)
@@ -575,23 +579,25 @@ func _handle_cli() -> bool:
 	if "--test" in args:
 		var idx: int = args.find("--test")
 		var names: Array = (args[idx + 1] if idx + 1 < args.size() else "").split(",", false)
-		await TestRunner.new().run_some(self, names)
-		get_tree().quit()
+		# The runner returns its failure count. Quitting with the default success code after
+		# printing "TESTS FAILED" let a broken run look green to anything that only reads the
+		# process exit status.
+		var failed_some: int = await TestRunner.new().run_some(self, names)
+		get_tree().quit(0 if failed_some == 0 else 1)
 		return true
 	if "--tests" in args:
 		# Awaited: run_all() is a coroutine (the UI suites build nodes across frames). An
 		# un-awaited call would suspend at its first await and get_tree().quit() would then run
 		# before the remaining checks ever executed.
-		await TestRunner.new().run_all(self)
-		get_tree().quit()
+		var failed_all: int = await TestRunner.new().run_all(self)
+		get_tree().quit(0 if failed_all == 0 else 1)
 		return true
 	if "--smoke" in args:
-		_run_smoke_checks()
-		get_tree().quit()
+		get_tree().quit(0 if _run_smoke_checks() == 0 else 1)
 		return true
 	if "--selftest" in args:
-		TestRunner.new().run_end_to_end(self)
-		get_tree().quit()
+		var failed_e2e: int = TestRunner.new().run_end_to_end(self)
+		get_tree().quit(0 if failed_e2e == 0 else 1)
 		return true
 	if "--assetreport" in args:
 		_run_asset_report()
@@ -692,7 +698,9 @@ func _run_balance_report() -> void:
 		f.store_string("```\n" + "\n".join(lines) + "\n```\n")
 		f.close()
 
-func _run_validation() -> void:
+## Returns the number of content ERRORS: warnings and notes are reported but do not fail the
+## verification, errors mean the shipped content is broken.
+func _run_validation() -> int:
 	var validator := ContentValidator.new()
 	var report: Array = validator.validate_all()
 	print(validator.format_report(true))
@@ -701,6 +709,11 @@ func _run_validation() -> void:
 		f.store_string(validator.format_report(true))
 		f.close()
 	EventBus.content_validation_report.emit(report)
+	var errors: int = 0
+	for entry in report:
+		if str(entry.get("severity", "")) == "error":
+			errors += 1
+	return errors
 
 func _run_offline_probe(args: PackedStringArray) -> void:
 	var seconds: float = 3600.0
@@ -750,7 +763,9 @@ func _run_asset_report() -> void:
 		f.store_string("\n".join(lines))
 		f.close()
 
-func _run_smoke_checks() -> void:
+## Headless sanity run. Every line states the value it expects, and every mismatch is counted:
+## an expectation that is only printed is not a check, so a broken build used to pass here.
+func _run_smoke_checks() -> int:
 	print("=== Emberreach smoke checks ===")
 	print("skills loaded: ", DataLoader.skills.size())
 	print("items loaded: ", DataLoader.items.size())
@@ -758,11 +773,22 @@ func _run_smoke_checks() -> void:
 	print("dungeons loaded: ", DataLoader.dungeons.size())
 	print("quests loaded: ", Quests.count())
 	print("achievements loaded: ", Achievements.count())
-	print("XP lvl 99: ", XPTable.xp_for_level(99), " (expect 13034431)")
-	print("XP lvl 120: ", XPTable.xp_for_level(120), " (expect 104273167)")
-	print("hit chance equal ratings: ", CombatFormulas.chance_to_hit(100.0, 100.0), " (expect 50)")
-	print("combat level fresh char: ", PlayerData.get_combat_level(), " (expect 1)")
+	var failed: int = 0
+	var expectations: Array = [
+		["XP lvl 99", float(XPTable.xp_for_level(99)), 13034431.0],
+		["XP lvl 120", float(XPTable.xp_for_level(120)), 104273167.0],
+		["hit chance equal ratings", float(CombatFormulas.chance_to_hit(100.0, 100.0)), 50.0],
+		["combat level fresh char", float(PlayerData.get_combat_level()), 1.0],
+	]
+	for row in expectations:
+		var matched: bool = is_equal_approx(float(row[1]), float(row[2]))
+		print("%s: %s (expect %s)" % [str(row[0]), str(row[1]), str(row[2])])
+		if not matched:
+			failed += 1
+			print("  FAIL: expected %s" % str(row[2]))
 	print("save version: ", SaveManager.SAVE_VERSION)
+	print("smoke checks failed: %d" % failed)
+	return failed
 
 # =========================================================================
 #  README drift check (--docs, --docs --fix)

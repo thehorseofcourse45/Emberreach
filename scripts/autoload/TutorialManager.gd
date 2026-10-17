@@ -94,7 +94,7 @@ func is_satisfied(cond: Variant) -> bool:
 		"skill_level":
 			current = float(PlayerData.get_level(str(c.get("skill_id", ""))))
 		"have_item":
-			current = float(BankManager.get_count(str(c.get("item_id", ""))))
+			current = float(BankManager.count_with_variants(str(c.get("item_id", ""))))
 		"kill_monster":
 			current = PlayerData.get_stat("monsters_killed", str(c.get("monster_id", "")))
 		"do_actions":
@@ -144,7 +144,7 @@ func describe_condition(cond: Variant) -> Dictionary:
 		"skill_level":
 			current = float(PlayerData.get_level(str(c.get("skill_id", ""))))
 		"have_item":
-			current = float(BankManager.get_count(str(c.get("item_id", ""))))
+			current = float(BankManager.count_with_variants(str(c.get("item_id", ""))))
 		"kill_monster":
 			current = PlayerData.get_stat("monsters_killed", str(c.get("monster_id", "")))
 		"do_actions":

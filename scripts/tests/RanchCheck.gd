@@ -98,8 +98,8 @@ func _ready() -> void:
 	verify(labels.any(func(label): return label.text == "Livestock catalogue"), "catalogue visible without pens")
 	verify(labels.any(func(label): return label.text == "Celestial Dragon"), "late game livestock visible")
 	var livestock_previews: Array = view.find_children("*", "TextureRect", true, false).filter(func(icon): return icon.custom_minimum_size == Vector2(64, 64))
-	verify(livestock_previews.size() == 9 and livestock_previews.all(func(icon): return icon.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST), "all livestock previews use crisp pixel scaling")
-	verify(view.find_children("*", "Button", true, false).filter(func(button): return button.text.begins_with("Buy stock · owned")).size() == 9, "nine species cards")
+	verify(livestock_previews.size() == 21 and livestock_previews.all(func(icon): return icon.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST), "all livestock previews use crisp pixel scaling")
+	verify(view.find_children("*", "Button", true, false).filter(func(button): return button.text.begins_with("Buy stock · owned")).size() == 21, "twenty-one species cards")
 	if "--capture" in OS.get_cmdline_user_args():
 		for layout_frame in range(5): await get_tree().process_frame
 		await RenderingServer.frame_post_draw

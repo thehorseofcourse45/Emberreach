@@ -82,9 +82,12 @@ replays elapsed time through the *same* code paths.
 | `CaravaneeringManager` | Trade caravans: timed routes over charted hexes, daily prices, bandit rolls, repeat orders. |
 | `EnchantingManager` | Disenchant to typed essence; enchant individual gear pieces. |
 | `DreamwalkingManager` | Offline dream allocation, dream depth, events and the Dream Bazaar. |
+| `DungeonModifierManager` | Optional dungeon challenges, selected affixes and increased rewards. |
+| `RegionalEventsManager` | Rotating regional world conditions that alter active gameplay. |
 | `CombatManager` | Tick combat, endless areas, dungeons, loot, death, auto-eat. |
 | `SkillManager` | Generic action loop for all non-combat skills. |
 | `GameManager` | Main loop, pause/speed, new game, load → offline. |
+| `EventDirector` | Dispatches timed random encounters and world activities. |
 | `OfflineProgression` | ≤24 h replay; seeded RNG. |
 | `SlayerManager` | Tasks, kill tracking, rewards, Slayer Shop. |
 | `AgilityManager` | 15 obstacle slots, pillars, blueprints. |
@@ -98,6 +101,8 @@ replays elapsed time through the *same* code paths.
 | `Quests` | Data-driven tasks with event-driven objectives and exactly-once rewards. |
 | `Achievements` | Milestones with modest, exactly-once rewards. |
 | `ProgressTracker` | Lifetime counters feeding quests, milestones and the collection log. |
+| `FactionManager` | Persistent allegiance, reputation ranks and faction bonuses. |
+| `ContractManager` | Repeatable three-slot contract board, tracked objectives and claim rewards. |
 | `PrestigeManager` | Ascendancy: the lifetime-XP gate, reset, and its additive bonuses. |
 | `TutorialManager` | Data-driven onboarding steps from `tutorial.json`. |
 | `ActionQueueManager` | Queued skill actions; policy and persistence for the queue screen. |
@@ -125,8 +130,10 @@ table, so reachability is one list; it also lists every skill.
 | **Storage** | Search, sort, filters, favourites, protection, inspect, Sell 1 / Sell All / Equip / Bury / **Use**. |
 | **Provisioner / General Store** | Shelves you return to vs. a searchable catalogue of upgrades you exhaust. |
 | **Tasks / Milestones / Collection** | Quests with live objective progress, achievements, and the completion log. |
+| **Contracts / Factions** | Repeatable work orders, faction allegiance and rank rewards in Tasks. |
 | **Stats** | The lifetime record: counters that feed quests, milestones and the collection log. |
 | **Settlement** | Buildings with costs, upgrade path, and links to the systems they improve. |
+| **Settlement specializations** | Four mutually exclusive town identities with paid switches and boosted production. |
 | **Farm** | Cultivation plots that grow in real time, planted and harvested by hand. |
 | **Equipment** | 14 slots, saved sets with ownership checks, aggregated stats. |
 | **Action Queue / Simulator** | Queued skill actions with policy and persistence; win-chance simulation on the real formulas. |
@@ -172,6 +179,16 @@ at 0 HP the node respawns after its timer.
 ```
 
 `equipment_slot` indexes match `ItemData.EquipmentSlot` (8 = weapon, 9 = shield, 7 = ring).
+
+Equipment produced by an artisan action can roll a quality tier and an independent affix from
+`data/crafting_quality.json` and `data/crafting_affixes.json`. A result such as
+`bronze_platebody__quality_fine__affix_warded` is a distinct bank stack with its own stats and
+passive bonuses; the base item's icon and equipping rules are reused. Old items remain Common,
+and newly generated item IDs resolve without rewriting `items.json` or migrating existing saves.
+
+The Settlement screen lets players purchase one of four paths described by
+`data/settlement_specializations.json`; each path changes hourly production and registers
+modifier bonuses. Switching paths spends the new path's full costs.
 
 ### Monster (`data/monsters.json`)
 ```json
@@ -222,14 +239,14 @@ Loaded content. This block is generated from the live singletons — do not hand
 <!-- doc-facts:start -->
 | Check | Value |
 |---|---|
-| Skills | 40 (9 combat / 31 non-combat) |
-| Skill actions | 759 |
-| Items | 758 |
-| Monsters | 68 |
+| Skills | 42 (9 combat / 33 non-combat) |
+| Skill actions | 893 |
+| Items | 885 |
+| Monsters | 102 |
 | Areas | 21 |
-| Dungeons | 22 |
+| Dungeons | 40 |
 | Prayers | 62 |
-| Autoload singletons | 44 |
+| Autoload singletons | 49 |
 | Screens | 21 |
 <!-- doc-facts:end -->
 

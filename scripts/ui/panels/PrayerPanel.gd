@@ -60,7 +60,7 @@ func _update_summary() -> void:
 	_summary.text += " · %.1f points/min · %s remaining at current attack speed" % [float(forecast.per_minute), "unlimited" if is_inf(float(forecast.seconds)) else UIStyle.fmt_duration(float(forecast.seconds))]
 
 func _rebuild() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
 		return
 	_update_summary()
 	var level: int = PlayerData.get_level("prayer")

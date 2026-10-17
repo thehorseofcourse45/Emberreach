@@ -258,6 +258,22 @@ func after_simulation_slice() -> void:
 		return
 	_defer_transition()
 
+## Check queued item targets after each completed action, including silent work.
+func skill_target_reached(skill_id: String, action_id: String) -> bool:
+	if not enabled or current_index >= steps.size():
+		return false
+	var step: Dictionary = steps[current_index]
+	if str(step.get("kind", "")) != "skill" or str(step.skill_id) != skill_id or str(step.action_id) != action_id:
+		return false
+	var count: int = BankManager.count_with_variants(str(step.target_item_id), true)
+	var target: int = int(step.target_quantity)
+	return count >= target if target > 0 else count <= 0
+
+## Resolve a skill transition inside the current offline slice.
+func resolve_transition_now() -> bool:
+	_advance_now()
+	return SkillManager.running
+
 # ---------------------------------------------------------------------------
 # Transition engine
 # ---------------------------------------------------------------------------
@@ -296,17 +312,9 @@ func _advance_now() -> void:
 func _advance_skill(step: Dictionary) -> bool:
 	var skill_id: String = str(step.get("skill_id", ""))
 	var action_id: String = str(step.get("action_id", ""))
-	var target_item: String = str(step.get("target_item_id", ""))
-	var target_quantity: int = int(step.get("target_quantity", 0))
 	var running_here: bool = SkillManager.running and SkillManager.active_skill == skill_id \
 		and SkillManager.active_action_id == action_id
-	var count: int = BankManager.get_total_owned(target_item)
-	if target_quantity > 0 and count >= target_quantity:
-		if running_here:
-			SkillManager.stop_action(SkillManager.StopReason.TARGET_REACHED, "Queue target reached")
-		current_index += 1
-		return true
-	if target_quantity == 0 and count <= 0:
+	if skill_target_reached(skill_id, action_id):
 		if running_here:
 			SkillManager.stop_action(SkillManager.StopReason.TARGET_REACHED, "Queue target reached")
 		current_index += 1
@@ -341,6 +349,13 @@ func _advance_skill(step: Dictionary) -> bool:
 	return false
 
 func _advance_combat(step: Dictionary) -> bool:
+	# EXPLICIT GATE: a queued fight is launched by the player, never by the offline
+	# simulation. Wait here — whichever path asked for the transition (deferred or the
+	# synchronous one offline catch-up uses) — and state_refreshed re-runs it once catch-up
+	# has finished, exactly where the offline-combat setting can be honoured.
+	if OfflineProgression.is_running:
+		status = STATUS_COMBAT_WAITING
+		return false
 	if CombatManager.state != CombatManager.State.IDLE:
 		# A running combat is waiting for the player decision. Do not infer completion.
 		status = STATUS_COMBAT_WAITING

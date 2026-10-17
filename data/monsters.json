@@ -6703,5 +6703,2682 @@
         }
       }
     ]
+  },
+  "ironveil_bulwark": {
+    "id": "ironveil_bulwark",
+    "name": "Ironveil Bulwark",
+    "combat_level": 345,
+    "hitpoints": 6500,
+    "attack_type": "melee",
+    "attack_speed": 3.6,
+    "max_hit": 250,
+    "accuracy_rating": 16000,
+    "melee_evasion": 1300,
+    "ranged_evasion": 1300,
+    "magic_evasion": 1300,
+    "damage_reduction": 35,
+    "special_attacks": [
+      "stronghold_ironveil_bulwark"
+    ],
+    "passives": [
+      "armored"
+    ],
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
+    ],
+    "phases": [
+      {
+        "name": "Furnace ignition",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "burn",
+            "duration": 5,
+            "damage_per_tick": 8
+          }
+        }
+      },
+      {
+        "name": "Ironveil last stand",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 8,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 10000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Melee attacker; weak to magic, resists ranged. Applies burn. Armour absorbs part of every hit. At 50% HP: Furnace ignition; at 20% HP: Ironveil last stand."
+  },
+  "cinder_artillerist": {
+    "id": "cinder_artillerist",
+    "name": "Cinder Artillerist",
+    "combat_level": 357,
+    "hitpoints": 7900,
+    "attack_type": "ranged",
+    "attack_speed": 3.6,
+    "max_hit": 268,
+    "accuracy_rating": 16000,
+    "melee_evasion": 1300,
+    "ranged_evasion": 1300,
+    "magic_evasion": 1300,
+    "damage_reduction": 38,
+    "special_attacks": [
+      "stronghold_cinder_artillerist"
+    ],
+    "passives": [],
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "phases": [
+      {
+        "name": "Furnace ignition",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "burn",
+            "duration": 5,
+            "damage_per_tick": 8
+          }
+        }
+      },
+      {
+        "name": "Overheated volley",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 8,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 11000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Ranged attacker; weak to melee, resists magic. Applies burn. At 50% HP: Furnace ignition; at 20% HP: Overheated volley."
+  },
+  "king_of_the_furnace": {
+    "id": "king_of_the_furnace",
+    "name": "King of the Furnace",
+    "combat_level": 375,
+    "hitpoints": 11500,
+    "attack_type": "magic",
+    "attack_speed": 3.6,
+    "max_hit": 286,
+    "accuracy_rating": 16000,
+    "melee_evasion": 1300,
+    "ranged_evasion": 1300,
+    "magic_evasion": 1300,
+    "damage_reduction": 41,
+    "special_attacks": [
+      "stronghold_king_of_the_furnace"
+    ],
+    "passives": [
+      "thorns"
+    ],
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "phases": [
+      {
+        "name": "Furnace ignition",
+        "at_hp_percent": 60,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "burn",
+            "duration": 5,
+            "damage_per_tick": 8
+          }
+        }
+      },
+      {
+        "name": "Molten coronation",
+        "at_hp_percent": 25,
+        "effects": {
+          "attack_type": "melee",
+          "attack_speed_multiplier": 1.15,
+          "max_hit_multiplier": 1.08
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 8,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 12000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false,
+    "flavour": "Magic attacker; weak to ranged, resists melee. Applies burn. Reflects a portion of your hits. At 60% HP: Furnace ignition. At 25%: Molten coronation."
+  },
+  "shardfang": {
+    "id": "shardfang",
+    "name": "Shardfang",
+    "combat_level": 365,
+    "hitpoints": 7700,
+    "attack_type": "ranged",
+    "attack_speed": 3.5,
+    "max_hit": 274,
+    "accuracy_rating": 18200,
+    "melee_evasion": 1450,
+    "ranged_evasion": 1450,
+    "magic_evasion": 1450,
+    "damage_reduction": 38,
+    "special_attacks": [
+      "stronghold_shardfang"
+    ],
+    "passives": [],
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "phases": [
+      {
+        "name": "Whiteout",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "slow",
+            "duration": 5
+          }
+        }
+      },
+      {
+        "name": "Predator's frenzy",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 10,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 12500,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Ranged attacker; weak to melee, resists magic. Applies slow. At 50% HP: Whiteout; at 20% HP: Predator's frenzy."
+  },
+  "whiteout_oracle": {
+    "id": "whiteout_oracle",
+    "name": "Whiteout Oracle",
+    "combat_level": 377,
+    "hitpoints": 9100,
+    "attack_type": "magic",
+    "attack_speed": 3.5,
+    "max_hit": 292,
+    "accuracy_rating": 18200,
+    "melee_evasion": 1450,
+    "ranged_evasion": 1450,
+    "magic_evasion": 1450,
+    "damage_reduction": 41,
+    "special_attacks": [
+      "stronghold_whiteout_oracle"
+    ],
+    "passives": [
+      "veil"
+    ],
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "phases": [
+      {
+        "name": "Whiteout",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "slow",
+            "duration": 5
+          }
+        }
+      },
+      {
+        "name": "Whiteout's edge",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 10,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 13500,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Magic attacker; weak to ranged, resists melee. Applies stun. Shrouded evasion. At 50% HP: Whiteout; at 20% HP: Whiteout's edge."
+  },
+  "the_glacial_regent": {
+    "id": "the_glacial_regent",
+    "name": "The Glacial Regent",
+    "combat_level": 395,
+    "hitpoints": 12700,
+    "attack_type": "melee",
+    "attack_speed": 3.5,
+    "max_hit": 310,
+    "accuracy_rating": 18200,
+    "melee_evasion": 1450,
+    "ranged_evasion": 1450,
+    "magic_evasion": 1450,
+    "damage_reduction": 44,
+    "special_attacks": [
+      "stronghold_the_glacial_regent"
+    ],
+    "passives": [],
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
+    ],
+    "phases": [
+      {
+        "name": "Whiteout",
+        "at_hp_percent": 60,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "slow",
+            "duration": 5
+          }
+        }
+      },
+      {
+        "name": "Absolute winter",
+        "at_hp_percent": 25,
+        "effects": {
+          "attack_type": "magic",
+          "attack_speed_multiplier": 1.15,
+          "max_hit_multiplier": 1.08
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 10,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 14500,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false,
+    "flavour": "Melee attacker; weak to magic, resists ranged. Applies stun. At 60% HP: Whiteout. At 25%: Absolute winter."
+  },
+  "venomroot_behemoth": {
+    "id": "venomroot_behemoth",
+    "name": "Venomroot Behemoth",
+    "combat_level": 390,
+    "hitpoints": 8900,
+    "attack_type": "melee",
+    "attack_speed": 3.4,
+    "max_hit": 298,
+    "accuracy_rating": 20400,
+    "melee_evasion": 1600,
+    "ranged_evasion": 1600,
+    "magic_evasion": 1600,
+    "damage_reduction": 41,
+    "special_attacks": [
+      "stronghold_venomroot_behemoth"
+    ],
+    "passives": [
+      "venomous"
+    ],
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
+    ],
+    "phases": [
+      {
+        "name": "Blighted bloom",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "poison",
+            "duration": 6,
+            "damage_per_tick": 9
+          }
+        }
+      },
+      {
+        "name": "Venomous collapse",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 12,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 15000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Melee attacker; weak to magic, resists ranged. Applies poison. Venom adds poison pressure. At 50% HP: Blighted bloom; at 20% HP: Venomous collapse."
+  },
+  "rotveil_matriarch": {
+    "id": "rotveil_matriarch",
+    "name": "Rotveil Matriarch",
+    "combat_level": 402,
+    "hitpoints": 10300,
+    "attack_type": "magic",
+    "attack_speed": 3.4,
+    "max_hit": 316,
+    "accuracy_rating": 20400,
+    "melee_evasion": 1600,
+    "ranged_evasion": 1600,
+    "magic_evasion": 1600,
+    "damage_reduction": 44,
+    "special_attacks": [
+      "stronghold_rotveil_matriarch"
+    ],
+    "passives": [
+      "thorns",
+      "venomous"
+    ],
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "phases": [
+      {
+        "name": "Blighted bloom",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "poison",
+            "duration": 6,
+            "damage_per_tick": 9
+          }
+        }
+      },
+      {
+        "name": "Plague crescendo",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 12,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 16000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Magic attacker; weak to ranged, resists melee. Applies poison. Reflects a portion of your hits. At 50% HP: Blighted bloom; at 20% HP: Plague crescendo."
+  },
+  "the_heart_of_rot": {
+    "id": "the_heart_of_rot",
+    "name": "The Heart of Rot",
+    "combat_level": 420,
+    "hitpoints": 13900,
+    "attack_type": "ranged",
+    "attack_speed": 3.4,
+    "max_hit": 334,
+    "accuracy_rating": 20400,
+    "melee_evasion": 1600,
+    "ranged_evasion": 1600,
+    "magic_evasion": 1600,
+    "damage_reduction": 47,
+    "special_attacks": [
+      "stronghold_the_heart_of_rot"
+    ],
+    "passives": [
+      "venomous"
+    ],
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "phases": [
+      {
+        "name": "Blighted bloom",
+        "at_hp_percent": 60,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "poison",
+            "duration": 6,
+            "damage_per_tick": 9
+          }
+        }
+      },
+      {
+        "name": "Roots drink deep",
+        "at_hp_percent": 25,
+        "effects": {
+          "attack_type": "magic",
+          "attack_speed_multiplier": 1.15,
+          "max_hit_multiplier": 1.08,
+          "add_passives": [
+            "lifedrain"
+          ]
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 12,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 17000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false,
+    "flavour": "Ranged attacker; weak to melee, resists magic. Applies poison. At 60% HP: Blighted bloom. At 25%: Roots drink deep."
+  },
+  "drowned_spearmarshal": {
+    "id": "drowned_spearmarshal",
+    "name": "Drowned Spearmarshal",
+    "combat_level": 410,
+    "hitpoints": 10100,
+    "attack_type": "melee",
+    "attack_speed": 3.3,
+    "max_hit": 322,
+    "accuracy_rating": 22600,
+    "melee_evasion": 1750,
+    "ranged_evasion": 1750,
+    "magic_evasion": 1750,
+    "damage_reduction": 44,
+    "special_attacks": [
+      "stronghold_drowned_spearmarshal"
+    ],
+    "passives": [],
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
+    ],
+    "phases": [
+      {
+        "name": "Crushing depths",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "silence",
+            "duration": 3
+          }
+        }
+      },
+      {
+        "name": "Undertow advance",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 14,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 17500,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Melee attacker; weak to magic, resists ranged. Applies bleed. At 50% HP: Crushing depths; at 20% HP: Undertow advance."
+  },
+  "tideglass_harrier": {
+    "id": "tideglass_harrier",
+    "name": "Tideglass Harrier",
+    "combat_level": 422,
+    "hitpoints": 11500,
+    "attack_type": "ranged",
+    "attack_speed": 3.3,
+    "max_hit": 340,
+    "accuracy_rating": 22600,
+    "melee_evasion": 1750,
+    "ranged_evasion": 1750,
+    "magic_evasion": 1750,
+    "damage_reduction": 47,
+    "special_attacks": [
+      "stronghold_tideglass_harrier"
+    ],
+    "passives": [],
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "phases": [
+      {
+        "name": "Crushing depths",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "silence",
+            "duration": 3
+          }
+        }
+      },
+      {
+        "name": "Final surge",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 14,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 18500,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Ranged attacker; weak to melee, resists magic. Applies slow. At 50% HP: Crushing depths; at 20% HP: Final surge."
+  },
+  "queen_of_the_abyss": {
+    "id": "queen_of_the_abyss",
+    "name": "Queen of the Abyss",
+    "combat_level": 440,
+    "hitpoints": 15100,
+    "attack_type": "magic",
+    "attack_speed": 3.3,
+    "max_hit": 358,
+    "accuracy_rating": 22600,
+    "melee_evasion": 1750,
+    "ranged_evasion": 1750,
+    "magic_evasion": 1750,
+    "damage_reduction": 50,
+    "special_attacks": [
+      "stronghold_queen_of_the_abyss"
+    ],
+    "passives": [
+      "veil"
+    ],
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "phases": [
+      {
+        "name": "Crushing depths",
+        "at_hp_percent": 60,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "apply_status": {
+            "id": "silence",
+            "duration": 3
+          }
+        }
+      },
+      {
+        "name": "Rising undertow",
+        "at_hp_percent": 25,
+        "effects": {
+          "attack_type": "ranged",
+          "attack_speed_multiplier": 1.15,
+          "max_hit_multiplier": 1.08
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 14,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 19500,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false,
+    "flavour": "Magic attacker; weak to ranged, resists melee. Applies silence. Shrouded evasion. At 60% HP: Crushing depths. At 25%: Rising undertow."
+  },
+  "voidglass_duelist": {
+    "id": "voidglass_duelist",
+    "name": "Voidglass Duelist",
+    "combat_level": 435,
+    "hitpoints": 11300,
+    "attack_type": "ranged",
+    "attack_speed": 3.2,
+    "max_hit": 346,
+    "accuracy_rating": 24800,
+    "melee_evasion": 1900,
+    "ranged_evasion": 1900,
+    "magic_evasion": 1900,
+    "damage_reduction": 47,
+    "special_attacks": [
+      "stronghold_voidglass_duelist"
+    ],
+    "passives": [
+      "veil"
+    ],
+    "weak_to": [
+      "melee"
+    ],
+    "resists": [
+      "magic"
+    ],
+    "phases": [
+      {
+        "name": "Shattered horizon",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "attack_type": "ranged"
+        }
+      },
+      {
+        "name": "Voidglass convergence",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 16,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 20000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Ranged attacker; weak to melee, resists magic. Applies slow. Shrouded evasion. At 50% HP: Shattered horizon; at 20% HP: Voidglass convergence."
+  },
+  "sunless_hierophant": {
+    "id": "sunless_hierophant",
+    "name": "Sunless Hierophant",
+    "combat_level": 447,
+    "hitpoints": 12700,
+    "attack_type": "magic",
+    "attack_speed": 3.2,
+    "max_hit": 364,
+    "accuracy_rating": 24800,
+    "melee_evasion": 1900,
+    "ranged_evasion": 1900,
+    "magic_evasion": 1900,
+    "damage_reduction": 50,
+    "special_attacks": [
+      "stronghold_sunless_hierophant"
+    ],
+    "passives": [],
+    "weak_to": [
+      "ranged"
+    ],
+    "resists": [
+      "melee"
+    ],
+    "phases": [
+      {
+        "name": "Shattered horizon",
+        "at_hp_percent": 50,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "attack_type": "ranged"
+        }
+      },
+      {
+        "name": "Last eclipse",
+        "at_hp_percent": 20,
+        "effects": {
+          "max_hit_multiplier": 1.12,
+          "attack_speed_multiplier": 1.12
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 16,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 21000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Magic attacker; weak to ranged, resists melee. Applies silence. At 50% HP: Shattered horizon; at 20% HP: Last eclipse."
+  },
+  "the_eclipse_sovereign": {
+    "id": "the_eclipse_sovereign",
+    "name": "The Eclipse Sovereign",
+    "combat_level": 465,
+    "hitpoints": 16300,
+    "attack_type": "melee",
+    "attack_speed": 3.2,
+    "max_hit": 382,
+    "accuracy_rating": 24800,
+    "melee_evasion": 1900,
+    "ranged_evasion": 1900,
+    "magic_evasion": 1900,
+    "damage_reduction": 53,
+    "special_attacks": [
+      "stronghold_the_eclipse_sovereign"
+    ],
+    "passives": [
+      "thorns"
+    ],
+    "weak_to": [
+      "magic"
+    ],
+    "resists": [
+      "ranged"
+    ],
+    "phases": [
+      {
+        "name": "Shattered horizon",
+        "at_hp_percent": 60,
+        "effects": {
+          "max_hit_multiplier": 1.08,
+          "attack_speed_multiplier": 1.1,
+          "attack_type": "ranged"
+        }
+      },
+      {
+        "name": "Total eclipse",
+        "at_hp_percent": 25,
+        "effects": {
+          "attack_type": "magic",
+          "attack_speed_multiplier": 1.15,
+          "max_hit_multiplier": 1.08
+        }
+      }
+    ],
+    "loot_table": [
+      {
+        "item_id": "herald_ore",
+        "quantity": 16,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.25
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 22000,
+    "is_boss": true,
+    "respawn_time": 5,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false,
+    "flavour": "Melee attacker; weak to magic, resists ranged. Applies stun. Reflects a portion of your hits. At 60% HP: Shattered horizon. At 25%: Total eclipse."
+  },
+  "reedbank_field_rat": {
+    "id": "reedbank_field_rat",
+    "name": "Reedbank Field Rat",
+    "combat_level": 1,
+    "hitpoints": 3,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 1,
+    "accuracy_rating": 4,
+    "melee_evasion": 2,
+    "ranged_evasion": 2,
+    "magic_evasion": 2,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "feather",
+        "quantity": 5,
+        "min_quantity": 1,
+        "chance": 0.8
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 5,
+        "chance": 1.0
+      },
+      {
+        "item_id": "ranch_hen",
+        "chance": 0.005,
+        "quantity": 1
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 2,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Plump brown field rat with straw in its fur, sharp ivory teeth, curled tail and tiny ears."
+  },
+  "reedbank_slinger": {
+    "id": "reedbank_slinger",
+    "name": "Reedbank Slinger",
+    "combat_level": 3,
+    "hitpoints": 10,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 2,
+    "accuracy_rating": 8,
+    "melee_evasion": 4,
+    "ranged_evasion": 4,
+    "magic_evasion": 4,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "bronze_sword",
+        "quantity": 1,
+        "chance": 0.05
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 9,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.266,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.266,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 4,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Small green goblin in a reed hat and patched tan tunic, holding a sling and a pouch of smooth river stones."
+  },
+  "lantern_moth": {
+    "id": "lantern_moth",
+    "name": "Lantern Moth",
+    "combat_level": 4,
+    "hitpoints": 12,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 3,
+    "accuracy_rating": 10,
+    "melee_evasion": 5,
+    "ranged_evasion": 5,
+    "magic_evasion": 5,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "bronze_sword",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 15,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 5,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Small golden moth with broad cream wings, glowing amber abdomen, leaf-like antennae and a friendly but menacing magical glow."
+  },
+  "strawbound_warden": {
+    "id": "strawbound_warden",
+    "name": "Strawbound Warden",
+    "combat_level": 6,
+    "hitpoints": 22,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 4,
+    "accuracy_rating": 17,
+    "melee_evasion": 8,
+    "ranged_evasion": 8,
+    "magic_evasion": 8,
+    "damage_reduction": 0,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "bronze_sword",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 37,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 8,
+    "is_boss": true,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Animated squat scarecrow wearing a burlap hood, glowing amber eyes, straw-stuffed limbs, rusted pitchfork and patched farmer coat.",
+    "special_attacks": [
+      "strawbound_warden_special"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 55,
+        "name": "Harvest Frenzy",
+        "effects": {"attack_speed_multiplier": 1.08}
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Last Lantern",
+        "effects": {"max_hit_multiplier": 1.12}
+      }
+    ]
+  },
+  "sootfang_fox": {
+    "id": "sootfang_fox",
+    "name": "Sootfang Fox",
+    "combat_level": 8,
+    "hitpoints": 22,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 4,
+    "accuracy_rating": 21,
+    "melee_evasion": 9,
+    "ranged_evasion": 9,
+    "magic_evasion": 9,
+    "damage_reduction": 2,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "bronze_sword",
+        "quantity": 1,
+        "chance": 0.05
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 45,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.266,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.266,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 12,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Crouching charcoal-red fox with bright amber eyes, sooty fur and ember-orange tail tip."
+  },
+  "ashwood_spitter": {
+    "id": "ashwood_spitter",
+    "name": "Ashwood Spitter",
+    "combat_level": 15,
+    "hitpoints": 34,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 6,
+    "accuracy_rating": 38,
+    "melee_evasion": 14,
+    "ranged_evasion": 18,
+    "magic_evasion": 10,
+    "damage_reduction": 3,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 122,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.325,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.325,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 25,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Chunky dark woodland beetle with orange cracked shell and a small glowing acid sac beneath its mandibles."
+  },
+  "embercap_shaman": {
+    "id": "embercap_shaman",
+    "name": "Embercap Shaman",
+    "combat_level": 18,
+    "hitpoints": 42,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 7,
+    "accuracy_rating": 50,
+    "melee_evasion": 18,
+    "ranged_evasion": 19,
+    "magic_evasion": 14,
+    "damage_reduction": 5,
+    "is_boss": false,
+    "loot_table": [
+      {
+        "item_id": "bronze_scimitar",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 3,
+        "min_quantity": 2
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 163,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 4,
+        "min_quantity": 2,
+        "chance": 0.691,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 12,
+        "min_quantity": 6,
+        "chance": 0.691,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 31,
+    "respawn_time": 3.0,
+    "can_be_stunned": false,
+    "is_immune_to_effects": false,
+    "flavour": "Small mushroom goblin shaman with glowing orange mushroom cap, grey-green skin, twisted branch staff and ember-spotted robe."
+  },
+  "cinderweb_broodmother": {
+    "id": "cinderweb_broodmother",
+    "name": "Cinderweb Broodmother",
+    "combat_level": 34,
+    "hitpoints": 108,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 13,
+    "accuracy_rating": 115,
+    "melee_evasion": 38,
+    "ranged_evasion": 38,
+    "magic_evasion": 38,
+    "damage_reduction": 6,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 587,
+        "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.265,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.265,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.265,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 65,
+    "is_boss": true,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Large crouched charcoal spider queen with ember-red carapace, ivory fangs, glowing orange eyes and a bright silk spinneret.",
+    "special_attacks": [
+      "cinderweb_broodmother_special"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 55,
+        "name": "Scorching Web",
+        "effects": {"attack_speed_multiplier": 1.08}
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Broodfire",
+        "effects": {"max_hit_multiplier": 1.12}
+      }
+    ]
+  },
+  "grave_sentinel": {
+    "id": "grave_sentinel",
+    "name": "Grave Sentinel",
+    "combat_level": 12,
+    "hitpoints": 30,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 5,
+    "accuracy_rating": 30,
+    "melee_evasion": 12,
+    "ranged_evasion": 12,
+    "magic_evasion": 12,
+    "damage_reduction": 5,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_scimitar",
+        "quantity": 1,
+        "chance": 0.02
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 85,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.309,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.309,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 20,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Short skeletal grave guardian wearing mossy iron scraps and a broken stone shield, holding a rusty sword."
+  },
+  "moor_bonearcher": {
+    "id": "moor_bonearcher",
+    "name": "Moor Bonearcher",
+    "combat_level": 22,
+    "hitpoints": 52,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 9,
+    "accuracy_rating": 66,
+    "melee_evasion": 23,
+    "ranged_evasion": 20,
+    "magic_evasion": 19,
+    "damage_reduction": 7,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "leather_body",
+        "quantity": 1,
+        "chance": 0.04
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 225,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.368,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.368,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 38,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Skeletal archer wrapped in faded teal burial cloth, carrying an old yew bow and bone arrows."
+  },
+  "mourning_lantern": {
+    "id": "mourning_lantern",
+    "name": "Mourning Lantern",
+    "combat_level": 28,
+    "hitpoints": 72,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 10,
+    "accuracy_rating": 88,
+    "melee_evasion": 31,
+    "ranged_evasion": 31,
+    "magic_evasion": 31,
+    "damage_reduction": 8,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "raw_swordfish",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 331,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.395,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.395,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 45,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Haunted bronze lantern floating in a compact swirl of pale blue spectral flame, small skull-like face inside the glass."
+  },
+  "bellkeeper_wraith": {
+    "id": "bellkeeper_wraith",
+    "name": "Bellkeeper Wraith",
+    "combat_level": 35,
+    "hitpoints": 110,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 12,
+    "accuracy_rating": 110,
+    "melee_evasion": 40,
+    "ranged_evasion": 40,
+    "magic_evasion": 40,
+    "damage_reduction": 12,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 615,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.269,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 60,
+    "is_boss": true,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Hooded blue spectral chapel keeper with glowing eyes, carrying a cracked bronze funeral bell and a crooked staff.",
+    "special_attacks": [
+      "bellkeeper_wraith_special"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 55,
+        "name": "Funeral Toll",
+        "effects": {"attack_speed_multiplier": 1.08}
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Midnight Chime",
+        "effects": {"max_hit_multiplier": 1.12}
+      }
+    ]
+  },
+  "tollway_cutthroat": {
+    "id": "tollway_cutthroat",
+    "name": "Tollway Cutthroat",
+    "combat_level": 23,
+    "hitpoints": 55,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 9,
+    "accuracy_rating": 70,
+    "melee_evasion": 24,
+    "ranged_evasion": 20,
+    "magic_evasion": 20,
+    "damage_reduction": 8,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "leather_body",
+        "quantity": 1,
+        "chance": 0.04
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 241,
+        "chance": 1.0
+      },
+      {
+        "item_id": "iron_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.368,
+        "_tier": true
+      },
+      {
+        "item_id": "air_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.368,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 40,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Stocky hooded highway robber in dark brown leather with green scarf, short curved dagger and a stolen coin pouch."
+  },
+  "rookwood_crossbowman": {
+    "id": "rookwood_crossbowman",
+    "name": "Rookwood Crossbowman",
+    "combat_level": 32,
+    "hitpoints": 84,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 12,
+    "accuracy_rating": 106,
+    "melee_evasion": 36,
+    "ranged_evasion": 36,
+    "magic_evasion": 36,
+    "damage_reduction": 7,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "leather_body",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 410,
+        "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 58,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Masked woodland mercenary wearing brown leather and moss-green cape, aiming a compact steel crossbow."
+  },
+  "thornhex_trickster": {
+    "id": "thornhex_trickster",
+    "name": "Thornhex Trickster",
+    "combat_level": 37,
+    "hitpoints": 96,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 14,
+    "accuracy_rating": 130,
+    "melee_evasion": 43,
+    "ranged_evasion": 43,
+    "magic_evasion": 43,
+    "damage_reduction": 10,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "leather_body",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 517,
+        "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.277,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 75,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Small sly violet woodland imp with thorny antlers, leaf cloak and a glowing lime spell between its hands."
+  },
+  "rookwatch_captain": {
+    "id": "rookwatch_captain",
+    "name": "Rookwatch Captain",
+    "combat_level": 60,
+    "hitpoints": 264,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 24,
+    "accuracy_rating": 320,
+    "melee_evasion": 110,
+    "ranged_evasion": 95,
+    "magic_evasion": 85,
+    "damage_reduction": 25,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "blue_dragonhide",
+        "chance": 0.9,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1456,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.365,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.365,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.365,
+        "_tier": true
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 180,
+    "is_boss": true,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Armoured outlaw captain with dark iron helmet, raven-feather mantle, heavy crossbow and scarlet belt.",
+    "special_attacks": [
+      "rookwatch_captain_special"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 55,
+        "name": "Raven Volley",
+        "effects": {"attack_speed_multiplier": 1.08}
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Last Watch",
+        "effects": {"max_hit_multiplier": 1.12}
+      }
+    ]
+  },
+  "rubble_mauler": {
+    "id": "rubble_mauler",
+    "name": "Rubble Mauler",
+    "combat_level": 42,
+    "hitpoints": 120,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 16,
+    "accuracy_rating": 160,
+    "melee_evasion": 60,
+    "ranged_evasion": 50,
+    "magic_evasion": 45,
+    "damage_reduction": 15,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "green_dragonhide",
+        "chance": 1.0,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 633,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.296,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.296,
+        "_tier": true
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 90,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Compact grey stone brute with ochre rubble fists, moss patches and amber eyes in a heavy craggy face."
+  },
+  "flintback_skitterer": {
+    "id": "flintback_skitterer",
+    "name": "Flintback Skitterer",
+    "combat_level": 48,
+    "hitpoints": 155,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 18,
+    "accuracy_rating": 196,
+    "melee_evasion": 72,
+    "ranged_evasion": 73,
+    "magic_evasion": 56,
+    "damage_reduction": 17,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "steel_arrow",
+        "quantity": 5,
+        "chance": 0.85,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "coal",
+        "quantity": 2,
+        "chance": 0.7,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 784,
+        "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.327,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.327,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.327,
+        "_tier": true
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 117,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Crab-like quarry creature with a sharp slate shell, flint spikes, stout legs and bright orange eyes."
+  },
+  "shale_crystal_wisp": {
+    "id": "shale_crystal_wisp",
+    "name": "Shale Crystal Wisp",
+    "combat_level": 54,
+    "hitpoints": 185,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 21,
+    "accuracy_rating": 250,
+    "melee_evasion": 70,
+    "ranged_evasion": 70,
+    "magic_evasion": 95,
+    "damage_reduction": 19,
+    "loot_table": [
+      {
+        "item_id": "bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 3,
+        "chance": 0.7,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 1,
+        "chance": 0.3
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 946,
+        "chance": 1.0
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.342,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.342,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.342,
+        "_tier": true
+      }
+    ],
+    "bone_type": "bones",
+    "slayer_xp": 145,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Floating cluster of jagged teal crystals surrounding a warm golden magical core, compact mineral spirit with dark stone fragments."
+  },
+  "vaultheart_colossus": {
+    "id": "vaultheart_colossus",
+    "name": "Vaultheart Colossus",
+    "combat_level": 58,
+    "hitpoints": 246,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 23,
+    "accuracy_rating": 290,
+    "melee_evasion": 100,
+    "ranged_evasion": 80,
+    "magic_evasion": 75,
+    "damage_reduction": 22,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "coal",
+        "quantity": 4,
+        "chance": 1.0,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "steel_bar",
+        "quantity": 1,
+        "chance": 0.5
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1379,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.358,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.358,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.358,
+        "_tier": true
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 165,
+    "is_boss": true,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Massive compact stone guardian with a glowing gold crystal heart, angular slate armour and enormous rock fists.",
+    "special_attacks": [
+      "vaultheart_colossus_special"
+    ],
+    "passives": [
+      "armored"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 55,
+        "name": "Fractured Heart",
+        "effects": {"attack_speed_multiplier": 1.08}
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Stonewake",
+        "effects": {"max_hit_multiplier": 1.12}
+      }
+    ]
+  },
+  "saltclaw_brute": {
+    "id": "saltclaw_brute",
+    "name": "Saltclaw Brute",
+    "combat_level": 66,
+    "hitpoints": 250,
+    "attack_type": "melee",
+    "attack_speed": 2.8,
+    "max_hit": 30,
+    "accuracy_rating": 400,
+    "melee_evasion": 122,
+    "ranged_evasion": 112,
+    "magic_evasion": 100,
+    "damage_reduction": 26,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "coal",
+        "chance": 0.7,
+        "quantity": 4,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 1,
+        "chance": 0.25
+      },
+      {
+        "item_id": "adamantite_ore",
+        "chance": 0.3,
+        "quantity": 1,
+        "min_quantity": 1
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1304,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.1
+      },
+      {
+        "item_id": "mithril_ore",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.388,
+        "_tier": true
+      },
+      {
+        "item_id": "mithril_bar",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.388,
+        "_tier": true
+      },
+      {
+        "item_id": "chaos_rune",
+        "quantity": 9,
+        "min_quantity": 4,
+        "chance": 0.388,
+        "_tier": true
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 250,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Stocky blue-green coastal crab ogre with one huge coral-orange claw, crusted shell armour and glowing yellow eyes."
+  },
+  "cliffside_harpooner": {
+    "id": "cliffside_harpooner",
+    "name": "Cliffside Harpooner",
+    "combat_level": 70,
+    "hitpoints": 260,
+    "attack_type": "ranged",
+    "attack_speed": 2.6,
+    "max_hit": 28,
+    "accuracy_rating": 380,
+    "melee_evasion": 130,
+    "ranged_evasion": 130,
+    "magic_evasion": 130,
+    "damage_reduction": 22,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.85
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 1433,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "chance": 0.1,
+        "quantity": 1
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.25,
+        "_tier": true
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 220,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Undead coastal harpooner wearing weathered teal seafarer coat, barnacled iron mask, carrying a short harpoon and rope coil."
+  },
+  "brineglass_sorcerer": {
+    "id": "brineglass_sorcerer",
+    "name": "Brineglass Sorcerer",
+    "combat_level": 96,
+    "hitpoints": 660,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 56,
+    "accuracy_rating": 840,
+    "melee_evasion": 270,
+    "ranged_evasion": 258,
+    "magic_evasion": 272,
+    "damage_reduction": 40,
+    "loot_table": [
+      {
+        "item_id": "dragon_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 1.0,
+        "quantity": 3,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "dragonite_bar",
+        "quantity": 1,
+        "chance": 0.18
+      },
+      {
+        "item_id": "umbral_essence",
+        "quantity": 1,
+        "chance": 0.3
+      },
+      {
+        "item_id": "prismatic_essence",
+        "quantity": 1,
+        "chance": 0.08
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 2375,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.2
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.33,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 2,
+        "min_quantity": 1,
+        "chance": 0.33,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 6,
+        "min_quantity": 3,
+        "chance": 0.33,
+        "_tier": true
+      }
+    ],
+    "bone_type": "dragon_bones",
+    "slayer_xp": 600,
+    "is_boss": false,
+    "respawn_time": 3.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Compact sea sorcerer with aqua crystal crown, deep blue robes, coral staff and a swirling green sea spell."
+  },
+  "saltglass_oracle": {
+    "id": "saltglass_oracle",
+    "name": "Saltglass Oracle",
+    "combat_level": 76,
+    "hitpoints": 480,
+    "attack_type": "magic",
+    "attack_speed": 3.0,
+    "max_hit": 35,
+    "accuracy_rating": 480,
+    "melee_evasion": 145,
+    "ranged_evasion": 140,
+    "magic_evasion": 150,
+    "damage_reduction": 32,
+    "loot_table": [
+      {
+        "item_id": "big_bones",
+        "quantity": 1,
+        "chance": 1.0
+      },
+      {
+        "item_id": "summoning_shard_green",
+        "chance": 0.85,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "blue_dragonhide",
+        "chance": 0.5,
+        "quantity": 2,
+        "min_quantity": 1
+      },
+      {
+        "item_id": "death_rune",
+        "chance": 0.5,
+        "quantity": 4,
+        "min_quantity": 2
+      },
+      {
+        "item_id": "pure_essence",
+        "quantity": 1,
+        "chance": 0.4
+      },
+      {
+        "is_currency": true,
+        "currency_id": "gp",
+        "quantity": 2125,
+        "chance": 1.0
+      },
+      {
+        "item_id": "enchant_catalyst",
+        "quantity": 1,
+        "chance": 0.15
+      },
+      {
+        "item_id": "runite_ore",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.268,
+        "_tier": true
+      },
+      {
+        "item_id": "runite_bar",
+        "quantity": 1,
+        "min_quantity": 1,
+        "chance": 0.268,
+        "_tier": true
+      },
+      {
+        "item_id": "death_rune",
+        "quantity": 3,
+        "min_quantity": 1,
+        "chance": 0.268,
+        "_tier": true
+      }
+    ],
+    "bone_type": "big_bones",
+    "slayer_xp": 310,
+    "is_boss": true,
+    "respawn_time": 5.0,
+    "can_be_stunned": true,
+    "is_immune_to_effects": false,
+    "flavour": "Regal drowned oracle with luminous aqua eyes, coral crown, dark blue layered robes, curved shell staff and turquoise spectral fins.",
+    "special_attacks": [
+      "saltglass_oracle_special"
+    ],
+    "phases": [
+      {
+        "at_hp_percent": 55,
+        "name": "Brine Prophecy",
+        "effects": {"attack_speed_multiplier": 1.08}
+      },
+      {
+        "at_hp_percent": 25,
+        "name": "Tidefall",
+        "effects": {"max_hit_multiplier": 1.12}
+      }
+    ]
   }
 }

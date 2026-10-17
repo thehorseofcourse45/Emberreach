@@ -51,6 +51,7 @@ func _on_game_loaded() -> void:
 ## thread.
 func build_snapshot(place_type: String, place_id: String, attack_style: String, melee_style: String, finite_supplies: bool = false) -> Dictionary:
 	var monsters: Array = _monster_sequence(place_type, place_id)
+	var hazard: Dictionary = CombatManager.region_hazard(str(place_id)) if str(place_type) == "area" else {}
 	if monsters.is_empty():
 		last_error = "That target has no monsters to fight."
 		return {}
@@ -61,10 +62,10 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		"prayer_balance": PlayerData.prayer_points,
 		"food_healing_percent": ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT),
 		"auto_eat_efficiency_percent": ModifierManager.get_modifier(ModifierKeys.AUTO_EAT_EFFICIENCY_PERCENT),
-		"player_special": EquipmentManager.get_weapon_special_attack().duplicate(true),
+		"player_special": EquipmentManager.get_weapon_special_attack(attack_style).duplicate(true),
 		"enchant_statuses": DataLoader.get_item(EquipmentManager.get_equipped(8)).get("enchant_statuses", []).duplicate(),
 		"protection_styles": [],
-		"attack_cost": EquipmentManager.get_attack_cost(),
+		"attack_cost": EquipmentManager.get_attack_cost(attack_style),
 		"ammo_preservation": ModifierManager.get_modifier(ModifierKeys.AMMO_PRESERVATION_PERCENT),
 		"attack_stock": BankManager.items.duplicate(),
 		"monsters": monsters,
@@ -74,7 +75,7 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		"prayer_points": PrayerManager.cost_per_attack(),
 		"mode_config": DataLoader.game_modes.get(str(PlayerData.game_mode), {}),
 		"in_slayer_area": str(DataLoader.areas.get(place_id, {}).get("type", "area")) == "slayer_area",
-		"hazard": CombatManager.region_hazard(place_id) if place_type == "area" else {},
+		"hazard": hazard,
 		"on_slayer_task": false,
 		"target_type": place_type,
 		"target_id": place_id,
@@ -82,7 +83,7 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 		# dictionary and no autoload, so anything it has to honour has to travel inside it.
 		"loadout": _ability_loadout(),
 		"strategy": CombatManager.active_strategy.duplicate(true),
-		"weapon_special": EquipmentManager.get_weapon_special_attack(),
+		"weapon_special": EquipmentManager.get_weapon_special_attack(attack_style),
 	}
 	# The player's own accuracy/max-hit come from CombatManager's derived paths so the simulator
 	# cannot drift from the live numbers.
@@ -99,6 +100,11 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	for id in PlayerData.active_prayers:
 		var prayer: Dictionary = PrayerManager.get_prayer(id)
 		if str(prayer.get("type", "")) == "protect": snapshot.protection_styles.append(str(prayer.get("style", "")))
+	# The affixes the player chose for this dungeon, summed by the same rule the live loop
+	# reads them with. Without them the estimate ran an easier fight than the one the player
+	# actually enters: a three-hit chicken instead of the hardened one the challenges spawn.
+	if str(place_type) == "dungeon":
+		snapshot["challenge_effects"] = _challenge_effects(place_id)
 	for id in snapshot.food: snapshot.food_counts[id] = BankManager.get_count(str(id))
 	if finite_supplies and place_type == "dungeon":
 		for id in DataLoader.get_dungeon(place_id).get("entry_items", {}):
@@ -116,6 +122,24 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	# Resource costs are authored on weapons. Existing attacks with no costs remain free.
 	last_error = ""
 	return snapshot
+
+## Summed effect values of the challenges in force for `dungeon_id`, keyed exactly as
+## DungeonModifierManager.modifier() reads them, so the model applies the same numbers to the
+## same keys. An attempt already under way uses its locked-in set; otherwise the player's
+## selection — which is what an estimate is made against — applies, and only to dungeons.
+func _challenge_effects(dungeon_id: String) -> Dictionary:
+	var ids: Array[String] = []
+	if DungeonModifierManager.active_dungeon == str(dungeon_id) and not DungeonModifierManager.active_ids.is_empty():
+		ids = DungeonModifierManager.active_ids
+	else:
+		ids = DungeonModifierManager.selected_ids
+	var effects: Dictionary = {}
+	for id in ids:
+		var defined: Dictionary = DungeonModifierManager.definitions.get(str(id), {})
+		for key in (defined.get("effects", {}) as Dictionary).keys():
+			var name: String = str(key)
+			effects[name] = float(effects.get(name, 0.0)) + float((defined["effects"] as Dictionary)[key])
+	return effects
 
 ## A minimal valid snapshot for `monster_id`, assembled from the same readers build_snapshot uses
 ## and touching no live combat state. This is the seam the simulator's own tests drive: a run

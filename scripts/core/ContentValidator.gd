@@ -272,6 +272,9 @@ func _check_action(skill_id: String, aid: String, a: Dictionary, max_level: int)
 		if c < 0.0 or c > 1.0:
 			_err("invalid_probability", "%s success_chance %f is outside 0..1" % [label, c])
 
+	if a.has("woven_spell"):
+		for message in validate_woven_spell(a.get("woven_spell")):
+			_err("invalid_woven_spell", "%s: %s" % [label, message])
 	var inputs: Dictionary = a.get("input_items", {})
 	var outputs: Dictionary = a.get("output_items", {})
 	for item_id in inputs.keys():
@@ -287,6 +290,7 @@ func _check_action(skill_id: String, aid: String, a: Dictionary, max_level: int)
 	var skill_type: String = str(DataLoader.get_skill(skill_id).get("type", ""))
 	var has_reward_channel: bool = not outputs.is_empty() or not inputs.is_empty() \
 		or not (a.get("secondary_outputs", []) as Array).is_empty() \
+		or not (a.get("pickpocket_loot", []) as Array).is_empty() \
 		or float(a.get("gp_reward", 0.0)) > 0.0
 	if not has_reward_channel:
 		# A few systems drive their own rewards from other data (Farming grows a seed's
@@ -320,6 +324,10 @@ func _check_action(skill_id: String, aid: String, a: Dictionary, max_level: int)
 			_err("invalid_probability", "%s secondary_output '%s' chance %f is outside 0..1" % [label, sid, chance])
 		if int(sec.get("min_qty", 1)) > int(sec.get("max_qty", 1)):
 			_err("invalid_quantity", "%s secondary_output '%s' min_qty > max_qty" % [label, sid])
+	if a.has("pickpocket_loot"):
+		if skill_id != "thieving" or not (a["pickpocket_loot"] is Array) \
+			or not preload("res://scripts/core/PickpocketLoot.gd").valid_table(a["pickpocket_loot"], DataLoader.items):
+			_err("invalid_pickpocket_loot", "%s needs distinct, valid items and positive quantities, with chances summing to 100%%" % label)
 	if a.has("ward"):
 		var ward: Variant = a["ward"]
 		if typeof(ward) != TYPE_DICTIONARY:
@@ -457,9 +465,17 @@ func _check_monsters() -> void:
 	for id in DataLoader.monsters.keys():
 		for sa in (DataLoader.monsters[id] as Dictionary).get("special_attacks", []):
 			carried[str(sa)] = true
+	for item in DataLoader.items.values():
+		var special := str(item.get("special_attack", ""))
+		if special != "":
+			carried[special] = true
+	for action in DataLoader.get_skill_actions("spellweaving"):
+		var special := str(action.get("woven_spell", {}).get("special_attack", ""))
+		if special != "":
+			carried[special] = true
 	for sa_id in DataLoader.special_attacks.keys():
 		if not carried.has(str(sa_id)):
-			_warn("unused_special_attack", "special attack '%s' is not carried by any monster" % sa_id)
+			_warn("unused_special_attack", "special attack '%s' is not used by any monster, weapon or woven spell" % sa_id)
 
 ## Checks the monster-mechanics schema (weak_to / resists / phases). Static so tests can feed
 ## in-memory records; returns one message per problem.
@@ -1344,7 +1360,7 @@ func _check_acquisition_coverage() -> void:
 		if typeof(species_def) != TYPE_DICTIONARY:
 			continue
 		var animal: Dictionary = species_def
-		for field in ["stock", "produce", "hide"]:
+		for field in ["stock", "rare_stock", "produce", "hide"]:
 			var granted: String = str(animal.get(field, ""))
 			if granted != "":
 				sources[granted] = true
@@ -1606,6 +1622,15 @@ func _check_new_skill_systems() -> void:
 				var value: Variant = record.get(field, null)
 				if not (value is int or value is float) or not is_finite(float(value)) or float(value) <= 0: _err("invalid_number", "%s.%s.%s must be a positive finite number" % [group, id, field])
 			if group == "devices" and not _has_skill(str(record.get("skill", ""))) and str(record.get("skill", "")) != "combat": _err("missing_reference", "device '%s' has unknown skill" % id)
+			if group == "devices" and record.has("efficiency_bonus"):
+				var bonus: Variant = record.get("efficiency_bonus")
+				if not (bonus is int or bonus is float) or not is_finite(float(bonus)) or float(bonus) < 0 or float(bonus) > 40:
+					_err("invalid_number", "%s.%s.efficiency_bonus must be a finite percentage in 0..40" % [group, id])
+			# rare_stock is optional — only a species with a rare variant carries one — so it
+			# cannot join item_fields (every record must have those), but when present it must
+			# name a real item or breeding would promise a variant that does not exist.
+			if group == "species" and record.has("rare_stock") and not _has_item(str(record.get("rare_stock", ""))):
+				_err("missing_reference", "%s.%s.rare_stock references a missing item" % [group, id])
 			if group == "caravan_routes":
 				if not ResourceLoader.exists("res://assets/caravans/maps/%s.png" % id): _err("missing_reference", "caravan route '%s' has no destination landscape" % id)
 				for good in (record.get("demand", []) as Array):
@@ -1648,6 +1673,24 @@ func _check_endgame() -> void:
 				_err("invalid_record", "Wonder %s has invalid material %s" % [bid, id])
 	for did in DataLoader.dungeons:
 		var d: Dictionary = DataLoader.dungeons[did]
+		if bool(d.get("stronghold", false)):
+			var stages: Variant = d.get("stages", [])
+			var sequence: Array = d.get("monsters", [])
+			if not stages is Array or stages.size() != sequence.size() or sequence.size() < 3:
+				_err("invalid_record", "Stronghold %s needs matching stages for at least three encounters" % did)
+			else:
+				var unique: Dictionary = {}
+				for i in range(stages.size()):
+					var stage: Variant = stages[i]
+					if not stage is Dictionary or str(stage.get("monster", "")) != str(sequence[i]) or str(stage.get("name", "")).strip_edges() == "" or str(stage.get("briefing", "")).strip_edges() == "":
+						_err("invalid_record", "Stronghold %s stage %d is incomplete or out of order" % [did,i])
+					if unique.has(str(sequence[i])) or not bool(DataLoader.get_monster(str(sequence[i])).get("is_boss", false)):
+						_err("invalid_record", "Stronghold %s requires unique stage bosses" % did)
+					unique[str(sequence[i])] = true
+			if not bool(d.get("equipment_locked", false)) or bool(d.get("endless_floors", false)):
+				_err("invalid_record", "Stronghold %s must lock equipment and end after its stages" % did)
+			if d.get("completion_reward", {}).get("items", {}).is_empty() or d.get("rewards_first_clear", {}).get("items", {}).is_empty():
+				_err("invalid_record", "Stronghold %s needs repeat and first-clear item rewards" % did)
 		if d.has("requires_quest") and Quests.get_quest(str(d.requires_quest)).is_empty():
 			_err("missing_reference", "Dungeon %s requires an unknown task" % did)
 		if d.has("dreamland"):
@@ -1676,3 +1719,30 @@ func _check_endgame() -> void:
 		for id in DataLoader.get_skill(str(sid)).get("mastery_challenge_reward", {}):
 			if not DataLoader.items.has(str(id)) or int(DataLoader.get_skill(str(sid)).mastery_challenge_reward[id]) <= 0:
 				_err("invalid_record", "Mastery challenge %s has invalid reward %s" % [sid, id])
+
+## Woven spells are content, never arbitrary expressions or executable formulas.
+static func validate_woven_spell(value: Variant) -> Array[String]:
+	var errors: Array[String] = []
+	if not value is Dictionary:
+		return ["woven_spell must be an object"]
+	for key in ["damage_multiplier", "interval_multiplier", "accuracy_percent"]:
+		if not _is_finite_number(value.get(key)):
+			errors.append("%s must be a finite number" % key)
+	for key in ["damage_multiplier", "interval_multiplier"]:
+		if _is_finite_number(value.get(key)) and (float(value[key]) < 0.5 or float(value[key]) > 1.5):
+			errors.append("%s must be between 0.5 and 1.5" % key)
+	if _is_finite_number(value.get("accuracy_percent")) and absf(float(value.accuracy_percent)) > 25.0:
+		errors.append("accuracy adjustment must be within 25%")
+	var runes: Variant = value.get("runes")
+	if not runes is Dictionary or runes.is_empty():
+		errors.append("runes must be a nonempty object")
+	else:
+		for rune in runes:
+			if str(DataLoader.get_item(str(rune)).get("item_type", "")) != "rune":
+				errors.append("unknown casting rune: " + str(rune))
+			if not _is_finite_number(runes[rune]) or float(runes[rune]) != int(runes[rune]) or int(runes[rune]) < 1:
+				errors.append("casting quantities must be positive integers")
+	var special := str(value.get("special_attack", ""))
+	if special != "" and not DataLoader.special_attacks.has(special):
+		errors.append("unknown casting special: " + special)
+	return errors

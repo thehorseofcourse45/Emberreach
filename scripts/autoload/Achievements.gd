@@ -125,7 +125,7 @@ func measure(cond: Dictionary) -> float:
 				total += PlayerData.get_level(skill_id)
 			return float(total)
 		"item_count":
-			return float(BankManager.get_count(str(cond.get("item_id", ""))))
+			return float(BankManager.count_with_variants(str(cond.get("item_id", ""))))
 		"lifetime_item":
 			return PlayerData.get_stat("items_gained", str(cond.get("item_id", "")))
 		"monsters_killed":

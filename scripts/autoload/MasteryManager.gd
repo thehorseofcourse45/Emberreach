@@ -205,6 +205,36 @@ func serialize() -> Dictionary:
     return {"mastery_xp": _mastery_xp.duplicate(true), "pools": _pools.duplicate(true), "challenges": _challenges.duplicate(true)}
 
 func deserialize(data: Dictionary) -> void:
+    data = data.duplicate(true)
+    # Preserve automation mastery previously stored under shortened device recipe IDs.
+    for device in DataLoader.new_skill_systems.get("devices", []):
+        var legacy: String = "assemble_" + str(device.id).trim_prefix("device_")
+        var canonical: String = "assemble_" + str(device.id)
+        if DataLoader.get_action("engineering", canonical).is_empty(): continue
+        var raw_xp: Variant = data.get("mastery_xp", {}).get("engineering", {})
+        var xp: Dictionary = raw_xp if raw_xp is Dictionary else {}
+        if xp.has(legacy):
+            var raw_old: Variant = xp[legacy]
+            var raw_current: Variant = xp.get(canonical, 0.0)
+            var old_xp: float = float(raw_old) if typeof(raw_old) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(raw_old)) else 0.0
+            var current_xp: float = float(raw_current) if typeof(raw_current) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(raw_current)) else 0.0
+            var combined: float = maxf(0.0, old_xp) + maxf(0.0, current_xp)
+            xp[canonical] = combined if is_finite(combined) else maxf(old_xp, current_xp)
+            xp.erase(legacy)
+        var raw_challenges: Variant = data.get("challenges", {})
+        var challenges: Dictionary = raw_challenges if raw_challenges is Dictionary else {}
+        var old_key: String = "engineering:" + legacy
+        var new_key: String = "engineering:" + canonical
+        if challenges.has(old_key) and challenges[old_key] is Dictionary:
+            var old_row: Dictionary = challenges[old_key]
+            var candidate: Variant = challenges.get(new_key, {})
+            var new_row: Dictionary = candidate if candidate is Dictionary else {}
+            var raw_old_seconds: Variant = old_row.get("seconds", 0.0)
+            var raw_new_seconds: Variant = new_row.get("seconds", 0.0)
+            var old_seconds: float = float(raw_old_seconds) if typeof(raw_old_seconds) in [TYPE_INT, TYPE_FLOAT] else 0.0
+            var new_seconds: float = float(raw_new_seconds) if typeof(raw_new_seconds) in [TYPE_INT, TYPE_FLOAT] else 0.0
+            challenges[new_key] = {"seconds": (clampf(old_seconds, 0.0, CHALLENGE_SECONDS) if is_finite(old_seconds) else 0.0) + (clampf(new_seconds, 0.0, CHALLENGE_SECONDS) if is_finite(new_seconds) else 0.0), "claimed": bool(old_row.get("claimed", false)) or bool(new_row.get("claimed", false))}
+            challenges.erase(old_key)
     _challenges.clear()
     var saved: Variant = data.get("challenges", {})
     if saved is Dictionary:

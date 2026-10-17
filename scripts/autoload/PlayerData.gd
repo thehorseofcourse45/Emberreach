@@ -429,7 +429,7 @@ func deserialize(d: Dictionary) -> void:
     var drops: Variant = d.get("notable_drops", [])
     if drops is Array:
         for e in drops.slice(-NOTABLE_DROPS_MAX):
-            if not (e is Dictionary) or not DataLoader.items.has(str(e.get("item_id", ""))):
+            if not (e is Dictionary) or DataLoader.get_item(str(e.get("item_id", ""))).is_empty():
                 continue
             var q: Variant = e.get("qty", 1)
             var t: Variant = e.get("unix", 0)
@@ -471,7 +471,7 @@ func _sanitize_item_flags(source: Variant) -> Dictionary:
     if typeof(source) != TYPE_DICTIONARY:
         return out
     for item_id in (source as Dictionary).keys():
-        if DataLoader.items.has(str(item_id)):
+        if not DataLoader.get_item(str(item_id)).is_empty():
             out[str(item_id)] = true
     return out
 

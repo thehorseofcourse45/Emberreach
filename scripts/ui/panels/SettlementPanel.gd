@@ -14,6 +14,7 @@ var _buildings_box: VBoxContainer
 var _trader_box: VBoxContainer
 var _worship_box: VBoxContainer
 var _study_box: VBoxContainer
+var _specialization_box: VBoxContainer
 var _ticks: Label
 var _built: bool = false
 
@@ -37,6 +38,8 @@ func _ready() -> void:
 	add_child(_ticks)
 	_resources_box = UIStyle.section("Stores", "produced every hour")
 	add_child(_resources_box)
+	_specialization_box = UIStyle.section("Town specializations", "Choose an identity; switching spends the new path's costs")
+	add_child(_specialization_box)
 	_buildings_box = UIStyle.section("Structures", "cost, effect and what it feeds")
 	add_child(_buildings_box)
 	_wonders_box = UIStyle.section("Settlement wonders", "Three permanent stages; bank materials and settlement stores unlock legendary expeditions")
@@ -60,9 +63,10 @@ func detail_context() -> Dictionary:
 		"body": "One production tick per hour of real time. Offline catch-up applies the same ticks, so growth continues while the game is closed."}
 
 func refresh() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, refresh):
 		return
 	_rebuild_resources()
+	_rebuild_specializations()
 	_rebuild_buildings()
 	_rebuild_trader()
 	_rebuild_worship()
@@ -96,6 +100,37 @@ func _rebuild_resources() -> void:
 	]))
 	_ticks.text = "Next production tick in %s  ·  total stored %s" % [
 		UIStyle.fmt_duration(TownshipManager.seconds_to_next_tick()), UIStyle.fmt(total)]
+
+func _rebuild_specializations() -> void:
+	for child in _specialization_box.get_children():
+		_specialization_box.remove_child(child)
+		child.queue_free()
+	for spec_id in DataLoader.settlement_specializations.keys():
+		var spec: Dictionary = DataLoader.settlement_specializations[spec_id]
+		var id: String = str(spec_id)
+		var selected: bool = TownshipManager.specialization == id
+		var card := UIStyle.card(selected)
+		var col := UIStyle.vbox(UITokens.SP_2)
+		card.add_child(col)
+		col.add_child(UIStyle.title(str(spec.get("name", id)), UITokens.FONT_SUBHEAD))
+		col.add_child(UIStyle.label(str(spec.get("description", "")), true, UITokens.FONT_SMALL))
+		var effects: Array[String] = []
+		for resource in (spec.get("production_bonus", {}) as Dictionary):
+			effects.append("+%s%% %s" % [str(spec.production_bonus[resource]), TownshipManager.resource_name(str(resource))])
+		col.add_child(UIStyle.colored_label("Hourly: " + ", ".join(effects), UITokens.TEAL, UITokens.FONT_MICRO))
+		var costs: Array[String] = ["%s GP" % UIStyle.fmt(float(spec.get("gp_cost", 0)))]
+		for resource in (spec.get("store_cost", {}) as Dictionary):
+			costs.append("%s %s" % [UIStyle.fmt(float(spec.store_cost[resource])), TownshipManager.resource_name(str(resource))])
+		col.add_child(UIStyle.label("Cost: " + ", ".join(costs), true, UITokens.FONT_MICRO))
+		var blocker: String = TownshipManager.specialization_blocker(id)
+		var button := UIStyle.primary_button("Current specialization" if selected else "Specialize")
+		button.disabled = selected or blocker != ""
+		button.tooltip_text = blocker if blocker != "" else "Adopt this settlement path"
+		button.pressed.connect(func(): TownshipManager.choose_specialization(id))
+		col.add_child(button)
+		if blocker != "" and not selected:
+			col.add_child(UIStyle.colored_label(blocker, UITokens.AMBER, UITokens.FONT_MICRO))
+		_specialization_box.add_child(card)
 
 func _rebuild_buildings() -> void:
 	for c in _wonders_box.get_children():
@@ -294,10 +329,10 @@ func _rebuild_study() -> void:
 	_study_box.add_child(UIStyle.colored_label("+%s XP / hour (Schoolhouse level %d)" % [UIStyle.fmt(rate), level] if rate > 0.0 else "Nobody is studying.", UITokens.TEAL if rate > 0.0 else UITokens.TEXT_DIM, UITokens.FONT_MICRO))
 
 func _refresh_costs() -> void:
-	if _built:
+	if _built and not Widgets.defer_offscreen_rebuild(self, _refresh_costs):
 		_rebuild_buildings()
 
 func _show_wonders(on: bool) -> void:
 	_wonders_box.visible = on
-	for box in [_resources_box, _buildings_box, _trader_box, _worship_box, _study_box]:
+	for box in [_resources_box, _specialization_box, _buildings_box, _trader_box, _worship_box, _study_box]:
 		box.visible = not on

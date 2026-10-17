@@ -1,0 +1,112 @@
+[
+  [
+    "metallic",
+    "Metallic",
+    "8–20",
+    "copper and iron coloured flecks suspended in amber fluid, squat iron bound bottle",
+    8,
+    1,
+    "enchant_martial_essence",
+    1,
+    [
+      "tin_flecked",
+      "sturdy",
+      "carbon_seam"
+    ]
+  ],
+  [
+    "argent",
+    "Argent",
+    "25–32",
+    "swirling silver white fluid and a moonlike silver stopper, slender pear shaped bottle",
+    25,
+    2,
+    "enchant_warding_essence",
+    1,
+    [
+      "dense",
+      "argent_seam"
+    ]
+  ],
+  [
+    "gilded",
+    "Gilded",
+    "40–48",
+    "rich molten gold fluid, square gold framed bottle with diamond stopper",
+    40,
+    3,
+    "enchant_martial_essence",
+    1,
+    [
+      "rich",
+      "gilded_seam"
+    ]
+  ],
+  [
+    "azure",
+    "Azure",
+    "55–60",
+    "cobalt and cyan magical fluid, angular blue glass bottle with silver neck",
+    55,
+    4,
+    "enchant_arcane_essence",
+    2,
+    [
+      "deep",
+      "azure_seam"
+    ]
+  ],
+  [
+    "frost",
+    "Frost",
+    "65–72",
+    "icy pale blue essence and tiny ice crystals inside faceted frosted bottle",
+    65,
+    5,
+    "enchant_warding_essence",
+    2,
+    [
+      "radiant",
+      "frostcrystal_seam"
+    ]
+  ],
+  [
+    "ember",
+    "Ember",
+    "88",
+    "fiery orange red essence held in charcoal black glass flask, flame shaped stopper",
+    88,
+    6,
+    "enchant_martial_essence",
+    2,
+    [
+      "ember_seam"
+    ]
+  ],
+  [
+    "void",
+    "Void",
+    "95",
+    "dark indigo black essence with bright violet swirling core, round obsidian glass bottle",
+    95,
+    7,
+    "enchant_arcane_essence",
+    2,
+    [
+      "voidtouched"
+    ]
+  ],
+  [
+    "crown",
+    "Crown",
+    "110",
+    "white gold radiant essence, regal crimson and gold ornate flask with crown shaped stopper",
+    110,
+    8,
+    "enchant_warding_essence",
+    3,
+    [
+      "crownstone_seam"
+    ]
+  ]
+]

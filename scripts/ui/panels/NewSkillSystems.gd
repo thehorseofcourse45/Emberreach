@@ -66,6 +66,8 @@ func build() -> void:
 		"enchanting": _enchanting()
 		"dreamwalking": _dreams()
 		"caravaneering": _caravans()
+		"riftkeeping": _rifts()
+		"spellweaving": _spells()
 
 func _caravans() -> void:
 	var cm = CaravaneeringManager
@@ -370,10 +372,10 @@ func _ranch() -> void:
 				EventBus.state_refreshed.emit(), not ids.is_empty())
 			_button(row, "Stock", func():
 				if not RanchingManager.stock(index, str(ids[choice.selected])): EventBus.notify("Buy stock first; animals in a pen must match.", "warn"), not ids.is_empty())
-			if BankManager.get_count("golden_hen_stock") > 0 or BankManager.get_count("mooncalf_stock") > 0:
+			if ids.any(func(id): return BankManager.get_count(RanchingManager.rare_stock_id(str(id))) > 0):
 				_button(row, "Rare stock", func():
-					if not RanchingManager.stock(index, str(ids[choice.selected]), true): EventBus.notify("No matching rare stock, or this pen holds ordinary animals.", "warn"), not ids.is_empty())
-	var catalogue := _card("Livestock catalogue", "A long-term progression from hens to celestial dragons. Matching animals share a pen; rare hens and mooncalves produce twice as much.")
+					if not RanchingManager.stock(index, str(ids[choice.selected]), true): EventBus.notify("That species has no rare variant, you do not hold its rare stock, or this pen holds ordinary animals.", "warn"), not ids.is_empty())
+	var catalogue := _card("Livestock catalogue", "A long-term progression from hens to celestial dragons. Matching animals share a pen; rare variants of every species produce twice as much.")
 	var catalogue_grid := _flow()
 	catalogue.add_child(catalogue_grid)
 	for animal in DataLoader.new_skill_systems.get("species", []):
@@ -396,6 +398,12 @@ func _ranch() -> void:
 		content.add_child(Widgets.mastery_progress("ranching", "raise_" + str(animal.id)))
 		content.add_child(Widgets.item_rewards({str(animal.produce): 1}))
 		content.add_child(UIStyle.label("%s cycle · %d feed/hour" % [UIStyle.fmt_duration(float(animal.seconds)), int(animal.feed)], true, UITokens.FONT_SMALL))
+		# Eligibility is shown where the player looks for it: only a species that names a rare
+		# variant in the data advertises one, so the catalogue can no longer imply that every
+		# animal can be bred rare.
+		var rare_id: String = RanchingManager.rare_stock_id(str(animal.id))
+		if rare_id != "":
+			content.add_child(UIStyle.label("Rare variant: %s" % str(DataLoader.get_item(rare_id).get("name", rare_id)), true, UITokens.FONT_SMALL))
 		_button(content, "Buy stock · owned %d" % BankManager.get_count(str(animal.stock)), func():
 			if not ShopManager.buy_store("store_" + str(animal.stock)): EventBus.notify("You need more GP or storage space.", "warn")
 			EventBus.state_refreshed.emit(), unlocked)
@@ -430,7 +438,7 @@ func _inscription() -> void:
 		box.add_child(UIStyle.label("Select a Research activity above to unlock your first recipe.", true, UITokens.FONT_SMALL))
 
 func _engineering() -> void:
-	var box := _card("Clockwork workshop", "%d device slots. Workers start at 40%% efficiency; their XP and output ignore your active skill bonuses. Fuel is prepaid one hour at a time." % EngineeringManager.slots())
+	var box := _card("Clockwork workshop", "%d device slots. Workers start at 40%% efficiency, and a device's own bonus is shown with it; their XP and output ignore your active skill bonuses. Fuel is prepaid one hour at a time." % EngineeringManager.slots())
 	for index in range(EngineeringManager.installed.size()):
 		var worker: Dictionary = EngineeringManager.installed[index]
 		var def: Dictionary = EngineeringManager.device(str(worker.id))
@@ -463,7 +471,9 @@ func _engineering() -> void:
 			names = ["Recover waiting loot from Storage overflow"]
 		else:
 			for action in DataLoader.get_skill_actions(str(def.skill)):
-				if PlayerData.get_level(str(def.skill)) >= int(action.level_required):
+				# The same gates the worker itself enforces: a recipe that manual crafting locks
+				# behind another skill or a building must not be offered here either.
+				if EngineeringManager.valid_work(def, str(action.id)):
 					ids.append(str(action.id))
 					names.append(str(action.name))
 		var choice := _choice(panel, ids, names)
@@ -628,3 +638,52 @@ func _open_caravan_map(route_id: String, journey: Dictionary = {}) -> void:
 	get_tree().root.add_child(view)
 	var available: Vector2i = Vector2i(get_viewport_rect().size) - Vector2i(48, 64)
 	view.popup_centered(Vector2i(mini(1040, available.x), mini(840, available.y)))
+
+func _rifts() -> void:
+	var box := _card("Containment stance", "Safe guarantees a smaller harvest. Balanced gives two aether per success. Overcharged gives four, but failures interrupt extraction. Rift nodes also need time to reform. These rules apply offline too.")
+	var select := _choice(box, ArcaneSkills.MODES, ["Safe · guaranteed · slower", "Balanced · steady extraction", "Overcharged · risky · larger harvest"])
+	select.select(maxi(0, ArcaneSkills.MODES.find(str(PlayerData.settings.get("riftkeeping_mode", "balanced")))))
+	select.item_selected.connect(func(index: int):
+		if SkillManager.active_skill == "riftkeeping":
+			SkillManager.stop_action()
+		PlayerData.settings["riftkeeping_mode"] = ArcaneSkills.MODES[index]
+		SaveManager.save_game()
+		EventBus.state_refreshed.emit())
+	box.add_child(UIStyle.label("Each activity's mastery gradually improves stability, up to +5% success chance at mastery 120. Changing stance stops the current extraction; start your chosen rift again.", true, UITokens.FONT_SMALL))
+
+func _spells() -> void:
+	var box := _card("Prepared spell", "Weave a pattern once to learn it permanently. With a magic weapon equipped, select a learned pattern to reshape every Sorcery attack. Both Spellweaving and Sorcery must meet its level. Patterns replace your weapon's special attack; weapon rune costs still apply.")
+	var ids: Array = [""]
+	var names: Array = ["Weapon spell · original casting"]
+	var icons: Array = [AssetRegistry.skill_icon("magic")]
+	for action in DataLoader.get_skill_actions("spellweaving"):
+		if ArcaneSkills.can_cast(action):
+			ids.append(str(action.id))
+			names.append(str(action.name).trim_prefix("Weave "))
+			icons.append(AssetRegistry.icon("spellweaving", str(action.id)))
+	var chosen := str(PlayerData.settings.get("spellweaving_pattern", ""))
+	var select := _choice(box, ids, names, icons)
+	select.select(maxi(0, ids.find(chosen)))
+	select.item_selected.connect(func(index: int):
+		PlayerData.settings["spellweaving_pattern"] = ids[index]
+		SaveManager.save_game()
+		EventBus.state_refreshed.emit())
+	var tuning := _choice(box, ArcaneSkills.TUNINGS, ["Balanced casting", "Focused · stronger, accurate, slower", "Rapid · faster, weaker, less accurate", "Frugal · fewer extra runes, weaker, slower"])
+	tuning.select(maxi(0, ArcaneSkills.TUNINGS.find(str(PlayerData.settings.get("spellweaving_tuning", "balanced")))))
+	tuning.item_selected.connect(func(index: int):
+		PlayerData.settings["spellweaving_tuning"] = ArcaneSkills.TUNINGS[index]
+		SaveManager.save_game()
+		EventBus.state_refreshed.emit())
+	var pattern := ArcaneSkills.active_pattern("magic")
+	if pattern.is_empty():
+		box.add_child(UIStyle.label("Using your weapon's original spell. Learn a pattern and equip a magic weapon to enable spellweaving.", true, UITokens.FONT_SMALL))
+	else:
+		box.add_child(Widgets.key_value("Prepared pattern", str(pattern.name).trim_prefix("Weave "), UITokens.GOLD))
+		box.add_child(Widgets.key_value("Damage / casting time", "%.0f%% / %.0f%% of weapon" % [float(pattern.damage_multiplier) * 100.0, float(pattern.interval_multiplier) * 100.0]))
+		box.add_child(Widgets.key_value("Accuracy adjustment", "%+.0f%%" % float(pattern.accuracy_percent)))
+		box.add_child(UIStyle.label("Runes per attack (including weapon)", true, UITokens.FONT_SMALL))
+		box.add_child(Widgets.item_rewards(EquipmentManager.get_attack_cost("magic")))
+		var special := ArcaneSkills.special("magic")
+		if not special.is_empty():
+			box.add_child(Widgets.key_value("On-hit effect", "%.0f%% chance · %s" % [float(special.trigger_chance), str(special.effect).capitalize()]))
+	box.add_child(UIStyle.label("Mastery 60 and 120 each save one extra rune per attack. Frugal saves another. Learning persists after selling the pattern; extra copies are useful for training and selling.", true, UITokens.FONT_SMALL))

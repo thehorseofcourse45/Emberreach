@@ -52,7 +52,7 @@ func detail_context() -> Dictionary:
 		"body": "Categories cover progression, gathering, crafting, combat, discovery, collection and a few optional challenges."}
 
 func _rebuild() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
 		return
 	var claimed: int = Achievements.claimed_count()
 	var ready: int = Achievements.ready_count()

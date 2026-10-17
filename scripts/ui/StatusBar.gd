@@ -142,7 +142,7 @@ func set_save_state(kind: String, message: String) -> void:
 func _on_clear() -> void:
 	var mode: String = str(PlayerData.settings.get("new_game_mode", PlayerData.game_mode))
 	ConfirmDialog.ask(self, "Clear save?",
-		"This deletes your save file and its automatic backup, then begins a new %s journey.\n\nThis cannot be undone." % mode,
+		"This clears the active save slot and its backup, then begins a new %s journey. Other save slots are preserved.\n\nThis cannot be undone for the active slot." % mode,
 		"Clear save", _do_clear, true,
 		"Exporting a copy first is free and reversible.")
 

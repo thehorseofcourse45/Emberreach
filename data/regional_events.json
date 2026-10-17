@@ -1,0 +1,8 @@
+{
+  "ashfall": {"name": "Cinderfall", "region_id": "golbin_village", "description": "Volcanic ash settles over the Cinderkin Warrens. Ore is plentiful, but enemies are restless.", "modifiers": {"mining_doubling_percent": 8, "smithing_skill_xp_percent": 5}, "enemy_damage_percent": 12},
+  "spring_bloom": {"name": "Hearthfall Bloom", "region_id": "farmlands", "description": "A surge of spring life supplies lumber and useful provisions.", "modifiers": {"woodcutting_doubling_percent": 9, "farming_skill_xp_percent": 7}, "enemy_damage_percent": -5},
+  "grave_mist": {"name": "Ashen Grave Mist", "region_id": "graveyard", "description": "A ghostly mist thickens over the barrows, empowering the restless dead.", "modifiers": {"prayer_skill_xp_percent": 8, "herblore_skill_xp_percent": 6}, "enemy_damage_percent": 15},
+  "river_flood": {"name": "River Flood", "region_id": "wet_forest", "description": "Swollen rivers carry plentiful fish downstream.", "modifiers": {"fishing_doubling_percent": 10, "cooking_skill_xp_percent": 5}, "enemy_damage_percent": 8},
+  "merchant_fair": {"name": "Frontier Trade Fair", "region_id": "farmlands", "description": "Travelling merchants exchange goods at unusually favorable rates.", "modifiers": {"global_gp_percent": 8, "caravaneering_skill_xp_percent": 7}, "enemy_damage_percent": 0},
+  "rift_surge": {"name": "Astral Rift Surge", "region_id": "dragon_valley", "description": "Unstable rift currents empower magical studies and awaken dangerous foes.", "modifiers": {"riftkeeping_skill_xp_percent": 10, "spellweaving_skill_xp_percent": 8, "runecrafting_skill_xp_percent": 6}, "enemy_damage_percent": 16}
+}

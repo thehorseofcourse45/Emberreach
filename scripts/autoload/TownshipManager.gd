@@ -63,6 +63,7 @@ var buildings: Dictionary = {}       # building_id -> level
 var population: int = 0
 var worship: String = ""
 var study: String = ""
+var specialization: String = ""
 var _tick_accumulator: float = 0.0
 
 func _ready() -> void:
@@ -111,7 +112,43 @@ func production_per_hour(res_id: String) -> float:
 		var def: Dictionary = buildings_data().get(building_id, {})
 		var per_level: float = float((def.get("production", {}) as Dictionary).get(res_id, 0.0))
 		total += per_level * float(level_of(str(building_id)))
-	return total
+	return total * _specialization_production_multiplier(res_id)
+
+func _specialization_production_multiplier(res_id: String) -> float:
+	var spec: Dictionary = DataLoader.settlement_specializations.get(specialization, {})
+	var bonus: float = float((spec.get("production_bonus", {}) as Dictionary).get(res_id, 0.0))
+	return 1.0 + bonus / 100.0
+
+func specialization_blocker(spec_id: String) -> String:
+	var spec: Dictionary = DataLoader.settlement_specializations.get(spec_id, {})
+	if spec.is_empty():
+		return "Unknown specialization"
+	if specialization == spec_id:
+		return "Already selected"
+	if PlayerData.get_level("township") < int(spec.get("requires_level", 20)):
+		return "Requires Township %d" % int(spec.get("requires_level", 20))
+	if PlayerData.gp < float(spec.get("gp_cost", 0)):
+		return "Not enough gold"
+	for res_id in (spec.get("store_cost", {}) as Dictionary):
+		if float(resources.get(res_id, 0.0)) < float(spec.store_cost[res_id]):
+			return "Needs %s" % resource_name(str(res_id))
+	return ""
+
+## Switching paths is permitted, but always consumes the selected path's full costs.
+func choose_specialization(spec_id: String) -> bool:
+	var blocker: String = specialization_blocker(spec_id)
+	if blocker != "":
+		EventBus.notify("Cannot specialize: " + blocker, "warn")
+		return false
+	var spec: Dictionary = DataLoader.settlement_specializations[spec_id]
+	for res_id in (spec.get("store_cost", {}) as Dictionary):
+		resources[res_id] = float(resources.get(res_id, 0.0)) - float(spec.store_cost[res_id])
+	PlayerData.spend_gp(float(spec.get("gp_cost", 0)))
+	specialization = spec_id
+	_reregister_modifiers()
+	EventBus.notify("Settlement specializes as %s." % spec.get("name", spec_id), "success")
+	EventBus.state_refreshed.emit()
+	return true
 
 ## Cost of the NEXT level of a structure, grown by `cost_growth` per level already built.
 func scaled_cost(building_id: String) -> Dictionary:
@@ -170,7 +207,7 @@ func produce_tick() -> void:
 			if str(res) == "population":
 				continue   # population is derived, never stored as a spendable resource
 			resources[str(res)] = float(resources.get(str(res), 0.0)) \
-				+ float(production[res]) * float(level_of(str(building_id)))
+				+ float(production[res]) * float(level_of(str(building_id))) * _specialization_production_multiplier(str(res))
 	population = int(productions_population())
 	var xp: float = xp_per_hour()
 	if xp > 0.0:
@@ -242,6 +279,14 @@ func _reregister_modifiers() -> void:
 		ModifierManager.register("%s:%s" % [CATEGORY, building_id], scaled, CATEGORY,
 			"%s (level %d)" % [str(buildings_data()[building_id].get("name", building_id)), level])
 	_apply_worship()
+	_apply_specialization()
+
+func _apply_specialization() -> void:
+	ModifierManager.unregister("township:specialization")
+	var spec: Dictionary = DataLoader.settlement_specializations.get(specialization, {})
+	if not spec.is_empty() and not (spec.get("modifiers", {}) as Dictionary).is_empty():
+		ModifierManager.register("township:specialization", spec.modifiers, CATEGORY,
+			"Specialization: " + str(spec.get("name", specialization)))
 
 # =========================================================================
 #  Offline
@@ -389,6 +434,7 @@ func serialize() -> Dictionary:
 		"population": population,
 		"worship": worship,
 		"study": study,
+		"specialization": specialization,
 		"tick_accumulator": _tick_accumulator,
 	}
 
@@ -414,6 +460,8 @@ func deserialize(d: Dictionary) -> void:
 	study = str(d.get("study", ""))
 	if not study_options().has(study):
 		study = ""
+	var saved_spec: String = str(d.get("specialization", ""))
+	specialization = saved_spec if DataLoader.settlement_specializations.has(saved_spec) else ""
 	_reregister_modifiers()   # also applies the patron
 
 func build_preview(building_id: String) -> Dictionary:

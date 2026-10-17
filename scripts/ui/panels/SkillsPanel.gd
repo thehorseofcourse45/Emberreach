@@ -47,14 +47,17 @@ func _ready() -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_build()
 	resized.connect(_update_columns)
-	EventBus.skill_level_up.connect(func(s, _l): if s == _skill_id: refresh())
-	EventBus.mastery_level_up.connect(func(s, _a, _l): if s == _skill_id: refresh())
+	EventBus.skill_level_up.connect(func(s, _l): if s == _skill_id: Widgets.rebuild_once_per_frame(refresh))
+	EventBus.mastery_level_up.connect(func(s, _a, _l): if s == _skill_id: Widgets.rebuild_once_per_frame(refresh))
 	EventBus.mastery_pool_changed.connect(func(s, _v): if s == _skill_id: _refresh_mastery())
-	EventBus.action_started.connect(func(_s, _a): refresh())
-	EventBus.action_stopped.connect(func(_s, _a): refresh())
-	EventBus.action_completed.connect(func(s, _a, _r): if s == _skill_id: _refresh_selected())
+	EventBus.action_started.connect(func(_s, _a): Widgets.rebuild_once_per_frame(refresh))
+	EventBus.action_stopped.connect(func(_s, _a): Widgets.rebuild_once_per_frame(refresh))
+	EventBus.action_completed.connect(func(s, _a, _r):
+		if s == _skill_id:
+			Widgets.rebuild_once_per_frame(_refresh_selected)
+			if s == "spellweaving": _systems.rebuild())
 	EventBus.state_refreshed.connect(refresh)
-	EventBus.bank_changed.connect(_refresh_selected)
+	EventBus.bank_changed.connect(func(): Widgets.rebuild_once_per_frame(_refresh_selected))
 	if _skill_id == "":
 		_select_skill(SkillManager.active_skill if SkillManager.running else "woodcutting")
 	else:
@@ -138,7 +141,7 @@ func _update_columns() -> void:
 func _arrange_layout() -> void:
 	if _header == null or _main_grid == null or _systems == null:
 		return
-	var integrated: bool = _skill_id in INTEGRATED_ACTIVITIES
+	var integrated: bool = _skill_id in INTEGRATED_ACTIVITIES or _skill_id in ["riftkeeping", "spellweaving"]
 	move_child(_systems, 1 if integrated else 2)
 	move_child(_main_grid, 2 if integrated else 1)
 
@@ -158,7 +161,7 @@ func _select_skill(skill_id: String) -> void:
 	refresh()
 
 func refresh() -> void:
-	if not _built or _skill_id == "":
+	if not _built or _skill_id == "" or Widgets.defer_offscreen_rebuild(self, refresh):
 		return
 	_rebuild_header()
 	_rebuild_activities()
@@ -304,6 +307,8 @@ func _refresh_selected() -> void:
 	var rewards: Dictionary = action.get("output_items", {})
 	if not rewards.is_empty():
 		_selected_box.add_child(Widgets.item_rewards(rewards))
+	if _skill_id == "thieving":
+		_add_pickpocket_rewards(action)
 	var check: Dictionary = SkillManager.check_action(_skill_id, _selected_action)
 	if not bool(check["ok"]):
 		_selected_box.add_child(UIStyle.colored_label("Cannot start: %s" % str(check["detail"]), UITokens.AMBER, UITokens.FONT_SMALL))
@@ -567,6 +572,46 @@ func _clear(box: Node) -> void:
 		box.remove_child(c)
 		c.queue_free()
 
+## Larceny's weighted item pool is a single draw after success; bonus seed drops
+## remain independent and are displayed with their own chances.
+func _add_pickpocket_rewards(action: Dictionary) -> void:
+	var table: Array = action.get("pickpocket_loot", [])
+	if table.is_empty():
+		return
+	var box := UIStyle.section("Pickpocket loot")
+	_selected_box.add_child(box)
+	box.add_child(UIStyle.label(
+		"Each successful pickpocket gives one roll from this target's items. These are exact chances after a successful steal.",
+		true, UITokens.FONT_SMALL))
+	for entry in table:
+		if typeof(entry) != TYPE_DICTIONARY:
+			continue
+		var item_id: String = str(entry.get("item_id", ""))
+		var item: Dictionary = DataLoader.get_item(item_id)
+		var lo: int = int(entry.get("min_qty", 1))
+		var hi: int = int(entry.get("max_qty", lo))
+		var qty: String = ("×%d" % lo) if lo == hi else ("×%d–%d" % [lo, hi])
+		var chance: float = float(entry.get("chance", 0.0)) * 100.0
+		var row := UIStyle.hbox(UITokens.SP_2)
+		var icon := UIStyle.icon_texture("items", item_id)
+		icon.custom_minimum_size = Vector2(27, 27)
+		row.add_child(icon)
+		var description := UIStyle.label("%s %s" % [str(item.get("name", item_id)), qty], true, UITokens.FONT_SMALL)
+		description.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_child(description)
+		row.add_child(UIStyle.colored_label("%.1f%%" % chance,
+			UITokens.PURPLE if chance <= 1.0 else UITokens.GOLD, UITokens.FONT_SMALL))
+		box.add_child(row)
+	var extras: Array = action.get("secondary_outputs", [])
+	if not extras.is_empty():
+		box.add_child(UIStyle.label("Independent bonus drops (can appear alongside the item above):",
+			true, UITokens.FONT_SMALL))
+		for sec in extras:
+			var name: String = str(DataLoader.get_item(str(sec.get("item_id", ""))).get("name", sec.get("item_id", "")))
+			box.add_child(UIStyle.label("%s · %.1f%% · ×%d–%d" % [name, 100.0 * float(sec.get("chance", 0.0)),
+				int(sec.get("min_qty", 1)), int(sec.get("max_qty", 1))], true, UITokens.FONT_MICRO))
+
 func _add_forecast_details(est: Dictionary, action: Dictionary) -> void:
 	var box := UIStyle.section("Planning")
 	_selected_box.add_child(box)
@@ -580,6 +625,25 @@ func _add_forecast_details(est: Dictionary, action: Dictionary) -> void:
 	box.add_child(UIStyle.label("%d successful actions · ≈ %s · preservation %.1f%% · doubling %.1f%%" % [quantity, UIStyle.fmt_duration(float(batch.seconds)), float(est.preservation_chance) * 100, float(est.doubling_chance) * 100], true, UITokens.FONT_SMALL))
 	for id in batch.inputs: box.add_child(Widgets.key_value(str(DataLoader.get_item(str(id)).get("name", id)), "≈ %.1f used / %d owned" % [float(batch.inputs[id]), BankManager.get_count(str(id))]))
 	if str(batch.bottleneck) != "": box.add_child(UIStyle.label("Material bottleneck: " + str(batch.bottleneck) + ". Estimates include failed attempts; quantity counts successful actions.", true, UITokens.FONT_MICRO))
+	if str(DataLoader.get_skill(_skill_id).get("type", "")) == "artisan":
+		for output_id in (action.get("output_items", {}) as Dictionary):
+			if str(DataLoader.get_item(str(output_id)).get("item_type", "")) != "equipment":
+				continue
+			var chances: Array[String] = []
+			var level: int = PlayerData.get_level(_skill_id)
+			for tier_id in ["fine", "superior", "masterwork", "legendary"]:
+				var tier: Dictionary = DataLoader.crafting_quality.get(tier_id, {})
+				if level >= int(tier.get("min_level", 120)):
+					chances.append("%s %.1f%%" % [str(tier.get("name", tier_id)), float(tier.get("chance", 0.0)) * (1.0 + float(level) / 240.0) * 100.0])
+			box.add_child(UIStyle.label("Equipment quality per piece: %s. All other results are Common. Each tier has its own Storage stack." % [", ".join(chances) if not chances.is_empty() else "Common only until crafting level 10"], true, UITokens.FONT_SMALL))
+			var affixes: Array[String] = []
+			for affix_id in DataLoader.crafting_affixes:
+				var affix: Dictionary = DataLoader.crafting_affixes[affix_id]
+				if level >= int(affix.get("min_level", 120)):
+					affixes.append("%s %.1f%%" % [str(affix.get("name", affix_id)), float(affix.get("chance", 0.0)) * (1.0 + float(level) / 240.0) * 100.0])
+			if not affixes.is_empty():
+				box.add_child(UIStyle.label("Independent bonus affix roll: " + ", ".join(affixes), true, UITokens.FONT_SMALL))
+			break
 	if _skill_id == "inscription":
 		box.add_child(UIStyle.label("Research prerequisite: " + str(action.get("requires_research", "none")), true, UITokens.FONT_SMALL))
 		if action.has("quality_product"):

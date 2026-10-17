@@ -10,7 +10,34 @@
       "seconds": 7200,
       "feed": 2,
       "xp": 268,
-      "meat": 2
+      "meat": 2,
+      "rare_stock": "golden_hen_stock"
+    },
+    {
+      "id": "duck",
+      "name": "Duck",
+      "level": 5,
+      "stock": "ranch_duck",
+      "produce": "ranch_egg",
+      "hide": "feather",
+      "seconds": 5400,
+      "feed": 2,
+      "xp": 191,
+      "meat": 2,
+      "rare_stock": "rare_ranch_duck"
+    },
+    {
+      "id": "goat",
+      "name": "Goat",
+      "level": 12,
+      "stock": "ranch_goat",
+      "produce": "ranch_milk",
+      "hide": "leather",
+      "seconds": 9000,
+      "feed": 3,
+      "xp": 1272,
+      "meat": 3,
+      "rare_stock": "rare_ranch_goat"
     },
     {
       "id": "cow",
@@ -22,7 +49,21 @@
       "seconds": 7200,
       "feed": 3,
       "xp": 1071,
-      "meat": 3
+      "meat": 3,
+      "rare_stock": "mooncalf_stock"
+    },
+    {
+      "id": "alpaca",
+      "name": "Alpaca",
+      "level": 22,
+      "stock": "ranch_alpaca",
+      "produce": "ranch_wool",
+      "hide": "leather",
+      "seconds": 5400,
+      "feed": 3,
+      "xp": 763,
+      "meat": 3,
+      "rare_stock": "rare_ranch_alpaca"
     },
     {
       "id": "sheep",
@@ -34,7 +75,34 @@
       "seconds": 7200,
       "feed": 4,
       "xp": 2409,
-      "meat": 4
+      "meat": 4,
+      "rare_stock": "rare_ranch_sheep"
+    },
+    {
+      "id": "bristleback",
+      "name": "Bristleback",
+      "level": 32,
+      "stock": "ranch_bristleback",
+      "produce": "ranch_tusk",
+      "hide": "leather",
+      "seconds": 9000,
+      "feed": 3,
+      "xp": 2861,
+      "meat": 4,
+      "rare_stock": "rare_ranch_bristleback"
+    },
+    {
+      "id": "silkwyrm",
+      "name": "Silkwyrm",
+      "level": 42,
+      "stock": "ranch_silkwyrm",
+      "produce": "ranch_wool",
+      "hide": "bowstring",
+      "seconds": 10800,
+      "feed": 4,
+      "xp": 6103,
+      "meat": 5,
+      "rare_stock": "rare_ranch_silkwyrm"
     },
     {
       "id": "boar",
@@ -46,7 +114,21 @@
       "seconds": 7200,
       "feed": 5,
       "xp": 4283,
-      "meat": 5
+      "meat": 5,
+      "rare_stock": "rare_ranch_boar"
+    },
+    {
+      "id": "sun_peacock",
+      "name": "Sun Peacock",
+      "level": 52,
+      "stock": "ranch_sun_peacock",
+      "produce": "ranch_plume",
+      "hide": "feather",
+      "seconds": 5400,
+      "feed": 5,
+      "xp": 3052,
+      "meat": 5,
+      "rare_stock": "rare_ranch_sun_peacock"
     },
     {
       "id": "moonstag",
@@ -58,7 +140,34 @@
       "seconds": 7200,
       "feed": 6,
       "xp": 6692,
-      "meat": 6
+      "meat": 6,
+      "rare_stock": "rare_ranch_moonstag"
+    },
+    {
+      "id": "crystal_tortoise",
+      "name": "Crystal Tortoise",
+      "level": 62,
+      "stock": "ranch_crystal_tortoise",
+      "produce": "ranch_scale",
+      "hide": "stardust",
+      "seconds": 9000,
+      "feed": 5,
+      "xp": 7947,
+      "meat": 6,
+      "rare_stock": "rare_ranch_crystal_tortoise"
+    },
+    {
+      "id": "ember_salamander",
+      "name": "Ember Salamander",
+      "level": 72,
+      "stock": "ranch_ember_salamander",
+      "produce": "ranch_ember",
+      "hide": "red_dragonhide",
+      "seconds": 5400,
+      "feed": 7,
+      "xp": 7113,
+      "meat": 7,
+      "rare_stock": "rare_ranch_ember_salamander"
     },
     {
       "id": "griffin",
@@ -70,7 +179,21 @@
       "seconds": 7200,
       "feed": 7,
       "xp": 9983,
-      "meat": 7
+      "meat": 7,
+      "rare_stock": "rare_ranch_griffin"
+    },
+    {
+      "id": "cloud_roc",
+      "name": "Cloud Roc",
+      "level": 82,
+      "stock": "ranch_cloud_roc",
+      "produce": "ranch_plume",
+      "hide": "feather",
+      "seconds": 10800,
+      "feed": 5,
+      "xp": 14226,
+      "meat": 7,
+      "rare_stock": "rare_ranch_cloud_roc"
     },
     {
       "id": "wyvern",
@@ -82,7 +205,34 @@
       "seconds": 7200,
       "feed": 8,
       "xp": 15106,
-      "meat": 8
+      "meat": 8,
+      "rare_stock": "rare_ranch_wyvern"
+    },
+    {
+      "id": "dusk_kirin",
+      "name": "Dusk Kirin",
+      "level": 92,
+      "stock": "ranch_dusk_kirin",
+      "produce": "ranch_antler",
+      "hide": "green_dragonhide",
+      "seconds": 9000,
+      "feed": 6,
+      "xp": 17938,
+      "meat": 8,
+      "rare_stock": "rare_ranch_dusk_kirin"
+    },
+    {
+      "id": "phoenix",
+      "name": "Phoenix",
+      "level": 104,
+      "stock": "ranch_phoenix",
+      "produce": "ranch_ember",
+      "hide": "golden_stardust",
+      "seconds": 5400,
+      "feed": 9,
+      "xp": 15628,
+      "meat": 9,
+      "rare_stock": "rare_ranch_phoenix"
     },
     {
       "id": "dragon",
@@ -94,7 +244,8 @@
       "seconds": 7200,
       "feed": 9,
       "xp": 21934,
-      "meat": 9
+      "meat": 9,
+      "rare_stock": "rare_ranch_dragon"
     },
     {
       "id": "celestial_dragon",
@@ -106,7 +257,21 @@
       "seconds": 7200,
       "feed": 10,
       "xp": 29792,
-      "meat": 10
+      "meat": 10,
+      "rare_stock": "rare_ranch_celestial_dragon"
+    },
+    {
+      "id": "aurora_drake",
+      "name": "Aurora Drake",
+      "level": 118,
+      "stock": "ranch_aurora_drake",
+      "produce": "ranch_star_scale",
+      "hide": "golden_stardust",
+      "seconds": 10800,
+      "feed": 7,
+      "xp": 42454,
+      "meat": 10,
+      "rare_stock": "rare_ranch_aurora_drake"
     }
   ],
   "devices": [
@@ -119,10 +284,36 @@
       "fuel_cost": 5
     },
     {
+      "id": "device_resin_tapper",
+      "name": "Resin Tapper",
+      "level": 5,
+      "skill": "woodcutting",
+      "fuel": "coal",
+      "fuel_cost": 5,
+      "efficiency_bonus": 5
+    },
+    {
+      "id": "device_seam_surveyor",
+      "name": "Seam Surveyor",
+      "level": 12,
+      "skill": "mining",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
       "id": "device_miner",
       "name": "Clockwork Miner",
       "level": 15,
       "skill": "mining",
+      "fuel": "coal",
+      "fuel_cost": 5,
+      "efficiency_bonus": 5
+    },
+    {
+      "id": "device_rune_sorter",
+      "name": "Rune Sorter",
+      "level": 22,
+      "skill": "runecrafting",
       "fuel": "coal",
       "fuel_cost": 5
     },
@@ -135,10 +326,34 @@
       "fuel_cost": 5
     },
     {
+      "id": "device_herb_still",
+      "name": "Herb Still",
+      "level": 32,
+      "skill": "herblore",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_arrow_fletcher",
+      "name": "Arrow Fletcher",
+      "level": 42,
+      "skill": "fletching",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
       "id": "device_stoker",
       "name": "Clockwork Stoker",
       "level": 45,
       "skill": "firemaking",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_prospectors_sifter",
+      "name": "Prospector's Sifter",
+      "level": 52,
+      "skill": "harvesting",
       "fuel": "coal",
       "fuel_cost": 5
     },
@@ -151,12 +366,37 @@
       "fuel_cost": 5
     },
     {
+      "id": "device_fold_surveyor",
+      "name": "Fold Surveyor",
+      "level": 62,
+      "skill": "wayfolding",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
+      "id": "device_weather_tender",
+      "name": "Weather Tender",
+      "level": 72,
+      "skill": "fermentation",
+      "fuel": "coal",
+      "fuel_cost": 5
+    },
+    {
       "id": "device_farmer",
       "name": "Clockwork Farmhand",
       "level": 75,
       "skill": "farming",
       "fuel": "coal",
       "fuel_cost": 5
+    },
+    {
+      "id": "device_case_archivist",
+      "name": "Case Archivist",
+      "level": 82,
+      "skill": "lostfinding",
+      "fuel": "cosmic_rune",
+      "fuel_cost": 10,
+      "efficiency_bonus": 15
     },
     {
       "id": "device_looter",
@@ -167,12 +407,31 @@
       "fuel_cost": 5
     },
     {
+      "id": "device_essence_tuner",
+      "name": "Essence Tuner",
+      "level": 92,
+      "skill": "enchanting",
+      "fuel": "cosmic_rune",
+      "fuel_cost": 10,
+      "efficiency_bonus": 15
+    },
+    {
+      "id": "device_rift_extractor",
+      "name": "Rift Extractor",
+      "level": 104,
+      "skill": "riftkeeping",
+      "fuel": "cosmic_rune",
+      "fuel_cost": 10,
+      "efficiency_bonus": 15
+    },
+    {
       "id": "device_arcane_miner",
       "name": "Arcane Delver",
       "level": 105,
       "skill": "mining",
       "fuel": "cosmic_rune",
-      "fuel_cost": 10
+      "fuel_cost": 10,
+      "efficiency_bonus": 15
     },
     {
       "id": "device_celestial_angler",
@@ -180,7 +439,17 @@
       "level": 115,
       "skill": "fishing",
       "fuel": "cosmic_rune",
-      "fuel_cost": 10
+      "fuel_cost": 10,
+      "efficiency_bonus": 15
+    },
+    {
+      "id": "device_pattern_loom",
+      "name": "Pattern Loom",
+      "level": 118,
+      "skill": "spellweaving",
+      "fuel": "cosmic_rune",
+      "fuel_cost": 10,
+      "efficiency_bonus": 15
     }
   ],
   "enchants": [

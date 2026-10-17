@@ -5,6 +5,9 @@ extends RefCounted
 ## that migrating or importing an old save can guarantee the key exists.
 
 const DEFAULTS: Dictionary = {
+	"riftkeeping_mode": "balanced",
+	"spellweaving_pattern": "",
+	"spellweaving_tuning": "balanced",
 	## Idle conveniences (earned, not default-on).
 	"auto_repeat": true,               ## repeat the current skill action until stopped
 	"auto_eat_tier": 0,                ## 0 = off; 1..3 = Auto Eat tiers bought in the shop
@@ -40,6 +43,7 @@ const DEFAULTS: Dictionary = {
 	"notify_success": true,
 	"notify_warn": true,
 	"notify_info": true,
+	"show_item_popups": true,
 	## Which mode the NEXT new journey uses (does not affect the current character).
 	"new_game_mode": "",
 	## Diagnostics.

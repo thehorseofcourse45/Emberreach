@@ -35,7 +35,24 @@ func valid_work(def: Dictionary, action_id: String) -> bool:
 	if skill_id == "combat":
 		return action_id == "loot"
 	var action: Dictionary = DataLoader.get_action(skill_id, action_id)
-	return not action.is_empty() and PlayerData.get_level(skill_id) >= int(action.get("level_required", 1))
+	if action.is_empty() or PlayerData.get_level(skill_id) < int(action.get("level_required", 1)):
+		return false
+	# A worker obeys the same permanent gates manual crafting does — the secondary skill
+	# requirements and the buildings/wonders a recipe is locked behind, evaluated by the
+	# shared project/unlock check. Only the target skill's own level used to be read here,
+	# so a device could assemble an endgame recipe at Attunement 1 with no forge built.
+	# Materials, fuel and output space remain the worker's own rules.
+	return SkillManager.project_blocker(action) == ""
+
+## How much of every second this device turns into work. One formula, read by the live
+## worker and by the preview alike, so what the workshop panel promises is what runs —
+## including the device's own `efficiency_bonus`, which is what makes a later device worth
+## crafting over an earlier one that shares its skill.
+func efficiency_of(def: Dictionary, mastery: int) -> float:
+	var bonus: float = float(def.get("efficiency_bonus", 0.0))
+	return clampf(0.4 + float(mastery - 1) * 0.001
+		+ (ModifierManager.get_modifier("engineering_efficiency_percent") + bonus) / 100.0,
+		0.4, 0.8)
 
 func uninstall(index: int) -> bool:
 	if index < 0 or index >= installed.size():
@@ -62,7 +79,7 @@ func advance(seconds: float, end_time: float = 0.0) -> void:
 			worker.status = "Work is locked"
 			continue
 		var remaining: float = seconds
-		var device_mastery: int = MasteryManager.get_level("engineering", "assemble_" + str(def.id).trim_prefix("device_"))
+		var device_mastery: int = MasteryManager.get_level("engineering", "assemble_" + str(def.id))
 		while remaining > 0:
 			if float(worker.fuel_seconds) <= 0:
 				var reduction: float = clampf(ModifierManager.get_modifier("engineering_fuel_reduction_percent") + float(device_mastery - 1) * 0.15, 0.0, 80.0)
@@ -75,13 +92,12 @@ func advance(seconds: float, end_time: float = 0.0) -> void:
 				worker.fuel_seconds = 3600.0
 				if PlayerData.active_potion == "potion_engineering":
 					PotionManager.consume_charge("engineering:fuel")
-			var farm_efficiency: float = clampf(0.4 + float(device_mastery - 1) * 0.001 + ModifierManager.get_modifier("engineering_efficiency_percent") / 100.0, 0.4, 0.8)
+			var farm_efficiency: float = efficiency_of(def, device_mastery)
 			var slice: float = minf(remaining, float(worker.fuel_seconds))
 			if str(def.skill) == "farming": slice = minf(slice, maxf(0.001, (60.0 - float(worker.progress)) / farm_efficiency))
 			worker.fuel_seconds = float(worker.fuel_seconds) - slice
 			remaining -= slice
-			var mastery: int = MasteryManager.get_level("engineering", "assemble_" + str(def.id).trim_prefix("device_"))
-			var efficiency: float = clampf(0.4 + float(mastery - 1) * 0.001 + ModifierManager.get_modifier("engineering_efficiency_percent") / 100.0, 0.4, 0.8)
+			var efficiency: float = efficiency_of(def, device_mastery)
 			worker.progress = float(worker.progress) + slice * efficiency
 			worker.status = "Working"
 			if str(def.skill) == "combat":
@@ -150,8 +166,31 @@ func _work(worker: Dictionary, def: Dictionary) -> void:
 		var qty: int = int(action.output_items[id]) * successes
 		BankManager.add_item_guaranteed(str(id), qty)
 		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, str(id), qty)
+	# Secondary outputs are half of what some recipes pay, and for a Kilncraft burn they are
+	# ALL of it: those recipes have no primary output, so without these rolls the Stoker ate
+	# logs and coal and returned no ash. Same odds, quantities and once-per-completed-action
+	# roll the manual action gets; worker efficiency only decides how many actions run, and
+	# no player modifier is silently added on top.
+	for sec in (action.get("secondary_outputs", []) as Array):
+		if typeof(sec) != TYPE_DICTIONARY:
+			continue
+		var sec_id: String = str((sec as Dictionary).get("item_id", ""))
+		if sec_id == "":
+			continue
+		var chance: float = clampf(float((sec as Dictionary).get("chance", 0.0)), 0.0, 1.0)
+		var gained: int = 0
+		for _roll in range(successes):
+			if _rng.randf() <= chance:
+				var lo: int = int((sec as Dictionary).get("min_qty", 1))
+				var hi: int = maxi(lo, int((sec as Dictionary).get("max_qty", lo)))
+				gained += _rng.randi_range(lo, hi)
+		if gained <= 0:
+			continue
+		var stored_sec: int = BankManager.add_item_guaranteed(sec_id, gained)
+		if stored_sec > 0:
+			SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, sec_id, float(stored_sec))
 	PlayerData.add_xp(skill_id, float(action.get("base_xp", 0.0)) * successes)
-	MasteryManager.add_mastery_xp("engineering", "assemble_" + str(def.id).trim_prefix("device_"), float(count) * interval, ModifierManager.get_mastery_xp_bonus("engineering"))
+	MasteryManager.add_mastery_xp("engineering", "assemble_" + str(def.id), float(count) * interval, ModifierManager.get_mastery_xp_bonus("engineering"))
 	PlayerData.bump_stat("actions", "%s:%s" % [skill_id, str(worker.action)], float(successes))
 	ProgressTracker.mark_dirty()
 
@@ -177,15 +216,30 @@ func worker_preview(index: int) -> Dictionary:
 	if index < 0 or index >= installed.size(): return {}
 	var worker: Dictionary = installed[index]
 	var def: Dictionary = device(str(worker.id))
-	var mastery: int = MasteryManager.get_level("engineering", "assemble_" + str(def.id).trim_prefix("device_"))
-	var efficiency: float = clampf(0.4 + float(mastery - 1) * 0.001 + ModifierManager.get_modifier("engineering_efficiency_percent") / 100.0, 0.4, 0.8)
+	var mastery: int = MasteryManager.get_level("engineering", "assemble_" + str(def.id))
+	var efficiency: float = efficiency_of(def, mastery)
 	var fuel: int = maxi(1, ceili(float(def.fuel_cost) * (1.0 - clampf(ModifierManager.get_modifier("engineering_fuel_reduction_percent") + float(mastery - 1) * 0.15, 0, 80) / 100.0)))
 	var action: Dictionary = DataLoader.get_action(str(def.skill), str(worker.action))
 	var interval: float = maxf(0.1, float(action.get("base_interval", 5)))
 	if int(action.get("node_hp", 0)) > 0: interval += float(action.get("respawn_seconds", 0)) / float(action.node_hp)
 	var attempts: float = efficiency * 3600.0 / interval
 	var outputs: Dictionary = {}
-	for id in action.get("output_items", {}): outputs[id] = float(action.output_items[id]) * attempts * clampf(float(action.get("success_chance", 1)), 0, 1)
+	var expected_successes: float = attempts * clampf(float(action.get("success_chance", 1)), 0, 1)
+	for id in action.get("output_items", {}): outputs[id] = float(action.output_items[id]) * expected_successes
+	# The same secondary rewards the live roll pays, as their expectation: chance x average
+	# quantity per completed action. A burn recipe has no primary output, so this is the
+	# whole forecast for the Stoker rather than a rounding extra.
+	for sec in (action.get("secondary_outputs", []) as Array):
+		if typeof(sec) != TYPE_DICTIONARY:
+			continue
+		var sec_id: String = str((sec as Dictionary).get("item_id", ""))
+		if sec_id == "":
+			continue
+		var lo: int = int((sec as Dictionary).get("min_qty", 1))
+		var hi: int = maxi(lo, int((sec as Dictionary).get("max_qty", lo)))
+		var per_action: float = clampf(float((sec as Dictionary).get("chance", 0.0)), 0.0, 1.0) \
+			* (float(lo + hi) / 2.0)
+		outputs[sec_id] = float(outputs.get(sec_id, 0)) + expected_successes * per_action
 	var materials: float = INF
 	for id in action.get("input_items", {}): materials = minf(materials, BankManager.get_count(str(id)) / maxf(0.001, float(action.input_items[id]) * attempts))
 	if str(def.skill) == "farming":

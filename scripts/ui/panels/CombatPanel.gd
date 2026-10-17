@@ -32,6 +32,9 @@ var _player_text: Label = null
 var _meter_box: VBoxContainer = null
 var _meter_labels: Dictionary = {}
 var expeditions_only: bool = false
+var _strongholds_only: bool = false
+var _dungeons_only: bool = false
+var _challenge_expanded: bool = false
 # Rebuilt with the fight readout; the motion hooks target these and no-ops while they are null.
 var _monster_sprite: TextureRect
 var _monster_fx: Control
@@ -104,7 +107,10 @@ func focus_route(route: Dictionary) -> void:
 	var area_id: String = str(route.get("area_id", ""))
 	if area_id != "":
 		_selected_area = area_id
+		_dungeons_only = DataLoader.dungeons.has(area_id)
+		_strongholds_only = bool(DataLoader.get_dungeon(area_id).get("stronghold", false))
 		_rebuild_places()
+		_rebuild_prep()
 		context_changed.emit({"kind": "region", "area_id": area_id})
 
 func detail_context() -> Dictionary:
@@ -131,6 +137,7 @@ func _build() -> void:
 	fight_card.add_child(_fight_box)
 	var places_card := UIStyle.panel()
 	add_child(places_card)
+	move_child(places_card, 1)
 	_places_box = UIStyle.vbox(UITokens.SP_4)
 	places_card.add_child(_places_box)
 
@@ -139,12 +146,33 @@ func _build() -> void:
 # =========================================================================
 
 func refresh() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, refresh):
 		return
 	_rebuild_food()
 	_rebuild_prep()
 	_refresh_fight()
 	_rebuild_places()
+
+func _add_dungeon_challenges() -> void:
+	if not (expeditions_only or DataLoader.dungeons.has(_selected_area)):
+		return
+	var heading := UIStyle.button("Dungeon challenges (%d/%d) %s" % [DungeonModifierManager.selected_ids.size(), DungeonModifierManager.MAX_SELECTED, "▾" if _challenge_expanded else "▸"])
+	heading.pressed.connect(func():
+		_challenge_expanded = not _challenge_expanded
+		_rebuild_prep())
+	_prep_box.add_child(heading)
+	if not _challenge_expanded:
+		return
+	_prep_box.add_child(UIStyle.label("Choose up to three modifiers before entering a dungeon. More danger increases the GP paid on each full clear.", true, UITokens.FONT_SMALL))
+	for id in DungeonModifierManager.definitions:
+		var entry: Dictionary = DungeonModifierManager.definitions[id]
+		var modifier_id: String = str(id)
+		var enabled: bool = DungeonModifierManager.selected_ids.has(modifier_id)
+		var button := UIStyle.button(("✓ " if enabled else "○ ") + str(entry.get("name", id)) + " · +%d%% clear GP" % int(entry.get("reward_bonus_percent", 0)))
+		button.disabled = DungeonModifierManager.active_dungeon != ""
+		button.tooltip_text = str(entry.get("description", ""))
+		button.pressed.connect(func(): DungeonModifierManager.toggle(modifier_id))
+		_prep_box.add_child(button)
 
 func _rebuild_prep() -> void:
 	_clear(_prep_box)
@@ -165,6 +193,7 @@ func _rebuild_prep() -> void:
 	row.add_child(_melee_menu)
 	_prep_box.add_child(row)
 	_prep_box.add_child(_build_strategy())
+	_add_dungeon_challenges()
 
 	# Supplies and rules, stated explicitly.
 	var summary: Dictionary = CombatManager.player_combat_summary()
@@ -476,6 +505,10 @@ func _refresh_fight() -> void:
 		_fight_box.add_child(_log["root"])
 		_add_triggers(_fight_box)
 		return
+	var siege: Dictionary = DataLoader.get_dungeon(str(CombatManager.context.get("id", "")))
+	if bool(siege.get("stronghold", false)):
+		var stage_index: int = clampi(int(CombatManager.context.get("index", 0)), 0, siege.stages.size()-1)
+		_fight_box.add_child(UIStyle.title("Stronghold · Stage %d/%d · %s" % [stage_index+1, siege.stages.size(), siege.stages[stage_index].name], UITokens.FONT_BODY))
 	var cmp: Dictionary = CombatManager.target_comparison()
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", UITokens.SP_5)
@@ -594,9 +627,42 @@ func _build_meters() -> void:
 	_fight_box.add_child(_meter_box)
 	_refresh_meters()
 
+func _show_dungeons(value: bool) -> void:
+	_dungeons_only = value
+	_selected_area = ""
+	_rebuild_places()
+	_rebuild_prep()
+
+func _show_strongholds(value: bool) -> void:
+	_strongholds_only = value
+	_selected_area = ""
+	_rebuild_places()
+
 func _rebuild_places() -> void:
 	_clear(_places_box)
-	_places_box.add_child(UIStyle.section("High-tier expeditions" if expeditions_only else "Regions and encounters"))
+	if expeditions_only:
+		var tabs := UIStyle.hbox(UITokens.SP_3)
+		var expeditions := UIStyle.mini_button("Expeditions")
+		var strongholds := UIStyle.mini_button("Strongholds")
+		expeditions.disabled = not _strongholds_only
+		strongholds.disabled = _strongholds_only
+		expeditions.pressed.connect(_show_strongholds.bind(false))
+		strongholds.pressed.connect(_show_strongholds.bind(true))
+		tabs.add_child(expeditions)
+		tabs.add_child(strongholds)
+		_places_box.add_child(tabs)
+	else:
+		var tabs := UIStyle.hbox(UITokens.SP_3)
+		var regions := UIStyle.mini_button("Regions")
+		var dungeons := UIStyle.mini_button("Dungeons")
+		regions.disabled = not _dungeons_only
+		dungeons.disabled = _dungeons_only
+		regions.pressed.connect(_show_dungeons.bind(false))
+		dungeons.pressed.connect(_show_dungeons.bind(true))
+		tabs.add_child(regions)
+		tabs.add_child(dungeons)
+		_places_box.add_child(tabs)
+	_places_box.add_child(UIStyle.section(("Strongholds" if _strongholds_only else "High-tier expeditions") if expeditions_only else ("Dungeons" if _dungeons_only else "Regions")))
 	if expeditions_only:
 		var unlock_reason: String = CombatManager.expedition_unlock_reason()
 		if unlock_reason != "":
@@ -611,7 +677,7 @@ func _rebuild_places() -> void:
 	_place_list.max_columns = 1
 	_place_list.fixed_icon_size = Vector2i(36, 36)
 	_places.clear()
-	if not expeditions_only:
+	if not expeditions_only and not _dungeons_only:
 		for area_id in DataLoader.areas.keys():
 			var area: Dictionary = DataLoader.areas[area_id]
 			if str(area.get("type", "area")) == "slayer_area":
@@ -619,9 +685,13 @@ func _rebuild_places() -> void:
 			_places.append({"type": "area", "id": area_id,
 				"level": int((area.get("level_range", [0]) as Array)[0])})
 	for dungeon_id in DataLoader.dungeons.keys():
+		if not expeditions_only and not _dungeons_only:
+			continue
 		if CombatManager.is_expedition(str(dungeon_id)) != expeditions_only:
 			continue
 		var dungeon: Dictionary = DataLoader.dungeons[dungeon_id]
+		if expeditions_only and bool(dungeon.get("stronghold", false)) != _strongholds_only:
+			continue
 		_places.append({"type": "dungeon", "id": dungeon_id,
 			"level": int((dungeon.get("level_range", [0]) as Array)[0])})
 	_places.sort_custom(func(a, b): return int(a["level"]) < int(b["level"]))
@@ -631,7 +701,7 @@ func _rebuild_places() -> void:
 			_place_list.add_item("Region · %s" % str(DataLoader.areas[id].get("name", id)),
 				AssetRegistry.icon("areas", id))
 		else:
-			_place_list.add_item(("Expedition · " if expeditions_only else "Dungeon · ")
+			_place_list.add_item((("Stronghold · " if _strongholds_only else "Expedition · ") if expeditions_only else "Dungeon · ")
 				+ str(DataLoader.dungeons[id].get("name", id)), AssetRegistry.icon("dungeons", id))
 	if _selected_area == "" and not _places.is_empty():
 		_selected_area = str(_places[0]["id"])
@@ -646,7 +716,7 @@ func _rebuild_places() -> void:
 		_rebuild_places())
 	_places_box.add_child(_place_list)
 	_place_list.call_deferred("ensure_current_is_visible")
-	_fight_button = UIStyle.primary_button(("Begin expedition" if expeditions_only else "Start fight") if CombatManager.state == CombatManager.State.IDLE else "Change target (retreats)")
+	_fight_button = UIStyle.primary_button((("Begin stronghold" if _strongholds_only else "Begin expedition") if expeditions_only else "Start fight") if CombatManager.state == CombatManager.State.IDLE else "Change target (retreats)")
 	_fight_button.pressed.connect(_on_fight)
 	_fight_button.disabled = expeditions_only and CombatManager.expedition_unlock_reason() != ""
 	selector.add_child(_fight_button)
@@ -670,6 +740,25 @@ func _rebuild_places() -> void:
 		var f := UIStyle.label(str(place["flavour"]), true, UITokens.FONT_SMALL)
 		f.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		col.add_child(f)
+	if bool(place.get("stronghold", false)):
+		col.add_child(UIStyle.section("Siege stages"))
+		for i in range(place.stages.size()):
+			var stage: Dictionary = place.stages[i]
+			var row := UIStyle.hbox(UITokens.SP_3)
+			var portrait := TextureRect.new()
+			portrait.texture = AssetRegistry.monster_sprite(str(stage.monster))
+			portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			portrait.custom_minimum_size = Vector2(48,48)
+			row.add_child(portrait)
+			var text := UIStyle.vbox(UITokens.SP_1)
+			text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			text.add_child(UIStyle.title("%d · %s" % [i+1, DataLoader.get_monster(str(stage.monster)).name], UITokens.FONT_BODY))
+			var note := UIStyle.label(str(stage.briefing), true, UITokens.FONT_SMALL)
+			note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			text.add_child(note)
+			row.add_child(text)
+			col.add_child(row)
 	var levels: Array = place.get("level_range", [])
 	if levels.size() == 2:
 		col.add_child(Widgets.key_value("Enemy levels", "%d – %d" % [int(levels[0]), int(levels[1])]))
@@ -715,7 +804,7 @@ func _rebuild_places() -> void:
 					"Clear %s" % str(DataLoader.get_dungeon(prev).get("name", prev)),
 					1.0 if cleared else 0.0, 1.0, cleared, "Open Expeditions to attempt it"))
 		if bool(place.get("equipment_locked", false)):
-			col.add_child(UIStyle.colored_label("Equipment cannot be changed during this expedition.",
+			col.add_child(UIStyle.colored_label("Equipment cannot be changed during this run.",
 				UITokens.AMBER, UITokens.FONT_SMALL))
 		if locked:
 			col.add_child(UIStyle.colored_label("Locked — %s" % CombatManager.dungeon_lock_reason(_selected_area),
@@ -736,7 +825,14 @@ func _rebuild_places() -> void:
 		var reason: String = CombatManager.dungeon_lock_reason(_selected_area)
 		if reason != "" and not locked: col.add_child(UIStyle.colored_label(reason, UITokens.AMBER, UITokens.FONT_SMALL))
 		_fight_button.disabled = reason != "" or (expeditions_only and CombatManager.expedition_unlock_reason() != "")
+		if bool(place.get("stronghold", false)):
+			var repeat: Dictionary = place.get("completion_reward", {})
+			col.add_child(UIStyle.section("Guaranteed each clear"))
+			col.add_child(Widgets.key_value("Gold", "%s GP" % UIStyle.fmt(float(repeat.get("gp", 0))), UITokens.GOLD_BRIGHT))
+			col.add_child(Widgets.item_rewards(repeat.get("items", {})))
 		var reward: Dictionary = place.get("rewards_first_clear", {})
+		if bool(place.get("stronghold", false)):
+			col.add_child(Widgets.item_rewards(reward.get("items", {})))
 		if not reward.is_empty():
 			var parts: Array[String] = []
 			if reward.has("gp"):

@@ -18,7 +18,7 @@ signal action_selected(skill_id: String, action_id: String)
 const NewSystems = preload("res://scripts/ui/panels/NewSkillSystems.gd")
 
 const HANDLED: Array[String] = [
-	"ranching", "inscription", "engineering", "enchanting", "dreamwalking", "caravaneering",
+	"ranching", "inscription", "engineering", "enchanting", "dreamwalking", "caravaneering", "riftkeeping", "spellweaving",
 	"slayer", "summoning", "astrology", "agility", "cartography", "archaeology",
 	"alt_magic",
 ]
@@ -50,7 +50,7 @@ func rebuild() -> void:
 		c.queue_free()
 	if not visible or _skill_id == "":
 		return
-	if _skill_id in ["ranching", "inscription", "engineering", "enchanting", "dreamwalking", "caravaneering"]:
+	if _skill_id in ["ranching", "inscription", "engineering", "enchanting", "dreamwalking", "caravaneering", "riftkeeping", "spellweaving"]:
 		var systems := NewSystems.new()
 		systems.navigated.connect(func(route): navigated.emit(route))
 		add_child(systems)

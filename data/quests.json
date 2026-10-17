@@ -13542,6 +13542,18 @@
         "skill_id": "caravaneering",
         "required": 99,
         "label": "Caravaneering 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "riftkeeping",
+        "required": 99,
+        "label": "Riftkeeping 99"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "spellweaving",
+        "required": 99,
+        "label": "Spellweaving 99"
       }
     ],
     "reward": {
@@ -13836,5 +13848,55 @@
       }
     },
     "category": "collection"
+  },
+  "riftkeeping_foundation": {
+    "id": "riftkeeping_foundation",
+    "name": "Riftkeeping · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Choose a containment stance and harvest ten Candle Fracture aether. Claim the rune supplies, then weave your first spell pattern.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "aether_candle_fracture",
+        "required": 10,
+        "label": "Obtain 10 aether candle fracture",
+        "route": {
+          "screen": "skills",
+          "skill_id": "riftkeeping"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200,
+      "items": {
+        "air_rune": 10,
+        "rune_essence": 10
+      }
+    }
+  },
+  "spellweaving_foundation": {
+    "id": "spellweaving_foundation",
+    "name": "Spellweaving · First steps",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "description": "Weave Ember Dart to learn it permanently. Equip a magic weapon and prepare the pattern here to use it in Sorcery combat.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "item_id": "woven_ember_dart_pattern",
+        "required": 1,
+        "label": "Obtain 1 woven ember dart pattern",
+        "route": {
+          "screen": "skills",
+          "skill_id": "spellweaving"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200
+    }
   }
 }

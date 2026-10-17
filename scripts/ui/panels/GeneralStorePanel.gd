@@ -64,7 +64,7 @@ func detail_context() -> Dictionary:
 		"body": "Repeatable stock, priced above what the item sells for: buying unblocks a queue rather than skipping a skill. Costlier lines stay shut until you have trained the skill that makes the item."}
 
 func _rebuild() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
 		return
 	_rebuild_summary()
 	for c in _list.get_children():

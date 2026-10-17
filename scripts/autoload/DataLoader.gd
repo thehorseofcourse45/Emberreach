@@ -6,6 +6,7 @@ extends Node
 ## Save data NEVER lives here — that is PlayerData / SaveManager.
 
 const DATA_DIR: String = "res://data/"
+const CraftQualityScript = preload("res://scripts/core/CraftingQuality.gd")
 
 var skills: Dictionary = {}          # skill_id -> {id, name, category, type, max_level, actions:[...]}
 var items: Dictionary = {}           # item_id  -> {...}
@@ -49,6 +50,9 @@ var worship: Dictionary = {}
 var random_events: Dictionary = {}
 ## Cartography terrain rules: travel cost, survey reveals, hull gate (CartographyManager).
 var cartography_terrain: Dictionary = {}
+var crafting_quality: Dictionary = {}
+var crafting_affixes: Dictionary = {}
+var settlement_specializations: Dictionary = {}
 
 # Derived indexes
 var _actions_by_skill: Dictionary = {}      # skill_id -> Array[Dictionary]
@@ -59,6 +63,9 @@ func _ready() -> void:
     _load_all()
 
 func _load_all() -> void:
+    crafting_quality = _load_file("crafting_quality.json")
+    crafting_affixes = _load_file("crafting_affixes.json")
+    settlement_specializations = _load_file("settlement_specializations.json")
     skills = _load_file("skills.json")
     new_skill_systems = _load_file("new_skill_systems.json")
     ascendancy = _load_file("ascendancy.json")
@@ -138,13 +145,17 @@ func get_skill(skill_id: String) -> Dictionary:
     return skills.get(skill_id, {})
 
 func get_skill_actions(skill_id: String) -> Array:
-    return _actions_by_skill.get(skill_id, [])
+    var actions: Array = _actions_by_skill.get(skill_id, [])
+    return actions.map(func(action: Dictionary): return ArcaneSkills.rift_action(action)) if skill_id == "riftkeeping" else actions
 
 func get_action(skill_id: String, action_id: String) -> Dictionary:
-    return _actions_by_id.get("%s:%s" % [skill_id, action_id], {})
+    var action: Dictionary = _actions_by_id.get("%s:%s" % [skill_id, action_id], {})
+    return ArcaneSkills.rift_action(action) if skill_id == "riftkeeping" else action
 
 func get_item(item_id: String) -> Dictionary:
-    return items.get(item_id, {})
+    if items.has(item_id):
+        return items[item_id]
+    return CraftQualityScript.resolve(item_id, items, crafting_quality, crafting_affixes)
 
 func get_monster(monster_id: String) -> Dictionary:
     return monsters.get(monster_id, {})

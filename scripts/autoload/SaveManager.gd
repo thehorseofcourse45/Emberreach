@@ -24,6 +24,14 @@ const QUARANTINE_TEMPLATE: String = "user://save_game.corrupt_%d.json"
 ## because a migrated file was never broken — it was simply an older format.
 const PREMIGRATION_TEMPLATE: String = "user://save_game.premigration_%d.json"
 const LOCK_PATH: String = "user://save_session.lock"
+## The live save remains at SAVE_PATH for compatibility with offline progression, recovery and
+## older builds. Named slots are separately backed-up snapshots of this same save format.
+const SLOT_COUNT: int = 5
+const SLOT_DIRECTORY: String = "user://save_slots/"
+const SLOT_INDEX: String = "user://save_slots/index.json"
+const PORTABLE_PREFIX: String = "ER1:"
+const PORTABLE_FORMAT: String = "emberreach-portable-save"
+const MAX_IMPORT_BYTES: int = 16 * 1024 * 1024
 
 ## Project names this game shipped under before it became Emberreach. `user://` follows the
 ## project name, so a rename would otherwise hide the player's existing save entirely. These
@@ -58,6 +66,8 @@ var last_outcome: int = LoadOutcome.NONE
 
 ## Set when the save was adopted from the old project directory, so the UI can say so.
 var legacy_adopted_from: String = ""
+var active_slot: int = 1
+var _slot_names: Dictionary = {}
 
 var _autosave_timer: float = 0.0
 var _write_in_progress: bool = false
@@ -65,7 +75,23 @@ var _session_id: String = ""
 
 func _ready() -> void:
 	_session_id = "%d-%d" % [OS.get_process_id(), int(Time.get_unix_time_from_system())]
+	_restore_interrupted_replacements()
+	_load_slot_index()
 	_adopt_legacy_save()
+	# An interrupted active-slot switch can leave only the independently backed-up snapshot.
+	if not has_save() and FileAccess.file_exists(_slot_path(active_slot)):
+		var data: Variant = _read_json(_slot_path(active_slot))
+		if validate_save(data).is_empty():
+			DirAccess.copy_absolute(_abs(_slot_path(active_slot)), _abs(SAVE_PATH))
+	elif has_save() and FileAccess.file_exists(_slot_path(active_slot)):
+		var live: Variant = _read_json(SAVE_PATH)
+		if typeof(live) == TYPE_DICTIONARY and live.has("slot_id"):
+			if int(live.get("slot_id", active_slot)) != active_slot:
+				var selected: Variant = _read_json(_slot_path(active_slot))
+				if validate_save(selected).is_empty():
+					# Do not discard an interrupted switch: keep its live file in the normal backup.
+					DirAccess.copy_absolute(_abs(SAVE_PATH), _abs(BACKUP_PATH))
+					DirAccess.copy_absolute(_abs(_slot_path(active_slot)), _abs(SAVE_PATH))
 	EventBus.skill_level_up.connect(func(_s, _l): _save_on_event())
 	EventBus.dungeon_completed.connect(func(_d): _save_on_event())
 	EventBus.player_died.connect(func(_c): _save_on_event())
@@ -87,14 +113,10 @@ func _process(delta: float) -> void:
 	_autosave_timer += delta
 	if _autosave_timer >= get_autosave_interval():
 		_autosave_timer = 0.0
-		# The offline marker must track the last persisted moment, or a save written now still
-		# claims the whole session is unclaimed and the next launch pays it out a second time.
-		# Only advance it once the write actually succeeded, so a failed/partial write cannot leave
-		# the marker ahead of the last durable save and silently drop the window in between.
-		var previous_marker: int = PlayerData.last_offline_unix
-		PlayerData.last_offline_unix = int(Time.get_unix_time_from_system())
-		if not save_game():
-			PlayerData.last_offline_unix = previous_marker
+		# The offline marker is advanced inside save_game(), which is the one path every save
+		# takes — an autosave, a manual save and a major-event save all claim the window they
+		# are about to persist, or the next launch replays time that is already on disk.
+		save_game()
 
 func _save_on_event() -> void:
 	if save_on_major_event and not _write_in_progress:
@@ -124,6 +146,7 @@ func get_autosave_interval() -> float:
 func build_save_data() -> Dictionary:
 	return {
 		"save_version": SAVE_VERSION,
+		"slot_id": active_slot,
 		"timestamp": int(Time.get_unix_time_from_system()),
 		"session": _session_id,
 		"game_mode": PlayerData.game_mode,
@@ -144,6 +167,10 @@ func build_save_data() -> Dictionary:
 		"caravaneering": CaravaneeringManager.serialize(),
 		"enchanting": EnchantingManager.serialize(),
 		"dreamwalking": DreamwalkingManager.serialize(),
+		"dungeon_modifiers": DungeonModifierManager.serialize(),
+		"regional_events": RegionalEventsManager.serialize(),
+		"factions": FactionManager.serialize(),
+		"contracts": ContractManager.serialize(),
 		"slayer": SlayerManager.serialize(),
 		"agility": AgilityManager.serialize(),
 		"summoning": SummoningManager.serialize(),
@@ -159,7 +186,10 @@ func build_save_data() -> Dictionary:
 	}
 
 ## Returns true when the save reached disk and re-read cleanly.
-func save_game(_reason_is_major: bool = false) -> bool:
+## `claim_offline_window` is false only for a write made while loading: the marker in the
+## freshly loaded save is what OfflineProgression is about to measure the window from, so
+## claiming it here would pay the player nothing for the time they were away.
+func save_game(_reason_is_major: bool = false, claim_offline_window: bool = true) -> bool:
 	if _write_in_progress:
 		# Duplicate submission guard: a save already owns the write slot.
 		return false
@@ -170,9 +200,21 @@ func save_game(_reason_is_major: bool = false) -> bool:
 	_write_in_progress = true
 	EventBus.save_status.emit("saving", "Saving…")
 
+	# The offline marker must track the last persisted moment, whichever save wrote it: a
+	# manual or event save that kept the old marker would claim a window that is already paid,
+	# and the next launch would pay it a second time. It only moves forward (a clock rolled
+	# backwards leaves the marker where it was) and only for the write itself — if the write
+	# fails, memory is put back exactly where the file on disk still is.
+	var previous_marker: int = PlayerData.last_offline_unix
+	if claim_offline_window:
+		PlayerData.last_offline_unix = maxi(previous_marker, int(Time.get_unix_time_from_system()))
 	var data: Dictionary = build_save_data()
 	var text: String = JSON.stringify(data, "\t")
 	var ok: bool = _atomic_write(text)
+	if ok and not GameManager.cli_mode:
+		ok = _write_slot_snapshot(active_slot, text)
+	if not ok and claim_offline_window:
+		PlayerData.last_offline_unix = previous_marker
 	_write_in_progress = false
 
 	last_save_ok = ok
@@ -199,13 +241,27 @@ func _atomic_write(text: String) -> bool:
 
 	# 2) Rotate the current good save into the backup slot.
 	if FileAccess.file_exists(SAVE_PATH):
-		_remove_file(BACKUP_PATH)
-		DirAccess.copy_absolute(_abs(SAVE_PATH), _abs(BACKUP_PATH))
+		if validate_save(_read_json(SAVE_PATH)).is_empty() and DirAccess.copy_absolute(_abs(SAVE_PATH), _abs(BACKUP_PATH)) != OK:
+			push_error("SaveManager: could not preserve previous save; current save left untouched")
+			_remove_file(TEMP_PATH)
+			return false
 
 	# 3) Move temp over the live save.
-	_remove_file(SAVE_PATH)
 	var err: int = DirAccess.rename_absolute(_abs(TEMP_PATH), _abs(SAVE_PATH))
 	if err != OK:
+		# Some platforms cannot rename over an existing destination. Keep the old
+		# primary until a verified replacement has been staged beside it.
+		var staged: String = SAVE_PATH + ".previous"
+		_remove_file(staged)
+		if FileAccess.file_exists(SAVE_PATH):
+			if DirAccess.rename_absolute(_abs(SAVE_PATH), _abs(staged)) != OK:
+				return false
+		err = DirAccess.rename_absolute(_abs(TEMP_PATH), _abs(SAVE_PATH))
+		if err != OK and FileAccess.file_exists(staged):
+			DirAccess.rename_absolute(_abs(staged), _abs(SAVE_PATH))
+		if err == OK:
+			_remove_file(staged)
+			return true
 		push_error("SaveManager: rename failed with error %d" % err)
 		return false
 	return true
@@ -228,6 +284,25 @@ func _abs(path: String) -> String:
 func _remove_file(path: String) -> void:
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(_abs(path))
+
+## On platforms requiring the rename fallback, a crash between the two renames
+## leaves the previous save beside the missing primary. Recover it before loading.
+func _restore_interrupted_replacements() -> void:
+	_restore_previous(SAVE_PATH)
+	for slot in range(1, SLOT_COUNT + 1):
+		_restore_previous(_slot_path(slot))
+
+func _restore_previous(path: String) -> void:
+	var previous: String = path + ".previous"
+	if not FileAccess.file_exists(previous):
+		return
+	if not FileAccess.file_exists(path):
+		if DirAccess.rename_absolute(_abs(previous), _abs(path)) != OK:
+			push_error("SaveManager: could not restore interrupted replacement at %s" % path)
+	else:
+		# A complete replacement already exists: keep the old file until verification.
+		if validate_save(_read_json(path)).is_empty():
+			_remove_file(previous)
 
 func _clock_string() -> String:
 	var t: Dictionary = Time.get_time_dict_from_system()
@@ -290,10 +365,14 @@ func load_game() -> bool:
 		_last_migration_note = ""
 	last_outcome = LoadOutcome.MIGRATED if migrated else LoadOutcome.LOADED
 	_claim_session_lock()
+	if not GameManager.cli_mode and not FileAccess.file_exists(_slot_path(active_slot)):
+		_write_slot_snapshot(active_slot, JSON.stringify(data, "\t"))
 	EventBus.game_loaded.emit()
 	if migrated:
 		EventBus.save_recovered.emit(_last_migration_note)
-		save_game()   # persist the upgraded format immediately
+		# Persist the upgraded format immediately, but claim nothing: the window this save
+		# was measured from is paid out by the offline catch-up that runs right after load.
+		save_game(false, false)
 	return true
 
 var _last_migration_note: String = ""
@@ -478,6 +557,13 @@ func _attempt_recovery(problems: Array) -> bool:
 			var bv: int = detect_version(backup_data)
 			if bv < SAVE_VERSION:
 				backup_data = migrate_save(backup_data, bv)
+			# Restore a valid primary immediately; leave the corrupt original in quarantine.
+			# This also prevents the next save from rotating corrupt data over our backup.
+			if DirAccess.copy_absolute(_abs(BACKUP_PATH), _abs(SAVE_PATH)) != OK:
+				pending_recovery["backup_error"] = "Could not restore the valid backup to the live path"
+				load_failed.emit(pending_recovery["reason"], detail)
+				last_outcome = LoadOutcome.FAILED
+				return false
 			_apply(backup_data)
 			last_outcome = LoadOutcome.RECOVERED
 			pending_recovery["recovered"] = true
@@ -510,6 +596,9 @@ func _apply(data: Dictionary) -> void:
 	# Every subsystem tolerates a missing section; each re-derives its own modifiers.
 	GameManager.clear_derived_modifiers()
 	PlayerData.deserialize(data.get("player", {}))
+	FactionManager.deserialize(data.get("factions", {}))
+	RegionalEventsManager.deserialize(data.get("regional_events", {}))
+	DungeonModifierManager.deserialize(data.get("dungeon_modifiers", {}))
 	PlayerData.settings.merge(data.get("settings", {}), false)
 	MasteryManager.deserialize(data.get("mastery", {}))
 	# Restore derived equipment definitions before bank and equipment lookups.
@@ -536,6 +625,7 @@ func _apply(data: Dictionary) -> void:
 	ArchaeologyManager.deserialize(data.get("archaeology", {}))
 	RaidManager.deserialize(data.get("raid", {}))
 	Quests.deserialize(data.get("quests", {}))
+	ContractManager.deserialize(data.get("contracts", {}))
 	Achievements.deserialize(data.get("achievements", {}))
 	Goals.deserialize(data.get("goals", {}))
 	PrestigeManager.deserialize(data.get("prestige", {}))
@@ -549,6 +639,347 @@ func delete_save() -> void:
 	_remove_file(SAVE_PATH)
 	_remove_file(BACKUP_PATH)
 	_remove_file(TEMP_PATH)
+	# Reset means reset the active journey, including its named snapshot. Other slots
+	# remain independent and may be loaded later.
+	if not GameManager.cli_mode:
+		_remove_file(_slot_path(active_slot))
+		_remove_file(_slot_backup(active_slot))
+
+# =========================================================================
+#  Independent save slots / portable saves
+# =========================================================================
+
+func _valid_slot(slot: int) -> bool:
+	return slot >= 1 and slot <= SLOT_COUNT
+
+func _slot_path(slot: int) -> String:
+	return SLOT_DIRECTORY + "slot_%d.json" % slot
+
+func _slot_backup(slot: int) -> String:
+	return SLOT_DIRECTORY + "slot_%d.backup.json" % slot
+
+func _load_slot_index() -> void:
+	active_slot = 1
+	_slot_names.clear()
+	var index: Variant = _read_json(SLOT_INDEX)
+	if typeof(index) != TYPE_DICTIONARY:
+		index = _read_json(SLOT_INDEX + ".backup")
+	if typeof(index) == TYPE_DICTIONARY:
+		var d: Dictionary = index
+		var wanted: int = int(d.get("active_slot", 1))
+		if _valid_slot(wanted):
+			active_slot = wanted
+		if typeof(d.get("names", null)) == TYPE_DICTIONARY:
+			for key in (d["names"] as Dictionary):
+				var index_number: int = int(str(key))
+				if _valid_slot(index_number):
+					_slot_names[str(index_number)] = str(d["names"][key]).substr(0, 36)
+
+func _save_slot_index() -> bool:
+	if DirAccess.make_dir_recursive_absolute(_abs(SLOT_DIRECTORY)) != OK:
+		return false
+	var payload: String = JSON.stringify({"active_slot": active_slot, "names": _slot_names}, "\t")
+	var temp: String = SLOT_INDEX + ".tmp"
+	var f := FileAccess.open(temp, FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(payload)
+	f.close()
+	if not _file_parses(temp):
+		_remove_file(temp)
+		return false
+	# The index contains display metadata; the independent slot snapshots hold player data.
+	var previous: String = SLOT_INDEX + ".backup"
+	if FileAccess.file_exists(SLOT_INDEX):
+		if DirAccess.copy_absolute(_abs(SLOT_INDEX), _abs(previous)) != OK:
+			_remove_file(temp)
+			return false
+	_remove_file(SLOT_INDEX)
+	if DirAccess.rename_absolute(_abs(temp), _abs(SLOT_INDEX)) != OK:
+		if FileAccess.file_exists(previous):
+			DirAccess.copy_absolute(_abs(previous), _abs(SLOT_INDEX))
+		return false
+	return true
+
+func _write_slot_snapshot(slot: int, text: String) -> bool:
+	if not _valid_slot(slot):
+		return false
+	if DirAccess.make_dir_recursive_absolute(_abs(SLOT_DIRECTORY)) != OK:
+		return false
+	var destination: String = _slot_path(slot)
+	var temp: String = destination + ".tmp"
+	var backup: String = _slot_backup(slot)
+	var raw: Variant = JSON.parse_string(text)
+	if not validate_save(raw).is_empty():
+		return false
+	var stamped: Dictionary = raw
+	stamped["slot_id"] = slot
+	var f := FileAccess.open(temp, FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(JSON.stringify(stamped, "\t"))
+	f.close()
+	if not validate_save(_read_json(temp)).is_empty():
+		_remove_file(temp)
+		return false
+	if FileAccess.file_exists(destination):
+		# An interrupted earlier write may have left the primary corrupt; in that
+		# case preserve the last valid backup instead of replacing it with garbage.
+		if validate_save(_read_json(destination)).is_empty():
+			if DirAccess.copy_absolute(_abs(destination), _abs(backup)) != OK:
+				_remove_file(temp)
+				return false
+	var err: int = DirAccess.rename_absolute(_abs(temp), _abs(destination))
+	if err != OK:
+		var staged: String = destination + ".previous"
+		_remove_file(staged)
+		if FileAccess.file_exists(destination):
+			if DirAccess.rename_absolute(_abs(destination), _abs(staged)) != OK:
+				return false
+		err = DirAccess.rename_absolute(_abs(temp), _abs(destination))
+		if err != OK:
+			if FileAccess.file_exists(staged):
+				DirAccess.rename_absolute(_abs(staged), _abs(destination))
+			return false
+		_remove_file(staged)
+	return true
+
+func get_slot_info(slot: int) -> Dictionary:
+	if not _valid_slot(slot):
+		return {"exists": false, "active": false, "name": ""}
+	var path: String = _slot_path(slot)
+	if slot == active_slot and not FileAccess.file_exists(path):
+		path = SAVE_PATH
+	var raw: Variant = _read_json(path)
+	var recovered_from_backup: bool = false
+	if not validate_save(raw).is_empty():
+		var alternate: Variant = _read_json(_slot_backup(slot))
+		if validate_save(alternate).is_empty():
+			raw = alternate
+			recovered_from_backup = true
+	var exists: bool = validate_save(raw).is_empty()
+	var data: Dictionary = raw if exists else {}
+	return {
+		"exists": exists,
+		"active": slot == active_slot,
+		"name": str(_slot_names.get(str(slot), "Slot %d" % slot)),
+		"timestamp": int(data.get("timestamp", 0)),
+		"game_mode": str(data.get("game_mode", "standard")),
+		"save_version": detect_version(data) if exists else 0,
+		"backup_available": recovered_from_backup,
+	}
+
+func rename_slot(slot: int, name: String) -> Dictionary:
+	if not _valid_slot(slot):
+		return {"ok": false, "reason": "Invalid slot number"}
+	var previous: Dictionary = _slot_names.duplicate()
+	var clean: String = name.strip_edges().substr(0, 36)
+	if clean.is_empty():
+		clean = "Slot %d" % slot
+	_slot_names[str(slot)] = clean
+	if not _save_slot_index():
+		_slot_names = previous
+		return {"ok": false, "reason": "Could not save slot name"}
+	return {"ok": true, "reason": ""}
+
+func save_to_slot(slot: int, make_active: bool = false) -> Dictionary:
+	if not _valid_slot(slot):
+		return {"ok": false, "reason": "Invalid slot number"}
+	if _write_in_progress or OfflineProgression.is_running:
+		return {"ok": false, "reason": "Wait for the current save or offline progress to finish"}
+	if not GameManager.cli_mode and not save_game():
+		return {"ok": false, "reason": "Could not save current progress"}
+	var text: String = JSON.stringify(build_save_data(), "\t")
+	if not _write_slot_snapshot(slot, text):
+		return {"ok": false, "reason": "Could not write slot %d" % slot}
+	if make_active:
+		var former: int = active_slot
+		active_slot = slot
+		if not _save_slot_index():
+			active_slot = former
+			return {"ok": false, "reason": "Slot was saved, but the active-slot selection could not be recorded"}
+	return {"ok": true, "reason": ""}
+
+func _activate_saved_data(slot: int, data: Dictionary) -> Dictionary:
+	# Save the outgoing character into its slot before switching; importing into
+	# the currently active slot intentionally keeps the previous file in backups.
+	if slot != active_slot and not GameManager.cli_mode and not save_game():
+		return {"ok": false, "reason": "Could not safeguard the current character before switching"}
+	data = data.duplicate(true)
+	data["slot_id"] = slot
+	var text: String = JSON.stringify(data, "\t")
+	if not _atomic_write(text):
+		return {"ok": false, "reason": "Could not safely replace the active save"}
+	var previous_slot: int = active_slot
+	active_slot = slot
+	if not _save_slot_index():
+		active_slot = previous_slot
+		if FileAccess.file_exists(BACKUP_PATH):
+			DirAccess.copy_absolute(_abs(BACKUP_PATH), _abs(SAVE_PATH))
+		return {"ok": false, "reason": "Save loaded onto disk, but the active-slot selection could not be recorded"}
+	_apply(data)
+	last_outcome = LoadOutcome.LOADED
+	last_save_unix = int(Time.get_unix_time_from_system())
+	last_save_ok = true
+	_claim_session_lock()
+	EventBus.game_loaded.emit()
+	EventBus.game_saved.emit()
+	EventBus.state_refreshed.emit()
+	return {"ok": true, "reason": ""}
+
+func load_slot(slot: int) -> Dictionary:
+	if not _valid_slot(slot):
+		return {"ok": false, "reason": "Invalid slot number"}
+	if _write_in_progress or OfflineProgression.is_running:
+		return {"ok": false, "reason": "Wait for saving or offline progress to finish"}
+	var raw: Variant = _read_json(_slot_path(slot))
+	var problems: Array = validate_save(raw)
+	if not problems.is_empty():
+		var backup_data: Variant = _read_json(_slot_backup(slot))
+		if validate_save(backup_data).is_empty():
+			if FileAccess.file_exists(_slot_path(slot)):
+				DirAccess.copy_absolute(_abs(_slot_path(slot)),
+					_abs(SLOT_DIRECTORY + "slot_%d.corrupt_%d.json" % [slot, int(Time.get_unix_time_from_system())]))
+			if DirAccess.copy_absolute(_abs(_slot_backup(slot)), _abs(_slot_path(slot))) != OK:
+				return {"ok": false, "reason": "Could not restore the slot's valid backup"}
+			raw = backup_data
+			problems.clear()
+	if not problems.is_empty():
+		return {"ok": false, "reason": "Invalid or empty slot: " + "; ".join(problems)}
+	var data: Dictionary = raw
+	var v: int = detect_version(data)
+	if v < SAVE_VERSION:
+		data = migrate_save(data, v)
+		if not _write_slot_snapshot(slot, JSON.stringify(data, "\t")):
+			return {"ok": false, "reason": "Could not migrate the selected slot"}
+	var result: Dictionary = _activate_saved_data(slot, data)
+	# Switching in is a load like the one at boot: the slot's time away is caught up now,
+	# before the next save moves its offline marker to the present and discards that window.
+	if bool(result.get("ok", false)):
+		OfflineProgression.run_on_load()
+	return result
+
+func delete_slot(slot: int) -> Dictionary:
+	if not _valid_slot(slot) or slot == active_slot:
+		return {"ok": false, "reason": "Select another active slot before deleting this one"}
+	if _write_in_progress or OfflineProgression.is_running:
+		return {"ok": false, "reason": "Wait for saving or offline progress to finish"}
+	for path in [_slot_path(slot), _slot_backup(slot)]:
+		if FileAccess.file_exists(path) and DirAccess.remove_absolute(_abs(path)) != OK:
+			return {"ok": false, "reason": "Could not remove the slot file at %s" % path}
+	_slot_names.erase(str(slot))
+	if not _save_slot_index():
+		return {"ok": false, "reason": "Slot deleted, but the slot index could not be updated"}
+	return {"ok": true, "reason": ""}
+
+func _portable_envelope(data: Dictionary) -> Dictionary:
+	var payload_text: String = JSON.stringify(data)
+	return {"format": PORTABLE_FORMAT, "format_version": 1,
+		"sha256": payload_text.sha256_text(), "payload": payload_text}
+
+func _decode_portable(raw: Variant) -> Dictionary:
+	if typeof(raw) != TYPE_DICTIONARY:
+		return {"ok": false, "reason": "Not a JSON save"}
+	var d: Dictionary = raw
+	var content: Variant = d
+	if d.has("format"):
+		if str(d.get("format", "")) != PORTABLE_FORMAT or int(d.get("format_version", 0)) != 1:
+			return {"ok": false, "reason": "Unknown portable save format"}
+		var payload: Variant = d.get("payload", null)
+		if typeof(payload) != TYPE_STRING:
+			return {"ok": false, "reason": "Portable save payload is missing"}
+		if str(payload).sha256_text() != str(d.get("sha256", "")):
+			return {"ok": false, "reason": "Save checksum mismatch"}
+		content = JSON.parse_string(str(payload))
+	var problems: Array = validate_save(content)
+	if not problems.is_empty():
+		return {"ok": false, "reason": "; ".join(problems)}
+	var data: Dictionary = content
+	if detect_version(data) < SAVE_VERSION:
+		data = migrate_save(data, detect_version(data))
+	return {"ok": true, "data": data, "reason": ""}
+
+func _slot_export_data(slot: int) -> Dictionary:
+	if not _valid_slot(slot):
+		return {"ok": false, "reason": "Invalid slot number"}
+	var raw: Variant = build_save_data() if slot == active_slot else _read_json(_slot_path(slot))
+	if slot != active_slot and not validate_save(raw).is_empty():
+		var recovered: Variant = _read_json(_slot_backup(slot))
+		if validate_save(recovered).is_empty():
+			raw = recovered
+	return _decode_portable(raw)
+
+func export_slot_code(slot: int) -> Dictionary:
+	var decoded: Dictionary = _slot_export_data(slot)
+	if not bool(decoded.get("ok", false)):
+		return decoded
+	var packed: PackedByteArray = JSON.stringify(_portable_envelope(decoded["data"])).to_utf8_buffer()
+	if packed.size() > MAX_IMPORT_BYTES:
+		return {"ok": false, "reason": "Save is too large to export as a code"}
+	var compressed: PackedByteArray = packed.compress(FileAccess.COMPRESSION_GZIP)
+	return {"ok": true, "reason": "", "code": PORTABLE_PREFIX + Marshalls.raw_to_base64(compressed)}
+
+func export_slot_file(slot: int, path: String) -> Dictionary:
+	var decoded: Dictionary = _slot_export_data(slot)
+	if not bool(decoded.get("ok", false)):
+		return decoded
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return {"ok": false, "reason": "Could not write export file"}
+	f.store_string(JSON.stringify(_portable_envelope(decoded["data"]), "\t"))
+	f.close()
+	return {"ok": true, "reason": ""}
+
+func _import_slot_data(slot: int, raw: Variant, activate: bool) -> Dictionary:
+	if not _valid_slot(slot):
+		return {"ok": false, "reason": "Invalid slot number"}
+	if slot == active_slot and not activate:
+		return {"ok": false, "reason": "Importing into the active slot also requires loading it"}
+	if _write_in_progress or OfflineProgression.is_running:
+		return {"ok": false, "reason": "Please wait until saving or offline progress finishes"}
+	var decoded: Dictionary = _decode_portable(raw)
+	if not bool(decoded.get("ok", false)):
+		return decoded
+	var data: Dictionary = decoded["data"]
+	# Snapshot import is transactional at the slot level, with the previous slot
+	# preserved in slot_N.backup.json before replacement.
+	var had_slot: bool = FileAccess.file_exists(_slot_path(slot))
+	if not _write_slot_snapshot(slot, JSON.stringify(data, "\t")):
+		return {"ok": false, "reason": "Could not write the imported slot"}
+	if activate:
+		var result: Dictionary = _activate_saved_data(slot, data)
+		if not bool(result.get("ok", false)):
+			if had_slot and FileAccess.file_exists(_slot_backup(slot)):
+				DirAccess.copy_absolute(_abs(_slot_backup(slot)), _abs(_slot_path(slot)))
+			elif not had_slot:
+				_remove_file(_slot_path(slot))
+		return result
+	return {"ok": true, "reason": ""}
+
+func import_slot_code(slot: int, code: String, activate: bool = true) -> Dictionary:
+	var stripped: String = code.strip_edges().replace("\n", "").replace("\r", "").replace(" ", "")
+	if not stripped.begins_with(PORTABLE_PREFIX) or stripped.length() > MAX_IMPORT_BYTES * 2:
+		return {"ok": false, "reason": "Invalid Emberreach save code"}
+	var zipped: PackedByteArray = Marshalls.base64_to_raw(stripped.substr(PORTABLE_PREFIX.length()))
+	if zipped.is_empty():
+		return {"ok": false, "reason": "Save code could not be decoded"}
+	var unpacked: PackedByteArray = zipped.decompress_dynamic(MAX_IMPORT_BYTES, FileAccess.COMPRESSION_GZIP)
+	if unpacked.is_empty():
+		return {"ok": false, "reason": "Save code is damaged or exceeds the size limit"}
+	return _import_slot_data(slot, JSON.parse_string(unpacked.get_string_from_utf8()), activate)
+
+func import_slot_file(slot: int, path: String, activate: bool = true) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {"ok": false, "reason": "File not found"}
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return {"ok": false, "reason": "Cannot read save file"}
+	if f.get_length() > MAX_IMPORT_BYTES:
+		f.close()
+		return {"ok": false, "reason": "Save file exceeds the size limit"}
+	var raw: Variant = JSON.parse_string(f.get_as_text())
+	f.close()
+	return _import_slot_data(slot, raw, activate)
 
 # =========================================================================
 #  Export / import
@@ -564,20 +995,7 @@ func export_save_to(path: String) -> Dictionary:
 	return {"ok": true, "reason": ""}
 
 func import_save_from(path: String) -> Dictionary:
-	if not FileAccess.file_exists(path):
-		return {"ok": false, "reason": "file not found"}
-	var raw: Variant = _read_json(path)
-	var problems: Array = validate_save(raw)
-	if not problems.is_empty():
-		return {"ok": false, "reason": "; ".join(problems)}
-	var data: Dictionary = raw
-	var v: int = detect_version(data)
-	if v < SAVE_VERSION:
-		data = migrate_save(data, v)
-	_apply(data)
-	EventBus.game_loaded.emit()
-	save_game()
-	return {"ok": true, "reason": ""}
+	return import_slot_file(active_slot, path, true)
 
 # =========================================================================
 #  Concurrency guard (best effort — documented as advisory, not a security boundary)

@@ -437,5 +437,101 @@
       "label": "Hollow static: enemies +30% damage, −12 accuracy"
     },
     "flavour": "Past the Verge there is no distance left, only the Silence."
+  },
+  "reedbank_meadows": {
+    "id": "reedbank_meadows",
+    "hex": "terrain_-1_0",
+    "name": "Reedbank Meadows",
+    "type": "area",
+    "level_range": [
+      1,
+      4
+    ],
+    "monsters": [
+      "reedbank_field_rat",
+      "reedbank_slinger",
+      "lantern_moth"
+    ],
+    "flavour": "A quiet riverside pasture. Practice against livestock before facing the raiders at the reed banks."
+  },
+  "ashwood_trails": {
+    "id": "ashwood_trails",
+    "hex": "terrain_-3_2",
+    "name": "Ashwood Trails",
+    "type": "area",
+    "level_range": [
+      8,
+      18
+    ],
+    "monsters": [
+      "sootfang_fox",
+      "ashwood_spitter",
+      "embercap_shaman"
+    ],
+    "flavour": "Ash-covered paths where scouts and spiders compete for the abandoned woodland."
+  },
+  "barrow_moor": {
+    "id": "barrow_moor",
+    "hex": "terrain_-3_0",
+    "name": "Barrow Moor",
+    "type": "area",
+    "level_range": [
+      12,
+      28
+    ],
+    "monsters": [
+      "grave_sentinel",
+      "moor_bonearcher",
+      "mourning_lantern"
+    ],
+    "flavour": "Flooded burial mounds provide bones and runes, but the restless dead punish poor preparation."
+  },
+  "rookwood_crossing": {
+    "id": "rookwood_crossing",
+    "hex": "terrain_1_1",
+    "name": "Rookwood Crossing",
+    "type": "area",
+    "level_range": [
+      23,
+      37
+    ],
+    "monsters": [
+      "tollway_cutthroat",
+      "rookwood_crossbowman",
+      "thornhex_trickster"
+    ],
+    "flavour": "An overgrown trade crossing contested by roadside brigands and venomous hunters."
+  },
+  "shale_ravine": {
+    "id": "shale_ravine",
+    "hex": "terrain_3_0",
+    "name": "Shale Ravine",
+    "type": "area",
+    "level_range": [
+      42,
+      54
+    ],
+    "monsters": [
+      "rubble_mauler",
+      "flintback_skitterer",
+      "shale_crystal_wisp"
+    ],
+    "flavour": "A sheltered quarry approach with stone and bone drops, suited to training before Greyharrow Deep."
+  },
+  "tidebreak_cliffs": {
+    "id": "tidebreak_cliffs",
+    "hex": "terrain_-5_-3",
+    "name": "Tidebreak Cliffs",
+    "type": "area",
+    "level_range": [
+      66,
+      96
+    ],
+    "monsters": [
+      "saltclaw_brute",
+      "cliffside_harpooner",
+      "brineglass_sorcerer"
+    ],
+    "flavour": "Salt spray climbs the volcanic coast. Trolls, witches and wyrm seers guard its upper ledges."
   }
 }

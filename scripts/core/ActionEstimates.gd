@@ -38,6 +38,18 @@ static func for_action(skill_id: String, action_id: String, extra_mods: Dictiona
 		if primary_name == "":
 			primary_name = str(DataLoader.get_item(str(item_id)).get("name", item_id))
 			primary_per_hour = expected * actions_per_hour
+	# Weighted Larceny pools yield one item on success (with a variable quantity).
+	# These expected rates include failed pickpockets and their stun overhead.
+	for loot in (action.get("pickpocket_loot", []) as Array):
+		if typeof(loot) != TYPE_DICTIONARY:
+			continue
+		var loot_id: String = str(loot.get("item_id", ""))
+		var mean_qty: float = (float(loot.get("min_qty", 1)) + float(loot.get("max_qty", 1))) * 0.5
+		var expected: float = float(loot.get("chance", 0.0)) * mean_qty * success * actions_per_hour
+		output[loot_id] = float(output.get(loot_id, 0.0)) + expected
+		primary_per_hour += expected
+	if not (action.get("pickpocket_loot", []) as Array).is_empty():
+		primary_name = "stolen items"
 
 	var consumption: Dictionary = {}
 	for item_id in (action.get("input_items", {}) as Dictionary).keys():
@@ -98,7 +110,9 @@ static func assumptions(skill_id: String, action: Dictionary) -> String:
 	if int(action.get("node_hp", 0)) > 0:
 		notes.append("includes expected node depletion and respawn (%.1fs)" % float(action.get("respawn_seconds", 3.0)))
 	if not (action.get("secondary_outputs", []) as Array).is_empty():
-		notes.append("excludes rare drops")
+		notes.append("excludes independent bonus drops")
+	if not (action.get("pickpocket_loot", []) as Array).is_empty():
+		notes.append("pickpocket item chances apply only after success")
 	var interval_floor: float = float(action.get("interval_floor", 0.25))
 	if ModifierManager.get_interval(skill_id, float(action.get("base_interval", 3.0)), interval_floor) <= interval_floor + 0.0001:
 		notes.append("action time is at the %.2fs floor" % interval_floor)

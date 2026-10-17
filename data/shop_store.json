@@ -477,5 +477,245 @@
     "unit_price": 182250,
     "description": "A living animal for Ranching.",
     "subtitle": "Ranch stock"
+  },
+  "store_copper_mint_seed": {
+    "id": "store_copper_mint_seed",
+    "name": "Copper Mint Seeds",
+    "item_id": "copper_mint_seed",
+    "cost": 40,
+    "unit_price": 8,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_duck": {
+    "id": "store_ranch_duck",
+    "name": "Duck Stock",
+    "item_id": "ranch_duck",
+    "cost": 562,
+    "unit_price": 562,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_honeycap_seed": {
+    "id": "store_honeycap_seed",
+    "name": "Honeycap Seeds",
+    "item_id": "honeycap_seed",
+    "cost": 75,
+    "unit_price": 15,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_goat": {
+    "id": "store_ranch_goat",
+    "name": "Goat Stock",
+    "item_id": "ranch_goat",
+    "cost": 1210,
+    "unit_price": 1210,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_frost_pea_seed": {
+    "id": "store_frost_pea_seed",
+    "name": "Frost Pea Seeds",
+    "item_id": "frost_pea_seed",
+    "cost": 115,
+    "unit_price": 23,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_alpaca": {
+    "id": "store_ranch_alpaca",
+    "name": "Alpaca Stock",
+    "item_id": "ranch_alpaca",
+    "cost": 2560,
+    "unit_price": 2560,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_sun_saffron_seed": {
+    "id": "store_sun_saffron_seed",
+    "name": "Sun Saffron Seeds",
+    "item_id": "sun_saffron_seed",
+    "cost": 150,
+    "unit_price": 30,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_bristleback": {
+    "id": "store_ranch_bristleback",
+    "name": "Bristleback Stock",
+    "item_id": "ranch_bristleback",
+    "cost": 4410,
+    "unit_price": 4410,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_sageberry_seed": {
+    "id": "store_sageberry_seed",
+    "name": "Sageberry Seeds",
+    "item_id": "sageberry_seed",
+    "cost": 190,
+    "unit_price": 38,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_silkwyrm": {
+    "id": "store_ranch_silkwyrm",
+    "name": "Silkwyrm Stock",
+    "item_id": "ranch_silkwyrm",
+    "cost": 6760,
+    "unit_price": 6760,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_glass_lily_seed": {
+    "id": "store_glass_lily_seed",
+    "name": "Glass Lily Seeds",
+    "item_id": "glass_lily_seed",
+    "cost": 225,
+    "unit_price": 45,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_sun_peacock": {
+    "id": "store_ranch_sun_peacock",
+    "name": "Sun Peacock Stock",
+    "item_id": "ranch_sun_peacock",
+    "cost": 9610,
+    "unit_price": 9610,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_blood_ginger_seed": {
+    "id": "store_blood_ginger_seed",
+    "name": "Blood Ginger Seeds",
+    "item_id": "blood_ginger_seed",
+    "cost": 265,
+    "unit_price": 53,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_crystal_tortoise": {
+    "id": "store_ranch_crystal_tortoise",
+    "name": "Crystal Tortoise Stock",
+    "item_id": "ranch_crystal_tortoise",
+    "cost": 12960,
+    "unit_price": 12960,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_moon_lotus_seed": {
+    "id": "store_moon_lotus_seed",
+    "name": "Moon Lotus Seeds",
+    "item_id": "moon_lotus_seed",
+    "cost": 300,
+    "unit_price": 60,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_ember_salamander": {
+    "id": "store_ranch_ember_salamander",
+    "name": "Ember Salamander Stock",
+    "item_id": "ranch_ember_salamander",
+    "cost": 16810,
+    "unit_price": 16810,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_storm_lavender_seed": {
+    "id": "store_storm_lavender_seed",
+    "name": "Storm Lavender Seeds",
+    "item_id": "storm_lavender_seed",
+    "cost": 340,
+    "unit_price": 68,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_cloud_roc": {
+    "id": "store_ranch_cloud_roc",
+    "name": "Cloud Roc Stock",
+    "item_id": "ranch_cloud_roc",
+    "cost": 21160,
+    "unit_price": 21160,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_night_pepper_seed": {
+    "id": "store_night_pepper_seed",
+    "name": "Night Pepper Seeds",
+    "item_id": "night_pepper_seed",
+    "cost": 375,
+    "unit_price": 75,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_dusk_kirin": {
+    "id": "store_ranch_dusk_kirin",
+    "name": "Dusk Kirin Stock",
+    "item_id": "ranch_dusk_kirin",
+    "cost": 26010,
+    "unit_price": 26010,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_astral_fennel_seed": {
+    "id": "store_astral_fennel_seed",
+    "name": "Astral Fennel Seeds",
+    "item_id": "astral_fennel_seed",
+    "cost": 415,
+    "unit_price": 83,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_phoenix": {
+    "id": "store_ranch_phoenix",
+    "name": "Phoenix Stock",
+    "item_id": "ranch_phoenix",
+    "cost": 32490,
+    "unit_price": 32490,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
+  },
+  "store_dawn_orchid_seed": {
+    "id": "store_dawn_orchid_seed",
+    "name": "Dawn Orchid Seeds",
+    "item_id": "dawn_orchid_seed",
+    "cost": 450,
+    "unit_price": 90,
+    "quantity": 5,
+    "subtitle": "Cultivation seeds",
+    "description": "Seeds for the new specialist crop."
+  },
+  "store_ranch_aurora_drake": {
+    "id": "store_ranch_aurora_drake",
+    "name": "Aurora Drake Stock",
+    "item_id": "ranch_aurora_drake",
+    "cost": 40960,
+    "unit_price": 40960,
+    "quantity": 1,
+    "subtitle": "Ranch stock",
+    "description": "A living animal for Husbandry."
   }
 }

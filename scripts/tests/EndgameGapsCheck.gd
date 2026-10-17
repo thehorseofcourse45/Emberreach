@@ -50,7 +50,8 @@ func _ready() -> void:
 		check(SkillManager.start_action(skill, action), "recipe starts: " + action)
 		var result: Dictionary = SkillManager.perform_action()
 		SkillManager.stop_action()
-		check(BankManager.get_count(out) >= 1, "recipe produces its item: " + action + " " + str(result))
+		var produced_id: String = str(result.get("items", {}).keys()[0]) if (result.get("items", {}) as Dictionary).size() > 0 else out
+		check(BankManager.get_count(produced_id) >= 1, "recipe produces its item: " + action + " " + str(result))
 	for id in ["sunforged_aegis", "nightweaver_mantle", "starbound_vestments"]:
 		check(int(DataLoader.get_item(id).equipment_slot) == ItemData.EquipmentSlot.PLATEBODY, "body slot: " + id)
 	check(int(DataLoader.get_item("worldheart_signet").equipment_slot) == ItemData.EquipmentSlot.RING, "ring slot")

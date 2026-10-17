@@ -52,8 +52,8 @@ func _ready() -> void:
 	EventBus.goal_changed.connect(refresh)
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.quest_reward_claimed.connect(func(_q): refresh())
-	EventBus.activity_changed.connect(refresh)
-	EventBus.bank_changed.connect(_refresh_unlocks_light)
+	EventBus.activity_changed.connect(func(): Widgets.rebuild_once_per_frame(refresh))
+	EventBus.bank_changed.connect(func(): Widgets.rebuild_once_per_frame(_refresh_unlocks_light))
 	refresh()
 
 func _build() -> void:
@@ -169,6 +169,8 @@ func refresh() -> void:
 		return
 	# Highlighted quest guidance first when something is ready to claim.
 	TutorialManager.next_step()
+	if Widgets.defer_offscreen_rebuild(self, refresh):
+		return
 	_rebuild_tutorial()
 	_rebuild_activity()
 	_rebuild_goals()
@@ -354,6 +356,10 @@ func _rebuild_tutorial() -> void:
 	_tutorial_box.add_child(card)
 
 func _rebuild_activity() -> void:
+	var world_event: Dictionary = RegionalEventsManager.active_event()
+	if not world_event.is_empty():
+		_activity_box.add_child(UIStyle.colored_label("World condition: %s · %s remaining" % [str(world_event.get("name", "")), UIStyle.fmt_duration(RegionalEventsManager.remaining_seconds())], UITokens.TEAL, UITokens.FONT_SMALL))
+		_activity_box.add_child(UIStyle.label(str(world_event.get("description", "")), true, UITokens.FONT_MICRO))
 	_clear(_activity_box)
 	var activity: Dictionary = GameManager.current_activity()
 	var card := UIStyle.card(true)

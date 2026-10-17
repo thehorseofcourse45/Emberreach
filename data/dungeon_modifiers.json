@@ -1,0 +1,12 @@
+{
+  "iron_skin": {"name": "Iron Skin", "description": "Enemies have 25% more maximum health.", "effects": {"enemy_hp_percent": 25}, "reward_bonus_percent": 10},
+  "blood_moon": {"name": "Blood Moon", "description": "Enemy hits deal 20% more damage.", "effects": {"enemy_damage_percent": 20}, "reward_bonus_percent": 12},
+  "fragile_power": {"name": "Fragile Power", "description": "Your outgoing damage falls by 12%.", "effects": {"player_damage_percent": -12}, "reward_bonus_percent": 12},
+  "unyielding": {"name": "Unyielding", "description": "Enemy accuracy increases by 20%.", "effects": {"enemy_accuracy_percent": 20}, "reward_bonus_percent": 10},
+  "blurred_sights": {"name": "Blurred Sights", "description": "Your attacks are 15% less accurate.", "effects": {"player_accuracy_percent": -15}, "reward_bonus_percent": 12},
+  "blighted_rations": {"name": "Blighted Rations", "description": "Food recovery is restricted: 25% less healing.", "effects": {"healing_percent": -25}, "reward_bonus_percent": 14},
+  "swift_horde": {"name": "Swift Horde", "description": "Enemy attacks land 15% more frequently.", "effects": {"enemy_attack_speed_percent": 15}, "reward_bonus_percent": 14},
+  "cursed_echo": {"name": "Cursed Echo", "description": "Enemies have 10% more health and deal 10% more damage.", "effects": {"enemy_hp_percent": 10, "enemy_damage_percent": 10}, "reward_bonus_percent": 15},
+  "sundering": {"name": "Sundering", "description": "Enemies ignore some of your damage reduction.", "effects": {"ignore_dr_percent": 8}, "reward_bonus_percent": 16},
+  "ancient_wrath": {"name": "Ancient Wrath", "description": "Enemies have 30% more health and 15% more damage.", "effects": {"enemy_hp_percent": 30, "enemy_damage_percent": 15}, "reward_bonus_percent": 22}
+}

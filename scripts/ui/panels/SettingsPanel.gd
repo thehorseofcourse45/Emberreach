@@ -18,6 +18,13 @@ var _built: bool = false
 var _import_menu: OptionButton
 var _import_paths: Array[String] = []
 var _save_health_box: VBoxContainer
+var _slot_picker: OptionButton
+var _slot_name_edit: LineEdit
+var _slot_details: VBoxContainer
+var _slot_code: TextEdit
+var _slot_file_dialog: FileDialog
+var _slot_file_action: String = ""
+var _selected_slot: int = 1
 ## The speed control here, kept so a change made at the top bar can move it too.
 var _speed_menu: OptionButton
 ## Debounces settings writes while a volume slider is being dragged: the change applies
@@ -43,6 +50,7 @@ func _ready() -> void:
 	_build_confirmations()
 	_build_saves()
 	EventBus.state_refreshed.connect(_refresh_save_health)
+	EventBus.game_saved.connect(_refresh_slot_details)
 	EventBus.game_speed_changed.connect(_on_speed_changed)
 
 func focus_route(_route: Dictionary) -> void:
@@ -132,6 +140,8 @@ func _build_notifications() -> void:
 		"Blocked purchases, an empty bank, a run out of materials. Muted entries still appear in the Overview event log."))
 	box.add_child(_check("notify_info", "Routine updates",
 		"Low-frequency notes such as a depleted node respawning or a potion expiring — the noisiest category in an idle session."))
+	box.add_child(_check("show_item_popups", "Show obtained items",
+		"Show an item icon, name and quantity when you pickpocket, gather, loot, craft or claim a reward. Repeated drops combine; offline gains appear in the welcome-back summary."))
 	box.add_child(UIStyle.colored_label(
 		"Errors are always shown. A failed save or a failed load is a data problem, not chatter.",
 		UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
@@ -227,13 +237,14 @@ func _build_confirmations() -> void:
 	box.add_child(_check("confirm_sell_all", "Confirm selling everything",
 		"Bulk sales of a whole stack ask before they happen. Single-unit sales never ask."))
 	box.add_child(_check("confirm_reset", "Confirm resetting progress",
-		"Resetting deletes the save and starts a new journey. Keep this on unless you are certain."))
+		"Resetting clears the active save slot and starts a new journey. Other slots are kept."))
 
 func _build_saves() -> void:
 	var box := UIStyle.section("Saves", "on disk, versioned and backed up")
 	add_child(box)
 	_save_health_box = UIStyle.vbox(UITokens.SP_2)
 	box.add_child(_save_health_box)
+	_build_save_slots(box)
 
 	var buttons := HBoxContainer.new()
 	buttons.add_theme_constant_override("separation", UITokens.SP_3)
@@ -279,14 +290,217 @@ func _build_saves() -> void:
 	mode_row.add_child(mode_menu)
 	box.add_child(mode_row)
 
-	var reset := UIStyle.danger_button("Reset progress and start over",
-		"Deletes the save file and any backup, then begins a new journey")
+	var reset := UIStyle.danger_button("Reset active slot and start over",
+		"Clears only the active slot and its backup, then begins a new journey")
 	reset.pressed.connect(_on_reset)
 	box.add_child(reset)
 	box.add_child(UIStyle.colored_label(
 		"Between sessions the game keeps one automatic backup of the last good save and quarantines any file that fails validation.",
 		UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
+	_reload_import_list()
 	_refresh_save_health()
+
+func _build_save_slots(box: VBoxContainer) -> void:
+	box.add_child(UIStyle.title("Five named save slots", UITokens.FONT_SUBHEAD))
+	box.add_child(UIStyle.label(
+		"Autosaves use the active slot. Save or load another slot to switch characters. "
+		+ "An import can restore progress after major game updates. For a new character, "
+		+ "save into an empty slot, then reset that active slot.", true, UITokens.FONT_SMALL))
+	var picker_row := HFlowContainer.new()
+	picker_row.add_theme_constant_override("h_separation", UITokens.SP_3)
+	picker_row.add_theme_constant_override("v_separation", UITokens.SP_2)
+	_slot_picker = OptionButton.new()
+	_slot_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for slot in range(1, SaveManager.SLOT_COUNT + 1):
+		_slot_picker.add_item("Slot %d" % slot)
+	_selected_slot = SaveManager.active_slot
+	_slot_picker.select(_selected_slot - 1)
+	_slot_picker.item_selected.connect(func(index: int):
+		_selected_slot = index + 1
+		_refresh_slot_details())
+	picker_row.add_child(_slot_picker)
+	var save_btn := UIStyle.button("Save here", "Save current progress to this slot and make it active")
+	save_btn.pressed.connect(_on_slot_save)
+	picker_row.add_child(save_btn)
+	var load_btn := UIStyle.button("Load slot", "Replace the running character with this saved slot")
+	load_btn.pressed.connect(_on_slot_load)
+	picker_row.add_child(load_btn)
+	box.add_child(picker_row)
+
+	_slot_details = UIStyle.vbox(UITokens.SP_2)
+	box.add_child(_slot_details)
+	var name_row := HFlowContainer.new()
+	name_row.add_theme_constant_override("h_separation", UITokens.SP_3)
+	name_row.add_theme_constant_override("v_separation", UITokens.SP_2)
+	_slot_name_edit = LineEdit.new()
+	_slot_name_edit.placeholder_text = "Slot name"
+	_slot_name_edit.max_length = 36
+	_slot_name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_row.add_child(_slot_name_edit)
+	var rename_btn := UIStyle.button("Rename", "Give this save slot a memorable name")
+	rename_btn.pressed.connect(func():
+		var result: Dictionary = SaveManager.rename_slot(_selected_slot, _slot_name_edit.text)
+		_slot_result(result, "Slot renamed."))
+	name_row.add_child(rename_btn)
+	var delete_btn := UIStyle.danger_button("Delete slot", "Delete a saved slot; cannot delete the active slot")
+	delete_btn.pressed.connect(_on_slot_delete)
+	name_row.add_child(delete_btn)
+	box.add_child(name_row)
+
+	var file_row := HFlowContainer.new()
+	file_row.add_theme_constant_override("h_separation", UITokens.SP_3)
+	file_row.add_theme_constant_override("v_separation", UITokens.SP_2)
+	var export_file := UIStyle.button("Export selected slot to file", "Save a portable JSON copy anywhere on your computer")
+	export_file.pressed.connect(func(): _choose_slot_file("export"))
+	file_row.add_child(export_file)
+	var import_file := UIStyle.button("Import file into slot", "Choose a JSON save from disk to restore")
+	import_file.pressed.connect(func(): _choose_slot_file("import"))
+	file_row.add_child(import_file)
+	box.add_child(file_row)
+
+	box.add_child(UIStyle.label("Portable save code", true, UITokens.FONT_SMALL))
+	_slot_code = TextEdit.new()
+	_slot_code.custom_minimum_size = Vector2(0, 110)
+	_slot_code.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_slot_code.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+	_slot_code.placeholder_text = "Generate a code from a saved slot, or paste an Emberreach code here to import it."
+	box.add_child(_slot_code)
+	var code_row := HFlowContainer.new()
+	code_row.add_theme_constant_override("h_separation", UITokens.SP_3)
+	code_row.add_theme_constant_override("v_separation", UITokens.SP_2)
+	var generate_code := UIStyle.button("Generate code", "Encode the selected save for copying")
+	generate_code.pressed.connect(func():
+		var result: Dictionary = SaveManager.export_slot_code(_selected_slot)
+		if bool(result.get("ok", false)):
+			_slot_code.text = str(result.get("code", ""))
+			EventBus.notify("Save code generated. Copy it to keep a portable backup.", "success")
+		else:
+			_slot_result(result, ""))
+	code_row.add_child(generate_code)
+	var copy_code := UIStyle.button("Copy code", "Copy the text above to the clipboard")
+	copy_code.pressed.connect(func():
+		if not _slot_code.text.is_empty():
+			DisplayServer.clipboard_set(_slot_code.text)
+			EventBus.notify("Save code copied.", "success"))
+	code_row.add_child(copy_code)
+	var paste_code := UIStyle.button("Paste code", "Paste a portable save from the clipboard")
+	paste_code.pressed.connect(func(): _slot_code.text = DisplayServer.clipboard_get())
+	code_row.add_child(paste_code)
+	var import_code := UIStyle.button("Import code into slot", "Validate the code then replace the selected slot")
+	import_code.pressed.connect(_on_slot_import_code)
+	code_row.add_child(import_code)
+	box.add_child(code_row)
+	box.add_child(UIStyle.colored_label(
+		"Save codes and files are portable backups. Keep them private if your character data is personal. "
+		+ "Loading or importing replaces your active progress only after confirmation.",
+		UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
+
+	_slot_file_dialog = FileDialog.new()
+	_slot_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	_slot_file_dialog.filters = PackedStringArray(["*.json ; Emberreach JSON save"])
+	_slot_file_dialog.file_selected.connect(_on_slot_file_selected)
+	add_child(_slot_file_dialog)
+	_refresh_slot_details()
+
+func _refresh_slot_details() -> void:
+	if _slot_picker == null or _slot_details == null:
+		return
+	for slot in range(1, SaveManager.SLOT_COUNT + 1):
+		var info: Dictionary = SaveManager.get_slot_info(slot)
+		_slot_picker.set_item_text(slot - 1, "%d. %s%s%s" % [
+			slot, str(info.get("name", "Slot %d" % slot)),
+			" (active)" if bool(info.get("active", false)) else "",
+			"" if bool(info.get("exists", false)) else " [empty]"])
+	_slot_picker.select(clampi(_selected_slot - 1, 0, SaveManager.SLOT_COUNT - 1))
+	for child in _slot_details.get_children():
+		_slot_details.remove_child(child)
+		child.queue_free()
+	var info: Dictionary = SaveManager.get_slot_info(_selected_slot)
+	if _slot_name_edit != null:
+		_slot_name_edit.text = str(info.get("name", "Slot %d" % _selected_slot))
+	var last_saved: int = int(info.get("timestamp", 0))
+	var time_label: String = Time.get_datetime_string_from_unix_time(last_saved, true) if last_saved > 0 else "Never"
+	_slot_details.add_child(UIStyle.label(
+		"%s · %s · Last saved: %s" % [
+			"Active slot" if bool(info.get("active", false)) else "Stored slot",
+			str(info.get("game_mode", "Standard")) if bool(info.get("exists", false)) else "Empty",
+			time_label], true, UITokens.FONT_SMALL))
+
+func _slot_result(result: Dictionary, success: String) -> void:
+	if bool(result.get("ok", false)):
+		if success != "":
+			EventBus.notify(success, "success")
+		_refresh_slot_details()
+	else:
+		EventBus.notify("Save slot operation failed: %s" % str(result.get("reason", "Unknown error")), "error")
+
+func _slot_loaded(result: Dictionary, success: String) -> void:
+	_slot_result(result, success)
+	if bool(result.get("ok", false)):
+		EventBus.state_refreshed.emit()
+		if Screens.shell() != null:
+			Screens.shell().call("rebuild_current")
+
+func _on_slot_save() -> void:
+	var slot: int = _selected_slot
+	var info: Dictionary = SaveManager.get_slot_info(slot)
+	if bool(info.get("exists", false)) and slot != SaveManager.active_slot:
+		ConfirmDialog.ask(self, "Overwrite save slot?",
+			("Replace the contents of %s with your current character and make it active? "
+			+ "The previous slot data will be kept in a backup.") % str(info.get("name", "Slot %d" % slot)),
+			"Overwrite slot", func(): _slot_result(SaveManager.save_to_slot(slot, true), "Progress saved into slot %d." % slot), true)
+	else:
+		_slot_result(SaveManager.save_to_slot(slot, true), "Progress saved into slot %d." % slot)
+
+func _on_slot_load() -> void:
+	var slot: int = _selected_slot
+	if not bool(SaveManager.get_slot_info(slot).get("exists", false)):
+		EventBus.notify("This slot is empty.", "warn")
+		return
+	ConfirmDialog.ask(self, "Load save slot?",
+		("Replace your running character with the saved progress in slot %d? "
+		+ "Switching slots first saves the current character. Reloading the active slot loses changes since its last save.") % slot,
+		"Load slot", func(): _slot_loaded(SaveManager.load_slot(slot), "Loaded slot %d." % slot), true)
+
+func _on_slot_delete() -> void:
+	var slot: int = _selected_slot
+	if slot == SaveManager.active_slot:
+		EventBus.notify("Switch to another slot before deleting the active slot.", "warn")
+		return
+	ConfirmDialog.ask(self, "Delete save slot?",
+		"Delete slot %d and its automatic backup? Export it first if you want to keep a copy." % slot,
+		"Delete slot", func(): _slot_result(SaveManager.delete_slot(slot), "Slot %d deleted." % slot), true)
+
+func _on_slot_import_code() -> void:
+	var slot: int = _selected_slot
+	var code: String = _slot_code.text.strip_edges()
+	if code.is_empty():
+		EventBus.notify("Paste a save code first.", "warn")
+		return
+	ConfirmDialog.ask(self, "Import save code?",
+		("Validate and import this code into slot %d? Existing contents will be backed up. "
+		+ "The imported character will become active.") % slot,
+		"Import code", func(): _slot_loaded(SaveManager.import_slot_code(slot, code, true),
+			"Imported save code into slot %d." % slot), true)
+
+func _choose_slot_file(action: String) -> void:
+	_slot_file_action = action
+	_slot_file_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE if action == "export" else FileDialog.FILE_MODE_OPEN_FILE
+	_slot_file_dialog.title = "Export slot %d" % _selected_slot if action == "export" else "Import into slot %d" % _selected_slot
+	if action == "export":
+		_slot_file_dialog.current_file = "emberreach_slot_%d.json" % _selected_slot
+	_slot_file_dialog.popup_centered_ratio(0.8)
+
+func _on_slot_file_selected(path: String) -> void:
+	var slot: int = _selected_slot
+	if _slot_file_action == "export":
+		_slot_result(SaveManager.export_slot_file(slot, path), "Exported slot %d." % slot)
+		return
+	ConfirmDialog.ask(self, "Import save file?",
+		("Import %s into slot %d? Existing contents will be backed up. "
+		+ "The imported character will become active.") % [path.get_file(), slot],
+		"Import save", func(): _slot_loaded(SaveManager.import_slot_file(slot, path, true),
+			"Imported save into slot %d." % slot), true)
 
 # =========================================================================
 #  Helpers
@@ -423,9 +637,9 @@ func _on_reset() -> void:
 		_do_reset()
 		return
 	var mode: String = str(PlayerData.settings.get("new_game_mode", PlayerData.game_mode))
-	ConfirmDialog.ask(self, "Reset all progress?",
-		"This deletes your save file and its automatic backup, then begins a new %s journey.\n\nThis cannot be undone." % mode,
-		"Reset everything", _do_reset, true,
+	ConfirmDialog.ask(self, "Reset active slot?",
+		"This clears your active slot and its automatic backup, then begins a new %s journey. Other slots stay intact.\n\nThis cannot be undone for the current slot." % mode,
+		"Reset active slot", _do_reset, true,
 		"Exporting a copy first is free and reversible.")
 
 func _do_reset() -> void:

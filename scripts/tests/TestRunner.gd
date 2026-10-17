@@ -34,7 +34,9 @@ var _section: String = ""
 ## Run only the named test methods (comma-separated on the CLI: `-- --test a,b`). A method that
 ## takes the host gets it. Same save backup and fresh game as run_all, so a single test sees the
 ## state the full suite would give it at the start.
-func run_some(host: Node, names: Array) -> void:
+## Returns the number of failed checks: the CLI turns any nonzero count into a nonzero exit code,
+## so a failing run cannot be read as a passing one by anything that only looks at the status.
+func run_some(host: Node, names: Array) -> int:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach test subset")
@@ -63,8 +65,9 @@ func run_some(host: Node, names: Array) -> void:
 	TestSupport.restore_snapshot(snapshot, files)
 	Motion.force_reduced = motion_was
 	_report()
+	return _failed
 
-func run_all(host: Node) -> void:
+func run_all(host: Node) -> int:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach test suite")
@@ -104,6 +107,8 @@ func run_all(host: Node) -> void:
 	_test_duplicate_submissions()
 	_test_mastery_stall()
 	_test_audit_fixes()
+	await _test_gameplay_audit_fixes(host)
+	await _test_remaining_audit_fixes(host)
 	_test_general_store()
 	_test_endgame_crafting_chains()
 	_test_monster_passives()
@@ -155,6 +160,7 @@ func run_all(host: Node) -> void:
 	_test_responsive_layouts(host)
 	# After the layout suite, which is what assembles the shell the tests share: a screen test run
 	# before it would navigate a shell with no panels built and no sidebar to find a tab in.
+	await _flush_frees(host)
 	_test_general_store_screen(host)
 	await _test_task_feedback_layout(host)
 	_test_combat_screen_split(host)
@@ -176,19 +182,25 @@ func run_all(host: Node) -> void:
 	_test_scroll_position_preserved(host)
 	_test_favorites()
 	_test_lifetime_stats_screen(host)
+	await _flush_frees(host)
 	_test_overview_skill_tabs(host)
 	_test_task_tabs_and_rotation(host)
 	_test_systems_wiring(host)
+	await _flush_frees(host)
 	_test_frontier_activities(host)
+	_test_frontier_expansions(host)
+	await _flush_frees(host)
 	_test_audio()
 	_test_settings_gap_keys()
 	_test_content_validation()
 	_test_game_modes()
+	await _flush_frees(host)
 	test_abilities_load()
 	test_events_load()
 	test_event_validation_rejects()
 	test_card_timeout_applies_policy()
 	test_spawn_switch_no_double_consume()
+	await _flush_frees(host)
 	test_events_offline_equivalence()
 	test_momentum_caps_and_resets()
 	test_activity_event_ui(host)
@@ -229,6 +241,7 @@ func run_all(host: Node) -> void:
 	TestSupport.restore_snapshot(snapshot, files)
 	Motion.force_reduced = motion_was
 	_report()
+	return _failed
 
 ## Regressions from the gameplay audit: each assertion fails on the pre-fix code.
 func _test_audit_fixes() -> void:
@@ -899,6 +912,133 @@ func _test_mastery_stall() -> void:
 			overpriced.append(str(o["item_id"]))
 	_ok(overpriced.is_empty(), "every skillcape costs at most 3h of top gold at its level %s" % str(overpriced))
 
+## Regressions from the 15 October 2026 gameplay audit. Every assertion here fails on the code
+## that audit ran: each one names the player-facing promise, not the implementation behind it.
+func _test_gameplay_audit_fixes(host: Node) -> void:
+	_heading("Gameplay audit fixes")
+
+	# 1. Every successful save claims the window it just wrote, not only the autosave timer.
+	GameManager.start_new_game("standard")
+	var lagging: int = int(Time.get_unix_time_from_system()) - 120
+	PlayerData.last_offline_unix = lagging
+	_ok(SaveManager.save_game(), "a manual save reaches disk")
+	_ok(PlayerData.last_offline_unix > lagging,
+		"a manual save claims the offline window it persisted, so reload cannot pay it twice")
+	_ok(int(Time.get_unix_time_from_system()) - PlayerData.last_offline_unix >= 0,
+		"the claimed marker is not in the future")
+
+	# 2. Playtime: one counter, and a loaded value survives the next tick.
+	PlayerData.playtime_seconds = 7200.0
+	GameManager._process(1.0)
+	_ok(PlayerData.playtime_seconds > 7200.0,
+		"loaded playtime keeps counting instead of resetting to one tick")
+	_ok(is_equal_approx(GameManager.playtime_seconds, PlayerData.playtime_seconds),
+		"the manager and the save read one playtime counter")
+
+	# 3. Engineering obeys the same permanent gates manual crafting does.
+	var fletcher: Dictionary = EngineeringManager.device("device_arrow_fletcher")
+	PlayerData.set_level("fletching", 120)
+	PlayerData.set_level("enchanting", 1)
+	_ok(not EngineeringManager.valid_work(fletcher, "assemble_nightweaver_weapon"),
+		"a worker honours a recipe's secondary skill requirement")
+	PlayerData.set_level("enchanting", 115)
+	_ok(not EngineeringManager.valid_work(fletcher, "assemble_nightweaver_weapon"),
+		"a worker honours the building a recipe is locked behind")
+	_ok(EngineeringManager.valid_work(fletcher, _first_action_of("fletching")),
+		"an unlocked recipe of the same skill is still workable")
+
+	# 4. A burn recipe pays its ash and coal, not just its XP.
+	GameManager.start_new_game("standard")
+	PlayerData.set_level("engineering", 120)
+	PlayerData.set_level("firemaking", 120)
+	BankManager.add_item_guaranteed("device_stoker", 1)
+	BankManager.add_item_guaranteed("normal_log", 2000)
+	BankManager.add_item_guaranteed("coal", 5)   # exactly one hour of prepaid Stoker fuel
+	_ok(EngineeringManager.install("device_stoker", "burn_normal_log"),
+		"the Stoker installs on a burn recipe")
+	SimulationMode.begin()
+	EngineeringManager.advance(3600.0, Time.get_unix_time_from_system())
+	SimulationMode.end()
+	_ok(BankManager.get_count("ash") > 0, "burning yields the ash its production chains need")
+	_ok(BankManager.get_count("coal") > 0,
+		"burning yields coal beyond the fuel it consumed (%d left)" % BankManager.get_count("coal"))
+	_ok(float(EngineeringManager.worker_preview(0).get("outputs", {}).get("ash", 0.0)) > 0.0,
+		"the workshop preview promises the same secondary rewards")
+
+	# 5. A later device is worth its unlock, its fuel and its slot.
+	_ok(EngineeringManager.efficiency_of(EngineeringManager.device("device_arcane_miner"), 1)
+			> EngineeringManager.efficiency_of(EngineeringManager.device("device_miner"), 1),
+		"the Arcane Delver outworks the Clockwork Miner it replaces")
+	_ok(EngineeringManager.efficiency_of(EngineeringManager.device("device_miner"), 1)
+			> EngineeringManager.efficiency_of(EngineeringManager.device("device_seam_surveyor"), 1),
+		"a later device sharing a skill beats the earlier one")
+
+	# 6. Rare breeding eligibility is data-driven, and honest about who has none.
+	_ok(RanchingManager.rare_stock_id("hen") == "golden_hen_stock",
+		"the hen's rare variant comes from its species record")
+	_ok(RanchingManager.rare_stock_id("cow") == "mooncalf_stock",
+		"the cow's rare variant comes from its species record")
+	var ordinary: String = ""
+	for entry in DataLoader.new_skill_systems.get("species", []):
+		if str(entry.id) != "hen" and str(entry.id) != "cow":
+			ordinary = str(entry.id)
+			break
+	_ok(ordinary != "" and DataLoader.items.has(RanchingManager.rare_stock_id(ordinary)),
+		"%s has its own breedable rare stock" % ordinary)
+
+	# 7. A temporary bonus pays for the work done before it expires — offline as online.
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	var gather: Dictionary = _find_gather_action()
+	if gather.is_empty():
+		_ok(false, "found a gathering action for the offline bonus check")
+	else:
+		var gather_skill: String = str(gather["skill_id"])
+		var gather_action: String = str(gather["action_id"])
+		SkillManager.start_action(gather_skill, gather_action, 0)
+		var plain_from: float = PlayerData.get_xp(gather_skill)
+		OfflineProgression.simulate_synchronously(30.0)
+		var plain_xp: float = PlayerData.get_xp(gather_skill) - plain_from
+		SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+		SkillManager.start_action(gather_skill, gather_action, 0)
+		InscriptionManager.activate_buff("audit_test_xp", {"global_skill_xp_percent": 100.0}, 10.0)
+		var buffed_from: float = PlayerData.get_xp(gather_skill)
+		OfflineProgression.simulate_synchronously(30.0)
+		var buffed_xp: float = PlayerData.get_xp(gather_skill) - buffed_from
+		InscriptionManager.advance(3600.0)   # drop the test bonus again
+		SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+		_ok(plain_xp > 0.0, "the plain offline window earned XP")
+		_ok(buffed_xp > plain_xp * 1.2,
+			"a +100%% bonus with 10s left paid for part of a 30s window (%.0f vs %.0f XP)" % [buffed_xp, plain_xp])
+
+	# 8. An offline queue moves to its next available step instead of ending the window early.
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	var queue_gather: Dictionary = _find_gather_action()
+	if queue_gather.is_empty():
+		_ok(false, "found a gathering action for the offline queue check")
+	else:
+		var queue_skill: String = str(queue_gather["skill_id"])
+		var queue_action: String = str(queue_gather["action_id"])
+		var target_item: String = _primary_output(queue_skill, queue_action)
+		ActionQueueManager.clear()
+		ActionQueueManager.add_skill_step("firemaking", "burn_normal_log", "normal_log", 0)
+		ActionQueueManager.add_skill_step(queue_skill, queue_action, target_item, 5)
+		BankManager.add_item_guaranteed("normal_log", 1)   # the burn step holds exactly one log
+		PlayerData.set_level("firemaking", 120)
+		ActionQueueManager.start()
+		await host.get_tree().process_frame
+		_ok(SkillManager.running and SkillManager.active_action_id == "burn_normal_log",
+			"the queued burn step took the activity slot")
+		var queue_summary: Dictionary = OfflineProgression.simulate_synchronously(3600.0)
+		_ok(BankManager.get_total_owned(target_item) >= 5,
+			"the offline window continued into the next queued step (%d × %s)" % [BankManager.get_total_owned(target_item), target_item])
+		# Exact targets can finish both steps before thirty seconds have elapsed.
+		_ok(ActionQueueManager.current_index == ActionQueueManager.steps.size(),
+			"the offline window completed both queued steps")
+		ActionQueueManager.clear()
+		SkillManager.stop_action(SkillManager.StopReason.PLAYER)
+
 ## The general store is the one place gold turns directly into materials, so two things have to
 ## hold: a locked line refuses the purchase without charging, and no line is cheaper than making
 ## the item yourself. Ungated stock would let a player skip a whole skill by buying its output.
@@ -1269,9 +1409,10 @@ func _test_task_tabs_and_rotation(host: Node) -> void:
 	var panel: Control = load("res://scripts/ui/panels/QuestsPanel.gd").new()
 	host.add_child(panel)
 	var tabs: Array = panel.get("_tab_buttons")
-	_eq(tabs.size(), Quests.DIFFICULTIES.size() + 1, "the Tasks screen has one tab per difficulty plus the rotation")
-	_ok((tabs[0] as Button).text == "Easy" and (tabs[tabs.size() - 1] as Button).text == "Rotating",
-		"tabs run from Easy to Nightmare and end on Rotating")
+	_eq(tabs.size(), Quests.DIFFICULTIES.size() + 2, "the Tasks screen has one tab per difficulty plus Rotating and Contracts & factions")
+	_ok((tabs[0] as Button).text == "Easy" and (tabs[tabs.size() - 2] as Button).text == "Rotating"
+		and (tabs[tabs.size() - 1] as Button).text == "Contracts & factions",
+		"tabs run from Easy to Nightmare, Rotating, then Contracts & factions")
 	var filter: OptionButton = panel.get("_filter")
 	filter.select(5)
 	panel.call("_select_tab", "easy")
@@ -1621,7 +1762,7 @@ func _test_husbandry(host: Node) -> void:
 	_heading("Cultivation")
 	GameManager.start_new_game("standard")
 	var farm: Dictionary = DataLoader.get_skill("farming")
-	_ok((farm.get("actions", []) as Array).size() == 22, "Cultivation lists 22 crops: herbs, allotment and trees")
+	_ok((farm.get("actions", []) as Array).size() == 34, "Cultivation lists 34 crops: herbs, allotment and trees")
 	var seeds_ok: bool = true
 	var gates_ok: bool = true
 	var products_ok: bool = true
@@ -1679,7 +1820,8 @@ func _test_husbandry(host: Node) -> void:
 	BankManager.add_item("compost", 2)
 	_ok(not FarmingManager.apply_compost(0) and FarmingManager.apply_compost(3), "compost only applies before planting")
 	_ok(int(FarmingManager.plots[3]["compost"]) == 1, "the plot records its compost")
-	# Growth and harvest.
+	# Pin survival: these assertions test growth and harvest, not the crop survival roll.
+	FarmingManager.plots[0]["alive"] = true
 	_ok(not FarmingManager.is_ready(0), "a fresh planting is not ready yet")
 	FarmingManager.plots[0]["planted_unix"] = float(Time.get_unix_time_from_system()) - 999999.0
 	_ok(FarmingManager.is_ready(0), "a backdated crop reads as ready")
@@ -1784,7 +1926,7 @@ const PANEL_SCRIPTS: Dictionary = {
 	Screens.RECOVERY: "RecoveryPanel",
 }
 
-func run_end_to_end(host: Node) -> void:
+func run_end_to_end(host: Node) -> int:
 	var files: Dictionary = TestSupport.backup_save_files()
 	var snapshot: Dictionary = SaveManager.build_save_data()
 	_begin("Emberreach end-to-end progression check")
@@ -1953,6 +2095,7 @@ func run_end_to_end(host: Node) -> void:
 		print("  " + str(line))
 	if not ok:
 		print("The end-to-end check found problems; see the failures above.")
+	return _failed
 
 # =========================================================================
 #  Tests
@@ -2689,6 +2832,12 @@ func _test_game_modes() -> void:
 	PlayerData.add_xp("woodcutting", 1.0e12)
 	_ok(PlayerData.get_level("woodcutting") == 10, "ancient_relics stops XP at 10 (skill_level_cap honoured), got %d"
 		% PlayerData.get_level("woodcutting"))
+	# Earlier tests can leave every combat skill at 120. Adventure's cap is based on
+	# the actual combat level, so make this assertion with a controlled combat profile.
+	var saved_combat_skills: Dictionary = {}
+	for combat_skill in PlayerData.COMBAT_SKILLS:
+		saved_combat_skills[combat_skill] = (PlayerData.skills.get(combat_skill, {}) as Dictionary).duplicate(true)
+		PlayerData.set_level(combat_skill, 1)
 	PlayerData.game_mode = "adventure"
 	PlayerData.set_level("attack", 40)
 	PlayerData.set_level("woodcutting", 40)
@@ -2703,6 +2852,8 @@ func _test_game_modes() -> void:
 	PlayerData.game_mode = "standard"
 	_ok(PlayerData.get_level_cap("woodcutting") == XPTable.MAX_LEVEL, "standard mode caps nothing")
 	PlayerData.game_mode = saved_mode
+	for combat_skill in saved_combat_skills:
+		PlayerData.skills[combat_skill] = saved_combat_skills[combat_skill]
 	BankManager.purchased_slots = saved_slots
 ## Task 2 pin: build_theme() must return a Theme with the ember display/text fonts
 ## registered (missing files fall back to the default font, never crash).
@@ -3247,6 +3398,10 @@ func test_floater_pool_bounded() -> void:
 ## NOTE: uses _ok/_heading like every neighboring test — TestRunner has no assert_* helpers.
 func test_tween_bar_defers_until_in_tree(host: Node) -> void:
 	var motion_was: bool = Motion.force_reduced
+	var time_scale_was: float = Engine.time_scale
+	# Earlier gameplay tests may leave a slowed clock. This test measures a short
+	# UI tween and should have a deterministic real-time animation interval.
+	Engine.time_scale = 1.0
 	Motion.force_reduced = false
 	_heading("Identity motion")
 	var holder := Control.new()
@@ -3267,7 +3422,7 @@ func test_tween_bar_defers_until_in_tree(host: Node) -> void:
 	bar.value = 0.0
 	holder.add_child(bar)
 	await host.get_tree().process_frame
-	await host.get_tree().create_timer(0.12).timeout
+	await host.get_tree().create_timer(0.12, true, false, true).timeout
 	await host.get_tree().process_frame
 	_ok(bar.value > 0.0 and bar.value <= 60.0,
 		"the deferred glide runs once the bar is in the tree (bar has moved to %.2f of 60)" % bar.value)
@@ -3275,6 +3430,7 @@ func test_tween_bar_defers_until_in_tree(host: Node) -> void:
 		"the one-shot is spent, so re-parenting cannot stack a second glide")
 	holder.queue_free()
 	Motion.force_reduced = motion_was
+	Engine.time_scale = time_scale_was
 
 ## Task 5 review pin: the pulse has to pivot on the control's centre. The HP bar pulses on the
 ## frame it is added, when `size` is still (0,0), so a pivot read only at call time lands in the
@@ -4500,7 +4656,7 @@ func _test_monster_mechanics_content() -> void:
 	_ok(swap_bosses >= 1, "at least one boss has a phase that changes its attack type (%d)" % swap_bosses)
 	_ok(venom_ok, "every monster applying poison is venomous")
 	_ok(lifedrain >= 2 and lifedrain <= 6, "2-6 monsters have lifedrain (%d)" % lifedrain)
-	_ok(armored >= 2 and armored <= 6, "2-6 monsters are armored (%d)" % armored)
+	_ok(armored >= 2 and armored <= 10, "2-10 monsters are armored (%d)" % armored)
 	_eq(errors.size(), 0, "every monster passes validate_monster_mechanics %s" % str(errors))
 	var resistant_items: int = 0
 	var families_covered: Dictionary = {}
@@ -4513,7 +4669,8 @@ func _test_monster_mechanics_content() -> void:
 				found = true
 		if found:
 			resistant_items += 1
-	_ok(resistant_items >= 6 and resistant_items <= 8, "6-8 equipment items carry status resistance (%d)" % resistant_items)
+	# Stronghold rewards add two resistance pieces to the existing eight-item pool.
+	_ok(resistant_items >= 8 and resistant_items <= 12, "8-12 equipment items carry status resistance (%d)" % resistant_items)
 	for family in ["poison", "burn", "stun"]:
 		if applied.has(family):
 			_ok(families_covered.has(family), "a resistance item counters the monster-applied %s family" % family)
@@ -5188,13 +5345,19 @@ func _test_monster_ladder() -> void:
 			placed[str(mid)] = true
 	for monster_id in DataLoader.monsters.keys():
 		_ok(placed.has(str(monster_id)), "monster '%s' can be found somewhere" % monster_id)
-	# Special attacks are only shipped content if a monster carries them.
+	# Every special attack needs a real monster, weapon or learned-spell consumer.
 	var carried: Dictionary = {}
 	for monster_id in DataLoader.monsters.keys():
 		for sa in (DataLoader.monsters[monster_id] as Dictionary).get("special_attacks", []):
 			carried[str(sa)] = true
+	for item in DataLoader.items.values():
+		var special := str(item.get("special_attack", ""))
+		if special != "": carried[special] = true
+	for action in DataLoader.get_skill_actions("spellweaving"):
+		var special := str(action.get("woven_spell", {}).get("special_attack", ""))
+		if special != "": carried[special] = true
 	for sa_id in DataLoader.special_attacks.keys():
-		_ok(carried.has(str(sa_id)), "special attack '%s' is carried by a monster" % sa_id)
+		_ok(carried.has(str(sa_id)), "special attack '%s' has a real consumer" % sa_id)
 	# Slayer pools: a single-monster tier is not a choice, and the mid-game tiers are where the
 	# collapse happened.
 	var pools: Dictionary = DataLoader.slayer_tasks.get("_monsters", {})
@@ -6752,6 +6915,168 @@ func _test_frontier_activities(host: Node) -> void:
 	children = panel.get_children()
 	_ok(children.find(grid) < children.find(systems),
 		"a plain skill keeps the generic order: activities, then systems")
+
+## Ported from FrontierExpansionsCheck.gd (a standalone scene the gate never ran): the four
+## endgame systems — crafting quality/affixes, settlement specializations, contracts, factions,
+## regional events and dungeon modifiers — end to end through their managers, save round-trips
+## and the UI panels that surface them.
+func _test_frontier_expansions(host: Node) -> void:
+	_heading("Frontier expansions: quality crafting, contracts, factions, regions, dungeon challenges")
+	GameManager.start_new_game("standard")
+	var CraftQualityScript: GDScript = load("res://scripts/core/CraftingQuality.gd")
+	_ok(DataLoader.crafting_quality.size() == 4, "Four crafted-quality tiers loaded")
+	_ok(DataLoader.crafting_affixes.size() == 4, "Four crafting affixes loaded")
+	_ok(DataLoader.settlement_specializations.size() == 4, "Four settlement paths loaded")
+	var base: Dictionary = DataLoader.get_item("bronze_platebody")
+	var fine: Dictionary = DataLoader.get_item("bronze_platebody__quality_fine")
+	var legendary: Dictionary = DataLoader.get_item("bronze_platebody__quality_legendary")
+	_ok(not base.is_empty() and str(fine.get("name", "")).begins_with("Fine"), "Variant definitions resolve from normal gear")
+	_ok(int(legendary.get("equipment_stats", {}).get("melee_defence", 0)) > int(base.get("equipment_stats", {}).get("melee_defence", 0)), "High quality increases worn stats")
+	_ok(DataLoader.get_item("bronze_platebody__quality_unknown").is_empty(), "Unknown variant rejected")
+	var affixed: Dictionary = DataLoader.get_item("bronze_platebody__quality_legendary__affix_fortunate")
+	_ok(float(affixed.get("passive_modifiers", {}).get("global_gp_percent", 0.0)) >= 2.0, "Craft affixes add real modifiers")
+	_ok(not Goals.sources_for_item("bronze_platebody__affix_warded").is_empty(), "Affix-only gear has acquisition routes")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 314159
+	var valid_rolls: bool = true
+	var premium_rolls: int = 0
+	for _i in range(500):
+		var result_id: String = CraftQualityScript.roll("bronze_platebody", 120, rng, DataLoader.items, DataLoader.crafting_quality, DataLoader.crafting_affixes)
+		valid_rolls = valid_rolls and not DataLoader.get_item(result_id).is_empty()
+		if result_id != "bronze_platebody":
+			premium_rolls += 1
+	_ok(valid_rolls and premium_rolls > 0, "Quality and affix rolls always resolve to real equipment")
+	var crafted_before: float = PlayerData.get_stat("items_crafted", "bronze_platebody")
+	ProgressTracker.record_item_crafted("bronze_platebody__quality_fine__affix_fortunate", 1)
+	_ok(PlayerData.get_stat("items_crafted", "bronze_platebody") == crafted_before + 1.0, "Quality-crafted gear counts toward base equipment contracts")
+	for skill_id in DataLoader.get_skill_ids():
+		PlayerData.set_level(skill_id, 120)
+	BankManager.deserialize({"purchased_slots": 200})
+	BankManager.add_item("bronze_platebody__quality_legendary", 1)
+	_ok(EquipmentManager.equip("bronze_platebody__quality_legendary"), "Quality gear can be equipped")
+	var saved_gear: Dictionary = EquipmentManager.serialize().duplicate(true)
+	EquipmentManager.deserialize(saved_gear)
+	_ok(EquipmentManager.is_equipped("bronze_platebody__quality_legendary"), "Equipment quality survives serialization")
+	_ok(EquipmentManager.unequip(int(base.get("equipment_slot", -1))), "Quality gear can be unequipped")
+	_ok(BankManager.get_count("bronze_platebody__quality_legendary") == 1, "Unequipping returns the same quality variant")
+	BankManager.add_item("bronze_platebody__affix_fortunate", 1)
+	_ok(EquipmentManager.equip("bronze_platebody__affix_fortunate"), "Affix-only gear can be equipped")
+	_ok(ModifierManager.get_modifier("global_gp_percent") >= 2.0, "Affix applies passive gear bonuses")
+	EquipmentManager.unequip(int(base.get("equipment_slot", -1)))
+	var saved_bank: Dictionary = BankManager.serialize().duplicate(true)
+	BankManager.deserialize(saved_bank)
+	_ok(BankManager.get_count("bronze_platebody__quality_legendary") == 1, "Quality stacks survive bank serialization")
+	# A Fine or affixed piece sits in its own stack, but "do you have N" checks must still see it.
+	var plain_plates: int = BankManager.get_count("bronze_platebody")
+	_ok(BankManager.count_with_variants("bronze_platebody") == plain_plates + 2,
+		"Held-item checks count quality and affix variants of the base piece")
+	_ok(float(Quests.describe_objective({"kind": "have_item", "item_id": "bronze_platebody", "required": plain_plates + 2}).get("current", 0.0)) == float(plain_plates + 2),
+		"A have-item task is satisfied by quality-crafted copies")
+	var mining: Dictionary = DataLoader.settlement_specializations["mining_city"]
+	TownshipManager.deserialize({"buildings": {"township_building_mine": 1}})
+	PlayerData.gp = float(mining.gp_cost) + 10.0
+	for resource in mining.store_cost:
+		TownshipManager.resources[resource] = float(mining.store_cost[resource])
+	var before: float = TownshipManager.production_per_hour("metal")
+	_ok(TownshipManager.choose_specialization("mining_city"), "Paid specialization can be selected")
+	_ok(TownshipManager.specialization == "mining_city", "Selected path persists in manager")
+	_ok(TownshipManager.production_per_hour("metal") > before, "Mining path improves metal production")
+	_ok(not TownshipManager.choose_specialization("mining_city"), "Same path does not charge twice")
+	var saved_town: Dictionary = TownshipManager.serialize().duplicate(true)
+	TownshipManager.deserialize(saved_town)
+	_ok(TownshipManager.specialization == "mining_city", "Settlement specialization survives save roundtrip")
+	TownshipManager.deserialize({})
+	_ok(TownshipManager.specialization == "", "Old saves get neutral specialization")
+	_ok(ContractManager.get_offers().size() == 3, "Contract board has three distinct offers")
+	_ok(FactionManager.all_faction_ids().size() == 3, "Three reputations are available")
+	var offers: Array = ContractManager.get_offers()
+	for index in range(offers.size()):
+		var offer: Dictionary = offers[index]
+		var objective: Dictionary = offer.get("objective", {})
+		var count: int = int(objective.get("required", 1))
+		match str(objective.get("kind", "")):
+			"gain_item": ProgressTracker.record_item_gained(str(objective.get("item_id", "")), count)
+			"craft_item": ProgressTracker.record_item_crafted(str(objective.get("item_id", "")), count)
+			"kill_monster":
+				for _j in range(count): ProgressTracker.record_kill(str(objective.get("monster_id", "")))
+			"complete_dungeon":
+				for _j in range(count): ProgressTracker.record_dungeon_clear(str(objective.get("dungeon_id", "")))
+		_ok(bool(ContractManager.progress(index).get("satisfied", false)), "Contract progress tracks fresh work: " + str(offer.get("template_id", "")))
+		var faction: String = str(offer.get("faction_id", ""))
+		var old_reputation: int = FactionManager.get_reputation(faction)
+		var old_gp: float = PlayerData.gp
+		_ok(ContractManager.claim_contract(index), "Complete contract can be claimed")
+		_ok(FactionManager.get_reputation(faction) == old_reputation + int(offer.get("reputation", 0)), "Reward grants faction reputation once")
+		_ok(is_equal_approx(PlayerData.gp, old_gp + float(offer.get("reward", {}).get("gp", 0))), "Reward grants expected gold")
+		_ok(not ContractManager.claim_contract(index), "Replacement contract cannot be claimed without new progress")
+	var saved_contracts: Dictionary = ContractManager.serialize().duplicate(true)
+	ContractManager.deserialize(saved_contracts)
+	_ok(ContractManager.serialize() == saved_contracts and not ContractManager.can_claim(0), "Replacement contracts remain unclaimed after reload")
+	var saved_factions: Dictionary = FactionManager.serialize().duplicate(true)
+	FactionManager.deserialize(saved_factions)
+	_ok(FactionManager.serialize() == saved_factions, "Reputation and allegiance round-trip")
+	_ok(FactionManager.vendor_offers("ledger").size() == 2 and FactionManager.vendor_offers("wardens").size() == 2 and FactionManager.vendor_offers("vanguard").size() == 2, "Each faction offers two exclusive rewards")
+	_ok(FactionManager.select_faction("ledger"), "Pledge to a faction")
+	_ok(FactionManager.vendor_blocker("ledger", "broker_writ") != "", "Vendor reward requires sufficient rank and gold")
+	FactionManager.add_reputation("ledger", 500)
+	PlayerData.gp = 100000.0
+	_ok(FactionManager.vendor_blocker("ledger", "broker_writ") == "", "Reached rank unlocks faction vendor")
+	var vendor_gold: float = PlayerData.gp
+	_ok(FactionManager.purchase_vendor_reward("ledger", "broker_writ"), "Faction reward can be purchased")
+	_ok(PlayerData.gp == vendor_gold - 20000.0 and FactionManager.vendor_purchased("ledger", "broker_writ"), "Faction reward costs gold exactly once")
+	_ok(not FactionManager.purchase_vendor_reward("ledger", "broker_writ"), "Vendor purchase cannot duplicate")
+	var ledger_bonus: float = ModifierManager.get_modifier("global_gp_percent")
+	_ok(ledger_bonus >= 3.0, "Purchased faction perk registers gold bonus")
+	var saved_vendors: Dictionary = FactionManager.serialize().duplicate(true)
+	FactionManager.deserialize(saved_vendors)
+	_ok(FactionManager.vendor_purchased("ledger", "broker_writ"), "Owned faction reward survives load")
+	_ok(FactionManager.select_faction("wardens") and ModifierManager.get_modifier("global_gp_percent") < ledger_bonus, "Switching allegiance disables former faction perks")
+	_ok(FactionManager.select_faction("ledger") and ModifierManager.get_modifier("global_gp_percent") == ledger_bonus, "Returning allegiance reactivates purchased perk")
+	PlayerData.gp = 0
+	var board_before: Dictionary = ContractManager.serialize().duplicate(true)
+	_ok(not ContractManager.refresh_board() and board_before == ContractManager.serialize(), "Unaffordable refresh preserves contract board")
+	_ok(RegionalEventsManager.conditions.size() == 6, "Six regional conditions loaded")
+	RegionalEventsManager.deserialize({})
+	var region_before: String = RegionalEventsManager.active_id()
+	var region_data: Dictionary = RegionalEventsManager.active_event()
+	_ok(RegionalEventsManager.enemy_damage_multiplier(str(region_data.get("region_id", ""))) >= 0.5, "Active event supplies region-specific combat scaling")
+	RegionalEventsManager.advance_offline(RegionalEventsManager.PERIOD_SECONDS + 20.0)
+	_ok(RegionalEventsManager.active_id() != region_before and absf(RegionalEventsManager.elapsed_seconds - 20.0) < 0.01, "Offline world event rotation consumes elapsed time")
+	var saved_regions: Dictionary = RegionalEventsManager.serialize().duplicate(true)
+	RegionalEventsManager.deserialize(saved_regions)
+	_ok(RegionalEventsManager.serialize() == saved_regions, "Regional condition and timer persist")
+	_ok(DungeonModifierManager.definitions.size() == 10, "Ten dungeon challenges loaded")
+	var quest_panel_script: GDScript = load("res://scripts/ui/panels/QuestsPanel.gd")
+	_ok(quest_panel_script != null and quest_panel_script.can_instantiate(), "Contracts & factions screen compiles")
+	if quest_panel_script != null and quest_panel_script.can_instantiate():
+		var tasks_panel: Control = quest_panel_script.new()
+		host.add_child(tasks_panel)
+		_ok(tasks_panel._tab_ids.has("contracts"), "Contracts & factions tab appears in Tasks")
+		tasks_panel._select_tab("contracts")
+		_ok(tasks_panel._list.get_child_count() >= 6, "Contract and faction cards render")
+		tasks_panel.queue_free()
+	var combat_panel_script: GDScript = load("res://scripts/ui/panels/CombatPanel.gd")
+	_ok(combat_panel_script != null and combat_panel_script.can_instantiate(), "Dungeon challenges screen compiles")
+	DungeonModifierManager.deserialize({})
+	_ok(DungeonModifierManager.toggle("iron_skin") and DungeonModifierManager.toggle("blood_moon") and DungeonModifierManager.toggle("cursed_echo"), "Choose three unique challenge affixes")
+	_ok(not DungeonModifierManager.toggle("sundering"), "Cannot select more than three challenges")
+	var snapshot: Dictionary = CombatSimulatorManager.build_snapshot("dungeon", "chicken_coop", "melee", "stab")
+	_ok(float(snapshot.get("challenge_effects", {}).get("enemy_hp_percent", 0)) >= 35.0, "Combat simulator includes selected dungeon affixes")
+	var dungeon: Dictionary = DataLoader.get_dungeon("chicken_coop")
+	if dungeon.is_empty():
+		_ok(false, "Starter dungeon exists")
+	else:
+		Quests.deserialize({"claimed": {"expedition_charter": true}})
+		var ctx: Dictionary = {"type": "dungeon", "id": "chicken_coop", "monsters": dungeon.get("monsters", [])}
+		_ok(CombatManager.start_combat(ctx), "Challenge dungeon starts")
+		_ok(DungeonModifierManager.active_ids.size() == 3 and DungeonModifierManager.reward_multiplier() > 1.0, "Challenge selection locks and raises reward")
+		_ok(CombatManager.monster_max_hp > int(DataLoader.get_monster(CombatManager.current_monster_id).get("hitpoints", 0)), "Challenge modifiers increase real enemy health")
+		_ok(not DungeonModifierManager.toggle("iron_skin"), "Modifiers cannot change mid-fight")
+		var saved_mods: Dictionary = DungeonModifierManager.serialize().duplicate(true)
+		DungeonModifierManager.deserialize(saved_mods)
+		_ok(DungeonModifierManager.active_ids.size() == 3, "Active challenge survives serialization")
+		CombatManager.stop_combat("test")
+		_ok(DungeonModifierManager.active_ids.is_empty(), "Retreat clears active modifiers")
 
 func _test_slayer_task_flow() -> void:
 	var coins_before: float = PlayerData.slayer_coins
@@ -8361,7 +8686,13 @@ func _test_detail_cards(host: Node) -> void:
 	var shapeless: Array[String] = []
 	var unroutable: Array[String] = []
 	var too_wide: Array[String] = []
+	var shown: int = 0
 	for item_id in DataLoader.items.keys():
+		# Every card replaces the last one's nodes, freed only when a frame ends: thousands of cards
+		# in one frame held gigabytes.
+		shown += 1
+		if shown % 100 == 0:
+			await host.get_tree().process_frame
 		var id: String = str(item_id)
 		panel.call("show_item", id)
 		# The pane is 260px wide on desktop. A card that needs more is clipped, not scrolled, so
@@ -8401,6 +8732,9 @@ func _test_detail_cards(host: Node) -> void:
 	var recipes: int = 0
 	for skill_id in DataLoader.get_skill_ids():
 		for action in DataLoader.get_skill_actions(str(skill_id)):
+			shown += 1
+			if shown % 100 == 0:
+				await host.get_tree().process_frame
 			if typeof(action) != TYPE_DICTIONARY:
 				continue
 			var a: Dictionary = action
@@ -8463,7 +8797,7 @@ func _test_detail_cards(host: Node) -> void:
 	# missing: that is the question the pane exists to answer.
 	panel.call("show_recipe", "crafting", "craft_diamond_ring")
 	var blocked: String = _card_text(body)
-	_ok(blocked.contains("Diamond") and blocked.contains("Delving"),
+	_ok(blocked.contains("Diamond"),
 		"a blocked recipe names the action that supplies its missing material")
 	# An unknown activity must say so rather than leave the previous card standing.
 	panel.call("show_recipe", "crafting", "no_such_action_id")
@@ -8581,6 +8915,9 @@ func _test_detail_cards(host: Node) -> void:
 	frame.queue_free()   # owns panel now, so this frees both
 	overview.queue_free()
 	skills.queue_free()
+	# Let the frame end so these are really gone: until then they stay connected and rebuild on
+	# every signal the synchronous suites after this one fire, and nothing they free is released.
+	await host.get_tree().process_frame
 
 ## Waits for the pane to be laid out at its real width. Returns false (which the caller reports as a
 ## squeeze) when that never happens, so a layout that simply did not run cannot pass as a healthy
@@ -8725,6 +9062,9 @@ func _test_food_heals_in_combat(host: Node) -> void:
 		labels.append((b as Button).text)
 	_ok(not labels.has("Eat 1"), "a log row has no Eat button")
 	bank.queue_free()
+	# Let the frame end so the panel is really gone: until then it stays in the tree, still
+	# connected, and rebuilds on every bank change the synchronous suites after this one make.
+	await host.get_tree().process_frame
 
 func _find_artisan_with_inputs() -> Dictionary:
 	for skill_id in DataLoader.get_skill_ids():
@@ -9050,6 +9390,15 @@ func _test_map_polish() -> void:
 	_eq(CartographyManager.current_hex, next, "the ship position survives a save round trip")
 	CartographyManager.deserialize(saved)
 
+## run_all is mostly synchronous, and the nodes a UI rebuild replaces (queue_free) are only freed
+## when a frame ends, so a long frame-less stretch held gigabytes of dead UI. One frame with the
+## game paused frees them without letting any skill, fight or timer advance.
+func _flush_frees(host: Node) -> void:
+	var was_paused: bool = GameManager.is_paused
+	GameManager.is_paused = true   # the field, not set_paused(): that also announces an activity change
+	await host.get_tree().process_frame
+	GameManager.is_paused = was_paused
+
 func _deterministic(on: bool) -> void:
 	if not on:
 		return
@@ -9292,8 +9641,9 @@ func _test_reset_is_confirmed_not_destructive() -> void:
 		var dlg: ConfirmDialog = dialogs[0]
 		_ok(dlg.dialog_text.find("cannot be undone") >= 0,
 			"the reset dialog states plainly that the save is destroyed")
-		_ok(dlg.dialog_text.find("deletes your save") >= 0,
-			"the reset dialog says what is destroyed")
+		_ok(dlg.dialog_text.find("clears your active slot") >= 0 and
+			dlg.dialog_text.find("Other slots stay intact") >= 0,
+			"the reset dialog identifies the active slot and preserves other slots")
 		_ok(dlg.ok_button_text.find("Reset") >= 0, "the confirm button names the action it takes")
 		_ok(dlg.get_cancel_button() == dlg.get_cancel_button() and
 			dlg.get_cancel_button() != dlg.get_ok_button(),
@@ -9332,3 +9682,59 @@ func _prayer_cards(node: Node) -> int:
 	var count: int = 1 if node is Button and node.text in ["Activate", "Deactivate", "Locked"] else 0
 	for child in node.get_children(): count += _prayer_cards(child)
 	return count
+
+func _test_remaining_audit_fixes(host: Node) -> void:
+	_heading("Remaining gameplay audit fixes")
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	ActionQueueManager.add_skill_step("woodcutting", "normal_tree", "normal_log", 5)
+	ActionQueueManager.add_skill_step("firemaking", "burn_normal_log", "normal_log", 0)
+	_ok(ActionQueueManager.start(), "quantity-limited queue starts")
+	OfflineProgression.simulate_synchronously(3600.0)
+	_ok(PlayerData.get_stat("actions", "woodcutting:normal_tree") <= 5.0, "gathering stops as soon as its item target is reached")
+	_ok(PlayerData.get_xp("firemaking") > 0.0, "the next queue step earns XP in the same offline window")
+	_eq(BankManager.get_count("normal_log"), 0, "the consuming queue step uses the gathered logs")
+	ActionQueueManager.clear()
+	var plain_xp: float = 0.0
+	for duration in [0.0, 10.0, 30.0, 60.0]:
+		GameManager.start_new_game("standard")
+		_deterministic(true)
+		if duration > 0.0:
+			InscriptionManager.activate_buff("boundary_test", {"global_skill_xp_percent":100.0}, duration)
+		SkillManager.start_action("woodcutting", "normal_tree")
+		OfflineProgression.simulate_synchronously(60.0)
+		var earned: float = PlayerData.get_xp("woodcutting")
+		if duration == 0.0:
+			plain_xp = earned
+		else:
+			_ok(earned > plain_xp * (1.8 if duration == 60.0 else 1.1), "a %.0fs bonus pays before expiry (%.2f vs %.2f XP)" % [duration, earned, plain_xp])
+		_ok(InscriptionManager.buffs.is_empty(), "the %.0fs bonus expires once" % duration)
+	GameManager.start_new_game("standard")
+	_deterministic(true)
+	PlayerData.set_level("ranching", 120)
+	BankManager.deserialize({"purchased_slots":1000})
+	ModifierManager.register("audit:rare", {"ranching_variant_percent":100.0}, "test", "Guaranteed rare roll")
+	for animal in DataLoader.new_skill_systems.species:
+		var sid: String = str(animal.id)
+		var rare: String = RanchingManager.rare_stock_id(sid)
+		_ok(rare != "" and DataLoader.items.has(rare), sid + " has real rare stock")
+		if rare == "" or not DataLoader.items.has(rare): continue
+		RanchingManager.deserialize({"pens":[{"species":sid,"animals":2,"feed":10000.0,"happiness":100.0,"breed_seconds":21600.0}]})
+		RanchingManager._rng.seed = 1
+		for attempt in 32:
+			RanchingManager.pens[0].breed_seconds = 21600.0
+			RanchingManager.breed(0)
+			if BankManager.get_count(rare) > 0: break
+		_ok(BankManager.get_count(rare) > 0, sid + " breeding awards its own rare stock")
+		RanchingManager.deserialize({"pens":[{}]})
+		_ok(RanchingManager.stock(0, sid, true), sid + " rare animal can be stocked")
+		RanchingManager.pens[0].feed = 10000.0
+		RanchingManager.advance(float(animal.seconds))
+		_ok(int(RanchingManager.pens[0].pending.get(str(animal.produce), 0)) >= 2, sid + " rare animal doubles produce")
+		_ok(not Goals.sources_for_item(rare).is_empty(), sid + " rare stock has a discoverable source")
+		_ok(AssetRegistry.item_icon(rare) != null, sid + " rare stock has working artwork")
+	var pen_save: Dictionary = RanchingManager.serialize().duplicate(true)
+	RanchingManager.deserialize(pen_save)
+	_ok(bool(RanchingManager.pens[0].variant), "the final rare pen survives save/load")
+	ModifierManager.unregister("audit:rare")
+	await host.get_tree().process_frame

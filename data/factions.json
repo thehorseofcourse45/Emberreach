@@ -1,0 +1,52 @@
+{
+  "factions": [
+    {
+      "id": "ledger",
+      "name": "Gilded Ledger",
+      "description": "Caravans, smiths and traders who turn frontier work into coin.",
+      "vendors": [
+        {"id": "broker_writ", "name": "Broker's Writ", "description": "+3% gold income while pledged", "requires_rank": 2, "cost_gp": 20000, "modifiers": {"global_gp_percent": 3}},
+        {"id": "vault_contract", "name": "Vault Contract", "description": "+5 Storage slots while pledged", "requires_rank": 4, "cost_gp": 75000, "modifiers": {"bank_space_flat": 5}}
+      ],
+      "ranks": [
+        {"name": "Outsider", "reputation": 0, "modifiers": {}, "unlocks": []},
+        {"name": "Associate", "reputation": 60, "modifiers": {"global_gp_percent": 2}, "unlocks": []},
+        {"name": "Broker", "reputation": 180, "modifiers": {"global_gp_percent": 4, "bank_space_flat": 2}, "unlocks": ["silver_contracts"]},
+        {"name": "Factor", "reputation": 500, "modifiers": {"global_gp_percent": 6, "bank_space_flat": 3, "global_skill_xp_percent": 1}, "unlocks": []},
+        {"name": "Magnate", "reputation": 1100, "modifiers": {"global_gp_percent": 9, "bank_space_flat": 5, "global_skill_xp_percent": 2}, "unlocks": ["gold_contracts"]}
+      ]
+    },
+    {
+      "id": "wardens",
+      "name": "Verdant Wardens",
+      "description": "Foragers and scouts who preserve the harvest of the wilds.",
+      "vendors": [
+        {"id": "forager_oath", "name": "Forager's Oath", "description": "+3% timber doubling while pledged", "requires_rank": 2, "cost_gp": 20000, "modifiers": {"woodcutting_doubling_percent": 3}},
+        {"id": "greenward_emblem", "name": "Greenward Emblem", "description": "+7% farming XP while pledged", "requires_rank": 4, "cost_gp": 75000, "modifiers": {"farming_skill_xp_percent": 7}}
+      ],
+      "ranks": [
+        {"name": "Outsider", "reputation": 0, "modifiers": {}, "unlocks": []},
+        {"name": "Seedbearer", "reputation": 60, "modifiers": {"woodcutting_skill_xp_percent": 3, "fishing_skill_xp_percent": 3}, "unlocks": []},
+        {"name": "Pathfinder", "reputation": 180, "modifiers": {"woodcutting_skill_xp_percent": 5, "fishing_skill_xp_percent": 5, "mining_skill_xp_percent": 3}, "unlocks": ["silver_contracts"]},
+        {"name": "Grovekeeper", "reputation": 500, "modifiers": {"woodcutting_skill_xp_percent": 7, "fishing_skill_xp_percent": 7, "mining_skill_xp_percent": 5, "woodcutting_doubling_percent": 2}, "unlocks": []},
+        {"name": "Elder Warden", "reputation": 1100, "modifiers": {"woodcutting_skill_xp_percent": 10, "fishing_skill_xp_percent": 10, "mining_skill_xp_percent": 7, "woodcutting_doubling_percent": 4, "fishing_doubling_percent": 4}, "unlocks": ["gold_contracts"]}
+      ]
+    },
+    {
+      "id": "vanguard",
+      "name": "Iron Vanguard",
+      "description": "Guards who keep the roads open and beasts away from settlements.",
+      "vendors": [
+        {"id": "bulwark_standard", "name": "Bulwark Standard", "description": "+1% damage reduction while pledged", "requires_rank": 2, "cost_gp": 20000, "modifiers": {"damage_reduction_percent": 1}},
+        {"id": "marshal_insignia", "name": "Marshal's Insignia", "description": "+4% melee accuracy while pledged", "requires_rank": 4, "cost_gp": 75000, "modifiers": {"melee_accuracy_percent": 4}}
+      ],
+      "ranks": [
+        {"name": "Outsider", "reputation": 0, "modifiers": {}, "unlocks": []},
+        {"name": "Recruit", "reputation": 60, "modifiers": {"melee_accuracy_percent": 2}, "unlocks": []},
+        {"name": "Sentinel", "reputation": 180, "modifiers": {"melee_accuracy_percent": 4, "ranged_accuracy_percent": 3}, "unlocks": ["silver_contracts"]},
+        {"name": "Captain", "reputation": 500, "modifiers": {"melee_accuracy_percent": 6, "ranged_accuracy_percent": 5, "magic_accuracy_percent": 5, "damage_reduction_percent": 1}, "unlocks": []},
+        {"name": "High Marshal", "reputation": 1100, "modifiers": {"melee_accuracy_percent": 9, "ranged_accuracy_percent": 8, "magic_accuracy_percent": 8, "damage_reduction_percent": 2}, "unlocks": ["gold_contracts"]}
+      ]
+    }
+  ]
+}
