@@ -239,6 +239,27 @@ func count_with_variants(item_id: String, include_overflow: bool = false) -> int
 				total += int(source[id])
 	return total
 
+## Spend `quantity` of an item as a recipe input: the plain stack first, then its quality-crafted
+## and affixed variants, so a Fine bar still smelts into something. Returns false if short.
+func remove_with_variants(item_id: String, quantity: int) -> bool:
+	if quantity <= 0 or count_with_variants(item_id) < quantity:
+		return false
+	var left: int = quantity
+	var take: int = mini(get_count(item_id), left)
+	if take > 0:
+		remove_item(item_id, take)
+		left -= take
+	var quality_prefix: String = item_id + CraftingQuality.SEPARATOR
+	var affix_prefix: String = item_id + CraftingQuality.AFFIX_SEPARATOR
+	for id in items.keys():
+		if left <= 0:
+			break
+		if str(id).begins_with(quality_prefix) or str(id).begins_with(affix_prefix):
+			take = mini(int(items[id]), left)
+			remove_item(str(id), take)
+			left -= take
+	return true
+
 func has_item(item_id: String, quantity: int = 1) -> bool:
 	return get_count(item_id) >= quantity
 

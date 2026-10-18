@@ -27,13 +27,15 @@ Emberreach/
 ├── data/                      # ALL content (JSON) — the "mod" surface
 │   ├── skills.json            # every skill has authored actions + a working system
 │   ├── new_skill_systems.json # species / devices / enchants / dreams / bazaar
-│   ├── items.json  monsters.json  dungeons.json  areas.json  game_modes.json
-│   ├── quests.json  rotating_tasks.json  achievements.json  tutorial.json
+│   ├── items.json  monsters.json  dungeons.json  areas.json  game_modes.json  abilities.json
+│   ├── quests.json  rotating_tasks.json  achievements.json  tutorial.json  contracts.json
+│   ├── factions.json  regional_events.json  events.json  random_events.json  ascendancy.json
+│   ├── crafting_quality.json  crafting_affixes.json  dungeon_modifiers.json
 │   ├── trader.json  raid_shop.json  shop.json  shop_store.json  shop_township.json
-│   ├── shop_museum.json  prayers.json  special_attacks.json  constellations.json
-│   ├── obstacles.json  familiars.json  pets.json  slayer_tasks.json  audio.json
-│   └── cartography_hexes.json  cartography_ships.json  archaeology_sites.json  worship.json  random_events.json
-│                                cartography_terrain.json
+│   ├── shop_museum.json  settlement_specializations.json  prayers.json  special_attacks.json
+│   ├── constellations.json  obstacles.json  familiars.json  pets.json  slayer_tasks.json
+│   ├── cartography_hexes.json  cartography_ships.json  cartography_terrain.json
+│   └── caravan_map_sites.json  archaeology_sites.json  worship.json  audio.json
 ├── scripts/
 │   ├── autoload/              # singleton managers (see §4)
 │   ├── combat/                # CombatFormulas.gd, StatusEffect.gd, CombatSimulator.gd
@@ -240,8 +242,8 @@ Loaded content. This block is generated from the live singletons — do not hand
 | Check | Value |
 |---|---|
 | Skills | 42 (9 combat / 33 non-combat) |
-| Skill actions | 1085 |
-| Items | 1036 |
+| Skill actions | 1107 |
+| Items | 1039 |
 | Monsters | 126 |
 | Areas | 27 |
 | Dungeons | 46 |
@@ -314,12 +316,15 @@ the game runs before any art exists.
 
 ## 9. Known gaps
 
-- All 39 skills, the Phase 9 endgame (God Dungeons, Raid, Abyssal) and the dark-fantasy UI
+- All 42 skills, the Phase 9 endgame (God Dungeons, Raid, Abyssal) and the dark-fantasy UI
   overhaul are implemented; area hazards **are** applied during combat (`_active_hazard()`).
 - Depth still light in places: Township education is the Schoolhouse (`township_building_school`): residents study one chosen non-combat skill and pay it 4,000 XP per Schoolhouse level each settlement tick, online or offline. Summoning tablet quantity does scale: mastery grants `summoning_resource_flat` (+5 at mastery 50, +15 at 99), applied to every output by `SkillManager._produce_outputs`.
   Cartography ship upgrades and the Archaeology museum shop were implemented after this list was
   first written — `cartography_ships.json` and `shop_museum.json` each have a live manager
   consumer now.
+- Recipe inputs accept quality-crafted and affixed copies: `BankManager.remove_with_variants`
+  spends the plain stack first, then variants. Bank counts for quests, goals and the tutorial use
+  `count_with_variants`. Save slots run offline catch-up when you switch slot.
 - Prospecting veins roll a richness tier on every spawn (`vein_richness` on the skill in
   `skills.json`: Poor / Vein / Rich / Motherlode). The tier scales the node's uses and XP per action
   until it respawns, and is saved with the node. Rate estimates still assume an average vein.

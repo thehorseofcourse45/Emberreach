@@ -118,10 +118,10 @@ func check_action(skill_id: String, action_id: String) -> Dictionary:
 	var inputs: Dictionary = data.get("input_items", {})
 	for item_id in inputs.keys():
 		var need: int = int(inputs[item_id])
-		if BankManager.get_count(str(item_id)) < need:
+		if BankManager.count_with_variants(str(item_id)) < need:
 			return {"ok": false, "reason": "materials",
 				"detail": "Needs %s ×%d (you have %d)" % [DataLoader.get_item(str(item_id)).get("name", item_id),
-					need, BankManager.get_count(str(item_id))]}
+					need, BankManager.count_with_variants(str(item_id))]}
 	var space: Dictionary = _check_output_space(data)
 	if not bool(space["ok"]):
 		return space
@@ -321,7 +321,7 @@ func perform_action() -> Dictionary:
 	var inputs: Dictionary = data.get("input_items", {})
 	for item_id in inputs.keys():
 		var need: int = int(inputs[item_id])
-		if BankManager.get_count(str(item_id)) < need:
+		if BankManager.count_with_variants(str(item_id)) < need:
 			stop_action(StopReason.MISSING_MATERIALS,
 				"Stopped: out of %s" % DataLoader.get_item(str(item_id)).get("name", item_id))
 			return {"success": false, "stop": "missing_materials"}
@@ -494,7 +494,7 @@ func _consume_inputs(data: Dictionary, forced: bool = false) -> void:
 			if _rng.randf() * 100.0 >= preserve:
 				consumed += 1
 		if consumed > 0:
-			BankManager.remove_item(str(item_id), consumed)
+			BankManager.remove_with_variants(str(item_id), consumed)
 			SimulationMode.bump(SimulationMode.BUCKET_ITEMS_CONSUMED, str(item_id), float(consumed))
 
 func _produce_outputs(data: Dictionary) -> Dictionary:

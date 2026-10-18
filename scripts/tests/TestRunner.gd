@@ -7049,6 +7049,13 @@ func _test_frontier_expansions(host: Node) -> void:
 		"Held-item checks count quality and affix variants of the base piece")
 	_ok(float(Quests.describe_objective({"kind": "have_item", "item_id": "bronze_platebody", "required": plain_plates + 2}).get("current", 0.0)) == float(plain_plates + 2),
 		"A have-item task is satisfied by quality-crafted copies")
+	# Recipe inputs spend the plain stack first, then quality/affix copies.
+	BankManager.deserialize({"purchased_slots": 200})
+	BankManager.add_item("bronze_platebody", 1)
+	BankManager.add_item("bronze_platebody__quality_legendary", 1)
+	_ok(not BankManager.remove_with_variants("bronze_platebody", 3), "Variant spend refuses when short")
+	_ok(BankManager.remove_with_variants("bronze_platebody", 2), "Variant spend consumes plain then quality copies")
+	_ok(BankManager.count_with_variants("bronze_platebody") == 0, "Variant spend leaves nothing behind")
 	var mining: Dictionary = DataLoader.settlement_specializations["mining_city"]
 	TownshipManager.deserialize({"buildings": {"township_building_mine": 1}})
 	PlayerData.gp = float(mining.gp_cost) + 10.0
