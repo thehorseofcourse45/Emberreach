@@ -5,8 +5,8 @@ extends VBoxContainer
 ## point cost) with no caller anywhere in the UI, so a 120-level skill's entire unlock tree was
 ## unreachable. This panel is the missing entry point; the logic all lives in PrayerManager.
 ##
-## Points come from burying bones in Storage and from settlement buildings, and are spent per
-## player attack, so the cost line is the number that matters when choosing what to keep lit.
+## Points come from burying bones and ash in Storage and from settlement buildings, and are spent
+## per player attack, so the cost line is the number that matters when choosing what to keep lit.
 
 signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
@@ -26,7 +26,7 @@ func _ready() -> void:
 	add_child(_summary)
 	add_child(UIStyle.label(
 		"Up to %d prayers run at once. Each one costs prayer points on every attack you make; "
-		% PrayerManager.MAX_ACTIVE + "bury bones in Storage or raise them in your settlement to earn more.",
+		% PrayerManager.MAX_ACTIVE + "bury bones or ash in Storage, or raise them in your settlement, to earn more.",
 		true, UITokens.FONT_SMALL))
 	_filter = OptionButton.new()
 	for label in ["All prayers", "Unlocked", "Active"]:

@@ -372,9 +372,20 @@ func _ranch() -> void:
 				EventBus.state_refreshed.emit(), not ids.is_empty())
 			_button(row, "Stock", func():
 				if not RanchingManager.stock(index, str(ids[choice.selected])): EventBus.notify("Buy stock first; animals in a pen must match.", "warn"), not ids.is_empty())
-			if ids.any(func(id): return BankManager.get_count(RanchingManager.rare_stock_id(str(id))) > 0):
-				_button(row, "Rare stock", func():
-					if not RanchingManager.stock(index, str(ids[choice.selected]), true): EventBus.notify("That species has no rare variant, you do not hold its rare stock, or this pen holds ordinary animals.", "warn"), not ids.is_empty())
+			# Rare stock is a separate item; the picker only lists ordinary ids, so a "rare" entry is
+			# added for each selected species whose rare stock is actually banked.
+			var rare_ids: Array = []
+			var rare_names: Array = []
+			for id in ids:
+				var rare: String = RanchingManager.rare_stock_id(str(id))
+				if rare != "" and BankManager.get_count(rare) > 0:
+					rare_ids.append(str(id))
+					rare_names.append(str(RanchingManager.species(str(id)).name))
+			if not rare_ids.is_empty():
+				var rare_choice := _choice(row, rare_ids, rare_names, rare_ids.map(func(id): return AssetRegistry.item_icon(RanchingManager.rare_stock_id(str(id)))))
+				_button(row, "Stock rare", func():
+					if not RanchingManager.stock(index, str(rare_ids[rare_choice.selected]), true): EventBus.notify("That pen holds ordinary animals, or it is full.", "warn")
+					EventBus.state_refreshed.emit())
 	var catalogue := _card("Livestock catalogue", "A long-term progression from hens to celestial dragons. Matching animals share a pen; rare variants of every species produce twice as much.")
 	var catalogue_grid := _flow()
 	catalogue.add_child(catalogue_grid)

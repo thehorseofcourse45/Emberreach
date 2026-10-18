@@ -2630,5 +2630,2453 @@
     "travel_cost": 1250,
     "survey_xp": 10,
     "poi": {}
+  },
+  "frontier_-12_-9": {
+    "id": "frontier_-12_-9",
+    "q": -12,
+    "r": -9,
+    "terrain": "redwood_grove",
+    "travel_cost": 1775,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-12_-9_poi",
+      "name": "Elderroot Sanctuary",
+      "reward": {
+        "gp": 6000,
+        "items": {
+          "redwood_log": 5
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "shrine"
+  },
+  "frontier_-12_-8": {
+    "id": "frontier_-12_-8",
+    "q": -12,
+    "r": -8,
+    "terrain": "redwood_grove",
+    "travel_cost": 1700,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_-7": {
+    "id": "frontier_-12_-7",
+    "q": -12,
+    "r": -7,
+    "terrain": "redwood_grove",
+    "travel_cost": 1625,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_-6": {
+    "id": "frontier_-12_-6",
+    "q": -12,
+    "r": -6,
+    "terrain": "redwood_grove",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-12_-6_poi",
+      "name": "Redwatch Lookout",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "redwood_log": 7
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "tower"
+  },
+  "frontier_-12_-5": {
+    "id": "frontier_-12_-5",
+    "q": -12,
+    "r": -5,
+    "terrain": "redwood_grove",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_-4": {
+    "id": "frontier_-12_-4",
+    "q": -12,
+    "r": -4,
+    "terrain": "redwood_grove",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_-3": {
+    "id": "frontier_-12_-3",
+    "q": -12,
+    "r": -3,
+    "terrain": "redwood_grove",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_-2": {
+    "id": "frontier_-12_-2",
+    "q": -12,
+    "r": -2,
+    "terrain": "moorland",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-12_-2_poi",
+      "name": "Heatherwatch Tower",
+      "reward": {
+        "gp": 6000,
+        "items": {
+          "garum_herb": 5
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "tower"
+  },
+  "frontier_-12_-1": {
+    "id": "frontier_-12_-1",
+    "q": -12,
+    "r": -1,
+    "terrain": "moorland",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_0": {
+    "id": "frontier_-12_0",
+    "q": -12,
+    "r": 0,
+    "terrain": "moorland",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_1": {
+    "id": "frontier_-12_1",
+    "q": -12,
+    "r": 1,
+    "terrain": "moorland",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-12_1_poi",
+      "name": "Stormbell Chapel",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "garum_herb": 7
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "shrine"
+  },
+  "frontier_-12_2": {
+    "id": "frontier_-12_2",
+    "q": -12,
+    "r": 2,
+    "terrain": "moorland",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_3": {
+    "id": "frontier_-12_3",
+    "q": -12,
+    "r": 3,
+    "terrain": "moorland",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_4": {
+    "id": "frontier_-12_4",
+    "q": -12,
+    "r": 4,
+    "terrain": "mangrove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-12_4_poi",
+      "name": "Rootwater Haven",
+      "reward": {
+        "gp": 6000,
+        "items": {
+          "raw_lobster": 5
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "settlement"
+  },
+  "frontier_-12_5": {
+    "id": "frontier_-12_5",
+    "q": -12,
+    "r": 5,
+    "terrain": "mangrove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_6": {
+    "id": "frontier_-12_6",
+    "q": -12,
+    "r": 6,
+    "terrain": "mangrove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_7": {
+    "id": "frontier_-12_7",
+    "q": -12,
+    "r": 7,
+    "terrain": "mangrove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-12_7_poi",
+      "name": "Tidewoven Shrine",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "raw_lobster": 7
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "shrine"
+  },
+  "frontier_-12_8": {
+    "id": "frontier_-12_8",
+    "q": -12,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-12_9": {
+    "id": "frontier_-12_9",
+    "q": -12,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-9": {
+    "id": "frontier_-11_-9",
+    "q": -11,
+    "r": -9,
+    "terrain": "redwood_grove",
+    "travel_cost": 1700,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-8": {
+    "id": "frontier_-11_-8",
+    "q": -11,
+    "r": -8,
+    "terrain": "redwood_grove",
+    "travel_cost": 1625,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-7": {
+    "id": "frontier_-11_-7",
+    "q": -11,
+    "r": -7,
+    "terrain": "redwood_grove",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-6": {
+    "id": "frontier_-11_-6",
+    "q": -11,
+    "r": -6,
+    "terrain": "redwood_grove",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-5": {
+    "id": "frontier_-11_-5",
+    "q": -11,
+    "r": -5,
+    "terrain": "redwood_grove",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-4": {
+    "id": "frontier_-11_-4",
+    "q": -11,
+    "r": -4,
+    "terrain": "redwood_grove",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-3": {
+    "id": "frontier_-11_-3",
+    "q": -11,
+    "r": -3,
+    "terrain": "redwood_grove",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-2": {
+    "id": "frontier_-11_-2",
+    "q": -11,
+    "r": -2,
+    "terrain": "moorland",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_-1": {
+    "id": "frontier_-11_-1",
+    "q": -11,
+    "r": -1,
+    "terrain": "moorland",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_0": {
+    "id": "frontier_-11_0",
+    "q": -11,
+    "r": 0,
+    "terrain": "moorland",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_1": {
+    "id": "frontier_-11_1",
+    "q": -11,
+    "r": 1,
+    "terrain": "moorland",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_2": {
+    "id": "frontier_-11_2",
+    "q": -11,
+    "r": 2,
+    "terrain": "moorland",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_3": {
+    "id": "frontier_-11_3",
+    "q": -11,
+    "r": 3,
+    "terrain": "moorland",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_4": {
+    "id": "frontier_-11_4",
+    "q": -11,
+    "r": 4,
+    "terrain": "mangrove",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_5": {
+    "id": "frontier_-11_5",
+    "q": -11,
+    "r": 5,
+    "terrain": "mangrove",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_6": {
+    "id": "frontier_-11_6",
+    "q": -11,
+    "r": 6,
+    "terrain": "mangrove",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_7": {
+    "id": "frontier_-11_7",
+    "q": -11,
+    "r": 7,
+    "terrain": "mangrove",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_8": {
+    "id": "frontier_-11_8",
+    "q": -11,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-11_9": {
+    "id": "frontier_-11_9",
+    "q": -11,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-9": {
+    "id": "frontier_-10_-9",
+    "q": -10,
+    "r": -9,
+    "terrain": "redwood_grove",
+    "travel_cost": 1625,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-8": {
+    "id": "frontier_-10_-8",
+    "q": -10,
+    "r": -8,
+    "terrain": "redwood_grove",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-7": {
+    "id": "frontier_-10_-7",
+    "q": -10,
+    "r": -7,
+    "terrain": "redwood_grove",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-6": {
+    "id": "frontier_-10_-6",
+    "q": -10,
+    "r": -6,
+    "terrain": "redwood_grove",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-5": {
+    "id": "frontier_-10_-5",
+    "q": -10,
+    "r": -5,
+    "terrain": "redwood_grove",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-4": {
+    "id": "frontier_-10_-4",
+    "q": -10,
+    "r": -4,
+    "terrain": "redwood_grove",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-3": {
+    "id": "frontier_-10_-3",
+    "q": -10,
+    "r": -3,
+    "terrain": "redwood_grove",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-2": {
+    "id": "frontier_-10_-2",
+    "q": -10,
+    "r": -2,
+    "terrain": "moorland",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_-1": {
+    "id": "frontier_-10_-1",
+    "q": -10,
+    "r": -1,
+    "terrain": "moorland",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_0": {
+    "id": "frontier_-10_0",
+    "q": -10,
+    "r": 0,
+    "terrain": "moorland",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_1": {
+    "id": "frontier_-10_1",
+    "q": -10,
+    "r": 1,
+    "terrain": "moorland",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_2": {
+    "id": "frontier_-10_2",
+    "q": -10,
+    "r": 2,
+    "terrain": "moorland",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_3": {
+    "id": "frontier_-10_3",
+    "q": -10,
+    "r": 3,
+    "terrain": "moorland",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_4": {
+    "id": "frontier_-10_4",
+    "q": -10,
+    "r": 4,
+    "terrain": "mangrove",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_5": {
+    "id": "frontier_-10_5",
+    "q": -10,
+    "r": 5,
+    "terrain": "mangrove",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_6": {
+    "id": "frontier_-10_6",
+    "q": -10,
+    "r": 6,
+    "terrain": "mangrove",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_7": {
+    "id": "frontier_-10_7",
+    "q": -10,
+    "r": 7,
+    "terrain": "mangrove",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_8": {
+    "id": "frontier_-10_8",
+    "q": -10,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-10_9": {
+    "id": "frontier_-10_9",
+    "q": -10,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-9": {
+    "id": "frontier_-9_-9",
+    "q": -9,
+    "r": -9,
+    "terrain": "redwood_grove",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-8": {
+    "id": "frontier_-9_-8",
+    "q": -9,
+    "r": -8,
+    "terrain": "redwood_grove",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-7": {
+    "id": "frontier_-9_-7",
+    "q": -9,
+    "r": -7,
+    "terrain": "redwood_grove",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-6": {
+    "id": "frontier_-9_-6",
+    "q": -9,
+    "r": -6,
+    "terrain": "redwood_grove",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-5": {
+    "id": "frontier_-9_-5",
+    "q": -9,
+    "r": -5,
+    "terrain": "redwood_grove",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-4": {
+    "id": "frontier_-9_-4",
+    "q": -9,
+    "r": -4,
+    "terrain": "redwood_grove",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-3": {
+    "id": "frontier_-9_-3",
+    "q": -9,
+    "r": -3,
+    "terrain": "redwood_grove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-9_-3_poi",
+      "name": "The Hollow Crown",
+      "reward": {
+        "gp": 10000,
+        "items": {
+          "redwood_log": 9
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "relic"
+  },
+  "frontier_-9_-2": {
+    "id": "frontier_-9_-2",
+    "q": -9,
+    "r": -2,
+    "terrain": "moorland",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_-1": {
+    "id": "frontier_-9_-1",
+    "q": -9,
+    "r": -1,
+    "terrain": "moorland",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_0": {
+    "id": "frontier_-9_0",
+    "q": -9,
+    "r": 0,
+    "terrain": "moorland",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_1": {
+    "id": "frontier_-9_1",
+    "q": -9,
+    "r": 1,
+    "terrain": "moorland",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_2": {
+    "id": "frontier_-9_2",
+    "q": -9,
+    "r": 2,
+    "terrain": "moorland",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_3": {
+    "id": "frontier_-9_3",
+    "q": -9,
+    "r": 3,
+    "terrain": "moorland",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-9_3_poi",
+      "name": "The Kingsroad Cairn",
+      "reward": {
+        "gp": 10000,
+        "items": {
+          "garum_herb": 9
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "relic"
+  },
+  "frontier_-9_4": {
+    "id": "frontier_-9_4",
+    "q": -9,
+    "r": 4,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_5": {
+    "id": "frontier_-9_5",
+    "q": -9,
+    "r": 5,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_6": {
+    "id": "frontier_-9_6",
+    "q": -9,
+    "r": 6,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_7": {
+    "id": "frontier_-9_7",
+    "q": -9,
+    "r": 7,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_8": {
+    "id": "frontier_-9_8",
+    "q": -9,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-9_9": {
+    "id": "frontier_-9_9",
+    "q": -9,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-9": {
+    "id": "frontier_-8_-9",
+    "q": -8,
+    "r": -9,
+    "terrain": "redwood_grove",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-8": {
+    "id": "frontier_-8_-8",
+    "q": -8,
+    "r": -8,
+    "terrain": "redwood_grove",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-7": {
+    "id": "frontier_-8_-7",
+    "q": -8,
+    "r": -7,
+    "terrain": "redwood_grove",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-6": {
+    "id": "frontier_-8_-6",
+    "q": -8,
+    "r": -6,
+    "terrain": "redwood_grove",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-5": {
+    "id": "frontier_-8_-5",
+    "q": -8,
+    "r": -5,
+    "terrain": "redwood_grove",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-4": {
+    "id": "frontier_-8_-4",
+    "q": -8,
+    "r": -4,
+    "terrain": "redwood_grove",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-3": {
+    "id": "frontier_-8_-3",
+    "q": -8,
+    "r": -3,
+    "terrain": "redwood_grove",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-2": {
+    "id": "frontier_-8_-2",
+    "q": -8,
+    "r": -2,
+    "terrain": "moorland",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_-1": {
+    "id": "frontier_-8_-1",
+    "q": -8,
+    "r": -1,
+    "terrain": "moorland",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_0": {
+    "id": "frontier_-8_0",
+    "q": -8,
+    "r": 0,
+    "terrain": "moorland",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_1": {
+    "id": "frontier_-8_1",
+    "q": -8,
+    "r": 1,
+    "terrain": "moorland",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_2": {
+    "id": "frontier_-8_2",
+    "q": -8,
+    "r": 2,
+    "terrain": "moorland",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_3": {
+    "id": "frontier_-8_3",
+    "q": -8,
+    "r": 3,
+    "terrain": "moorland",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_4": {
+    "id": "frontier_-8_4",
+    "q": -8,
+    "r": 4,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_5": {
+    "id": "frontier_-8_5",
+    "q": -8,
+    "r": 5,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_6": {
+    "id": "frontier_-8_6",
+    "q": -8,
+    "r": 6,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_7": {
+    "id": "frontier_-8_7",
+    "q": -8,
+    "r": 7,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_8": {
+    "id": "frontier_-8_8",
+    "q": -8,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-8_9": {
+    "id": "frontier_-8_9",
+    "q": -8,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-7_-9": {
+    "id": "frontier_-7_-9",
+    "q": -7,
+    "r": -9,
+    "terrain": "redwood_grove",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-7_-8": {
+    "id": "frontier_-7_-8",
+    "q": -7,
+    "r": -8,
+    "terrain": "redwood_grove",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-7_8": {
+    "id": "frontier_-7_8",
+    "q": -7,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-7_9": {
+    "id": "frontier_-7_9",
+    "q": -7,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-6_-9": {
+    "id": "frontier_-6_-9",
+    "q": -6,
+    "r": -9,
+    "terrain": "redwood_grove",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-6_-8": {
+    "id": "frontier_-6_-8",
+    "q": -6,
+    "r": -8,
+    "terrain": "redwood_grove",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-6_8": {
+    "id": "frontier_-6_8",
+    "q": -6,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-6_9": {
+    "id": "frontier_-6_9",
+    "q": -6,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-5_-9": {
+    "id": "frontier_-5_-9",
+    "q": -5,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-5_-9_poi",
+      "name": "Frostglass Observatory",
+      "reward": {
+        "gp": 6000,
+        "items": {
+          "pure_essence": 5
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "observatory"
+  },
+  "frontier_-5_-8": {
+    "id": "frontier_-5_-8",
+    "q": -5,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-5_8": {
+    "id": "frontier_-5_8",
+    "q": -5,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-5_9": {
+    "id": "frontier_-5_9",
+    "q": -5,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-4_-9": {
+    "id": "frontier_-4_-9",
+    "q": -4,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-4_-8": {
+    "id": "frontier_-4_-8",
+    "q": -4,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-4_8": {
+    "id": "frontier_-4_8",
+    "q": -4,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-4_9": {
+    "id": "frontier_-4_9",
+    "q": -4,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-3_-9": {
+    "id": "frontier_-3_-9",
+    "q": -3,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-3_-8": {
+    "id": "frontier_-3_-8",
+    "q": -3,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-3_8": {
+    "id": "frontier_-3_8",
+    "q": -3,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-3_9": {
+    "id": "frontier_-3_9",
+    "q": -3,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-2_-9": {
+    "id": "frontier_-2_-9",
+    "q": -2,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-2_-8": {
+    "id": "frontier_-2_-8",
+    "q": -2,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-2_8": {
+    "id": "frontier_-2_8",
+    "q": -2,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-2_9": {
+    "id": "frontier_-2_9",
+    "q": -2,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-1_-9": {
+    "id": "frontier_-1_-9",
+    "q": -1,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-1_-8": {
+    "id": "frontier_-1_-8",
+    "q": -1,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-1_8": {
+    "id": "frontier_-1_8",
+    "q": -1,
+    "r": 8,
+    "terrain": "mangrove",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_-1_9": {
+    "id": "frontier_-1_9",
+    "q": -1,
+    "r": 9,
+    "terrain": "mangrove",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_-1_9_poi",
+      "name": "The Drowned Beacon",
+      "reward": {
+        "gp": 10000,
+        "items": {
+          "raw_lobster": 9
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "tower"
+  },
+  "frontier_0_-9": {
+    "id": "frontier_0_-9",
+    "q": 0,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_0_-8": {
+    "id": "frontier_0_-8",
+    "q": 0,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_0_8": {
+    "id": "frontier_0_8",
+    "q": 0,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_0_9": {
+    "id": "frontier_0_9",
+    "q": 0,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_1_-9": {
+    "id": "frontier_1_-9",
+    "q": 1,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_1_-8": {
+    "id": "frontier_1_-8",
+    "q": 1,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_1_8": {
+    "id": "frontier_1_8",
+    "q": 1,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_1_9": {
+    "id": "frontier_1_9",
+    "q": 1,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_2_-9": {
+    "id": "frontier_2_-9",
+    "q": 2,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_2_-8": {
+    "id": "frontier_2_-8",
+    "q": 2,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_2_8": {
+    "id": "frontier_2_8",
+    "q": 2,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_2_9": {
+    "id": "frontier_2_9",
+    "q": 2,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_2_9_poi",
+      "name": "Mirrorpan Observatory",
+      "reward": {
+        "gp": 6000,
+        "items": {
+          "gold_bar": 5
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "observatory"
+  },
+  "frontier_3_-9": {
+    "id": "frontier_3_-9",
+    "q": 3,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_3_-8": {
+    "id": "frontier_3_-8",
+    "q": 3,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_3_8": {
+    "id": "frontier_3_8",
+    "q": 3,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_3_9": {
+    "id": "frontier_3_9",
+    "q": 3,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_4_-9": {
+    "id": "frontier_4_-9",
+    "q": 4,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_4_-8": {
+    "id": "frontier_4_-8",
+    "q": 4,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_4_8": {
+    "id": "frontier_4_8",
+    "q": 4,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_4_9": {
+    "id": "frontier_4_9",
+    "q": 4,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_5_-9": {
+    "id": "frontier_5_-9",
+    "q": 5,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_5_-8": {
+    "id": "frontier_5_-8",
+    "q": 5,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_5_8": {
+    "id": "frontier_5_8",
+    "q": 5,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_5_9": {
+    "id": "frontier_5_9",
+    "q": 5,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_6_-9": {
+    "id": "frontier_6_-9",
+    "q": 6,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_6_-8": {
+    "id": "frontier_6_-8",
+    "q": 6,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_6_8": {
+    "id": "frontier_6_8",
+    "q": 6,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_6_9": {
+    "id": "frontier_6_9",
+    "q": 6,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_7_-9": {
+    "id": "frontier_7_-9",
+    "q": 7,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_7_-8": {
+    "id": "frontier_7_-8",
+    "q": 7,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_7_8": {
+    "id": "frontier_7_8",
+    "q": 7,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_7_9": {
+    "id": "frontier_7_9",
+    "q": 7,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-9": {
+    "id": "frontier_8_-9",
+    "q": 8,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-8": {
+    "id": "frontier_8_-8",
+    "q": 8,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-7": {
+    "id": "frontier_8_-7",
+    "q": 8,
+    "r": -7,
+    "terrain": "salt_flats",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-6": {
+    "id": "frontier_8_-6",
+    "q": 8,
+    "r": -6,
+    "terrain": "salt_flats",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-5": {
+    "id": "frontier_8_-5",
+    "q": 8,
+    "r": -5,
+    "terrain": "salt_flats",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-4": {
+    "id": "frontier_8_-4",
+    "q": 8,
+    "r": -4,
+    "terrain": "salt_flats",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-3": {
+    "id": "frontier_8_-3",
+    "q": 8,
+    "r": -3,
+    "terrain": "mesa",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-2": {
+    "id": "frontier_8_-2",
+    "q": 8,
+    "r": -2,
+    "terrain": "mesa",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_-1": {
+    "id": "frontier_8_-1",
+    "q": 8,
+    "r": -1,
+    "terrain": "mesa",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_0": {
+    "id": "frontier_8_0",
+    "q": 8,
+    "r": 0,
+    "terrain": "mesa",
+    "travel_cost": 800,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_1": {
+    "id": "frontier_8_1",
+    "q": 8,
+    "r": 1,
+    "terrain": "mesa",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_2": {
+    "id": "frontier_8_2",
+    "q": 8,
+    "r": 2,
+    "terrain": "mesa",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_3": {
+    "id": "frontier_8_3",
+    "q": 8,
+    "r": 3,
+    "terrain": "mesa",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_4": {
+    "id": "frontier_8_4",
+    "q": 8,
+    "r": 4,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_5": {
+    "id": "frontier_8_5",
+    "q": 8,
+    "r": 5,
+    "terrain": "mesa",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_6": {
+    "id": "frontier_8_6",
+    "q": 8,
+    "r": 6,
+    "terrain": "mesa",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_7": {
+    "id": "frontier_8_7",
+    "q": 8,
+    "r": 7,
+    "terrain": "mesa",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_8": {
+    "id": "frontier_8_8",
+    "q": 8,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_8_9": {
+    "id": "frontier_8_9",
+    "q": 8,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_-9": {
+    "id": "frontier_9_-9",
+    "q": 9,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_-8": {
+    "id": "frontier_9_-8",
+    "q": 9,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_-7": {
+    "id": "frontier_9_-7",
+    "q": 9,
+    "r": -7,
+    "terrain": "salt_flats",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_-6": {
+    "id": "frontier_9_-6",
+    "q": 9,
+    "r": -6,
+    "terrain": "salt_flats",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_9_-6_poi",
+      "name": "Saltwind Caravanserai",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "gold_bar": 7
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "settlement"
+  },
+  "frontier_9_-5": {
+    "id": "frontier_9_-5",
+    "q": 9,
+    "r": -5,
+    "terrain": "salt_flats",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_-4": {
+    "id": "frontier_9_-4",
+    "q": 9,
+    "r": -4,
+    "terrain": "salt_flats",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_-3": {
+    "id": "frontier_9_-3",
+    "q": 9,
+    "r": -3,
+    "terrain": "mesa",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_9_-3_poi",
+      "name": "Redstone Delve",
+      "reward": {
+        "gp": 6000,
+        "items": {
+          "steel_bar": 5
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "mine"
+  },
+  "frontier_9_-2": {
+    "id": "frontier_9_-2",
+    "q": 9,
+    "r": -2,
+    "terrain": "mesa",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_-1": {
+    "id": "frontier_9_-1",
+    "q": 9,
+    "r": -1,
+    "terrain": "mesa",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_0": {
+    "id": "frontier_9_0",
+    "q": 9,
+    "r": 0,
+    "terrain": "mesa",
+    "travel_cost": 875,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_1": {
+    "id": "frontier_9_1",
+    "q": 9,
+    "r": 1,
+    "terrain": "mesa",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_2": {
+    "id": "frontier_9_2",
+    "q": 9,
+    "r": 2,
+    "terrain": "mesa",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_3": {
+    "id": "frontier_9_3",
+    "q": 9,
+    "r": 3,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_4": {
+    "id": "frontier_9_4",
+    "q": 9,
+    "r": 4,
+    "terrain": "mesa",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_5": {
+    "id": "frontier_9_5",
+    "q": 9,
+    "r": 5,
+    "terrain": "mesa",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_6": {
+    "id": "frontier_9_6",
+    "q": 9,
+    "r": 6,
+    "terrain": "mesa",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_7": {
+    "id": "frontier_9_7",
+    "q": 9,
+    "r": 7,
+    "terrain": "mesa",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_8": {
+    "id": "frontier_9_8",
+    "q": 9,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_9_9": {
+    "id": "frontier_9_9",
+    "q": 9,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-9": {
+    "id": "frontier_10_-9",
+    "q": 10,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_10_-9_poi",
+      "name": "Whitewake Harbour",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "pure_essence": 7
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "harbour"
+  },
+  "frontier_10_-8": {
+    "id": "frontier_10_-8",
+    "q": 10,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-7": {
+    "id": "frontier_10_-7",
+    "q": 10,
+    "r": -7,
+    "terrain": "salt_flats",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-6": {
+    "id": "frontier_10_-6",
+    "q": 10,
+    "r": -6,
+    "terrain": "salt_flats",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-5": {
+    "id": "frontier_10_-5",
+    "q": 10,
+    "r": -5,
+    "terrain": "salt_flats",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-4": {
+    "id": "frontier_10_-4",
+    "q": 10,
+    "r": -4,
+    "terrain": "salt_flats",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-3": {
+    "id": "frontier_10_-3",
+    "q": 10,
+    "r": -3,
+    "terrain": "mesa",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-2": {
+    "id": "frontier_10_-2",
+    "q": 10,
+    "r": -2,
+    "terrain": "mesa",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_-1": {
+    "id": "frontier_10_-1",
+    "q": 10,
+    "r": -1,
+    "terrain": "mesa",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_0": {
+    "id": "frontier_10_0",
+    "q": 10,
+    "r": 0,
+    "terrain": "mesa",
+    "travel_cost": 950,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_1": {
+    "id": "frontier_10_1",
+    "q": 10,
+    "r": 1,
+    "terrain": "mesa",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_2": {
+    "id": "frontier_10_2",
+    "q": 10,
+    "r": 2,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_3": {
+    "id": "frontier_10_3",
+    "q": 10,
+    "r": 3,
+    "terrain": "mesa",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_4": {
+    "id": "frontier_10_4",
+    "q": 10,
+    "r": 4,
+    "terrain": "mesa",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_5": {
+    "id": "frontier_10_5",
+    "q": 10,
+    "r": 5,
+    "terrain": "mesa",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_6": {
+    "id": "frontier_10_6",
+    "q": 10,
+    "r": 6,
+    "terrain": "mesa",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_7": {
+    "id": "frontier_10_7",
+    "q": 10,
+    "r": 7,
+    "terrain": "mesa",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_10_7_poi",
+      "name": "Sunspine Citadel",
+      "reward": {
+        "gp": 8000,
+        "items": {
+          "steel_bar": 7
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "fortress"
+  },
+  "frontier_10_8": {
+    "id": "frontier_10_8",
+    "q": 10,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_10_9": {
+    "id": "frontier_10_9",
+    "q": 10,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1625,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-9": {
+    "id": "frontier_11_-9",
+    "q": 11,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-8": {
+    "id": "frontier_11_-8",
+    "q": 11,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-7": {
+    "id": "frontier_11_-7",
+    "q": 11,
+    "r": -7,
+    "terrain": "salt_flats",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-6": {
+    "id": "frontier_11_-6",
+    "q": 11,
+    "r": -6,
+    "terrain": "salt_flats",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-5": {
+    "id": "frontier_11_-5",
+    "q": 11,
+    "r": -5,
+    "terrain": "salt_flats",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-4": {
+    "id": "frontier_11_-4",
+    "q": 11,
+    "r": -4,
+    "terrain": "salt_flats",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-3": {
+    "id": "frontier_11_-3",
+    "q": 11,
+    "r": -3,
+    "terrain": "mesa",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-2": {
+    "id": "frontier_11_-2",
+    "q": 11,
+    "r": -2,
+    "terrain": "mesa",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_-1": {
+    "id": "frontier_11_-1",
+    "q": 11,
+    "r": -1,
+    "terrain": "mesa",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_0": {
+    "id": "frontier_11_0",
+    "q": 11,
+    "r": 0,
+    "terrain": "mesa",
+    "travel_cost": 1025,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_1": {
+    "id": "frontier_11_1",
+    "q": 11,
+    "r": 1,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_2": {
+    "id": "frontier_11_2",
+    "q": 11,
+    "r": 2,
+    "terrain": "mesa",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_3": {
+    "id": "frontier_11_3",
+    "q": 11,
+    "r": 3,
+    "terrain": "mesa",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_4": {
+    "id": "frontier_11_4",
+    "q": 11,
+    "r": 4,
+    "terrain": "mesa",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_5": {
+    "id": "frontier_11_5",
+    "q": 11,
+    "r": 5,
+    "terrain": "mesa",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_6": {
+    "id": "frontier_11_6",
+    "q": 11,
+    "r": 6,
+    "terrain": "mesa",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_7": {
+    "id": "frontier_11_7",
+    "q": 11,
+    "r": 7,
+    "terrain": "mesa",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_8": {
+    "id": "frontier_11_8",
+    "q": 11,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1625,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_11_9": {
+    "id": "frontier_11_9",
+    "q": 11,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1700,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_-9": {
+    "id": "frontier_12_-9",
+    "q": 12,
+    "r": -9,
+    "terrain": "glacier",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_-8": {
+    "id": "frontier_12_-8",
+    "q": 12,
+    "r": -8,
+    "terrain": "glacier",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_12_-8_poi",
+      "name": "The Frozen Reliquary",
+      "reward": {
+        "gp": 10000,
+        "items": {
+          "pure_essence": 9
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "relic"
+  },
+  "frontier_12_-7": {
+    "id": "frontier_12_-7",
+    "q": 12,
+    "r": -7,
+    "terrain": "salt_flats",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_-6": {
+    "id": "frontier_12_-6",
+    "q": 12,
+    "r": -6,
+    "terrain": "salt_flats",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_-5": {
+    "id": "frontier_12_-5",
+    "q": 12,
+    "r": -5,
+    "terrain": "salt_flats",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_-4": {
+    "id": "frontier_12_-4",
+    "q": 12,
+    "r": -4,
+    "terrain": "salt_flats",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_-3": {
+    "id": "frontier_12_-3",
+    "q": 12,
+    "r": -3,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_-2": {
+    "id": "frontier_12_-2",
+    "q": 12,
+    "r": -2,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_12_-2_poi",
+      "name": "The Painted Archive",
+      "reward": {
+        "gp": 10000,
+        "items": {
+          "steel_bar": 9
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "relic"
+  },
+  "frontier_12_-1": {
+    "id": "frontier_12_-1",
+    "q": 12,
+    "r": -1,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_0": {
+    "id": "frontier_12_0",
+    "q": 12,
+    "r": 0,
+    "terrain": "mesa",
+    "travel_cost": 1100,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_1": {
+    "id": "frontier_12_1",
+    "q": 12,
+    "r": 1,
+    "terrain": "mesa",
+    "travel_cost": 1175,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_2": {
+    "id": "frontier_12_2",
+    "q": 12,
+    "r": 2,
+    "terrain": "mesa",
+    "travel_cost": 1250,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_3": {
+    "id": "frontier_12_3",
+    "q": 12,
+    "r": 3,
+    "terrain": "mesa",
+    "travel_cost": 1325,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_4": {
+    "id": "frontier_12_4",
+    "q": 12,
+    "r": 4,
+    "terrain": "mesa",
+    "travel_cost": 1400,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_5": {
+    "id": "frontier_12_5",
+    "q": 12,
+    "r": 5,
+    "terrain": "mesa",
+    "travel_cost": 1475,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_6": {
+    "id": "frontier_12_6",
+    "q": 12,
+    "r": 6,
+    "terrain": "mesa",
+    "travel_cost": 1550,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_7": {
+    "id": "frontier_12_7",
+    "q": 12,
+    "r": 7,
+    "terrain": "mesa",
+    "travel_cost": 1625,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_8": {
+    "id": "frontier_12_8",
+    "q": 12,
+    "r": 8,
+    "terrain": "salt_flats",
+    "travel_cost": 1700,
+    "survey_xp": 10,
+    "poi": {}
+  },
+  "frontier_12_9": {
+    "id": "frontier_12_9",
+    "q": 12,
+    "r": 9,
+    "terrain": "salt_flats",
+    "travel_cost": 1775,
+    "survey_xp": 10,
+    "poi": {
+      "id": "frontier_12_9_poi",
+      "name": "The Brineglass Vault",
+      "reward": {
+        "gp": 10000,
+        "items": {
+          "gold_bar": 9
+        }
+      },
+      "effect": {}
+    },
+    "landmark": "relic"
   }
 }

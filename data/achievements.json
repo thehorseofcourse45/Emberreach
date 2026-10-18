@@ -3704,5 +3704,690 @@
     "reward": {
       "gp": 100000
     }
-  }
+  },
+    "riftkeeping_10": {
+      "id": "riftkeeping_10",
+      "name": "Riftkeeping 10",
+      "description": "Reach Riftkeeping level 10.",
+      "category": "gathering",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "riftkeeping",
+        "value": 10
+      },
+      "reward": {
+        "gp": 500
+      }
+    },
+    "riftkeeping_25": {
+      "id": "riftkeeping_25",
+      "name": "Riftkeeping 25",
+      "description": "Reach Riftkeeping level 25.",
+      "category": "gathering",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "riftkeeping",
+        "value": 25
+      },
+      "reward": {
+        "gp": 1500
+      }
+    },
+    "riftkeeping_50": {
+      "id": "riftkeeping_50",
+      "name": "Riftkeeping 50",
+      "description": "Reach Riftkeeping level 50.",
+      "category": "gathering",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "riftkeeping",
+        "value": 50
+      },
+      "reward": {
+        "gp": 4000
+      }
+    },
+    "riftkeeping_75": {
+      "id": "riftkeeping_75",
+      "name": "Riftkeeping 75",
+      "description": "Reach Riftkeeping level 75.",
+      "category": "gathering",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "riftkeeping",
+        "value": 75
+      },
+      "reward": {
+        "gp": 9000
+      }
+    },
+    "riftkeeping_99": {
+      "id": "riftkeeping_99",
+      "name": "Riftkeeping 99",
+      "description": "Reach Riftkeeping level 99.",
+      "category": "gathering",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "riftkeeping",
+        "value": 99
+      },
+      "reward": {
+        "gp": 25000
+      }
+    },
+    "spellweaving_10": {
+      "id": "spellweaving_10",
+      "name": "Spellweaving 10",
+      "description": "Reach Spellweaving level 10.",
+      "category": "crafting",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "spellweaving",
+        "value": 10
+      },
+      "reward": {
+        "gp": 500
+      }
+    },
+    "spellweaving_25": {
+      "id": "spellweaving_25",
+      "name": "Spellweaving 25",
+      "description": "Reach Spellweaving level 25.",
+      "category": "crafting",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "spellweaving",
+        "value": 25
+      },
+      "reward": {
+        "gp": 1500
+      }
+    },
+    "spellweaving_50": {
+      "id": "spellweaving_50",
+      "name": "Spellweaving 50",
+      "description": "Reach Spellweaving level 50.",
+      "category": "crafting",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "spellweaving",
+        "value": 50
+      },
+      "reward": {
+        "gp": 4000
+      }
+    },
+    "spellweaving_75": {
+      "id": "spellweaving_75",
+      "name": "Spellweaving 75",
+      "description": "Reach Spellweaving level 75.",
+      "category": "crafting",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "spellweaving",
+        "value": 75
+      },
+      "reward": {
+        "gp": 9000
+      }
+    },
+    "spellweaving_99": {
+      "id": "spellweaving_99",
+      "name": "Spellweaving 99",
+      "description": "Reach Spellweaving level 99.",
+      "category": "crafting",
+      "condition": {
+        "kind": "skill_level",
+        "skill_id": "spellweaving",
+        "value": 99
+      },
+      "reward": {
+        "gp": 25000
+      }
+    },
+    "total_2500": {
+      "id": "total_2500",
+      "name": "Two and a Half Thousand",
+      "description": "Reach 2,500 total skill levels across all 42 skills.",
+      "category": "progression",
+      "condition": {
+        "kind": "total_level",
+        "value": 2500
+      },
+      "reward": {
+        "gp": 30000
+      }
+    },
+    "total_3500": {
+      "id": "total_3500",
+      "name": "Broad and Deep",
+      "description": "Reach 3,500 total skill levels across all 42 skills.",
+      "category": "progression",
+      "condition": {
+        "kind": "total_level",
+        "value": 3500
+      },
+      "reward": {
+        "gp": 75000
+      }
+    },
+    "total_4158": {
+      "id": "total_4158",
+      "name": "Every Trade at Ninety-Nine",
+      "description": "Reach 4,158 total skill levels across all 42 skills.",
+      "category": "progression",
+      "condition": {
+        "kind": "total_level",
+        "value": 4158
+      },
+      "reward": {
+        "gp": 150000
+      }
+    },
+    "total_5040": {
+      "id": "total_5040",
+      "name": "Every Trade Mastered",
+      "description": "Reach 5,040 total skill levels across all 42 skills.",
+      "category": "progression",
+      "condition": {
+        "kind": "total_level",
+        "value": 5040
+      },
+      "reward": {
+        "gp": 400000
+      }
+    },
+    "clear_sunderhold_undercroft": {
+      "id": "clear_sunderhold_undercroft",
+      "name": "Sunderhold Undercroft Clear",
+      "description": "Clear Sunderhold Undercroft for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "sunderhold_undercroft",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_astral_sanctum": {
+      "id": "clear_astral_sanctum",
+      "name": "Astral Sanctum Clear",
+      "description": "Clear Astral Sanctum for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "astral_sanctum",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_storm_citadel": {
+      "id": "clear_storm_citadel",
+      "name": "Storm Citadel Clear",
+      "description": "Clear Storm Citadel for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "storm_citadel",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_crown_of_embers": {
+      "id": "clear_crown_of_embers",
+      "name": "Crown of Embers Clear",
+      "description": "Clear Crown of Embers for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "crown_of_embers",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_threat_sundered_reaches": {
+      "id": "clear_threat_sundered_reaches",
+      "name": "The Sundered Tyrant \u00b7 Lair Clear",
+      "description": "Clear The Sundered Tyrant \u00b7 Lair for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "threat_sundered_reaches",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_threat_drowned_reach": {
+      "id": "clear_threat_drowned_reach",
+      "name": "Drowned Leviathan \u00b7 Lair Clear",
+      "description": "Clear Drowned Leviathan \u00b7 Lair for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "threat_drowned_reach",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_threat_heralds_march": {
+      "id": "clear_threat_heralds_march",
+      "name": "Warlord of the March \u00b7 Lair Clear",
+      "description": "Clear Warlord of the March \u00b7 Lair for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "threat_heralds_march",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_dream_choir": {
+      "id": "clear_dream_choir",
+      "name": "The Sunken Choir Clear",
+      "description": "Clear The Sunken Choir for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "dream_choir",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_dream_tide": {
+      "id": "clear_dream_tide",
+      "name": "The Astral Devourer Clear",
+      "description": "Clear The Astral Devourer for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "dream_tide",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_dream_sovereign": {
+      "id": "clear_dream_sovereign",
+      "name": "The Sleeping Sovereign Clear",
+      "description": "Clear The Sleeping Sovereign for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "dream_sovereign",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_endless_ashes": {
+      "id": "clear_endless_ashes",
+      "name": "Endless Ashen Descent Clear",
+      "description": "Clear Endless Ashen Descent for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "endless_ashes",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_endless_tides": {
+      "id": "clear_endless_tides",
+      "name": "Endless Tidal Descent Clear",
+      "description": "Clear Endless Tidal Descent for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "endless_tides",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_endless_stars": {
+      "id": "clear_endless_stars",
+      "name": "Endless Astral Descent Clear",
+      "description": "Clear Endless Astral Descent for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "endless_stars",
+        "value": 1
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "clear_archive_of_the_unwritten": {
+      "id": "clear_archive_of_the_unwritten",
+      "name": "Archive of the Unwritten Clear",
+      "description": "Clear Archive of the Unwritten for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "archive_of_the_unwritten",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_ironveil_bastion": {
+      "id": "clear_ironveil_bastion",
+      "name": "Ironveil Bastion Clear",
+      "description": "Clear Ironveil Bastion for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "ironveil_bastion",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_frostglass_citadel": {
+      "id": "clear_frostglass_citadel",
+      "name": "Frostglass Citadel Clear",
+      "description": "Clear Frostglass Citadel for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "frostglass_citadel",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_blightroot_hold": {
+      "id": "clear_blightroot_hold",
+      "name": "Blightroot Hold Clear",
+      "description": "Clear Blightroot Hold for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "blightroot_hold",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_sunken_dominion": {
+      "id": "clear_sunken_dominion",
+      "name": "Sunken Dominion Clear",
+      "description": "Clear Sunken Dominion for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "sunken_dominion",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_eclipse_throne": {
+      "id": "clear_eclipse_throne",
+      "name": "Eclipse Throne Clear",
+      "description": "Clear Eclipse Throne for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "eclipse_throne",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_scarecrow_cellar": {
+      "id": "clear_scarecrow_cellar",
+      "name": "Scarecrow Cellar Clear",
+      "description": "Clear Scarecrow Cellar for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "scarecrow_cellar",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_ashwood_nest": {
+      "id": "clear_ashwood_nest",
+      "name": "Ashwood Nest Clear",
+      "description": "Clear Ashwood Nest for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "ashwood_nest",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_barrow_chapel": {
+      "id": "clear_barrow_chapel",
+      "name": "Barrow Chapel Clear",
+      "description": "Clear Barrow Chapel for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "barrow_chapel",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_rookwatch_tower": {
+      "id": "clear_rookwatch_tower",
+      "name": "Rookwatch Tower Clear",
+      "description": "Clear Rookwatch Tower for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "rookwatch_tower",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_shaleheart_vault": {
+      "id": "clear_shaleheart_vault",
+      "name": "Shaleheart Vault Clear",
+      "description": "Clear Shaleheart Vault for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "shaleheart_vault",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "clear_saltglass_catacombs": {
+      "id": "clear_saltglass_catacombs",
+      "name": "Saltglass Catacombs Clear",
+      "description": "Clear Saltglass Catacombs for the first time.",
+      "category": "combat",
+      "condition": {
+        "kind": "dungeons_cleared",
+        "dungeon_id": "saltglass_catacombs",
+        "value": 1
+      },
+      "reward": {
+        "gp": 6000
+      }
+    },
+    "discovered_600": {
+      "id": "discovered_600",
+      "name": "Deep Catalogue",
+      "description": "Discover 600 distinct items.",
+      "category": "collection",
+      "condition": {
+        "kind": "items_discovered",
+        "value": 600
+      },
+      "reward": {
+        "gp": 40000
+      }
+    },
+    "discovered_750": {
+      "id": "discovered_750",
+      "name": "Three Quarters Known",
+      "description": "Discover 750 distinct items.",
+      "category": "collection",
+      "condition": {
+        "kind": "items_discovered",
+        "value": 750
+      },
+      "reward": {
+        "gp": 90000
+      }
+    },
+    "discovered_900": {
+      "id": "discovered_900",
+      "name": "Almost the Whole Shelf",
+      "description": "Discover 900 distinct items.",
+      "category": "collection",
+      "condition": {
+        "kind": "items_discovered",
+        "value": 900
+      },
+      "reward": {
+        "gp": 200000
+      }
+    },
+    "discovered_1000": {
+      "id": "discovered_1000",
+      "name": "A Thousand Things",
+      "description": "Discover 1000 distinct items.",
+      "category": "collection",
+      "condition": {
+        "kind": "items_discovered",
+        "value": 1000
+      },
+      "reward": {
+        "gp": 500000
+      }
+    },
+    "quests_275": {
+      "id": "quests_275",
+      "name": "Well Travelled",
+      "description": "Complete 275 tasks.",
+      "category": "progression",
+      "condition": {
+        "kind": "quests_completed",
+        "value": 275
+      },
+      "reward": {
+        "gp": 60000
+      }
+    },
+    "quests_300": {
+      "id": "quests_300",
+      "name": "Three Hundred Errands",
+      "description": "Complete 300 tasks.",
+      "category": "progression",
+      "condition": {
+        "kind": "quests_completed",
+        "value": 300
+      },
+      "reward": {
+        "gp": 150000
+      }
+    },
+    "quests_350": {
+      "id": "quests_350",
+      "name": "The Long Register",
+      "description": "Complete 350 tasks.",
+      "category": "progression",
+      "condition": {
+        "kind": "quests_completed",
+        "value": 350
+      },
+      "reward": {
+        "gp": 400000
+      }
+    },
+    "pets_30": {
+      "id": "pets_30",
+      "name": "A Crowded House",
+      "description": "Bond with 30 companions.",
+      "category": "collection",
+      "condition": {
+        "kind": "pets_unlocked",
+        "value": 30
+      },
+      "reward": {
+        "gp": 120000
+      }
+    },
+    "pets_38": {
+      "id": "pets_38",
+      "name": "Every Companion",
+      "description": "Bond with 38 companions.",
+      "category": "collection",
+      "condition": {
+        "kind": "pets_unlocked",
+        "value": 38
+      },
+      "reward": {
+        "gp": 500000
+      }
+    },
+    "ach_charted_200": {
+      "id": "ach_charted_200",
+      "name": "Cartographer of the Frontier",
+      "description": "Chart 200 regions on the frontier map.",
+      "category": "discovery",
+      "condition": {
+        "kind": "chart_hexes",
+        "value": 200
+      },
+      "reward": {
+        "gp": 80000
+      }
+    },
+    "ach_charted_225": {
+      "id": "ach_charted_225",
+      "name": "The Whole Map",
+      "description": "Chart 225 regions on the frontier map.",
+      "category": "discovery",
+      "condition": {
+        "kind": "chart_hexes",
+        "value": 225
+      },
+      "reward": {
+        "gp": 250000
+      }
+    }
 }

@@ -85,6 +85,8 @@ func run_all(host: Node) -> int:
 	_test_equipment_modifiers()
 	_test_quest_reward_once()
 	_test_achievement_reward_once()
+	_test_milestone_coverage()
+	_test_recipe_levels_cover_inputs()
 	_test_save_round_trip()
 	_test_save_migration()
 	test_migrate_2_to_3_defaults()
@@ -1738,6 +1740,17 @@ func _test_prayer_expansion(host: Node) -> void:
 	PrayerManager.deactivate_all()
 	_ok(is_zero_approx(ModifierManager.get_max_hit_percent("ranged")), "deactivating removes the bonus")
 	GameManager.start_new_game("standard")
+	_heading("Ash is buried for Prayer Points")
+	BankManager.add_item_guaranteed("ash", 3)
+	_ok(BankManager.is_buryable("ash"), "ash is a buryable offering, not just a vendor byproduct")
+	var pp_before: float = PlayerData.prayer_points
+	_ok(BankManager.bury_bone("ash", 2) and BankManager.get_count("ash") == 1,
+		"burying two ash consumes them")
+	var ash_gain: float = PlayerData.prayer_points - pp_before
+	_ok(ash_gain > 0.0, "burying ash paid Prayer Points (%.1f)" % ash_gain)
+	_ok(not BankManager.bury_bone("normal_log", 1), "an ordinary material is still not buryable")
+	_ok(not BankManager.is_buryable("normal_log"), "the buryability rule is shared, not per-caller")
+	GameManager.start_new_game("standard")
 	host.call("navigate", {"screen": "skill", "skill_id": "prayer"})
 	_ok(host.get("_screen") == Screens.PRAYERS, "legacy prayer skill routes open Prayers")
 	var panel: Control = (host.get("_panels") as Dictionary)[Screens.PRAYERS]
@@ -2245,6 +2258,70 @@ func _test_quest_reward_once() -> void:
 	_ok(Quests.is_claimed(quest_id), "the claim is recorded")
 	if gp_after_first > gp_before:
 		_ok(true, "the reward added %s GP" % UIStyle.fmt(gp_after_first - gp_before))
+
+## A recipe's listed level must not undercut the level at which its own skill first makes an input,
+## or the player sees a recipe they cannot craft for tens of levels.
+func _test_recipe_levels_cover_inputs() -> void:
+	_heading("Recipe levels cover their inputs")
+	var early: Array[String] = []
+	for skill_id in DataLoader.get_skill_ids():
+		var made: Dictionary = {}
+		var actions: Array = DataLoader.get_skill_actions(skill_id)
+		for a in actions:
+			for item_id in (a.get("output_items", {}) as Dictionary):
+				made[item_id] = mini(int(made.get(item_id, 999)), int(a.get("level_required", 1)))
+		for a in actions:
+			for item_id in (a.get("input_items", {}) as Dictionary):
+				var own_output: bool = (a.get("output_items", {}) as Dictionary).has(item_id)
+				if not own_output and made.has(item_id) and int(made[item_id]) > int(a.get("level_required", 1)):
+					early.append("%s:%s" % [skill_id, str(a.get("id", ""))])
+	_ok(early.is_empty(), "no recipe is listed below the level of an input its skill makes%s" % _trouble(early, " — "))
+
+## Milestones and tasks rot the same way the README does: content is added, the ladders are not.
+## Each assertion here failed on the 42-skill / 47-dungeon build before the endgame seed pass.
+func _test_milestone_coverage() -> void:
+	_heading("Milestones and tasks cover the whole build")
+	var ladders: Dictionary = {}
+	for id in Achievements.all_ids():
+		var cond: Dictionary = Achievements.get_record(id).get("condition", {})
+		if str(cond.get("kind", "")) == "skill_level":
+			ladders[str(cond.get("skill_id", ""))] = true
+	var no_ladder: Array = DataLoader.get_skill_ids().filter(func(s): return not ladders.has(str(s)))
+	_ok(no_ladder.is_empty(), "every skill has a milestone ladder%s" % _trouble(no_ladder, " — missing: "))
+	var cleared: Dictionary = {}
+	for id in Achievements.all_ids():
+		var cond2: Dictionary = Achievements.get_record(id).get("condition", {})
+		if str(cond2.get("kind", "")) == "dungeons_cleared" and cond2.has("dungeon_id"):
+			cleared[str(cond2["dungeon_id"])] = true
+	var uncleared: Array[String] = []
+	for dungeon_id in DataLoader.dungeons.keys():
+		if not str(dungeon_id).begins_with("_") and not cleared.has(str(dungeon_id)):
+			uncleared.append(str(dungeon_id))
+	_ok(uncleared.is_empty(), "every expedition has a clear milestone%s" % _trouble(uncleared, " — missing: "))
+	# The total-level ladder has to reach the real ceiling (every skill at its max), or a maxed
+	# character can finish the game with no milestone left to earn.
+	var ceiling: int = 0
+	for skill_id in DataLoader.get_skill_ids():
+		ceiling += int(DataLoader.get_skill(skill_id).get("max_level", 120))
+	var top: int = 0
+	for id in Achievements.all_ids():
+		var cond3: Dictionary = Achievements.get_record(id).get("condition", {})
+		if str(cond3.get("kind", "")) == "total_level":
+			top = maxi(top, int(cond3.get("value", 0)))
+	_eq(top, ceiling, "the total-level ladder reaches the skill ceiling")
+	# New content must also be reachable from the rotating pool, not only the static quest list.
+	var pool: Array = Quests.rotating_pool_ids()
+	# Item and chart objectives carry no skill_id, so those skills are covered by a named task.
+	var trained: Dictionary = {"spellweaving": "weave_the_wards", "engineering": "gearworks_delivery",
+		"enchanting": "essence_order", "cartography": "chart_the_frontier", "archaeology": "dust_and_potsherds"}
+	for task_id in pool:
+		for obj in (Quests.get_quest(task_id).get("objectives", []) as Array):
+			if obj.has("skill_id"):
+				trained[str(obj["skill_id"])] = task_id
+	for skill_id in ["riftkeeping", "spellweaving", "engineering", "enchanting", "cartography", "archaeology"]:
+		_ok(pool.has(trained.get(skill_id, "")), "a rotating task trains %s" % skill_id)
+	var late_task: Dictionary = Quests.get_quest("empire_of_coin")
+	_ok(not late_task.is_empty() and (late_task.objectives as Array).size() == 1, "the endgame coin task loads")
 
 func _test_achievement_reward_once() -> void:
 	_heading("Milestone rewards are claimed exactly once")
@@ -3295,8 +3372,8 @@ func test_reward_moments(host: Node) -> void:
 	PlayerData.settings["reduced_motion"] = false
 	EventBus.skill_level_up.emit("woodcutting", 2)
 	_eq(bursts.call(), 1, "a level-up bursts on its sidebar entry")
-	for i in range(80):
-		await host.get_tree().process_frame
+	# The ring is a 0.6s tween: wait on the clock, because headless frames can run faster than 80 per 0.6s.
+	await host.get_tree().create_timer(0.9).timeout
 	_eq(bursts.call(), 0, "the burst cleans itself up")
 	PlayerData.settings["reduced_motion"] = true
 	EventBus.skill_level_up.emit("woodcutting", 3)
@@ -7839,6 +7916,14 @@ func _test_quest_coverage() -> void:
 			_ok(covered.has(skill_id), "a quest objective trains %s" % skill_id)
 	_ok(kinds.has("defeat_boss"), "a quest uses defeat_boss (the boss fights are quested)")
 	_ok(kinds.has("unlock_pet"), "a quest uses unlock_pet (companions are quested)")
+	# A "reach N in every skill" capstone silently skips any skill added after it was written, so
+	# the two completion pursuits must name exactly the live skill list.
+	for id in ["path_of_completion", "path_of_mastery"]:
+		var names: Array = []
+		for o in (Quests.get_quest(id).get("objectives", []) as Array):
+			names.append(str(o.get("skill_id", "")))
+		var missing: Array = DataLoader.get_skill_ids().filter(func(s): return not names.has(str(s)))
+		_ok(missing.is_empty(), "%s covers every skill%s" % [id, _trouble(missing, " — missing: ")])
 	# Prerequisite chains must point at quests that exist, or a quest locks itself forever.
 	for id in Quests.all_quest_ids():
 		if Quests.is_rotating(id):
@@ -8527,7 +8612,9 @@ func _test_late_skills_pace() -> void:
 		var gap: int = 0
 		var top_rate: float = 0.0
 		var top_level: int = 0
-		for action in DataLoader.get_skill_actions(skill_id):
+		var by_level: Array = DataLoader.get_skill_actions(skill_id).duplicate()
+		by_level.sort_custom(func(a, b): return int(a.get("level_required", 1)) < int(b.get("level_required", 1)))
+		for action in by_level:
 			var lvl: int = int(action.get("level_required", 1))
 			gap = maxi(gap, lvl - last)
 			last = lvl
@@ -9000,7 +9087,8 @@ func _test_food_heals_in_combat(host: Node) -> void:
 	_ok(BankManager.get_count("burnt_food") == 5, "refused food is not consumed")
 	_ok(CombatManager.consume_food("nonexistent_item") == "", "an unknown item cannot be eaten")
 
-	# The button lives on the strip that is visible in every screen, and says why it is disabled.
+	# The button lives on the strip that is visible in every screen, but food is only eaten from
+	# the Combat screen, so outside a fight it stays closed and says where to go.
 	GameManager.start_new_game("standard")
 	BankManager.add_item_guaranteed("shrimp", 3)
 	var strip = load("res://scripts/ui/ActivityStrip.gd").new()
@@ -9008,28 +9096,32 @@ func _test_food_heals_in_combat(host: Node) -> void:
 	await host.get_tree().process_frame
 	var eat: Button = strip.get("_eat")
 	_ok(eat != null, "the activity strip exposes an Eat button")
-	CombatManager.player_hp = CombatManager._compute_max_hp()
-	strip.call("_refresh_eat")
-	_ok(eat.disabled, "Eat is disabled at full health")
-	_ok(eat.tooltip_text.contains("full health"), "the disabled Eat explains why (%s)" % eat.tooltip_text)
 	CombatManager.player_hp = maxf(1.0, CombatManager._compute_max_hp() * 0.25)
 	strip.call("_refresh_eat")
-	_ok(not eat.disabled, "Eat is enabled when hurt and stocked")
+	_ok(eat.disabled, "Eat is disabled outside combat even while hurt and stocked")
+	_ok(eat.tooltip_text.to_lower().contains("combat"), "the disabled Eat points at the Combat screen (%s)" % eat.tooltip_text)
+	# In a fight it wakes up: enabled, names the food, and heals when pressed.
+	CombatManager.context = {"type": "area", "id": "farmlands", "monsters": ["golbin"]}
+	_ok(CombatManager.start_combat(CombatManager.context), "a fight starts for the Eat button")
+	CombatManager.player_hp = maxf(1.0, CombatManager._compute_max_hp() * 0.25)
+	strip.call("_refresh_eat")
+	_ok(not eat.disabled, "Eat is enabled when hurt and stocked in combat")
 	_ok(eat.text.contains("Shrimp"), "Eat names the food it will use (%s)" % eat.text)
-	# Pressing it must heal, not just relabel.
 	var hp_before: int = int(CombatManager.player_hp)
 	eat.pressed.emit()
 	_ok(CombatManager.player_hp > hp_before, "pressing Eat healed the player")
 	_ok(BankManager.get_count("shrimp") == 2, "pressing Eat consumed exactly one food")
 	# No food at all is its own reason, distinct from full health.
 	GameManager.start_new_game("standard")
+	CombatManager.context = {"type": "area", "id": "farmlands", "monsters": ["golbin"]}
+	CombatManager.start_combat(CombatManager.context)
 	strip.call("_refresh_eat")
 	_ok(eat.disabled, "Eat is disabled with no food in Storage")
 	_ok(eat.tooltip_text.contains("No food"), "the empty-bank reason is explained (%s)" % eat.tooltip_text)
+	CombatManager.stop_combat()
 	strip.queue_free()
 
-	# Storage needs its own Eat action. The strip button only ever picks the best food for you, so
-	# without this row a player who cooked a specific meal has no way to choose to eat that one.
+	# Storage assigns food to combat slots but never eats it: eating happens on the Combat screen.
 	GameManager.start_new_game("standard")
 	BankManager.add_item_guaranteed("shrimp", 4)
 	var bank = load("res://scripts/ui/panels/BankPanel.gd").new()
@@ -9039,19 +9131,10 @@ func _test_food_heals_in_combat(host: Node) -> void:
 	var labels: Array[String] = []
 	for b in bank.find_children("", "Button", true, false):
 		labels.append((b as Button).text)
-	_ok(labels.has("Eat 1"), "a food row in Storage offers Eat 1 (%s)" % str(labels))
-	_ok(labels.has("Eat all"), "a food row in Storage offers Eat all")
+	_ok(not labels.has("Eat 1"), "a food row in Storage offers no Eat action (%s)" % str(labels))
+	_ok(not labels.has("Eat all"), "a food row in Storage offers no Eat all action")
+	_ok(labels.has("Equip food…"), "the food row still assigns a combat slot")
 	_ok(not labels.has("Equip"), "food is not offered an Equip action")
-	# Pressing it must really heal.
-	CombatManager.player_hp = maxf(1.0, CombatManager._compute_max_hp() * 0.25)
-	var hp_in_bank: int = int(CombatManager.player_hp)
-	var shrimp_stored: int = BankManager.get_count("shrimp")
-	for b in bank.find_children("", "Button", true, false):
-		if (b as Button).text == "Eat 1":
-			(b as Button).pressed.emit()
-			break
-	_ok(CombatManager.player_hp > hp_in_bank, "Storage's Eat 1 healed the player")
-	_ok(BankManager.get_count("shrimp") == shrimp_stored - 1, "Storage's Eat 1 consumed one shrimp")
 	# A non-food row must not grow an Eat button.
 	GameManager.start_new_game("standard")
 	BankManager.add_item_guaranteed("normal_log", 3)

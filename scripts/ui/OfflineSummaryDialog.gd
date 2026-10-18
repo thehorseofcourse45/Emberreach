@@ -31,7 +31,7 @@ func show_summary(summary: Dictionary) -> void:
 
 	_content.add_child(UIStyle.title("While you were away", UITokens.FONT_DISPLAY))
 	var processed: float = float(summary.get("processed_seconds", 0.0))
-	var headline: Array = [Widgets.stat_chip("status", "idle", UIStyle.fmt_duration(processed), "Time processed", UITokens.TEXT_STRONG)]
+	var headline: Array = [Widgets.stat_chip("status", "playtime", UIStyle.fmt_duration(processed), "Time processed", UITokens.TEXT_STRONG)]
 	var headline_row: HFlowContainer = Widgets.chip_row(headline)
 	_content.add_child(headline_row)
 	var capped: float = float(summary.get("capped_seconds", 0.0))

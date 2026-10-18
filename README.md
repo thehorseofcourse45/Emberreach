@@ -240,11 +240,11 @@ Loaded content. This block is generated from the live singletons — do not hand
 | Check | Value |
 |---|---|
 | Skills | 42 (9 combat / 33 non-combat) |
-| Skill actions | 893 |
-| Items | 885 |
-| Monsters | 102 |
-| Areas | 21 |
-| Dungeons | 40 |
+| Skill actions | 1085 |
+| Items | 1036 |
+| Monsters | 126 |
+| Areas | 27 |
+| Dungeons | 46 |
 | Prayers | 62 |
 | Autoload singletons | 49 |
 | Screens | 21 |

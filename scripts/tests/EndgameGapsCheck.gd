@@ -117,6 +117,7 @@ func _ready() -> void:
 	check(not Quests.claim("path_of_completion"), "cape claims once")
 	for s in DataLoader.get_skill_ids(): PlayerData.set_level(str(s), 120)
 	Quests.accept("path_of_mastery")
+	check((q2.objectives as Array).size() == DataLoader.get_skill_ids().size(), "mastery quest covers every skill")
 	check(Quests.claim("path_of_mastery") and BankManager.get_count("completionist_cape_superior") == 1, "superior cape awarded")
 	check(EquipmentManager.equip("completionist_cape"), "cape equips")
 

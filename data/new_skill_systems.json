@@ -1446,7 +1446,7 @@
         "redwood_log"
       ],
       "specialty": {
-        "stormglass_cargo": 4
+        "stormglass_cargo": 40
       },
       "xp": 1920000,
       "danger_severity": [
@@ -1468,7 +1468,7 @@
         "redwood_log"
       ],
       "specialty": {
-        "nightveil_silk": 4
+        "nightveil_silk": 40
       },
       "xp": 2400000,
       "danger_severity": [
@@ -1490,7 +1490,7 @@
         "redwood_log"
       ],
       "specialty": {
-        "worldheart_ore": 4
+        "worldheart_ore": 40
       },
       "xp": 2880000,
       "danger_severity": [

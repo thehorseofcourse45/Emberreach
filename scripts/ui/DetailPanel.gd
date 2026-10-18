@@ -354,7 +354,7 @@ func show_recipe(skill_id: String, action_id: String) -> void:
 	if not est.is_empty():
 		_body.add_child(UIStyle.section("Projection", str(est["assumptions"])))
 		var chips: Array = [
-			Widgets.stat_chip("status", "idle", "%.2fs" % float(est["interval"]), "Action time"),
+			Widgets.stat_chip("status", "action_time", "%.2fs" % float(est["interval"]), "Action time"),
 			Widgets.stat_chip("skills", skill_id, UIStyle.fmt(float(est["xp_per_action"])) + " XP", "XP per action", UITokens.BLUE),
 			Widgets.stat_chip("skills", skill_id, "≈ %s XP/h" % UIStyle.fmt(float(est["xp_per_hour"])), "XP per hour (estimate)", UITokens.BLUE),
 			Widgets.stat_chip("status", "ok", UIStyle.fmt_percent(float(est["success_chance"])), "Success chance"),

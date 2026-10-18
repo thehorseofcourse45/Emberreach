@@ -13,8 +13,9 @@ var _hp_bar: ProgressBar
 var _stop: Button
 var _eat: Button
 var _estimates: Label
-## Eat-button cache: last HP it was built for, and a flag to rebuild when the bank changes.
+## Eat-button cache: last HP and combat state it was built for, plus a flag to rebuild when the bank changes.
 var _eat_hp_seen: int = -1
+var _eat_fighting: bool = false
 var _eat_dirty: bool = true
 # The activity layer's spawn offer (EventDirector): shown only while an offer is live, polled
 # for its remaining charges because the count drops on engine completions, not on signals.
@@ -128,8 +129,10 @@ func _process(_delta: float) -> void:
 	# panel refresh. Reading HP is free; the bank walk only runs when HP actually moved or the
 	# bank changed, so this stays cheap per frame.
 	var hp: int = int(CombatManager.player_hp)
-	if hp != _eat_hp_seen or _eat_dirty:
+	var fighting: bool = CombatManager.state != CombatManager.State.IDLE
+	if hp != _eat_hp_seen or fighting != _eat_fighting or _eat_dirty:
 		_eat_hp_seen = hp
+		_eat_fighting = fighting
 		_eat_dirty = false
 		_refresh_eat()
 	# Same polling rule for the spawn countdown: the charge drops inside the engine's completion
@@ -192,8 +195,14 @@ func _refresh_combat_readout() -> void:
 	_hp_bar.tooltip_text = "Your health: %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)]
 
 ## Eating only matters while hurt, and only with food in the bank. Saying which of those is
-## missing is the whole value of a disabled button.
+## missing is the whole value of a disabled button. Food is eaten from the Combat screen while a
+## fight is running, so this quick button is inactive everywhere else.
 func _refresh_eat() -> void:
+	if CombatManager.state == CombatManager.State.IDLE:
+		_eat.disabled = true
+		_eat.text = "Eat in combat"
+		_eat.tooltip_text = "Equip food in Storage and eat it from the Combat screen while fighting."
+		return
 	var food: Dictionary = _best_food_in_bank()
 	var maxhp: float = CombatManager._compute_max_hp()
 	if food.is_empty():

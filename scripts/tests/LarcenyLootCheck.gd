@@ -26,7 +26,7 @@ func _ready() -> void:
 func _run() -> void:
 	GameManager.start_new_game("standard")
 	var actions: Array = DataLoader.get_skill_actions("thieving")
-	check(actions.size() == 18, "Every Larceny target is present")
+	check(actions.size() == 36, "Every Larceny target is present")
 	var valid: bool = true
 	var has_rare: bool = true
 	for action in actions:

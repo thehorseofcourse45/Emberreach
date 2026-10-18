@@ -3906,7 +3906,7 @@
       {
         "id": "smith_iron_helmet",
         "name": "Wrought Helmet",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 45,
         "input_items": {
@@ -3920,7 +3920,7 @@
       {
         "id": "smith_iron_platebody",
         "name": "Wrought Platebody",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 105,
         "input_items": {
@@ -3934,7 +3934,7 @@
       {
         "id": "smith_iron_platelegs",
         "name": "Wrought Platelegs",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 65,
         "input_items": {
@@ -3948,7 +3948,7 @@
       {
         "id": "smith_iron_boots",
         "name": "Wrought Boots",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 45,
         "input_items": {
@@ -3962,7 +3962,7 @@
       {
         "id": "smith_iron_gloves",
         "name": "Wrought Gloves",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 25,
         "input_items": {
@@ -3976,7 +3976,7 @@
       {
         "id": "smith_iron_shield",
         "name": "Wrought Shield",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 45,
         "input_items": {
@@ -3990,7 +3990,7 @@
       {
         "id": "smith_iron_sword",
         "name": "Wrought Sword",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 25,
         "input_items": {
@@ -4004,7 +4004,7 @@
       {
         "id": "smith_iron_scimitar",
         "name": "Wrought Scimitar",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 45,
         "input_items": {
@@ -4018,7 +4018,7 @@
       {
         "id": "smith_iron_dagger",
         "name": "Wrought Dagger",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 25,
         "input_items": {
@@ -4032,7 +4032,7 @@
       {
         "id": "smith_iron_battleaxe",
         "name": "Wrought Battleaxe",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 45,
         "input_items": {
@@ -4046,7 +4046,7 @@
       {
         "id": "smith_iron_2h_sword",
         "name": "Wrought 2H Sword",
-        "level_required": 10,
+        "level_required": 15,
         "base_interval": 1.7,
         "base_xp": 65,
         "input_items": {
@@ -4082,7 +4082,7 @@
       {
         "id": "smith_steel_helmet",
         "name": "Crucible Helmet",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 77,
         "input_items": {
@@ -4096,7 +4096,7 @@
       {
         "id": "smith_steel_platebody",
         "name": "Crucible Platebody",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 185,
         "input_items": {
@@ -4110,7 +4110,7 @@
       {
         "id": "smith_steel_platelegs",
         "name": "Crucible Platelegs",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 113,
         "input_items": {
@@ -4124,7 +4124,7 @@
       {
         "id": "smith_steel_boots",
         "name": "Crucible Boots",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 77,
         "input_items": {
@@ -4138,7 +4138,7 @@
       {
         "id": "smith_steel_gloves",
         "name": "Crucible Gloves",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 41,
         "input_items": {
@@ -4152,7 +4152,7 @@
       {
         "id": "smith_steel_shield",
         "name": "Crucible Shield",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 77,
         "input_items": {
@@ -4166,7 +4166,7 @@
       {
         "id": "smith_steel_sword",
         "name": "Crucible Sword",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 41,
         "input_items": {
@@ -4180,7 +4180,7 @@
       {
         "id": "smith_steel_scimitar",
         "name": "Crucible Scimitar",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 77,
         "input_items": {
@@ -4194,7 +4194,7 @@
       {
         "id": "smith_steel_dagger",
         "name": "Crucible Dagger",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 41,
         "input_items": {
@@ -4208,7 +4208,7 @@
       {
         "id": "smith_steel_battleaxe",
         "name": "Crucible Battleaxe",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 77,
         "input_items": {
@@ -4222,7 +4222,7 @@
       {
         "id": "smith_steel_2h_sword",
         "name": "Crucible 2H Sword",
-        "level_required": 20,
+        "level_required": 30,
         "base_interval": 1.7,
         "base_xp": 113,
         "input_items": {
@@ -4259,7 +4259,7 @@
       {
         "id": "smith_mithril_helmet",
         "name": "Ghoststeel Helmet",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 117,
         "input_items": {
@@ -4273,7 +4273,7 @@
       {
         "id": "smith_mithril_platebody",
         "name": "Ghoststeel Platebody",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 285,
         "input_items": {
@@ -4287,7 +4287,7 @@
       {
         "id": "smith_mithril_platelegs",
         "name": "Ghoststeel Platelegs",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 173,
         "input_items": {
@@ -4301,7 +4301,7 @@
       {
         "id": "smith_mithril_boots",
         "name": "Ghoststeel Boots",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 117,
         "input_items": {
@@ -4315,7 +4315,7 @@
       {
         "id": "smith_mithril_gloves",
         "name": "Ghoststeel Gloves",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 61,
         "input_items": {
@@ -4329,7 +4329,7 @@
       {
         "id": "smith_mithril_shield",
         "name": "Ghoststeel Shield",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 117,
         "input_items": {
@@ -4343,7 +4343,7 @@
       {
         "id": "smith_mithril_sword",
         "name": "Ghoststeel Sword",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 61,
         "input_items": {
@@ -4357,7 +4357,7 @@
       {
         "id": "smith_mithril_scimitar",
         "name": "Ghoststeel Scimitar",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 117,
         "input_items": {
@@ -4371,7 +4371,7 @@
       {
         "id": "smith_mithril_dagger",
         "name": "Ghoststeel Dagger",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 61,
         "input_items": {
@@ -4385,7 +4385,7 @@
       {
         "id": "smith_mithril_battleaxe",
         "name": "Ghoststeel Battleaxe",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 117,
         "input_items": {
@@ -4399,7 +4399,7 @@
       {
         "id": "smith_mithril_2h_sword",
         "name": "Ghoststeel 2H Sword",
-        "level_required": 30,
+        "level_required": 55,
         "base_interval": 1.7,
         "base_xp": 173,
         "input_items": {
@@ -4441,7 +4441,7 @@
       {
         "id": "smith_adamantite_sword",
         "name": "Skyiron Sword",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 3.0,
         "base_xp": 120,
         "input_items": {
@@ -4456,7 +4456,7 @@
       {
         "id": "smith_adamantite_scimitar",
         "name": "Skyiron Scimitar",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 3.0,
         "base_xp": 120,
         "input_items": {
@@ -4471,7 +4471,7 @@
       {
         "id": "smith_adamantite_battleaxe",
         "name": "Skyiron Battleaxe",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 3.0,
         "base_xp": 120,
         "input_items": {
@@ -4486,7 +4486,7 @@
       {
         "id": "smith_adamantite_2h_sword",
         "name": "Skyiron 2H Sword",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 3.0,
         "base_xp": 120,
         "input_items": {
@@ -4501,7 +4501,7 @@
       {
         "id": "smith_adamantite_helmet",
         "name": "Skyiron Helm",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 1.9,
         "base_xp": 180,
         "input_items": {
@@ -4515,7 +4515,7 @@
       {
         "id": "smith_adamantite_platebody",
         "name": "Skyiron Platebody",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 1.9,
         "base_xp": 420,
         "input_items": {
@@ -4529,7 +4529,7 @@
       {
         "id": "smith_adamantite_platelegs",
         "name": "Skyiron Platelegs",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 1.9,
         "base_xp": 260,
         "input_items": {
@@ -4543,7 +4543,7 @@
       {
         "id": "smith_adamantite_boots",
         "name": "Skyiron Boots",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 1.9,
         "base_xp": 180,
         "input_items": {
@@ -4557,7 +4557,7 @@
       {
         "id": "smith_adamantite_gloves",
         "name": "Skyiron Gauntlets",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 1.9,
         "base_xp": 110,
         "input_items": {
@@ -4571,7 +4571,7 @@
       {
         "id": "smith_adamantite_shield",
         "name": "Skyiron Shield",
-        "level_required": 50,
+        "level_required": 70,
         "base_interval": 1.9,
         "base_xp": 360,
         "input_items": {
@@ -6588,7 +6588,7 @@
       {
         "id": "craft_topaz_amulet",
         "name": "Topaz Amulet",
-        "level_required": 15,
+        "level_required": 55,
         "base_interval": 1.65,
         "base_xp": 30,
         "input_items": {
@@ -6857,7 +6857,7 @@
       {
         "id": "set_topaz_ring",
         "name": "Topaz Ring",
-        "level_required": 42,
+        "level_required": 55,
         "base_interval": 1.9,
         "base_xp": 90,
         "input_items": {
@@ -9270,6 +9270,60 @@
         "icon_activity": true
       },
       {
+        "id": "street_busker",
+        "name": "Street Busker",
+        "level_required": 3,
+        "base_interval": 3.0,
+        "base_xp": 10,
+        "success_chance": 0.535,
+        "perception": 2,
+        "stun_seconds": 1,
+        "fail_damage": 1,
+        "gp_reward": 12,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "raw_shrimp",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "copper_ore",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "tin_ore",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "leather",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "air_rune",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "topaz",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.0,
+        "icon_activity": true,
+        "description": "Pickpocket the street busker for gold and specialist supplies."
+      },
+      {
         "id": "golbin",
         "name": "Cinderkin Raider",
         "level_required": 5,
@@ -9329,6 +9383,60 @@
           }
         ],
         "icon_activity": true
+      },
+      {
+        "id": "market_runner",
+        "name": "Market Runner",
+        "level_required": 8,
+        "base_interval": 3.0,
+        "base_xp": 21,
+        "success_chance": 0.508,
+        "perception": 5,
+        "stun_seconds": 2,
+        "fail_damage": 2,
+        "gp_reward": 24,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "leather",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "bronze_bar",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "iron_ore",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "air_rune",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "bowstring",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "sapphire",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.0,
+        "icon_activity": true,
+        "description": "Pickpocket the market runner for gold and specialist supplies."
       },
       {
         "id": "farmer",
@@ -9477,6 +9585,60 @@
         ]
       },
       {
+        "id": "dockhand",
+        "name": "Dockhand",
+        "level_required": 18,
+        "base_interval": 3.1,
+        "base_xp": 42,
+        "success_chance": 0.47,
+        "perception": 10,
+        "stun_seconds": 3,
+        "fail_damage": 4,
+        "gp_reward": 58,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "raw_lobster",
+            "chance": 0.32,
+            "min_qty": 2,
+            "max_qty": 5
+          },
+          {
+            "item_id": "raw_herring",
+            "chance": 0.25,
+            "min_qty": 2,
+            "max_qty": 6
+          },
+          {
+            "item_id": "iron_bar",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "bowstring",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "topaz",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "sapphire",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.1,
+        "icon_activity": true,
+        "description": "Lift dockside wages, seafood and rigging supplies."
+      },
+      {
         "id": "marauder",
         "name": "Marauder",
         "level_required": 21,
@@ -9538,6 +9700,168 @@
         "icon_activity": true
       },
       {
+        "id": "quarry_paymaster",
+        "name": "Quarry Paymaster",
+        "level_required": 24,
+        "base_interval": 3.2,
+        "base_xp": 57,
+        "success_chance": 0.4554,
+        "perception": 14,
+        "stun_seconds": 3,
+        "fail_damage": 5,
+        "gp_reward": 82,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "iron_ore",
+            "chance": 0.32,
+            "min_qty": 2,
+            "max_qty": 5
+          },
+          {
+            "item_id": "coal",
+            "chance": 0.25,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "iron_bar",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "steel_bar",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "topaz",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "emerald",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.2,
+        "icon_activity": true,
+        "description": "Pickpocket the quarry paymaster for gold and specialist supplies."
+      },
+      {
+        "id": "apothecary",
+        "name": "Apothecary",
+        "level_required": 27,
+        "base_interval": 3.2,
+        "base_xp": 64,
+        "success_chance": 0.4508,
+        "perception": 15,
+        "stun_seconds": 3,
+        "fail_damage": 5,
+        "gp_reward": 93,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "mantalyme",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "sourweed_seed",
+            "chance": 0.25,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "garum_herb",
+            "chance": 0.18,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "potion_skilling_1",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "potion_dr_1",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "herb_box",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.2,
+        "icon_activity": true,
+        "description": "Steal useful herbs, seeds and prepared remedies."
+      },
+      {
+        "id": "herbalist",
+        "name": "Herbalist",
+        "level_required": 31,
+        "base_interval": 3.2,
+        "base_xp": 73,
+        "success_chance": 0.4446,
+        "perception": 17,
+        "stun_seconds": 3,
+        "fail_damage": 5,
+        "gp_reward": 108,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "garum_herb",
+            "chance": 0.32,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "sourweed_seed",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "mantalyme",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "potion_skilling_1",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "potion_dr_1",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "herb_box",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.2,
+        "icon_activity": true,
+        "description": "Pickpocket the herbalist for gold and specialist supplies."
+      },
+      {
         "id": "chef",
         "name": "Chef",
         "level_required": 34,
@@ -9597,6 +9921,60 @@
           }
         ],
         "icon_activity": true
+      },
+      {
+        "id": "jeweller",
+        "name": "Jeweller",
+        "level_required": 37,
+        "base_interval": 3.2,
+        "base_xp": 88,
+        "success_chance": 0.435,
+        "perception": 20,
+        "stun_seconds": 4,
+        "fail_damage": 6,
+        "gp_reward": 140,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "topaz",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "gold_ring",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "gold_bar",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "sapphire",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "gold_amulet",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "emerald",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.2,
+        "icon_activity": true,
+        "description": "Lift cut stones and finished jewellery from a skilled artisan."
       },
       {
         "id": "lumberjack",
@@ -9672,6 +10050,60 @@
         ]
       },
       {
+        "id": "ship_captain",
+        "name": "Ship Captain",
+        "level_required": 43,
+        "base_interval": 3.32,
+        "base_xp": 110,
+        "success_chance": 0.424,
+        "perception": 24,
+        "stun_seconds": 4,
+        "fail_damage": 8,
+        "gp_reward": 196,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "raw_lobster",
+            "chance": 0.32,
+            "min_qty": 3,
+            "max_qty": 6
+          },
+          {
+            "item_id": "steel_bar",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "bowstring",
+            "chance": 0.18,
+            "min_qty": 4,
+            "max_qty": 8
+          },
+          {
+            "item_id": "gold_bar",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "sapphire",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.32,
+        "icon_activity": true,
+        "description": "Pickpocket the ship captain for gold and specialist supplies."
+      },
+      {
         "id": "knight",
         "name": "Knight",
         "level_required": 45,
@@ -9733,6 +10165,60 @@
         ]
       },
       {
+        "id": "caravan_factor",
+        "name": "Caravan Factor",
+        "level_required": 48,
+        "base_interval": 3.4,
+        "base_xp": 132,
+        "success_chance": 0.414,
+        "perception": 28,
+        "stun_seconds": 5,
+        "fail_damage": 9,
+        "gp_reward": 268,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "leather",
+            "chance": 0.32,
+            "min_qty": 6,
+            "max_qty": 10
+          },
+          {
+            "item_id": "green_dragonhide",
+            "chance": 0.25,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "gold_bar",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "bowstring",
+            "chance": 0.14,
+            "min_qty": 6,
+            "max_qty": 12
+          },
+          {
+            "item_id": "blue_dragonhide",
+            "chance": 0.1,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.4,
+        "icon_activity": true,
+        "description": "Skim hides and crafting supplies from a travelling merchant."
+      },
+      {
         "id": "merchant",
         "name": "Merchant",
         "level_required": 50,
@@ -9792,6 +10278,60 @@
           }
         ],
         "icon_activity": true
+      },
+      {
+        "id": "silk_trader",
+        "name": "Silk Trader",
+        "level_required": 53,
+        "base_interval": 3.4,
+        "base_xp": 155,
+        "success_chance": 0.404,
+        "perception": 32,
+        "stun_seconds": 5,
+        "fail_damage": 10,
+        "gp_reward": 348,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "leather",
+            "chance": 0.32,
+            "min_qty": 8,
+            "max_qty": 14
+          },
+          {
+            "item_id": "bowstring",
+            "chance": 0.25,
+            "min_qty": 8,
+            "max_qty": 12
+          },
+          {
+            "item_id": "green_dragonhide",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "blue_dragonhide",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "gold_bar",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.4,
+        "icon_activity": true,
+        "description": "Pickpocket the silk trader for gold and specialist supplies."
       },
       {
         "id": "master_farmer",
@@ -9879,6 +10419,60 @@
         ]
       },
       {
+        "id": "archive_keeper",
+        "name": "Archive Keeper",
+        "level_required": 58,
+        "base_interval": 3.52,
+        "base_xp": 180,
+        "success_chance": 0.394,
+        "perception": 38,
+        "stun_seconds": 6,
+        "fail_damage": 12,
+        "gp_reward": 434,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "scribe_paper",
+            "chance": 0.32,
+            "min_qty": 8,
+            "max_qty": 16
+          },
+          {
+            "item_id": "scribe_blue_ink",
+            "chance": 0.25,
+            "min_qty": 4,
+            "max_qty": 8
+          },
+          {
+            "item_id": "law_rune",
+            "chance": 0.18,
+            "min_qty": 3,
+            "max_qty": 7
+          },
+          {
+            "item_id": "nature_rune",
+            "chance": 0.14,
+            "min_qty": 3,
+            "max_qty": 7
+          },
+          {
+            "item_id": "pure_essence",
+            "chance": 0.1,
+            "min_qty": 5,
+            "max_qty": 10
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.52,
+        "icon_activity": true,
+        "description": "Pilfer paper, ink and runes from the archive's supply satchel."
+      },
+      {
         "id": "bandit",
         "name": "Sable Rook",
         "level_required": 60,
@@ -9938,6 +10532,60 @@
             "max_qty": 1
           }
         ]
+      },
+      {
+        "id": "relic_dealer",
+        "name": "Relic Dealer",
+        "level_required": 63,
+        "base_interval": 3.6,
+        "base_xp": 208,
+        "success_chance": 0.384,
+        "perception": 42,
+        "stun_seconds": 6,
+        "fail_damage": 13,
+        "gp_reward": 524,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "gold_bar",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "pure_essence",
+            "chance": 0.25,
+            "min_qty": 6,
+            "max_qty": 12
+          },
+          {
+            "item_id": "nature_rune",
+            "chance": 0.18,
+            "min_qty": 4,
+            "max_qty": 8
+          },
+          {
+            "item_id": "law_rune",
+            "chance": 0.14,
+            "min_qty": 3,
+            "max_qty": 6
+          },
+          {
+            "item_id": "emerald",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.6,
+        "icon_activity": true,
+        "description": "Pickpocket the relic dealer for gold and specialist supplies."
       },
       {
         "id": "guard",
@@ -10005,6 +10653,60 @@
           }
         ],
         "icon_activity": true
+      },
+      {
+        "id": "spellbroker",
+        "name": "Spellbroker",
+        "level_required": 68,
+        "base_interval": 3.6,
+        "base_xp": 241,
+        "success_chance": 0.374,
+        "perception": 48,
+        "stun_seconds": 7,
+        "fail_damage": 15,
+        "gp_reward": 632,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "chaos_rune",
+            "chance": 0.32,
+            "min_qty": 6,
+            "max_qty": 12
+          },
+          {
+            "item_id": "death_rune",
+            "chance": 0.25,
+            "min_qty": 5,
+            "max_qty": 10
+          },
+          {
+            "item_id": "blood_rune",
+            "chance": 0.18,
+            "min_qty": 4,
+            "max_qty": 8
+          },
+          {
+            "item_id": "soul_rune",
+            "chance": 0.14,
+            "min_qty": 2,
+            "max_qty": 5
+          },
+          {
+            "item_id": "pure_essence",
+            "chance": 0.1,
+            "min_qty": 5,
+            "max_qty": 10
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.6,
+        "icon_activity": true,
+        "description": "Snatch rune stocks and refined essence from a wary arcane trader."
       },
       {
         "id": "thief",
@@ -10129,6 +10831,60 @@
         "icon_activity": true
       },
       {
+        "id": "astral_diviner",
+        "name": "Astral Diviner",
+        "level_required": 80,
+        "base_interval": 3.9,
+        "base_xp": 350,
+        "success_chance": 0.35,
+        "perception": 61,
+        "stun_seconds": 8,
+        "fail_damage": 20,
+        "gp_reward": 1010,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "pure_essence",
+            "chance": 0.32,
+            "min_qty": 10,
+            "max_qty": 20
+          },
+          {
+            "item_id": "soul_rune",
+            "chance": 0.25,
+            "min_qty": 3,
+            "max_qty": 6
+          },
+          {
+            "item_id": "blood_rune",
+            "chance": 0.18,
+            "min_qty": 5,
+            "max_qty": 9
+          },
+          {
+            "item_id": "death_rune",
+            "chance": 0.14,
+            "min_qty": 6,
+            "max_qty": 10
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 3.9,
+        "icon_activity": true,
+        "description": "Pickpocket the astral diviner for gold and specialist supplies."
+      },
+      {
         "id": "princess",
         "name": "Princess",
         "level_required": 85,
@@ -10202,6 +10958,60 @@
         "icon_activity": true
       },
       {
+        "id": "royal_treasurer",
+        "name": "Royal Treasurer",
+        "level_required": 90,
+        "base_interval": 4.1,
+        "base_xp": 460,
+        "success_chance": 0.33,
+        "perception": 72,
+        "stun_seconds": 9,
+        "fail_damage": 25,
+        "gp_reward": 1500,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "gold_bar",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "gold_necklace",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "dragonite_bar",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 3
+          },
+          {
+            "item_id": "diamond_amulet",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 4.1,
+        "icon_activity": true,
+        "description": "Rob a watchful royal official for goldwork, gems and precious metal."
+      },
+      {
         "id": "king",
         "name": "King",
         "level_required": 95,
@@ -10267,6 +11077,60 @@
           }
         ],
         "icon_activity": true
+      },
+      {
+        "id": "citadel_quartermaster",
+        "name": "Citadel Quartermaster",
+        "level_required": 100,
+        "base_interval": 4.3,
+        "base_xp": 590,
+        "success_chance": 0.31,
+        "perception": 83,
+        "stun_seconds": 11,
+        "fail_damage": 31,
+        "gp_reward": 2100,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "dragonite_bar",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "umbral_bar",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "gold_bar",
+            "chance": 0.18,
+            "min_qty": 2,
+            "max_qty": 4
+          },
+          {
+            "item_id": "soul_rune",
+            "chance": 0.14,
+            "min_qty": 4,
+            "max_qty": 8
+          },
+          {
+            "item_id": "ruby",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "diamond",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 4.3,
+        "icon_activity": true,
+        "description": "Pickpocket the citadel quartermaster for gold and specialist supplies."
       },
       {
         "id": "high_priest",
@@ -10340,6 +11204,114 @@
           }
         ],
         "icon_activity": true
+      },
+      {
+        "id": "void_smuggler",
+        "name": "Void Smuggler",
+        "level_required": 110,
+        "base_interval": 4.5,
+        "base_xp": 730,
+        "success_chance": 0.29,
+        "perception": 92,
+        "stun_seconds": 13,
+        "fail_damage": 37,
+        "gp_reward": 2800,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "umbral_bar",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "umbral_essence",
+            "chance": 0.25,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "soul_rune",
+            "chance": 0.18,
+            "min_qty": 4,
+            "max_qty": 8
+          },
+          {
+            "item_id": "dragonite_bar",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "herald_ore",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 1
+          },
+          {
+            "item_id": "chapeau_noir",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 4.5,
+        "icon_activity": true,
+        "description": "Steal high-tier contraband from a dangerous shadow-market courier."
+      },
+      {
+        "id": "rift_courier",
+        "name": "Rift Courier",
+        "level_required": 113,
+        "base_interval": 4.56,
+        "base_xp": 772,
+        "success_chance": 0.284,
+        "perception": 94,
+        "stun_seconds": 14,
+        "fail_damage": 39,
+        "gp_reward": 3040,
+        "output_items": {},
+        "pickpocket_loot": [
+          {
+            "item_id": "umbral_essence",
+            "chance": 0.32,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "soul_rune",
+            "chance": 0.25,
+            "min_qty": 5,
+            "max_qty": 10
+          },
+          {
+            "item_id": "umbral_bar",
+            "chance": 0.18,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "herald_ore",
+            "chance": 0.14,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "dragonite_bar",
+            "chance": 0.1,
+            "min_qty": 1,
+            "max_qty": 2
+          },
+          {
+            "item_id": "chapeau_noir",
+            "chance": 0.01,
+            "min_qty": 1,
+            "max_qty": 1
+          }
+        ],
+        "mastery_action_time": 4.56,
+        "icon_activity": true,
+        "description": "Pickpocket the rift courier for gold and specialist supplies."
       },
       {
         "id": "herald_mark",
@@ -16145,7 +17117,7 @@
       {
         "id": "archive_custom",
         "name": "Archive a Custom",
-        "level_required": 25,
+        "level_required": 40,
         "base_interval": 3.8,
         "base_xp": 23,
         "description": "Retire a custom at a modest fee and fold what it taught into a standing record. A bad habit should cost a detour, not a playthrough.",
@@ -17264,9 +18236,68 @@
         "mastery_action_time": 1.5
       },
       {
+        "id": "make_bark_paper",
+        "name": "Bark Paper",
+        "level_required": 1,
+        "base_interval": 2.0,
+        "base_xp": 12,
+        "input_items": {
+          "normal_log": 1
+        },
+        "output_items": {
+          "scribe_paper": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "scribe_xp_tome_0_scrap",
+        "name": "Scrap Tome",
+        "level_required": 5,
+        "base_interval": 2.0,
+        "base_xp": 30,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_ink": 1
+        },
+        "output_items": {
+          "scribe_xp_tome_0_scrap": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "scribe_xp_tome_0_plain",
+        "name": "Plain Tome",
+        "level_required": 10,
+        "base_interval": 2.0,
+        "base_xp": 40,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_ink": 2
+        },
+        "output_items": {
+          "scribe_xp_tome_0_plain": 1
+        },
+        "mastery_action_time": 2.0
+      },
+      {
+        "id": "scribe_xp_tome_0_pressed",
+        "name": "Pressed Tome",
+        "level_required": 15,
+        "base_interval": 2.1,
+        "base_xp": 50,
+        "input_items": {
+          "scribe_paper": 1,
+          "scribe_ink": 3
+        },
+        "output_items": {
+          "scribe_xp_tome_0_pressed": 1
+        },
+        "mastery_action_time": 2.1
+      },
+      {
         "id": "scribe_xp_tome_1_faded",
         "name": "Xp Tome 1 Faded",
-        "level_required": 20,
+        "level_required": 25,
         "base_interval": 2.2,
         "base_xp": 60,
         "input_items": {
@@ -17445,7 +18476,7 @@
       {
         "id": "bind_apprentice_illuminated",
         "name": "Apprentice Illuminated Tome",
-        "level_required": 45,
+        "level_required": 50,
         "base_interval": 2.5,
         "base_xp": 100,
         "input_items": {
@@ -17610,7 +18641,7 @@
       {
         "id": "bind_scholar_illuminated",
         "name": "Scholar Illuminated Tome",
-        "level_required": 65,
+        "level_required": 70,
         "base_interval": 2.5,
         "base_xp": 120,
         "input_items": {
@@ -17715,7 +18746,7 @@
       {
         "id": "make_celestial_ink",
         "name": "Celestial Ink",
-        "level_required": 90,
+        "level_required": 30,
         "base_interval": 2.0,
         "base_xp": 160,
         "input_items": {
@@ -17804,7 +18835,7 @@
       {
         "id": "bind_sage_illuminated",
         "name": "Sage Illuminated Tome",
-        "level_required": 95,
+        "level_required": 100,
         "base_interval": 2.5,
         "base_xp": 150,
         "input_items": {
@@ -18032,7 +19063,7 @@
       {
         "id": "assemble_device_lumberjack",
         "name": "Assemble Lumberjack",
-        "level_required": 1,
+        "level_required": 50,
         "base_interval": 3.0,
         "base_xp": 62,
         "input_items": {
@@ -18082,7 +19113,7 @@
       {
         "id": "assemble_device_miner",
         "name": "Assemble Miner",
-        "level_required": 15,
+        "level_required": 50,
         "base_interval": 3.0,
         "base_xp": 90,
         "input_items": {
@@ -18129,7 +19160,7 @@
       {
         "id": "assemble_device_angler",
         "name": "Assemble Angler",
-        "level_required": 30,
+        "level_required": 50,
         "base_interval": 3.0,
         "base_xp": 120,
         "input_items": {
@@ -18181,7 +19212,7 @@
       {
         "id": "assemble_device_stoker",
         "name": "Assemble Stoker",
-        "level_required": 45,
+        "level_required": 50,
         "base_interval": 3.0,
         "base_xp": 150,
         "input_items": {

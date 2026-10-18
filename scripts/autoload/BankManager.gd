@@ -364,10 +364,15 @@ func sell_many(entries: Array) -> Dictionary:
 			gp += PlayerData.gp - before
 	return {"items": sold_items, "gp": gp}
 
-## Bury bones for Prayer Points.
+## Bury bones for Prayer Points. Anything with prayer_points is buryable, not only item_type
+## "bone": ash is the firemaking byproduct the player is meant to burn for points too.
+func is_buryable(item_id: String) -> bool:
+	var data: Dictionary = DataLoader.get_item(item_id)
+	return str(data.get("item_type", "")) == "bone" or float(data.get("prayer_points", 0)) > 0
+
 func bury_bone(item_id: String, quantity: int = 1) -> bool:
 	var data: Dictionary = DataLoader.get_item(item_id)
-	if data.get("item_type", "") != "bone":
+	if not is_buryable(item_id):
 		return false
 	if quantity <= 0:
 		return false

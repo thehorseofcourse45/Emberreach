@@ -712,5 +712,166 @@
         "masterwork_seal": 1
       }
     }
+  },
+  "rift_light": {
+    "id": "rift_light",
+    "name": "Rift Light",
+    "difficulty": "normal",
+    "region": "abyssal_rift",
+    "description": "The rift lanterns are guttering. Split a fresh batch of candles.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "required": 40,
+        "label": "Fracture 40 aether candles",
+        "skill_id": "riftkeeping",
+        "action_id": "candle_fracture"
+      }
+    ],
+    "reward": {
+      "gp": 900,
+      "xp": {
+        "riftkeeping": 600
+      }
+    }
+  },
+  "weave_the_wards": {
+    "id": "weave_the_wards",
+    "name": "Weave the Wards",
+    "difficulty": "normal",
+    "region": "silence_verge",
+    "description": "The ward-line wants new patterns before the next tide of sparks.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "required": 25,
+        "label": "Weave 25 ember dart patterns",
+        "item_id": "woven_ember_dart_pattern"
+      }
+    ],
+    "reward": {
+      "gp": 1500,
+      "xp": {
+        "spellweaving": 900
+      }
+    }
+  },
+  "gearworks_delivery": {
+    "id": "gearworks_delivery",
+    "name": "Gearworks Delivery",
+    "difficulty": "normal",
+    "region": "greyharrow_quarry",
+    "description": "The quarry's lifts are down. Bring clockwork gears to the engineers.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "required": 20,
+        "label": "Forge 20 clockwork gears",
+        "item_id": "clockwork_gear"
+      }
+    ],
+    "reward": {
+      "gp": 2200,
+      "xp": {
+        "engineering": 900
+      }
+    }
+  },
+  "essence_order": {
+    "id": "essence_order",
+    "name": "Essence Order",
+    "difficulty": "normal",
+    "region": "gloamreach_marsh",
+    "description": "An attuner in the marsh pays well for raw arcane essence.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 30,
+        "label": "Gather 30 arcane essence",
+        "item_id": "enchant_arcane_essence"
+      }
+    ],
+    "reward": {
+      "gp": 2600,
+      "xp": {
+        "enchanting": 800
+      }
+    }
+  },
+  "dust_and_potsherds": {
+    "id": "dust_and_potsherds",
+    "name": "Dust and Potsherds",
+    "difficulty": "normal",
+    "region": "barrow_moor",
+    "description": "The barrow-moor dig needs shards before the season turns.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 25,
+        "label": "Recover 25 artefact shards",
+        "item_id": "artefact_shard"
+      }
+    ],
+    "reward": {
+      "gp": 2400,
+      "xp": {
+        "archaeology": 900
+      }
+    }
+  },
+  "chart_the_frontier": {
+    "id": "chart_the_frontier",
+    "name": "Chart the Frontier",
+    "difficulty": "normal",
+    "region": "tidebreak_cliffs",
+    "description": "The survey office wants five more regions on the map.",
+    "objectives": [
+      {
+        "kind": "chart_hexes",
+        "required": 5,
+        "label": "Chart 5 frontier regions"
+      }
+    ],
+    "reward": {
+      "gp": 3000,
+      "xp": {
+        "cartography": 1000
+      }
+    }
+  },
+  "haul_the_stormglass": {
+    "id": "haul_the_stormglass",
+    "name": "Haul the Stormglass",
+    "difficulty": "hard",
+    "region": "sundered_reaches",
+    "description": "A caravan master in the Sundered Reaches is short of stormglass cargo.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 12,
+        "label": "Bring back 12 stormglass cargo",
+        "item_id": "stormglass_cargo"
+      }
+    ],
+    "reward": {
+      "gp": 150000
+    }
+  },
+  "empire_of_coin": {
+    "id": "empire_of_coin",
+    "name": "Empire of Coin",
+    "difficulty": "hard",
+    "region": "castle_of_kings",
+    "description": "The treasury wants proof the frontier can carry real coin.",
+    "objectives": [
+      {
+        "kind": "gp_total",
+        "required": 50000000,
+        "label": "Earn 50,000,000 GP in total"
+      }
+    ],
+    "reward": {
+      "gp": 5000000
+    }
   }
 }

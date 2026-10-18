@@ -1,0 +1,684 @@
+[
+  {
+    "id": "dockhand",
+    "name": "Dockhand",
+    "level": 18,
+    "description": "Lift dockside wages, seafood and rigging supplies.",
+    "art": "burly human dockworker in a rolled-sleeve cream shirt, blue waistcoat and brown boots, carrying a coiled rope and a small fish basket",
+    "loot": [
+      [
+        "raw_lobster",
+        2,
+        5
+      ],
+      [
+        "raw_herring",
+        2,
+        6
+      ],
+      [
+        "iron_bar",
+        1,
+        2
+      ],
+      [
+        "bowstring",
+        1,
+        3
+      ],
+      [
+        "topaz",
+        1,
+        2
+      ],
+      [
+        "sapphire",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "apothecary",
+    "name": "Apothecary",
+    "level": 27,
+    "description": "Steal useful herbs, seeds and prepared remedies.",
+    "art": "female human apothecary in a moss-green robe and leather apron, red hair, holding a tiny herb bundle and an amber potion bottle",
+    "loot": [
+      [
+        "mantalyme",
+        1,
+        2
+      ],
+      [
+        "sourweed_seed",
+        2,
+        4
+      ],
+      [
+        "garum_herb",
+        2,
+        4
+      ],
+      [
+        "potion_skilling_1",
+        1,
+        1
+      ],
+      [
+        "potion_dr_1",
+        1,
+        1
+      ],
+      [
+        "herb_box",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "jeweller",
+    "name": "Jeweller",
+    "level": 37,
+    "description": "Lift cut stones and finished jewellery from a skilled artisan.",
+    "art": "stout elderly dwarf jeweller with a silver beard, burgundy leather apron and small magnifying eyepiece, holding an open box with a sapphire and gold ring",
+    "loot": [
+      [
+        "topaz",
+        1,
+        2
+      ],
+      [
+        "gold_ring",
+        1,
+        1
+      ],
+      [
+        "gold_bar",
+        1,
+        1
+      ],
+      [
+        "sapphire",
+        1,
+        1
+      ],
+      [
+        "gold_amulet",
+        1,
+        1
+      ],
+      [
+        "emerald",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "caravan_factor",
+    "name": "Caravan Factor",
+    "level": 48,
+    "description": "Skim hides and crafting supplies from a travelling merchant.",
+    "art": "female caravan merchant with tan skin, teal and ochre travelling robes, gold sash, brown leather satchel and a bundled roll of hides",
+    "loot": [
+      [
+        "leather",
+        6,
+        10
+      ],
+      [
+        "green_dragonhide",
+        2,
+        4
+      ],
+      [
+        "gold_bar",
+        1,
+        3
+      ],
+      [
+        "bowstring",
+        6,
+        12
+      ],
+      [
+        "blue_dragonhide",
+        2,
+        4
+      ],
+      [
+        "diamond",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "archive_keeper",
+    "name": "Archive Keeper",
+    "level": 58,
+    "description": "Pilfer paper, ink and runes from the archive's supply satchel.",
+    "art": "elderly human archivist with spectacles, white swept hair, deep blue scholarly robe with bronze trim, holding a bulky book and scroll case",
+    "loot": [
+      [
+        "scribe_paper",
+        8,
+        16
+      ],
+      [
+        "scribe_blue_ink",
+        4,
+        8
+      ],
+      [
+        "law_rune",
+        3,
+        7
+      ],
+      [
+        "nature_rune",
+        3,
+        7
+      ],
+      [
+        "pure_essence",
+        5,
+        10
+      ],
+      [
+        "ruby",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "spellbroker",
+    "name": "Spellbroker",
+    "level": 68,
+    "description": "Snatch rune stocks and refined essence from a wary arcane trader.",
+    "art": "mysterious elven spell merchant in a violet hood and dark navy layered robe, silver belt, holding a pouch of glowing blue and red rune stones",
+    "loot": [
+      [
+        "chaos_rune",
+        6,
+        12
+      ],
+      [
+        "death_rune",
+        5,
+        10
+      ],
+      [
+        "blood_rune",
+        4,
+        8
+      ],
+      [
+        "soul_rune",
+        2,
+        5
+      ],
+      [
+        "pure_essence",
+        5,
+        10
+      ],
+      [
+        "diamond",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "royal_treasurer",
+    "name": "Royal Treasurer",
+    "level": 90,
+    "description": "Rob a watchful royal official for goldwork, gems and precious metal.",
+    "art": "dignified human royal treasurer with grey moustache, emerald green coat, ornate gold trim, holding a brass key ring and a locked coin coffer, no crown",
+    "loot": [
+      [
+        "gold_bar",
+        1,
+        3
+      ],
+      [
+        "gold_necklace",
+        1,
+        3
+      ],
+      [
+        "ruby",
+        1,
+        2
+      ],
+      [
+        "diamond",
+        1,
+        1
+      ],
+      [
+        "dragonite_bar",
+        1,
+        3
+      ],
+      [
+        "diamond_amulet",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "void_smuggler",
+    "name": "Void Smuggler",
+    "level": 110,
+    "description": "Steal high-tier contraband from a dangerous shadow-market courier.",
+    "art": "hooded shadow-market smuggler in charcoal and indigo leather, violet scarf, heavy boots, half-masked face, carrying a crate of glowing purple crystals and a concealed gold coin pouch",
+    "loot": [
+      [
+        "umbral_bar",
+        1,
+        2
+      ],
+      [
+        "umbral_essence",
+        1,
+        1
+      ],
+      [
+        "soul_rune",
+        4,
+        8
+      ],
+      [
+        "dragonite_bar",
+        1,
+        2
+      ],
+      [
+        "herald_ore",
+        1,
+        1
+      ],
+      [
+        "chapeau_noir",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "street_busker",
+    "name": "Street Busker",
+    "level": 3,
+    "loot": [
+      [
+        "raw_shrimp",
+        1,
+        3
+      ],
+      [
+        "copper_ore",
+        1,
+        2
+      ],
+      [
+        "tin_ore",
+        1,
+        2
+      ],
+      [
+        "leather",
+        1,
+        1
+      ],
+      [
+        "air_rune",
+        1,
+        2
+      ],
+      [
+        "topaz",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "market_runner",
+    "name": "Market Runner",
+    "level": 8,
+    "loot": [
+      [
+        "leather",
+        1,
+        2
+      ],
+      [
+        "bronze_bar",
+        1,
+        2
+      ],
+      [
+        "iron_ore",
+        1,
+        3
+      ],
+      [
+        "air_rune",
+        1,
+        3
+      ],
+      [
+        "bowstring",
+        1,
+        2
+      ],
+      [
+        "sapphire",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "quarry_paymaster",
+    "name": "Quarry Paymaster",
+    "level": 24,
+    "loot": [
+      [
+        "iron_ore",
+        2,
+        5
+      ],
+      [
+        "coal",
+        2,
+        4
+      ],
+      [
+        "iron_bar",
+        1,
+        2
+      ],
+      [
+        "steel_bar",
+        1,
+        1
+      ],
+      [
+        "topaz",
+        1,
+        2
+      ],
+      [
+        "emerald",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "herbalist",
+    "name": "Herbalist",
+    "level": 31,
+    "loot": [
+      [
+        "garum_herb",
+        2,
+        4
+      ],
+      [
+        "sourweed_seed",
+        1,
+        3
+      ],
+      [
+        "mantalyme",
+        1,
+        2
+      ],
+      [
+        "potion_skilling_1",
+        1,
+        1
+      ],
+      [
+        "potion_dr_1",
+        1,
+        1
+      ],
+      [
+        "herb_box",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "ship_captain",
+    "name": "Ship Captain",
+    "level": 43,
+    "loot": [
+      [
+        "raw_lobster",
+        3,
+        6
+      ],
+      [
+        "steel_bar",
+        1,
+        2
+      ],
+      [
+        "bowstring",
+        4,
+        8
+      ],
+      [
+        "gold_bar",
+        1,
+        2
+      ],
+      [
+        "sapphire",
+        1,
+        2
+      ],
+      [
+        "ruby",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "silk_trader",
+    "name": "Silk Trader",
+    "level": 53,
+    "loot": [
+      [
+        "leather",
+        8,
+        14
+      ],
+      [
+        "bowstring",
+        8,
+        12
+      ],
+      [
+        "green_dragonhide",
+        1,
+        2
+      ],
+      [
+        "blue_dragonhide",
+        1,
+        2
+      ],
+      [
+        "gold_bar",
+        1,
+        2
+      ],
+      [
+        "diamond",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "relic_dealer",
+    "name": "Relic Dealer",
+    "level": 63,
+    "loot": [
+      [
+        "gold_bar",
+        1,
+        2
+      ],
+      [
+        "pure_essence",
+        6,
+        12
+      ],
+      [
+        "nature_rune",
+        4,
+        8
+      ],
+      [
+        "law_rune",
+        3,
+        6
+      ],
+      [
+        "emerald",
+        1,
+        1
+      ],
+      [
+        "ruby",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "astral_diviner",
+    "name": "Astral Diviner",
+    "level": 80,
+    "loot": [
+      [
+        "pure_essence",
+        10,
+        20
+      ],
+      [
+        "soul_rune",
+        3,
+        6
+      ],
+      [
+        "blood_rune",
+        5,
+        9
+      ],
+      [
+        "death_rune",
+        6,
+        10
+      ],
+      [
+        "ruby",
+        1,
+        1
+      ],
+      [
+        "diamond",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "citadel_quartermaster",
+    "name": "Citadel Quartermaster",
+    "level": 100,
+    "loot": [
+      [
+        "dragonite_bar",
+        1,
+        2
+      ],
+      [
+        "umbral_bar",
+        1,
+        2
+      ],
+      [
+        "gold_bar",
+        2,
+        4
+      ],
+      [
+        "soul_rune",
+        4,
+        8
+      ],
+      [
+        "ruby",
+        1,
+        2
+      ],
+      [
+        "diamond",
+        1,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "rift_courier",
+    "name": "Rift Courier",
+    "level": 113,
+    "loot": [
+      [
+        "umbral_essence",
+        1,
+        2
+      ],
+      [
+        "soul_rune",
+        5,
+        10
+      ],
+      [
+        "umbral_bar",
+        1,
+        2
+      ],
+      [
+        "herald_ore",
+        1,
+        2
+      ],
+      [
+        "dragonite_bar",
+        1,
+        2
+      ],
+      [
+        "chapeau_noir",
+        1,
+        1
+      ]
+    ]
+  }
+]

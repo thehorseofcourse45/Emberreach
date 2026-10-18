@@ -89,7 +89,7 @@ func _build() -> void:
 	var sell_all := UIStyle.danger_button("Sell filtered…", "Preview and confirm selling every unprotected item in the current filter")
 	sell_all.pressed.connect(_on_bulk_sell)
 	actions.add_child(sell_all)
-	var bury_all := UIStyle.primary_button("Bury all bones", "Consume every bone in the current filter for Prayer Points")
+	var bury_all := UIStyle.primary_button("Bury all offerings", "Consume every bone and ash pile in the current filter for Prayer Points")
 	bury_all.pressed.connect(_on_bulk_bury)
 	actions.add_child(bury_all)
 	var track_sel := UIStyle.mini_button("Track selection")
@@ -458,7 +458,7 @@ func _item_row(r: Dictionary) -> Control:
 	actions.add_child(_quick_button("Unfavourite" if bool(r["favorite"]) else "Favourite",
 		func(): BankManager.toggle_favorite(item_id)))
 	actions.add_child(_quick_button("Track", func(): Goals.pin("item", item_id)))
-	if str(item.get("item_type", "")) == "bone":
+	if BankManager.is_buryable(item_id):
 		actions.add_child(_quick_button("Bury", func():
 			BankManager.bury_bone(item_id, 1)
 			refresh()))
@@ -488,18 +488,7 @@ func _item_row(r: Dictionary) -> Control:
 			refresh(), "Assign this Storage stack to a combat food slot")
 		equip_food.text = "Equip food…"
 		actions.add_child(equip_food)
-		# The Eat button on the activity strip only ever picks the best food for you. This is how a
-		# player chooses a specific meal, which is the whole point of cooking your own.
-		var eat := _quick_button("Eat 1", func():
-			CombatManager.consume_food(item_id, 100.0, "Ate")
-			refresh())
-		eat.tooltip_text = "Heal %d HP now" % int(item.get("heal_amount", 0))
-		actions.add_child(eat)
-		actions.add_child(_quick_button("Eat all", func():
-			var n: int = BankManager.get_count(item_id)
-			for _i in range(n):
-				CombatManager.consume_food(item_id, 100.0, "Ate")
-			refresh()))
+		# Eating is a Combat-screen action (equipped food slots). Storage only assigns slots.
 	elif str(item.get("item_type", "")) == "equipment":
 		actions.add_child(_quick_button("Equip", func():
 			if not EquipmentManager.equip(item_id):
@@ -555,7 +544,7 @@ func _on_bulk_bury() -> void:
 	var rows: Array = BankManager.sorted_list(_search.text, sort_mode, _ascending, category)
 	var entries: Array = []
 	for r in rows:
-		if str((r["data"] as Dictionary).get("item_type", "")) != "bone":
+		if not BankManager.is_buryable(str(r["item_id"])):
 			continue
 		entries.append(str(r["item_id"]))
 	if entries.is_empty():

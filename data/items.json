@@ -439,7 +439,8 @@
     "item_type": "resource",
     "sell_price": 1,
     "is_stackable": true,
-    "terminal_reason": "fuel byproduct of every firemaking action; 11 routes produce it and it sells for 1 GP"
+    "description": "The ash left by every firemaking action. Worth almost nothing, but it can be buried for Prayer Points.",
+    "prayer_points": 1
   },
   "bones": {
     "id": "bones",
@@ -7332,6 +7333,36 @@
     "scribe_effect": "haste",
     "scribe_amount": 7.5,
     "description": "Use from Inscription. XP tomes grant XP to your selected skill; scrolls apply temporary bonuses."
+  },
+  "scribe_xp_tome_0_scrap": {
+    "id": "scribe_xp_tome_0_scrap",
+    "name": "Scrap XP Tome",
+    "item_type": "consumable",
+    "sell_price": 4,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 12,
+    "description": "Use from Inscription to grant 12 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_xp_tome_0_plain": {
+    "id": "scribe_xp_tome_0_plain",
+    "name": "Plain XP Tome",
+    "item_type": "consumable",
+    "sell_price": 4,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 16,
+    "description": "Use from Inscription to grant 16 XP to your selected skill. Banked XP supplements the main training curve."
+  },
+  "scribe_xp_tome_0_pressed": {
+    "id": "scribe_xp_tome_0_pressed",
+    "name": "Pressed XP Tome",
+    "item_type": "consumable",
+    "sell_price": 4,
+    "is_stackable": true,
+    "scribe_effect": "xp",
+    "scribe_amount": 20,
+    "description": "Use from Inscription to grant 20 XP to your selected skill. Banked XP supplements the main training curve."
   },
   "scribe_xp_tome_1_faded": {
     "id": "scribe_xp_tome_1_faded",

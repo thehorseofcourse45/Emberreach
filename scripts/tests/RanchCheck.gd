@@ -132,7 +132,22 @@ func _ready() -> void:
 	populated._process(0.5)
 	verify(populated._live_pens[0].breed_button.disabled, "unhappy animals cannot breed")
 	rm.pens[0].happiness = 100.0
-	populated.queue_free()
+	# Rare stock breeds into a separate item; the pen picker only listed ordinary ids, so the rare
+	# item could never be spent. The pen row must offer a "Stock rare" path when it is banked.
+	BankManager.add_item(rm.rare_stock_id("hen"), 1)
+	# The panel builds its pen rows on construction, so build it after the stock is banked.
+	var rare_view = load("res://scripts/ui/panels/NewSkillSystems.gd").new()
+	add_child(rare_view)
+	rare_view.set_skill("ranching")
+	await get_tree().process_frame
+	var stocked_rare: bool = false
+	for button in rare_view.find_children("*", "Button", true, false):
+		if str(button.text).begins_with("Stock rare"):
+			button.pressed.emit()
+			stocked_rare = true
+	verify(stocked_rare and "Rare variant" in str(rare_view.find_children("*", "Label", true, false).map(func(l): return l.text)),
+		"banked rare stock can be stocked from the pen row")
+	rare_view.queue_free()
 	await get_tree().process_frame
 	if "--capture" in OS.get_cmdline_user_args():
 		var host = load("res://scripts/ui/MainUI.gd").new()

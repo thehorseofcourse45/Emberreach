@@ -1,5 +1,5 @@
 {
-  "_comment": "Emberreach progression tasks. Objectives are evaluated against authoritative state only (PlayerData.stats lifetime counters or live inventory), never against session-local variables. Objective kinds: have_item (currently held), gain_item (lifetime), skill_level, mastery_level, kill_monster, defeat_boss, complete_dungeon, craft_item (lifetime, player-produced), do_actions (lifetime), reach_region, buy_upgrade, build_structure, gp_total (lifetime earned), unlock_pet, discover_items. Rewards are granted exactly once, on explicit claim. Difficulty (easy|normal|hard|expert|nightmare) drives the Tasks screen sub-tabs.",
+  "_comment": "Emberreach progression tasks. Objectives are evaluated against authoritative state only (PlayerData.stats lifetime counters or live inventory), never against session-local variables. Objective kinds: have_item (currently held), gain_item (lifetime), skill_level, mastery_level, kill_monster, defeat_boss, complete_dungeon, craft_item (lifetime, player-produced), do_actions (lifetime), reach_region, buy_upgrade, build_structure, gp_total (lifetime earned), unlock_pet, discover_items, discover_set, combat_level, chart_hexes. Rewards are granted exactly once, on explicit claim. Difficulty (easy|normal|hard|expert|nightmare) drives the Tasks screen sub-tabs.",
   "first_firewood": {
     "id": "first_firewood",
     "name": "First Firewood",
@@ -13811,6 +13811,18 @@
         "skill_id": "caravaneering",
         "required": 120,
         "label": "Caravaneering 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "riftkeeping",
+        "required": 120,
+        "label": "Riftkeeping 120"
+      },
+      {
+        "kind": "skill_level",
+        "skill_id": "spellweaving",
+        "required": 120,
+        "label": "Spellweaving 120"
       }
     ],
     "reward": {

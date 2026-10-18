@@ -740,7 +740,7 @@ func _run_asset_report() -> void:
 		"sprites/monsters": DataLoader.monsters.keys(),
 		"icons/areas": DataLoader.areas.keys(),
 		"icons/dungeons": DataLoader.dungeons.keys(),
-		"icons/status": ["idle", "ok", "warning", "danger"],
+		"icons/status": ["idle", "playtime", "action_time", "ok", "warning", "danger"],
 	}
 	var lines: Array[String] = ["# Asset status", ""]
 	var present: int = 0
