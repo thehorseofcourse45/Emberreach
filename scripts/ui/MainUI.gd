@@ -582,21 +582,21 @@ func _handle_cli() -> bool:
 		# The runner returns its failure count. Quitting with the default success code after
 		# printing "TESTS FAILED" let a broken run look green to anything that only reads the
 		# process exit status.
-		var failed_some: int = await TestRunner.new().run_some(self, names)
+		var failed_some: int = await load("res://scripts/tests/TestRunner.gd").new().run_some(self, names)
 		get_tree().quit(0 if failed_some == 0 else 1)
 		return true
 	if "--tests" in args:
 		# Awaited: run_all() is a coroutine (the UI suites build nodes across frames). An
 		# un-awaited call would suspend at its first await and get_tree().quit() would then run
 		# before the remaining checks ever executed.
-		var failed_all: int = await TestRunner.new().run_all(self)
+		var failed_all: int = await load("res://scripts/tests/TestRunner.gd").new().run_all(self)
 		get_tree().quit(0 if failed_all == 0 else 1)
 		return true
 	if "--smoke" in args:
 		get_tree().quit(0 if _run_smoke_checks() == 0 else 1)
 		return true
 	if "--selftest" in args:
-		var failed_e2e: int = TestRunner.new().run_end_to_end(self)
+		var failed_e2e: int = load("res://scripts/tests/TestRunner.gd").new().run_end_to_end(self)
 		get_tree().quit(0 if failed_e2e == 0 else 1)
 		return true
 	if "--assetreport" in args:
