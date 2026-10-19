@@ -1,0 +1,3350 @@
+{
+  "families": {
+    "potion_dr": {
+      "tiers": {
+        "1": "potion_dr_1",
+        "2": "potion_dr_2",
+        "3": "potion_dr_3",
+        "4": "potion_dr_4",
+        "5": "potion_dr_5",
+        "6": "potion_dr_6"
+      },
+      "special": false
+    },
+    "potion_mining": {
+      "tiers": {
+        "1": "potion_mining_1",
+        "2": "potion_mining_2",
+        "3": "potion_mining_3",
+        "4": "potion_mining_4",
+        "5": "potion_mining_5",
+        "6": "potion_mining_6"
+      },
+      "special": false
+    },
+    "potion_skilling": {
+      "tiers": {
+        "1": "potion_skilling_1",
+        "2": "potion_skilling_2",
+        "3": "potion_skilling_3",
+        "4": "potion_skilling_4",
+        "5": "potion_skilling_5",
+        "6": "potion_skilling_6"
+      },
+      "special": false
+    },
+    "potion_firemaking": {
+      "tiers": {
+        "1": "potion_firemaking_1",
+        "2": "potion_firemaking_2",
+        "3": "potion_firemaking_3",
+        "4": "potion_firemaking_4",
+        "5": "potion_firemaking_5",
+        "6": "potion_firemaking_6"
+      },
+      "special": false
+    },
+    "echo_inscription": {
+      "tiers": {
+        "1": "echo_inscription",
+        "2": "echo_inscription_2",
+        "3": "echo_inscription_3",
+        "4": "echo_inscription_4",
+        "5": "echo_inscription_5",
+        "6": "echo_inscription_6"
+      },
+      "special": true
+    },
+    "master_echo_loop": {
+      "tiers": {
+        "1": "master_echo_loop",
+        "2": "master_echo_loop_2",
+        "3": "master_echo_loop_3",
+        "4": "master_echo_loop_4",
+        "5": "master_echo_loop_5",
+        "6": "master_echo_loop_6"
+      },
+      "special": true
+    },
+    "blended_weather": {
+      "tiers": {
+        "1": "blended_weather",
+        "2": "blended_weather_2",
+        "3": "blended_weather_3",
+        "4": "blended_weather_4",
+        "5": "blended_weather_5",
+        "6": "blended_weather_6"
+      },
+      "special": true
+    },
+    "finders_fee": {
+      "tiers": {
+        "1": "finders_fee",
+        "2": "finders_fee_2",
+        "3": "finders_fee_3",
+        "4": "finders_fee_4",
+        "5": "finders_fee_5",
+        "6": "finders_fee_6"
+      },
+      "special": true
+    },
+    "flawless_echo": {
+      "tiers": {
+        "1": "flawless_echo",
+        "2": "flawless_echo_2",
+        "3": "flawless_echo_3",
+        "4": "flawless_echo_4",
+        "5": "flawless_echo_5",
+        "6": "flawless_echo_6"
+      },
+      "special": true
+    },
+    "grand_confluence": {
+      "tiers": {
+        "1": "grand_confluence",
+        "2": "grand_confluence_2",
+        "3": "grand_confluence_3",
+        "4": "grand_confluence_4",
+        "5": "grand_confluence_5",
+        "6": "grand_confluence_6"
+      },
+      "special": true
+    },
+    "herald_gate": {
+      "tiers": {
+        "1": "herald_gate",
+        "2": "herald_gate_2",
+        "3": "herald_gate_3",
+        "4": "herald_gate_4",
+        "5": "herald_gate_5",
+        "6": "herald_gate_6"
+      },
+      "special": true
+    },
+    "herald_craft": {
+      "tiers": {
+        "1": "herald_craft",
+        "2": "herald_craft_2",
+        "3": "herald_craft_3",
+        "4": "herald_craft_4",
+        "5": "herald_craft_5",
+        "6": "herald_craft_6"
+      },
+      "special": true
+    },
+    "herald_case": {
+      "tiers": {
+        "1": "herald_case",
+        "2": "herald_case_2",
+        "3": "herald_case_3",
+        "4": "herald_case_4",
+        "5": "herald_case_5",
+        "6": "herald_case_6"
+      },
+      "special": true
+    },
+    "potion_ranching": {
+      "tiers": {
+        "1": "potion_ranching",
+        "2": "potion_ranching_2",
+        "3": "potion_ranching_3",
+        "4": "potion_ranching_4",
+        "5": "potion_ranching_5",
+        "6": "potion_ranching_6"
+      },
+      "special": true
+    },
+    "potion_inscription": {
+      "tiers": {
+        "1": "potion_inscription",
+        "2": "potion_inscription_2",
+        "3": "potion_inscription_3",
+        "4": "potion_inscription_4",
+        "5": "potion_inscription_5",
+        "6": "potion_inscription_6"
+      },
+      "special": true
+    },
+    "potion_engineering": {
+      "tiers": {
+        "1": "potion_engineering",
+        "2": "potion_engineering_2",
+        "3": "potion_engineering_3",
+        "4": "potion_engineering_4",
+        "5": "potion_engineering_5",
+        "6": "potion_engineering_6"
+      },
+      "special": true
+    },
+    "potion_enchanting": {
+      "tiers": {
+        "1": "potion_enchanting",
+        "2": "potion_enchanting_2",
+        "3": "potion_enchanting_3",
+        "4": "potion_enchanting_4",
+        "5": "potion_enchanting_5",
+        "6": "potion_enchanting_6"
+      },
+      "special": true
+    },
+    "potion_dreamwalking": {
+      "tiers": {
+        "1": "potion_dreamwalking",
+        "2": "potion_dreamwalking_2",
+        "3": "potion_dreamwalking_3",
+        "4": "potion_dreamwalking_4",
+        "5": "potion_dreamwalking_5",
+        "6": "potion_dreamwalking_6"
+      },
+      "special": true
+    },
+    "potion_hushroot": {
+      "tiers": {
+        "1": "potion_hushroot",
+        "2": "potion_hushroot_2",
+        "3": "potion_hushroot_3",
+        "4": "potion_hushroot_4",
+        "5": "potion_hushroot_5",
+        "6": "potion_hushroot_6"
+      },
+      "special": true
+    },
+    "potion_herald_bloom": {
+      "tiers": {
+        "1": "potion_herald_bloom",
+        "2": "potion_herald_bloom_2",
+        "3": "potion_herald_bloom_3",
+        "4": "potion_herald_bloom_4",
+        "5": "potion_herald_bloom_5",
+        "6": "potion_herald_bloom_6"
+      },
+      "special": true
+    },
+    "potion_emberbloom": {
+      "tiers": {
+        "1": "potion_emberbloom",
+        "2": "potion_emberbloom_2",
+        "3": "potion_emberbloom_3",
+        "4": "potion_emberbloom_4",
+        "5": "potion_emberbloom_5",
+        "6": "potion_emberbloom_6"
+      },
+      "special": true
+    },
+    "potion_antivenom": {
+      "tiers": {
+        "1": "potion_antivenom",
+        "2": "potion_antivenom_2",
+        "3": "potion_antivenom_3",
+        "4": "potion_antivenom_4",
+        "5": "potion_antivenom_5",
+        "6": "potion_antivenom_6"
+      },
+      "special": true
+    },
+    "potion_caravaneering": {
+      "tiers": {
+        "1": "potion_caravaneering",
+        "2": "potion_caravaneering_2",
+        "3": "potion_caravaneering_3",
+        "4": "potion_caravaneering_4",
+        "5": "potion_caravaneering_5",
+        "6": "potion_caravaneering_6"
+      },
+      "special": true
+    },
+    "potion_fieldhand_tonic": {
+      "tiers": {
+        "1": "potion_fieldhand_tonic",
+        "2": "potion_fieldhand_tonic_2",
+        "3": "potion_fieldhand_tonic_3",
+        "4": "potion_fieldhand_tonic_4",
+        "5": "potion_fieldhand_tonic_5",
+        "6": "potion_fieldhand_tonic_6"
+      },
+      "special": true
+    },
+    "potion_nestkeeper_elixir": {
+      "tiers": {
+        "1": "potion_nestkeeper_elixir",
+        "2": "potion_nestkeeper_elixir_2",
+        "3": "potion_nestkeeper_elixir_3",
+        "4": "potion_nestkeeper_elixir_4",
+        "5": "potion_nestkeeper_elixir_5",
+        "6": "potion_nestkeeper_elixir_6"
+      },
+      "special": true
+    },
+    "potion_veinseeker_tonic": {
+      "tiers": {
+        "1": "potion_veinseeker_tonic",
+        "2": "potion_veinseeker_tonic_2",
+        "3": "potion_veinseeker_tonic_3",
+        "4": "potion_veinseeker_tonic_4",
+        "5": "potion_veinseeker_tonic_5",
+        "6": "potion_veinseeker_tonic_6"
+      },
+      "special": true
+    },
+    "potion_bowyer_focus": {
+      "tiers": {
+        "1": "potion_bowyer_focus",
+        "2": "potion_bowyer_focus_2",
+        "3": "potion_bowyer_focus_3",
+        "4": "potion_bowyer_focus_4",
+        "5": "potion_bowyer_focus_5",
+        "6": "potion_bowyer_focus_6"
+      },
+      "special": true
+    },
+    "potion_stoneward_tonic": {
+      "tiers": {
+        "1": "potion_stoneward_tonic",
+        "2": "potion_stoneward_tonic_2",
+        "3": "potion_stoneward_tonic_3",
+        "4": "potion_stoneward_tonic_4",
+        "5": "potion_stoneward_tonic_5",
+        "6": "potion_stoneward_tonic_6"
+      },
+      "special": true
+    },
+    "potion_gearsmith_elixir": {
+      "tiers": {
+        "1": "potion_gearsmith_elixir",
+        "2": "potion_gearsmith_elixir_2",
+        "3": "potion_gearsmith_elixir_3",
+        "4": "potion_gearsmith_elixir_4",
+        "5": "potion_gearsmith_elixir_5",
+        "6": "potion_gearsmith_elixir_6"
+      },
+      "special": true
+    },
+    "potion_rootkeeper_tonic": {
+      "tiers": {
+        "1": "potion_rootkeeper_tonic",
+        "2": "potion_rootkeeper_tonic_2",
+        "3": "potion_rootkeeper_tonic_3",
+        "4": "potion_rootkeeper_tonic_4",
+        "5": "potion_rootkeeper_tonic_5",
+        "6": "potion_rootkeeper_tonic_6"
+      },
+      "special": true
+    },
+    "potion_moonlit_insight": {
+      "tiers": {
+        "1": "potion_moonlit_insight",
+        "2": "potion_moonlit_insight_2",
+        "3": "potion_moonlit_insight_3",
+        "4": "potion_moonlit_insight_4",
+        "5": "potion_moonlit_insight_5",
+        "6": "potion_moonlit_insight_6"
+      },
+      "special": true
+    },
+    "potion_stormrunner_elixir": {
+      "tiers": {
+        "1": "potion_stormrunner_elixir",
+        "2": "potion_stormrunner_elixir_2",
+        "3": "potion_stormrunner_elixir_3",
+        "4": "potion_stormrunner_elixir_4",
+        "5": "potion_stormrunner_elixir_5",
+        "6": "potion_stormrunner_elixir_6"
+      },
+      "special": true
+    },
+    "potion_riftward_tonic": {
+      "tiers": {
+        "1": "potion_riftward_tonic",
+        "2": "potion_riftward_tonic_2",
+        "3": "potion_riftward_tonic_3",
+        "4": "potion_riftward_tonic_4",
+        "5": "potion_riftward_tonic_5",
+        "6": "potion_riftward_tonic_6"
+      },
+      "special": true
+    },
+    "potion_astral_lucidity": {
+      "tiers": {
+        "1": "potion_astral_lucidity",
+        "2": "potion_astral_lucidity_2",
+        "3": "potion_astral_lucidity_3",
+        "4": "potion_astral_lucidity_4",
+        "5": "potion_astral_lucidity_5",
+        "6": "potion_astral_lucidity_6"
+      },
+      "special": true
+    },
+    "potion_dawnweaver_elixir": {
+      "tiers": {
+        "1": "potion_dawnweaver_elixir",
+        "2": "potion_dawnweaver_elixir_2",
+        "3": "potion_dawnweaver_elixir_3",
+        "4": "potion_dawnweaver_elixir_4",
+        "5": "potion_dawnweaver_elixir_5",
+        "6": "potion_dawnweaver_elixir_6"
+      },
+      "special": true
+    },
+    "potion_lumberjack": {
+      "tiers": {
+        "1": "potion_lumberjack_1",
+        "2": "potion_lumberjack_2",
+        "3": "potion_lumberjack_3",
+        "4": "potion_lumberjack_4",
+        "5": "potion_lumberjack_5",
+        "6": "potion_lumberjack_6"
+      },
+      "special": false
+    },
+    "potion_tidecatch": {
+      "tiers": {
+        "1": "potion_tidecatch_1",
+        "2": "potion_tidecatch_2",
+        "3": "potion_tidecatch_3",
+        "4": "potion_tidecatch_4",
+        "5": "potion_tidecatch_5",
+        "6": "potion_tidecatch_6"
+      },
+      "special": false
+    },
+    "potion_forgekeeper": {
+      "tiers": {
+        "1": "potion_forgekeeper_1",
+        "2": "potion_forgekeeper_2",
+        "3": "potion_forgekeeper_3",
+        "4": "potion_forgekeeper_4",
+        "5": "potion_forgekeeper_5",
+        "6": "potion_forgekeeper_6"
+      },
+      "special": false
+    },
+    "potion_artisan": {
+      "tiers": {
+        "1": "potion_artisan_1",
+        "2": "potion_artisan_2",
+        "3": "potion_artisan_3",
+        "4": "potion_artisan_4",
+        "5": "potion_artisan_5",
+        "6": "potion_artisan_6"
+      },
+      "special": false
+    }
+  },
+  "recipes": [
+    {
+      "id": "brew_potion_mining_6",
+      "name": "Brew Delver's Draught VI",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_mining_5": 1,
+        "barrentoe": 6
+      },
+      "output_items": {
+        "potion_mining_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_skilling_6",
+      "name": "Brew Polymath Tonic VI",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_skilling_5": 1,
+        "barrentoe": 6
+      },
+      "output_items": {
+        "potion_skilling_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_firemaking_6",
+      "name": "Brew Banked Coals VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_firemaking_5": 1,
+        "barrentoe": 6
+      },
+      "output_items": {
+        "potion_firemaking_6": 1
+      }
+    },
+    {
+      "id": "brew_echo_inscription_2",
+      "name": "Brew Echoed Inscription II",
+      "level_required": 64,
+      "base_interval": 1.7,
+      "base_xp": 86,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "echo_inscription": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "echo_inscription_2": 1
+      }
+    },
+    {
+      "id": "brew_echo_inscription_3",
+      "name": "Brew Echoed Inscription III",
+      "level_required": 78,
+      "base_interval": 1.7,
+      "base_xp": 116,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "echo_inscription_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "echo_inscription_3": 1
+      }
+    },
+    {
+      "id": "brew_echo_inscription_4",
+      "name": "Brew Echoed Inscription IV",
+      "level_required": 92,
+      "base_interval": 1.7,
+      "base_xp": 144,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "echo_inscription_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "echo_inscription_4": 1
+      }
+    },
+    {
+      "id": "brew_echo_inscription_5",
+      "name": "Brew Echoed Inscription V",
+      "level_required": 106,
+      "base_interval": 1.7,
+      "base_xp": 186,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "echo_inscription_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "echo_inscription_5": 1
+      }
+    },
+    {
+      "id": "brew_echo_inscription_6",
+      "name": "Brew Echoed Inscription VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "echo_inscription_5": 1,
+        "moon_lotus": 6
+      },
+      "output_items": {
+        "echo_inscription_6": 1
+      }
+    },
+    {
+      "id": "brew_master_echo_loop_2",
+      "name": "Brew Master Loop II",
+      "level_required": 80,
+      "base_interval": 1.7,
+      "base_xp": 120,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "master_echo_loop": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "master_echo_loop_2": 1
+      }
+    },
+    {
+      "id": "brew_master_echo_loop_3",
+      "name": "Brew Master Loop III",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "master_echo_loop_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "master_echo_loop_3": 1
+      }
+    },
+    {
+      "id": "brew_master_echo_loop_4",
+      "name": "Brew Master Loop IV",
+      "level_required": 100,
+      "base_interval": 1.7,
+      "base_xp": 165,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "master_echo_loop_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "master_echo_loop_4": 1
+      }
+    },
+    {
+      "id": "brew_master_echo_loop_5",
+      "name": "Brew Master Loop V",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "master_echo_loop_4": 1,
+        "storm_lavender": 5
+      },
+      "output_items": {
+        "master_echo_loop_5": 1
+      }
+    },
+    {
+      "id": "brew_master_echo_loop_6",
+      "name": "Brew Master Loop VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "master_echo_loop_5": 1,
+        "astral_fennel": 6
+      },
+      "output_items": {
+        "master_echo_loop_6": 1
+      }
+    },
+    {
+      "id": "brew_blended_weather_2",
+      "name": "Brew Blended Weather II",
+      "level_required": 80,
+      "base_interval": 1.7,
+      "base_xp": 120,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "blended_weather": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "blended_weather_2": 1
+      }
+    },
+    {
+      "id": "brew_blended_weather_3",
+      "name": "Brew Blended Weather III",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "blended_weather_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "blended_weather_3": 1
+      }
+    },
+    {
+      "id": "brew_blended_weather_4",
+      "name": "Brew Blended Weather IV",
+      "level_required": 100,
+      "base_interval": 1.7,
+      "base_xp": 165,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "blended_weather_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "blended_weather_4": 1
+      }
+    },
+    {
+      "id": "brew_blended_weather_5",
+      "name": "Brew Blended Weather V",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "blended_weather_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "blended_weather_5": 1
+      }
+    },
+    {
+      "id": "brew_blended_weather_6",
+      "name": "Brew Blended Weather VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "blended_weather_5": 1,
+        "dawn_orchid": 6
+      },
+      "output_items": {
+        "blended_weather_6": 1
+      }
+    },
+    {
+      "id": "brew_finders_fee_2",
+      "name": "Brew Finder's Fee II",
+      "level_required": 40,
+      "base_interval": 1.7,
+      "base_xp": 59,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "finders_fee": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "finders_fee_2": 1
+      }
+    },
+    {
+      "id": "brew_finders_fee_3",
+      "name": "Brew Finder's Fee III",
+      "level_required": 60,
+      "base_interval": 1.7,
+      "base_xp": 79,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "finders_fee_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "finders_fee_3": 1
+      }
+    },
+    {
+      "id": "brew_finders_fee_4",
+      "name": "Brew Finder's Fee IV",
+      "level_required": 80,
+      "base_interval": 1.7,
+      "base_xp": 120,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "finders_fee_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "finders_fee_4": 1
+      }
+    },
+    {
+      "id": "brew_finders_fee_5",
+      "name": "Brew Finder's Fee V",
+      "level_required": 100,
+      "base_interval": 1.7,
+      "base_xp": 165,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "finders_fee_4": 1,
+        "moon_lotus": 5
+      },
+      "output_items": {
+        "finders_fee_5": 1
+      }
+    },
+    {
+      "id": "brew_finders_fee_6",
+      "name": "Brew Finder's Fee VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "finders_fee_5": 1,
+        "storm_lavender": 6
+      },
+      "output_items": {
+        "finders_fee_6": 1
+      }
+    },
+    {
+      "id": "brew_flawless_echo_2",
+      "name": "Brew Flawless Echo II",
+      "level_required": 92,
+      "base_interval": 1.7,
+      "base_xp": 144,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "flawless_echo": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "flawless_echo_2": 1
+      }
+    },
+    {
+      "id": "brew_flawless_echo_3",
+      "name": "Brew Flawless Echo III",
+      "level_required": 99,
+      "base_interval": 1.7,
+      "base_xp": 162,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "flawless_echo_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "flawless_echo_3": 1
+      }
+    },
+    {
+      "id": "brew_flawless_echo_4",
+      "name": "Brew Flawless Echo IV",
+      "level_required": 106,
+      "base_interval": 1.7,
+      "base_xp": 186,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "flawless_echo_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "flawless_echo_4": 1
+      }
+    },
+    {
+      "id": "brew_flawless_echo_5",
+      "name": "Brew Flawless Echo V",
+      "level_required": 113,
+      "base_interval": 1.7,
+      "base_xp": 209,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "flawless_echo_4": 1,
+        "night_pepper": 5
+      },
+      "output_items": {
+        "flawless_echo_5": 1
+      }
+    },
+    {
+      "id": "brew_flawless_echo_6",
+      "name": "Brew Flawless Echo VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "flawless_echo_5": 1,
+        "sageberry": 6
+      },
+      "output_items": {
+        "flawless_echo_6": 1
+      }
+    },
+    {
+      "id": "brew_grand_confluence_2",
+      "name": "Brew Grand Confluence II",
+      "level_required": 100,
+      "base_interval": 1.7,
+      "base_xp": 165,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "grand_confluence": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "grand_confluence_2": 1
+      }
+    },
+    {
+      "id": "brew_grand_confluence_3",
+      "name": "Brew Grand Confluence III",
+      "level_required": 105,
+      "base_interval": 1.7,
+      "base_xp": 182,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "grand_confluence_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "grand_confluence_3": 1
+      }
+    },
+    {
+      "id": "brew_grand_confluence_4",
+      "name": "Brew Grand Confluence IV",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "grand_confluence_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "grand_confluence_4": 1
+      }
+    },
+    {
+      "id": "brew_grand_confluence_5",
+      "name": "Brew Grand Confluence V",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "grand_confluence_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "grand_confluence_5": 1
+      }
+    },
+    {
+      "id": "brew_grand_confluence_6",
+      "name": "Brew Grand Confluence VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "grand_confluence_5": 1,
+        "astral_fennel": 6
+      },
+      "output_items": {
+        "grand_confluence_6": 1
+      }
+    },
+    {
+      "id": "brew_herald_gate_2",
+      "name": "Brew Herald Gate II",
+      "level_required": 112,
+      "base_interval": 1.7,
+      "base_xp": 206,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_gate": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "herald_gate_2": 1
+      }
+    },
+    {
+      "id": "brew_herald_gate_3",
+      "name": "Brew Herald Gate III",
+      "level_required": 114,
+      "base_interval": 1.7,
+      "base_xp": 212,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_gate_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "herald_gate_3": 1
+      }
+    },
+    {
+      "id": "brew_herald_gate_4",
+      "name": "Brew Herald Gate IV",
+      "level_required": 116,
+      "base_interval": 1.7,
+      "base_xp": 218,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_gate_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "herald_gate_4": 1
+      }
+    },
+    {
+      "id": "brew_herald_gate_5",
+      "name": "Brew Herald Gate V",
+      "level_required": 118,
+      "base_interval": 1.7,
+      "base_xp": 224,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_gate_4": 1,
+        "blood_ginger": 5
+      },
+      "output_items": {
+        "herald_gate_5": 1
+      }
+    },
+    {
+      "id": "brew_herald_gate_6",
+      "name": "Brew Herald Gate VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_gate_5": 1,
+        "dawn_orchid": 6
+      },
+      "output_items": {
+        "herald_gate_6": 1
+      }
+    },
+    {
+      "id": "brew_herald_craft_2",
+      "name": "Brew Herald Craft II",
+      "level_required": 108,
+      "base_interval": 1.7,
+      "base_xp": 193,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_craft": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "herald_craft_2": 1
+      }
+    },
+    {
+      "id": "brew_herald_craft_3",
+      "name": "Brew Herald Craft III",
+      "level_required": 111,
+      "base_interval": 1.7,
+      "base_xp": 203,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_craft_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "herald_craft_3": 1
+      }
+    },
+    {
+      "id": "brew_herald_craft_4",
+      "name": "Brew Herald Craft IV",
+      "level_required": 114,
+      "base_interval": 1.7,
+      "base_xp": 212,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_craft_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "herald_craft_4": 1
+      }
+    },
+    {
+      "id": "brew_herald_craft_5",
+      "name": "Brew Herald Craft V",
+      "level_required": 117,
+      "base_interval": 1.7,
+      "base_xp": 221,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_craft_4": 1,
+        "moon_lotus": 5
+      },
+      "output_items": {
+        "herald_craft_5": 1
+      }
+    },
+    {
+      "id": "brew_herald_craft_6",
+      "name": "Brew Herald Craft VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_craft_5": 1,
+        "storm_lavender": 6
+      },
+      "output_items": {
+        "herald_craft_6": 1
+      }
+    },
+    {
+      "id": "brew_herald_case_2",
+      "name": "Brew Herald Case II",
+      "level_required": 100,
+      "base_interval": 1.7,
+      "base_xp": 165,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_case": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "herald_case_2": 1
+      }
+    },
+    {
+      "id": "brew_herald_case_3",
+      "name": "Brew Herald Case III",
+      "level_required": 105,
+      "base_interval": 1.7,
+      "base_xp": 182,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_case_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "herald_case_3": 1
+      }
+    },
+    {
+      "id": "brew_herald_case_4",
+      "name": "Brew Herald Case IV",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_case_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "herald_case_4": 1
+      }
+    },
+    {
+      "id": "brew_herald_case_5",
+      "name": "Brew Herald Case V",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_case_4": 1,
+        "night_pepper": 5
+      },
+      "output_items": {
+        "herald_case_5": 1
+      }
+    },
+    {
+      "id": "brew_herald_case_6",
+      "name": "Brew Herald Case VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "herald_case_5": 1,
+        "sageberry": 6
+      },
+      "output_items": {
+        "herald_case_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_ranching_2",
+      "name": "Brew Rancher's Draught II",
+      "level_required": 44,
+      "base_interval": 1.7,
+      "base_xp": 63,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_ranching": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_ranching_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_ranching_3",
+      "name": "Brew Rancher's Draught III",
+      "level_required": 63,
+      "base_interval": 1.7,
+      "base_xp": 84,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_ranching_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_ranching_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_ranching_4",
+      "name": "Brew Rancher's Draught IV",
+      "level_required": 82,
+      "base_interval": 1.7,
+      "base_xp": 124,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_ranching_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_ranching_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_ranching_5",
+      "name": "Brew Rancher's Draught V",
+      "level_required": 101,
+      "base_interval": 1.7,
+      "base_xp": 168,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_ranching_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "potion_ranching_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_ranching_6",
+      "name": "Brew Rancher's Draught VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_ranching_5": 1,
+        "astral_fennel": 6
+      },
+      "output_items": {
+        "potion_ranching_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_inscription_2",
+      "name": "Brew Illuminating Potion II",
+      "level_required": 52,
+      "base_interval": 1.7,
+      "base_xp": 71,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_inscription": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_inscription_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_inscription_3",
+      "name": "Brew Illuminating Potion III",
+      "level_required": 69,
+      "base_interval": 1.7,
+      "base_xp": 97,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_inscription_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_inscription_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_inscription_4",
+      "name": "Brew Illuminating Potion IV",
+      "level_required": 86,
+      "base_interval": 1.7,
+      "base_xp": 132,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_inscription_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_inscription_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_inscription_5",
+      "name": "Brew Illuminating Potion V",
+      "level_required": 103,
+      "base_interval": 1.7,
+      "base_xp": 176,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_inscription_4": 1,
+        "blood_ginger": 5
+      },
+      "output_items": {
+        "potion_inscription_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_inscription_6",
+      "name": "Brew Illuminating Potion VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_inscription_5": 1,
+        "dawn_orchid": 6
+      },
+      "output_items": {
+        "potion_inscription_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_engineering_2",
+      "name": "Brew Lubricating Potion II",
+      "level_required": 60,
+      "base_interval": 1.7,
+      "base_xp": 79,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_engineering": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_engineering_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_engineering_3",
+      "name": "Brew Lubricating Potion III",
+      "level_required": 75,
+      "base_interval": 1.7,
+      "base_xp": 110,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_engineering_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_engineering_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_engineering_4",
+      "name": "Brew Lubricating Potion IV",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_engineering_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_engineering_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_engineering_5",
+      "name": "Brew Lubricating Potion V",
+      "level_required": 105,
+      "base_interval": 1.7,
+      "base_xp": 182,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_engineering_4": 1,
+        "moon_lotus": 5
+      },
+      "output_items": {
+        "potion_engineering_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_engineering_6",
+      "name": "Brew Lubricating Potion VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_engineering_5": 1,
+        "storm_lavender": 6
+      },
+      "output_items": {
+        "potion_engineering_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_enchanting_2",
+      "name": "Brew Attunement Potion II",
+      "level_required": 68,
+      "base_interval": 1.7,
+      "base_xp": 95,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_enchanting": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_enchanting_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_enchanting_3",
+      "name": "Brew Attunement Potion III",
+      "level_required": 81,
+      "base_interval": 1.7,
+      "base_xp": 122,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_enchanting_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_enchanting_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_enchanting_4",
+      "name": "Brew Attunement Potion IV",
+      "level_required": 94,
+      "base_interval": 1.7,
+      "base_xp": 148,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_enchanting_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_enchanting_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_enchanting_5",
+      "name": "Brew Attunement Potion V",
+      "level_required": 107,
+      "base_interval": 1.7,
+      "base_xp": 190,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_enchanting_4": 1,
+        "night_pepper": 5
+      },
+      "output_items": {
+        "potion_enchanting_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_enchanting_6",
+      "name": "Brew Attunement Potion VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_enchanting_5": 1,
+        "sageberry": 6
+      },
+      "output_items": {
+        "potion_enchanting_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_dreamwalking_2",
+      "name": "Brew Lucid Draught II",
+      "level_required": 76,
+      "base_interval": 1.7,
+      "base_xp": 112,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dreamwalking": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_dreamwalking_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_dreamwalking_3",
+      "name": "Brew Lucid Draught III",
+      "level_required": 87,
+      "base_interval": 1.7,
+      "base_xp": 134,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dreamwalking_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_dreamwalking_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_dreamwalking_4",
+      "name": "Brew Lucid Draught IV",
+      "level_required": 98,
+      "base_interval": 1.7,
+      "base_xp": 159,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dreamwalking_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_dreamwalking_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_dreamwalking_5",
+      "name": "Brew Lucid Draught V",
+      "level_required": 109,
+      "base_interval": 1.7,
+      "base_xp": 196,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dreamwalking_4": 1,
+        "oxilyme": 5
+      },
+      "output_items": {
+        "potion_dreamwalking_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_dreamwalking_6",
+      "name": "Brew Lucid Draught VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dreamwalking_5": 1,
+        "astral_fennel": 6
+      },
+      "output_items": {
+        "potion_dreamwalking_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_hushroot_2",
+      "name": "Brew Hushroot Draught II",
+      "level_required": 52,
+      "base_interval": 1.7,
+      "base_xp": 71,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_hushroot": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_hushroot_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_hushroot_3",
+      "name": "Brew Hushroot Draught III",
+      "level_required": 69,
+      "base_interval": 1.7,
+      "base_xp": 97,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_hushroot_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_hushroot_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_hushroot_4",
+      "name": "Brew Hushroot Draught IV",
+      "level_required": 86,
+      "base_interval": 1.7,
+      "base_xp": 132,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_hushroot_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_hushroot_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_hushroot_5",
+      "name": "Brew Hushroot Draught V",
+      "level_required": 103,
+      "base_interval": 1.7,
+      "base_xp": 176,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_hushroot_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "potion_hushroot_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_hushroot_6",
+      "name": "Brew Hushroot Draught VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_hushroot_5": 1,
+        "dawn_orchid": 6
+      },
+      "output_items": {
+        "potion_hushroot_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_herald_bloom_2",
+      "name": "Brew Herald Bloom Tonic II",
+      "level_required": 100,
+      "base_interval": 1.7,
+      "base_xp": 165,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_herald_bloom": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_herald_bloom_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_herald_bloom_3",
+      "name": "Brew Herald Bloom Tonic III",
+      "level_required": 105,
+      "base_interval": 1.7,
+      "base_xp": 182,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_herald_bloom_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_herald_bloom_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_herald_bloom_4",
+      "name": "Brew Herald Bloom Tonic IV",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_herald_bloom_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_herald_bloom_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_herald_bloom_5",
+      "name": "Brew Herald Bloom Tonic V",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_herald_bloom_4": 1,
+        "glass_lily": 5
+      },
+      "output_items": {
+        "potion_herald_bloom_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_herald_bloom_6",
+      "name": "Brew Herald Bloom Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_herald_bloom_5": 1,
+        "blood_ginger": 6
+      },
+      "output_items": {
+        "potion_herald_bloom_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_emberbloom_2",
+      "name": "Brew Emberbloom Tonic II",
+      "level_required": 76,
+      "base_interval": 1.7,
+      "base_xp": 112,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_emberbloom": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_emberbloom_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_emberbloom_3",
+      "name": "Brew Emberbloom Tonic III",
+      "level_required": 87,
+      "base_interval": 1.7,
+      "base_xp": 134,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_emberbloom_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_emberbloom_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_emberbloom_4",
+      "name": "Brew Emberbloom Tonic IV",
+      "level_required": 98,
+      "base_interval": 1.7,
+      "base_xp": 159,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_emberbloom_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_emberbloom_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_emberbloom_5",
+      "name": "Brew Emberbloom Tonic V",
+      "level_required": 109,
+      "base_interval": 1.7,
+      "base_xp": 196,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_emberbloom_4": 1,
+        "moon_lotus": 5
+      },
+      "output_items": {
+        "potion_emberbloom_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_emberbloom_6",
+      "name": "Brew Emberbloom Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_emberbloom_5": 1,
+        "storm_lavender": 6
+      },
+      "output_items": {
+        "potion_emberbloom_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_antivenom_2",
+      "name": "Brew Antivenom Draught II",
+      "level_required": 64,
+      "base_interval": 1.7,
+      "base_xp": 86,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_antivenom": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_antivenom_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_antivenom_3",
+      "name": "Brew Antivenom Draught III",
+      "level_required": 78,
+      "base_interval": 1.7,
+      "base_xp": 116,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_antivenom_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_antivenom_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_antivenom_4",
+      "name": "Brew Antivenom Draught IV",
+      "level_required": 92,
+      "base_interval": 1.7,
+      "base_xp": 144,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_antivenom_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_antivenom_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_antivenom_5",
+      "name": "Brew Antivenom Draught V",
+      "level_required": 106,
+      "base_interval": 1.7,
+      "base_xp": 186,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_antivenom_4": 1,
+        "night_pepper": 5
+      },
+      "output_items": {
+        "potion_antivenom_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_antivenom_6",
+      "name": "Brew Antivenom Draught VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_antivenom_5": 1,
+        "sageberry": 6
+      },
+      "output_items": {
+        "potion_antivenom_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_caravaneering_2",
+      "name": "Brew Merchant's Tonic II",
+      "level_required": 68,
+      "base_interval": 1.7,
+      "base_xp": 95,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_caravaneering": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_caravaneering_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_caravaneering_3",
+      "name": "Brew Merchant's Tonic III",
+      "level_required": 81,
+      "base_interval": 1.7,
+      "base_xp": 122,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_caravaneering_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_caravaneering_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_caravaneering_4",
+      "name": "Brew Merchant's Tonic IV",
+      "level_required": 94,
+      "base_interval": 1.7,
+      "base_xp": 148,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_caravaneering_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_caravaneering_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_caravaneering_5",
+      "name": "Brew Merchant's Tonic V",
+      "level_required": 107,
+      "base_interval": 1.7,
+      "base_xp": 190,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_caravaneering_4": 1,
+        "oxilyme": 5
+      },
+      "output_items": {
+        "potion_caravaneering_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_caravaneering_6",
+      "name": "Brew Merchant's Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_caravaneering_5": 1,
+        "astral_fennel": 6
+      },
+      "output_items": {
+        "potion_caravaneering_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_fieldhand_tonic_2",
+      "name": "Brew Fieldhand Tonic II",
+      "level_required": 28,
+      "base_interval": 1.7,
+      "base_xp": 47,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_fieldhand_tonic": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_fieldhand_tonic_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_fieldhand_tonic_3",
+      "name": "Brew Fieldhand Tonic III",
+      "level_required": 51,
+      "base_interval": 1.7,
+      "base_xp": 70,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_fieldhand_tonic_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_fieldhand_tonic_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_fieldhand_tonic_4",
+      "name": "Brew Fieldhand Tonic IV",
+      "level_required": 74,
+      "base_interval": 1.7,
+      "base_xp": 108,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_fieldhand_tonic_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_fieldhand_tonic_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_fieldhand_tonic_5",
+      "name": "Brew Fieldhand Tonic V",
+      "level_required": 97,
+      "base_interval": 1.7,
+      "base_xp": 156,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_fieldhand_tonic_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "potion_fieldhand_tonic_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_fieldhand_tonic_6",
+      "name": "Brew Fieldhand Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_fieldhand_tonic_5": 1,
+        "dawn_orchid": 6
+      },
+      "output_items": {
+        "potion_fieldhand_tonic_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_nestkeeper_elixir_2",
+      "name": "Brew Nestkeeper Elixir II",
+      "level_required": 34,
+      "base_interval": 1.7,
+      "base_xp": 53,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_nestkeeper_elixir": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_nestkeeper_elixir_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_nestkeeper_elixir_3",
+      "name": "Brew Nestkeeper Elixir III",
+      "level_required": 55,
+      "base_interval": 1.7,
+      "base_xp": 74,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_nestkeeper_elixir_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_nestkeeper_elixir_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_nestkeeper_elixir_4",
+      "name": "Brew Nestkeeper Elixir IV",
+      "level_required": 77,
+      "base_interval": 1.7,
+      "base_xp": 114,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_nestkeeper_elixir_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_nestkeeper_elixir_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_nestkeeper_elixir_5",
+      "name": "Brew Nestkeeper Elixir V",
+      "level_required": 98,
+      "base_interval": 1.7,
+      "base_xp": 159,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_nestkeeper_elixir_4": 1,
+        "glass_lily": 5
+      },
+      "output_items": {
+        "potion_nestkeeper_elixir_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_nestkeeper_elixir_6",
+      "name": "Brew Nestkeeper Elixir VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_nestkeeper_elixir_5": 1,
+        "blood_ginger": 6
+      },
+      "output_items": {
+        "potion_nestkeeper_elixir_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_veinseeker_tonic_2",
+      "name": "Brew Veinseeker Tonic II",
+      "level_required": 42,
+      "base_interval": 1.7,
+      "base_xp": 61,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_veinseeker_tonic": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_veinseeker_tonic_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_veinseeker_tonic_3",
+      "name": "Brew Veinseeker Tonic III",
+      "level_required": 61,
+      "base_interval": 1.7,
+      "base_xp": 80,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_veinseeker_tonic_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_veinseeker_tonic_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_veinseeker_tonic_4",
+      "name": "Brew Veinseeker Tonic IV",
+      "level_required": 81,
+      "base_interval": 1.7,
+      "base_xp": 122,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_veinseeker_tonic_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_veinseeker_tonic_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_veinseeker_tonic_5",
+      "name": "Brew Veinseeker Tonic V",
+      "level_required": 100,
+      "base_interval": 1.7,
+      "base_xp": 165,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_veinseeker_tonic_4": 1,
+        "moon_lotus": 5
+      },
+      "output_items": {
+        "potion_veinseeker_tonic_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_veinseeker_tonic_6",
+      "name": "Brew Veinseeker Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_veinseeker_tonic_5": 1,
+        "storm_lavender": 6
+      },
+      "output_items": {
+        "potion_veinseeker_tonic_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_bowyer_focus_2",
+      "name": "Brew Bowyer Focus II",
+      "level_required": 50,
+      "base_interval": 1.7,
+      "base_xp": 69,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_bowyer_focus": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_bowyer_focus_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_bowyer_focus_3",
+      "name": "Brew Bowyer Focus III",
+      "level_required": 67,
+      "base_interval": 1.7,
+      "base_xp": 93,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_bowyer_focus_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_bowyer_focus_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_bowyer_focus_4",
+      "name": "Brew Bowyer Focus IV",
+      "level_required": 85,
+      "base_interval": 1.7,
+      "base_xp": 130,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_bowyer_focus_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_bowyer_focus_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_bowyer_focus_5",
+      "name": "Brew Bowyer Focus V",
+      "level_required": 102,
+      "base_interval": 1.7,
+      "base_xp": 172,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_bowyer_focus_4": 1,
+        "night_pepper": 5
+      },
+      "output_items": {
+        "potion_bowyer_focus_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_bowyer_focus_6",
+      "name": "Brew Bowyer Focus VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_bowyer_focus_5": 1,
+        "sageberry": 6
+      },
+      "output_items": {
+        "potion_bowyer_focus_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_stoneward_tonic_2",
+      "name": "Brew Stoneward Tonic II",
+      "level_required": 58,
+      "base_interval": 1.7,
+      "base_xp": 77,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stoneward_tonic": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_stoneward_tonic_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_stoneward_tonic_3",
+      "name": "Brew Stoneward Tonic III",
+      "level_required": 73,
+      "base_interval": 1.7,
+      "base_xp": 106,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stoneward_tonic_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_stoneward_tonic_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_stoneward_tonic_4",
+      "name": "Brew Stoneward Tonic IV",
+      "level_required": 89,
+      "base_interval": 1.7,
+      "base_xp": 138,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stoneward_tonic_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_stoneward_tonic_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_stoneward_tonic_5",
+      "name": "Brew Stoneward Tonic V",
+      "level_required": 104,
+      "base_interval": 1.7,
+      "base_xp": 179,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stoneward_tonic_4": 1,
+        "oxilyme": 5
+      },
+      "output_items": {
+        "potion_stoneward_tonic_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_stoneward_tonic_6",
+      "name": "Brew Stoneward Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stoneward_tonic_5": 1,
+        "astral_fennel": 6
+      },
+      "output_items": {
+        "potion_stoneward_tonic_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_gearsmith_elixir_2",
+      "name": "Brew Gearsmith Elixir II",
+      "level_required": 66,
+      "base_interval": 1.7,
+      "base_xp": 91,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_gearsmith_elixir": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_gearsmith_elixir_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_gearsmith_elixir_3",
+      "name": "Brew Gearsmith Elixir III",
+      "level_required": 79,
+      "base_interval": 1.7,
+      "base_xp": 118,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_gearsmith_elixir_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_gearsmith_elixir_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_gearsmith_elixir_4",
+      "name": "Brew Gearsmith Elixir IV",
+      "level_required": 93,
+      "base_interval": 1.7,
+      "base_xp": 146,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_gearsmith_elixir_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_gearsmith_elixir_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_gearsmith_elixir_5",
+      "name": "Brew Gearsmith Elixir V",
+      "level_required": 106,
+      "base_interval": 1.7,
+      "base_xp": 186,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_gearsmith_elixir_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "potion_gearsmith_elixir_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_gearsmith_elixir_6",
+      "name": "Brew Gearsmith Elixir VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_gearsmith_elixir_5": 1,
+        "dawn_orchid": 6
+      },
+      "output_items": {
+        "potion_gearsmith_elixir_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_rootkeeper_tonic_2",
+      "name": "Brew Rootkeeper Tonic II",
+      "level_required": 74,
+      "base_interval": 1.7,
+      "base_xp": 108,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_rootkeeper_tonic": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_rootkeeper_tonic_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_rootkeeper_tonic_3",
+      "name": "Brew Rootkeeper Tonic III",
+      "level_required": 85,
+      "base_interval": 1.7,
+      "base_xp": 130,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_rootkeeper_tonic_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_rootkeeper_tonic_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_rootkeeper_tonic_4",
+      "name": "Brew Rootkeeper Tonic IV",
+      "level_required": 97,
+      "base_interval": 1.7,
+      "base_xp": 156,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_rootkeeper_tonic_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_rootkeeper_tonic_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_rootkeeper_tonic_5",
+      "name": "Brew Rootkeeper Tonic V",
+      "level_required": 108,
+      "base_interval": 1.7,
+      "base_xp": 193,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_rootkeeper_tonic_4": 1,
+        "glass_lily": 5
+      },
+      "output_items": {
+        "potion_rootkeeper_tonic_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_rootkeeper_tonic_6",
+      "name": "Brew Rootkeeper Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_rootkeeper_tonic_5": 1,
+        "blood_ginger": 6
+      },
+      "output_items": {
+        "potion_rootkeeper_tonic_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_moonlit_insight_2",
+      "name": "Brew Moonlit Insight II",
+      "level_required": 82,
+      "base_interval": 1.7,
+      "base_xp": 124,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_moonlit_insight": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_moonlit_insight_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_moonlit_insight_3",
+      "name": "Brew Moonlit Insight III",
+      "level_required": 91,
+      "base_interval": 1.7,
+      "base_xp": 142,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_moonlit_insight_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_moonlit_insight_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_moonlit_insight_4",
+      "name": "Brew Moonlit Insight IV",
+      "level_required": 101,
+      "base_interval": 1.7,
+      "base_xp": 168,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_moonlit_insight_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_moonlit_insight_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_moonlit_insight_5",
+      "name": "Brew Moonlit Insight V",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_moonlit_insight_4": 1,
+        "moon_lotus": 5
+      },
+      "output_items": {
+        "potion_moonlit_insight_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_moonlit_insight_6",
+      "name": "Brew Moonlit Insight VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_moonlit_insight_5": 1,
+        "storm_lavender": 6
+      },
+      "output_items": {
+        "potion_moonlit_insight_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_stormrunner_elixir_2",
+      "name": "Brew Stormrunner Elixir II",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stormrunner_elixir": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_stormrunner_elixir_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_stormrunner_elixir_3",
+      "name": "Brew Stormrunner Elixir III",
+      "level_required": 97,
+      "base_interval": 1.7,
+      "base_xp": 156,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stormrunner_elixir_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_stormrunner_elixir_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_stormrunner_elixir_4",
+      "name": "Brew Stormrunner Elixir IV",
+      "level_required": 105,
+      "base_interval": 1.7,
+      "base_xp": 182,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stormrunner_elixir_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_stormrunner_elixir_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_stormrunner_elixir_5",
+      "name": "Brew Stormrunner Elixir V",
+      "level_required": 112,
+      "base_interval": 1.7,
+      "base_xp": 206,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stormrunner_elixir_4": 1,
+        "night_pepper": 5
+      },
+      "output_items": {
+        "potion_stormrunner_elixir_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_stormrunner_elixir_6",
+      "name": "Brew Stormrunner Elixir VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_stormrunner_elixir_5": 1,
+        "sageberry": 6
+      },
+      "output_items": {
+        "potion_stormrunner_elixir_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_riftward_tonic_2",
+      "name": "Brew Riftward Tonic II",
+      "level_required": 98,
+      "base_interval": 1.7,
+      "base_xp": 159,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_riftward_tonic": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_riftward_tonic_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_riftward_tonic_3",
+      "name": "Brew Riftward Tonic III",
+      "level_required": 103,
+      "base_interval": 1.7,
+      "base_xp": 176,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_riftward_tonic_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_riftward_tonic_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_riftward_tonic_4",
+      "name": "Brew Riftward Tonic IV",
+      "level_required": 109,
+      "base_interval": 1.7,
+      "base_xp": 196,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_riftward_tonic_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_riftward_tonic_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_riftward_tonic_5",
+      "name": "Brew Riftward Tonic V",
+      "level_required": 114,
+      "base_interval": 1.7,
+      "base_xp": 212,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_riftward_tonic_4": 1,
+        "oxilyme": 5
+      },
+      "output_items": {
+        "potion_riftward_tonic_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_riftward_tonic_6",
+      "name": "Brew Riftward Tonic VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_riftward_tonic_5": 1,
+        "astral_fennel": 6
+      },
+      "output_items": {
+        "potion_riftward_tonic_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_astral_lucidity_2",
+      "name": "Brew Astral Lucidity II",
+      "level_required": 107,
+      "base_interval": 1.7,
+      "base_xp": 190,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_astral_lucidity": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_astral_lucidity_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_astral_lucidity_3",
+      "name": "Brew Astral Lucidity III",
+      "level_required": 110,
+      "base_interval": 1.7,
+      "base_xp": 200,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_astral_lucidity_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_astral_lucidity_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_astral_lucidity_4",
+      "name": "Brew Astral Lucidity IV",
+      "level_required": 114,
+      "base_interval": 1.7,
+      "base_xp": 212,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_astral_lucidity_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_astral_lucidity_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_astral_lucidity_5",
+      "name": "Brew Astral Lucidity V",
+      "level_required": 117,
+      "base_interval": 1.7,
+      "base_xp": 221,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_astral_lucidity_4": 1,
+        "poraxx": 5
+      },
+      "output_items": {
+        "potion_astral_lucidity_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_astral_lucidity_6",
+      "name": "Brew Astral Lucidity VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_astral_lucidity_5": 1,
+        "dawn_orchid": 6
+      },
+      "output_items": {
+        "potion_astral_lucidity_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_dawnweaver_elixir_2",
+      "name": "Brew Dawnweaver Elixir II",
+      "level_required": 118,
+      "base_interval": 1.7,
+      "base_xp": 224,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dawnweaver_elixir": 1,
+        "garum_herb": 2
+      },
+      "output_items": {
+        "potion_dawnweaver_elixir_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_dawnweaver_elixir_3",
+      "name": "Brew Dawnweaver Elixir III",
+      "level_required": 119,
+      "base_interval": 1.7,
+      "base_xp": 227,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dawnweaver_elixir_2": 1,
+        "sourweed": 3
+      },
+      "output_items": {
+        "potion_dawnweaver_elixir_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_dawnweaver_elixir_4",
+      "name": "Brew Dawnweaver Elixir IV",
+      "level_required": 119,
+      "base_interval": 1.7,
+      "base_xp": 227,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dawnweaver_elixir_3": 1,
+        "mantalyme": 4
+      },
+      "output_items": {
+        "potion_dawnweaver_elixir_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_dawnweaver_elixir_5",
+      "name": "Brew Dawnweaver Elixir V",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dawnweaver_elixir_4": 1,
+        "glass_lily": 5
+      },
+      "output_items": {
+        "potion_dawnweaver_elixir_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_dawnweaver_elixir_6",
+      "name": "Brew Dawnweaver Elixir VI",
+      "level_required": 120,
+      "base_interval": 1.7,
+      "base_xp": 230,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "potion_dawnweaver_elixir_5": 1,
+        "blood_ginger": 6
+      },
+      "output_items": {
+        "potion_dawnweaver_elixir_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_lumberjack_1",
+      "name": "Brew Lumberjack’s Draught I",
+      "level_required": 5,
+      "base_interval": 1.7,
+      "base_xp": 24,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "copper_mint": 1
+      },
+      "output_items": {
+        "potion_lumberjack_1": 1
+      }
+    },
+    {
+      "id": "brew_potion_lumberjack_2",
+      "name": "Brew Lumberjack’s Draught II",
+      "level_required": 25,
+      "base_interval": 1.7,
+      "base_xp": 44,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "copper_mint": 2,
+        "potion_lumberjack_1": 1
+      },
+      "output_items": {
+        "potion_lumberjack_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_lumberjack_3",
+      "name": "Brew Lumberjack’s Draught III",
+      "level_required": 45,
+      "base_interval": 1.7,
+      "base_xp": 64,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "copper_mint": 3,
+        "potion_lumberjack_2": 1
+      },
+      "output_items": {
+        "potion_lumberjack_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_lumberjack_4",
+      "name": "Brew Lumberjack’s Draught IV",
+      "level_required": 65,
+      "base_interval": 1.7,
+      "base_xp": 89,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "copper_mint": 4,
+        "potion_lumberjack_3": 1
+      },
+      "output_items": {
+        "potion_lumberjack_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_lumberjack_5",
+      "name": "Brew Lumberjack’s Draught V",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "oxilyme": 5,
+        "potion_lumberjack_4": 1
+      },
+      "output_items": {
+        "potion_lumberjack_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_lumberjack_6",
+      "name": "Brew Lumberjack’s Draught VI",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "barrentoe": 6,
+        "potion_lumberjack_5": 1
+      },
+      "output_items": {
+        "potion_lumberjack_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_tidecatch_1",
+      "name": "Brew Tidecatch Tonic I",
+      "level_required": 5,
+      "base_interval": 1.7,
+      "base_xp": 24,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "frost_pea": 1
+      },
+      "output_items": {
+        "potion_tidecatch_1": 1
+      }
+    },
+    {
+      "id": "brew_potion_tidecatch_2",
+      "name": "Brew Tidecatch Tonic II",
+      "level_required": 25,
+      "base_interval": 1.7,
+      "base_xp": 44,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "frost_pea": 2,
+        "potion_tidecatch_1": 1
+      },
+      "output_items": {
+        "potion_tidecatch_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_tidecatch_3",
+      "name": "Brew Tidecatch Tonic III",
+      "level_required": 45,
+      "base_interval": 1.7,
+      "base_xp": 64,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "frost_pea": 3,
+        "potion_tidecatch_2": 1
+      },
+      "output_items": {
+        "potion_tidecatch_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_tidecatch_4",
+      "name": "Brew Tidecatch Tonic IV",
+      "level_required": 65,
+      "base_interval": 1.7,
+      "base_xp": 89,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "frost_pea": 4,
+        "potion_tidecatch_3": 1
+      },
+      "output_items": {
+        "potion_tidecatch_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_tidecatch_5",
+      "name": "Brew Tidecatch Tonic V",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "oxilyme": 5,
+        "potion_tidecatch_4": 1
+      },
+      "output_items": {
+        "potion_tidecatch_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_tidecatch_6",
+      "name": "Brew Tidecatch Tonic VI",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "barrentoe": 6,
+        "potion_tidecatch_5": 1
+      },
+      "output_items": {
+        "potion_tidecatch_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_forgekeeper_1",
+      "name": "Brew Forgekeeper’s Draught I",
+      "level_required": 5,
+      "base_interval": 1.7,
+      "base_xp": 24,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "sun_saffron": 1
+      },
+      "output_items": {
+        "potion_forgekeeper_1": 1
+      }
+    },
+    {
+      "id": "brew_potion_forgekeeper_2",
+      "name": "Brew Forgekeeper’s Draught II",
+      "level_required": 25,
+      "base_interval": 1.7,
+      "base_xp": 44,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "sun_saffron": 2,
+        "potion_forgekeeper_1": 1
+      },
+      "output_items": {
+        "potion_forgekeeper_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_forgekeeper_3",
+      "name": "Brew Forgekeeper’s Draught III",
+      "level_required": 45,
+      "base_interval": 1.7,
+      "base_xp": 64,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "sun_saffron": 3,
+        "potion_forgekeeper_2": 1
+      },
+      "output_items": {
+        "potion_forgekeeper_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_forgekeeper_4",
+      "name": "Brew Forgekeeper’s Draught IV",
+      "level_required": 65,
+      "base_interval": 1.7,
+      "base_xp": 89,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "sun_saffron": 4,
+        "potion_forgekeeper_3": 1
+      },
+      "output_items": {
+        "potion_forgekeeper_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_forgekeeper_5",
+      "name": "Brew Forgekeeper’s Draught V",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "oxilyme": 5,
+        "potion_forgekeeper_4": 1
+      },
+      "output_items": {
+        "potion_forgekeeper_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_forgekeeper_6",
+      "name": "Brew Forgekeeper’s Draught VI",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "barrentoe": 6,
+        "potion_forgekeeper_5": 1
+      },
+      "output_items": {
+        "potion_forgekeeper_6": 1
+      }
+    },
+    {
+      "id": "brew_potion_artisan_1",
+      "name": "Brew Artisan’s Elixir I",
+      "level_required": 5,
+      "base_interval": 1.7,
+      "base_xp": 24,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "glass_lily": 1
+      },
+      "output_items": {
+        "potion_artisan_1": 1
+      }
+    },
+    {
+      "id": "brew_potion_artisan_2",
+      "name": "Brew Artisan’s Elixir II",
+      "level_required": 25,
+      "base_interval": 1.7,
+      "base_xp": 44,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "glass_lily": 2,
+        "potion_artisan_1": 1
+      },
+      "output_items": {
+        "potion_artisan_2": 1
+      }
+    },
+    {
+      "id": "brew_potion_artisan_3",
+      "name": "Brew Artisan’s Elixir III",
+      "level_required": 45,
+      "base_interval": 1.7,
+      "base_xp": 64,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "glass_lily": 3,
+        "potion_artisan_2": 1
+      },
+      "output_items": {
+        "potion_artisan_3": 1
+      }
+    },
+    {
+      "id": "brew_potion_artisan_4",
+      "name": "Brew Artisan’s Elixir IV",
+      "level_required": 65,
+      "base_interval": 1.7,
+      "base_xp": 89,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "glass_lily": 4,
+        "potion_artisan_3": 1
+      },
+      "output_items": {
+        "potion_artisan_4": 1
+      }
+    },
+    {
+      "id": "brew_potion_artisan_5",
+      "name": "Brew Artisan’s Elixir V",
+      "level_required": 90,
+      "base_interval": 1.7,
+      "base_xp": 140,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "oxilyme": 5,
+        "potion_artisan_4": 1
+      },
+      "output_items": {
+        "potion_artisan_5": 1
+      }
+    },
+    {
+      "id": "brew_potion_artisan_6",
+      "name": "Brew Artisan’s Elixir VI",
+      "level_required": 115,
+      "base_interval": 1.7,
+      "base_xp": 215,
+      "mastery_action_time": 1.7,
+      "input_items": {
+        "barrentoe": 6,
+        "potion_artisan_5": 1
+      },
+      "output_items": {
+        "potion_artisan_6": 1
+      }
+    }
+  ],
+  "new_ids": [
+    "potion_mining_6",
+    "potion_skilling_6",
+    "potion_firemaking_6",
+    "echo_inscription_2",
+    "echo_inscription_3",
+    "echo_inscription_4",
+    "echo_inscription_5",
+    "echo_inscription_6",
+    "master_echo_loop_2",
+    "master_echo_loop_3",
+    "master_echo_loop_4",
+    "master_echo_loop_5",
+    "master_echo_loop_6",
+    "blended_weather_2",
+    "blended_weather_3",
+    "blended_weather_4",
+    "blended_weather_5",
+    "blended_weather_6",
+    "finders_fee_2",
+    "finders_fee_3",
+    "finders_fee_4",
+    "finders_fee_5",
+    "finders_fee_6",
+    "flawless_echo_2",
+    "flawless_echo_3",
+    "flawless_echo_4",
+    "flawless_echo_5",
+    "flawless_echo_6",
+    "grand_confluence_2",
+    "grand_confluence_3",
+    "grand_confluence_4",
+    "grand_confluence_5",
+    "grand_confluence_6",
+    "herald_gate_2",
+    "herald_gate_3",
+    "herald_gate_4",
+    "herald_gate_5",
+    "herald_gate_6",
+    "herald_craft_2",
+    "herald_craft_3",
+    "herald_craft_4",
+    "herald_craft_5",
+    "herald_craft_6",
+    "herald_case_2",
+    "herald_case_3",
+    "herald_case_4",
+    "herald_case_5",
+    "herald_case_6",
+    "potion_ranching_2",
+    "potion_ranching_3",
+    "potion_ranching_4",
+    "potion_ranching_5",
+    "potion_ranching_6",
+    "potion_inscription_2",
+    "potion_inscription_3",
+    "potion_inscription_4",
+    "potion_inscription_5",
+    "potion_inscription_6",
+    "potion_engineering_2",
+    "potion_engineering_3",
+    "potion_engineering_4",
+    "potion_engineering_5",
+    "potion_engineering_6",
+    "potion_enchanting_2",
+    "potion_enchanting_3",
+    "potion_enchanting_4",
+    "potion_enchanting_5",
+    "potion_enchanting_6",
+    "potion_dreamwalking_2",
+    "potion_dreamwalking_3",
+    "potion_dreamwalking_4",
+    "potion_dreamwalking_5",
+    "potion_dreamwalking_6",
+    "potion_hushroot_2",
+    "potion_hushroot_3",
+    "potion_hushroot_4",
+    "potion_hushroot_5",
+    "potion_hushroot_6",
+    "potion_herald_bloom_2",
+    "potion_herald_bloom_3",
+    "potion_herald_bloom_4",
+    "potion_herald_bloom_5",
+    "potion_herald_bloom_6",
+    "potion_emberbloom_2",
+    "potion_emberbloom_3",
+    "potion_emberbloom_4",
+    "potion_emberbloom_5",
+    "potion_emberbloom_6",
+    "potion_antivenom_2",
+    "potion_antivenom_3",
+    "potion_antivenom_4",
+    "potion_antivenom_5",
+    "potion_antivenom_6",
+    "potion_caravaneering_2",
+    "potion_caravaneering_3",
+    "potion_caravaneering_4",
+    "potion_caravaneering_5",
+    "potion_caravaneering_6",
+    "potion_fieldhand_tonic_2",
+    "potion_fieldhand_tonic_3",
+    "potion_fieldhand_tonic_4",
+    "potion_fieldhand_tonic_5",
+    "potion_fieldhand_tonic_6",
+    "potion_nestkeeper_elixir_2",
+    "potion_nestkeeper_elixir_3",
+    "potion_nestkeeper_elixir_4",
+    "potion_nestkeeper_elixir_5",
+    "potion_nestkeeper_elixir_6",
+    "potion_veinseeker_tonic_2",
+    "potion_veinseeker_tonic_3",
+    "potion_veinseeker_tonic_4",
+    "potion_veinseeker_tonic_5",
+    "potion_veinseeker_tonic_6",
+    "potion_bowyer_focus_2",
+    "potion_bowyer_focus_3",
+    "potion_bowyer_focus_4",
+    "potion_bowyer_focus_5",
+    "potion_bowyer_focus_6",
+    "potion_stoneward_tonic_2",
+    "potion_stoneward_tonic_3",
+    "potion_stoneward_tonic_4",
+    "potion_stoneward_tonic_5",
+    "potion_stoneward_tonic_6",
+    "potion_gearsmith_elixir_2",
+    "potion_gearsmith_elixir_3",
+    "potion_gearsmith_elixir_4",
+    "potion_gearsmith_elixir_5",
+    "potion_gearsmith_elixir_6",
+    "potion_rootkeeper_tonic_2",
+    "potion_rootkeeper_tonic_3",
+    "potion_rootkeeper_tonic_4",
+    "potion_rootkeeper_tonic_5",
+    "potion_rootkeeper_tonic_6",
+    "potion_moonlit_insight_2",
+    "potion_moonlit_insight_3",
+    "potion_moonlit_insight_4",
+    "potion_moonlit_insight_5",
+    "potion_moonlit_insight_6",
+    "potion_stormrunner_elixir_2",
+    "potion_stormrunner_elixir_3",
+    "potion_stormrunner_elixir_4",
+    "potion_stormrunner_elixir_5",
+    "potion_stormrunner_elixir_6",
+    "potion_riftward_tonic_2",
+    "potion_riftward_tonic_3",
+    "potion_riftward_tonic_4",
+    "potion_riftward_tonic_5",
+    "potion_riftward_tonic_6",
+    "potion_astral_lucidity_2",
+    "potion_astral_lucidity_3",
+    "potion_astral_lucidity_4",
+    "potion_astral_lucidity_5",
+    "potion_astral_lucidity_6",
+    "potion_dawnweaver_elixir_2",
+    "potion_dawnweaver_elixir_3",
+    "potion_dawnweaver_elixir_4",
+    "potion_dawnweaver_elixir_5",
+    "potion_dawnweaver_elixir_6",
+    "potion_lumberjack_1",
+    "potion_lumberjack_2",
+    "potion_lumberjack_3",
+    "potion_lumberjack_4",
+    "potion_lumberjack_5",
+    "potion_lumberjack_6",
+    "potion_tidecatch_1",
+    "potion_tidecatch_2",
+    "potion_tidecatch_3",
+    "potion_tidecatch_4",
+    "potion_tidecatch_5",
+    "potion_tidecatch_6",
+    "potion_forgekeeper_1",
+    "potion_forgekeeper_2",
+    "potion_forgekeeper_3",
+    "potion_forgekeeper_4",
+    "potion_forgekeeper_5",
+    "potion_forgekeeper_6",
+    "potion_artisan_1",
+    "potion_artisan_2",
+    "potion_artisan_3",
+    "potion_artisan_4",
+    "potion_artisan_5",
+    "potion_artisan_6"
+  ],
+  "scribing": [
+    "scribe_xp_tome_0_scrap",
+    "scribe_xp_tome_0_plain",
+    "scribe_xp_tome_0_pressed"
+  ]
+}

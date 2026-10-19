@@ -21,8 +21,9 @@ const PINNED_SCREENS: Array[String] = [Screens.STORE, Screens.PROVISIONER, Scree
 ## screen) and every screen in Screens.ORDER (except Skills and Prayers, reached through skill rows)
 ## belongs to exactly one; test_chapters pins that. `icon` names a skill (skill icon) or a screen.
 const CHAPTERS: Array[Dictionary] = [
+	{"id": "storage", "label": "Storage", "icon": "bank", "screens": ["bank"], "skills": []},
 	{"id": "town", "label": "Town", "icon": "store",
-		"screens": ["store", "provisioner", "bank", "settlement", "farm", "action_queue"], "skills": ["caravaneering"]},
+		"screens": ["store", "provisioner", "settlement", "farm", "action_queue"], "skills": ["caravaneering"]},
 	{"id": "combat", "label": "Combat", "icon": "combat",
 		"screens": ["combat", "expeditions", "raids", "equipment", "combat_simulator"],
 		"skills": ["attack", "strength", "defence", "hitpoints", "ranged", "magic", "prayer", "slayer", "corruption"]},
@@ -119,12 +120,18 @@ static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 			header.icon = AssetRegistry.skill_icon(icon_id)
 		else:
 			header.icon = AssetRegistry.icon(_icon_kind_for(icon_id), _icon_id_for(icon_id))
-		header.pressed.connect(func(): open_chapter(host, chapter_id))
+		header.pressed.connect(func():
+			open_chapter(host, chapter_id)
+			if chapter_id == "storage":
+				host.call("_show_screen", Screens.BANK, {}))
 		list.add_child(header)
 		var body := UIStyle.vbox(UITokens.SP_1)
 		body.visible = false
 		list.add_child(body)
 		for screen in ch["screens"]:
+			if chapter_id == "storage":
+				nav_buttons[str(screen)] = header
+				continue
 			_add_screen_button(host, body, str(screen), nav_buttons, null)
 		for skill_id in ch["skills"]:
 			_add_skill_row(host, body, str(skill_id), nav_buttons, skill_buttons, null)
@@ -187,7 +194,12 @@ static func populate_drawer(host: Control, drawer: PanelContainer) -> void:
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(col)
 	col.add_child(UIStyle.title("Navigate", UITokens.FONT_SUBHEAD))
-	_add_pinned_nav(host, col, {}, drawer)
+	col.add_child(UIStyle.label("STORAGE", true, UITokens.FONT_MICRO))
+	_add_screen_button(host, col, Screens.BANK, {}, drawer)
+	col.add_child(HSeparator.new())
+	for screen in PINNED_SCREENS:
+		if screen != Screens.BANK:
+			_add_screen_button(host, col, screen, {}, drawer)
 	col.add_child(HSeparator.new())
 	_add_skill_links(host, col, {}, {}, drawer)
 	col.add_child(HSeparator.new())

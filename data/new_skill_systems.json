@@ -9,7 +9,7 @@
       "hide": "feather",
       "seconds": 7200,
       "feed": 2,
-      "xp": 268,
+      "xp": 27,
       "meat": 2,
       "rare_stock": "golden_hen_stock"
     },
@@ -22,7 +22,7 @@
       "hide": "feather",
       "seconds": 5400,
       "feed": 2,
-      "xp": 191,
+      "xp": 28,
       "meat": 2,
       "rare_stock": "rare_ranch_duck"
     },
@@ -35,7 +35,7 @@
       "hide": "leather",
       "seconds": 9000,
       "feed": 3,
-      "xp": 1272,
+      "xp": 297,
       "meat": 3,
       "rare_stock": "rare_ranch_goat"
     },
@@ -48,7 +48,7 @@
       "hide": "leather",
       "seconds": 7200,
       "feed": 3,
-      "xp": 1071,
+      "xp": 289,
       "meat": 3,
       "rare_stock": "mooncalf_stock"
     },
@@ -61,7 +61,7 @@
       "hide": "leather",
       "seconds": 5400,
       "feed": 3,
-      "xp": 763,
+      "xp": 271,
       "meat": 3,
       "rare_stock": "rare_ranch_alpaca"
     },
@@ -74,7 +74,7 @@
       "hide": "leather",
       "seconds": 7200,
       "feed": 4,
-      "xp": 2409,
+      "xp": 1091,
       "meat": 4,
       "rare_stock": "rare_ranch_sheep"
     },
@@ -87,7 +87,7 @@
       "hide": "leather",
       "seconds": 9000,
       "feed": 3,
-      "xp": 2861,
+      "xp": 1365,
       "meat": 4,
       "rare_stock": "rare_ranch_bristleback"
     },
@@ -100,7 +100,7 @@
       "hide": "bowstring",
       "seconds": 10800,
       "feed": 4,
-      "xp": 6103,
+      "xp": 3654,
       "meat": 5,
       "rare_stock": "rare_ranch_silkwyrm"
     },
@@ -113,7 +113,7 @@
       "hide": "leather",
       "seconds": 7200,
       "feed": 5,
-      "xp": 4283,
+      "xp": 2720,
       "meat": 5,
       "rare_stock": "rare_ranch_boar"
     },
@@ -126,7 +126,7 @@
       "hide": "feather",
       "seconds": 5400,
       "feed": 5,
-      "xp": 3052,
+      "xp": 2198,
       "meat": 5,
       "rare_stock": "rare_ranch_sun_peacock"
     },
@@ -139,7 +139,7 @@
       "hide": "stardust",
       "seconds": 7200,
       "feed": 6,
-      "xp": 6692,
+      "xp": 5471,
       "meat": 6,
       "rare_stock": "rare_ranch_moonstag"
     },
@@ -152,7 +152,7 @@
       "hide": "stardust",
       "seconds": 9000,
       "feed": 5,
-      "xp": 7947,
+      "xp": 6691,
       "meat": 6,
       "rare_stock": "rare_ranch_crystal_tortoise"
     },
@@ -165,7 +165,7 @@
       "hide": "red_dragonhide",
       "seconds": 5400,
       "feed": 7,
-      "xp": 7113,
+      "xp": 6853,
       "meat": 7,
       "rare_stock": "rare_ranch_ember_salamander"
     },
@@ -921,7 +921,7 @@
       "id": "meadow",
       "name": "Starlit Meadow",
       "level": 1,
-      "xp_hour": 4324,
+      "xp_hour": 64,
       "essence_hour": 11,
       "twist": {
         "essence_percent": 10,
@@ -932,7 +932,7 @@
       "id": "orchard",
       "name": "Lantern Orchard",
       "level": 8,
-      "xp_hour": 7481,
+      "xp_hour": 598,
       "essence_hour": 18,
       "twist": {
         "items_per_hour": {
@@ -945,7 +945,7 @@
       "id": "shore",
       "name": "Moonlit Shore",
       "level": 15,
-      "xp_hour": 12943,
+      "xp_hour": 2029,
       "essence_hour": 25,
       "twist": {
         "mastery_xp_percent": 20,
@@ -956,7 +956,7 @@
       "id": "harbour",
       "name": "Sleepwalker's Harbour",
       "level": 22,
-      "xp_hour": 17634,
+      "xp_hour": 4246,
       "essence_hour": 32,
       "twist": {
         "nightmare_immune": true,
@@ -967,7 +967,7 @@
       "id": "wood",
       "name": "Whispering Wood",
       "level": 30,
-      "xp_hour": 25111,
+      "xp_hour": 8617,
       "essence_hour": 40,
       "twist": {
         "items_per_hour": {
@@ -980,7 +980,7 @@
       "id": "carnival",
       "name": "Hollow Carnival",
       "level": 38,
-      "xp_hour": 32060,
+      "xp_hour": 14459,
       "essence_hour": 48,
       "twist": {
         "event_chance": 0.8,
@@ -991,7 +991,7 @@
       "id": "library",
       "name": "Dream Library",
       "level": 45,
-      "xp_hour": 39701,
+      "xp_hour": 21798,
       "essence_hour": 55,
       "twist": {
         "nightmare_mult": 0.5,
@@ -1002,7 +1002,7 @@
       "id": "archive",
       "name": "Mirror Archive",
       "level": 52,
-      "xp_hour": 46754,
+      "xp_hour": 30397,
       "essence_hour": 62,
       "twist": {
         "xp_percent": 20,
@@ -1016,7 +1016,7 @@
       "id": "citadel",
       "name": "Sleeping Citadel",
       "level": 60,
-      "xp_hour": 56362,
+      "xp_hour": 43340,
       "essence_hour": 70,
       "twist": {
         "essence_percent": 20,
@@ -1028,7 +1028,7 @@
       "id": "clockwork",
       "name": "Clockwork Dusk",
       "level": 67,
-      "xp_hour": 65871,
+      "xp_hour": 57671,
       "essence_hour": 77,
       "twist": {
         "depth_rate": 2.0,
@@ -1256,7 +1256,7 @@
       "specialty": {
         "leather": 4
       },
-      "xp": 1297
+      "xp": 52
     },
     {
       "id": "reed_road",
@@ -1272,7 +1272,7 @@
       "specialty": {
         "scribe_paper": 6
       },
-      "xp": 2971
+      "xp": 193
     },
     {
       "id": "charcoal_haul",
@@ -1288,7 +1288,7 @@
       "specialty": {
         "coal": 12
       },
-      "xp": 3521
+      "xp": 373
     },
     {
       "id": "quarry_road",
@@ -1304,7 +1304,7 @@
       "specialty": {
         "iron_ore": 10
       },
-      "xp": 6260
+      "xp": 950
     },
     {
       "id": "smithy_line",
@@ -1320,7 +1320,7 @@
       "specialty": {
         "mithril_ore": 6
       },
-      "xp": 11721
+      "xp": 2971
     },
     {
       "id": "lantern_pass",
@@ -1336,7 +1336,7 @@
       "specialty": {
         "ranch_wool": 8
       },
-      "xp": 24691
+      "xp": 8994
     },
     {
       "id": "dune_crossing",
@@ -1352,7 +1352,7 @@
       "specialty": {
         "green_dragonhide": 3
       },
-      "xp": 46232
+      "xp": 22277
     },
     {
       "id": "tollgate_road",
@@ -1368,7 +1368,7 @@
       "specialty": {
         "adamantite_ore": 6
       },
-      "xp": 81155
+      "xp": 49095
     },
     {
       "id": "kings_road",
@@ -1384,7 +1384,7 @@
       "specialty": {
         "dragon_bones": 3
       },
-      "xp": 162068
+      "xp": 129355
     },
     {
       "id": "wyrmfall_run",

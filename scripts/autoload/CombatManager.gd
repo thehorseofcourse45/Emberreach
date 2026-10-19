@@ -879,17 +879,20 @@ func _fire_due_phases() -> void:
 				float(status.get("damage_per_tick", 0.0)))
 		_sig_monster_phase(current_monster_id, str(phase.get("name", "")))
 
+func _add_combat_skill_xp(skill_id: String, amount: float) -> void:
+	PlayerData.add_xp(skill_id, amount * ModifierManager.get_skill_xp_multiplier(skill_id))
+
 func _grant_combat_xp(damage: int) -> void:
-	PlayerData.add_xp("hitpoints", CombatFormulas.hitpoints_xp(float(damage)))
+	_add_combat_skill_xp("hitpoints", CombatFormulas.hitpoints_xp(float(damage)))
 	if attack_style == "melee":
 		match melee_style:
-			"stab": PlayerData.add_xp("attack", CombatFormulas.style_xp(float(damage)))
-			"slash": PlayerData.add_xp("strength", CombatFormulas.style_xp(float(damage)))
-			"block": PlayerData.add_xp("defence", CombatFormulas.style_xp(float(damage)))
+			"stab": _add_combat_skill_xp("attack", CombatFormulas.style_xp(float(damage)))
+			"slash": _add_combat_skill_xp("strength", CombatFormulas.style_xp(float(damage)))
+			"block": _add_combat_skill_xp("defence", CombatFormulas.style_xp(float(damage)))
 	else:
-		PlayerData.add_xp(attack_style, CombatFormulas.style_xp(float(damage)))
+		_add_combat_skill_xp(attack_style, CombatFormulas.style_xp(float(damage)))
 	if not PlayerData.active_prayers.is_empty():
-		PlayerData.add_xp("prayer", CombatFormulas.prayer_xp(float(damage), float(PlayerData.active_prayers.size())))
+		_add_combat_skill_xp("prayer", CombatFormulas.prayer_xp(float(damage), float(PlayerData.active_prayers.size())))
 
 # =========================================================================
 #  Special attacks
@@ -940,7 +943,7 @@ func _on_monster_death() -> void:
 	_grant_loot(m)
 	var slayer_xp: float = CombatFormulas.slayer_xp_for_kill(float(m.get("hitpoints", 0)), on_task, str(context.get("type", "")) == "slayer_area")
 	if slayer_xp > 0.0:
-		PlayerData.add_xp("slayer", slayer_xp)
+		_add_combat_skill_xp("slayer", slayer_xp)
 	var respawn: float = maxf(0.25, float(m.get("respawn_time", DEFAULT_RESPAWN))
 		* (1.0 - ModifierManager.get_modifier(ModifierKeys.RESPWAN_TIME_PERCENT) / 100.0))
 	if bool(context.get("endless", false)):

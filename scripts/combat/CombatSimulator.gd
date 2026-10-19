@@ -102,6 +102,8 @@ static func simulate(snapshot: Dictionary, trials: int, seed_value: int) -> Dict
 	report["damage_dealt"] = damage
 	# How often the loadout actually fired, so a loadout that never triggers is visible.
 	report["ability_fires"] = fires
+	for skill_id in xp:
+		xp[skill_id] = float(xp[skill_id]) * float(snapshot.get("xp_multipliers", {}).get(skill_id, 1.0))
 	report["xp"] = xp
 	report["death_chance"] = (float(deaths) + float(timeouts)) / float(total)
 	# Rates are per hour of simulated fighting time, not per wall-clock second of the run.
@@ -289,7 +291,8 @@ static func _run_fight(snapshot: Dictionary, player: Dictionary, monster: Dictio
 					view = _fire_phases(snapshot, player, monster, view, monster_hp / monster_hp_max, player_effects, rng)
 				# XP follows the live formulas, on damage actually dealt.
 				_xp(xp, "hitpoints", CombatFormulas.hitpoints_xp(dealt))
-				_xp(xp, str(style), CombatFormulas.style_xp(dealt, bool(player.get("hybrid", false))))
+				var xp_skill: String = str({"stab": "attack", "slash": "strength", "block": "defence"}.get(str(player.get("melee_style", "stab")), "attack")) if style == "melee" else style
+				_xp(xp, xp_skill, CombatFormulas.style_xp(dealt, bool(player.get("hybrid", false))))
 				if float(snapshot.get("prayer_points", 0.0)) > 0.0:
 					_xp(xp, "prayer", CombatFormulas.prayer_xp(dealt, float(snapshot.get("prayer_points", 0.0))))
 				if life_steal > 0.0:

@@ -485,7 +485,9 @@
     "charges": 10,
     "potion_effect": {
       "damage_reduction_percent": 2
-    }
+    },
+    "potion_family": "potion_dr",
+    "potion_tier": 1
   },
   "ent_mark": {
     "id": "ent_mark",
@@ -3462,7 +3464,7 @@
     "product_item": "garum_herb",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 1562
+    "harvest_xp": 61
   },
   "sourweed": {
     "id": "sourweed",
@@ -3482,7 +3484,7 @@
     "product_item": "sourweed",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 2231
+    "harvest_xp": 253
   },
   "mantalyme": {
     "id": "mantalyme",
@@ -3502,7 +3504,7 @@
     "product_item": "mantalyme",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 3346
+    "harvest_xp": 983
   },
   "lemontyle": {
     "id": "lemontyle",
@@ -3522,7 +3524,7 @@
     "product_item": "lemontyle",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 4462
+    "harvest_xp": 2401
   },
   "oxilyme": {
     "id": "oxilyme",
@@ -3542,7 +3544,7 @@
     "product_item": "oxilyme",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 5577
+    "harvest_xp": 4710
   },
   "poraxx": {
     "id": "poraxx",
@@ -3593,7 +3595,9 @@
     "charges": 15,
     "potion_effect": {
       "damage_reduction_percent": 4
-    }
+    },
+    "potion_family": "potion_dr",
+    "potion_tier": 2
   },
   "potion_dr_3": {
     "id": "potion_dr_3",
@@ -3604,7 +3608,9 @@
     "charges": 20,
     "potion_effect": {
       "damage_reduction_percent": 6
-    }
+    },
+    "potion_family": "potion_dr",
+    "potion_tier": 3
   },
   "potion_dr_4": {
     "id": "potion_dr_4",
@@ -3615,7 +3621,9 @@
     "charges": 25,
     "potion_effect": {
       "damage_reduction_percent": 10
-    }
+    },
+    "potion_family": "potion_dr",
+    "potion_tier": 4
   },
   "potion_mining_1": {
     "id": "potion_mining_1",
@@ -3626,7 +3634,9 @@
     "charges": 10,
     "potion_effect": {
       "mining_node_preservation_percent": 5
-    }
+    },
+    "potion_family": "potion_mining",
+    "potion_tier": 1
   },
   "potion_mining_2": {
     "id": "potion_mining_2",
@@ -3637,7 +3647,9 @@
     "charges": 15,
     "potion_effect": {
       "mining_node_preservation_percent": 10
-    }
+    },
+    "potion_family": "potion_mining",
+    "potion_tier": 2
   },
   "potion_mining_3": {
     "id": "potion_mining_3",
@@ -3648,7 +3660,9 @@
     "charges": 20,
     "potion_effect": {
       "mining_node_preservation_percent": 15
-    }
+    },
+    "potion_family": "potion_mining",
+    "potion_tier": 3
   },
   "potion_mining_4": {
     "id": "potion_mining_4",
@@ -3659,7 +3673,9 @@
     "charges": 25,
     "potion_effect": {
       "mining_node_preservation_percent": 20
-    }
+    },
+    "potion_family": "potion_mining",
+    "potion_tier": 4
   },
   "potion_skilling_1": {
     "id": "potion_skilling_1",
@@ -3670,7 +3686,9 @@
     "charges": 10,
     "potion_effect": {
       "global_skill_xp_percent": 2
-    }
+    },
+    "potion_family": "potion_skilling",
+    "potion_tier": 1
   },
   "potion_skilling_2": {
     "id": "potion_skilling_2",
@@ -3681,7 +3699,9 @@
     "charges": 15,
     "potion_effect": {
       "global_skill_xp_percent": 4
-    }
+    },
+    "potion_family": "potion_skilling",
+    "potion_tier": 2
   },
   "potion_skilling_3": {
     "id": "potion_skilling_3",
@@ -3692,7 +3712,9 @@
     "charges": 20,
     "potion_effect": {
       "global_skill_xp_percent": 6
-    }
+    },
+    "potion_family": "potion_skilling",
+    "potion_tier": 3
   },
   "potion_skilling_4": {
     "id": "potion_skilling_4",
@@ -3703,7 +3725,9 @@
     "charges": 25,
     "potion_effect": {
       "global_skill_xp_percent": 10
-    }
+    },
+    "potion_family": "potion_skilling",
+    "potion_tier": 4
   },
   "potion_firemaking_1": {
     "id": "potion_firemaking_1",
@@ -3714,7 +3738,9 @@
     "charges": 10,
     "potion_effect": {
       "firemaking_doubling_percent": 5
-    }
+    },
+    "potion_family": "potion_firemaking",
+    "potion_tier": 1
   },
   "potion_firemaking_2": {
     "id": "potion_firemaking_2",
@@ -3725,7 +3751,9 @@
     "charges": 15,
     "potion_effect": {
       "firemaking_doubling_percent": 10
-    }
+    },
+    "potion_family": "potion_firemaking",
+    "potion_tier": 2
   },
   "potion_firemaking_3": {
     "id": "potion_firemaking_3",
@@ -3736,7 +3764,9 @@
     "charges": 20,
     "potion_effect": {
       "firemaking_doubling_percent": 15
-    }
+    },
+    "potion_family": "potion_firemaking",
+    "potion_tier": 3
   },
   "potion_firemaking_4": {
     "id": "potion_firemaking_4",
@@ -3747,7 +3777,9 @@
     "charges": 25,
     "potion_effect": {
       "firemaking_doubling_percent": 20
-    }
+    },
+    "potion_family": "potion_firemaking",
+    "potion_tier": 4
   },
   "potion_dr_5": {
     "id": "potion_dr_5",
@@ -3758,7 +3790,9 @@
     "charges": 25,
     "potion_effect": {
       "damage_reduction_percent": 14
-    }
+    },
+    "potion_family": "potion_dr",
+    "potion_tier": 5
   },
   "potion_dr_6": {
     "id": "potion_dr_6",
@@ -3769,7 +3803,9 @@
     "charges": 30,
     "potion_effect": {
       "damage_reduction_percent": 18
-    }
+    },
+    "potion_family": "potion_dr",
+    "potion_tier": 6
   },
   "potion_mining_5": {
     "id": "potion_mining_5",
@@ -3780,7 +3816,9 @@
     "charges": 25,
     "potion_effect": {
       "mining_node_preservation_percent": 25
-    }
+    },
+    "potion_family": "potion_mining",
+    "potion_tier": 5
   },
   "potion_skilling_5": {
     "id": "potion_skilling_5",
@@ -3791,7 +3829,9 @@
     "charges": 25,
     "potion_effect": {
       "global_skill_xp_percent": 14
-    }
+    },
+    "potion_family": "potion_skilling",
+    "potion_tier": 5
   },
   "potion_firemaking_5": {
     "id": "potion_firemaking_5",
@@ -3802,7 +3842,9 @@
     "charges": 25,
     "potion_effect": {
       "firemaking_doubling_percent": 25
-    }
+    },
+    "potion_family": "potion_firemaking",
+    "potion_tier": 5
   },
   "chapeau_noir": {
     "id": "chapeau_noir",
@@ -5920,7 +5962,7 @@
   },
   "echo_inscription": {
     "id": "echo_inscription",
-    "name": "Echoed Inscription",
+    "name": "Echoed Inscription I",
     "item_type": "potion",
     "sell_price": 277,
     "is_stackable": true,
@@ -5928,11 +5970,13 @@
     "charges": 40,
     "potion_effect": {
       "global_skill_interval_percent": 5
-    }
+    },
+    "potion_family": "echo_inscription",
+    "potion_tier": 1
   },
   "master_echo_loop": {
     "id": "master_echo_loop",
-    "name": "Master Loop",
+    "name": "Master Loop I",
     "item_type": "potion",
     "sell_price": 595,
     "is_stackable": true,
@@ -5940,7 +5984,9 @@
     "charges": 40,
     "potion_effect": {
       "global_mastery_xp_percent": 6
-    }
+    },
+    "potion_family": "master_echo_loop",
+    "potion_tier": 1
   },
   "route_survey": {
     "id": "route_survey",
@@ -6016,7 +6062,7 @@
   },
   "blended_weather": {
     "id": "blended_weather",
-    "name": "Blended Weather",
+    "name": "Blended Weather I",
     "item_type": "potion",
     "sell_price": 636,
     "is_stackable": true,
@@ -6024,7 +6070,9 @@
     "charges": 25,
     "potion_effect": {
       "global_doubling_percent": 4
-    }
+    },
+    "potion_family": "blended_weather",
+    "potion_tier": 1
   },
   "custom_proposal": {
     "id": "custom_proposal",
@@ -6100,7 +6148,7 @@
   },
   "finders_fee": {
     "id": "finders_fee",
-    "name": "Finder's Fee",
+    "name": "Finder's Fee I",
     "item_type": "potion",
     "sell_price": 125,
     "is_stackable": true,
@@ -6108,7 +6156,9 @@
     "charges": 50,
     "potion_effect": {
       "global_gp_percent": 10
-    }
+    },
+    "potion_family": "finders_fee",
+    "potion_tier": 1
   },
   "echo_keeping_cape": {
     "id": "echo_keeping_cape",
@@ -6203,7 +6253,7 @@
   },
   "flawless_echo": {
     "id": "flawless_echo",
-    "name": "Flawless Echo",
+    "name": "Flawless Echo I",
     "item_type": "potion",
     "sell_price": 1050,
     "is_stackable": true,
@@ -6211,7 +6261,9 @@
     "charges": 40,
     "potion_effect": {
       "global_skill_xp_percent": 8
-    }
+    },
+    "potion_family": "flawless_echo",
+    "potion_tier": 1
   },
   "herald_echo": {
     "id": "herald_echo",
@@ -6223,7 +6275,7 @@
   },
   "grand_confluence": {
     "id": "grand_confluence",
-    "name": "Grand Confluence",
+    "name": "Grand Confluence I",
     "item_type": "potion",
     "sell_price": 2804,
     "is_stackable": true,
@@ -6231,11 +6283,13 @@
     "charges": 30,
     "potion_effect": {
       "global_doubling_percent": 5
-    }
+    },
+    "potion_family": "grand_confluence",
+    "potion_tier": 1
   },
   "herald_gate": {
     "id": "herald_gate",
-    "name": "Herald Gate",
+    "name": "Herald Gate I",
     "item_type": "potion",
     "sell_price": 8600,
     "is_stackable": true,
@@ -6244,7 +6298,9 @@
     "charge_scope": "combat",
     "potion_effect": {
       "attack_interval_percent": 6
-    }
+    },
+    "potion_family": "herald_gate",
+    "potion_tier": 1
   },
   "living_legend": {
     "id": "living_legend",
@@ -6256,7 +6312,7 @@
   },
   "herald_craft": {
     "id": "herald_craft",
-    "name": "Herald Craft",
+    "name": "Herald Craft I",
     "item_type": "potion",
     "sell_price": 4009,
     "is_stackable": true,
@@ -6265,7 +6321,9 @@
     "charge_scope": "combat",
     "potion_effect": {
       "global_slayer_coins_percent": 15
-    }
+    },
+    "potion_family": "herald_craft",
+    "potion_tier": 1
   },
   "cold_trail": {
     "id": "cold_trail",
@@ -6277,7 +6335,7 @@
   },
   "herald_case": {
     "id": "herald_case",
-    "name": "Herald Case",
+    "name": "Herald Case I",
     "item_type": "potion",
     "sell_price": 2886,
     "is_stackable": true,
@@ -6286,7 +6344,9 @@
     "charge_scope": "combat",
     "potion_effect": {
       "global_double_loot_percent": 5
-    }
+    },
+    "potion_family": "herald_case",
+    "potion_tier": 1
   },
   "adamantite_sword": {
     "id": "adamantite_sword",
@@ -6920,7 +6980,7 @@
     "product_item": "hearthroot",
     "min_yield": 4,
     "max_yield": 8,
-    "harvest_xp": 760,
+    "harvest_xp": 30,
     "description": "Plant in an allotment plot. Grows Hearthroot in 30 min."
   },
   "ashbulb_seed": {
@@ -6935,7 +6995,7 @@
     "product_item": "ashbulb",
     "min_yield": 4,
     "max_yield": 8,
-    "harvest_xp": 1700,
+    "harvest_xp": 378,
     "description": "Plant in an allotment plot. Grows Ashbulb in 45 min."
   },
   "stormcabbage_seed": {
@@ -6950,7 +7010,7 @@
     "product_item": "stormcabbage",
     "min_yield": 4,
     "max_yield": 8,
-    "harvest_xp": 2700,
+    "harvest_xp": 1441,
     "description": "Plant in an allotment plot. Grows Stormcabbage in 60 min."
   },
   "sunmelon_seed": {
@@ -6965,7 +7025,7 @@
     "product_item": "sunmelon",
     "min_yield": 4,
     "max_yield": 8,
-    "harvest_xp": 4000,
+    "harvest_xp": 3809,
     "description": "Plant in an allotment plot. Grows Sunmelon in 80 min."
   },
   "starcorn_seed": {
@@ -7010,7 +7070,7 @@
     "product_item": "oak_log",
     "min_yield": 15,
     "max_yield": 25,
-    "harvest_xp": 6000,
+    "harvest_xp": 1382,
     "description": "Plant in a tree plot. Grows into a Ironbark Tree in 4 hours and is felled for 15-25 Ironbark Log."
   },
   "willow_sapling_seed": {
@@ -7025,7 +7085,7 @@
     "product_item": "willow_log",
     "min_yield": 15,
     "max_yield": 25,
-    "harvest_xp": 11000,
+    "harvest_xp": 4563,
     "description": "Plant in a tree plot. Grows into a Silverleaf Tree in 5 hours and is felled for 15-25 Silverleaf Log."
   },
   "yew_sapling_seed": {
@@ -7040,7 +7100,7 @@
     "product_item": "yew_log",
     "min_yield": 15,
     "max_yield": 25,
-    "harvest_xp": 20000,
+    "harvest_xp": 12532,
     "description": "Plant in a tree plot. Grows into a Gravewood Tree in 6 hours and is felled for 15-25 Gravewood Log."
   },
   "magic_sapling_seed": {
@@ -7055,7 +7115,7 @@
     "product_item": "magic_log",
     "min_yield": 12,
     "max_yield": 20,
-    "harvest_xp": 38000,
+    "harvest_xp": 29957,
     "description": "Plant in a tree plot. Grows into a Witchpine Tree in 8 hours and is felled for 12-20 Witchpine Log."
   },
   "redwood_sapling_seed": {
@@ -8005,7 +8065,7 @@
   },
   "potion_ranching": {
     "id": "potion_ranching",
-    "name": "Rancher's Draught",
+    "name": "Rancher's Draught I",
     "item_type": "potion",
     "sell_price": 10,
     "is_stackable": true,
@@ -8013,7 +8073,9 @@
     "charge_scope": "ranching:collection",
     "potion_effect": {
       "ranching_interval_percent": 15
-    }
+    },
+    "potion_family": "potion_ranching",
+    "potion_tier": 1
   },
   "inscription_skillcape": {
     "id": "inscription_skillcape",
@@ -8037,7 +8099,7 @@
   },
   "potion_inscription": {
     "id": "potion_inscription",
-    "name": "Illuminating Potion",
+    "name": "Illuminating Potion I",
     "item_type": "potion",
     "sell_price": 10,
     "is_stackable": true,
@@ -8045,7 +8107,9 @@
     "charge_scope": "inscription",
     "potion_effect": {
       "inscription_quality_percent": 10
-    }
+    },
+    "potion_family": "potion_inscription",
+    "potion_tier": 1
   },
   "engineering_skillcape": {
     "id": "engineering_skillcape",
@@ -8069,7 +8133,7 @@
   },
   "potion_engineering": {
     "id": "potion_engineering",
-    "name": "Lubricating Potion",
+    "name": "Lubricating Potion I",
     "item_type": "potion",
     "sell_price": 10,
     "is_stackable": true,
@@ -8077,7 +8141,9 @@
     "charge_scope": "engineering:fuel",
     "potion_effect": {
       "engineering_fuel_reduction_percent": 15
-    }
+    },
+    "potion_family": "potion_engineering",
+    "potion_tier": 1
   },
   "enchanting_skillcape": {
     "id": "enchanting_skillcape",
@@ -8101,7 +8167,7 @@
   },
   "potion_enchanting": {
     "id": "potion_enchanting",
-    "name": "Attunement Potion",
+    "name": "Attunement Potion I",
     "item_type": "potion",
     "sell_price": 10,
     "is_stackable": true,
@@ -8109,7 +8175,9 @@
     "charge_scope": "enchanting",
     "potion_effect": {
       "enchanting_essence_percent": 15
-    }
+    },
+    "potion_family": "potion_enchanting",
+    "potion_tier": 1
   },
   "dreamwalking_skillcape": {
     "id": "dreamwalking_skillcape",
@@ -8133,7 +8201,7 @@
   },
   "potion_dreamwalking": {
     "id": "potion_dreamwalking",
-    "name": "Lucid Draught",
+    "name": "Lucid Draught I",
     "item_type": "potion",
     "sell_price": 10,
     "is_stackable": true,
@@ -8141,7 +8209,9 @@
     "charge_scope": "dreamwalking",
     "potion_effect": {
       "dreamwalking_essence_percent": 15
-    }
+    },
+    "potion_family": "potion_dreamwalking",
+    "potion_tier": 1
   },
   "border_collie_tablet": {
     "id": "border_collie_tablet",
@@ -8209,36 +8279,42 @@
   },
   "potion_hushroot": {
     "id": "potion_hushroot",
-    "name": "Hushroot Draught",
+    "name": "Hushroot Draught I",
     "item_type": "potion",
     "sell_price": 190,
     "is_stackable": true,
     "charges": 20,
     "potion_effect": {
       "thieving_stealth": 12
-    }
+    },
+    "potion_family": "potion_hushroot",
+    "potion_tier": 1
   },
   "potion_herald_bloom": {
     "id": "potion_herald_bloom",
-    "name": "Herald Bloom Tonic",
+    "name": "Herald Bloom Tonic I",
     "item_type": "potion",
     "sell_price": 260,
     "is_stackable": true,
     "charges": 15,
     "potion_effect": {
       "global_mastery_xp_percent": 10
-    }
+    },
+    "potion_family": "potion_herald_bloom",
+    "potion_tier": 1
   },
   "potion_emberbloom": {
     "id": "potion_emberbloom",
-    "name": "Emberbloom Tonic",
+    "name": "Emberbloom Tonic I",
     "item_type": "potion",
     "sell_price": 300,
     "is_stackable": true,
     "charges": 15,
     "potion_effect": {
       "crit_chance_percent": 8
-    }
+    },
+    "potion_family": "potion_emberbloom",
+    "potion_tier": 1
   },
   "charmed_gold_ring": {
     "id": "charmed_gold_ring",
@@ -8793,14 +8869,16 @@
   },
   "potion_antivenom": {
     "id": "potion_antivenom",
-    "name": "Antivenom Draught",
+    "name": "Antivenom Draught I",
     "item_type": "potion",
     "sell_price": 70,
     "is_stackable": true,
     "charges": 15,
     "potion_effect": {
       "poison_resistance_percent": 30
-    }
+    },
+    "potion_family": "potion_antivenom",
+    "potion_tier": 1
   },
   "hush_plate_cuirass": {
     "id": "hush_plate_cuirass",
@@ -8940,7 +9018,7 @@
   },
   "potion_caravaneering": {
     "id": "potion_caravaneering",
-    "name": "Merchant's Tonic",
+    "name": "Merchant's Tonic I",
     "item_type": "potion",
     "sell_price": 10,
     "is_stackable": true,
@@ -8948,7 +9026,9 @@
     "charge_scope": "caravaneering:trip",
     "potion_effect": {
       "caravaneering_profit_percent": 15
-    }
+    },
+    "potion_family": "potion_caravaneering",
+    "potion_tier": 1
   },
   "mosswillow_log": {
     "id": "mosswillow_log",
@@ -10470,7 +10550,7 @@
     "product_item": "copper_mint",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 1484,
+    "harvest_xp": 120,
     "plot_type": "herb"
   },
   "ranch_duck": {
@@ -10511,14 +10591,16 @@
   },
   "potion_fieldhand_tonic": {
     "id": "potion_fieldhand_tonic",
-    "name": "Fieldhand Tonic",
+    "name": "Fieldhand Tonic I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 10,
     "charges": 20,
     "potion_effect": {
       "farming_interval_percent": 5
-    }
+    },
+    "potion_family": "potion_fieldhand_tonic",
+    "potion_tier": 1
   },
   "aether_lantern_splinter": {
     "id": "aether_lantern_splinter",
@@ -10573,7 +10655,7 @@
     "product_item": "honeycap",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 2119,
+    "harvest_xp": 309,
     "plot_type": "herb"
   },
   "ranch_goat": {
@@ -10614,7 +10696,7 @@
   },
   "potion_nestkeeper_elixir": {
     "id": "potion_nestkeeper_elixir",
-    "name": "Nestkeeper Elixir",
+    "name": "Nestkeeper Elixir I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 20,
@@ -10622,7 +10704,9 @@
     "potion_effect": {
       "ranching_interval_percent": 8
     },
-    "charge_scope": "ranching:collection"
+    "charge_scope": "ranching:collection",
+    "potion_family": "potion_nestkeeper_elixir",
+    "potion_tier": 1
   },
   "aether_reedwater_scar": {
     "id": "aether_reedwater_scar",
@@ -10677,7 +10761,7 @@
     "product_item": "frost_pea",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 1615,
+    "harvest_xp": 432,
     "plot_type": "allotment"
   },
   "ranch_alpaca": {
@@ -10718,14 +10802,16 @@
   },
   "potion_veinseeker_tonic": {
     "id": "potion_veinseeker_tonic",
-    "name": "Veinseeker Tonic",
+    "name": "Veinseeker Tonic I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 30,
     "charges": 24,
     "potion_effect": {
       "mining_node_preservation_percent": 8
-    }
+    },
+    "potion_family": "potion_veinseeker_tonic",
+    "potion_tier": 1
   },
   "aether_amber_fault": {
     "id": "aether_amber_fault",
@@ -10780,7 +10866,7 @@
     "product_item": "sun_saffron",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 10450,
+    "harvest_xp": 5043,
     "plot_type": "herb"
   },
   "ranch_bristleback": {
@@ -10821,14 +10907,16 @@
   },
   "potion_bowyer_focus": {
     "id": "potion_bowyer_focus",
-    "name": "Bowyer Focus",
+    "name": "Bowyer Focus I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 40,
     "charges": 26,
     "potion_effect": {
       "fletching_doubling_percent": 8
-    }
+    },
+    "potion_family": "potion_bowyer_focus",
+    "potion_tier": 1
   },
   "aether_thistle_window": {
     "id": "aether_thistle_window",
@@ -10883,7 +10971,7 @@
     "product_item": "sageberry",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 4239,
+    "harvest_xp": 2601,
     "plot_type": "allotment"
   },
   "ranch_silkwyrm": {
@@ -10924,7 +11012,7 @@
   },
   "potion_stoneward_tonic": {
     "id": "potion_stoneward_tonic",
-    "name": "Stoneward Tonic",
+    "name": "Stoneward Tonic I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 50,
@@ -10932,7 +11020,9 @@
     "potion_effect": {
       "damage_reduction_percent": 3
     },
-    "charge_scope": "combat"
+    "charge_scope": "combat",
+    "potion_family": "potion_stoneward_tonic",
+    "potion_tier": 1
   },
   "aether_ironwind_tear": {
     "id": "aether_ironwind_tear",
@@ -10987,7 +11077,7 @@
     "product_item": "glass_lily",
     "min_yield": 3,
     "max_yield": 6,
-    "harvest_xp": 19000,
+    "harvest_xp": 13396,
     "plot_type": "herb"
   },
   "ranch_sun_peacock": {
@@ -11020,7 +11110,7 @@
   },
   "potion_gearsmith_elixir": {
     "id": "potion_gearsmith_elixir",
-    "name": "Gearsmith Elixir",
+    "name": "Gearsmith Elixir I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 60,
@@ -11028,7 +11118,9 @@
     "potion_effect": {
       "engineering_fuel_reduction_percent": 12
     },
-    "charge_scope": "engineering:fuel"
+    "charge_scope": "engineering:fuel",
+    "potion_family": "potion_gearsmith_elixir",
+    "potion_tier": 1
   },
   "aether_hailglass_fold": {
     "id": "aether_hailglass_fold",
@@ -11124,14 +11216,16 @@
   },
   "potion_rootkeeper_tonic": {
     "id": "potion_rootkeeper_tonic",
-    "name": "Rootkeeper Tonic",
+    "name": "Rootkeeper Tonic I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 70,
     "charges": 32,
     "potion_effect": {
       "farming_doubling_percent": 10
-    }
+    },
+    "potion_family": "potion_rootkeeper_tonic",
+    "potion_tier": 1
   },
   "aether_gloomroot_breach": {
     "id": "aether_gloomroot_breach",
@@ -11227,14 +11321,16 @@
   },
   "potion_moonlit_insight": {
     "id": "potion_moonlit_insight",
-    "name": "Moonlit Insight",
+    "name": "Moonlit Insight I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 80,
     "charges": 34,
     "potion_effect": {
       "global_mastery_xp_percent": 8
-    }
+    },
+    "potion_family": "potion_moonlit_insight",
+    "potion_tier": 1
   },
   "aether_moonwake_crossing": {
     "id": "aether_moonwake_crossing",
@@ -11330,14 +11426,16 @@
   },
   "potion_stormrunner_elixir": {
     "id": "potion_stormrunner_elixir",
-    "name": "Stormrunner Elixir",
+    "name": "Stormrunner Elixir I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 90,
     "charges": 36,
     "potion_effect": {
       "global_skill_interval_percent": 5
-    }
+    },
+    "potion_family": "potion_stormrunner_elixir",
+    "potion_tier": 1
   },
   "aether_stormforge_cleft": {
     "id": "aether_stormforge_cleft",
@@ -11433,14 +11531,16 @@
   },
   "potion_riftward_tonic": {
     "id": "potion_riftward_tonic",
-    "name": "Riftward Tonic",
+    "name": "Riftward Tonic I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 100,
     "charges": 38,
     "potion_effect": {
       "riftkeeping_doubling_percent": 12
-    }
+    },
+    "potion_family": "potion_riftward_tonic",
+    "potion_tier": 1
   },
   "aether_obsidian_aperture": {
     "id": "aether_obsidian_aperture",
@@ -11536,14 +11636,16 @@
   },
   "potion_astral_lucidity": {
     "id": "potion_astral_lucidity",
-    "name": "Astral Lucidity",
+    "name": "Astral Lucidity I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 110,
     "charges": 40,
     "potion_effect": {
       "global_skill_xp_percent": 8
-    }
+    },
+    "potion_family": "potion_astral_lucidity",
+    "potion_tier": 1
   },
   "aether_starling_nexus": {
     "id": "aether_starling_nexus",
@@ -11639,14 +11741,16 @@
   },
   "potion_dawnweaver_elixir": {
     "id": "potion_dawnweaver_elixir",
-    "name": "Dawnweaver Elixir",
+    "name": "Dawnweaver Elixir I",
     "item_type": "potion",
     "is_stackable": true,
     "sell_price": 120,
     "charges": 42,
     "potion_effect": {
       "global_doubling_percent": 12
-    }
+    },
+    "potion_family": "potion_dawnweaver_elixir",
+    "potion_tier": 1
   },
   "aether_dawnheart_seam": {
     "id": "aether_dawnheart_seam",
@@ -11943,5 +12047,2476 @@
     "sell_price": 1,
     "is_stackable": true,
     "description": "Specialist essence from Prospecting veins (levels 110). Refine in Attunement into Warding Essence."
+  },
+  "potion_mining_6": {
+    "id": "potion_mining_6",
+    "name": "Delver's Draught VI",
+    "item_type": "potion",
+    "sell_price": 678,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "mining_node_preservation_percent": 30
+    },
+    "potion_family": "potion_mining",
+    "potion_tier": 6
+  },
+  "potion_skilling_6": {
+    "id": "potion_skilling_6",
+    "name": "Polymath Tonic VI",
+    "item_type": "potion",
+    "sell_price": 678,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "global_skill_xp_percent": 18
+    },
+    "potion_family": "potion_skilling",
+    "potion_tier": 6
+  },
+  "potion_firemaking_6": {
+    "id": "potion_firemaking_6",
+    "name": "Banked Coals VI",
+    "item_type": "potion",
+    "sell_price": 678,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "firemaking_doubling_percent": 30
+    },
+    "potion_family": "potion_firemaking",
+    "potion_tier": 6
+  },
+  "echo_inscription_2": {
+    "id": "echo_inscription_2",
+    "name": "Echoed Inscription II",
+    "item_type": "potion",
+    "sell_price": 293,
+    "is_stackable": true,
+    "description": "A working of careful craft carrying a captured rhythm inside it. Play it from storage: for 40 actions every skill acts 5% faster.",
+    "charges": 44,
+    "potion_effect": {
+      "global_skill_interval_percent": 5.5
+    },
+    "potion_family": "echo_inscription",
+    "potion_tier": 2
+  },
+  "echo_inscription_3": {
+    "id": "echo_inscription_3",
+    "name": "Echoed Inscription III",
+    "item_type": "potion",
+    "sell_price": 347,
+    "is_stackable": true,
+    "description": "A working of careful craft carrying a captured rhythm inside it. Play it from storage: for 40 actions every skill acts 5% faster.",
+    "charges": 48,
+    "potion_effect": {
+      "global_skill_interval_percent": 6.0
+    },
+    "potion_family": "echo_inscription",
+    "potion_tier": 3
+  },
+  "echo_inscription_4": {
+    "id": "echo_inscription_4",
+    "name": "Echoed Inscription IV",
+    "item_type": "potion",
+    "sell_price": 479,
+    "is_stackable": true,
+    "description": "A working of careful craft carrying a captured rhythm inside it. Play it from storage: for 40 actions every skill acts 5% faster.",
+    "charges": 52,
+    "potion_effect": {
+      "global_skill_interval_percent": 6.5
+    },
+    "potion_family": "echo_inscription",
+    "potion_tier": 4
+  },
+  "echo_inscription_5": {
+    "id": "echo_inscription_5",
+    "name": "Echoed Inscription V",
+    "item_type": "potion",
+    "sell_price": 869,
+    "is_stackable": true,
+    "description": "A working of careful craft carrying a captured rhythm inside it. Play it from storage: for 40 actions every skill acts 5% faster.",
+    "charges": 56,
+    "potion_effect": {
+      "global_skill_interval_percent": 7.0
+    },
+    "potion_family": "echo_inscription",
+    "potion_tier": 5
+  },
+  "echo_inscription_6": {
+    "id": "echo_inscription_6",
+    "name": "Echoed Inscription VI",
+    "item_type": "potion",
+    "sell_price": 1109,
+    "is_stackable": true,
+    "description": "A working of careful craft carrying a captured rhythm inside it. Play it from storage: for 40 actions every skill acts 5% faster.",
+    "charges": 60,
+    "potion_effect": {
+      "global_skill_interval_percent": 7.5
+    },
+    "potion_family": "echo_inscription",
+    "potion_tier": 6
+  },
+  "master_echo_loop_2": {
+    "id": "master_echo_loop_2",
+    "name": "Master Loop II",
+    "item_type": "potion",
+    "sell_price": 611,
+    "is_stackable": true,
+    "description": "A sequence that completes cleanly and cheaply enough to keep running all night. Play it from storage: for 40 actions all mastery XP is 6% higher.",
+    "charges": 44,
+    "potion_effect": {
+      "global_mastery_xp_percent": 6.6
+    },
+    "potion_family": "master_echo_loop",
+    "potion_tier": 2
+  },
+  "master_echo_loop_3": {
+    "id": "master_echo_loop_3",
+    "name": "Master Loop III",
+    "item_type": "potion",
+    "sell_price": 665,
+    "is_stackable": true,
+    "description": "A sequence that completes cleanly and cheaply enough to keep running all night. Play it from storage: for 40 actions all mastery XP is 6% higher.",
+    "charges": 48,
+    "potion_effect": {
+      "global_mastery_xp_percent": 7.2
+    },
+    "potion_family": "master_echo_loop",
+    "potion_tier": 3
+  },
+  "master_echo_loop_4": {
+    "id": "master_echo_loop_4",
+    "name": "Master Loop IV",
+    "item_type": "potion",
+    "sell_price": 797,
+    "is_stackable": true,
+    "description": "A sequence that completes cleanly and cheaply enough to keep running all night. Play it from storage: for 40 actions all mastery XP is 6% higher.",
+    "charges": 52,
+    "potion_effect": {
+      "global_mastery_xp_percent": 7.8
+    },
+    "potion_family": "master_echo_loop",
+    "potion_tier": 4
+  },
+  "master_echo_loop_5": {
+    "id": "master_echo_loop_5",
+    "name": "Master Loop V",
+    "item_type": "potion",
+    "sell_price": 1022,
+    "is_stackable": true,
+    "description": "A sequence that completes cleanly and cheaply enough to keep running all night. Play it from storage: for 40 actions all mastery XP is 6% higher.",
+    "charges": 56,
+    "potion_effect": {
+      "global_mastery_xp_percent": 8.4
+    },
+    "potion_family": "master_echo_loop",
+    "potion_tier": 5
+  },
+  "master_echo_loop_6": {
+    "id": "master_echo_loop_6",
+    "name": "Master Loop VI",
+    "item_type": "potion",
+    "sell_price": 1352,
+    "is_stackable": true,
+    "description": "A sequence that completes cleanly and cheaply enough to keep running all night. Play it from storage: for 40 actions all mastery XP is 6% higher.",
+    "charges": 60,
+    "potion_effect": {
+      "global_mastery_xp_percent": 9.0
+    },
+    "potion_family": "master_echo_loop",
+    "potion_tier": 6
+  },
+  "blended_weather_2": {
+    "id": "blended_weather_2",
+    "name": "Blended Weather II",
+    "item_type": "potion",
+    "sell_price": 652,
+    "is_stackable": true,
+    "description": "A brew of three weathers. Drink it from storage: for 25 actions every skill has a 4% chance to double its output. Still sells well.",
+    "charges": 28,
+    "potion_effect": {
+      "global_doubling_percent": 4.4
+    },
+    "potion_family": "blended_weather",
+    "potion_tier": 2
+  },
+  "blended_weather_3": {
+    "id": "blended_weather_3",
+    "name": "Blended Weather III",
+    "item_type": "potion",
+    "sell_price": 706,
+    "is_stackable": true,
+    "description": "A brew of three weathers. Drink it from storage: for 25 actions every skill has a 4% chance to double its output. Still sells well.",
+    "charges": 30,
+    "potion_effect": {
+      "global_doubling_percent": 4.8
+    },
+    "potion_family": "blended_weather",
+    "potion_tier": 3
+  },
+  "blended_weather_4": {
+    "id": "blended_weather_4",
+    "name": "Blended Weather IV",
+    "item_type": "potion",
+    "sell_price": 838,
+    "is_stackable": true,
+    "description": "A brew of three weathers. Drink it from storage: for 25 actions every skill has a 4% chance to double its output. Still sells well.",
+    "charges": 33,
+    "potion_effect": {
+      "global_doubling_percent": 5.2
+    },
+    "potion_family": "blended_weather",
+    "potion_tier": 4
+  },
+  "blended_weather_5": {
+    "id": "blended_weather_5",
+    "name": "Blended Weather V",
+    "item_type": "potion",
+    "sell_price": 1228,
+    "is_stackable": true,
+    "description": "A brew of three weathers. Drink it from storage: for 25 actions every skill has a 4% chance to double its output. Still sells well.",
+    "charges": 35,
+    "potion_effect": {
+      "global_doubling_percent": 5.6
+    },
+    "potion_family": "blended_weather",
+    "potion_tier": 5
+  },
+  "blended_weather_6": {
+    "id": "blended_weather_6",
+    "name": "Blended Weather VI",
+    "item_type": "potion",
+    "sell_price": 1588,
+    "is_stackable": true,
+    "description": "A brew of three weathers. Drink it from storage: for 25 actions every skill has a 4% chance to double its output. Still sells well.",
+    "charges": 38,
+    "potion_effect": {
+      "global_doubling_percent": 6.0
+    },
+    "potion_family": "blended_weather",
+    "potion_tier": 6
+  },
+  "finders_fee_2": {
+    "id": "finders_fee_2",
+    "name": "Finder's Fee II",
+    "item_type": "potion",
+    "sell_price": 141,
+    "is_stackable": true,
+    "description": "An honest reward, and the object back where it belongs. Spend it from storage: for 50 actions or attacks you earn 10% more gold.",
+    "charges": 56,
+    "potion_effect": {
+      "global_gp_percent": 11.0
+    },
+    "potion_family": "finders_fee",
+    "potion_tier": 2
+  },
+  "finders_fee_3": {
+    "id": "finders_fee_3",
+    "name": "Finder's Fee III",
+    "item_type": "potion",
+    "sell_price": 195,
+    "is_stackable": true,
+    "description": "An honest reward, and the object back where it belongs. Spend it from storage: for 50 actions or attacks you earn 10% more gold.",
+    "charges": 60,
+    "potion_effect": {
+      "global_gp_percent": 12.0
+    },
+    "potion_family": "finders_fee",
+    "potion_tier": 3
+  },
+  "finders_fee_4": {
+    "id": "finders_fee_4",
+    "name": "Finder's Fee IV",
+    "item_type": "potion",
+    "sell_price": 327,
+    "is_stackable": true,
+    "description": "An honest reward, and the object back where it belongs. Spend it from storage: for 50 actions or attacks you earn 10% more gold.",
+    "charges": 65,
+    "potion_effect": {
+      "global_gp_percent": 13.0
+    },
+    "potion_family": "finders_fee",
+    "potion_tier": 4
+  },
+  "finders_fee_5": {
+    "id": "finders_fee_5",
+    "name": "Finder's Fee V",
+    "item_type": "potion",
+    "sell_price": 527,
+    "is_stackable": true,
+    "description": "An honest reward, and the object back where it belongs. Spend it from storage: for 50 actions or attacks you earn 10% more gold.",
+    "charges": 70,
+    "potion_effect": {
+      "global_gp_percent": 14.0
+    },
+    "potion_family": "finders_fee",
+    "potion_tier": 5
+  },
+  "finders_fee_6": {
+    "id": "finders_fee_6",
+    "name": "Finder's Fee VI",
+    "item_type": "potion",
+    "sell_price": 797,
+    "is_stackable": true,
+    "description": "An honest reward, and the object back where it belongs. Spend it from storage: for 50 actions or attacks you earn 10% more gold.",
+    "charges": 75,
+    "potion_effect": {
+      "global_gp_percent": 15.0
+    },
+    "potion_family": "finders_fee",
+    "potion_tier": 6
+  },
+  "flawless_echo_2": {
+    "id": "flawless_echo_2",
+    "name": "Flawless Echo II",
+    "item_type": "potion",
+    "sell_price": 1066,
+    "is_stackable": true,
+    "description": "A loop with no seam. Play it once and the room remembers. Play it from storage: for 40 actions all skill XP is 8% higher.",
+    "charges": 44,
+    "potion_effect": {
+      "global_skill_xp_percent": 8.8
+    },
+    "potion_family": "flawless_echo",
+    "potion_tier": 2
+  },
+  "flawless_echo_3": {
+    "id": "flawless_echo_3",
+    "name": "Flawless Echo III",
+    "item_type": "potion",
+    "sell_price": 1120,
+    "is_stackable": true,
+    "description": "A loop with no seam. Play it once and the room remembers. Play it from storage: for 40 actions all skill XP is 8% higher.",
+    "charges": 48,
+    "potion_effect": {
+      "global_skill_xp_percent": 9.6
+    },
+    "potion_family": "flawless_echo",
+    "potion_tier": 3
+  },
+  "flawless_echo_4": {
+    "id": "flawless_echo_4",
+    "name": "Flawless Echo IV",
+    "item_type": "potion",
+    "sell_price": 1252,
+    "is_stackable": true,
+    "description": "A loop with no seam. Play it once and the room remembers. Play it from storage: for 40 actions all skill XP is 8% higher.",
+    "charges": 52,
+    "potion_effect": {
+      "global_skill_xp_percent": 10.4
+    },
+    "potion_family": "flawless_echo",
+    "potion_tier": 4
+  },
+  "flawless_echo_5": {
+    "id": "flawless_echo_5",
+    "name": "Flawless Echo V",
+    "item_type": "potion",
+    "sell_price": 1502,
+    "is_stackable": true,
+    "description": "A loop with no seam. Play it once and the room remembers. Play it from storage: for 40 actions all skill XP is 8% higher.",
+    "charges": 56,
+    "potion_effect": {
+      "global_skill_xp_percent": 11.2
+    },
+    "potion_family": "flawless_echo",
+    "potion_tier": 5
+  },
+  "flawless_echo_6": {
+    "id": "flawless_echo_6",
+    "name": "Flawless Echo VI",
+    "item_type": "potion",
+    "sell_price": 1652,
+    "is_stackable": true,
+    "description": "A loop with no seam. Play it once and the room remembers. Play it from storage: for 40 actions all skill XP is 8% higher.",
+    "charges": 60,
+    "potion_effect": {
+      "global_skill_xp_percent": 12.0
+    },
+    "potion_family": "flawless_echo",
+    "potion_tier": 6
+  },
+  "grand_confluence_2": {
+    "id": "grand_confluence_2",
+    "name": "Grand Confluence II",
+    "item_type": "potion",
+    "sell_price": 2820,
+    "is_stackable": true,
+    "description": "Every road in the survey arriving at once, politely. Walk it from storage: for 30 actions every skill has a 5% chance to double its output.",
+    "charges": 33,
+    "potion_effect": {
+      "global_doubling_percent": 5.5
+    },
+    "potion_family": "grand_confluence",
+    "potion_tier": 2
+  },
+  "grand_confluence_3": {
+    "id": "grand_confluence_3",
+    "name": "Grand Confluence III",
+    "item_type": "potion",
+    "sell_price": 2874,
+    "is_stackable": true,
+    "description": "Every road in the survey arriving at once, politely. Walk it from storage: for 30 actions every skill has a 5% chance to double its output.",
+    "charges": 36,
+    "potion_effect": {
+      "global_doubling_percent": 6.0
+    },
+    "potion_family": "grand_confluence",
+    "potion_tier": 3
+  },
+  "grand_confluence_4": {
+    "id": "grand_confluence_4",
+    "name": "Grand Confluence IV",
+    "item_type": "potion",
+    "sell_price": 3006,
+    "is_stackable": true,
+    "description": "Every road in the survey arriving at once, politely. Walk it from storage: for 30 actions every skill has a 5% chance to double its output.",
+    "charges": 39,
+    "potion_effect": {
+      "global_doubling_percent": 6.5
+    },
+    "potion_family": "grand_confluence",
+    "potion_tier": 4
+  },
+  "grand_confluence_5": {
+    "id": "grand_confluence_5",
+    "name": "Grand Confluence V",
+    "item_type": "potion",
+    "sell_price": 3396,
+    "is_stackable": true,
+    "description": "Every road in the survey arriving at once, politely. Walk it from storage: for 30 actions every skill has a 5% chance to double its output.",
+    "charges": 42,
+    "potion_effect": {
+      "global_doubling_percent": 7.0
+    },
+    "potion_family": "grand_confluence",
+    "potion_tier": 5
+  },
+  "grand_confluence_6": {
+    "id": "grand_confluence_6",
+    "name": "Grand Confluence VI",
+    "item_type": "potion",
+    "sell_price": 3726,
+    "is_stackable": true,
+    "description": "Every road in the survey arriving at once, politely. Walk it from storage: for 30 actions every skill has a 5% chance to double its output.",
+    "charges": 45,
+    "potion_effect": {
+      "global_doubling_percent": 7.5
+    },
+    "potion_family": "grand_confluence",
+    "potion_tier": 6
+  },
+  "herald_gate_2": {
+    "id": "herald_gate_2",
+    "name": "Herald Gate II",
+    "item_type": "potion",
+    "sell_price": 8616,
+    "is_stackable": true,
+    "description": "A passage drawn to exactly one place. Knock first. Open it from storage: for 300 attacks you attack 6% faster.",
+    "charges": 330,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "attack_interval_percent": 6.6
+    },
+    "potion_family": "herald_gate",
+    "potion_tier": 2
+  },
+  "herald_gate_3": {
+    "id": "herald_gate_3",
+    "name": "Herald Gate III",
+    "item_type": "potion",
+    "sell_price": 8670,
+    "is_stackable": true,
+    "description": "A passage drawn to exactly one place. Knock first. Open it from storage: for 300 attacks you attack 6% faster.",
+    "charges": 360,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "attack_interval_percent": 7.2
+    },
+    "potion_family": "herald_gate",
+    "potion_tier": 3
+  },
+  "herald_gate_4": {
+    "id": "herald_gate_4",
+    "name": "Herald Gate IV",
+    "item_type": "potion",
+    "sell_price": 8802,
+    "is_stackable": true,
+    "description": "A passage drawn to exactly one place. Knock first. Open it from storage: for 300 attacks you attack 6% faster.",
+    "charges": 390,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "attack_interval_percent": 7.8
+    },
+    "potion_family": "herald_gate",
+    "potion_tier": 4
+  },
+  "herald_gate_5": {
+    "id": "herald_gate_5",
+    "name": "Herald Gate V",
+    "item_type": "potion",
+    "sell_price": 8977,
+    "is_stackable": true,
+    "description": "A passage drawn to exactly one place. Knock first. Open it from storage: for 300 attacks you attack 6% faster.",
+    "charges": 420,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "attack_interval_percent": 8.4
+    },
+    "potion_family": "herald_gate",
+    "potion_tier": 5
+  },
+  "herald_gate_6": {
+    "id": "herald_gate_6",
+    "name": "Herald Gate VI",
+    "item_type": "potion",
+    "sell_price": 9337,
+    "is_stackable": true,
+    "description": "A passage drawn to exactly one place. Knock first. Open it from storage: for 300 attacks you attack 6% faster.",
+    "charges": 450,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "attack_interval_percent": 9.0
+    },
+    "potion_family": "herald_gate",
+    "potion_tier": 6
+  },
+  "herald_craft_2": {
+    "id": "herald_craft_2",
+    "name": "Herald Craft II",
+    "item_type": "potion",
+    "sell_price": 4025,
+    "is_stackable": true,
+    "description": "Made the way it will be remembered, which is to say perfectly. Carry it from storage: for 300 attacks Huntsman tasks pay 15% more coins.",
+    "charges": 330,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_slayer_coins_percent": 16.5
+    },
+    "potion_family": "herald_craft",
+    "potion_tier": 2
+  },
+  "herald_craft_3": {
+    "id": "herald_craft_3",
+    "name": "Herald Craft III",
+    "item_type": "potion",
+    "sell_price": 4079,
+    "is_stackable": true,
+    "description": "Made the way it will be remembered, which is to say perfectly. Carry it from storage: for 300 attacks Huntsman tasks pay 15% more coins.",
+    "charges": 360,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_slayer_coins_percent": 18.0
+    },
+    "potion_family": "herald_craft",
+    "potion_tier": 3
+  },
+  "herald_craft_4": {
+    "id": "herald_craft_4",
+    "name": "Herald Craft IV",
+    "item_type": "potion",
+    "sell_price": 4211,
+    "is_stackable": true,
+    "description": "Made the way it will be remembered, which is to say perfectly. Carry it from storage: for 300 attacks Huntsman tasks pay 15% more coins.",
+    "charges": 390,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_slayer_coins_percent": 19.5
+    },
+    "potion_family": "herald_craft",
+    "potion_tier": 4
+  },
+  "herald_craft_5": {
+    "id": "herald_craft_5",
+    "name": "Herald Craft V",
+    "item_type": "potion",
+    "sell_price": 4411,
+    "is_stackable": true,
+    "description": "Made the way it will be remembered, which is to say perfectly. Carry it from storage: for 300 attacks Huntsman tasks pay 15% more coins.",
+    "charges": 420,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_slayer_coins_percent": 21.0
+    },
+    "potion_family": "herald_craft",
+    "potion_tier": 5
+  },
+  "herald_craft_6": {
+    "id": "herald_craft_6",
+    "name": "Herald Craft VI",
+    "item_type": "potion",
+    "sell_price": 4681,
+    "is_stackable": true,
+    "description": "Made the way it will be remembered, which is to say perfectly. Carry it from storage: for 300 attacks Huntsman tasks pay 15% more coins.",
+    "charges": 450,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_slayer_coins_percent": 22.5
+    },
+    "potion_family": "herald_craft",
+    "potion_tier": 6
+  },
+  "herald_case_2": {
+    "id": "herald_case_2",
+    "name": "Herald Case II",
+    "item_type": "potion",
+    "sell_price": 2902,
+    "is_stackable": true,
+    "description": "Closed. The label is in your handwriting and you have never seen it before. Open it from storage: for 300 attacks every kill has a 5% chance to drop double loot.",
+    "charges": 330,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_double_loot_percent": 5.5
+    },
+    "potion_family": "herald_case",
+    "potion_tier": 2
+  },
+  "herald_case_3": {
+    "id": "herald_case_3",
+    "name": "Herald Case III",
+    "item_type": "potion",
+    "sell_price": 2956,
+    "is_stackable": true,
+    "description": "Closed. The label is in your handwriting and you have never seen it before. Open it from storage: for 300 attacks every kill has a 5% chance to drop double loot.",
+    "charges": 360,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_double_loot_percent": 6.0
+    },
+    "potion_family": "herald_case",
+    "potion_tier": 3
+  },
+  "herald_case_4": {
+    "id": "herald_case_4",
+    "name": "Herald Case IV",
+    "item_type": "potion",
+    "sell_price": 3088,
+    "is_stackable": true,
+    "description": "Closed. The label is in your handwriting and you have never seen it before. Open it from storage: for 300 attacks every kill has a 5% chance to drop double loot.",
+    "charges": 390,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_double_loot_percent": 6.5
+    },
+    "potion_family": "herald_case",
+    "potion_tier": 4
+  },
+  "herald_case_5": {
+    "id": "herald_case_5",
+    "name": "Herald Case V",
+    "item_type": "potion",
+    "sell_price": 3338,
+    "is_stackable": true,
+    "description": "Closed. The label is in your handwriting and you have never seen it before. Open it from storage: for 300 attacks every kill has a 5% chance to drop double loot.",
+    "charges": 420,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_double_loot_percent": 7.0
+    },
+    "potion_family": "herald_case",
+    "potion_tier": 5
+  },
+  "herald_case_6": {
+    "id": "herald_case_6",
+    "name": "Herald Case VI",
+    "item_type": "potion",
+    "sell_price": 3488,
+    "is_stackable": true,
+    "description": "Closed. The label is in your handwriting and you have never seen it before. Open it from storage: for 300 attacks every kill has a 5% chance to drop double loot.",
+    "charges": 450,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_double_loot_percent": 7.5
+    },
+    "potion_family": "herald_case",
+    "potion_tier": 6
+  },
+  "potion_ranching_2": {
+    "id": "potion_ranching_2",
+    "name": "Rancher's Draught II",
+    "item_type": "potion",
+    "sell_price": 26,
+    "is_stackable": true,
+    "charges": 111,
+    "charge_scope": "ranching:collection",
+    "potion_effect": {
+      "ranching_interval_percent": 16.5
+    },
+    "potion_family": "potion_ranching",
+    "potion_tier": 2
+  },
+  "potion_ranching_3": {
+    "id": "potion_ranching_3",
+    "name": "Rancher's Draught III",
+    "item_type": "potion",
+    "sell_price": 80,
+    "is_stackable": true,
+    "charges": 120,
+    "charge_scope": "ranching:collection",
+    "potion_effect": {
+      "ranching_interval_percent": 18.0
+    },
+    "potion_family": "potion_ranching",
+    "potion_tier": 3
+  },
+  "potion_ranching_4": {
+    "id": "potion_ranching_4",
+    "name": "Rancher's Draught IV",
+    "item_type": "potion",
+    "sell_price": 212,
+    "is_stackable": true,
+    "charges": 130,
+    "charge_scope": "ranching:collection",
+    "potion_effect": {
+      "ranching_interval_percent": 19.5
+    },
+    "potion_family": "potion_ranching",
+    "potion_tier": 4
+  },
+  "potion_ranching_5": {
+    "id": "potion_ranching_5",
+    "name": "Rancher's Draught V",
+    "item_type": "potion",
+    "sell_price": 602,
+    "is_stackable": true,
+    "charges": 140,
+    "charge_scope": "ranching:collection",
+    "potion_effect": {
+      "ranching_interval_percent": 21.0
+    },
+    "potion_family": "potion_ranching",
+    "potion_tier": 5
+  },
+  "potion_ranching_6": {
+    "id": "potion_ranching_6",
+    "name": "Rancher's Draught VI",
+    "item_type": "potion",
+    "sell_price": 932,
+    "is_stackable": true,
+    "charges": 150,
+    "charge_scope": "ranching:collection",
+    "potion_effect": {
+      "ranching_interval_percent": 22.5
+    },
+    "potion_family": "potion_ranching",
+    "potion_tier": 6
+  },
+  "potion_inscription_2": {
+    "id": "potion_inscription_2",
+    "name": "Illuminating Potion II",
+    "item_type": "potion",
+    "sell_price": 26,
+    "is_stackable": true,
+    "charges": 111,
+    "charge_scope": "inscription",
+    "potion_effect": {
+      "inscription_quality_percent": 11.0
+    },
+    "potion_family": "potion_inscription",
+    "potion_tier": 2
+  },
+  "potion_inscription_3": {
+    "id": "potion_inscription_3",
+    "name": "Illuminating Potion III",
+    "item_type": "potion",
+    "sell_price": 80,
+    "is_stackable": true,
+    "charges": 120,
+    "charge_scope": "inscription",
+    "potion_effect": {
+      "inscription_quality_percent": 12.0
+    },
+    "potion_family": "potion_inscription",
+    "potion_tier": 3
+  },
+  "potion_inscription_4": {
+    "id": "potion_inscription_4",
+    "name": "Illuminating Potion IV",
+    "item_type": "potion",
+    "sell_price": 212,
+    "is_stackable": true,
+    "charges": 130,
+    "charge_scope": "inscription",
+    "potion_effect": {
+      "inscription_quality_percent": 13.0
+    },
+    "potion_family": "potion_inscription",
+    "potion_tier": 4
+  },
+  "potion_inscription_5": {
+    "id": "potion_inscription_5",
+    "name": "Illuminating Potion V",
+    "item_type": "potion",
+    "sell_price": 387,
+    "is_stackable": true,
+    "charges": 140,
+    "charge_scope": "inscription",
+    "potion_effect": {
+      "inscription_quality_percent": 14.0
+    },
+    "potion_family": "potion_inscription",
+    "potion_tier": 5
+  },
+  "potion_inscription_6": {
+    "id": "potion_inscription_6",
+    "name": "Illuminating Potion VI",
+    "item_type": "potion",
+    "sell_price": 747,
+    "is_stackable": true,
+    "charges": 150,
+    "charge_scope": "inscription",
+    "potion_effect": {
+      "inscription_quality_percent": 15.0
+    },
+    "potion_family": "potion_inscription",
+    "potion_tier": 6
+  },
+  "potion_engineering_2": {
+    "id": "potion_engineering_2",
+    "name": "Lubricating Potion II",
+    "item_type": "potion",
+    "sell_price": 26,
+    "is_stackable": true,
+    "charges": 111,
+    "charge_scope": "engineering:fuel",
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 16.5
+    },
+    "potion_family": "potion_engineering",
+    "potion_tier": 2
+  },
+  "potion_engineering_3": {
+    "id": "potion_engineering_3",
+    "name": "Lubricating Potion III",
+    "item_type": "potion",
+    "sell_price": 80,
+    "is_stackable": true,
+    "charges": 120,
+    "charge_scope": "engineering:fuel",
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 18.0
+    },
+    "potion_family": "potion_engineering",
+    "potion_tier": 3
+  },
+  "potion_engineering_4": {
+    "id": "potion_engineering_4",
+    "name": "Lubricating Potion IV",
+    "item_type": "potion",
+    "sell_price": 212,
+    "is_stackable": true,
+    "charges": 130,
+    "charge_scope": "engineering:fuel",
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 19.5
+    },
+    "potion_family": "potion_engineering",
+    "potion_tier": 4
+  },
+  "potion_engineering_5": {
+    "id": "potion_engineering_5",
+    "name": "Lubricating Potion V",
+    "item_type": "potion",
+    "sell_price": 412,
+    "is_stackable": true,
+    "charges": 140,
+    "charge_scope": "engineering:fuel",
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 21.0
+    },
+    "potion_family": "potion_engineering",
+    "potion_tier": 5
+  },
+  "potion_engineering_6": {
+    "id": "potion_engineering_6",
+    "name": "Lubricating Potion VI",
+    "item_type": "potion",
+    "sell_price": 682,
+    "is_stackable": true,
+    "charges": 150,
+    "charge_scope": "engineering:fuel",
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 22.5
+    },
+    "potion_family": "potion_engineering",
+    "potion_tier": 6
+  },
+  "potion_enchanting_2": {
+    "id": "potion_enchanting_2",
+    "name": "Attunement Potion II",
+    "item_type": "potion",
+    "sell_price": 26,
+    "is_stackable": true,
+    "charges": 111,
+    "charge_scope": "enchanting",
+    "potion_effect": {
+      "enchanting_essence_percent": 16.5
+    },
+    "potion_family": "potion_enchanting",
+    "potion_tier": 2
+  },
+  "potion_enchanting_3": {
+    "id": "potion_enchanting_3",
+    "name": "Attunement Potion III",
+    "item_type": "potion",
+    "sell_price": 80,
+    "is_stackable": true,
+    "charges": 120,
+    "charge_scope": "enchanting",
+    "potion_effect": {
+      "enchanting_essence_percent": 18.0
+    },
+    "potion_family": "potion_enchanting",
+    "potion_tier": 3
+  },
+  "potion_enchanting_4": {
+    "id": "potion_enchanting_4",
+    "name": "Attunement Potion IV",
+    "item_type": "potion",
+    "sell_price": 212,
+    "is_stackable": true,
+    "charges": 130,
+    "charge_scope": "enchanting",
+    "potion_effect": {
+      "enchanting_essence_percent": 19.5
+    },
+    "potion_family": "potion_enchanting",
+    "potion_tier": 4
+  },
+  "potion_enchanting_5": {
+    "id": "potion_enchanting_5",
+    "name": "Attunement Potion V",
+    "item_type": "potion",
+    "sell_price": 462,
+    "is_stackable": true,
+    "charges": 140,
+    "charge_scope": "enchanting",
+    "potion_effect": {
+      "enchanting_essence_percent": 21.0
+    },
+    "potion_family": "potion_enchanting",
+    "potion_tier": 5
+  },
+  "potion_enchanting_6": {
+    "id": "potion_enchanting_6",
+    "name": "Attunement Potion VI",
+    "item_type": "potion",
+    "sell_price": 612,
+    "is_stackable": true,
+    "charges": 150,
+    "charge_scope": "enchanting",
+    "potion_effect": {
+      "enchanting_essence_percent": 22.5
+    },
+    "potion_family": "potion_enchanting",
+    "potion_tier": 6
+  },
+  "potion_dreamwalking_2": {
+    "id": "potion_dreamwalking_2",
+    "name": "Lucid Draught II",
+    "item_type": "potion",
+    "sell_price": 26,
+    "is_stackable": true,
+    "charges": 111,
+    "charge_scope": "dreamwalking",
+    "potion_effect": {
+      "dreamwalking_essence_percent": 16.5
+    },
+    "potion_family": "potion_dreamwalking",
+    "potion_tier": 2
+  },
+  "potion_dreamwalking_3": {
+    "id": "potion_dreamwalking_3",
+    "name": "Lucid Draught III",
+    "item_type": "potion",
+    "sell_price": 80,
+    "is_stackable": true,
+    "charges": 120,
+    "charge_scope": "dreamwalking",
+    "potion_effect": {
+      "dreamwalking_essence_percent": 18.0
+    },
+    "potion_family": "potion_dreamwalking",
+    "potion_tier": 3
+  },
+  "potion_dreamwalking_4": {
+    "id": "potion_dreamwalking_4",
+    "name": "Lucid Draught IV",
+    "item_type": "potion",
+    "sell_price": 212,
+    "is_stackable": true,
+    "charges": 130,
+    "charge_scope": "dreamwalking",
+    "potion_effect": {
+      "dreamwalking_essence_percent": 19.5
+    },
+    "potion_family": "potion_dreamwalking",
+    "potion_tier": 4
+  },
+  "potion_dreamwalking_5": {
+    "id": "potion_dreamwalking_5",
+    "name": "Lucid Draught V",
+    "item_type": "potion",
+    "sell_price": 527,
+    "is_stackable": true,
+    "charges": 140,
+    "charge_scope": "dreamwalking",
+    "potion_effect": {
+      "dreamwalking_essence_percent": 21.0
+    },
+    "potion_family": "potion_dreamwalking",
+    "potion_tier": 5
+  },
+  "potion_dreamwalking_6": {
+    "id": "potion_dreamwalking_6",
+    "name": "Lucid Draught VI",
+    "item_type": "potion",
+    "sell_price": 857,
+    "is_stackable": true,
+    "charges": 150,
+    "charge_scope": "dreamwalking",
+    "potion_effect": {
+      "dreamwalking_essence_percent": 22.5
+    },
+    "potion_family": "potion_dreamwalking",
+    "potion_tier": 6
+  },
+  "potion_hushroot_2": {
+    "id": "potion_hushroot_2",
+    "name": "Hushroot Draught II",
+    "item_type": "potion",
+    "sell_price": 206,
+    "is_stackable": true,
+    "charges": 22,
+    "potion_effect": {
+      "thieving_stealth": 13.2
+    },
+    "potion_family": "potion_hushroot",
+    "potion_tier": 2
+  },
+  "potion_hushroot_3": {
+    "id": "potion_hushroot_3",
+    "name": "Hushroot Draught III",
+    "item_type": "potion",
+    "sell_price": 260,
+    "is_stackable": true,
+    "charges": 24,
+    "potion_effect": {
+      "thieving_stealth": 14.4
+    },
+    "potion_family": "potion_hushroot",
+    "potion_tier": 3
+  },
+  "potion_hushroot_4": {
+    "id": "potion_hushroot_4",
+    "name": "Hushroot Draught IV",
+    "item_type": "potion",
+    "sell_price": 392,
+    "is_stackable": true,
+    "charges": 26,
+    "potion_effect": {
+      "thieving_stealth": 15.6
+    },
+    "potion_family": "potion_hushroot",
+    "potion_tier": 4
+  },
+  "potion_hushroot_5": {
+    "id": "potion_hushroot_5",
+    "name": "Hushroot Draught V",
+    "item_type": "potion",
+    "sell_price": 782,
+    "is_stackable": true,
+    "charges": 28,
+    "potion_effect": {
+      "thieving_stealth": 16.8
+    },
+    "potion_family": "potion_hushroot",
+    "potion_tier": 5
+  },
+  "potion_hushroot_6": {
+    "id": "potion_hushroot_6",
+    "name": "Hushroot Draught VI",
+    "item_type": "potion",
+    "sell_price": 1142,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "thieving_stealth": 18.0
+    },
+    "potion_family": "potion_hushroot",
+    "potion_tier": 6
+  },
+  "potion_herald_bloom_2": {
+    "id": "potion_herald_bloom_2",
+    "name": "Herald Bloom Tonic II",
+    "item_type": "potion",
+    "sell_price": 276,
+    "is_stackable": true,
+    "charges": 17,
+    "potion_effect": {
+      "global_mastery_xp_percent": 11.0
+    },
+    "potion_family": "potion_herald_bloom",
+    "potion_tier": 2
+  },
+  "potion_herald_bloom_3": {
+    "id": "potion_herald_bloom_3",
+    "name": "Herald Bloom Tonic III",
+    "item_type": "potion",
+    "sell_price": 330,
+    "is_stackable": true,
+    "charges": 18,
+    "potion_effect": {
+      "global_mastery_xp_percent": 12.0
+    },
+    "potion_family": "potion_herald_bloom",
+    "potion_tier": 3
+  },
+  "potion_herald_bloom_4": {
+    "id": "potion_herald_bloom_4",
+    "name": "Herald Bloom Tonic IV",
+    "item_type": "potion",
+    "sell_price": 462,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "global_mastery_xp_percent": 13.0
+    },
+    "potion_family": "potion_herald_bloom",
+    "potion_tier": 4
+  },
+  "potion_herald_bloom_5": {
+    "id": "potion_herald_bloom_5",
+    "name": "Herald Bloom Tonic V",
+    "item_type": "potion",
+    "sell_price": 612,
+    "is_stackable": true,
+    "charges": 21,
+    "potion_effect": {
+      "global_mastery_xp_percent": 14.0
+    },
+    "potion_family": "potion_herald_bloom",
+    "potion_tier": 5
+  },
+  "potion_herald_bloom_6": {
+    "id": "potion_herald_bloom_6",
+    "name": "Herald Bloom Tonic VI",
+    "item_type": "potion",
+    "sell_price": 822,
+    "is_stackable": true,
+    "charges": 23,
+    "potion_effect": {
+      "global_mastery_xp_percent": 15.0
+    },
+    "potion_family": "potion_herald_bloom",
+    "potion_tier": 6
+  },
+  "potion_emberbloom_2": {
+    "id": "potion_emberbloom_2",
+    "name": "Emberbloom Tonic II",
+    "item_type": "potion",
+    "sell_price": 316,
+    "is_stackable": true,
+    "charges": 17,
+    "potion_effect": {
+      "crit_chance_percent": 8.8
+    },
+    "potion_family": "potion_emberbloom",
+    "potion_tier": 2
+  },
+  "potion_emberbloom_3": {
+    "id": "potion_emberbloom_3",
+    "name": "Emberbloom Tonic III",
+    "item_type": "potion",
+    "sell_price": 370,
+    "is_stackable": true,
+    "charges": 18,
+    "potion_effect": {
+      "crit_chance_percent": 9.6
+    },
+    "potion_family": "potion_emberbloom",
+    "potion_tier": 3
+  },
+  "potion_emberbloom_4": {
+    "id": "potion_emberbloom_4",
+    "name": "Emberbloom Tonic IV",
+    "item_type": "potion",
+    "sell_price": 502,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "crit_chance_percent": 10.4
+    },
+    "potion_family": "potion_emberbloom",
+    "potion_tier": 4
+  },
+  "potion_emberbloom_5": {
+    "id": "potion_emberbloom_5",
+    "name": "Emberbloom Tonic V",
+    "item_type": "potion",
+    "sell_price": 702,
+    "is_stackable": true,
+    "charges": 21,
+    "potion_effect": {
+      "crit_chance_percent": 11.2
+    },
+    "potion_family": "potion_emberbloom",
+    "potion_tier": 5
+  },
+  "potion_emberbloom_6": {
+    "id": "potion_emberbloom_6",
+    "name": "Emberbloom Tonic VI",
+    "item_type": "potion",
+    "sell_price": 972,
+    "is_stackable": true,
+    "charges": 23,
+    "potion_effect": {
+      "crit_chance_percent": 12.0
+    },
+    "potion_family": "potion_emberbloom",
+    "potion_tier": 6
+  },
+  "potion_antivenom_2": {
+    "id": "potion_antivenom_2",
+    "name": "Antivenom Draught II",
+    "item_type": "potion",
+    "sell_price": 86,
+    "is_stackable": true,
+    "charges": 17,
+    "potion_effect": {
+      "poison_resistance_percent": 33.0
+    },
+    "potion_family": "potion_antivenom",
+    "potion_tier": 2
+  },
+  "potion_antivenom_3": {
+    "id": "potion_antivenom_3",
+    "name": "Antivenom Draught III",
+    "item_type": "potion",
+    "sell_price": 140,
+    "is_stackable": true,
+    "charges": 18,
+    "potion_effect": {
+      "poison_resistance_percent": 36.0
+    },
+    "potion_family": "potion_antivenom",
+    "potion_tier": 3
+  },
+  "potion_antivenom_4": {
+    "id": "potion_antivenom_4",
+    "name": "Antivenom Draught IV",
+    "item_type": "potion",
+    "sell_price": 272,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "poison_resistance_percent": 39.0
+    },
+    "potion_family": "potion_antivenom",
+    "potion_tier": 4
+  },
+  "potion_antivenom_5": {
+    "id": "potion_antivenom_5",
+    "name": "Antivenom Draught V",
+    "item_type": "potion",
+    "sell_price": 522,
+    "is_stackable": true,
+    "charges": 21,
+    "potion_effect": {
+      "poison_resistance_percent": 42.0
+    },
+    "potion_family": "potion_antivenom",
+    "potion_tier": 5
+  },
+  "potion_antivenom_6": {
+    "id": "potion_antivenom_6",
+    "name": "Antivenom Draught VI",
+    "item_type": "potion",
+    "sell_price": 672,
+    "is_stackable": true,
+    "charges": 23,
+    "potion_effect": {
+      "poison_resistance_percent": 45.0
+    },
+    "potion_family": "potion_antivenom",
+    "potion_tier": 6
+  },
+  "potion_caravaneering_2": {
+    "id": "potion_caravaneering_2",
+    "name": "Merchant's Tonic II",
+    "item_type": "potion",
+    "sell_price": 26,
+    "is_stackable": true,
+    "charges": 22,
+    "charge_scope": "caravaneering:trip",
+    "potion_effect": {
+      "caravaneering_profit_percent": 16.5
+    },
+    "potion_family": "potion_caravaneering",
+    "potion_tier": 2
+  },
+  "potion_caravaneering_3": {
+    "id": "potion_caravaneering_3",
+    "name": "Merchant's Tonic III",
+    "item_type": "potion",
+    "sell_price": 80,
+    "is_stackable": true,
+    "charges": 24,
+    "charge_scope": "caravaneering:trip",
+    "potion_effect": {
+      "caravaneering_profit_percent": 18.0
+    },
+    "potion_family": "potion_caravaneering",
+    "potion_tier": 3
+  },
+  "potion_caravaneering_4": {
+    "id": "potion_caravaneering_4",
+    "name": "Merchant's Tonic IV",
+    "item_type": "potion",
+    "sell_price": 212,
+    "is_stackable": true,
+    "charges": 26,
+    "charge_scope": "caravaneering:trip",
+    "potion_effect": {
+      "caravaneering_profit_percent": 19.5
+    },
+    "potion_family": "potion_caravaneering",
+    "potion_tier": 4
+  },
+  "potion_caravaneering_5": {
+    "id": "potion_caravaneering_5",
+    "name": "Merchant's Tonic V",
+    "item_type": "potion",
+    "sell_price": 527,
+    "is_stackable": true,
+    "charges": 28,
+    "charge_scope": "caravaneering:trip",
+    "potion_effect": {
+      "caravaneering_profit_percent": 21.0
+    },
+    "potion_family": "potion_caravaneering",
+    "potion_tier": 5
+  },
+  "potion_caravaneering_6": {
+    "id": "potion_caravaneering_6",
+    "name": "Merchant's Tonic VI",
+    "item_type": "potion",
+    "sell_price": 857,
+    "is_stackable": true,
+    "charges": 30,
+    "charge_scope": "caravaneering:trip",
+    "potion_effect": {
+      "caravaneering_profit_percent": 22.5
+    },
+    "potion_family": "potion_caravaneering",
+    "potion_tier": 6
+  },
+  "potion_fieldhand_tonic_2": {
+    "id": "potion_fieldhand_tonic_2",
+    "name": "Fieldhand Tonic II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 26,
+    "charges": 22,
+    "potion_effect": {
+      "farming_interval_percent": 5.5
+    },
+    "potion_family": "potion_fieldhand_tonic",
+    "potion_tier": 2
+  },
+  "potion_fieldhand_tonic_3": {
+    "id": "potion_fieldhand_tonic_3",
+    "name": "Fieldhand Tonic III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 80,
+    "charges": 24,
+    "potion_effect": {
+      "farming_interval_percent": 6.0
+    },
+    "potion_family": "potion_fieldhand_tonic",
+    "potion_tier": 3
+  },
+  "potion_fieldhand_tonic_4": {
+    "id": "potion_fieldhand_tonic_4",
+    "name": "Fieldhand Tonic IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 212,
+    "charges": 26,
+    "potion_effect": {
+      "farming_interval_percent": 6.5
+    },
+    "potion_family": "potion_fieldhand_tonic",
+    "potion_tier": 4
+  },
+  "potion_fieldhand_tonic_5": {
+    "id": "potion_fieldhand_tonic_5",
+    "name": "Fieldhand Tonic V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 602,
+    "charges": 28,
+    "potion_effect": {
+      "farming_interval_percent": 7.0
+    },
+    "potion_family": "potion_fieldhand_tonic",
+    "potion_tier": 5
+  },
+  "potion_fieldhand_tonic_6": {
+    "id": "potion_fieldhand_tonic_6",
+    "name": "Fieldhand Tonic VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 962,
+    "charges": 30,
+    "potion_effect": {
+      "farming_interval_percent": 7.5
+    },
+    "potion_family": "potion_fieldhand_tonic",
+    "potion_tier": 6
+  },
+  "potion_nestkeeper_elixir_2": {
+    "id": "potion_nestkeeper_elixir_2",
+    "name": "Nestkeeper Elixir II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 36,
+    "charges": 25,
+    "potion_effect": {
+      "ranching_interval_percent": 8.8
+    },
+    "charge_scope": "ranching:collection",
+    "potion_family": "potion_nestkeeper_elixir",
+    "potion_tier": 2
+  },
+  "potion_nestkeeper_elixir_3": {
+    "id": "potion_nestkeeper_elixir_3",
+    "name": "Nestkeeper Elixir III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 90,
+    "charges": 27,
+    "potion_effect": {
+      "ranching_interval_percent": 9.6
+    },
+    "charge_scope": "ranching:collection",
+    "potion_family": "potion_nestkeeper_elixir",
+    "potion_tier": 3
+  },
+  "potion_nestkeeper_elixir_4": {
+    "id": "potion_nestkeeper_elixir_4",
+    "name": "Nestkeeper Elixir IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 222,
+    "charges": 29,
+    "potion_effect": {
+      "ranching_interval_percent": 10.4
+    },
+    "charge_scope": "ranching:collection",
+    "potion_family": "potion_nestkeeper_elixir",
+    "potion_tier": 4
+  },
+  "potion_nestkeeper_elixir_5": {
+    "id": "potion_nestkeeper_elixir_5",
+    "name": "Nestkeeper Elixir V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 372,
+    "charges": 31,
+    "potion_effect": {
+      "ranching_interval_percent": 11.2
+    },
+    "charge_scope": "ranching:collection",
+    "potion_family": "potion_nestkeeper_elixir",
+    "potion_tier": 5
+  },
+  "potion_nestkeeper_elixir_6": {
+    "id": "potion_nestkeeper_elixir_6",
+    "name": "Nestkeeper Elixir VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 582,
+    "charges": 33,
+    "potion_effect": {
+      "ranching_interval_percent": 12.0
+    },
+    "charge_scope": "ranching:collection",
+    "potion_family": "potion_nestkeeper_elixir",
+    "potion_tier": 6
+  },
+  "potion_veinseeker_tonic_2": {
+    "id": "potion_veinseeker_tonic_2",
+    "name": "Veinseeker Tonic II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 46,
+    "charges": 27,
+    "potion_effect": {
+      "mining_node_preservation_percent": 8.8
+    },
+    "potion_family": "potion_veinseeker_tonic",
+    "potion_tier": 2
+  },
+  "potion_veinseeker_tonic_3": {
+    "id": "potion_veinseeker_tonic_3",
+    "name": "Veinseeker Tonic III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 100,
+    "charges": 29,
+    "potion_effect": {
+      "mining_node_preservation_percent": 9.6
+    },
+    "potion_family": "potion_veinseeker_tonic",
+    "potion_tier": 3
+  },
+  "potion_veinseeker_tonic_4": {
+    "id": "potion_veinseeker_tonic_4",
+    "name": "Veinseeker Tonic IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 232,
+    "charges": 32,
+    "potion_effect": {
+      "mining_node_preservation_percent": 10.4
+    },
+    "potion_family": "potion_veinseeker_tonic",
+    "potion_tier": 4
+  },
+  "potion_veinseeker_tonic_5": {
+    "id": "potion_veinseeker_tonic_5",
+    "name": "Veinseeker Tonic V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 432,
+    "charges": 34,
+    "potion_effect": {
+      "mining_node_preservation_percent": 11.2
+    },
+    "potion_family": "potion_veinseeker_tonic",
+    "potion_tier": 5
+  },
+  "potion_veinseeker_tonic_6": {
+    "id": "potion_veinseeker_tonic_6",
+    "name": "Veinseeker Tonic VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 702,
+    "charges": 36,
+    "potion_effect": {
+      "mining_node_preservation_percent": 12.0
+    },
+    "potion_family": "potion_veinseeker_tonic",
+    "potion_tier": 6
+  },
+  "potion_bowyer_focus_2": {
+    "id": "potion_bowyer_focus_2",
+    "name": "Bowyer Focus II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 56,
+    "charges": 29,
+    "potion_effect": {
+      "fletching_doubling_percent": 8.8
+    },
+    "potion_family": "potion_bowyer_focus",
+    "potion_tier": 2
+  },
+  "potion_bowyer_focus_3": {
+    "id": "potion_bowyer_focus_3",
+    "name": "Bowyer Focus III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 110,
+    "charges": 32,
+    "potion_effect": {
+      "fletching_doubling_percent": 9.6
+    },
+    "potion_family": "potion_bowyer_focus",
+    "potion_tier": 3
+  },
+  "potion_bowyer_focus_4": {
+    "id": "potion_bowyer_focus_4",
+    "name": "Bowyer Focus IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 242,
+    "charges": 34,
+    "potion_effect": {
+      "fletching_doubling_percent": 10.4
+    },
+    "potion_family": "potion_bowyer_focus",
+    "potion_tier": 4
+  },
+  "potion_bowyer_focus_5": {
+    "id": "potion_bowyer_focus_5",
+    "name": "Bowyer Focus V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 492,
+    "charges": 37,
+    "potion_effect": {
+      "fletching_doubling_percent": 11.2
+    },
+    "potion_family": "potion_bowyer_focus",
+    "potion_tier": 5
+  },
+  "potion_bowyer_focus_6": {
+    "id": "potion_bowyer_focus_6",
+    "name": "Bowyer Focus VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 642,
+    "charges": 39,
+    "potion_effect": {
+      "fletching_doubling_percent": 12.0
+    },
+    "potion_family": "potion_bowyer_focus",
+    "potion_tier": 6
+  },
+  "potion_stoneward_tonic_2": {
+    "id": "potion_stoneward_tonic_2",
+    "name": "Stoneward Tonic II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 66,
+    "charges": 31,
+    "potion_effect": {
+      "damage_reduction_percent": 3.3
+    },
+    "charge_scope": "combat",
+    "potion_family": "potion_stoneward_tonic",
+    "potion_tier": 2
+  },
+  "potion_stoneward_tonic_3": {
+    "id": "potion_stoneward_tonic_3",
+    "name": "Stoneward Tonic III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 120,
+    "charges": 34,
+    "potion_effect": {
+      "damage_reduction_percent": 3.6
+    },
+    "charge_scope": "combat",
+    "potion_family": "potion_stoneward_tonic",
+    "potion_tier": 3
+  },
+  "potion_stoneward_tonic_4": {
+    "id": "potion_stoneward_tonic_4",
+    "name": "Stoneward Tonic IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 252,
+    "charges": 37,
+    "potion_effect": {
+      "damage_reduction_percent": 3.9
+    },
+    "charge_scope": "combat",
+    "potion_family": "potion_stoneward_tonic",
+    "potion_tier": 4
+  },
+  "potion_stoneward_tonic_5": {
+    "id": "potion_stoneward_tonic_5",
+    "name": "Stoneward Tonic V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 567,
+    "charges": 40,
+    "potion_effect": {
+      "damage_reduction_percent": 4.2
+    },
+    "charge_scope": "combat",
+    "potion_family": "potion_stoneward_tonic",
+    "potion_tier": 5
+  },
+  "potion_stoneward_tonic_6": {
+    "id": "potion_stoneward_tonic_6",
+    "name": "Stoneward Tonic VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 897,
+    "charges": 42,
+    "potion_effect": {
+      "damage_reduction_percent": 4.5
+    },
+    "charge_scope": "combat",
+    "potion_family": "potion_stoneward_tonic",
+    "potion_tier": 6
+  },
+  "potion_gearsmith_elixir_2": {
+    "id": "potion_gearsmith_elixir_2",
+    "name": "Gearsmith Elixir II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 76,
+    "charges": 33,
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 13.2
+    },
+    "charge_scope": "engineering:fuel",
+    "potion_family": "potion_gearsmith_elixir",
+    "potion_tier": 2
+  },
+  "potion_gearsmith_elixir_3": {
+    "id": "potion_gearsmith_elixir_3",
+    "name": "Gearsmith Elixir III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 130,
+    "charges": 36,
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 14.4
+    },
+    "charge_scope": "engineering:fuel",
+    "potion_family": "potion_gearsmith_elixir",
+    "potion_tier": 3
+  },
+  "potion_gearsmith_elixir_4": {
+    "id": "potion_gearsmith_elixir_4",
+    "name": "Gearsmith Elixir IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 262,
+    "charges": 39,
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 15.6
+    },
+    "charge_scope": "engineering:fuel",
+    "potion_family": "potion_gearsmith_elixir",
+    "potion_tier": 4
+  },
+  "potion_gearsmith_elixir_5": {
+    "id": "potion_gearsmith_elixir_5",
+    "name": "Gearsmith Elixir V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 652,
+    "charges": 42,
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 16.8
+    },
+    "charge_scope": "engineering:fuel",
+    "potion_family": "potion_gearsmith_elixir",
+    "potion_tier": 5
+  },
+  "potion_gearsmith_elixir_6": {
+    "id": "potion_gearsmith_elixir_6",
+    "name": "Gearsmith Elixir VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 1012,
+    "charges": 45,
+    "potion_effect": {
+      "engineering_fuel_reduction_percent": 18.0
+    },
+    "charge_scope": "engineering:fuel",
+    "potion_family": "potion_gearsmith_elixir",
+    "potion_tier": 6
+  },
+  "potion_rootkeeper_tonic_2": {
+    "id": "potion_rootkeeper_tonic_2",
+    "name": "Rootkeeper Tonic II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 86,
+    "charges": 36,
+    "potion_effect": {
+      "farming_doubling_percent": 11.0
+    },
+    "potion_family": "potion_rootkeeper_tonic",
+    "potion_tier": 2
+  },
+  "potion_rootkeeper_tonic_3": {
+    "id": "potion_rootkeeper_tonic_3",
+    "name": "Rootkeeper Tonic III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 140,
+    "charges": 39,
+    "potion_effect": {
+      "farming_doubling_percent": 12.0
+    },
+    "potion_family": "potion_rootkeeper_tonic",
+    "potion_tier": 3
+  },
+  "potion_rootkeeper_tonic_4": {
+    "id": "potion_rootkeeper_tonic_4",
+    "name": "Rootkeeper Tonic IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 272,
+    "charges": 42,
+    "potion_effect": {
+      "farming_doubling_percent": 13.0
+    },
+    "potion_family": "potion_rootkeeper_tonic",
+    "potion_tier": 4
+  },
+  "potion_rootkeeper_tonic_5": {
+    "id": "potion_rootkeeper_tonic_5",
+    "name": "Rootkeeper Tonic V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 422,
+    "charges": 45,
+    "potion_effect": {
+      "farming_doubling_percent": 14.0
+    },
+    "potion_family": "potion_rootkeeper_tonic",
+    "potion_tier": 5
+  },
+  "potion_rootkeeper_tonic_6": {
+    "id": "potion_rootkeeper_tonic_6",
+    "name": "Rootkeeper Tonic VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 632,
+    "charges": 48,
+    "potion_effect": {
+      "farming_doubling_percent": 15.0
+    },
+    "potion_family": "potion_rootkeeper_tonic",
+    "potion_tier": 6
+  },
+  "potion_moonlit_insight_2": {
+    "id": "potion_moonlit_insight_2",
+    "name": "Moonlit Insight II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 96,
+    "charges": 38,
+    "potion_effect": {
+      "global_mastery_xp_percent": 8.8
+    },
+    "potion_family": "potion_moonlit_insight",
+    "potion_tier": 2
+  },
+  "potion_moonlit_insight_3": {
+    "id": "potion_moonlit_insight_3",
+    "name": "Moonlit Insight III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 150,
+    "charges": 41,
+    "potion_effect": {
+      "global_mastery_xp_percent": 9.6
+    },
+    "potion_family": "potion_moonlit_insight",
+    "potion_tier": 3
+  },
+  "potion_moonlit_insight_4": {
+    "id": "potion_moonlit_insight_4",
+    "name": "Moonlit Insight IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 282,
+    "charges": 45,
+    "potion_effect": {
+      "global_mastery_xp_percent": 10.4
+    },
+    "potion_family": "potion_moonlit_insight",
+    "potion_tier": 4
+  },
+  "potion_moonlit_insight_5": {
+    "id": "potion_moonlit_insight_5",
+    "name": "Moonlit Insight V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 482,
+    "charges": 48,
+    "potion_effect": {
+      "global_mastery_xp_percent": 11.2
+    },
+    "potion_family": "potion_moonlit_insight",
+    "potion_tier": 5
+  },
+  "potion_moonlit_insight_6": {
+    "id": "potion_moonlit_insight_6",
+    "name": "Moonlit Insight VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 752,
+    "charges": 51,
+    "potion_effect": {
+      "global_mastery_xp_percent": 12.0
+    },
+    "potion_family": "potion_moonlit_insight",
+    "potion_tier": 6
+  },
+  "potion_stormrunner_elixir_2": {
+    "id": "potion_stormrunner_elixir_2",
+    "name": "Stormrunner Elixir II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 106,
+    "charges": 40,
+    "potion_effect": {
+      "global_skill_interval_percent": 5.5
+    },
+    "potion_family": "potion_stormrunner_elixir",
+    "potion_tier": 2
+  },
+  "potion_stormrunner_elixir_3": {
+    "id": "potion_stormrunner_elixir_3",
+    "name": "Stormrunner Elixir III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 160,
+    "charges": 44,
+    "potion_effect": {
+      "global_skill_interval_percent": 6.0
+    },
+    "potion_family": "potion_stormrunner_elixir",
+    "potion_tier": 3
+  },
+  "potion_stormrunner_elixir_4": {
+    "id": "potion_stormrunner_elixir_4",
+    "name": "Stormrunner Elixir IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 292,
+    "charges": 47,
+    "potion_effect": {
+      "global_skill_interval_percent": 6.5
+    },
+    "potion_family": "potion_stormrunner_elixir",
+    "potion_tier": 4
+  },
+  "potion_stormrunner_elixir_5": {
+    "id": "potion_stormrunner_elixir_5",
+    "name": "Stormrunner Elixir V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 542,
+    "charges": 51,
+    "potion_effect": {
+      "global_skill_interval_percent": 7.0
+    },
+    "potion_family": "potion_stormrunner_elixir",
+    "potion_tier": 5
+  },
+  "potion_stormrunner_elixir_6": {
+    "id": "potion_stormrunner_elixir_6",
+    "name": "Stormrunner Elixir VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 692,
+    "charges": 54,
+    "potion_effect": {
+      "global_skill_interval_percent": 7.5
+    },
+    "potion_family": "potion_stormrunner_elixir",
+    "potion_tier": 6
+  },
+  "potion_riftward_tonic_2": {
+    "id": "potion_riftward_tonic_2",
+    "name": "Riftward Tonic II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 116,
+    "charges": 42,
+    "potion_effect": {
+      "riftkeeping_doubling_percent": 13.2
+    },
+    "potion_family": "potion_riftward_tonic",
+    "potion_tier": 2
+  },
+  "potion_riftward_tonic_3": {
+    "id": "potion_riftward_tonic_3",
+    "name": "Riftward Tonic III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 170,
+    "charges": 46,
+    "potion_effect": {
+      "riftkeeping_doubling_percent": 14.4
+    },
+    "potion_family": "potion_riftward_tonic",
+    "potion_tier": 3
+  },
+  "potion_riftward_tonic_4": {
+    "id": "potion_riftward_tonic_4",
+    "name": "Riftward Tonic IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 302,
+    "charges": 50,
+    "potion_effect": {
+      "riftkeeping_doubling_percent": 15.6
+    },
+    "potion_family": "potion_riftward_tonic",
+    "potion_tier": 4
+  },
+  "potion_riftward_tonic_5": {
+    "id": "potion_riftward_tonic_5",
+    "name": "Riftward Tonic V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 617,
+    "charges": 54,
+    "potion_effect": {
+      "riftkeeping_doubling_percent": 16.8
+    },
+    "potion_family": "potion_riftward_tonic",
+    "potion_tier": 5
+  },
+  "potion_riftward_tonic_6": {
+    "id": "potion_riftward_tonic_6",
+    "name": "Riftward Tonic VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 947,
+    "charges": 57,
+    "potion_effect": {
+      "riftkeeping_doubling_percent": 18.0
+    },
+    "potion_family": "potion_riftward_tonic",
+    "potion_tier": 6
+  },
+  "potion_astral_lucidity_2": {
+    "id": "potion_astral_lucidity_2",
+    "name": "Astral Lucidity II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 126,
+    "charges": 44,
+    "potion_effect": {
+      "global_skill_xp_percent": 8.8
+    },
+    "potion_family": "potion_astral_lucidity",
+    "potion_tier": 2
+  },
+  "potion_astral_lucidity_3": {
+    "id": "potion_astral_lucidity_3",
+    "name": "Astral Lucidity III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 180,
+    "charges": 48,
+    "potion_effect": {
+      "global_skill_xp_percent": 9.6
+    },
+    "potion_family": "potion_astral_lucidity",
+    "potion_tier": 3
+  },
+  "potion_astral_lucidity_4": {
+    "id": "potion_astral_lucidity_4",
+    "name": "Astral Lucidity IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 312,
+    "charges": 52,
+    "potion_effect": {
+      "global_skill_xp_percent": 10.4
+    },
+    "potion_family": "potion_astral_lucidity",
+    "potion_tier": 4
+  },
+  "potion_astral_lucidity_5": {
+    "id": "potion_astral_lucidity_5",
+    "name": "Astral Lucidity V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 702,
+    "charges": 56,
+    "potion_effect": {
+      "global_skill_xp_percent": 11.2
+    },
+    "potion_family": "potion_astral_lucidity",
+    "potion_tier": 5
+  },
+  "potion_astral_lucidity_6": {
+    "id": "potion_astral_lucidity_6",
+    "name": "Astral Lucidity VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 1062,
+    "charges": 60,
+    "potion_effect": {
+      "global_skill_xp_percent": 12.0
+    },
+    "potion_family": "potion_astral_lucidity",
+    "potion_tier": 6
+  },
+  "potion_dawnweaver_elixir_2": {
+    "id": "potion_dawnweaver_elixir_2",
+    "name": "Dawnweaver Elixir II",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 136,
+    "charges": 47,
+    "potion_effect": {
+      "global_doubling_percent": 13.2
+    },
+    "potion_family": "potion_dawnweaver_elixir",
+    "potion_tier": 2
+  },
+  "potion_dawnweaver_elixir_3": {
+    "id": "potion_dawnweaver_elixir_3",
+    "name": "Dawnweaver Elixir III",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 190,
+    "charges": 51,
+    "potion_effect": {
+      "global_doubling_percent": 14.4
+    },
+    "potion_family": "potion_dawnweaver_elixir",
+    "potion_tier": 3
+  },
+  "potion_dawnweaver_elixir_4": {
+    "id": "potion_dawnweaver_elixir_4",
+    "name": "Dawnweaver Elixir IV",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 322,
+    "charges": 55,
+    "potion_effect": {
+      "global_doubling_percent": 15.6
+    },
+    "potion_family": "potion_dawnweaver_elixir",
+    "potion_tier": 4
+  },
+  "potion_dawnweaver_elixir_5": {
+    "id": "potion_dawnweaver_elixir_5",
+    "name": "Dawnweaver Elixir V",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 472,
+    "charges": 59,
+    "potion_effect": {
+      "global_doubling_percent": 16.8
+    },
+    "potion_family": "potion_dawnweaver_elixir",
+    "potion_tier": 5
+  },
+  "potion_dawnweaver_elixir_6": {
+    "id": "potion_dawnweaver_elixir_6",
+    "name": "Dawnweaver Elixir VI",
+    "item_type": "potion",
+    "is_stackable": true,
+    "sell_price": 682,
+    "charges": 63,
+    "potion_effect": {
+      "global_doubling_percent": 18.0
+    },
+    "potion_family": "potion_dawnweaver_elixir",
+    "potion_tier": 6
+  },
+  "potion_lumberjack_1": {
+    "id": "potion_lumberjack_1",
+    "name": "Lumberjack’s Draught I",
+    "item_type": "potion",
+    "sell_price": 5,
+    "is_stackable": true,
+    "charges": 10,
+    "potion_effect": {
+      "woodcutting_doubling_percent": 5
+    },
+    "potion_family": "potion_lumberjack",
+    "potion_tier": 1
+  },
+  "potion_lumberjack_2": {
+    "id": "potion_lumberjack_2",
+    "name": "Lumberjack’s Draught II",
+    "item_type": "potion",
+    "sell_price": 15,
+    "is_stackable": true,
+    "charges": 15,
+    "potion_effect": {
+      "woodcutting_doubling_percent": 10
+    },
+    "potion_family": "potion_lumberjack",
+    "potion_tier": 2
+  },
+  "potion_lumberjack_3": {
+    "id": "potion_lumberjack_3",
+    "name": "Lumberjack’s Draught III",
+    "item_type": "potion",
+    "sell_price": 30,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "woodcutting_doubling_percent": 15
+    },
+    "potion_family": "potion_lumberjack",
+    "potion_tier": 3
+  },
+  "potion_lumberjack_4": {
+    "id": "potion_lumberjack_4",
+    "name": "Lumberjack’s Draught IV",
+    "item_type": "potion",
+    "sell_price": 50,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "woodcutting_doubling_percent": 20
+    },
+    "potion_family": "potion_lumberjack",
+    "potion_tier": 4
+  },
+  "potion_lumberjack_5": {
+    "id": "potion_lumberjack_5",
+    "name": "Lumberjack’s Draught V",
+    "item_type": "potion",
+    "sell_price": 365,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "woodcutting_doubling_percent": 25
+    },
+    "potion_family": "potion_lumberjack",
+    "potion_tier": 5
+  },
+  "potion_lumberjack_6": {
+    "id": "potion_lumberjack_6",
+    "name": "Lumberjack’s Draught VI",
+    "item_type": "potion",
+    "sell_price": 923,
+    "is_stackable": true,
+    "charges": 35,
+    "potion_effect": {
+      "woodcutting_doubling_percent": 30
+    },
+    "potion_family": "potion_lumberjack",
+    "potion_tier": 6
+  },
+  "potion_tidecatch_1": {
+    "id": "potion_tidecatch_1",
+    "name": "Tidecatch Tonic I",
+    "item_type": "potion",
+    "sell_price": 15,
+    "is_stackable": true,
+    "charges": 10,
+    "potion_effect": {
+      "fishing_doubling_percent": 5
+    },
+    "potion_family": "potion_tidecatch",
+    "potion_tier": 1
+  },
+  "potion_tidecatch_2": {
+    "id": "potion_tidecatch_2",
+    "name": "Tidecatch Tonic II",
+    "item_type": "potion",
+    "sell_price": 45,
+    "is_stackable": true,
+    "charges": 15,
+    "potion_effect": {
+      "fishing_doubling_percent": 10
+    },
+    "potion_family": "potion_tidecatch",
+    "potion_tier": 2
+  },
+  "potion_tidecatch_3": {
+    "id": "potion_tidecatch_3",
+    "name": "Tidecatch Tonic III",
+    "item_type": "potion",
+    "sell_price": 90,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "fishing_doubling_percent": 15
+    },
+    "potion_family": "potion_tidecatch",
+    "potion_tier": 3
+  },
+  "potion_tidecatch_4": {
+    "id": "potion_tidecatch_4",
+    "name": "Tidecatch Tonic IV",
+    "item_type": "potion",
+    "sell_price": 150,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "fishing_doubling_percent": 20
+    },
+    "potion_family": "potion_tidecatch",
+    "potion_tier": 4
+  },
+  "potion_tidecatch_5": {
+    "id": "potion_tidecatch_5",
+    "name": "Tidecatch Tonic V",
+    "item_type": "potion",
+    "sell_price": 465,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "fishing_doubling_percent": 25
+    },
+    "potion_family": "potion_tidecatch",
+    "potion_tier": 5
+  },
+  "potion_tidecatch_6": {
+    "id": "potion_tidecatch_6",
+    "name": "Tidecatch Tonic VI",
+    "item_type": "potion",
+    "sell_price": 1023,
+    "is_stackable": true,
+    "charges": 35,
+    "potion_effect": {
+      "fishing_doubling_percent": 30
+    },
+    "potion_family": "potion_tidecatch",
+    "potion_tier": 6
+  },
+  "potion_forgekeeper_1": {
+    "id": "potion_forgekeeper_1",
+    "name": "Forgekeeper’s Draught I",
+    "item_type": "potion",
+    "sell_price": 20,
+    "is_stackable": true,
+    "charges": 10,
+    "potion_effect": {
+      "smithing_preservation_percent": 5
+    },
+    "potion_family": "potion_forgekeeper",
+    "potion_tier": 1
+  },
+  "potion_forgekeeper_2": {
+    "id": "potion_forgekeeper_2",
+    "name": "Forgekeeper’s Draught II",
+    "item_type": "potion",
+    "sell_price": 60,
+    "is_stackable": true,
+    "charges": 15,
+    "potion_effect": {
+      "smithing_preservation_percent": 10
+    },
+    "potion_family": "potion_forgekeeper",
+    "potion_tier": 2
+  },
+  "potion_forgekeeper_3": {
+    "id": "potion_forgekeeper_3",
+    "name": "Forgekeeper’s Draught III",
+    "item_type": "potion",
+    "sell_price": 120,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "smithing_preservation_percent": 15
+    },
+    "potion_family": "potion_forgekeeper",
+    "potion_tier": 3
+  },
+  "potion_forgekeeper_4": {
+    "id": "potion_forgekeeper_4",
+    "name": "Forgekeeper’s Draught IV",
+    "item_type": "potion",
+    "sell_price": 200,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "smithing_preservation_percent": 20
+    },
+    "potion_family": "potion_forgekeeper",
+    "potion_tier": 4
+  },
+  "potion_forgekeeper_5": {
+    "id": "potion_forgekeeper_5",
+    "name": "Forgekeeper’s Draught V",
+    "item_type": "potion",
+    "sell_price": 515,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "smithing_preservation_percent": 25
+    },
+    "potion_family": "potion_forgekeeper",
+    "potion_tier": 5
+  },
+  "potion_forgekeeper_6": {
+    "id": "potion_forgekeeper_6",
+    "name": "Forgekeeper’s Draught VI",
+    "item_type": "potion",
+    "sell_price": 1073,
+    "is_stackable": true,
+    "charges": 35,
+    "potion_effect": {
+      "smithing_preservation_percent": 30
+    },
+    "potion_family": "potion_forgekeeper",
+    "potion_tier": 6
+  },
+  "potion_artisan_1": {
+    "id": "potion_artisan_1",
+    "name": "Artisan’s Elixir I",
+    "item_type": "potion",
+    "sell_price": 30,
+    "is_stackable": true,
+    "charges": 10,
+    "potion_effect": {
+      "crafting_preservation_percent": 5
+    },
+    "potion_family": "potion_artisan",
+    "potion_tier": 1
+  },
+  "potion_artisan_2": {
+    "id": "potion_artisan_2",
+    "name": "Artisan’s Elixir II",
+    "item_type": "potion",
+    "sell_price": 90,
+    "is_stackable": true,
+    "charges": 15,
+    "potion_effect": {
+      "crafting_preservation_percent": 10
+    },
+    "potion_family": "potion_artisan",
+    "potion_tier": 2
+  },
+  "potion_artisan_3": {
+    "id": "potion_artisan_3",
+    "name": "Artisan’s Elixir III",
+    "item_type": "potion",
+    "sell_price": 180,
+    "is_stackable": true,
+    "charges": 20,
+    "potion_effect": {
+      "crafting_preservation_percent": 15
+    },
+    "potion_family": "potion_artisan",
+    "potion_tier": 3
+  },
+  "potion_artisan_4": {
+    "id": "potion_artisan_4",
+    "name": "Artisan’s Elixir IV",
+    "item_type": "potion",
+    "sell_price": 300,
+    "is_stackable": true,
+    "charges": 25,
+    "potion_effect": {
+      "crafting_preservation_percent": 20
+    },
+    "potion_family": "potion_artisan",
+    "potion_tier": 4
+  },
+  "potion_artisan_5": {
+    "id": "potion_artisan_5",
+    "name": "Artisan’s Elixir V",
+    "item_type": "potion",
+    "sell_price": 615,
+    "is_stackable": true,
+    "charges": 30,
+    "potion_effect": {
+      "crafting_preservation_percent": 25
+    },
+    "potion_family": "potion_artisan",
+    "potion_tier": 5
+  },
+  "potion_artisan_6": {
+    "id": "potion_artisan_6",
+    "name": "Artisan’s Elixir VI",
+    "item_type": "potion",
+    "sell_price": 1173,
+    "is_stackable": true,
+    "charges": 35,
+    "potion_effect": {
+      "crafting_preservation_percent": 30
+    },
+    "potion_family": "potion_artisan",
+    "potion_tier": 6
   }
 }

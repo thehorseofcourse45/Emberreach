@@ -88,6 +88,9 @@ func build_snapshot(place_type: String, place_id: String, attack_style: String, 
 	# The player's own accuracy/max-hit come from CombatManager's derived paths so the simulator
 	# cannot drift from the live numbers.
 	var summary: Dictionary = CombatManager.player_combat_summary(attack_style, melee_style.to_lower())
+	snapshot["xp_multipliers"] = {}
+	for skill_id in PlayerData.COMBAT_SKILLS:
+		snapshot.xp_multipliers[skill_id] = ModifierManager.get_skill_xp_multiplier(skill_id)
 	for key in ["accuracy", "max_hit", "attack_interval", "damage_reduction", "evasion", "max_hp"]: snapshot.player[key] = summary[key]
 	snapshot.player.min_hit_percent = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_PERCENT_OF_MAX) / 100.0
 	snapshot.player.min_hit_flat = ModifierManager.get_modifier(ModifierKeys.MIN_HIT_FLAT)

@@ -37,11 +37,12 @@ func allocated_share() -> float:
 	return share if not def.is_empty() and PlayerData.get_level("dreamwalking") >= int(def.level) else 0.0
 
 func prepare_draught(item_id: String) -> bool:
-	if item_id != "potion_dreamwalking" or not BankManager.has_item(item_id, 1):
+	var potion: Dictionary = DataLoader.get_item(item_id)
+	if potion.get("item_type", "") != "potion" or str(potion.get("potion_family", item_id)) != "potion_dreamwalking" or not BankManager.has_item(item_id, 1):
 		return false
 	BankManager.remove_item(item_id, 1)
-	next_essence_bonus = 15.0
-	EventBus.notify("Lucid Draught prepared for your next offline dream.", "success")
+	next_essence_bonus = float(potion.get("potion_effect", {}).get("dreamwalking_essence_percent", 0.0))
+	EventBus.notify("%s prepared for your next offline dream." % potion.get("name", "Lucid Draught"), "success")
 	return true
 
 func advance_offline(seconds: float, advance_buffs: bool = false) -> Dictionary:
@@ -152,7 +153,8 @@ func deserialize(data: Dictionary) -> void:
 		dreamscape = "meadow"
 	var fraction: float = float(data.get("share", 0.0))
 	share = clampf(fraction, 0.0, 1.0) if is_finite(fraction) else 0.0
-	next_essence_bonus = clampf(float(data.get("next_essence_bonus", 0.0)), 0.0, 15.0)
+	var draught_cap: float = float(DataLoader.get_item("potion_dreamwalking_6").get("potion_effect", {}).get("dreamwalking_essence_percent", 15.0))
+	next_essence_bonus = clampf(float(data.get("next_essence_bonus", 0.0)), 0.0, draught_cap)
 	essence_fraction = clampf(float(data.get("essence_fraction", 0.0)), 0.0, 0.999999)
 	events = data.get("events", []).duplicate(true).slice(0, 10) if typeof(data.get("events", [])) == TYPE_ARRAY else []
 

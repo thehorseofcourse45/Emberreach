@@ -1,0 +1,107 @@
+[
+  [
+    "gather_void_motes",
+    "Gather Void Motes",
+    5,
+    5,
+    "three floating violet-black motes circling a bright cyan spark"
+  ],
+  [
+    "trace_blight_sigil",
+    "Trace a Blight Sigil",
+    15,
+    5,
+    "a glowing violet occult sigil engraved on a cracked round dark stone"
+  ],
+  [
+    "wake_blackroot",
+    "Wake the Blackroot",
+    25,
+    6,
+    "a twisting black thorn root with sickly purple glowing buds"
+  ],
+  [
+    "kindle_sable_flame",
+    "Kindle the Sable Flame",
+    35,
+    5,
+    "a dark iron brazier holding a striking violet and indigo magical flame"
+  ],
+  [
+    "distill_nightmare",
+    "Distill a Nightmare",
+    45,
+    7,
+    "an ornate glass vial holding swirling violet nightmare smoke with a spectral eye"
+  ],
+  [
+    "weave_dusk_shroud",
+    "Weave a Dusk Shroud",
+    55,
+    6,
+    "a floating tattered deep purple spectral cloak with cyan rune trim"
+  ],
+  [
+    "seal_anguished_eye",
+    "Seal the Anguished Eye",
+    65,
+    6,
+    "a large violet glowing demonic eye enclosed in an angular golden sealing ring"
+  ],
+  [
+    "harvest_hollow_bloom",
+    "Harvest a Hollow Bloom",
+    75,
+    5,
+    "an eerie indigo lotus blossom with a luminous magenta crystalline heart"
+  ],
+  [
+    "forge_dread_mask",
+    "Forge a Dread Mask",
+    80,
+    7,
+    "a horned dark metal ritual mask with violet eyes and gold runic edges"
+  ],
+  [
+    "raise_oblivion_obelisk",
+    "Raise an Oblivion Obelisk",
+    90,
+    7,
+    "a sharp black stone obelisk carved with bright violet runes on a small rocky base"
+  ],
+  [
+    "temper_eclipse_shard",
+    "Temper an Eclipse Shard",
+    98,
+    6,
+    "a jagged dark crystal shard encircled by a thin golden eclipse halo"
+  ],
+  [
+    "invoke_ashen_oracle",
+    "Invoke the Ashen Oracle",
+    103,
+    7,
+    "a hooded spectral oracle bust of charcoal smoke with two bright violet eyes"
+  ],
+  [
+    "ensnare_void_serpent",
+    "Ensnare a Void Serpent",
+    108,
+    8,
+    "a coiled midnight purple spectral serpent bound by a glowing gold rune chain"
+  ],
+  [
+    "turn_eventide_hourglass",
+    "Turn the Eventide Hourglass",
+    113,
+    6,
+    "an ornate obsidian hourglass containing glowing purple stardust and gold fittings"
+  ],
+  [
+    "awaken_abyssal_heart",
+    "Awaken the Abyssal Heart",
+    118,
+    8,
+    "a large faceted violet anatomical crystal heart held by thorny black roots with a cyan core"
+  ]
+]

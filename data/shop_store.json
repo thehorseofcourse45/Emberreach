@@ -1,5 +1,5 @@
 {
-  "_comment": "Emberreach general store. 'cost' is gold, not settlement stores: this is the convenience counter for a player who needs a material now and does not want to wait for it. Every line is priced at 2.5x the item's sell value per bundle, so buying is never a shortcut past the skill that makes the item - only a way to unblock yourself. A test asserts that margin holds, so a future edit cannot quietly turn the store into a currency printer. Nothing here is a raw trace or a capstone: the raw gathering actions stay the only source of those, and skillcapes stay at the mastery stall.",
+  "_comment": "General Store catalogue. Eighty material bundles rotate every six real-world hours. Ranch livestock remains available from the ranch. New stock costs at least five times sell value and keeps its producing skill level requirement.",
   "store_bronze_bar": {
     "id": "store_bronze_bar",
     "item_id": "bronze_bar",
@@ -717,5 +717,3164 @@
     "quantity": 1,
     "subtitle": "Ranch stock",
     "description": "A living animal for Husbandry."
+  },
+  "store_abyssal_essence": {
+    "id": "store_abyssal_essence",
+    "item_id": "abyssal_essence",
+    "name": "Umbral Essence",
+    "subtitle": "Blight supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 8750.0,
+    "unit_price": 175.0,
+    "requires_skill": {
+      "corruption": 1
+    }
+  },
+  "store_adamantite_arrow": {
+    "id": "store_adamantite_arrow",
+    "item_id": "adamantite_arrow",
+    "name": "Skyiron Arrow",
+    "subtitle": "Bowyering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1750.0,
+    "unit_price": 35.0,
+    "requires_skill": {
+      "fletching": 60
+    }
+  },
+  "store_adamantite_arrowtips": {
+    "id": "store_adamantite_arrowtips",
+    "item_id": "adamantite_arrowtips",
+    "name": "Skyiron Arrowtips",
+    "subtitle": "Forgecraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1000.0,
+    "unit_price": 20.0,
+    "requires_skill": {
+      "smithing": 70
+    }
+  },
+  "store_adamantite_bar": {
+    "id": "store_adamantite_bar",
+    "item_id": "adamantite_bar",
+    "name": "Skyiron Bar",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 17500.0,
+    "unit_price": 350.0,
+    "requires_skill": {
+      "alt_magic": 65
+    }
+  },
+  "store_adamantite_ore": {
+    "id": "store_adamantite_ore",
+    "item_id": "adamantite_ore",
+    "name": "Skyiron Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "mining": 70
+    }
+  },
+  "store_aether_amber_fault": {
+    "id": "store_aether_amber_fault",
+    "item_id": "aether_amber_fault",
+    "name": "Amber Fault Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2750.0,
+    "unit_price": 55.0,
+    "requires_skill": {
+      "riftkeeping": 22
+    }
+  },
+  "store_aether_ashen_mirror": {
+    "id": "store_aether_ashen_mirror",
+    "item_id": "aether_ashen_mirror",
+    "name": "Ashen Mirror Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "riftkeeping": 35
+    }
+  },
+  "store_aether_bloodmoon_cleft": {
+    "id": "store_aether_bloodmoon_cleft",
+    "item_id": "aether_bloodmoon_cleft",
+    "name": "Bloodmoon Cleft Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 21250.0,
+    "unit_price": 425.0,
+    "requires_skill": {
+      "riftkeeping": 80
+    }
+  },
+  "store_aether_bonewhite_breach": {
+    "id": "store_aether_bonewhite_breach",
+    "item_id": "aether_bonewhite_breach",
+    "name": "Bonewhite Breach Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 17500.0,
+    "unit_price": 350.0,
+    "requires_skill": {
+      "riftkeeping": 65
+    }
+  },
+  "store_aether_brook_tear": {
+    "id": "store_aether_brook_tear",
+    "item_id": "aether_brook_tear",
+    "name": "Brook Tear Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4250.0,
+    "unit_price": 85.0,
+    "requires_skill": {
+      "riftkeeping": 10
+    }
+  },
+  "store_aether_candle_fracture": {
+    "id": "store_aether_candle_fracture",
+    "item_id": "aether_candle_fracture",
+    "name": "Candle Fracture Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1250.0,
+    "unit_price": 25.0,
+    "requires_skill": {
+      "riftkeeping": 1
+    }
+  },
+  "store_aether_cinder_fissure": {
+    "id": "store_aether_cinder_fissure",
+    "item_id": "aether_cinder_fissure",
+    "name": "Cinder Fissure Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 13250.0,
+    "unit_price": 265.0,
+    "requires_skill": {
+      "riftkeeping": 40
+    }
+  },
+  "store_aether_clockwork_aperture": {
+    "id": "store_aether_clockwork_aperture",
+    "item_id": "aether_clockwork_aperture",
+    "name": "Clockwork Aperture Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 12500.0,
+    "unit_price": 250.0,
+    "requires_skill": {
+      "riftkeeping": 45
+    }
+  },
+  "store_aether_copperglow_slit": {
+    "id": "store_aether_copperglow_slit",
+    "item_id": "aether_copperglow_slit",
+    "name": "Copperglow Slit Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "riftkeeping": 5
+    }
+  },
+  "store_aether_gilded_nexus": {
+    "id": "store_aether_gilded_nexus",
+    "item_id": "aether_gilded_nexus",
+    "name": "Gilded Nexus Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 18750.0,
+    "unit_price": 375.0,
+    "requires_skill": {
+      "riftkeeping": 70
+    }
+  },
+  "store_aether_gloomroot_breach": {
+    "id": "store_aether_gloomroot_breach",
+    "item_id": "aether_gloomroot_breach",
+    "name": "Gloomroot Breach Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5750.0,
+    "unit_price": 115.0,
+    "requires_skill": {
+      "riftkeeping": 62
+    }
+  },
+  "store_aether_gravity_well": {
+    "id": "store_aether_gravity_well",
+    "item_id": "aether_gravity_well",
+    "name": "Gravity Well Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 22250.0,
+    "unit_price": 445.0,
+    "requires_skill": {
+      "riftkeeping": 75
+    }
+  },
+  "store_aether_hailglass_fold": {
+    "id": "store_aether_hailglass_fold",
+    "item_id": "aether_hailglass_fold",
+    "name": "Hailglass Fold Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5000.0,
+    "unit_price": 100.0,
+    "requires_skill": {
+      "riftkeeping": 52
+    }
+  },
+  "store_aether_ironwind_tear": {
+    "id": "store_aether_ironwind_tear",
+    "item_id": "aether_ironwind_tear",
+    "name": "Ironwind Tear Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4250.0,
+    "unit_price": 85.0,
+    "requires_skill": {
+      "riftkeeping": 42
+    }
+  },
+  "store_aether_lantern_splinter": {
+    "id": "store_aether_lantern_splinter",
+    "item_id": "aether_lantern_splinter",
+    "name": "Lantern Splinter Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1250.0,
+    "unit_price": 25.0,
+    "requires_skill": {
+      "riftkeeping": 5
+    }
+  },
+  "store_aether_mistbound_hollow": {
+    "id": "store_aether_mistbound_hollow",
+    "item_id": "aether_mistbound_hollow",
+    "name": "Mistbound Hollow Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 15000.0,
+    "unit_price": 300.0,
+    "requires_skill": {
+      "riftkeeping": 55
+    }
+  },
+  "store_aether_moonwake_crossing": {
+    "id": "store_aether_moonwake_crossing",
+    "item_id": "aether_moonwake_crossing",
+    "name": "Moonwake Crossing Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 6500.0,
+    "unit_price": 130.0,
+    "requires_skill": {
+      "riftkeeping": 72
+    }
+  },
+  "store_aether_nightveil_breach": {
+    "id": "store_aether_nightveil_breach",
+    "item_id": "aether_nightveil_breach",
+    "name": "Nightveil Breach Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5050.0,
+    "unit_price": 505.0,
+    "requires_skill": {
+      "riftkeeping": 85
+    }
+  },
+  "store_aether_obsidian_aperture": {
+    "id": "store_aether_obsidian_aperture",
+    "item_id": "aether_obsidian_aperture",
+    "name": "Obsidian Aperture Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 8000.0,
+    "unit_price": 160.0,
+    "requires_skill": {
+      "riftkeeping": 92
+    }
+  },
+  "store_aether_prismatic_rift": {
+    "id": "store_aether_prismatic_rift",
+    "item_id": "aether_prismatic_rift",
+    "name": "Prismatic Rift Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 19250.0,
+    "unit_price": 385.0,
+    "requires_skill": {
+      "riftkeeping": 60
+    }
+  },
+  "store_aether_reedwater_scar": {
+    "id": "store_aether_reedwater_scar",
+    "item_id": "aether_reedwater_scar",
+    "name": "Reedwater Scar Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2000.0,
+    "unit_price": 40.0,
+    "requires_skill": {
+      "riftkeeping": 12
+    }
+  },
+  "store_aether_rime_breach": {
+    "id": "store_aether_rime_breach",
+    "item_id": "aether_rime_breach",
+    "name": "Rime Breach Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 16250.0,
+    "unit_price": 325.0,
+    "requires_skill": {
+      "riftkeeping": 50
+    }
+  },
+  "store_aether_rootbound_scar": {
+    "id": "store_aether_rootbound_scar",
+    "item_id": "aether_rootbound_scar",
+    "name": "Rootbound Scar Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7500.0,
+    "unit_price": 150.0,
+    "requires_skill": {
+      "riftkeeping": 25
+    }
+  },
+  "store_aether_rune": {
+    "id": "store_aether_rune",
+    "item_id": "aether_rune",
+    "name": "Aether Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4000.0,
+    "unit_price": 80.0,
+    "requires_skill": {
+      "runecrafting": 38
+    }
+  },
+  "store_aether_saltglass_window": {
+    "id": "store_aether_saltglass_window",
+    "item_id": "aether_saltglass_window",
+    "name": "Saltglass Window Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5000.0,
+    "unit_price": 100.0,
+    "requires_skill": {
+      "riftkeeping": 15
+    }
+  },
+  "store_aether_soulglass_crossing": {
+    "id": "store_aether_soulglass_crossing",
+    "item_id": "aether_soulglass_crossing",
+    "name": "Soulglass Crossing Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5000.0,
+    "unit_price": 500.0,
+    "requires_skill": {
+      "riftkeeping": 95
+    }
+  },
+  "store_aether_storm_seam": {
+    "id": "store_aether_storm_seam",
+    "item_id": "aether_storm_seam",
+    "name": "Storm Seam Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7250.0,
+    "unit_price": 145.0,
+    "requires_skill": {
+      "riftkeeping": 20
+    }
+  },
+  "store_aether_stormforge_cleft": {
+    "id": "store_aether_stormforge_cleft",
+    "item_id": "aether_stormforge_cleft",
+    "name": "Stormforge Cleft Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7250.0,
+    "unit_price": 145.0,
+    "requires_skill": {
+      "riftkeeping": 82
+    }
+  },
+  "store_aether_sunscar_rift": {
+    "id": "store_aether_sunscar_rift",
+    "item_id": "aether_sunscar_rift",
+    "name": "Sunscar Rift Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5650.0,
+    "unit_price": 565.0,
+    "requires_skill": {
+      "riftkeeping": 100
+    }
+  },
+  "store_aether_thistle_window": {
+    "id": "store_aether_thistle_window",
+    "item_id": "aether_thistle_window",
+    "name": "Thistle Window Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3500.0,
+    "unit_price": 70.0,
+    "requires_skill": {
+      "riftkeeping": 32
+    }
+  },
+  "store_aether_thunderhead_rift": {
+    "id": "store_aether_thunderhead_rift",
+    "item_id": "aether_thunderhead_rift",
+    "name": "Thunderhead Rift Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 23750.0,
+    "unit_price": 475.0,
+    "requires_skill": {
+      "riftkeeping": 90
+    }
+  },
+  "store_aether_verdant_fold": {
+    "id": "store_aether_verdant_fold",
+    "item_id": "aether_verdant_fold",
+    "name": "Verdant Fold Aether",
+    "subtitle": "Riftkeeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10250.0,
+    "unit_price": 205.0,
+    "requires_skill": {
+      "riftkeeping": 30
+    }
+  },
+  "store_air_rune": {
+    "id": "store_air_rune",
+    "item_id": "air_rune",
+    "name": "Gale Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1000.0,
+    "unit_price": 20.0,
+    "requires_skill": {
+      "runecrafting": 1
+    }
+  },
+  "store_amber_acacia_log": {
+    "id": "store_amber_acacia_log",
+    "item_id": "amber_acacia_log",
+    "name": "Amber Acacia Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3000.0,
+    "unit_price": 60.0,
+    "requires_skill": {
+      "woodcutting": 22
+    }
+  },
+  "store_argent_essence": {
+    "id": "store_argent_essence",
+    "item_id": "argent_essence",
+    "name": "Argent Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "harvesting": 25
+    }
+  },
+  "store_ashbulb_broth": {
+    "id": "store_ashbulb_broth",
+    "item_id": "ashbulb_broth",
+    "name": "Ashbulb Broth",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "cooking": 24
+    }
+  },
+  "store_ashcap_shark_stew": {
+    "id": "store_ashcap_shark_stew",
+    "item_id": "ashcap_shark_stew",
+    "name": "Ashcap Shark Stew",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 15000.0,
+    "unit_price": 300.0,
+    "requires_skill": {
+      "cooking": 74
+    }
+  },
+  "store_azure_essence": {
+    "id": "store_azure_essence",
+    "item_id": "azure_essence",
+    "name": "Azure Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "harvesting": 55
+    }
+  },
+  "store_blood_rune": {
+    "id": "store_blood_rune",
+    "item_id": "blood_rune",
+    "name": "Vital Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 6750.0,
+    "unit_price": 135.0,
+    "requires_skill": {
+      "runecrafting": 77
+    }
+  },
+  "store_bloodginger_braise": {
+    "id": "store_bloodginger_braise",
+    "item_id": "bloodginger_braise",
+    "name": "Bloodginger Braise",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5500.0,
+    "unit_price": 110.0,
+    "requires_skill": {
+      "cooking": 62
+    }
+  },
+  "store_bloodthorn_log": {
+    "id": "store_bloodthorn_log",
+    "item_id": "bloodthorn_log",
+    "name": "Bloodthorn Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 8000.0,
+    "unit_price": 160.0,
+    "requires_skill": {
+      "woodcutting": 62
+    }
+  },
+  "store_bloom_rune": {
+    "id": "store_bloom_rune",
+    "item_id": "bloom_rune",
+    "name": "Bloom Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5500.0,
+    "unit_price": 110.0,
+    "requires_skill": {
+      "runecrafting": 58
+    }
+  },
+  "store_blue_dragonhide": {
+    "id": "store_blue_dragonhide",
+    "item_id": "blue_dragonhide",
+    "name": "Azure Wyrmhide",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 15000.0,
+    "unit_price": 300.0,
+    "requires_skill": {
+      "alt_magic": 66
+    }
+  },
+  "store_bronze_arrow": {
+    "id": "store_bronze_arrow",
+    "item_id": "bronze_arrow",
+    "name": "Bronze Arrow",
+    "subtitle": "Bowyering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "fletching": 1
+    }
+  },
+  "store_bronze_carp": {
+    "id": "store_bronze_carp",
+    "item_id": "bronze_carp",
+    "name": "Grilled Bronze Carp",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2750.0,
+    "unit_price": 55.0,
+    "requires_skill": {
+      "cooking": 25
+    }
+  },
+  "store_case_file": {
+    "id": "store_case_file",
+    "item_id": "case_file",
+    "name": "Case File",
+    "subtitle": "Lostfinding supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3500.0,
+    "unit_price": 70.0,
+    "requires_skill": {
+      "lostfinding": 1
+    }
+  },
+  "store_cave_fish": {
+    "id": "store_cave_fish",
+    "item_id": "cave_fish",
+    "name": "Cavern Char",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 12500.0,
+    "unit_price": 250.0,
+    "requires_skill": {
+      "cooking": 75
+    }
+  },
+  "store_chaos_rune": {
+    "id": "store_chaos_rune",
+    "item_id": "chaos_rune",
+    "name": "Discord Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3000.0,
+    "unit_price": 60.0,
+    "requires_skill": {
+      "runecrafting": 35
+    }
+  },
+  "store_cinder_rune": {
+    "id": "store_cinder_rune",
+    "item_id": "cinder_rune",
+    "name": "Cinder Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3000.0,
+    "unit_price": 60.0,
+    "requires_skill": {
+      "runecrafting": 18
+    }
+  },
+  "store_cinderbark_log": {
+    "id": "store_cinderbark_log",
+    "item_id": "cinderbark_log",
+    "name": "Cinderbark Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 10000.0,
+    "unit_price": 1000.0,
+    "requires_skill": {
+      "woodcutting": 100
+    }
+  },
+  "store_citrine_mineral": {
+    "id": "store_citrine_mineral",
+    "item_id": "citrine_mineral",
+    "name": "Citrine Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7250.0,
+    "unit_price": 145.0,
+    "requires_skill": {
+      "mining": 32
+    }
+  },
+  "store_clockwork_frame": {
+    "id": "store_clockwork_frame",
+    "item_id": "clockwork_frame",
+    "name": "Clockwork Frame",
+    "subtitle": "Engineering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "engineering": 50
+    }
+  },
+  "store_coal": {
+    "id": "store_coal",
+    "item_id": "coal",
+    "name": "Coal Ore",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "alt_magic": 15
+    }
+  },
+  "store_cold_trail": {
+    "id": "store_cold_trail",
+    "item_id": "cold_trail",
+    "name": "Cold Trail",
+    "subtitle": "Lostfinding supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 1,
+    "cost": 5345.0,
+    "unit_price": 5345.0,
+    "requires_skill": {
+      "lostfinding": 80
+    }
+  },
+  "store_condensed_route": {
+    "id": "store_condensed_route",
+    "item_id": "condensed_route",
+    "name": "Condensed Route",
+    "subtitle": "Wayfolding supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 1,
+    "cost": 8790.0,
+    "unit_price": 8790.0,
+    "requires_skill": {
+      "wayfolding": 72
+    }
+  },
+  "store_copper_ore": {
+    "id": "store_copper_ore",
+    "item_id": "copper_ore",
+    "name": "Copper Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "mining": 1
+    }
+  },
+  "store_copperleaf_log": {
+    "id": "store_copperleaf_log",
+    "item_id": "copperleaf_log",
+    "name": "Copperleaf Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "woodcutting": 5
+    }
+  },
+  "store_coral_bisque": {
+    "id": "store_coral_bisque",
+    "item_id": "coral_bisque",
+    "name": "Coral Bisque",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 8000.0,
+    "unit_price": 160.0,
+    "requires_skill": {
+      "cooking": 58
+    }
+  },
+  "store_coral_bream": {
+    "id": "store_coral_bream",
+    "item_id": "coral_bream",
+    "name": "Grilled Coral Bream",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7250.0,
+    "unit_price": 145.0,
+    "requires_skill": {
+      "cooking": 55
+    }
+  },
+  "store_cosmic_rune": {
+    "id": "store_cosmic_rune",
+    "item_id": "cosmic_rune",
+    "name": "Astral Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "runecrafting": 27
+    }
+  },
+  "store_crab": {
+    "id": "store_crab",
+    "item_id": "crab",
+    "name": "Mudcrab",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7500.0,
+    "unit_price": 150.0,
+    "requires_skill": {
+      "cooking": 60
+    }
+  },
+  "store_custom_proposal": {
+    "id": "store_custom_proposal",
+    "item_id": "custom_proposal",
+    "name": "Custom Proposal",
+    "subtitle": "Customcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2250.0,
+    "unit_price": 45.0,
+    "requires_skill": {
+      "customcraft": 1
+    }
+  },
+  "store_death_rune": {
+    "id": "store_death_rune",
+    "item_id": "death_rune",
+    "name": "Mourning Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5000.0,
+    "unit_price": 100.0,
+    "requires_skill": {
+      "runecrafting": 65
+    }
+  },
+  "store_diamond": {
+    "id": "store_diamond",
+    "item_id": "diamond",
+    "name": "Diamond",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 25000.0,
+    "unit_price": 2500.0,
+    "requires_skill": {
+      "alt_magic": 90
+    }
+  },
+  "store_dragonite_arrow": {
+    "id": "store_dragonite_arrow",
+    "item_id": "dragonite_arrow",
+    "name": "Wyrmsteel Arrow",
+    "subtitle": "Bowyering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2750.0,
+    "unit_price": 55.0,
+    "requires_skill": {
+      "fletching": 90
+    }
+  },
+  "store_dragonite_arrowtips": {
+    "id": "store_dragonite_arrowtips",
+    "item_id": "dragonite_arrowtips",
+    "name": "Wyrmsteel Arrowtips",
+    "subtitle": "Forgecraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2000.0,
+    "unit_price": 40.0,
+    "requires_skill": {
+      "smithing": 95
+    }
+  },
+  "store_dragonite_bar": {
+    "id": "store_dragonite_bar",
+    "item_id": "dragonite_bar",
+    "name": "Wyrmsteel Bar",
+    "subtitle": "Forgecraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 6250.0,
+    "unit_price": 625.0,
+    "requires_skill": {
+      "smithing": 95
+    }
+  },
+  "store_dragonite_ore": {
+    "id": "store_dragonite_ore",
+    "item_id": "dragonite_ore",
+    "name": "Wyrmsteel Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 22500.0,
+    "unit_price": 450.0,
+    "requires_skill": {
+      "mining": 95
+    }
+  },
+  "store_dusk_bass": {
+    "id": "store_dusk_bass",
+    "item_id": "dusk_bass",
+    "name": "Grilled Dusk Bass",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3750.0,
+    "unit_price": 75.0,
+    "requires_skill": {
+      "cooking": 35
+    }
+  },
+  "store_duskwillow_log": {
+    "id": "store_duskwillow_log",
+    "item_id": "duskwillow_log",
+    "name": "Duskwillow Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4250.0,
+    "unit_price": 85.0,
+    "requires_skill": {
+      "woodcutting": 32
+    }
+  },
+  "store_ember_essence": {
+    "id": "store_ember_essence",
+    "item_id": "ember_essence",
+    "name": "Ember Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "harvesting": 88
+    }
+  },
+  "store_emberleaf_shrimp_bowl": {
+    "id": "store_emberleaf_shrimp_bowl",
+    "item_id": "emberleaf_shrimp_bowl",
+    "name": "Emberleaf Shrimp Bowl",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1750.0,
+    "unit_price": 35.0,
+    "requires_skill": {
+      "cooking": 8
+    }
+  },
+  "store_emberleaf_skewers": {
+    "id": "store_emberleaf_skewers",
+    "item_id": "emberleaf_skewers",
+    "name": "Emberleaf Fish Skewers",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4500.0,
+    "unit_price": 90.0,
+    "requires_skill": {
+      "cooking": 38
+    }
+  },
+  "store_enchant_arcane_essence": {
+    "id": "store_enchant_arcane_essence",
+    "item_id": "enchant_arcane_essence",
+    "name": "Arcane Essence",
+    "subtitle": "Attunement supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "enchanting": 1
+    }
+  },
+  "store_enchant_martial_essence": {
+    "id": "store_enchant_martial_essence",
+    "item_id": "enchant_martial_essence",
+    "name": "Martial Essence",
+    "subtitle": "Attunement supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "enchanting": 8
+    }
+  },
+  "store_enchant_verdant_essence": {
+    "id": "store_enchant_verdant_essence",
+    "item_id": "enchant_verdant_essence",
+    "name": "Verdant Essence",
+    "subtitle": "Attunement supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "enchanting": 5
+    }
+  },
+  "store_enchant_warding_essence": {
+    "id": "store_enchant_warding_essence",
+    "item_id": "enchant_warding_essence",
+    "name": "Warding Essence",
+    "subtitle": "Attunement supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "enchanting": 12
+    }
+  },
+  "store_established_tradition": {
+    "id": "store_established_tradition",
+    "item_id": "established_tradition",
+    "name": "Established Tradition",
+    "subtitle": "Customcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 13150.0,
+    "unit_price": 1315.0,
+    "requires_skill": {
+      "customcraft": 40
+    }
+  },
+  "store_fen_lobster_gratin": {
+    "id": "store_fen_lobster_gratin",
+    "item_id": "fen_lobster_gratin",
+    "name": "Fen Lobster Gratin",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10500.0,
+    "unit_price": 210.0,
+    "requires_skill": {
+      "cooking": 62
+    }
+  },
+  "store_fluorite_mineral": {
+    "id": "store_fluorite_mineral",
+    "item_id": "fluorite_mineral",
+    "name": "Fluorite Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5250.0,
+    "unit_price": 105.0,
+    "requires_skill": {
+      "mining": 22
+    }
+  },
+  "store_frost_essence": {
+    "id": "store_frost_essence",
+    "item_id": "frost_essence",
+    "name": "Frost Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "harvesting": 65
+    }
+  },
+  "store_frost_pea_soup": {
+    "id": "store_frost_pea_soup",
+    "item_id": "frost_pea_soup",
+    "name": "Frost Pea Soup",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5000.0,
+    "unit_price": 100.0,
+    "requires_skill": {
+      "cooking": 22
+    }
+  },
+  "store_frost_pike": {
+    "id": "store_frost_pike",
+    "item_id": "frost_pike",
+    "name": "Grilled Frost Pike",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 13750.0,
+    "unit_price": 275.0,
+    "requires_skill": {
+      "cooking": 80
+    }
+  },
+  "store_frostcedar_log": {
+    "id": "store_frostcedar_log",
+    "item_id": "frostcedar_log",
+    "name": "Frostcedar Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 13750.0,
+    "unit_price": 275.0,
+    "requires_skill": {
+      "woodcutting": 65
+    }
+  },
+  "store_garnet_mineral": {
+    "id": "store_garnet_mineral",
+    "item_id": "garnet_mineral",
+    "name": "Garnet Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 13250.0,
+    "unit_price": 265.0,
+    "requires_skill": {
+      "mining": 62
+    }
+  },
+  "store_gilded_essence": {
+    "id": "store_gilded_essence",
+    "item_id": "gilded_essence",
+    "name": "Gilded Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "harvesting": 40
+    }
+  },
+  "store_gold_ore": {
+    "id": "store_gold_ore",
+    "item_id": "gold_ore",
+    "name": "Gold Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5000.0,
+    "unit_price": 100.0,
+    "requires_skill": {
+      "mining": 50
+    }
+  },
+  "store_goldpetal_salmon": {
+    "id": "store_goldpetal_salmon",
+    "item_id": "goldpetal_salmon",
+    "name": "Goldpetal Salmon",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 6000.0,
+    "unit_price": 120.0,
+    "requires_skill": {
+      "cooking": 42
+    }
+  },
+  "store_grand_vintage": {
+    "id": "store_grand_vintage",
+    "item_id": "grand_vintage",
+    "name": "Grand Vintage",
+    "subtitle": "Fermentation supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 1,
+    "cost": 10305.0,
+    "unit_price": 10305.0,
+    "requires_skill": {
+      "fermentation": 95
+    }
+  },
+  "store_gravemoss_surf_and_turf": {
+    "id": "store_gravemoss_surf_and_turf",
+    "item_id": "gravemoss_surf_and_turf",
+    "name": "Gravemoss Surf and Turf",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5000.0,
+    "unit_price": 500.0,
+    "requires_skill": {
+      "cooking": 88
+    }
+  },
+  "store_harvested_essence": {
+    "id": "store_harvested_essence",
+    "item_id": "harvested_essence",
+    "name": "Harvested Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7000.0,
+    "unit_price": 140.0,
+    "requires_skill": {
+      "harvesting": 1
+    }
+  },
+  "store_hearthroot_mash": {
+    "id": "store_hearthroot_mash",
+    "item_id": "hearthroot_mash",
+    "name": "Hearthroot Mash",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 750.0,
+    "unit_price": 15.0,
+    "requires_skill": {
+      "cooking": 4
+    }
+  },
+  "store_hematite_mineral": {
+    "id": "store_hematite_mineral",
+    "item_id": "hematite_mineral",
+    "name": "Hematite Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3250.0,
+    "unit_price": 65.0,
+    "requires_skill": {
+      "mining": 12
+    }
+  },
+  "store_herald_echo": {
+    "id": "store_herald_echo",
+    "item_id": "herald_echo",
+    "name": "Herald Echo",
+    "subtitle": "Echo Keeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 1,
+    "cost": 9010.0,
+    "unit_price": 9010.0,
+    "requires_skill": {
+      "echo_keeping": 100
+    }
+  },
+  "store_herring": {
+    "id": "store_herring",
+    "item_id": "herring",
+    "name": "Reedfish",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1250.0,
+    "unit_price": 25.0,
+    "requires_skill": {
+      "cooking": 10
+    }
+  },
+  "store_iron_arrow": {
+    "id": "store_iron_arrow",
+    "item_id": "iron_arrow",
+    "name": "Iron Arrow",
+    "subtitle": "Bowyering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1000.0,
+    "unit_price": 20.0,
+    "requires_skill": {
+      "fletching": 15
+    }
+  },
+  "store_iron_ore": {
+    "id": "store_iron_ore",
+    "item_id": "iron_ore",
+    "name": "Iron Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1500.0,
+    "unit_price": 30.0,
+    "requires_skill": {
+      "mining": 15
+    }
+  },
+  "store_jade_cypress_log": {
+    "id": "store_jade_cypress_log",
+    "item_id": "jade_cypress_log",
+    "name": "Jade Cypress Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 6750.0,
+    "unit_price": 135.0,
+    "requires_skill": {
+      "woodcutting": 52
+    }
+  },
+  "store_lapis_mineral": {
+    "id": "store_lapis_mineral",
+    "item_id": "lapis_mineral",
+    "name": "Lapis Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 9250.0,
+    "unit_price": 185.0,
+    "requires_skill": {
+      "mining": 42
+    }
+  },
+  "store_law_rune": {
+    "id": "store_law_rune",
+    "item_id": "law_rune",
+    "name": "Bond Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4250.0,
+    "unit_price": 85.0,
+    "requires_skill": {
+      "runecrafting": 54
+    }
+  },
+  "store_living_legend": {
+    "id": "store_living_legend",
+    "item_id": "living_legend",
+    "name": "Living Legend",
+    "subtitle": "Customcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 1,
+    "cost": 10620.0,
+    "unit_price": 10620.0,
+    "requires_skill": {
+      "customcraft": 90
+    }
+  },
+  "store_lobster": {
+    "id": "store_lobster",
+    "item_id": "lobster",
+    "name": "Fen Lobster",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4500.0,
+    "unit_price": 90.0,
+    "requires_skill": {
+      "cooking": 40
+    }
+  },
+  "store_magic_log": {
+    "id": "store_magic_log",
+    "item_id": "magic_log",
+    "name": "Witchpine Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 20000.0,
+    "unit_price": 400.0,
+    "requires_skill": {
+      "woodcutting": 75
+    }
+  },
+  "store_mahogany_log": {
+    "id": "store_mahogany_log",
+    "item_id": "mahogany_log",
+    "name": "Blackgrain Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7500.0,
+    "unit_price": 150.0,
+    "requires_skill": {
+      "woodcutting": 55
+    }
+  },
+  "store_malachite_mineral": {
+    "id": "store_malachite_mineral",
+    "item_id": "malachite_mineral",
+    "name": "Malachite Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1250.0,
+    "unit_price": 25.0,
+    "requires_skill": {
+      "mining": 5
+    }
+  },
+  "store_manta_ray": {
+    "id": "store_manta_ray",
+    "item_id": "manta_ray",
+    "name": "Glidefin Manta",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 15000.0,
+    "unit_price": 300.0,
+    "requires_skill": {
+      "cooking": 85
+    }
+  },
+  "store_maple_log": {
+    "id": "store_maple_log",
+    "item_id": "maple_log",
+    "name": "Amberwood Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5000.0,
+    "unit_price": 100.0,
+    "requires_skill": {
+      "woodcutting": 45
+    }
+  },
+  "store_marsh_chowder": {
+    "id": "store_marsh_chowder",
+    "item_id": "marsh_chowder",
+    "name": "Marsh Chowder",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "cooking": 18
+    }
+  },
+  "store_metallic_essence": {
+    "id": "store_metallic_essence",
+    "item_id": "metallic_essence",
+    "name": "Metallic Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "harvesting": 8
+    }
+  },
+  "store_mind_rune": {
+    "id": "store_mind_rune",
+    "item_id": "mind_rune",
+    "name": "Waking Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 750.0,
+    "unit_price": 15.0,
+    "requires_skill": {
+      "runecrafting": 2
+    }
+  },
+  "store_mist_rune": {
+    "id": "store_mist_rune",
+    "item_id": "mist_rune",
+    "name": "Mist Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1500.0,
+    "unit_price": 30.0,
+    "requires_skill": {
+      "runecrafting": 7
+    }
+  },
+  "store_mithril_arrow": {
+    "id": "store_mithril_arrow",
+    "item_id": "mithril_arrow",
+    "name": "Ghoststeel Arrow",
+    "subtitle": "Bowyering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1500.0,
+    "unit_price": 30.0,
+    "requires_skill": {
+      "fletching": 45
+    }
+  },
+  "store_mithril_arrowtips": {
+    "id": "store_mithril_arrowtips",
+    "item_id": "mithril_arrowtips",
+    "name": "Ghoststeel Arrowtips",
+    "subtitle": "Forgecraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 750.0,
+    "unit_price": 15.0,
+    "requires_skill": {
+      "smithing": 55
+    }
+  },
+  "store_mithril_ore": {
+    "id": "store_mithril_ore",
+    "item_id": "mithril_ore",
+    "name": "Ghoststeel Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7000.0,
+    "unit_price": 140.0,
+    "requires_skill": {
+      "mining": 55
+    }
+  },
+  "store_moon_eel": {
+    "id": "store_moon_eel",
+    "item_id": "moon_eel",
+    "name": "Grilled Moon Eel",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5500.0,
+    "unit_price": 110.0,
+    "requires_skill": {
+      "cooking": 45
+    }
+  },
+  "store_moonbark_log": {
+    "id": "store_moonbark_log",
+    "item_id": "moonbark_log",
+    "name": "Moonbark Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 9250.0,
+    "unit_price": 185.0,
+    "requires_skill": {
+      "woodcutting": 72
+    }
+  },
+  "store_moonstone_mineral": {
+    "id": "store_moonstone_mineral",
+    "item_id": "moonstone_mineral",
+    "name": "Moonstone Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 15250.0,
+    "unit_price": 305.0,
+    "requires_skill": {
+      "mining": 72
+    }
+  },
+  "store_mosswillow_log": {
+    "id": "store_mosswillow_log",
+    "item_id": "mosswillow_log",
+    "name": "Mosswillow Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1750.0,
+    "unit_price": 35.0,
+    "requires_skill": {
+      "woodcutting": 18
+    }
+  },
+  "store_nature_rune": {
+    "id": "store_nature_rune",
+    "item_id": "nature_rune",
+    "name": "Verdant Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3750.0,
+    "unit_price": 75.0,
+    "requires_skill": {
+      "runecrafting": 44
+    }
+  },
+  "store_normal_log": {
+    "id": "store_normal_log",
+    "item_id": "normal_log",
+    "name": "Emberpine Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "woodcutting": 1
+    }
+  },
+  "store_oak_log": {
+    "id": "store_oak_log",
+    "item_id": "oak_log",
+    "name": "Ironbark Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1000.0,
+    "unit_price": 20.0,
+    "requires_skill": {
+      "woodcutting": 10
+    }
+  },
+  "store_obsidian_mangrove_log": {
+    "id": "store_obsidian_mangrove_log",
+    "item_id": "obsidian_mangrove_log",
+    "name": "Obsidian Mangrove Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 11750.0,
+    "unit_price": 235.0,
+    "requires_skill": {
+      "woodcutting": 92
+    }
+  },
+  "store_obsidian_mineral": {
+    "id": "store_obsidian_mineral",
+    "item_id": "obsidian_mineral",
+    "name": "Obsidian Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 19250.0,
+    "unit_price": 385.0,
+    "requires_skill": {
+      "mining": 92
+    }
+  },
+  "store_obsidian_sturgeon": {
+    "id": "store_obsidian_sturgeon",
+    "item_id": "obsidian_sturgeon",
+    "name": "Grilled Obsidian Sturgeon",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 6250.0,
+    "unit_price": 625.0,
+    "requires_skill": {
+      "cooking": 100
+    }
+  },
+  "store_paired_tradition": {
+    "id": "store_paired_tradition",
+    "item_id": "paired_tradition",
+    "name": "Paired Tradition",
+    "subtitle": "Customcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 17500.0,
+    "unit_price": 1750.0,
+    "requires_skill": {
+      "customcraft": 40
+    }
+  },
+  "store_pond_perch": {
+    "id": "store_pond_perch",
+    "item_id": "pond_perch",
+    "name": "Grilled Pond Perch",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 750.0,
+    "unit_price": 15.0,
+    "requires_skill": {
+      "cooking": 3
+    }
+  },
+  "store_prismatic_essence": {
+    "id": "store_prismatic_essence",
+    "item_id": "prismatic_essence",
+    "name": "Prismatic Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 7500.0,
+    "unit_price": 750.0,
+    "requires_skill": {
+      "harvesting": 80
+    }
+  },
+  "store_pure_essence": {
+    "id": "store_pure_essence",
+    "item_id": "pure_essence",
+    "name": "Refined Glyph Essence",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1250.0,
+    "unit_price": 25.0,
+    "requires_skill": {
+      "alt_magic": 12
+    }
+  },
+  "store_ranch_cheese": {
+    "id": "store_ranch_cheese",
+    "item_id": "ranch_cheese",
+    "name": "Ranch Cheese",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3500.0,
+    "unit_price": 70.0,
+    "requires_skill": {
+      "cooking": 45
+    }
+  },
+  "store_ranch_cooked_meat": {
+    "id": "store_ranch_cooked_meat",
+    "item_id": "ranch_cooked_meat",
+    "name": "Roasted Ranch Meat",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "cooking": 55
+    }
+  },
+  "store_ranch_feast": {
+    "id": "store_ranch_feast",
+    "item_id": "ranch_feast",
+    "name": "Rancher's Feast",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10500.0,
+    "unit_price": 210.0,
+    "requires_skill": {
+      "cooking": 80
+    }
+  },
+  "store_ranch_omelette": {
+    "id": "store_ranch_omelette",
+    "item_id": "ranch_omelette",
+    "name": "Ranch Omelette",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1500.0,
+    "unit_price": 30.0,
+    "requires_skill": {
+      "cooking": 35
+    }
+  },
+  "store_raw_bronze_carp": {
+    "id": "store_raw_bronze_carp",
+    "item_id": "raw_bronze_carp",
+    "name": "Raw Bronze Carp",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1750.0,
+    "unit_price": 35.0,
+    "requires_skill": {
+      "fishing": 25
+    }
+  },
+  "store_raw_cave_fish": {
+    "id": "store_raw_cave_fish",
+    "item_id": "raw_cave_fish",
+    "name": "Raw Cavern Char",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 11250.0,
+    "unit_price": 225.0,
+    "requires_skill": {
+      "fishing": 75
+    }
+  },
+  "store_raw_coral_bream": {
+    "id": "store_raw_coral_bream",
+    "item_id": "raw_coral_bream",
+    "name": "Raw Coral Bream",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5750.0,
+    "unit_price": 115.0,
+    "requires_skill": {
+      "fishing": 55
+    }
+  },
+  "store_raw_crab": {
+    "id": "store_raw_crab",
+    "item_id": "raw_crab",
+    "name": "Raw Mudcrab",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 6250.0,
+    "unit_price": 125.0,
+    "requires_skill": {
+      "fishing": 60
+    }
+  },
+  "store_raw_dusk_bass": {
+    "id": "store_raw_dusk_bass",
+    "item_id": "raw_dusk_bass",
+    "name": "Raw Dusk Bass",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "fishing": 35
+    }
+  },
+  "store_raw_frost_pike": {
+    "id": "store_raw_frost_pike",
+    "item_id": "raw_frost_pike",
+    "name": "Raw Frost Pike",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 12000.0,
+    "unit_price": 240.0,
+    "requires_skill": {
+      "fishing": 80
+    }
+  },
+  "store_raw_herring": {
+    "id": "store_raw_herring",
+    "item_id": "raw_herring",
+    "name": "Raw Reedfish",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 750.0,
+    "unit_price": 15.0,
+    "requires_skill": {
+      "fishing": 10
+    }
+  },
+  "store_raw_lobster": {
+    "id": "store_raw_lobster",
+    "item_id": "raw_lobster",
+    "name": "Raw Fen Lobster",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3000.0,
+    "unit_price": 60.0,
+    "requires_skill": {
+      "fishing": 40
+    }
+  },
+  "store_raw_manta_ray": {
+    "id": "store_raw_manta_ray",
+    "item_id": "raw_manta_ray",
+    "name": "Raw Void Ray",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 15000.0,
+    "unit_price": 300.0,
+    "requires_skill": {
+      "fishing": 85
+    }
+  },
+  "store_raw_moon_eel": {
+    "id": "store_raw_moon_eel",
+    "item_id": "raw_moon_eel",
+    "name": "Raw Moon Eel",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3750.0,
+    "unit_price": 75.0,
+    "requires_skill": {
+      "fishing": 45
+    }
+  },
+  "store_raw_obsidian_sturgeon": {
+    "id": "store_raw_obsidian_sturgeon",
+    "item_id": "raw_obsidian_sturgeon",
+    "name": "Raw Obsidian Sturgeon",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5250.0,
+    "unit_price": 525.0,
+    "requires_skill": {
+      "fishing": 100
+    }
+  },
+  "store_raw_pond_perch": {
+    "id": "store_raw_pond_perch",
+    "item_id": "raw_pond_perch",
+    "name": "Raw Pond Perch",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "fishing": 3
+    }
+  },
+  "store_raw_salmon": {
+    "id": "store_raw_salmon",
+    "item_id": "raw_salmon",
+    "name": "Raw Ember Salmon",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2000.0,
+    "unit_price": 40.0,
+    "requires_skill": {
+      "fishing": 30
+    }
+  },
+  "store_raw_sardine": {
+    "id": "store_raw_sardine",
+    "item_id": "raw_sardine",
+    "name": "Raw Silverfin",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "fishing": 5
+    }
+  },
+  "store_raw_shark": {
+    "id": "store_raw_shark",
+    "item_id": "raw_shark",
+    "name": "Raw Gale Shark",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 8750.0,
+    "unit_price": 175.0,
+    "requires_skill": {
+      "fishing": 70
+    }
+  },
+  "store_raw_shrimp": {
+    "id": "store_raw_shrimp",
+    "item_id": "raw_shrimp",
+    "name": "Raw Marsh Shrimp",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "fishing": 1
+    }
+  },
+  "store_raw_squid": {
+    "id": "store_raw_squid",
+    "item_id": "raw_squid",
+    "name": "Raw Ink Squid",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "fishing": 48
+    }
+  },
+  "store_raw_storm_tuna": {
+    "id": "store_raw_storm_tuna",
+    "item_id": "raw_storm_tuna",
+    "name": "Raw Storm Tuna",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7500.0,
+    "unit_price": 150.0,
+    "requires_skill": {
+      "fishing": 65
+    }
+  },
+  "store_raw_sunscale_koi": {
+    "id": "store_raw_sunscale_koi",
+    "item_id": "raw_sunscale_koi",
+    "name": "Raw Sunscale Koi",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 16250.0,
+    "unit_price": 325.0,
+    "requires_skill": {
+      "fishing": 90
+    }
+  },
+  "store_raw_swordfish": {
+    "id": "store_raw_swordfish",
+    "item_id": "raw_swordfish",
+    "name": "Raw Bladefin",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 4500.0,
+    "unit_price": 90.0,
+    "requires_skill": {
+      "fishing": 50
+    }
+  },
+  "store_raw_trout": {
+    "id": "store_raw_trout",
+    "item_id": "raw_trout",
+    "name": "Raw Speckled Trout",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1250.0,
+    "unit_price": 25.0,
+    "requires_skill": {
+      "fishing": 20
+    }
+  },
+  "store_raw_whale": {
+    "id": "store_raw_whale",
+    "item_id": "raw_whale",
+    "name": "Raw Leviathan",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 20000.0,
+    "unit_price": 400.0,
+    "requires_skill": {
+      "fishing": 95
+    }
+  },
+  "store_raw_willow_roach": {
+    "id": "store_raw_willow_roach",
+    "item_id": "raw_willow_roach",
+    "name": "Raw Willow Roach",
+    "subtitle": "Angling supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1000.0,
+    "unit_price": 20.0,
+    "requires_skill": {
+      "fishing": 12
+    }
+  },
+  "store_redwood_log": {
+    "id": "store_redwood_log",
+    "item_id": "redwood_log",
+    "name": "Bloodwood Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 6000.0,
+    "unit_price": 600.0,
+    "requires_skill": {
+      "woodcutting": 90
+    }
+  },
+  "store_resonance_trace": {
+    "id": "store_resonance_trace",
+    "item_id": "resonance_trace",
+    "name": "Resonance Trace",
+    "subtitle": "Echo Keeping supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2000.0,
+    "unit_price": 40.0,
+    "requires_skill": {
+      "echo_keeping": 1
+    }
+  },
+  "store_rime_rune": {
+    "id": "store_rime_rune",
+    "item_id": "rime_rune",
+    "name": "Rime Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7500.0,
+    "unit_price": 150.0,
+    "requires_skill": {
+      "runecrafting": 76
+    }
+  },
+  "store_route_survey": {
+    "id": "store_route_survey",
+    "item_id": "route_survey",
+    "name": "Route Survey",
+    "subtitle": "Wayfolding supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "wayfolding": 1
+    }
+  },
+  "store_royal_anglers_platter": {
+    "id": "store_royal_anglers_platter",
+    "item_id": "royal_anglers_platter",
+    "name": "Royal Angler's Platter",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 6000.0,
+    "unit_price": 600.0,
+    "requires_skill": {
+      "cooking": 98
+    }
+  },
+  "store_ruby": {
+    "id": "store_ruby",
+    "item_id": "ruby",
+    "name": "Ruby",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 12500.0,
+    "unit_price": 1250.0,
+    "requires_skill": {
+      "alt_magic": 70
+    }
+  },
+  "store_rune_essence": {
+    "id": "store_rune_essence",
+    "item_id": "rune_essence",
+    "name": "Raw Glyph Essence",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "mining": 1
+    }
+  },
+  "store_runite_arrow": {
+    "id": "store_runite_arrow",
+    "item_id": "runite_arrow",
+    "name": "Starforge Arrow",
+    "subtitle": "Bowyering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2250.0,
+    "unit_price": 45.0,
+    "requires_skill": {
+      "fletching": 75
+    }
+  },
+  "store_runite_arrowtips": {
+    "id": "store_runite_arrowtips",
+    "item_id": "runite_arrowtips",
+    "name": "Starforge Arrowtips",
+    "subtitle": "Forgecraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1500.0,
+    "unit_price": 30.0,
+    "requires_skill": {
+      "smithing": 85
+    }
+  },
+  "store_runite_bar": {
+    "id": "store_runite_bar",
+    "item_id": "runite_bar",
+    "name": "Starforge Bar",
+    "subtitle": "Forgecraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 23750.0,
+    "unit_price": 475.0,
+    "requires_skill": {
+      "smithing": 85
+    }
+  },
+  "store_runite_ore": {
+    "id": "store_runite_ore",
+    "item_id": "runite_ore",
+    "name": "Starforge Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 15000.0,
+    "unit_price": 300.0,
+    "requires_skill": {
+      "mining": 85
+    }
+  },
+  "store_sageberry_crumble": {
+    "id": "store_sageberry_crumble",
+    "item_id": "sageberry_crumble",
+    "name": "Sageberry Crumble",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 7500.0,
+    "unit_price": 150.0,
+    "requires_skill": {
+      "cooking": 42
+    }
+  },
+  "store_salmon": {
+    "id": "store_salmon",
+    "item_id": "salmon",
+    "name": "Ember Salmon",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3250.0,
+    "unit_price": 65.0,
+    "requires_skill": {
+      "cooking": 30
+    }
+  },
+  "store_sapphire": {
+    "id": "store_sapphire",
+    "item_id": "sapphire",
+    "name": "Sapphire",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 12500.0,
+    "unit_price": 250.0,
+    "requires_skill": {
+      "alt_magic": 40
+    }
+  },
+  "store_sardine": {
+    "id": "store_sardine",
+    "item_id": "sardine",
+    "name": "Silverfin",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 750.0,
+    "unit_price": 15.0,
+    "requires_skill": {
+      "cooking": 5
+    }
+  },
+  "store_scribe_celestial_ink": {
+    "id": "store_scribe_celestial_ink",
+    "item_id": "scribe_celestial_ink",
+    "name": "Celestial Ink",
+    "subtitle": "Scribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2500.0,
+    "unit_price": 50.0,
+    "requires_skill": {
+      "inscription": 30
+    }
+  },
+  "store_scribe_ink": {
+    "id": "store_scribe_ink",
+    "item_id": "scribe_ink",
+    "name": "Crude Ink",
+    "subtitle": "Scribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1750.0,
+    "unit_price": 35.0,
+    "requires_skill": {
+      "inscription": 1
+    }
+  },
+  "store_scribe_paper": {
+    "id": "store_scribe_paper",
+    "item_id": "scribe_paper",
+    "name": "Scribe Paper",
+    "subtitle": "Scribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2000.0,
+    "unit_price": 40.0,
+    "requires_skill": {
+      "inscription": 1
+    }
+  },
+  "store_sequoia_log": {
+    "id": "store_sequoia_log",
+    "item_id": "sequoia_log",
+    "name": "Sequoia Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5500.0,
+    "unit_price": 110.0,
+    "requires_skill": {
+      "woodcutting": 42
+    }
+  },
+  "store_shark": {
+    "id": "store_shark",
+    "item_id": "shark",
+    "name": "Gale Shark",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "cooking": 70
+    }
+  },
+  "store_shrimp": {
+    "id": "store_shrimp",
+    "item_id": "shrimp",
+    "name": "Marsh Shrimp",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "cooking": 1
+    }
+  },
+  "store_silver_bar": {
+    "id": "store_silver_bar",
+    "item_id": "silver_bar",
+    "name": "Silver Bar",
+    "subtitle": "Runescribing supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "alt_magic": 32
+    }
+  },
+  "store_silver_birch_log": {
+    "id": "store_silver_birch_log",
+    "item_id": "silver_birch_log",
+    "name": "Silver Birch Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1750.0,
+    "unit_price": 35.0,
+    "requires_skill": {
+      "woodcutting": 12
+    }
+  },
+  "store_silver_ore": {
+    "id": "store_silver_ore",
+    "item_id": "silver_ore",
+    "name": "Silver Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3500.0,
+    "unit_price": 70.0,
+    "requires_skill": {
+      "mining": 40
+    }
+  },
+  "store_silverfin_egg_bites": {
+    "id": "store_silverfin_egg_bites",
+    "item_id": "silverfin_egg_bites",
+    "name": "Silverfin Egg Bites",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3000.0,
+    "unit_price": 60.0,
+    "requires_skill": {
+      "cooking": 22
+    }
+  },
+  "store_soul_rune": {
+    "id": "store_soul_rune",
+    "item_id": "soul_rune",
+    "name": "Soul Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "runecrafting": 95
+    }
+  },
+  "store_starcorn_chowder": {
+    "id": "store_starcorn_chowder",
+    "item_id": "starcorn_chowder",
+    "name": "Starcorn Chowder",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 17500.0,
+    "unit_price": 350.0,
+    "requires_skill": {
+      "cooking": 84
+    }
+  },
+  "store_steel_arrow": {
+    "id": "store_steel_arrow",
+    "item_id": "steel_arrow",
+    "name": "Steel Arrow",
+    "subtitle": "Bowyering supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1750.0,
+    "unit_price": 35.0,
+    "requires_skill": {
+      "fletching": 30
+    }
+  },
+  "store_storm_opal_mineral": {
+    "id": "store_storm_opal_mineral",
+    "item_id": "storm_opal_mineral",
+    "name": "Storm Opal Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 17250.0,
+    "unit_price": 345.0,
+    "requires_skill": {
+      "mining": 82
+    }
+  },
+  "store_storm_tuna": {
+    "id": "store_storm_tuna",
+    "item_id": "storm_tuna",
+    "name": "Grilled Storm Tuna",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 9000.0,
+    "unit_price": 180.0,
+    "requires_skill": {
+      "cooking": 65
+    }
+  },
+  "store_stormcabbage_roll": {
+    "id": "store_stormcabbage_roll",
+    "item_id": "stormcabbage_roll",
+    "name": "Stormcabbage Roll",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5500.0,
+    "unit_price": 110.0,
+    "requires_skill": {
+      "cooking": 44
+    }
+  },
+  "store_stormfish_pie": {
+    "id": "store_stormfish_pie",
+    "item_id": "stormfish_pie",
+    "name": "Stormfish Pie",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 14000.0,
+    "unit_price": 280.0,
+    "requires_skill": {
+      "cooking": 78
+    }
+  },
+  "store_stormwood_log": {
+    "id": "store_stormwood_log",
+    "item_id": "stormwood_log",
+    "name": "Stormwood Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5500.0,
+    "unit_price": 550.0,
+    "requires_skill": {
+      "woodcutting": 85
+    }
+  },
+  "store_stuffed_night_peppers": {
+    "id": "store_stuffed_night_peppers",
+    "item_id": "stuffed_night_peppers",
+    "name": "Stuffed Night Peppers",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 14250.0,
+    "unit_price": 285.0,
+    "requires_skill": {
+      "cooking": 92
+    }
+  },
+  "store_sunmelon_glazed_tuna": {
+    "id": "store_sunmelon_glazed_tuna",
+    "item_id": "sunmelon_glazed_tuna",
+    "name": "Sunmelon-Glazed Tuna",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 11250.0,
+    "unit_price": 225.0,
+    "requires_skill": {
+      "cooking": 64
+    }
+  },
+  "store_sunscale_koi": {
+    "id": "store_sunscale_koi",
+    "item_id": "sunscale_koi",
+    "name": "Grilled Sunscale Koi",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 18750.0,
+    "unit_price": 375.0,
+    "requires_skill": {
+      "cooking": 90
+    }
+  },
+  "store_swordfish": {
+    "id": "store_swordfish",
+    "item_id": "swordfish",
+    "name": "Bladefin",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 6250.0,
+    "unit_price": 125.0,
+    "requires_skill": {
+      "cooking": 50
+    }
+  },
+  "store_teak_log": {
+    "id": "store_teak_log",
+    "item_id": "teak_log",
+    "name": "Reedwood Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3500.0,
+    "unit_price": 70.0,
+    "requires_skill": {
+      "woodcutting": 35
+    }
+  },
+  "store_tempest_rune": {
+    "id": "store_tempest_rune",
+    "item_id": "tempest_rune",
+    "name": "Tempest Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10500.0,
+    "unit_price": 210.0,
+    "requires_skill": {
+      "runecrafting": 88
+    }
+  },
+  "store_thunder_ash_log": {
+    "id": "store_thunder_ash_log",
+    "item_id": "thunder_ash_log",
+    "name": "Thunder Ash Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10500.0,
+    "unit_price": 210.0,
+    "requires_skill": {
+      "woodcutting": 82
+    }
+  },
+  "store_tin_ore": {
+    "id": "store_tin_ore",
+    "item_id": "tin_ore",
+    "name": "Tin Ore",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "mining": 1
+    }
+  },
+  "store_topaz": {
+    "id": "store_topaz",
+    "item_id": "topaz",
+    "name": "Topaz",
+    "subtitle": "Artifice supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 5000.0,
+    "unit_price": 100.0,
+    "requires_skill": {
+      "crafting": 55
+    }
+  },
+  "store_tourmaline_mineral": {
+    "id": "store_tourmaline_mineral",
+    "item_id": "tourmaline_mineral",
+    "name": "Tourmaline Mineral",
+    "subtitle": "Delving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 11250.0,
+    "unit_price": 225.0,
+    "requires_skill": {
+      "mining": 52
+    }
+  },
+  "store_tradition_progress": {
+    "id": "store_tradition_progress",
+    "item_id": "tradition_progress",
+    "name": "Tradition Progress",
+    "subtitle": "Customcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 11250.0,
+    "unit_price": 225.0,
+    "requires_skill": {
+      "customcraft": 5
+    }
+  },
+  "store_trout": {
+    "id": "store_trout",
+    "item_id": "trout",
+    "name": "Speckled Trout",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2250.0,
+    "unit_price": 45.0,
+    "requires_skill": {
+      "cooking": 20
+    }
+  },
+  "store_void_essence": {
+    "id": "store_void_essence",
+    "item_id": "void_essence",
+    "name": "Void Essence",
+    "subtitle": "Prospecting supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 500,
+    "unit_price": 10,
+    "requires_skill": {
+      "harvesting": 95
+    }
+  },
+  "store_water_rune": {
+    "id": "store_water_rune",
+    "item_id": "water_rune",
+    "name": "Tide Rune",
+    "subtitle": "Glyphcraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1000.0,
+    "unit_price": 20.0,
+    "requires_skill": {
+      "runecrafting": 5
+    }
+  },
+  "store_weather_starter": {
+    "id": "store_weather_starter",
+    "item_id": "weather_starter",
+    "name": "Weather Starter",
+    "subtitle": "Fermentation supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 3000.0,
+    "unit_price": 60.0,
+    "requires_skill": {
+      "fermentation": 1
+    }
+  },
+  "store_whale": {
+    "id": "store_whale",
+    "item_id": "whale",
+    "name": "Leviathan Steak",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 23750.0,
+    "unit_price": 475.0,
+    "requires_skill": {
+      "cooking": 95
+    }
+  },
+  "store_willow_log": {
+    "id": "store_willow_log",
+    "item_id": "willow_log",
+    "name": "Silverleaf Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 2250.0,
+    "unit_price": 45.0,
+    "requires_skill": {
+      "woodcutting": 25
+    }
+  },
+  "store_willow_roach": {
+    "id": "store_willow_roach",
+    "item_id": "willow_roach",
+    "name": "Grilled Willow Roach",
+    "subtitle": "Cookery supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 1500.0,
+    "unit_price": 30.0,
+    "requires_skill": {
+      "cooking": 12
+    }
+  },
+  "store_woven_amber_shards_pattern": {
+    "id": "store_woven_amber_shards_pattern",
+    "item_id": "woven_amber_shards_pattern",
+    "name": "Amber Shards Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 17500.0,
+    "unit_price": 350.0,
+    "requires_skill": {
+      "spellweaving": 22
+    }
+  },
+  "store_woven_ash_comet_pattern": {
+    "id": "store_woven_ash_comet_pattern",
+    "item_id": "woven_ash_comet_pattern",
+    "name": "Ash Comet Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 12500.0,
+    "unit_price": 1250.0,
+    "requires_skill": {
+      "spellweaving": 35
+    }
+  },
+  "store_woven_briar_fang_pattern": {
+    "id": "store_woven_briar_fang_pattern",
+    "item_id": "woven_briar_fang_pattern",
+    "name": "Briar Fang Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 9100.0,
+    "unit_price": 910.0,
+    "requires_skill": {
+      "spellweaving": 25
+    }
+  },
+  "store_woven_brine_bolt_pattern": {
+    "id": "store_woven_brine_bolt_pattern",
+    "item_id": "woven_brine_bolt_pattern",
+    "name": "Brine Bolt Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 6250.0,
+    "unit_price": 625.0,
+    "requires_skill": {
+      "spellweaving": 15
+    }
+  },
+  "store_woven_cinder_beam_pattern": {
+    "id": "store_woven_cinder_beam_pattern",
+    "item_id": "woven_cinder_beam_pattern",
+    "name": "Cinder Beam Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 14000.0,
+    "unit_price": 1400.0,
+    "requires_skill": {
+      "spellweaving": 40
+    }
+  },
+  "store_woven_clockbolt_pattern": {
+    "id": "store_woven_clockbolt_pattern",
+    "item_id": "woven_clockbolt_pattern",
+    "name": "Clockbolt Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 15500.0,
+    "unit_price": 1550.0,
+    "requires_skill": {
+      "spellweaving": 45
+    }
+  },
+  "store_woven_crimson_brand_pattern": {
+    "id": "store_woven_crimson_brand_pattern",
+    "item_id": "woven_crimson_brand_pattern",
+    "name": "Crimson Brand Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 26000.0,
+    "unit_price": 2600.0,
+    "requires_skill": {
+      "spellweaving": 80
+    }
+  },
+  "store_woven_ember_dart_pattern": {
+    "id": "store_woven_ember_dart_pattern",
+    "item_id": "woven_ember_dart_pattern",
+    "name": "Ember Dart Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "spellweaving": 1
+    }
+  },
+  "store_woven_fog_needle_pattern": {
+    "id": "store_woven_fog_needle_pattern",
+    "item_id": "woven_fog_needle_pattern",
+    "name": "Fog Needle Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 18500.0,
+    "unit_price": 1850.0,
+    "requires_skill": {
+      "spellweaving": 55
+    }
+  },
+  "store_woven_gilded_verdict_pattern": {
+    "id": "store_woven_gilded_verdict_pattern",
+    "item_id": "woven_gilded_verdict_pattern",
+    "name": "Gilded Verdict Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 23000.0,
+    "unit_price": 2300.0,
+    "requires_skill": {
+      "spellweaving": 70
+    }
+  },
+  "store_woven_gloomroot_bind_pattern": {
+    "id": "store_woven_gloomroot_bind_pattern",
+    "item_id": "woven_gloomroot_bind_pattern",
+    "name": "Gloomroot Bind Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 6500.0,
+    "unit_price": 650.0,
+    "requires_skill": {
+      "spellweaving": 62
+    }
+  },
+  "store_woven_grave_lance_pattern": {
+    "id": "store_woven_grave_lance_pattern",
+    "item_id": "woven_grave_lance_pattern",
+    "name": "Grave Lance Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 21500.0,
+    "unit_price": 2150.0,
+    "requires_skill": {
+      "spellweaving": 65
+    }
+  },
+  "store_woven_gravity_pulse_pattern": {
+    "id": "store_woven_gravity_pulse_pattern",
+    "item_id": "woven_gravity_pulse_pattern",
+    "name": "Gravity Pulse Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 23000.0,
+    "unit_price": 2300.0,
+    "requires_skill": {
+      "spellweaving": 75
+    }
+  },
+  "store_woven_hailglass_spear_pattern": {
+    "id": "store_woven_hailglass_spear_pattern",
+    "item_id": "woven_hailglass_spear_pattern",
+    "name": "Hailglass Spear Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5750.0,
+    "unit_price": 575.0,
+    "requires_skill": {
+      "spellweaving": 52
+    }
+  },
+  "store_woven_ironwind_disc_pattern": {
+    "id": "store_woven_ironwind_disc_pattern",
+    "item_id": "woven_ironwind_disc_pattern",
+    "name": "Ironwind Disc Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5000.0,
+    "unit_price": 500.0,
+    "requires_skill": {
+      "spellweaving": 42
+    }
+  },
+  "store_woven_moonwake_arc_pattern": {
+    "id": "store_woven_moonwake_arc_pattern",
+    "item_id": "woven_moonwake_arc_pattern",
+    "name": "Moonwake Arc Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 7250.0,
+    "unit_price": 725.0,
+    "requires_skill": {
+      "spellweaving": 72
+    }
+  },
+  "store_woven_nightveil_needle_pattern": {
+    "id": "store_woven_nightveil_needle_pattern",
+    "item_id": "woven_nightveil_needle_pattern",
+    "name": "Nightveil Needle Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 26000.0,
+    "unit_price": 2600.0,
+    "requires_skill": {
+      "spellweaving": 85
+    }
+  },
+  "store_woven_obsidian_rain_pattern": {
+    "id": "store_woven_obsidian_rain_pattern",
+    "item_id": "woven_obsidian_rain_pattern",
+    "name": "Obsidian Rain Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 8750.0,
+    "unit_price": 875.0,
+    "requires_skill": {
+      "spellweaving": 92
+    }
+  },
+  "store_woven_prism_fan_pattern": {
+    "id": "store_woven_prism_fan_pattern",
+    "item_id": "woven_prism_fan_pattern",
+    "name": "Prism Fan Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 20000.0,
+    "unit_price": 2000.0,
+    "requires_skill": {
+      "spellweaving": 60
+    }
+  },
+  "store_woven_reedwater_coil_pattern": {
+    "id": "store_woven_reedwater_coil_pattern",
+    "item_id": "woven_reedwater_coil_pattern",
+    "name": "Reedwater Coil Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 13750.0,
+    "unit_price": 275.0,
+    "requires_skill": {
+      "spellweaving": 12
+    }
+  },
+  "store_woven_rime_snare_pattern": {
+    "id": "store_woven_rime_snare_pattern",
+    "item_id": "woven_rime_snare_pattern",
+    "name": "Rime Snare Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 17000.0,
+    "unit_price": 1700.0,
+    "requires_skill": {
+      "spellweaving": 50
+    }
+  },
+  "store_woven_spark_needle_pattern": {
+    "id": "store_woven_spark_needle_pattern",
+    "item_id": "woven_spark_needle_pattern",
+    "name": "Spark Needle Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 17500.0,
+    "unit_price": 350.0,
+    "requires_skill": {
+      "spellweaving": 5
+    }
+  },
+  "store_woven_spirit_pin_pattern": {
+    "id": "store_woven_spirit_pin_pattern",
+    "item_id": "woven_spirit_pin_pattern",
+    "name": "Spirit Pin Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 30500.0,
+    "unit_price": 3050.0,
+    "requires_skill": {
+      "spellweaving": 95
+    }
+  },
+  "store_woven_storm_chain_pattern": {
+    "id": "store_woven_storm_chain_pattern",
+    "item_id": "woven_storm_chain_pattern",
+    "name": "Storm Chain Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 8000.0,
+    "unit_price": 800.0,
+    "requires_skill": {
+      "spellweaving": 20
+    }
+  },
+  "store_woven_stormforge_hammer_pattern": {
+    "id": "store_woven_stormforge_hammer_pattern",
+    "item_id": "woven_stormforge_hammer_pattern",
+    "name": "Stormforge Hammer Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 8000.0,
+    "unit_price": 800.0,
+    "requires_skill": {
+      "spellweaving": 82
+    }
+  },
+  "store_woven_sunburst_pattern": {
+    "id": "store_woven_sunburst_pattern",
+    "item_id": "woven_sunburst_pattern",
+    "name": "Sunburst Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 29000.0,
+    "unit_price": 2900.0,
+    "requires_skill": {
+      "spellweaving": 100
+    }
+  },
+  "store_woven_thistle_volley_pattern": {
+    "id": "store_woven_thistle_volley_pattern",
+    "item_id": "woven_thistle_volley_pattern",
+    "name": "Thistle Volley Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 21250.0,
+    "unit_price": 425.0,
+    "requires_skill": {
+      "spellweaving": 32
+    }
+  },
+  "store_woven_thorn_spiral_pattern": {
+    "id": "store_woven_thorn_spiral_pattern",
+    "item_id": "woven_thorn_spiral_pattern",
+    "name": "Thorn Spiral Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 11000.0,
+    "unit_price": 1100.0,
+    "requires_skill": {
+      "spellweaving": 30
+    }
+  },
+  "store_woven_thunder_seal_pattern": {
+    "id": "store_woven_thunder_seal_pattern",
+    "item_id": "woven_thunder_seal_pattern",
+    "name": "Thunder Seal Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 29000.0,
+    "unit_price": 2900.0,
+    "requires_skill": {
+      "spellweaving": 90
+    }
+  },
+  "store_woven_tidal_lance_pattern": {
+    "id": "store_woven_tidal_lance_pattern",
+    "item_id": "woven_tidal_lance_pattern",
+    "name": "Tidal Lance Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 10,
+    "cost": 5000.0,
+    "unit_price": 500.0,
+    "requires_skill": {
+      "spellweaving": 10
+    }
+  },
+  "store_woven_wickshot_pattern": {
+    "id": "store_woven_wickshot_pattern",
+    "item_id": "woven_wickshot_pattern",
+    "name": "Wickshot Pattern",
+    "subtitle": "Spellweaving supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "spellweaving": 5
+    }
+  },
+  "store_yew_log": {
+    "id": "store_yew_log",
+    "item_id": "yew_log",
+    "name": "Gravewood Log",
+    "subtitle": "Timbercraft supplies",
+    "description": "Rotating merchant stock. Gather or craft this item for better value.",
+    "quantity": 50,
+    "cost": 10000.0,
+    "unit_price": 200.0,
+    "requires_skill": {
+      "woodcutting": 60
+    }
   }
 }

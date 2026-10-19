@@ -1135,7 +1135,7 @@ func _test_general_store_screen(host: Node) -> void:
 		"the sidebar carries a %s tab" % Screens.label_for(Screens.STORE))
 
 	# Where a source route points matters: the store half of the goal system has to land here.
-	var store_sources: Array = Goals.sources_for_item("bronze_bar")
+	var store_sources: Array = Goals.sources_for_item(str(ShopManager.store_offers()[0].item_id))
 	var route_ok: bool = false
 	for s in store_sources:
 		if str((s as Dictionary).get("route", {}).get("screen", "")) == Screens.STORE:
@@ -1641,7 +1641,7 @@ func _test_combat_screen_split(host: Node) -> void:
 		"Settlement uses its management entry instead of a duplicate skill link")
 	var chapters: Dictionary = host.get("_chapters")
 	var bank_button: Button = (host.get("_nav_buttons") as Dictionary)[Screens.BANK]
-	_ok(bank_button.get_parent() == chapters["town"]["body"], "Storage lives in the Town chapter")
+	_ok(bank_button == chapters["storage"]["header"], "Storage is its own chapter header")
 	var prayer_button: Button = skill_buttons["prayer"]
 	_ok(prayer_button.get_parent() == chapters["combat"]["body"], "Prayers sits inside the Combat chapter")
 	SidebarNav.open_chapter(host, "combat")
@@ -3021,7 +3021,7 @@ func test_chapters(host: Node) -> void:
 		if not (sc in [Screens.SKILLS, Screens.PRAYERS]):
 			_eq(int(seen.get(sc, 0)), 1, "screen %s is in exactly one chapter" % sc)
 	_eq(SidebarNav.chapter_of("woodcutting"), "gathering", "Timbercraft is a gathering skill")
-	_eq(SidebarNav.chapter_of(Screens.BANK), "town", "Storage is in Town")
+	_eq(SidebarNav.chapter_of(Screens.BANK), "storage", "Storage has its own chapter")
 	var chapters: Dictionary = host.get("_chapters")
 	SidebarNav.open_chapter(host, "crafting")
 	for id in chapters.keys():
@@ -5653,8 +5653,9 @@ func _test_township_has_no_dead_ends() -> void:
 	_eq(TownshipManager.study, "", "a passive system skill cannot be studied")
 	TownshipManager.set_study("woodcutting")
 	var study_before: float = PlayerData.get_xp("woodcutting")
+	var expected_study_xp: float = TownshipManager.study_xp_per_hour()
 	TownshipManager.produce_tick()
-	_approx(PlayerData.get_xp("woodcutting") - study_before, 2.0 * TownshipManager.XP_PER_SCHOOL_LEVEL * ModifierManager.get_skill_xp_multiplier("woodcutting"), 0.5, "a level-2 Schoolhouse pays the studied skill XP each tick")
+	_approx(PlayerData.get_xp("woodcutting") - study_before, expected_study_xp, 0.5, "a level-2 Schoolhouse pays its level-scaled study XP each tick")
 	TownshipManager.set_study("")
 	TownshipManager.worship = saved_worship
 	TownshipManager.buildings = saved_buildings
