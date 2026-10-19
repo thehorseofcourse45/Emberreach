@@ -90,8 +90,7 @@ func advance(seconds: float, end_time: float = 0.0) -> void:
 				BankManager.remove_item(str(def.fuel), fuel)
 				SimulationMode.bump(SimulationMode.BUCKET_ITEMS_CONSUMED, str(def.fuel), fuel)
 				worker.fuel_seconds = 3600.0
-				if PlayerData.active_potion == "potion_engineering":
-					PotionManager.consume_charge("engineering:fuel")
+				PotionManager.consume_charge("engineering:fuel")
 			var farm_efficiency: float = efficiency_of(def, device_mastery)
 			var slice: float = minf(remaining, float(worker.fuel_seconds))
 			if str(def.skill) == "farming": slice = minf(slice, maxf(0.001, (60.0 - float(worker.progress)) / farm_efficiency))

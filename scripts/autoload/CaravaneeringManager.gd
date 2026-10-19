@@ -297,8 +297,7 @@ func _complete(index: int) -> bool:
 		BankManager.add_item_guaranteed(str(item_id), qty)
 		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, str(item_id), qty)
 		found[str(item_id)] = qty
-	if PlayerData.active_potion == "potion_caravaneering":
-		PotionManager.consume_charge("caravaneering:trip")
+	PotionManager.consume_charge("caravaneering:trip")
 	history.push_front({"route": str(c.route), "revenue": gold, "loss": loss, "xp": xp, "items": found,
 		"total": float(c.total), "journey": c.get("journey", {}).duplicate(true)})
 	if history.size() > HISTORY_LIMIT:

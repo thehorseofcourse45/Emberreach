@@ -172,8 +172,7 @@ func collect(index: int) -> bool:
 	MasteryManager.add_mastery_xp("ranching", "raise_" + str(pen.species), float(pen.cycles) * float(species(str(pen.species)).get("seconds", 7200.0)), ModifierManager.get_mastery_xp_bonus("ranching"))
 	SummoningManager.on_action("ranching", 60.0)
 	PetManager.roll_for_skill("ranching", float(pen.cycles) * float(species(str(pen.species)).get("seconds", 7200.0)))
-	if str(DataLoader.get_item(PlayerData.active_potion).get("id", "")) == "potion_ranching":
-		PotionManager.consume_charge("ranching:collection")
+	PotionManager.consume_charge("ranching:collection")
 	pen.pending = {}
 	pen.pending_xp = 0.0
 	pen.cycles = 0

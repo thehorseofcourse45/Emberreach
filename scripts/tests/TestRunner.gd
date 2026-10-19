@@ -7049,6 +7049,19 @@ func _test_frontier_expansions(host: Node) -> void:
 		"Held-item checks count quality and affix variants of the base piece")
 	_ok(float(Quests.describe_objective({"kind": "have_item", "item_id": "bronze_platebody", "required": plain_plates + 2}).get("current", 0.0)) == float(plain_plates + 2),
 		"A have-item task is satisfied by quality-crafted copies")
+	# Scoped potions of every tier spend a charge; the last charge clears the potion.
+	for pid in ["potion_ranching_3", "potion_nestkeeper_elixir_2", "potion_caravaneering_4", "potion_gearsmith_elixir_5", "potion_engineering_6"]:
+		var scope: String = str(DataLoader.get_item(pid).get("charge_scope", ""))
+		BankManager.add_item(pid, 1)
+		_ok(PotionManager.use_potion(pid), "%s can be drunk" % pid)
+		var charges: int = PlayerData.potion_charges
+		PotionManager.consume_charge("not_my_scope")
+		_ok(PlayerData.potion_charges == charges, "%s ignores other scopes" % pid)
+		PotionManager.consume_charge(scope)
+		_ok(PlayerData.potion_charges == charges - 1, "%s spends a charge in its own scope" % pid)
+		PlayerData.potion_charges = 1
+		PotionManager.consume_charge(scope)
+		_ok(not PotionManager.is_active(), "%s clears on its final charge" % pid)
 	# Recipe inputs spend the plain stack first, then quality/affix copies.
 	BankManager.deserialize({"purchased_slots": 200})
 	BankManager.add_item("bronze_platebody", 1)
