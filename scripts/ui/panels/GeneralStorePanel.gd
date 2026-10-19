@@ -26,15 +26,18 @@ var _filter: OptionButton
 var _summary: VBoxContainer
 var _list: VBoxContainer
 var _built: bool = false
+var _refresh_label: Label
+var _shown_period: int = -1
+var _timer_elapsed: float = 0.0
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_4)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_built = true
 	add_child(UIStyle.title("General Store", UITokens.FONT_DISPLAY))
-	add_child(UIStyle.label(
-		"Materials bought outright with gold, for when you need one now and would rather not wait for it. Every price sits well above what the item sells for, so making it yourself is always the better deal — this counter removes a wait, not a skill.",
-		true, UITokens.FONT_SMALL))
+	add_child(UIStyle.label("A travelling merchant brings 80 bundles from a broad catalogue every six real-world hours. Stock stays the same when you reload; skill requirements and premium prices still apply.", true, UITokens.FONT_SMALL))
+	_refresh_label = UIStyle.colored_label("", UITokens.GOLD_BRIGHT, UITokens.FONT_SUBHEAD)
+	add_child(_refresh_label)
 
 	var bar := HFlowContainer.new()
 	bar.add_theme_constant_override("h_separation", UITokens.SP_4)
@@ -59,13 +62,26 @@ func _ready() -> void:
 	EventBus.state_refreshed.connect(_rebuild)
 	_rebuild()
 
+func _process(delta: float) -> void:
+	_timer_elapsed += delta
+	if _timer_elapsed < 1.0 or not is_visible_in_tree():
+		return
+	_timer_elapsed = 0.0
+	var remaining: int = ShopManager.store_refresh_seconds()
+	_refresh_label.text = "New stock in %02d:%02d:%02d" % [remaining / 3600, (remaining % 3600) / 60, remaining % 60]
+	if _shown_period != ShopManager.store_period():
+		_rebuild()
+
 func detail_context() -> Dictionary:
 	return {"kind": "text", "title": "General Store",
-		"body": "Repeatable stock, priced above what the item sells for: buying unblocks a queue rather than skipping a skill. Costlier lines stay shut until you have trained the skill that makes the item."}
+		"body": "Eighty bundles rotate every six real-world hours, including while offline. Premium prices keep gathering and crafting worthwhile. Livestock is always sold directly at the ranch."}
 
 func _rebuild() -> void:
 	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
 		return
+	_shown_period = ShopManager.store_period()
+	var remaining: int = ShopManager.store_refresh_seconds()
+	_refresh_label.text = "New stock in %02d:%02d:%02d" % [remaining / 3600, (remaining % 3600) / 60, remaining % 60]
 	_rebuild_summary()
 	for c in _list.get_children():
 		_list.remove_child(c)

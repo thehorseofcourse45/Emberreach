@@ -580,7 +580,7 @@ const SCREEN_HELP: Dictionary = {
 	Screens.PROVISIONER: {"title": "Provisioner",
 		"body": "Spend GP on unlocks and conveniences. Costs and requirements are stated before you commit."},
 	Screens.STORE: {"title": "General Store",
-		"body": "Repeatable stock bought in bundles. Every price sits above what the item sells for, so crafting stays the cheaper route: buy to unblock a queue, not to skip a skill."},
+		"body": "Eighty bundles rotate every six real-world hours. Every price sits above what the item sells for, so crafting stays the cheaper route: buy to unblock a queue, not to skip a skill."},
 	Screens.SETTINGS: {"title": "Settings",
 		"body": "Offline behaviour, automation thresholds, accessibility and save management."},
 	Screens.RECOVERY: {"title": "Save recovery",

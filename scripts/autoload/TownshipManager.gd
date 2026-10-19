@@ -220,8 +220,16 @@ func xp_per_hour() -> float:
 		var def: Dictionary = buildings_data().get(building_id, {})
 		if int((def.get("production", {}) as Dictionary).get("population", 0)) <= 0:
 			structure_levels += level_of(str(building_id))
-	return (float(productions_population()) * XP_PER_RESIDENT + float(structure_levels) * XP_PER_STRUCTURE_LEVEL) \
-		* ModifierManager.get_skill_xp_multiplier("township")
+	var production_xp: float = float(productions_population()) * XP_PER_RESIDENT + float(structure_levels) * XP_PER_STRUCTURE_LEVEL
+	# Ramp early payouts while keeping every building upgrade valuable.
+	return production_xp * _progression_factor() * ModifierManager.get_skill_xp_multiplier("township")
+
+func _progression_factor() -> float:
+	var development: float = clampf(float(PlayerData.get_level("township") - 1) / 74.0, 0.0, 1.0)
+	return 0.015 + 0.985 * pow(development, 1.5)
+
+func _trade_xp(skill_id: String, amount: float) -> float:
+	return amount * (_progression_factor() if skill_id == "township" else 1.0) * ModifierManager.get_skill_xp_multiplier(skill_id)
 
 func productions_population() -> int:
 	var pop: int = 0
@@ -366,7 +374,7 @@ func trade_offer(offer_id: String) -> Dictionary:
 				PlayerData.add_slayer_coins(amount)
 				granted.append("%s Huntsman coins" % UIStyle.fmt(amount))
 	for skill_id in (offer.get("grant_xp", {}) as Dictionary).keys():
-		var xp: float = float(offer["grant_xp"][skill_id]) * ModifierManager.get_skill_xp_multiplier(str(skill_id))
+		var xp: float = _trade_xp(str(skill_id), float(offer["grant_xp"][skill_id]))
 		PlayerData.add_xp(str(skill_id), xp)
 		granted.append("%s %s XP" % [UIStyle.fmt(xp), str(DataLoader.skills.get(skill_id, {}).get("name", skill_id))])
 	EventBus.notify("Traded: %s" % ", ".join(granted), "success")
@@ -383,7 +391,7 @@ func describe_offer(offer: Dictionary) -> String:
 		parts.append("%s %s" % [UIStyle.fmt(float(offer["grant_currency"][currency])),
 			str(currency).replace("_", " ")])
 	for skill_id in (offer.get("grant_xp", {}) as Dictionary).keys():
-		parts.append("%s %s XP" % [UIStyle.fmt(float(offer["grant_xp"][skill_id])),
+		parts.append("%s %s XP" % [UIStyle.fmt(_trade_xp(str(skill_id), float(offer["grant_xp"][skill_id]))),
 			str(DataLoader.skills.get(skill_id, {}).get("name", skill_id))])
 	return ", ".join(parts) if not parts.is_empty() else "Nothing"
 
@@ -398,7 +406,8 @@ func study_options() -> Array[String]:
 func study_xp_per_hour() -> float:
 	if study == "":
 		return 0.0
-	return float(level_of(SCHOOL_ID)) * XP_PER_SCHOOL_LEVEL * ModifierManager.get_skill_xp_multiplier(study)
+	var study_budget: float = 50.0 * float(level_of(SCHOOL_ID)) * pow(1.0 + float(PlayerData.get_level(study) - 1) / 5.0, 2.0)
+	return minf(float(level_of(SCHOOL_ID)) * XP_PER_SCHOOL_LEVEL, study_budget) * ModifierManager.get_skill_xp_multiplier(study)
 
 func set_study(skill_id: String) -> void:
 	study = skill_id if study_options().has(skill_id) else ""

@@ -96,31 +96,62 @@ func _apply_one(upgrade_id: String) -> void:
 #  The general store
 # =========================================================================
 
-## Buying a resource is repeatable, unlike an upgrade, so the gate is the three questions the
-## UI already asks everywhere: do you have the gold, do you have the skill level, is there room.
-## No ownership count: a crate of bronze bars is not a thing you finish buying.
-func store_offers() -> Array:
+const STORE_ROTATION_SECONDS: int = 6 * 60 * 60
+const STORE_ROTATING_COUNT: int = 80
+var _store_period: int = -1
+var _store_stock: Array = []
+
+func store_period() -> int:
+    return floori(Time.get_unix_time_from_system() / STORE_ROTATION_SECONDS)
+
+func store_refresh_seconds() -> int:
+    return (store_period() + 1) * STORE_ROTATION_SECONDS - floori(Time.get_unix_time_from_system())
+
+## Seeded by the real-world window: reloads and offline time cannot reroll stock.
+func store_offers_for_period(period: int) -> Array:
+    var ids: Array = []
+    for id in DataLoader.shop_store:
+        if DataLoader.shop_store[id] is Dictionary and not str(id).begins_with("store_ranch_"):
+            ids.append(id)
+    ids.sort()
+    var rng := RandomNumberGenerator.new()
+    rng.seed = period ^ 0x53544F5245
+    for i in range(ids.size() - 1, 0, -1):
+        var j: int = rng.randi_range(0, i)
+        var swap: Variant = ids[i]
+        ids[i] = ids[j]
+        ids[j] = swap
     var out: Array = []
-    for offer_id in DataLoader.shop_store.keys():
-        var offer: Variant = DataLoader.shop_store[offer_id]
-        if typeof(offer) == TYPE_DICTIONARY:
-            out.append(offer)
+    for id in ids.slice(0, mini(STORE_ROTATING_COUNT, ids.size())):
+        out.append(DataLoader.shop_store[id])
     out.sort_custom(func(a, b):
-        var pa: float = float((a as Dictionary).get("cost", 0))
-        var pb: float = float((b as Dictionary).get("cost", 0))
-        if is_equal_approx(pa, pb):
-            return str((a as Dictionary).get("name", "")) < str((b as Dictionary).get("name", ""))
-        return pa < pb)
+        if float(a.cost) == float(b.cost):
+            return str(a.id) < str(b.id)
+        return float(a.cost) < float(b.cost))
     return out
 
+func store_offers() -> Array:
+    var period: int = store_period()
+    if period != _store_period:
+        _store_stock = store_offers_for_period(period)
+        _store_period = period
+    return _store_stock.duplicate(true)
+
 func get_store_offer(offer_id: String) -> Dictionary:
-    return DataLoader.shop_store.get(offer_id, {})
+    # Livestock is a core ranch purchase, independent of the visiting merchant.
+    if offer_id.begins_with("store_ranch_"):
+        return DataLoader.shop_store.get(offer_id, {})
+    for offer in store_offers():
+        if str(offer.id) == offer_id:
+            return offer
+    return {}
 
 ## The level a stock line is gated behind, or {"", 0} when it is always available.
 func store_requirement(offer: Dictionary) -> Dictionary:
     var req: Dictionary = offer.get("requires_skill", {}) as Dictionary
     for skill_id in req.keys():
-        return {"skill": str(skill_id), "level": int(req[skill_id])}
+        if int(req[skill_id]) > 1:
+            return {"skill": str(skill_id), "level": int(req[skill_id])}
     return {"skill": "", "level": 0}
 
 func can_buy_store(offer_id: String) -> Dictionary:
@@ -144,6 +175,8 @@ func buy_store(offer_id: String) -> bool:
         EventBus.notification.emit("Cannot buy: %s" % str(check["reason"]), "warn")
         return false
     var offer: Dictionary = get_store_offer(offer_id)
+    if offer.is_empty():
+        return false
     var cost: float = float(offer.get("cost", 0))
     if not PlayerData.spend_gp(cost):
         return false

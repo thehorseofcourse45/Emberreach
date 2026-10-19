@@ -634,25 +634,23 @@ func sources_for_item(item_id: String) -> Array:
 				"level_required": int((offer as Dictionary)["required"]),
 				"unlocked": bool((offer as Dictionary)["met"]),
 				"route": {"screen": "provisioner"}})
-	# 5b. The general store sells it outright. It is never the cheapest route — every line is
-	# priced above the item's sell value — but it is always an available one, which is the whole
-	# justification for the counter existing. Without this entry the store was invisible to goal
-	# tracking: "where do I get this?" never answered "gold".
-	for store_id in DataLoader.shop_store.keys():
+	# Future merchant stock remains discoverable, with availability stated explicitly.
+	for store_id in DataLoader.shop_store:
 		var stock: Variant = DataLoader.shop_store[store_id]
-		if typeof(stock) != TYPE_DICTIONARY:
+		if not stock is Dictionary or str(store_id).begins_with("store_ranch_"):
 			continue
-		if str((stock as Dictionary).get("item_id", "")) != item_id:
+		if str(stock.get("item_id", "")) != item_id:
 			continue
-		var gate: Dictionary = ShopManager.store_requirement(stock as Dictionary)
-		var bundle: int = maxi(1, int((stock as Dictionary).get("quantity", 1)))
-		var bundle_cost: float = float((stock as Dictionary).get("cost", 0))
+		var gate: Dictionary = ShopManager.store_requirement(stock)
+		var bundle: int = maxi(1, int(stock.get("quantity", 1)))
+		var bundle_cost: float = float(stock.get("cost", 0))
+		var in_stock: bool = not ShopManager.get_store_offer(str(store_id)).is_empty()
 		out.append({
 			"kind": "shop",
 			"label": "General store · %d× %s" % [bundle, str(DataLoader.get_item(item_id).get("name", item_id))],
-			"detail": "%s GP per bundle · %s each" % [_fmt(bundle_cost), _fmt(bundle_cost / float(bundle))],
+			"detail": "%s GP per bundle · %s each · %s" % [_fmt(bundle_cost), _fmt(bundle_cost / float(bundle)), "In stock" if in_stock else "Returns in future six-hour rotations"],
 			"level_required": int(gate["level"]),
-			"unlocked": str(gate["skill"]) == "" or PlayerData.get_level(str(gate["skill"])) >= int(gate["level"]),
+			"unlocked": in_stock and (str(gate["skill"]) == "" or PlayerData.get_level(str(gate["skill"])) >= int(gate["level"])),
 			"route": {"screen": "store"},
 		})
 	# 6. Something else upgrades into this item.

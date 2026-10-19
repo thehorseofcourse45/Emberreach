@@ -19,9 +19,9 @@ func get_potion(item_id: String) -> Dictionary:
 
 ## Drink a potion from the bank and make it active.
 func use_potion(item_id: String) -> bool:
-    if item_id == "potion_dreamwalking":
-        return DreamwalkingManager.prepare_draught(item_id)
     var def: Dictionary = get_potion(item_id)
+    if str(def.get("potion_family", item_id)) == "potion_dreamwalking":
+        return DreamwalkingManager.prepare_draught(item_id)
     if def.get("item_type", "") != "potion":
         return false
     if not BankManager.has_item(item_id, 1):

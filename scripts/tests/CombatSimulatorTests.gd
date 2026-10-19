@@ -544,8 +544,8 @@ static func run(host: Node) -> Dictionary:
 	var xp: Dictionary = a["xp"]
 	_assert(xp.has("hitpoints") and float(xp["hitpoints"]) > 0.0,
 		"damage dealt produces hitpoints XP", state)
-	_assert(xp.has("melee") and float(xp["melee"]) > 0.0,
-		"damage dealt produces attack-style XP", state)
+	_assert(xp.has("attack") and float(xp["attack"]) > 0.0 and not xp.has("melee"),
+		"stab damage produces Bladework XP under the trained skill ID", state)
 	_assert(not xp.has("slayer"),
 		"no slayer XP is granted outside a slayer area", state)
 	var slayer_snap: Dictionary = _strong_snapshot(10, 1)
