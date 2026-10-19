@@ -14,6 +14,8 @@ extends Node
 var _sources: Dictionary = {}      # source_id -> ModifierSource
 var _cache: Dictionary = {}        # key -> combined value
 var _dirty: bool = true
+## Bumps on every source change, so a view can tell whether the numbers it drew are still current.
+var revision: int = 0
 
 ## Keys whose contributions multiply instead of adding, e.g. (1+a)(1+b)-1.
 const MULTIPLICATIVE_KEYS: Array[String] = [
@@ -58,6 +60,7 @@ func clear_category(category: String) -> void:
 
 func _mark_dirty() -> void:
     _dirty = true
+    revision += 1
     EventBus.modifiers_changed.emit()
 
 # ---------------- Aggregation ----------------

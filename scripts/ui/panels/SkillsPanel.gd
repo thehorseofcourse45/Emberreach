@@ -30,6 +30,8 @@ var _selected_box: VBoxContainer
 var _mods_box: VBoxContainer
 var _mastery_box: VBoxContainer
 var _quantity_index: int = 0
+## What the activity rows were last drawn from; a refresh that finds it unchanged keeps them.
+var _activities_signature: Array = []
 var _built: bool = false
 var _systems: SkillSystemsView
 ## Live XP readout. The bar is rebuilt on every refresh(), so these are re-cached each rebuild and
@@ -249,12 +251,25 @@ func _process(_delta: float) -> void:
 	if _xp_remaining != null:
 		_xp_remaining.text = UIStyle.fmt_exact(float(XPTable.xp_to_next_level(xp, level)))
 
+## Rows show lock state, estimates and tooltips; the mastery bar polls itself, so a level-up that
+## unlocks nothing and changes no modifier does not need the whole list rebuilt.
+func _activities_signature_now() -> Array:
+	var level: int = PlayerData.get_level(_skill_id)
+	var per_action: Array = []
+	for a in DataLoader.get_skill_actions(_skill_id):
+		per_action.append([int(a.get("level_required", 1)) <= level, MasteryManager.get_level(_skill_id, str(a.get("id", "")))])
+	return [_skill_id, _selected_action, ModifierManager.revision, per_action]
+
 func _rebuild_activities() -> void:
 	_main_grid.visible = _skill_id not in ["ranching", "dreamwalking", "caravaneering"]
 	var integrated: bool = _skill_id in INTEGRATED_ACTIVITIES
 	_activities_card.visible = not integrated
 	_arrange_layout()
 	_update_columns()
+	var signature: Array = _activities_signature_now()
+	if not integrated and signature == _activities_signature and _activities.get_child_count() > 0:
+		return
+	_activities_signature = signature
 	_clear(_activities)
 	if integrated:
 		# The rows are drawn by the system section that owns them (the Frontier map).

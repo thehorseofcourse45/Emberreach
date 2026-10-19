@@ -1655,6 +1655,15 @@ func _test_combat_screen_split(host: Node) -> void:
 	fishing_button.pressed.emit()
 	_ok(host.get("_screen") == Screens.SKILLS and str((host.get("_panels") as Dictionary)[Screens.SKILLS].get("_skill_id")) == "fishing",
 		"a sidebar skill opens that skill's activities")
+	# A refresh that changes nothing keeps the activity rows; a modifier change redraws them.
+	var skills_panel = (host.get("_panels") as Dictionary)[Screens.SKILLS]
+	var first_row: Node = skills_panel._activities.get_child(2)
+	skills_panel.refresh()
+	_ok(skills_panel._activities.get_child(2) == first_row, "a refresh with nothing changed keeps the activity rows")
+	ModifierManager.register("audit:rows", {"fishing_interval_percent": 10.0})
+	skills_panel.refresh()
+	_ok(skills_panel._activities.get_child(2) != first_row, "a modifier change redraws the activity rows")
+	ModifierManager.unregister("audit:rows")
 	# The label tracks a level-up that happens while the shell is live, not only the level at
 	# build time: grant exactly one level and read the button back.
 	var before_level: int = PlayerData.get_level("fishing")
@@ -9841,4 +9850,20 @@ func _test_remaining_audit_fixes(host: Node) -> void:
 	RanchingManager.deserialize(pen_save)
 	_ok(bool(RanchingManager.pens[0].variant), "the final rare pen survives save/load")
 	ModifierManager.unregister("audit:rare")
+	# Reward safety: a full bank must park a ranch claim in overflow, and a second claim must not pay twice.
+	GameManager.start_new_game("standard")
+	var produce: String = str(DataLoader.new_skill_systems.species[0].produce)
+	RanchingManager.deserialize({"pens":[{"species":str(DataLoader.new_skill_systems.species[0].id),"animals":2}]})
+	for filler in DataLoader.items.keys():
+		if BankManager.is_full(): break
+		if str(filler) != produce: BankManager.items[str(filler)] = 1
+	RanchingManager.pens[0].pending = {produce: 3}
+	RanchingManager.pens[0].pending_xp = 10.0
+	RanchingManager.pens[0].cycles = 2
+	_ok(BankManager.is_full() and BankManager.get_count(produce) == 0, "the bank is full before the ranch claim")
+	_ok(RanchingManager.collect(0), "a full bank still lets a pen be claimed")
+	_ok(int(BankManager.overflow.get(produce, 0)) == 3, "the ranch reward lands in overflow, not lost")
+	_ok(not RanchingManager.collect(0), "a second ranch claim is refused")
+	_ok(int(BankManager.overflow.get(produce, 0)) == 3, "a refused ranch claim pays nothing more")
+	GameManager.start_new_game("standard")
 	await host.get_tree().process_frame

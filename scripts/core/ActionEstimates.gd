@@ -23,6 +23,14 @@ static func for_action(skill_id: String, action_id: String, extra_mods: Dictiona
 	var actions_per_hour: float = 3600.0 / maxf(effective_interval, 0.05)
 	var xp_mult: float = (1.0 + (_mod("global_skill_xp_percent", replacements) + _mod(skill_id + "_skill_xp_percent", replacements)) / 100.0)
 	var xp_per_action: float = float(action.get("base_xp", 0.0)) * xp_mult
+	# Planting pays no XP itself; the seed pays harvest_xp once grown. Project per plot-cycle.
+	for seed_id in (action.get("input_items", {}) as Dictionary).keys():
+		var seed: Dictionary = DataLoader.get_item(str(seed_id))
+		if skill_id == "farming" and xp_per_action <= 0.0 and float(seed.get("harvest_xp", 0.0)) > 0.0 and float(seed.get("grow_seconds", 0.0)) > 0.0:
+			xp_per_action = float(seed["harvest_xp"]) * xp_mult
+			actions_per_hour = 3600.0 / float(seed["grow_seconds"])
+			success = float(seed.get("base_survival", 1.0))
+			break
 	var doubling: float = clampf((_mod(skill_id + "_doubling_percent", replacements) + _mod("global_doubling_percent", replacements)) / 100.0, 0, 1)
 	var flat_bonus: int = int(_mod(skill_id + "_resource_flat", replacements))
 	var preservation: float = clampf(_mod(skill_id + "_preservation_percent", replacements) / 100.0, 0, 1)
