@@ -53,7 +53,8 @@ func _bootstrap() -> void:
 	start_new_game(str(PlayerData.game_mode))
 
 func _validate_content_quietly() -> void:
-	if not OS.is_debug_build():
+	# The full pass takes ~40 s in a debug build, so it is opt-in: run with `-- --validate-content`.
+	if not OS.is_debug_build() or not "--validate-content" in OS.get_cmdline_user_args():
 		return
 	var report: Array = ContentValidator.new().validate_all()
 	var errors: int = 0
