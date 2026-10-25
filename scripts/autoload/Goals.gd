@@ -866,7 +866,36 @@ func suggestions(limit: int = 5) -> Array:
 			"icon_kind": "currencies", "icon_id": "gp",
 			"goal": {"kind": "upgrade", "id": affordable["id"]},
 		})
+	# 6. A non-combat skill the player has never touched, in the game's own skill order, so a
+	# 42-skill game introduces its systems one at a time instead of all at once.
+	var fresh: Dictionary = _unstarted_skill()
+	if not fresh.is_empty():
+		out.append({
+			"reason": "Never tried — %s" % fresh["description"],
+			"label": "Try %s" % fresh["name"],
+			"route": {"screen": "skill", "skill_id": fresh["skill_id"], "action_id": fresh["action_id"]},
+			"icon_kind": "skills", "icon_id": fresh["skill_id"],
+		})
 	return out.slice(0, limit)
+
+## The earliest-ordered non-combat skill with no XP that already has a level-1 action to run.
+func _unstarted_skill() -> Dictionary:
+	var best: Dictionary = {}
+	var best_order: int = 1 << 30
+	for skill_id in DataLoader.skills.keys():
+		var sk: Dictionary = DataLoader.get_skill(skill_id)
+		if str(sk.get("category", "")) == "combat" or PlayerData.get_xp(skill_id) > 0.0:
+			continue
+		var order: int = int(sk.get("order", 9999))
+		if order >= best_order:
+			continue
+		for a in DataLoader.get_skill_actions(skill_id):
+			if int(a.get("level_required", 1)) <= 1:
+				best_order = order
+				best = {"skill_id": skill_id, "name": str(sk.get("name", skill_id)),
+					"description": str(sk.get("description", "")).to_lower(), "action_id": str(a.get("id", ""))}
+				break
+	return best
 
 func _best_craftable_equipment() -> Dictionary:
 	var best_slot_score: Dictionary = {}
