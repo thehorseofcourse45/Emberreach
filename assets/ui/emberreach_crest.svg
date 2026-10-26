@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640">
+ <defs>
+  <linearGradient id="gold" x2=".8" y2="1"><stop stop-color="#fff0bf"/><stop offset=".35" stop-color="#e4bb72"/><stop offset=".65" stop-color="#9c6934"/><stop offset="1" stop-color="#f6d797"/></linearGradient>
+  <linearGradient id="steel" x2="0" y2="1"><stop stop-color="#29445d"/><stop offset="1" stop-color="#0b1421"/></linearGradient>
+  <linearGradient id="fire" x2=".25" y2="1"><stop stop-color="#fff5d0"/><stop offset=".45" stop-color="#efb861"/><stop offset="1" stop-color="#bd6230"/></linearGradient>
+ </defs>
+ <circle cx="320" cy="306" r="231" fill="none" stroke="#b79758" stroke-opacity=".24"/>
+ <circle cx="320" cy="306" r="214" fill="none" stroke="#b79758" stroke-opacity=".12"/>
+ <path d="M320 46 338 69 320 94 302 69Z M320 548 333 567 320 587 307 567Z M57 306 74 294 91 306 74 318Z M549 306 566 294 583 306 566 318Z" fill="url(#gold)"/>
+ <path d="M320 113 477 173 464 348Q450 450 320 514 190 450 176 348L163 173Z" fill="#070f1b" stroke="#060c14" stroke-width="17"/>
+ <path d="M320 113 477 173 464 348Q450 450 320 514 190 450 176 348L163 173Z" fill="url(#steel)" stroke="url(#gold)" stroke-width="8"/>
+ <path d="M320 133 457 187 445 345Q432 432 320 492 208 432 195 345L183 187Z" fill="none" stroke="#b79758" stroke-width="1.5"/>
+ <path d="M219 397 262 296 292 351 345 232 422 397Z" fill="#162536" stroke="#54738a" stroke-width="2"/>
+ <path d="m345 232-25 86 28-12 16 21 6-32Z" fill="#91b8c7" opacity=".6"/>
+ <path d="M320 428C249 422 249 377 272 340c-3 37 12 43 20 44-21-72 61-102 29-179 78 49 34 96 51 135 5-14 9-21 15-28 35 69 0 115-67 116Z" fill="url(#fire)" stroke="#f4cd88" stroke-width="2"/>
+ <path d="M320 415c-39-6-32-35-12-59-3 21 9 23 9 23-1-27 24-38 19-63 35 41 29 88-16 99Z" fill="#fff0b8"/>
+ <path d="M136 324q-23 65 34 115 M128 365l-25-22q-5 30 29 45 M143 399l-32-7q11 31 41 25 M164 431l-28 7q24 23 42 8 M504 324q23 65-34 115 M512 365l25-22q5 30-29 45 M497 399l32-7q-11 31-41 25 M476 431l28 7q-24 23-42 8" fill="#b79758" stroke="#d6b67c" stroke-width="2"/>
+ <path d="m264 190 5-13 5 13 13 5-13 5-5 13-5-13-13-5Z m107-26 4-9 4 9 9 4-9 4-4 9-4-9-9-4Z" fill="#f8df9b"/>
+</svg>
