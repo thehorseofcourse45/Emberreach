@@ -1275,7 +1275,6 @@ func simulate_elapsed(elapsed: float) -> Dictionary:
 	if elapsed <= 0.0 or state == State.IDLE:
 		return out
 	var remaining: float = elapsed
-	var stops_on_defeat: bool = bool(PlayerData.settings.get("offline_combat_stops_on_defeat", true))
 	var guard: int = 0
 	while remaining > 1e-6 and guard < MAX_OFFLINE_STEPS:
 		guard += 1
@@ -1290,10 +1289,6 @@ func simulate_elapsed(elapsed: float) -> Dictionary:
 			out["reason"] = "defeated" if deaths_this_session > deaths_before else "fight ended"
 			break
 		if state == State.DEAD:
-			out["stopped"] = true
-			out["reason"] = "defeated"
-			break
-		if deaths_this_session > 0 and stops_on_defeat:
 			out["stopped"] = true
 			out["reason"] = "defeated"
 			break

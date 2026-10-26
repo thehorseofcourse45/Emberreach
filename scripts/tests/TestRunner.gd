@@ -106,6 +106,7 @@ func run_all(host: Node) -> int:
 	await _test_cooking_failure_burns_materials(host)
 	await _test_food_heals_in_combat(host)
 	_test_combat_defeat_and_retreat(host)
+	_test_offline_combat_ignores_stale_deaths()
 	_test_duplicate_submissions()
 	_test_mastery_stall()
 	_test_audit_fixes()
@@ -2698,6 +2699,31 @@ func _test_online_offline_consistency() -> void:
 	_approx(offline_xp, online_xp, 0.0001, "both paths awarded identical XP")
 	_eq(offline_items, online_items, "both paths produced identical items")
 	_ok(online_items > 0, "the consistent run actually produced something")
+
+func _test_offline_combat_ignores_stale_deaths() -> void:
+	_heading("Offline combat is not stopped by a death from earlier in the session")
+	var area: Dictionary = _find_area()
+	if area.is_empty():
+		_ok(false, "found a region with monsters")
+		return
+	GameManager.start_new_game("standard")
+	for skill_id in ["attack", "strength", "defence", "hitpoints"]:
+		PlayerData.set_level(skill_id, 40)
+	CombatManager.start_combat({
+		"type": "area", "id": str(area["id"]), "monsters": area["monsters"], "endless": true,
+		"attack_style": "melee", "melee_style": "stab",
+	})
+	CombatManager.player_max_hp = CombatManager._compute_max_hp()
+	CombatManager.player_hp = CombatManager.player_max_hp
+	CombatManager.deaths_this_session = 1
+	SimulationMode.begin()
+	var out: Dictionary = CombatManager.simulate_elapsed(30.0)
+	SimulationMode.end()
+	var no_new_death: bool = CombatManager.deaths_this_session == 1
+	_ok(not no_new_death or float(out["seconds_processed"]) >= 29.0,
+		"a stale death count does not end a fight that nothing ended (processed %.1fs)" % float(out["seconds_processed"]))
+	CombatManager.stop_combat("test complete")
+	CombatManager.deaths_this_session = 0
 
 func _test_combat_defeat_and_retreat(host: Node) -> void:
 	_heading("Combat defeat and retreat")

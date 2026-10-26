@@ -322,7 +322,7 @@ static func _button_box(fill: Color, border: Color) -> StyleBoxFlat:
 ## so no call site has to remember which of the two it is writing.
 const WRAP_THRESHOLD: int = 48
 
-static func label(text: String, muted := false, size := UITokens.FONT_BODY) -> Label:
+static func label(text: String, muted: bool = false, size: int = UITokens.FONT_BODY) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.add_theme_font_size_override("font_size", size)
@@ -340,8 +340,8 @@ static func label(text: String, muted := false, size := UITokens.FONT_BODY) -> L
 	return l
 
 ## Gold heading ink with a faint ember glow, in the display face when it is installed.
-static func title(text: String, size := UITokens.FONT_HEAD) -> Label:
-	var l := label(text, false, size)
+static func title(text: String, size: int = UITokens.FONT_HEAD) -> Label:
+	var l: Label = label(text, false, size)
 	l.add_theme_color_override("font_color", UITokens.GOLD_BRIGHT)
 	l.add_theme_color_override("font_shadow_color", Color(UITokens.GLOW.r, UITokens.GLOW.g, UITokens.GLOW.b, 0.35))
 	l.add_theme_constant_override("shadow_outline_size", 6)
@@ -356,7 +356,7 @@ static func title(text: String, size := UITokens.FONT_HEAD) -> Label:
 	return l
 
 static func colored_label(text: String, color: Color, size := UITokens.FONT_BODY) -> Label:
-	var l := label(text, false, size)
+	var l: Label = label(text, false, size)
 	l.add_theme_color_override("font_color", color)
 	return l
 
