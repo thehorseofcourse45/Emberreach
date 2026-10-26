@@ -356,6 +356,7 @@ func load_game() -> bool:
 		# Preserve the exact original before touching it.
 		keep = PREMIGRATION_TEMPLATE % int(Time.get_unix_time_from_system())
 		DirAccess.copy_absolute(_abs(SAVE_PATH), _abs(keep))
+		_prune_premigration_copies()
 		data = migrate_save(data, from_version)
 
 	_apply(data)
@@ -374,6 +375,21 @@ func load_game() -> bool:
 		# was measured from is paid out by the offline catch-up that runs right after load.
 		save_game(false, false)
 	return true
+
+const PREMIGRATION_KEEP: int = 3
+
+## Keep only the newest few pre-migration originals; the unix timestamp in the name orders them.
+func _prune_premigration_copies() -> void:
+	var dir: DirAccess = DirAccess.open("user://")
+	if dir == null:
+		return
+	var found: Array[String] = []
+	for f in dir.get_files():
+		if f.begins_with("save_game.premigration_") and f.ends_with(".json"):
+			found.append(f)
+	found.sort()
+	for i in range(maxi(0, found.size() - PREMIGRATION_KEEP)):
+		_remove_file("user://" + found[i])
 
 var _last_migration_note: String = ""
 
