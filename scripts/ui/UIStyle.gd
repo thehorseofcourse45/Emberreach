@@ -474,7 +474,13 @@ static func fmt(v: float) -> String:
 	var neg: bool = v < 0.0
 	var a: float = absf(v)
 	var out: String
-	if a >= 1_000_000_000_000.0:
+	var notation: String = str(PlayerData.settings.get("number_notation", "abbreviated"))
+	if notation == "full" and a >= 10_000.0 and is_finite(a):
+		return fmt_exact(v)
+	if notation == "scientific" and a >= 1_000_000.0 and is_finite(a):
+		var exp10: int = int(floor(log(a) / log(10.0)))
+		out = "%.2fe%d" % [a / pow(10.0, exp10), exp10]
+	elif a >= 1_000_000_000_000.0:
 		out = "%.2fT" % (a / 1_000_000_000_000.0)
 	elif a >= 1_000_000_000.0:
 		out = "%.2fB" % (a / 1_000_000_000.0)

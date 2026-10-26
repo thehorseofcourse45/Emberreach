@@ -189,6 +189,18 @@ func _build_presentation() -> void:
 	menu.tooltip_text = "Scales the whole interface for readability."
 	row.add_child(menu)
 	box.add_child(row)
+	var notation_row := HBoxContainer.new()
+	notation_row.add_theme_constant_override("separation", UITokens.SP_4)
+	notation_row.add_child(UIStyle.label("Number format", true, UITokens.FONT_SMALL))
+	var notations: Array = ["abbreviated", "scientific", "full"]
+	var notation_menu := Widgets.option_menu(["1.23M", "1.23e6", "1,234,567"], func(i):
+		PlayerData.settings["number_notation"] = notations[clampi(i, 0, notations.size() - 1)]
+		EventBus.state_refreshed.emit()
+		SaveManager.save_game(),
+		maxi(0, notations.find(str(PlayerData.settings.get("number_notation", "abbreviated")))))
+	notation_menu.tooltip_text = "How large numbers are written. Full groups digits from 10,000 up; scientific starts at one million."
+	notation_row.add_child(notation_menu)
+	box.add_child(notation_row)
 
 ## One slider: the game has no music, so effects are the only sound to adjust.
 func _build_sound() -> void:
