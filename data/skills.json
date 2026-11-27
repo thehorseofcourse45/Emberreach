@@ -3864,6 +3864,25 @@
         "mastery_action_time": 14.45,
         "fail_output_item": "burnt_food",
         "fail_output_qty": 1
+      },
+      {
+        "id": "cook_siege_supplies",
+        "name": "Prepare Siege Supper",
+        "level_required": 118,
+        "base_interval": 8.0,
+        "base_xp": 747,
+        "mastery_action_time": 8.0,
+        "input_items": {
+          "aurora_seafood_feast": 2,
+          "ranch_cheese": 1,
+          "blood_ginger": 1
+        },
+        "output_items": {
+          "siege_supper": 2
+        },
+        "success_chance": 0.85,
+        "fail_output_item": "burnt_food",
+        "fail_output_qty": 1
       }
     ],
     "order": 15,
@@ -5968,6 +5987,24 @@
         "requires_skills": {
           "engineering": 100
         }
+      },
+      {
+        "id": "temper_siegebound_platelegs",
+        "name": "Temper Siegebound Platelegs",
+        "description": "Consumes the original item. Quality and affixes are rolled anew.",
+        "level_required": 119,
+        "base_interval": 12.0,
+        "base_xp": 650,
+        "mastery_action_time": 12.0,
+        "input_items": {
+          "throneguard_platelegs": 1,
+          "herald_bar": 8,
+          "herald_essence": 3,
+          "enchant_catalyst": 8
+        },
+        "output_items": {
+          "siegebound_platelegs": 1
+        }
       }
     ],
     "order": 16,
@@ -6617,6 +6654,24 @@
         "requires_skills": {
           "enchanting": 115,
           "lostfinding": 105
+        }
+      },
+      {
+        "id": "reinforce_dawnbloom_bow",
+        "name": "Reinforce Dawnbloom Longbow",
+        "description": "Consumes the original item. Quality and affixes are rolled anew.",
+        "level_required": 118,
+        "base_interval": 12.0,
+        "base_xp": 650,
+        "mastery_action_time": 12.0,
+        "input_items": {
+          "dawnbloom_longbow": 1,
+          "dawnbloom_log": 4,
+          "herald_bar": 3,
+          "enchant_catalyst": 8
+        },
+        "output_items": {
+          "dawnbloom_siege_bow": 1
         }
       }
     ],
@@ -7902,6 +7957,24 @@
           "herald_gloves": 1
         },
         "mastery_action_time": 1.7
+      },
+      {
+        "id": "set_siege_sigil",
+        "name": "Set Siege Sigil",
+        "description": "Consumes the original item. Quality and affixes are rolled anew.",
+        "level_required": 115,
+        "base_interval": 12.0,
+        "base_xp": 650,
+        "mastery_action_time": 12.0,
+        "input_items": {
+          "heralds_sigil": 1,
+          "diamond": 4,
+          "herald_bar": 4,
+          "enchant_catalyst": 8
+        },
+        "output_items": {
+          "siege_sigil": 1
+        }
       }
     ],
     "mastery_unlocks": {
@@ -8674,6 +8747,24 @@
         "requires_skills": {
           "enchanting": 115,
           "echo_keeping": 110
+        }
+      },
+      {
+        "id": "attune_dawn_wand",
+        "name": "Attune Dawn Wand",
+        "description": "Consumes the original item. Quality and affixes are rolled anew.",
+        "level_required": 120,
+        "base_interval": 12.0,
+        "base_xp": 650,
+        "mastery_action_time": 12.0,
+        "input_items": {
+          "dawn_wand": 1,
+          "dawn_rune": 30,
+          "herald_essence": 4,
+          "enchant_catalyst": 10
+        },
+        "output_items": {
+          "attuned_dawn_wand": 1
         }
       }
     ],
@@ -12073,6 +12164,22 @@
         "output_items": {
           "potion_dawnweaver_elixir_6": 1
         }
+      },
+      {
+        "id": "brew_wardens_draught",
+        "name": "Brew Warden's Draught",
+        "level_required": 120,
+        "base_interval": 8.0,
+        "base_xp": 500,
+        "mastery_action_time": 8.0,
+        "input_items": {
+          "potion_stoneward_tonic_6": 1,
+          "dawn_orchid": 3,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "wardens_draught": 1
+        }
       }
     ],
     "mastery_unlocks": {
@@ -15377,6 +15484,25 @@
         "icon_activity": true
       },
       {
+        "id": "scribe_bronze_volley",
+        "name": "Scribe Bronze Volley",
+        "level_required": 8,
+        "base_interval": 2.5,
+        "base_xp": 18,
+        "input_items": {
+          "normal_log": 1,
+          "bronze_arrowtips": 5,
+          "air_rune": 2
+        },
+        "output_items": {
+          "bronze_arrow": 5
+        },
+        "mastery_action_time": 2.5,
+        "description": "Carve and fletch five bronze arrows directly from a log and arrowtips, saving feathers and a separate shaft-making step.",
+        "conversion": true,
+        "icon_activity": true
+      },
+      {
         "id": "bone_offering",
         "name": "Bone Offering",
         "level_required": 10,
@@ -15536,6 +15662,26 @@
         },
         "mastery_action_time": 1.7,
         "description": "Turn spare oak into coal through controlled ember magic.",
+        "conversion": true,
+        "icon_activity": true
+      },
+      {
+        "id": "scribe_leather_kit",
+        "name": "Scribe Leather Kit",
+        "level_required": 26,
+        "base_interval": 2.5,
+        "base_xp": 35,
+        "input_items": {
+          "leather": 2,
+          "water_rune": 3,
+          "mind_rune": 1
+        },
+        "output_items": {
+          "leather_body": 1,
+          "leather_chaps": 1
+        },
+        "mastery_action_time": 2.5,
+        "description": "Shape two pieces of leather into a body and chaps in one cast, bypassing separate Artifice recipes.",
         "conversion": true,
         "icon_activity": true
       },
@@ -15874,6 +16020,25 @@
         "conversion": true
       },
       {
+        "id": "scribe_ghoststeel_yield",
+        "name": "Scribe Ghoststeel Yield",
+        "level_required": 67,
+        "base_interval": 2.5,
+        "base_xp": 80,
+        "input_items": {
+          "mithril_ore": 2,
+          "fire_rune": 4,
+          "cosmic_rune": 1
+        },
+        "output_items": {
+          "mithril_bar": 3
+        },
+        "mastery_action_time": 2.5,
+        "description": "Refine two Ghoststeel ore into three bars without coal. The extra yield costs runes.",
+        "conversion": true,
+        "icon_activity": true
+      },
+      {
         "id": "enchant_ruby",
         "name": "Enchant Ruby Ring",
         "level_required": 68,
@@ -16012,6 +16177,25 @@
         "icon_item": "rime_rune"
       },
       {
+        "id": "scribe_fen_rations",
+        "name": "Scribe Fen Rations",
+        "level_required": 82,
+        "base_interval": 2.5,
+        "base_xp": 115,
+        "input_items": {
+          "raw_lobster": 3,
+          "fire_rune": 3,
+          "water_rune": 2
+        },
+        "output_items": {
+          "lobster": 3
+        },
+        "mastery_action_time": 2.5,
+        "description": "Cook three Fen Lobsters in a single cast for combat food without using Cookery.",
+        "conversion": true,
+        "icon_activity": true
+      },
+      {
         "id": "superheat_runite",
         "name": "Superheat Runite",
         "level_required": 85,
@@ -16136,6 +16320,24 @@
         "icon_activity": true
       },
       {
+        "id": "scribe_catalyst",
+        "name": "Scribe Enchantment Catalyst",
+        "level_required": 102,
+        "base_interval": 2.5,
+        "base_xp": 145,
+        "input_items": {
+          "pure_essence": 1,
+          "cosmic_rune": 1
+        },
+        "output_items": {
+          "enchant_catalyst": 1
+        },
+        "mastery_action_time": 2.5,
+        "description": "Bind refined essence into an Enchantment Catalyst, offering a repeatable alternative to monster drops.",
+        "conversion": true,
+        "icon_activity": true
+      },
+      {
         "id": "bind_riven_signet",
         "name": "Bind the Riven Signet",
         "level_required": 103,
@@ -16225,6 +16427,26 @@
         },
         "mastery_action_time": 1.7,
         "description": "Bind a specialised enchantment into a crafted amulet."
+      },
+      {
+        "id": "scribe_runic_cache",
+        "name": "Scribe Runic Cache",
+        "level_required": 114,
+        "base_interval": 2.5,
+        "base_xp": 170,
+        "input_items": {
+          "pure_essence": 2,
+          "soul_rune": 1,
+          "nature_rune": 2
+        },
+        "output_items": {
+          "tempest_rune": 2,
+          "bloom_rune": 2
+        },
+        "mastery_action_time": 2.5,
+        "description": "Bind refined essence into Tempest and Bloom Runes together, skipping separate Glyphcraft recipes.",
+        "conversion": true,
+        "icon_activity": true
       },
       {
         "id": "superheat_herald",
@@ -21902,6 +22124,22 @@
           "equipped_tome_grand_tome_illuminated": 1
         },
         "mastery_action_time": 2.5
+      },
+      {
+        "id": "inscribe_hunters_sigil",
+        "name": "Inscribe Hunter's Sigil",
+        "level_required": 110,
+        "base_interval": 8.0,
+        "base_xp": 500,
+        "mastery_action_time": 8.0,
+        "input_items": {
+          "scribe_paper": 2,
+          "scribe_celestial_ink": 2,
+          "herald_essence": 1
+        },
+        "output_items": {
+          "hunters_sigil": 1
+        }
       }
     ],
     "pool_checkpoints": {
@@ -22356,6 +22594,22 @@
         },
         "output_items": {
           "device_pattern_loom": 1
+        }
+      },
+      {
+        "id": "assemble_siege_charge",
+        "name": "Assemble Siege Charge",
+        "level_required": 115,
+        "base_interval": 8.0,
+        "base_xp": 500,
+        "mastery_action_time": 8.0,
+        "input_items": {
+          "clockwork_gear": 2,
+          "clockwork_spring": 1,
+          "herald_bar": 2
+        },
+        "output_items": {
+          "siege_charge": 1
         }
       }
     ],
@@ -24041,6 +24295,33 @@
         }
       },
       {
+        "id": "briar_hex",
+        "name": "Weave Briar Hex",
+        "level_required": 18,
+        "base_interval": 5.27,
+        "base_xp": 106,
+        "mastery_action_time": 5.27,
+        "input_items": {
+          "aether_saltglass_window": 3,
+          "earth_rune": 2,
+          "rune_essence": 2
+        },
+        "output_items": {
+          "woven_briar_hex_pattern": 1
+        },
+        "icon_activity": true,
+        "description": "93% damage, 95% attack time, +5% accuracy. A 25% chance to apply poison. Weave once to learn permanently; casting requires Sorcery level 18.",
+        "woven_spell": {
+          "damage_multiplier": 0.93,
+          "interval_multiplier": 0.95,
+          "accuracy_percent": 5,
+          "runes": {
+            "earth_rune": 2
+          },
+          "special_attack": "woven_briar_hex"
+        }
+      },
+      {
         "id": "storm_chain",
         "name": "Weave Storm Chain",
         "level_required": 20,
@@ -24338,6 +24619,33 @@
         }
       },
       {
+        "id": "frostglass_prism",
+        "name": "Weave Frostglass Prism",
+        "level_required": 52,
+        "base_interval": 5.78,
+        "base_xp": 259,
+        "mastery_action_time": 5.78,
+        "input_items": {
+          "aether_rime_breach": 3,
+          "mist_rune": 3,
+          "rune_essence": 2
+        },
+        "output_items": {
+          "woven_frostglass_prism_pattern": 1
+        },
+        "icon_activity": true,
+        "description": "102% damage, 110% attack time, +10% accuracy. A 25% chance to apply slow. Weave once to learn permanently; casting requires Sorcery level 52.",
+        "woven_spell": {
+          "damage_multiplier": 1.02,
+          "interval_multiplier": 1.1,
+          "accuracy_percent": 10,
+          "runes": {
+            "mist_rune": 3
+          },
+          "special_attack": "woven_frostglass_prism"
+        }
+      },
+      {
         "id": "fog_needle",
         "name": "Weave Fog Needle",
         "level_required": 55,
@@ -24608,6 +24916,33 @@
         }
       },
       {
+        "id": "thunderbrand",
+        "name": "Weave Thunderbrand",
+        "level_required": 88,
+        "base_interval": 6.32,
+        "base_xp": 421,
+        "mastery_action_time": 6.32,
+        "input_items": {
+          "aether_nightveil_breach": 3,
+          "tempest_rune": 4,
+          "rune_essence": 2
+        },
+        "output_items": {
+          "woven_thunderbrand_pattern": 1
+        },
+        "icon_activity": true,
+        "description": "108% damage, 118% attack time, +8% accuracy. A 25% chance to apply stun. Weave once to learn permanently; casting requires Sorcery level 88.",
+        "woven_spell": {
+          "damage_multiplier": 1.08,
+          "interval_multiplier": 1.18,
+          "accuracy_percent": 8,
+          "runes": {
+            "tempest_rune": 4
+          },
+          "special_attack": "woven_thunderbrand"
+        }
+      },
+      {
         "id": "thunder_seal",
         "name": "Weave Thunder Seal",
         "level_required": 90,
@@ -24794,6 +25129,33 @@
             "umbral_rune": 5
           },
           "special_attack": "woven_eclipse_spear"
+        }
+      },
+      {
+        "id": "astral_cinder",
+        "name": "Weave Astral Cinder",
+        "level_required": 116,
+        "base_interval": 6.74,
+        "base_xp": 547,
+        "mastery_action_time": 6.74,
+        "input_items": {
+          "aether_umbral_crown_gate": 3,
+          "umbral_rune": 5,
+          "rune_essence": 2
+        },
+        "output_items": {
+          "woven_astral_cinder_pattern": 1
+        },
+        "icon_activity": true,
+        "description": "122% damage, 128% attack time, +4% accuracy. A 25% chance to apply burn. Weave once to learn permanently; casting requires Sorcery level 116.",
+        "woven_spell": {
+          "damage_multiplier": 1.22,
+          "interval_multiplier": 1.28,
+          "accuracy_percent": 4,
+          "runes": {
+            "umbral_rune": 5
+          },
+          "special_attack": "woven_astral_cinder"
         }
       },
       {

@@ -137,6 +137,7 @@ func _ready() -> void:
 	check(RaidManager.locked_reason("hard") == "", "other difficulties are ungated")
 	PlayerData.set_level("slayer", 120)
 	check(RaidManager.start_raid("mythic"), "mythic raid starts")
+	check(RaidManager.choose_route(0), "mythic patrol starts")
 	check(str(CombatManager.context.monsters[0]) == str(cfg.enemy), "mythic waves use the configured enemy")
 	RaidManager.end_raid()
 	RaidManager.wave = int(cfg.boss_every) - 1

@@ -298,6 +298,10 @@ func _complete(index: int) -> bool:
 		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, str(item_id), qty)
 		found[str(item_id)] = qty
 	PotionManager.consume_charge("caravaneering:trip")
+	var delivered: Dictionary = {}
+	for item_id in c.cargo:
+		delivered[item_id] = floori(float(c.cargo[item_id]) * (1.0 - loss))
+	ProgressTracker.record_caravan_delivery(delivered)
 	history.push_front({"route": str(c.route), "revenue": gold, "loss": loss, "xp": xp, "items": found,
 		"total": float(c.total), "journey": c.get("journey", {}).duplicate(true)})
 	if history.size() > HISTORY_LIMIT:

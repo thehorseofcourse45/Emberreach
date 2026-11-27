@@ -222,7 +222,7 @@ func _refresh_gear() -> void:
 			var levels: Array = area.get("level_range", [])
 			if not levels.is_empty():
 				_gear_box.add_child(Widgets.key_value("Enemy levels",
-					"%d–%d" % [int(levels[0]), int(levels[levels.size() - 1])]))
+					"%s–%s" % [UIStyle.fmt_exact(float(levels[0])), UIStyle.fmt_exact(float(levels[levels.size() - 1]))]))
 
 func _refresh_results() -> void:
 	_clear(_result_box)

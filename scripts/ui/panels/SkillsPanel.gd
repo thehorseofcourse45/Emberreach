@@ -32,6 +32,7 @@ var _mastery_box: VBoxContainer
 var _quantity_index: int = 0
 ## What the activity rows were last drawn from; a refresh that finds it unchanged keeps them.
 var _activities_signature: Array = []
+var _highlighted_action: String = ""
 var _built: bool = false
 var _systems: SkillSystemsView
 ## Live XP readout. The bar is rebuilt on every refresh(), so these are re-cached each rebuild and
@@ -258,7 +259,7 @@ func _activities_signature_now() -> Array:
 	var per_action: Array = []
 	for a in DataLoader.get_skill_actions(_skill_id):
 		per_action.append([int(a.get("level_required", 1)) <= level, MasteryManager.get_level(_skill_id, str(a.get("id", "")))])
-	return [_skill_id, _selected_action, ModifierManager.revision, per_action]
+	return [_skill_id, ModifierManager.revision, per_action]
 
 func _rebuild_activities() -> void:
 	_main_grid.visible = _skill_id not in ["ranching", "dreamwalking", "caravaneering"]
@@ -268,8 +269,10 @@ func _rebuild_activities() -> void:
 	_update_columns()
 	var signature: Array = _activities_signature_now()
 	if not integrated and signature == _activities_signature and _activities.get_child_count() > 0:
+		_update_activity_highlight()
 		return
 	_activities_signature = signature
+	_highlighted_action = _selected_action
 	_clear(_activities)
 	if integrated:
 		# The rows are drawn by the system section that owns them (the Frontier map).
@@ -286,8 +289,23 @@ func _rebuild_activities() -> void:
 		var action_id: String = str(a.get("id", ""))
 		var row := Widgets.activity_row(_skill_id, a, action_id == _selected_action,
 			func(id): _select_action(str(id)))
+		row.set_meta("action_id", action_id)
 		(row.get_child(0) as Button).custom_minimum_size.y = 60
 		_activities.add_child(row)
+
+## Selection changes only the two rows' normal appearance; estimates and lock state are unchanged.
+func _update_activity_highlight() -> void:
+	if _highlighted_action == _selected_action:
+		return
+	for row in _activities.get_children():
+		var action_id: String = str(row.get_meta("action_id", ""))
+		if action_id == "" or (action_id != _highlighted_action and action_id != _selected_action):
+			continue
+		var button := row.get_child(0) as Button
+		if button != null:
+			var selected: bool = action_id == _selected_action
+			button.add_theme_stylebox_override("normal", UIStyle.surface_box("raised" if selected else "row", selected))
+	_highlighted_action = _selected_action
 
 func _select_action(action_id: String) -> void:
 	_selected_action = action_id

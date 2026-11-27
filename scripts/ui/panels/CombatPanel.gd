@@ -8,6 +8,27 @@ extends VBoxContainer
 signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
+const Battlefield = preload("res://scripts/ui/panels/CombatBattlefield.gd")
+const FEATURED_ENCOUNTERS := {
+	"Expeditions": "into_the_mist", "Strongholds": "ashward_fortress", "Raids": "infernal_crucible",
+}
+
+var _battle: Battlefield
+var _dashboard: BoxContainer
+var _readiness: PanelContainer
+var _encounter_button: Button
+var _encounter_panel: PanelContainer
+var _eat_button: Button
+var _retreat_button: Button
+var _inspect_button: Button
+var _food_warning: Label
+var _entry_notice: Label
+var _entry_terms: Label
+var _mode_buttons: Dictionary = {}
+var _quick_food_slots: Array[Dictionary] = []
+var _combat_controls_tick := 0.0
+var _strategy_open := false
+
 var _place_list: ItemList
 var _places: Array = []
 var _style_menu: OptionButton
@@ -16,7 +37,6 @@ var _area_menu: OptionButton
 var _fight_button: Button
 var _fight_box: VBoxContainer
 var _food_box: VBoxContainer
-var _food_controls: Array[Dictionary] = []
 var _prep_box: VBoxContainer
 var _places_box: VBoxContainer
 var _log: Dictionary = Widgets.event_log(40)
@@ -33,12 +53,9 @@ var _meter_box: VBoxContainer = null
 var _meter_labels: Dictionary = {}
 var expeditions_only: bool = false
 var _strongholds_only: bool = false
+var _raids_only: bool = false
 var _dungeons_only: bool = false
 var _challenge_expanded: bool = false
-# Rebuilt with the fight readout; the motion hooks target these and no-ops while they are null.
-var _monster_sprite: TextureRect
-var _monster_fx: Control
-var _player_fx: Control
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
@@ -50,7 +67,9 @@ func _ready() -> void:
 	EventBus.monster_attacked.connect(_on_monster_attacked)
 	EventBus.player_attacked.connect(_on_player_attacked)
 	EventBus.player_died.connect(func(c): _log["push"].call("Defeated by %s." % str(c.get("killer", "an enemy"))))
-	EventBus.dungeon_completed.connect(func(d): _log["push"].call("%s cleared." % str(DataLoader.get_dungeon(d).get("name", d))))
+	EventBus.dungeon_completed.connect(func(d):
+		_log["push"].call("%s cleared." % str(DataLoader.get_dungeon(d).get("name", d)))
+		if _raids_only and str(d) == _selected_area: call_deferred("_rebuild_places"))
 	EventBus.ability_triggered.connect(_on_ability_triggered)
 	EventBus.player_special_attack.connect(_on_special_attack)
 	# An adopted preset rewrites the active strategy and the effective loadout, so both are read
@@ -65,8 +84,15 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	# Bars are polled from the live simulation (same contract as the activity strip): the
 	# readout must never disagree with the fight that grants rewards.
-	if not _built:
+	if not _built or not is_visible_in_tree():
 		return
+	if _battle != null:
+		_battle.refresh()
+		_battle.tick()
+		_combat_controls_tick += _delta
+		if _combat_controls_tick >= 0.20:
+			_combat_controls_tick = 0.0
+			_update_battle_controls()
 	if CombatManager.state == CombatManager.State.FIGHTING:
 		_live_bar(_enemy_bar, _enemy_text, CombatManager.monster_hp, maxf(1.0, float(CombatManager.monster_max_hp)),
 			"%s / %s" % [UIStyle.fmt(CombatManager.monster_hp), UIStyle.fmt(CombatManager.monster_max_hp)])
@@ -109,9 +135,9 @@ func focus_route(route: Dictionary) -> void:
 		_selected_area = area_id
 		_dungeons_only = DataLoader.dungeons.has(area_id)
 		_strongholds_only = bool(DataLoader.get_dungeon(area_id).get("stronghold", false))
+		_raids_only = bool(DataLoader.get_dungeon(area_id).get("raid", false))
 		_rebuild_places()
 		_rebuild_prep()
-		context_changed.emit({"kind": "region", "area_id": area_id})
 
 func detail_context() -> Dictionary:
 	if CombatManager.current_monster_id != "":
@@ -122,24 +148,145 @@ func detail_context() -> Dictionary:
 
 func _build() -> void:
 	_built = true
-	add_child(UIStyle.title("Expeditions" if expeditions_only else "Combat", UITokens.FONT_DISPLAY))
-	var food_card := UIStyle.panel()
-	add_child(food_card)
-	_food_box = UIStyle.vbox(UITokens.SP_4)
-	food_card.add_child(_food_box)
-	var prep_card := UIStyle.panel()
-	add_child(prep_card)
+	if expeditions_only:
+		_build_expedition_tabs()
+	_build_battle_layout()
+
+
+func _build_expedition_tabs() -> void:
+	var tabs := Widgets.chip_row([])
+	var group := ButtonGroup.new()
+	for mode: String in FEATURED_ENCOUNTERS:
+		var button := UIStyle.button(mode)
+		button.icon = AssetRegistry.icon("dungeons", FEATURED_ENCOUNTERS[mode])
+		button.add_theme_constant_override("icon_max_width", UITokens.ICON_SM)
+		button.add_theme_stylebox_override("pressed", UIStyle.flat_box("raised", true))
+		button.toggle_mode = true
+		button.button_group = group
+		button.pressed.connect(_select_expedition_mode.bind(mode))
+		_mode_buttons[mode] = button
+		tabs.add_child(button)
+	add_child(tabs)
+
+
+func _select_expedition_mode(mode: String) -> void:
+	if mode == "Raids":
+		_show_raids()
+	else:
+		_show_strongholds(mode == "Strongholds")
+
+
+func _expedition_mode() -> String:
+	return "Raids" if _raids_only else ("Strongholds" if _strongholds_only else "Expeditions")
+
+
+func _build_battle_layout() -> void:
+	_dashboard = BoxContainer.new()
+	_dashboard.vertical = true
+	_dashboard.add_theme_constant_override("separation", UITokens.SP_5)
+	add_child(_dashboard)
+
+	var actions := Widgets.chip_row([])
+	_fight_button = UIStyle.primary_button("Start fight")
+	_fight_button.pressed.connect(_on_fight)
+	actions.add_child(_fight_button)
+	_eat_button = UIStyle.primary_button("Eat")
+	_eat_button.pressed.connect(func(): CombatManager.eat_best_food())
+	actions.add_child(_eat_button)
+	_retreat_button = UIStyle.danger_button("Retreat", "End the current encounter")
+	_retreat_button.pressed.connect(func(): CombatManager.stop_combat("retreat"))
+	actions.add_child(_retreat_button)
+	_encounter_button = UIStyle.button("Change encounter")
+	_encounter_button.toggle_mode = true
+	_encounter_button.toggled.connect(func(open): _encounter_panel.visible = open)
+	actions.add_child(_encounter_button)
+	_inspect_button = UIStyle.mini_button("Inspect encounter")
+	_inspect_button.pressed.connect(func():
+		var id: String = str(CombatManager.context.get("id", _selected_area))
+		if id != "":
+			context_changed.emit({"kind": "region", "area_id": id}))
+	actions.add_child(_inspect_button)
+	_battle = Battlefield.new()
+	_battle.build(actions)
+	_dashboard.add_child(_battle)
+
+	_readiness = UIStyle.panel()
+	_readiness.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_dashboard.add_child(_readiness)
+	var column := UIStyle.vbox(UITokens.SP_4)
+	_readiness.add_child(column)
+	column.add_child(UIStyle.section("Readiness"))
+	_entry_notice = _wrapped("", UITokens.AMBER)
+	_entry_notice.hide()
+	column.add_child(_entry_notice)
+	if expeditions_only:
+		_entry_terms = _wrapped("", UITokens.TEXT_MUTED)
+		_entry_terms.hide()
+		column.add_child(_entry_terms)
+	_food_warning = _wrapped("", UITokens.AMBER)
+	column.add_child(_food_warning)
+	_food_box = UIStyle.vbox(UITokens.SP_3)
+	column.add_child(_food_box)
 	_prep_box = UIStyle.vbox(UITokens.SP_4)
-	prep_card.add_child(_prep_box)
-	var fight_card := UIStyle.panel()
-	add_child(fight_card)
-	_fight_box = UIStyle.vbox(UITokens.SP_4)
-	fight_card.add_child(_fight_box)
-	var places_card := UIStyle.panel()
-	add_child(places_card)
-	move_child(places_card, 1)
+	column.add_child(_prep_box)
+
+	_encounter_panel = UIStyle.panel()
+	_encounter_panel.hide()
+	add_child(_encounter_panel)
 	_places_box = UIStyle.vbox(UITokens.SP_4)
-	places_card.add_child(_places_box)
+	_encounter_panel.add_child(_places_box)
+
+	var diagnostic_card := UIStyle.panel()
+	add_child(diagnostic_card)
+	var diagnostic_body := UIStyle.vbox(UITokens.SP_3)
+	diagnostic_card.add_child(diagnostic_body)
+	var diagnostics := UIStyle.button("Fight details, meters & log")
+	diagnostics.toggle_mode = true
+	diagnostic_body.add_child(diagnostics)
+	_fight_box = UIStyle.vbox(UITokens.SP_3)
+	_fight_box.hide()
+	diagnostic_body.add_child(_fight_box)
+	diagnostics.toggled.connect(func(open): _fight_box.visible = open)
+	resized.connect(_reflow_battle)
+	_reflow_battle()
+	_update_battle_controls()
+
+
+func _reflow_battle() -> void:
+	_dashboard.vertical = size.x < 900
+	_readiness.custom_minimum_size.x = 0 if _dashboard.vertical else 298
+
+
+func _update_battle_controls() -> void:
+	var active: bool = CombatManager.state != CombatManager.State.IDLE
+	_fight_button.visible = not active
+	_encounter_button.visible = not active
+	if active and _encounter_button.button_pressed:
+		_encounter_button.button_pressed = false
+	if expeditions_only:
+		var selected := _expedition_mode()
+		for mode in _mode_buttons:
+			var button: Button = _mode_buttons[mode]
+			button.set_pressed_no_signal(mode == selected)
+			button.disabled = active
+		_entry_terms.visible = not active and _entry_terms.text != ""
+	_update_entry_notice(active)
+	_retreat_button.visible = active
+	_eat_button.visible = active
+	if active:
+		var food: String = CombatManager.find_food()
+		_eat_button.disabled = food == "" or CombatManager.player_hp >= CombatManager._compute_max_hp()
+		_eat_button.tooltip_text = "No usable food" if food == "" else str(DataLoader.get_item(food).get("name", food))
+	var slotted := false
+	for id in EquipmentManager.food_slots:
+		if id != "" and BankManager.has_item(id, 1):
+			slotted = true
+			break
+	var warning := "" if slotted else ("No food equipped · food available in Storage" if _food_count() > 0 else "No food equipped · defeat ends the run")
+	if _food_warning.text != warning:
+		_food_warning.text = warning
+	_food_warning.visible = warning != ""
+
 
 # =========================================================================
 #  Refresh
@@ -152,6 +299,19 @@ func refresh() -> void:
 	_rebuild_prep()
 	_refresh_fight()
 	_rebuild_places()
+	if _battle != null:
+		_update_battle_controls()
+
+func _update_entry_notice(active: bool) -> void:
+	var message := ""
+	if active and CombatManager.equipment_locked():
+		message = "Equipment locked for this run"
+	elif not active and _fight_button.disabled and _fight_button.tooltip_text != "":
+		message = _fight_button.tooltip_text
+	if _entry_notice.text != message:
+		_entry_notice.text = message
+	_entry_notice.visible = message != ""
+
 
 func _add_dungeon_challenges() -> void:
 	if not (expeditions_only or DataLoader.dungeons.has(_selected_area)):
@@ -176,11 +336,8 @@ func _add_dungeon_challenges() -> void:
 
 func _rebuild_prep() -> void:
 	_clear(_prep_box)
-	_prep_box.add_child(UIStyle.section("Preparation", "Set your style and check supplies before you begin."))
-	var row := HFlowContainer.new()
-	row.add_theme_constant_override("h_separation", UITokens.SP_4)
-	row.add_theme_constant_override("v_separation", UITokens.SP_3)
-	row.add_child(UIStyle.label("Style", true, UITokens.FONT_SMALL))
+	var row := UIStyle.vbox(UITokens.SP_2)
+	row.add_child(UIStyle.label("Attack style", true, UITokens.FONT_SMALL))
 	_style_menu = Widgets.option_menu(["Melee", "Ranged", "Magic"], func(i):
 		CombatManager.attack_style = ["melee", "ranged", "magic"][i]
 		_refresh_fight(), _style_index())
@@ -188,11 +345,23 @@ func _rebuild_prep() -> void:
 	row.add_child(_style_menu)
 	_melee_menu = Widgets.option_menu(["Stab (Bladework)", "Slash (Might)", "Block (Warding)"], func(i):
 		CombatManager.melee_style = ["stab", "slash", "block"][i]
-		_refresh_fight(), 0)
+		_refresh_fight(), maxi(0, ["stab", "slash", "block"].find(CombatManager.melee_style)))
 	_melee_menu.tooltip_text = "Which melee skill trains while you fight"
 	row.add_child(_melee_menu)
 	_prep_box.add_child(row)
-	_prep_box.add_child(_build_strategy())
+	var preset := _wrapped("Preset · " + str(CombatManager.active_strategy.get("name", "Default")), UITokens.TEXT_MUTED)
+	_prep_box.add_child(preset)
+	var strategy := UIStyle.button("Strategy & stats")
+	strategy.toggle_mode = true
+	strategy.set_pressed_no_signal(_strategy_open)
+	_prep_box.add_child(strategy)
+	var details := UIStyle.vbox(UITokens.SP_3)
+	details.visible = _strategy_open
+	_prep_box.add_child(details)
+	strategy.toggled.connect(func(open):
+		_strategy_open = open
+		details.visible = open)
+	details.add_child(_build_strategy())
 	_add_dungeon_challenges()
 
 	# Supplies and rules, stated explicitly.
@@ -200,7 +369,7 @@ func _rebuild_prep() -> void:
 	var evasion: Dictionary = summary["evasion"]
 	var forecast: Dictionary = PrayerManager.runway()
 	var you := Widgets.section_card("You", "your numbers for this fight")
-	_prep_box.add_child(you)
+	details.add_child(you)
 	Widgets.section_body(you).add_child(Widgets.chip_row([
 		Widgets.stat_chip("skills", "strength", UIStyle.fmt(float(summary["max_hit"])), "Your max hit", UITokens.RED),
 		Widgets.stat_chip("skills", "attack", UIStyle.fmt(float(summary["accuracy"])), "Your accuracy rating"),
@@ -233,14 +402,14 @@ func _rebuild_prep() -> void:
 		var style_name := {"melee": "Melee", "ranged": "Ranged", "magic": "Magic"}
 		match str(tri.get("relation", "neutral")):
 			"disadvantage":
-				_prep_box.add_child(UIStyle.colored_label(
+				details.add_child(UIStyle.colored_label(
 					"⚠ Triangle disadvantage: your %s is weak against this %s enemy (−%d%% accuracy, −%d%% damage). %s would counter it." % [
 						style_name.get(str(summary.style), str(summary.style)), style_name.get(enemy_style, enemy_style),
 						int(absf(float(tri.accuracy_percent))), int(absf(float(tri.damage_percent))),
 						style_name.get({"melee": "magic", "ranged": "melee", "magic": "ranged"}.get(enemy_style, "Melee"), "Melee")],
 					UITokens.AMBER, UITokens.FONT_SMALL))
 			"advantage":
-				_prep_box.add_child(UIStyle.colored_label(
+				details.add_child(UIStyle.colored_label(
 					"✓ Triangle advantage: your %s counters this %s enemy (+%d%% accuracy, +%d%% damage)." % [
 						style_name.get(str(summary.style), str(summary.style)), style_name.get(enemy_style, enemy_style),
 						int(float(tri.accuracy_percent)), int(float(tri.damage_percent))],
@@ -249,7 +418,7 @@ func _rebuild_prep() -> void:
 				pass
 	var food: int = _food_count()
 	if food <= 0:
-		_prep_box.add_child(UIStyle.colored_label(
+		details.add_child(UIStyle.colored_label(
 			"No food. A defeat ends the fight and, offline, ends the whole session — bring supplies or train Vitality first.",
 			UITokens.AMBER, UITokens.FONT_SMALL))
 
@@ -261,7 +430,7 @@ func _rebuild_prep() -> void:
 		rule = "eats below %s%% HP, heals to %s%% at %s%% efficiency" % [
 			UIStyle.fmt(float(cfg["threshold"])), UIStyle.fmt(float(cfg["heal_to"])), UIStyle.fmt(float(cfg["efficiency"]))]
 	# A count of 0 is not self-evidently a problem, so the glyph states it, not just the colour.
-	_prep_box.add_child(Widgets.chip_row([
+	details.add_child(Widgets.chip_row([
 		Widgets.stat_chip("skills", "cooking", "%s %s" % [UIStyle.fmt_exact(float(food)), "✓" if food > 0 else "✗ none"],
 			"Food in storage", UITokens.GREEN if food > 0 else UITokens.RED),
 		Widgets.stat_chip("skills", "hitpoints", "auto-eat " + ("off" if tier <= 0 else "tier %d" % tier),
@@ -270,7 +439,7 @@ func _rebuild_prep() -> void:
 			"Offline combat " + ("is enabled and stops at the first defeat" if bool(PlayerData.settings.get("offline_combat_enabled", true)) else "is disabled") + ". Change this in Settings → Offline.",
 			UITokens.TEXT_MUTED),
 	]))
-	_prep_box.add_child(UIStyle.colored_label(
+	details.add_child(UIStyle.colored_label(
 		"Combat always stops on defeat, and offline combat stops permanently at the first defeat. Endless automatic deaths are impossible.",
 		UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
 
@@ -466,10 +635,16 @@ func _ability_names(ids: Array) -> Array[String]:
 	return out
 
 func _on_ability_triggered(ability_id: String) -> void:
-	_triggers["push"].call("%s fires." % str(DataLoader.get_ability(ability_id).get("name", ability_id)))
+	var name: String = str(DataLoader.get_ability(ability_id).get("name", ability_id))
+	_triggers["push"].call("%s fires." % name)
+	if _battle != null:
+		_battle.cue(name)
 
 func _on_special_attack(sa_id: String) -> void:
-	_triggers["push"].call("Special: %s." % str(DataLoader.get_special_attack(sa_id).get("name", sa_id)))
+	var name: String = str(DataLoader.get_special_attack(sa_id).get("name", sa_id))
+	_triggers["push"].call("Special: %s." % name)
+	if _battle != null:
+		_battle.cue(name)
 
 ## The trigger feed, kept beside the fight log. The label is lifted out with the log BEFORE the
 ## clear below frees the box's children, so the feed survives the readout's wholesale rebuild
@@ -479,14 +654,12 @@ func _add_triggers(box: VBoxContainer) -> void:
 	box.add_child(_triggers["root"])
 
 func _refresh_fight() -> void:
+	if _battle != null:
+		_battle.refresh()
+		_update_battle_controls()
 	# The log is cached across rebuilds, so lift it out before the clear frees the box's children.
 	Widgets.detach(_log["root"])
 	Widgets.detach(_triggers["root"])
-	# The readout is torn down and rebuilt wholesale, so the motion targets are dropped with it: a
-	# floater or a flash aimed at the previous cell would otherwise be pointing at a freed node.
-	_monster_sprite = null
-	_monster_fx = null
-	_player_fx = null
 	_clear(_fight_box)
 	_enemy_bar = null
 	_enemy_text = null
@@ -516,14 +689,12 @@ func _refresh_fight() -> void:
 	sprite.texture = AssetRegistry.monster_sprite(CombatManager.current_monster_id)
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var monster_cell := _fx_cell(sprite, Vector2(UITokens.ICON_XL, UITokens.ICON_XL))
-	head.add_child(monster_cell["cell"])
-	_monster_sprite = sprite
-	_monster_fx = monster_cell["overlay"]
+	sprite.custom_minimum_size = Vector2(UITokens.ICON_XL, UITokens.ICON_XL)
+	head.add_child(sprite)
 	var col := UIStyle.vbox(UITokens.SP_2)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not cmp.is_empty():
-		col.add_child(UIStyle.title("%s — level %d" % [str(cmp["monster_name"]), int(cmp["monster_level"])], UITokens.FONT_SUBHEAD))
+		col.add_child(UIStyle.title("%s — level %s" % [str(cmp["monster_name"]), UIStyle.fmt_exact(float(cmp["monster_level"]))], UITokens.FONT_SUBHEAD))
 		_enemy_bar = Widgets.meter(float(CombatManager.monster_hp),
 			maxf(1.0, float(CombatManager.monster_max_hp)), "enemy_hp",
 			"%s / %s" % [UIStyle.fmt(CombatManager.monster_hp), UIStyle.fmt(CombatManager.monster_max_hp)])
@@ -557,9 +728,7 @@ func _refresh_fight() -> void:
 	_player_bar = Widgets.meter(CombatManager.player_hp, maxhp, "hp",
 		"Your HP %s / %s" % [UIStyle.fmt(CombatManager.player_hp), UIStyle.fmt(maxhp)], 16)
 	_player_text = (_player_bar.get_child(0) as Label) if _player_bar.get_child_count() > 0 else null
-	var hp_cell := _fx_cell(_player_bar, Vector2(0, 16))
-	_fight_box.add_child(hp_cell["cell"])
-	_player_fx = hp_cell["overlay"]
+	_fight_box.add_child(_player_bar)
 	# Nearly dead: a looping call for attention. Motion drops it under reduced motion, and the bar is
 	# rebuilt (and so re-evaluated) on every refresh, so healing above the line stops it.
 	if maxhp > 0.0 and CombatManager.player_hp / maxhp < 0.25:
@@ -635,23 +804,21 @@ func _show_dungeons(value: bool) -> void:
 
 func _show_strongholds(value: bool) -> void:
 	_strongholds_only = value
+	_raids_only = false
 	_selected_area = ""
 	_rebuild_places()
+	_rebuild_prep()
+
+func _show_raids() -> void:
+	_strongholds_only = false
+	_raids_only = true
+	_selected_area = ""
+	_rebuild_places()
+	_rebuild_prep()
 
 func _rebuild_places() -> void:
 	_clear(_places_box)
-	if expeditions_only:
-		var tabs := UIStyle.hbox(UITokens.SP_3)
-		var expeditions := UIStyle.mini_button("Expeditions")
-		var strongholds := UIStyle.mini_button("Strongholds")
-		expeditions.disabled = not _strongholds_only
-		strongholds.disabled = _strongholds_only
-		expeditions.pressed.connect(_show_strongholds.bind(false))
-		strongholds.pressed.connect(_show_strongholds.bind(true))
-		tabs.add_child(expeditions)
-		tabs.add_child(strongholds)
-		_places_box.add_child(tabs)
-	else:
+	if not expeditions_only:
 		var tabs := UIStyle.hbox(UITokens.SP_3)
 		var regions := UIStyle.mini_button("Regions")
 		var dungeons := UIStyle.mini_button("Dungeons")
@@ -662,15 +829,12 @@ func _rebuild_places() -> void:
 		tabs.add_child(regions)
 		tabs.add_child(dungeons)
 		_places_box.add_child(tabs)
-	_places_box.add_child(UIStyle.section(("Strongholds" if _strongholds_only else "High-tier expeditions") if expeditions_only else ("Dungeons" if _dungeons_only else "Regions")))
+	_places_box.add_child(UIStyle.section(("Raids" if _raids_only else ("Strongholds" if _strongholds_only else "High-tier expeditions")) if expeditions_only else ("Dungeons" if _dungeons_only else "Regions")))
 	if expeditions_only:
 		var unlock_reason: String = CombatManager.expedition_unlock_reason()
 		if unlock_reason != "":
 			_places_box.add_child(UIStyle.colored_label("Locked — %s. Complete the Expedition Charter task to enter." % unlock_reason,
 				UITokens.AMBER, UITokens.FONT_SMALL))
-	var selector := HFlowContainer.new()
-	selector.add_theme_constant_override("h_separation", UITokens.SP_4)
-	selector.add_theme_constant_override("v_separation", UITokens.SP_3)
 	_place_list = ItemList.new()
 	_place_list.custom_minimum_size = Vector2(0, 220)
 	_place_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -690,21 +854,27 @@ func _rebuild_places() -> void:
 		if CombatManager.is_expedition(str(dungeon_id)) != expeditions_only:
 			continue
 		var dungeon: Dictionary = DataLoader.dungeons[dungeon_id]
+		if expeditions_only and bool(dungeon.get("raid", false)) != _raids_only:
+			continue
 		if expeditions_only and bool(dungeon.get("stronghold", false)) != _strongholds_only:
 			continue
 		_places.append({"type": "dungeon", "id": dungeon_id,
 			"level": int((dungeon.get("level_range", [0]) as Array)[0])})
-	_places.sort_custom(func(a, b): return int(a["level"]) < int(b["level"]))
+	if expeditions_only and _raids_only:
+		_places.sort_custom(func(a, b): return DataLoader.get_dungeon(str(a.id)).get("monsters", []).size() < DataLoader.get_dungeon(str(b.id)).get("monsters", []).size())
+	else:
+		_places.sort_custom(func(a, b): return int(a["level"]) < int(b["level"]))
 	for place in _places:
 		var id: String = str(place["id"])
 		if str(place["type"]) == "area":
 			_place_list.add_item("Region · %s" % str(DataLoader.areas[id].get("name", id)),
 				AssetRegistry.icon("areas", id))
 		else:
-			_place_list.add_item((("Stronghold · " if _strongholds_only else "Expedition · ") if expeditions_only else "Dungeon · ")
+			_place_list.add_item((("Raid · " if _raids_only else ("Stronghold · " if _strongholds_only else "Expedition · ")) if expeditions_only else "Dungeon · ")
 				+ str(DataLoader.dungeons[id].get("name", id)), AssetRegistry.icon("dungeons", id))
 	if _selected_area == "" and not _places.is_empty():
-		_selected_area = str(_places[0]["id"])
+		var suggested: String = FEATURED_ENCOUNTERS[_expedition_mode()] if expeditions_only else ""
+		_selected_area = suggested if _places.any(func(place): return place.id == suggested) else str(_places[0]["id"])
 	var initial: int = 0
 	for i in range(_places.size()):
 		if str(_places[i]["id"]) == _selected_area:
@@ -712,15 +882,25 @@ func _rebuild_places() -> void:
 	_place_list.select(initial)
 	_place_list.item_selected.connect(func(i):
 		_selected_area = str(_places[i]["id"])
-		context_changed.emit({"kind": "region", "area_id": _selected_area})
-		_rebuild_places())
+		_rebuild_places()
+		_rebuild_prep()
+		_encounter_button.button_pressed = false
+		_encounter_button.grab_focus())
 	_places_box.add_child(_place_list)
 	_place_list.call_deferred("ensure_current_is_visible")
-	_fight_button = UIStyle.primary_button((("Begin stronghold" if _strongholds_only else "Begin expedition") if expeditions_only else "Start fight") if CombatManager.state == CombatManager.State.IDLE else "Change target (retreats)")
-	_fight_button.pressed.connect(_on_fight)
-	_fight_button.disabled = expeditions_only and CombatManager.expedition_unlock_reason() != ""
-	selector.add_child(_fight_button)
-	_places_box.add_child(selector)
+	_fight_button.disabled = _selected_area == ""
+	_fight_button.text = "Start fight"
+	_fight_button.tooltip_text = ""
+	if expeditions_only:
+		var details: Dictionary = DataLoader.get_dungeon(_selected_area)
+		var terms: PackedStringArray = []
+		for item in details.get("entry_items", {}):
+			terms.append("%d × %s" % [details.entry_items[item], DataLoader.get_item(item).get("name", item)])
+		_entry_terms.text = "Entry cost · " + ", ".join(terms) if not terms.is_empty() else ""
+		if bool(details.get("equipment_locked", false)):
+			_entry_terms.text += ("\n" if _entry_terms.text != "" else "") + "Equipment locks when the run begins"
+	_battle.select(_selected_area)
+	_update_battle_controls()
 
 	if _selected_area == "":
 		return
@@ -753,7 +933,10 @@ func _rebuild_places() -> void:
 			row.add_child(portrait)
 			var text := UIStyle.vbox(UITokens.SP_1)
 			text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			text.add_child(UIStyle.title("%d · %s" % [i+1, DataLoader.get_monster(str(stage.monster)).name], UITokens.FONT_BODY))
+			var stage_title := UIStyle.title("%d · %s" % [i+1, str(stage.get("name", "Stage"))], UITokens.FONT_BODY)
+			stage_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			text.add_child(stage_title)
+			text.add_child(UIStyle.label(str(DataLoader.get_monster(str(stage.monster)).name), false, UITokens.FONT_SMALL))
 			var note := UIStyle.label(str(stage.briefing), true, UITokens.FONT_SMALL)
 			note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			text.add_child(note)
@@ -761,7 +944,9 @@ func _rebuild_places() -> void:
 			col.add_child(row)
 	var levels: Array = place.get("level_range", [])
 	if levels.size() == 2:
-		col.add_child(Widgets.key_value("Enemy levels", "%d – %d" % [int(levels[0]), int(levels[1])]))
+		col.add_child(Widgets.key_value("Enemy levels", "%s – %s" % [UIStyle.fmt_exact(float(levels[0])), UIStyle.fmt_exact(float(levels[1]))]))
+		if int(levels[1]) > 120:
+			col.add_child(UIStyle.label("Enemy levels use their own scale; player combat skills still cap at 120.", true, UITokens.FONT_MICRO))
 	var identity: Dictionary = {}
 	for monster_id in place.get("monsters", []):
 		for drop in DataLoader.get_monster(str(monster_id)).get("loot_table", []):
@@ -773,6 +958,10 @@ func _rebuild_places() -> void:
 	if is_dungeon:
 		var cleared: bool = PlayerData.completion_log.get("dungeons", {}).has(_selected_area)
 		col.add_child(Widgets.requirement_row("First clear recorded", 1.0 if cleared else 0.0, 1.0, cleared))
+		if bool(place.get("raid", false)):
+			_add_raid_mastery(col, _selected_area)
+		elif PlayerData.dungeon_mastery_eligible(_selected_area):
+			_add_dungeon_mastery(col, _selected_area)
 	if not is_dungeon:
 		var defeated: int = 0
 		for id in place.get("monsters", []):
@@ -821,17 +1010,34 @@ func _rebuild_places() -> void:
 			col.add_child(task)
 		if bool(place.get("endless_floors", false)):
 			col.add_child(UIStyle.title("Best floor: %d" % int(PlayerData.get_stat("endless_best", _selected_area)), UITokens.FONT_BODY))
-			col.add_child(UIStyle.label("+12% enemy HP / +4% damage per floor. Loot is banked each floor; ten-floor milestones pay six shards. Retreat whenever you want. Simulator previews floor 1.", true, UITokens.FONT_SMALL))
+			col.add_child(UIStyle.label("+12% enemy HP / +4% damage per floor. Loot is banked each floor; every tenth floor pays six times the floor reward. Retreat whenever you want. Simulator previews floor 1.", true, UITokens.FONT_SMALL))
 		var reason: String = CombatManager.dungeon_lock_reason(_selected_area)
 		if reason != "" and not locked: col.add_child(UIStyle.colored_label(reason, UITokens.AMBER, UITokens.FONT_SMALL))
-		_fight_button.disabled = reason != "" or (expeditions_only and CombatManager.expedition_unlock_reason() != "")
-		if bool(place.get("stronghold", false)):
-			var repeat: Dictionary = place.get("completion_reward", {})
-			col.add_child(UIStyle.section("Guaranteed each clear"))
-			col.add_child(Widgets.key_value("Gold", "%s GP" % UIStyle.fmt(float(repeat.get("gp", 0))), UITokens.GOLD_BRIGHT))
-			col.add_child(Widgets.item_rewards(repeat.get("items", {})))
+		var gate: String = CombatManager.expedition_unlock_reason() if expeditions_only else ""
+		var blocker: String = gate if gate != "" else reason
+		_fight_button.disabled = blocker != ""
+		_fight_button.tooltip_text = blocker
+		var start_text: String = "Start dungeon"
+		if expeditions_only:
+			start_text = {"Raids": "Begin raid", "Strongholds": "Begin stronghold", "Expeditions": "Begin expedition"}[_expedition_mode()]
+		_fight_button.text = "Locked" if blocker != "" else start_text
+		_update_entry_notice(CombatManager.state != CombatManager.State.IDLE)
+		var endless: bool = bool(place.get("endless_floors", false))
+		var repeat: Dictionary = place.get("floor_reward" if endless else "completion_reward", {})
+		if not repeat.is_empty():
+			col.add_child(UIStyle.section("Base reward per floor" if endless else "Base reward per clear", "Guaranteed in addition to enemy drops; modifiers may increase GP."))
+			if repeat.has("gp"):
+				col.add_child(Widgets.key_value("Gold", "%s GP" % UIStyle.fmt(float(repeat.gp)), UITokens.GOLD_BRIGHT))
+			if not (repeat.get("items", {}) as Dictionary).is_empty():
+				col.add_child(Widgets.item_rewards(repeat.items))
+				var item_names: Array[String] = []
+				for item_id in repeat.items:
+					item_names.append("%s ×%d" % [DataLoader.get_item(str(item_id)).get("name", item_id), int(repeat.items[item_id])])
+				var reward_names := UIStyle.label(", ".join(item_names), true, UITokens.FONT_SMALL)
+				reward_names.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				col.add_child(reward_names)
 		var reward: Dictionary = place.get("rewards_first_clear", {})
-		if bool(place.get("stronghold", false)):
+		if bool(place.get("stronghold", false)) or bool(place.get("raid", false)):
 			col.add_child(Widgets.item_rewards(reward.get("items", {})))
 		if not reward.is_empty():
 			var parts: Array[String] = []
@@ -847,6 +1053,68 @@ func _rebuild_places() -> void:
 		col.add_child(UIStyle.colored_label("Regions spawn endlessly from their enemy pool until you retreat.",
 			UITokens.TEXT_MUTED, UITokens.FONT_MICRO))
 	_places_box.add_child(card)
+
+func _add_dungeon_mastery(col: VBoxContainer, dungeon_id: String) -> void:
+	var clears: int = PlayerData.dungeon_mastery_clears(dungeon_id)
+	col.add_child(UIStyle.section("Dungeon mastery", "Recorded past clears count. Claim each milestone once."))
+	col.add_child(Widgets.key_value("Total clears", str(clears)))
+	var repeat: Dictionary = PlayerData.dungeon_mastery_repeat_reward(dungeon_id)
+	if not repeat.is_empty():
+		var repeat_text := UIStyle.label("Every clear: %d Enchantment Catalyst · used for high-tier Attunement." % int(repeat.enchant_catalyst), true, UITokens.FONT_SMALL)
+		repeat_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		col.add_child(repeat_text)
+	for index in range(PlayerData.DUNGEON_MASTERY_THRESHOLDS.size()):
+		var required: int = PlayerData.DUNGEON_MASTERY_THRESHOLDS[index]
+		var reward: Dictionary = PlayerData.dungeon_mastery_reward(dungeon_id, index)
+		var claimed: bool = PlayerData.dungeon_mastery_claimed(dungeon_id, index)
+		var row := HFlowContainer.new()
+		row.add_theme_constant_override("h_separation", UITokens.SP_3)
+		row.add_theme_constant_override("v_separation", UITokens.SP_2)
+		var item_name: String = str(DataLoader.get_item(str(reward.item_id)).get("name", reward.item_id))
+		row.add_child(UIStyle.label("%d / %d clears · %s ×%d" % [mini(clears, required), required, item_name, int(reward.quantity)], true, UITokens.FONT_SMALL))
+		var button := UIStyle.mini_button("Claimed" if claimed else ("Claim" if clears >= required else "Locked"))
+		button.disabled = claimed or clears < required
+		button.pressed.connect(_claim_dungeon_mastery.bind(dungeon_id, index))
+		row.add_child(button)
+		col.add_child(row)
+
+func _claim_dungeon_mastery(dungeon_id: String, index: int) -> void:
+	if PlayerData.claim_dungeon_mastery(dungeon_id, index):
+		EventBus.notify("Dungeon mastery reward claimed.", "success")
+	_rebuild_places()
+
+func _add_raid_mastery(col: VBoxContainer, raid_id: String) -> void:
+	var clears := PlayerData.raid_clear_count(raid_id)
+	var marks := PlayerData.raid_marks(raid_id)
+	col.add_child(UIStyle.section("Raid mastery", "Past recorded clears count. Each clear earns 1 mark for this raid."))
+	col.add_child(Widgets.key_value("Clears / marks", "%d / %d" % [clears, marks]))
+	for milestone in [[1, 1], [5, 2], [10, 3], [25, 5]]:
+		var count: int = int(milestone[0])
+		var bonus: int = int(milestone[1])
+		col.add_child(Widgets.requirement_row("%d %s: +%d %s" % [count, "clear" if count == 1 else "clears", bonus, "mark" if bonus == 1 else "marks"], min(clears, count), count, clears >= count))
+	col.add_child(UIStyle.section("Raid reward exchange", "Spend this raid's marks to obtain missing final-boss rewards. Each has its own drop chance too."))
+	for choice in PlayerData.raid_exchange_items(raid_id):
+		var id: String = str(choice.item_id)
+		var owned: bool = BankManager.get_total_owned(id) > 0 or EquipmentManager.is_equipped(id)
+		var row := UIStyle.hbox(UITokens.SP_3)
+		var icon := TextureRect.new()
+		icon.texture = AssetRegistry.item_icon(id)
+		icon.custom_minimum_size = Vector2(32, 32)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		row.add_child(icon)
+		var label := UIStyle.label(str(DataLoader.get_item(id).get("name", id)), false, UITokens.FONT_SMALL)
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(label)
+		var button := UIStyle.mini_button("Owned" if owned else "%d marks" % int(choice.cost))
+		button.disabled = owned or marks < int(choice.cost)
+		button.pressed.connect(_exchange_raid_reward.bind(raid_id, id))
+		row.add_child(button)
+		col.add_child(row)
+
+func _exchange_raid_reward(raid_id: String, item_id: String) -> void:
+	if PlayerData.exchange_raid_reward(raid_id, item_id):
+		EventBus.notify("Exchanged raid marks for %s." % str(DataLoader.get_item(item_id).get("name", item_id)), "success")
+	_rebuild_places()
 
 func _on_fight() -> void:
 	if _selected_area == "":
@@ -946,117 +1214,52 @@ func _clear(box: Node) -> void:
 
 func _rebuild_food() -> void:
 	_clear(_food_box)
-	_food_controls.clear()
-	_food_box.add_child(UIStyle.section("Combat food", "Equip up to three foods from Storage. Eating uses one from its stack."))
-	var flow := HFlowContainer.new()
-	flow.add_theme_constant_override("h_separation", UITokens.SP_4)
-	flow.add_theme_constant_override("v_separation", UITokens.SP_4)
-	_food_box.add_child(flow)
+	_quick_food_slots.clear()
+	_food_box.add_child(UIStyle.label("Food slots", true, UITokens.FONT_SMALL))
+	var slots := Widgets.chip_row([])
+	_food_box.add_child(slots)
 	for slot in range(EquipmentManager.FOOD_SLOT_COUNT):
-		var item_id: String = EquipmentManager.food_slots[slot]
-		var card := UIStyle.card()
-		card.custom_minimum_size.x = 180
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		flow.add_child(card)
-		var col := UIStyle.vbox(UITokens.SP_3)
-		card.add_child(col)
-		col.add_child(UIStyle.label("Food slot %d" % (slot + 1), true, UITokens.FONT_MICRO))
-		if item_id == "":
-			var empty_row := UIStyle.hbox()
-			empty_row.add_child(Widgets.item_slot("", 0))
-			empty_row.add_child(UIStyle.label("Empty", true))
-			col.add_child(empty_row)
-			var assign := UIStyle.button("Equip from Storage")
-			assign.pressed.connect(func(): navigated.emit({"screen": Screens.BANK}))
-			col.add_child(assign)
-			continue
-		var item: Dictionary = DataLoader.get_item(item_id)
-		var header := UIStyle.hbox()
-		header.add_child(Widgets.item_slot(item_id, BankManager.get_count(item_id)))
-		var name_label := UIStyle.label(str(item.get("name", item_id)))
-		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		header.add_child(name_label)
-		col.add_child(header)
-		var count := UIStyle.label("", true, UITokens.FONT_SMALL)
-		col.add_child(count)
-		var buttons := UIStyle.hbox()
-		col.add_child(buttons)
-		var eat := UIStyle.primary_button("Eat")
-		var index: int = slot
-		eat.pressed.connect(func():
-			EquipmentManager.eat_food_slot(index)
-			_update_food_controls())
-		buttons.add_child(eat)
-		var clear := UIStyle.mini_button("Clear", "Remove the assignment; food stays in Storage")
-		clear.pressed.connect(func(): EquipmentManager.equip_food(index, ""))
-		buttons.add_child(clear)
-		_food_controls.append({"item_id": item_id, "count": count, "eat": eat})
+		var id: String = EquipmentManager.food_slots[slot]
+		var item: Dictionary = DataLoader.get_item(id)
+		var button := UIStyle.mini_button(str(slot + 1) if id == "" else "")
+		button.icon = AssetRegistry.skill_icon("cooking") if id == "" else AssetRegistry.item_icon(id)
+		button.add_theme_constant_override("icon_max_width", 19)
+		button.tooltip_text = "Slot %d · %s" % [slot + 1, str(item.get("name", "Empty"))]
+		if id != "":
+			var index := slot
+			_quick_food_slots.append({"button": button, "id": id})
+			button.pressed.connect(func(): EquipmentManager.eat_food_slot(index))
+			var clear := UIStyle.mini_button("×", "Clear food slot %d" % (slot + 1))
+			clear.pressed.connect(func(): EquipmentManager.equip_food(index, ""))
+			var pair := UIStyle.hbox(UITokens.SP_1)
+			pair.add_child(button)
+			pair.add_child(clear)
+			slots.add_child(pair)
+		else:
+			button.pressed.connect(func(): navigated.emit({"screen": Screens.BANK}))
+			slots.add_child(button)
+	var equip := UIStyle.button("Equip food", "Choose food in Storage")
+	equip.pressed.connect(func(): navigated.emit({"screen": Screens.BANK}))
+	_food_box.add_child(equip)
 	_update_food_controls()
 
+
 func _update_food_controls() -> void:
-	for entry in _food_controls:
-		var count: Label = entry["count"]
-		var eat: Button = entry["eat"]
-		if not is_instance_valid(count) or not is_instance_valid(eat):
-			continue
-		var item_id: String = str(entry["item_id"])
-		var quantity: int = BankManager.get_count(item_id)
-		var heal: float = float(DataLoader.get_item(item_id).get("heal_amount", 0)) * (1.0 + ModifierManager.get_modifier(ModifierKeys.FOOD_HEALING_PERCENT) / 100.0)
-		count.text = "%s left · +%s HP" % [UIStyle.fmt_exact(quantity), UIStyle.fmt(heal)]
-		var full: bool = CombatManager.player_hp >= CombatManager._compute_max_hp()
-		eat.disabled = quantity <= 0 or full
-		eat.text = "Out of food" if quantity <= 0 else ("Full health" if full else "Eat")
-		eat.tooltip_text = "Eat one to restore up to %s HP" % UIStyle.fmt(heal)
+	for slot in _quick_food_slots:
+		var button: Button = slot.button
+		var quantity: int = BankManager.get_count(slot.id)
+		button.text = UIStyle.fmt(float(quantity))
+		button.disabled = quantity <= 0 or CombatManager.player_hp >= CombatManager._compute_max_hp()
 # =========================================================================
 #  Combat motion
 # =========================================================================
 
-## A cell with a dedicated overlay for damage floaters. Motion.spawn_floater reuses whichever
-## hidden Label it finds under the Control it is handed, so the cell that holds the avatar or the
-## HP bar also has to hold an overlay of its own — pointing the floater at a shared parent would
-## let it hijack that parent's Labels. The cell is a plain Control, not a container, so the overlay
-## keeps its own position and the content is anchored to fill the cell.
-func _fx_cell(content: Control, min_size: Vector2) -> Dictionary:
-	var cell := Control.new()
-	cell.custom_minimum_size = min_size
-	cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.set_anchors_preset(Control.PRESET_FULL_RECT)
-	cell.add_child(content)
-	var overlay := Control.new()
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cell.add_child(overlay)
-	return {"cell": cell, "overlay": overlay}
-
 func _on_player_attacked(damage: int, is_crit: bool) -> void:
 	_log["push"].call("You hit for %d%s." % [damage, " (critical)" if is_crit else ""])
-	_floater(_monster_fx, "-%d" % damage, UITokens.GOLD_BRIGHT if is_crit else UITokens.TEXT_STRONG, is_crit)
-	_flash(_monster_sprite)
+	_battle.hit(true, damage, is_crit)
 
 func _on_monster_attacked(damage: int) -> void:
 	if damage <= 0:
 		return
 	_log["push"].call("You take %d damage." % damage)
-	_floater(_player_fx, "-%d" % damage, UITokens.RED)
-
-## The size goes on the Label Motion just woke rather than on the overlay: a theme override does
-## not reach a child, and the pool is shared between ordinary hits and crits, so a size left on a
-## pooled Label would stick to the next number that reuses it.
-func _floater(overlay: Control, text: String, color: Color, crit := false) -> void:
-	if overlay == null or not is_instance_valid(overlay):
-		return
-	Motion.spawn_floater(overlay, text, color)
-	for child in overlay.get_children():
-		var label := child as Label
-		if label != null and label.visible:
-			label.add_theme_font_size_override("font_size",
-				UITokens.FONT_SUBHEAD if crit else UITokens.FONT_BODY)
-
-## 80ms of over-bright so a hit lands even when the log line is missed. Over 1.0 rather than plain
-## white: modulate multiplies, so a sprite is only white if its texture is white.
-func _flash(sprite: TextureRect) -> void:
-	if sprite == null or not is_instance_valid(sprite) or Motion.reduced():
-		return
-	sprite.modulate = Color(2.4, 2.4, 2.4)
-	var tween := sprite.create_tween()
-	tween.tween_property(sprite, "modulate", Color.WHITE, 0.08)
+	_battle.hit(false, damage)

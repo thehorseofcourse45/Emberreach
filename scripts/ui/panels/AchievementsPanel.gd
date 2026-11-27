@@ -13,6 +13,12 @@ var _summary: Label
 var _claim_row: HBoxContainer
 var _claim_all_button: Button
 var _built: bool = false
+## achievement_id -> the card currently on screen for it, so a claim can swap one row instead of
+## rebuilding the whole list.
+var _rows: Dictionary = {}
+## achievement_id -> [current, completed, claimed] as last drawn, so a signal that changed nothing
+## for a row does not rebuild it.
+var _row_state: Dictionary = {}
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_5)
@@ -34,15 +40,16 @@ func _ready() -> void:
 	add_child(_claim_row)
 	_list = UIStyle.vbox(UITokens.SP_4)
 	add_child(_list)
-	EventBus.achievement_unlocked.connect(func(_a): _rebuild())
-	EventBus.achievement_reward_claimed.connect(func(_a): _rebuild())
-	EventBus.state_refreshed.connect(_rebuild)
-	EventBus.bank_changed.connect(_rebuild)
+	EventBus.achievement_unlocked.connect(_on_unlocked)
+	EventBus.achievement_reward_claimed.connect(_on_claimed)
+	EventBus.state_refreshed.connect(_on_state_refreshed)
+	EventBus.bank_changed.connect(_on_bank_changed)
 	_rebuild()
 
 func _claim_all() -> void:
 	Achievements.claim_all()
-	_rebuild()
+	# Claim-all pays out in one batch, so one batched rebuild is right here.
+	_queue_rebuild()
 
 func focus_route(_route: Dictionary) -> void:
 	pass
@@ -54,6 +61,33 @@ func detail_context() -> Dictionary:
 func _rebuild() -> void:
 	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
 		return
+	_refresh_summary()
+	for c in _list.get_children():
+		_list.remove_child(c)
+		c.queue_free()
+	_rows.clear()
+	_row_state.clear()
+	# Grouped in one pass: the list is rebuilt per category, and re-copying the whole id list once
+	# per category re-ran that sort for every one of them.
+	var by_category: Dictionary = {}
+	for id in Achievements.all_ids():
+		var category: String = str(Achievements.get_record(id).get("category", "general"))
+		if not by_category.has(category):
+			by_category[category] = []
+		(by_category[category] as Array).append(id)
+	var categories: Array[String] = Achievements.categories()
+	categories.sort_custom(func(a, b): return a < b)
+	for category in categories:
+		var ids: Array = by_category.get(category, [])
+		if ids.is_empty():
+			continue
+		var header := UIStyle.section(str(category).capitalize(), _category_hint(str(category)))
+		for id in ids:
+			header.add_child(_row(str(id), Achievements.get_record(str(id))))
+		_list.add_child(header)
+
+## Everything above the list: claimed/ready counts and the claim-all button.
+func _refresh_summary() -> void:
 	var claimed: int = Achievements.claimed_count()
 	var ready: int = Achievements.ready_count()
 	_summary.text = "%d of %d claimed" % [claimed, Achievements.count()]
@@ -61,22 +95,64 @@ func _rebuild() -> void:
 		_summary.text += "  —  %d ready to claim" % ready
 	_claim_row.visible = ready > 0
 	_claim_all_button.text = "Claim all ready (%d)" % ready
-	for c in _list.get_children():
-		_list.remove_child(c)
-		c.queue_free()
-	var categories: Array[String] = Achievements.categories()
-	categories.sort_custom(func(a, b): return a < b)
-	for category in categories:
-		var header := UIStyle.section(str(category).capitalize(), _category_hint(str(category)))
-		var any: bool = false
-		for id in Achievements.all_ids():
-			var rec: Dictionary = Achievements.get_record(id)
-			if str(rec.get("category", "general")) != category:
-				continue
-			any = true
-			header.add_child(_row(id, rec))
-		if any:
-			_list.add_child(header)
+
+## Swap one milestone's card for a freshly built one, keeping its place in its category.
+func _refresh_row(id: String) -> void:
+	var old: Control = _rows.get(id)
+	if old == null or not is_instance_valid(old):
+		return
+	var parent: Node = old.get_parent()
+	if parent == null:
+		return
+	var index: int = old.get_index()
+	var fresh: Control = _row(id, Achievements.get_record(id))
+	parent.add_child(fresh)
+	parent.move_child(fresh, index)
+	parent.remove_child(old)
+	old.queue_free()
+
+# A claim touches one milestone (plus any it cascades into), so only that row is rebuilt: every
+# card in the list is rebuilt from scratch otherwise, and the list is 500+ cards long.
+func _on_claimed(id: String) -> void:
+	_refresh_row(id)
+	_refresh_summary()
+
+func _on_unlocked(id: String) -> void:
+	_refresh_row(id)
+	_refresh_summary()
+
+## Storage changes constantly and only moves the conditions that count what the bank holds.
+func _on_bank_changed() -> void:
+	_refresh_changed_rows(["item_count", "lifetime_item", "items_discovered"])
+
+## Broad state changes (a load, a catch-up, a reset) can touch any row.
+func _on_state_refreshed() -> void:
+	_refresh_changed_rows([])
+
+## Rebuild only the cards whose drawn value actually moved. Measuring a row is cheap, rebuilding it
+## is not, and this list is 500+ cards long.
+func _refresh_changed_rows(kinds: Array) -> void:
+	if not _built or Widgets.defer_offscreen_rebuild(self, _rebuild):
+		return
+	var dirty: bool = false
+	for id in _rows.keys():
+		var cond: Dictionary = Achievements.get_record(str(id)).get("condition", {})
+		if not kinds.is_empty() and not (str(cond.get("kind", "")) in kinds):
+			continue
+		var now: Array = [Achievements.measure(cond), Achievements.is_completed(str(id)),
+			Achievements.is_claimed(str(id))]
+		if _row_state.get(str(id), []) == now:
+			continue
+		_row_state[str(id)] = now
+		_refresh_row(str(id))
+		dirty = true
+	if dirty:
+		_refresh_summary()
+
+## One rebuild at the end of the frame however many signals arrive before it (claim all).
+func _queue_rebuild() -> void:
+	if _built:
+		Widgets.rebuild_once_per_frame(_rebuild)
 
 func _category_hint(category: String) -> String:
 	match category:
@@ -129,9 +205,12 @@ func _row(id: String, rec: Dictionary) -> Control:
 		claim.tooltip_text = "Collect this milestone's reward"
 		claim.pressed.connect(func():
 			Achievements.claim(id)
-			_rebuild())
+			_refresh_row(id)
+			_refresh_summary())
 		row.add_child(claim)
 	elif claimed:
 		row.add_child(Widgets.badge("Claimed", UITokens.GREEN,
 			"Claimed at %s" % Time.get_datetime_string_from_unix_time(Achievements.claimed_at(id)) if Achievements.claimed_at(id) > 0 else "Claimed"))
+	_rows[id] = card
+	_row_state[id] = [float(progress.get("current", 0.0)), completed, claimed]
 	return card

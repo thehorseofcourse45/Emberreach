@@ -89,6 +89,7 @@ func run_all(host: Node) -> int:
 	_test_recipe_levels_cover_inputs()
 	_test_save_round_trip()
 	_test_save_migration()
+	_test_premigration_prune()
 	test_migrate_2_to_3_defaults()
 	_test_malformed_save_rejected()
 	_test_offline_cap_and_negative_time()
@@ -1412,15 +1413,26 @@ func _test_task_tabs_and_rotation(host: Node) -> void:
 	var panel: Control = load("res://scripts/ui/panels/QuestsPanel.gd").new()
 	host.add_child(panel)
 	var tabs: Array = panel.get("_tab_buttons")
-	_eq(tabs.size(), Quests.DIFFICULTIES.size() + 2, "the Tasks screen has one tab per difficulty plus Rotating and Contracts & factions")
-	_ok((tabs[0] as Button).text == "Easy" and (tabs[tabs.size() - 2] as Button).text == "Rotating"
-		and (tabs[tabs.size() - 1] as Button).text == "Contracts & factions",
-		"tabs run from Easy to Nightmare, Rotating, then Contracts & factions")
+	_eq(tabs.size(), Quests.DIFFICULTIES.size() + 5,
+		"the Tasks screen includes difficulty, rotation, expedition, astral, contracts and restoration tabs")
+	var tab_labels: Array[String] = []
+	for button in tabs:
+		tab_labels.append((button as Button).text)
+	_eq(", ".join(tab_labels),
+		"Easy, Normal, Hard, Expert, Nightmare, Rotating, Expeditions, Astral trials, Contracts & factions, Restoration",
+		"tabs run from Easy through rotation, the expedition and astral boards, contracts and restoration")
+	var tagged: int = Quests.all_quest_ids().filter(func(id):
+		return Quests.tab_of(id) == "expeditions" or Quests.tab_of(id) == "astral").size()
+	_ok(tagged >= 18, "expedition and astral tasks are tagged for their own boards (%d)" % tagged)
 	var filter: OptionButton = panel.get("_filter")
 	filter.select(5)
 	panel.call("_select_tab", "easy")
 	var list: VBoxContainer = panel.get("_list")
 	_ok(list.get_child_count() > 0, "the Easy tab lists its tasks (%d cards)" % list.get_child_count())
+	panel.call("_select_tab", "expeditions")
+	_ok(list.get_child_count() > 1, "the expeditions tab lists its dungeon tasks (%d nodes)" % list.get_child_count())
+	panel.call("_select_tab", "astral")
+	_ok(list.get_child_count() > 1, "the astral trial tab lists its trial tasks (%d nodes)" % list.get_child_count())
 	panel.call("_select_tab", "rotating")
 	_ok(panel.get("_rotation_label") != null, "the rotating tab shows the next-rotation countdown")
 	_ok(list.get_child_count() >= 3, "the rotating tab lists featured tasks (%d nodes)" % list.get_child_count())
@@ -1929,7 +1941,9 @@ const PANEL_SCRIPTS: Dictionary = {
 	Screens.OVERVIEW: "OverviewPanel",
 	Screens.SKILLS: "SkillsPanel",
 	Screens.COMBAT: "CombatPanel",
+	Screens.COMBAT_ROADMAP: "CombatRoadmapPanel",
 	Screens.EXPEDITIONS: "CombatPanel",
+	Screens.EQUIPMENT_GUIDE: "EquipmentGuidePanel",
 	Screens.BANK: "BankPanel",
 	Screens.ACTION_QUEUE: "ActionQueuePanel",
 	Screens.COMBAT_SIMULATOR: "CombatSimulatorPanel",
@@ -1946,6 +1960,8 @@ const PANEL_SCRIPTS: Dictionary = {
 	Screens.RAIDS: "RaidPanel",
 	Screens.FARM: "FarmPanel",
 	Screens.PRESTIGE: "PrestigePanel",
+	Screens.DREAM_REALM: "DreamRealmPanel",
+	Screens.ENCYCLOPEDIA: "EncyclopediaPanel",
 	Screens.RECOVERY: "RecoveryPanel",
 }
 
@@ -2274,6 +2290,13 @@ func _test_quest_reward_once() -> void:
 func _test_recipe_levels_cover_inputs() -> void:
 	_heading("Recipe levels cover their inputs")
 	var early: Array[String] = []
+	# An input another skill also makes is not gated by this skill's ladder (Runecrafting supplies
+	# the runes an Alt. Magic conversion also makes late), so only single-source inputs count.
+	var makers: Dictionary = {}
+	for skill_id in DataLoader.get_skill_ids():
+		for a in DataLoader.get_skill_actions(skill_id):
+			for item_id in (a.get("output_items", {}) as Dictionary):
+				(makers.get_or_add(item_id, {}) as Dictionary)[skill_id] = true
 	for skill_id in DataLoader.get_skill_ids():
 		var made: Dictionary = {}
 		var actions: Array = DataLoader.get_skill_actions(skill_id)
@@ -2283,7 +2306,7 @@ func _test_recipe_levels_cover_inputs() -> void:
 		for a in actions:
 			for item_id in (a.get("input_items", {}) as Dictionary):
 				var own_output: bool = (a.get("output_items", {}) as Dictionary).has(item_id)
-				if not own_output and made.has(item_id) and int(made[item_id]) > int(a.get("level_required", 1)):
+				if not own_output and made.has(item_id) and (makers[item_id] as Dictionary).size() == 1 and int(made[item_id]) > int(a.get("level_required", 1)):
 					early.append("%s:%s" % [skill_id, str(a.get("id", ""))])
 	_ok(early.is_empty(), "no recipe is listed below the level of an input its skill makes%s" % _trouble(early, " — "))
 
@@ -2594,6 +2617,23 @@ func test_migrate_2_to_3_defaults() -> void:
 	_ok((PlayerData.combat_strategies[0] as Dictionary).get("name", "") == "Default",
 		"the preset the loaded player has is the default one")
 	TestSupport.restore_snapshot(snapshot, files)
+
+## Only the newest PREMIGRATION_KEEP pre-migration copies survive a prune. Timestamps far in the
+## future make the test's files the newest, whatever earlier tests left behind.
+func _test_premigration_prune() -> void:
+	var stamps: Array[int] = [9000000001, 9000000002, 9000000003, 9000000004, 9000000005]
+	for stamp in stamps:
+		var f := FileAccess.open(SaveManager.PREMIGRATION_TEMPLATE % stamp, FileAccess.WRITE)
+		f.store_string("{}")
+		f.close()
+	SaveManager._prune_premigration_copies()
+	var left: Array = Array(DirAccess.get_files_at("user://")).filter(
+		func(n: String) -> bool: return n.begins_with("save_game.premigration_"))
+	_eq(left.size(), SaveManager.PREMIGRATION_KEEP, "a prune keeps exactly the newest pre-migration copies")
+	_ok(not FileAccess.file_exists(SaveManager.PREMIGRATION_TEMPLATE % stamps[1]), "an older pre-migration copy is pruned")
+	_ok(FileAccess.file_exists(SaveManager.PREMIGRATION_TEMPLATE % stamps[4]), "the newest pre-migration copy is kept")
+	for stamp in stamps:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SaveManager.PREMIGRATION_TEMPLATE % stamp))
 
 ## Names the promised keys a migrated player block is missing or holding at the wrong type, or ""
 ## when it is in the promised shape. One shared check for every case in
@@ -3045,6 +3085,15 @@ func test_forge_backdrop(host: Node) -> void:
 ## following navigation, and an icon-only rail on medium-narrow windows.
 func test_chapters(host: Node) -> void:
 	_heading("Chapters")
+	var nav_buttons: Dictionary = host.get("_nav_buttons")
+	var drawer: PanelContainer = host.get("_drawer")
+	SidebarNav.populate_drawer(host, drawer)
+	var drawer_buttons := drawer.find_children("*", "Button", true, false)
+	for screen in [Screens.COMBAT_ROADMAP, Screens.EQUIPMENT_GUIDE]:
+		var label: String = Screens.label_for(screen)
+		_ok(not nav_buttons.has(screen), "%s is absent from the sidebar" % label)
+		_ok(not drawer_buttons.any(func(button: Button): return button.text == label),
+			"%s is absent from the navigation drawer" % label)
 	var seen: Dictionary = {}
 	for ch in SidebarNav.CHAPTERS:
 		for id in (ch["skills"] as Array) + (ch["screens"] as Array):
@@ -3265,7 +3314,9 @@ func test_combat_visual(host: Node) -> void:
 ".join(tips)
 	for needle in ["hit chance", "max hit", "damage reduction", "evasion", "accuracy"]:
 		_ok(blob.contains(needle), "a stat chip explains %s" % needle)
-	_ok(_count_widgets(panel, "item_slot") >= 3, "the three food slots are item slots (%d)" % _count_widgets(panel, "item_slot"))
+	# Food slots are compact quick-eat buttons in a chip row: label, row, Equip button.
+	var food_row: Node = (panel.get("_food_box") as Node).get_child(1)
+	_eq(food_row.get_child_count(), EquipmentManager.FOOD_SLOT_COUNT, "every food slot has a quick-eat button")
 	_ok(_count_widgets(panel, "key_value") <= 3, "at most three label/value rows remain (%d)" % _count_widgets(panel, "key_value"))
 	CombatManager.stop_combat("retreat")
 	panel.queue_free()
@@ -4781,8 +4832,9 @@ func _test_monster_mechanics_content() -> void:
 				found = true
 		if found:
 			resistant_items += 1
-	# Stronghold rewards add two resistance pieces to the existing eight-item pool.
-	_ok(resistant_items >= 8 and resistant_items <= 12, "8-12 equipment items carry status resistance (%d)" % resistant_items)
+	# Stronghold rewards add two resistance pieces to the existing eight-item pool, and the Nightfen,
+	# Moonfall and Thornstar rewards (mantle, mantle, cuirass) add three more.
+	_ok(resistant_items >= 8 and resistant_items <= 13, "8-13 equipment items carry status resistance (%d)" % resistant_items)
 	for family in ["poison", "burn", "stun"]:
 		if applied.has(family):
 			_ok(families_covered.has(family), "a resistance item counters the monster-applied %s family" % family)
@@ -5455,6 +5507,10 @@ func _test_monster_ladder() -> void:
 	for dungeon_id in DataLoader.dungeons.keys():
 		for mid in (DataLoader.dungeons[dungeon_id] as Dictionary).get("monsters", []):
 			placed[str(mid)] = true
+	# Astral trials (Raids screen) build their waves in RaidManager, not in dungeons.json.
+	for index in range(RaidManager.ASTRAL_TRIALS.size()):
+		for mid in RaidManager.astral_sequence(index):
+			placed[str(mid)] = true
 	for monster_id in DataLoader.monsters.keys():
 		_ok(placed.has(str(monster_id)), "monster '%s' can be found somewhere" % monster_id)
 	# Every special attack needs a real monster, weapon or learned-spell consumer.
@@ -5518,7 +5574,8 @@ func _test_dungeon_ladder() -> void:
 		# Endless descents have no clear: they pay per floor instead.
 		var pays: bool = int((d.get("completion_reward", {}) as Dictionary).get("gp", 0)) > 0 				or (bool(d.get("endless_floors", false)) and not (d.get("floor_reward", {}) as Dictionary).is_empty())
 		_ok(pays, "'%s' pays something on a clear" % dungeon_id)
-		tiers.append({"id": str(dungeon_id), "low": low, "high": high})
+		var player_span: Array = d.get("player_reference_level_range", span)
+		tiers.append({"id": str(dungeon_id), "low": int(player_span[0]), "high": int(player_span[1])})
 	tiers.sort_custom(func(a, b): return int(a["low"]) < int(b["low"]))
 	var reached: int = 0
 	var worst: int = 0
@@ -5534,7 +5591,7 @@ func _test_dungeon_ladder() -> void:
 	var undercroft: Dictionary = DataLoader.get_dungeon("sunderhold_undercroft")
 	_ok(not undercroft.is_empty(), "the mid-game dungeon exists")
 	if not undercroft.is_empty():
-		var u_span: Array = undercroft.get("level_range", [])
+		var u_span: Array = undercroft.get("player_reference_level_range", undercroft.get("level_range", []))
 		_eq(int(u_span[0]), 71, "the mid-game dungeon starts where the last one stops")
 		_ok(int(u_span[1]) >= 105, "the mid-game dungeon reaches the god line's doorstep")
 		_ok((undercroft.get("monsters", []) as Array).size() >= 3, "the mid-game dungeon is a sequence")
@@ -7039,7 +7096,7 @@ func _test_frontier_expansions(host: Node) -> void:
 	var CraftQualityScript: GDScript = load("res://scripts/core/CraftingQuality.gd")
 	_ok(DataLoader.crafting_quality.size() == 4, "Four crafted-quality tiers loaded")
 	_ok(DataLoader.crafting_affixes.size() == 4, "Four crafting affixes loaded")
-	_ok(DataLoader.settlement_specializations.size() == 4, "Four settlement paths loaded")
+	_ok(DataLoader.settlement_specializations.size() == TownshipManager.LOCATIONS.size(), "Every settlement location has a specialization")
 	var base: Dictionary = DataLoader.get_item("bronze_platebody")
 	var fine: Dictionary = DataLoader.get_item("bronze_platebody__quality_fine")
 	var legendary: Dictionary = DataLoader.get_item("bronze_platebody__quality_legendary")
@@ -7729,16 +7786,16 @@ func _test_raid_shop_upgrades_are_real() -> void:
 	for item_id in (DataLoader.raid_shop.get("alt_items", []) as Array):
 		_ok(not DataLoader.get_item(str(item_id)).is_empty(), "alt item %s exists" % item_id)
 
-	# 2. raid_wave_skip: the run must start past the early waves.
+	# 2. Legacy wave-skip upgrades now provide starting supplies.
 	_ok(RaidManager.start_raid("normal"), "a raid starts with no purchases")
-	_eq(RaidManager.wave, 1, "a fresh raid begins at wave 1")
+	_eq(RaidManager.trail_supplies, 2, "a fresh journey starts with two supplies")
 	RaidManager.end_raid()
 	PlayerData.raid_coins = 100000.0
 	_ok(RaidManager.buy("raid_wave_skip"), "raid_wave_skip can be bought")
 	_ok(ModifierManager.get_modifier(ModifierKeys.RAID_WAVE_SKIP) == 1.0,
 		"raid_wave_skip registers the modifier start_raid() reads")
 	_ok(RaidManager.start_raid("normal"), "a raid starts after buying wave skip")
-	_eq(RaidManager.wave, 2, "raid_wave_skip starts the run at wave 2, not 1")
+	_eq(RaidManager.trail_supplies, 3, "the existing upgrade adds a starting supply")
 	RaidManager.end_raid()
 
 	# 3. raid_food: the raid forces auto-eat tier II, so healing more per food is exactly the
@@ -7776,9 +7833,11 @@ func _test_raid_shop_upgrades_are_real() -> void:
 	GameManager.start_new_game("standard")
 	PlayerData.set_level("hitpoints", 50)
 	_ok(RaidManager.start_raid("normal"), "a normal raid starts for the HP comparison")
+	_ok(RaidManager.choose_route(0), "normal patrol starts")
 	var normal_hp: int = CombatManager.monster_max_hp
 	RaidManager.end_raid()
 	_ok(RaidManager.start_raid("hard"), "a hard raid starts for the HP comparison")
+	_ok(RaidManager.choose_route(0), "hard patrol starts")
 	var hard_hp: int = CombatManager.monster_max_hp
 	RaidManager.end_raid()
 	var cfg: Dictionary = DataLoader.raid_shop["difficulties"]["hard"]
@@ -7820,6 +7879,7 @@ func _test_reachable_systems() -> void:
 	PlayerData.set_level("hitpoints", 50)
 	var raid_started: bool = RaidManager.start_raid("normal")
 	_ok(raid_started and RaidManager.active, "a raid can be started")
+	_ok(RaidManager.choose_route(0), "a trail patrol can be started")
 	_ok(CombatManager.state != CombatManager.State.IDLE, "a raid occupies the activity slot")
 	_ok(RaidManager.wave == 1, "the first wave begins")
 	if RaidManager.active:
@@ -8605,7 +8665,7 @@ func _test_monster_style_mix() -> void:
 			continue
 		var style: String = str((m as Dictionary).get("attack_type", ""))
 		counts[style] = int(counts.get(style, 0)) + 1
-		var band: int = mini(int((m as Dictionary).get("combat_level", 1)) / 50, 5)
+		var band: int = mini(int((m as Dictionary).get("player_reference_combat_level", (m as Dictionary).get("combat_level", 1))) / 50, 5)
 		if not bands.has(band):
 			bands[band] = {}
 		(bands[band] as Dictionary)[style] = true
@@ -8647,7 +8707,7 @@ func _test_open_world_coverage() -> void:
 		for mid in (row as Dictionary).get("monsters", []):
 			var m: Dictionary = DataLoader.get_monster(str(mid))
 			if not m.is_empty() and not bool(m.get("is_boss", false)):
-				levels[int(m.get("combat_level", 0))] = true
+				levels[int(m.get("player_reference_combat_level", m.get("combat_level", 0)))] = true
 	var sorted_levels: Array = levels.keys()
 	sorted_levels.sort()
 	var holes: Array[String] = []
@@ -8723,7 +8783,7 @@ func _test_gold_is_bounded() -> void:
 		for drop in (m.get("loot_table", []) as Array):
 			if typeof(drop) == TYPE_DICTIONARY and bool(drop.get("is_currency", false)) and str(drop.get("currency_id", "gp")) == "gp":
 				gp += float(drop.get("quantity", 0)) * float(drop.get("chance", 1.0))
-		var target: float = float(m.get("hitpoints", 1)) * (2.0 + float(m.get("combat_level", 1)) / 12.0) \
+		var target: float = float(m.get("hitpoints", 1)) * (2.0 + float(m.get("player_reference_combat_level", m.get("combat_level", 1))) / 12.0) \
 			* (1.5 if bool(m.get("is_boss", false)) else 1.0)
 		if gp > target * 1.3:
 			rich.append("%s %.0f gp (target %.0f)" % [monster_id, gp, target])

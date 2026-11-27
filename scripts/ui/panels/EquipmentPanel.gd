@@ -31,6 +31,9 @@ func _ready() -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_built = true
 	add_child(UIStyle.title("Equipment", UITokens.FONT_DISPLAY))
+	var guide := UIStyle.mini_button("Equipment progression guide")
+	guide.pressed.connect(func(): navigated.emit({"screen": Screens.EQUIPMENT_GUIDE}))
+	add_child(guide)
 	add_child(UIStyle.label("What you wear, what it gives, and what the bank can offer.",
 		true, UITokens.FONT_SMALL))
 	var stats_toggle := UIStyle.button("View Equipment Stats", "Show or hide combat stats")

@@ -44,6 +44,11 @@ func record_item_gained(item_id: String, quantity: int) -> void:
 	_record_quality_base("items_gained", item_id, quantity)
 	mark_dirty()
 
+func record_caravan_delivery(cargo: Dictionary) -> void:
+	for item_id in cargo:
+		PlayerData.bump_stat("caravan_deliveries", str(item_id), maxi(0, int(cargo[item_id])))
+	mark_dirty()
+
 func record_item_crafted(item_id: String, quantity: int) -> void:
 	if item_id == "" or quantity <= 0:
 		return

@@ -2,36 +2,49 @@
   "upgrades": {
     "raid_wave_skip": {
       "id": "raid_wave_skip",
-      "name": "Wave Skip Discount",
+      "name": "Stellar Insight",
       "cost": 2000,
       "effect": {
         "raid_wave_skip": 1
-      }
+      },
+      "description": "Increases Trial Marks earned by 5% per rank."
     },
     "raid_food": {
       "id": "raid_food",
-      "name": "Food Bonus",
+      "name": "Astral Sustenance",
       "cost": 1500,
       "effect": {
         "food_healing_percent": 25
-      }
+      },
+      "description": "Increases food healing by 25% per rank."
     },
     "raid_pet": {
       "id": "raid_pet",
-      "name": "Raid Pet",
+      "name": "Celestial Fortune",
       "cost": 20000,
       "effect": {
         "global_double_loot_percent": 2
-      }
+      },
+      "description": "Increases double loot chance by 2% per rank."
     }
   },
   "alt_items": [
-    "raid_alt_weapon_1",
-    "raid_alt_weapon_2",
-    "raid_alt_weapon_3",
-    "raid_alt_weapon_4",
-    "raid_alt_weapon_5",
-    "raid_pet_egg"
+    "astral_vanguard_blade",
+    "cometfall_longbow",
+    "eclipse_oracle_staff",
+    "starward_aegis",
+    "constellation_signet",
+    "horizon_mantle",
+    "observatory_blade",
+    "observatory_helm",
+    "nebula_bow",
+    "nebula_cuirass",
+    "aurora_staff",
+    "aurora_gauntlets",
+    "voidstar_aegis",
+    "voidstar_greaves",
+    "eternity_greatblade",
+    "eternity_crown_helm"
   ],
   "difficulties": {
     "easy": {
@@ -63,5 +76,13 @@
         "hitpoints": 115
       }
     }
-  }
+  },
+  "legacy_alt_items": [
+    "raid_alt_weapon_1",
+    "raid_alt_weapon_2",
+    "raid_alt_weapon_3",
+    "raid_alt_weapon_4",
+    "raid_alt_weapon_5",
+    "raid_pet_egg"
+  ]
 }

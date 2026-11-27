@@ -1,8 +1,8 @@
 extends VBoxContainer
 ## CollectionPanel — the collection log: what you have discovered, and what remains.
 ##
-## Undiscovered entries stay visible as silhouettes so the player knows content EXISTS without
-## being told its identity, keeping some mystery without hiding progress-critical information.
+## Undiscovered enemies and expeditions are counted together until discovered; items retain
+## silhouettes, with the separate Missing items tab available for named searches.
 
 signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
@@ -23,7 +23,7 @@ func _ready() -> void:
 	add_child(_search)
 	_tabs_box = HFlowContainer.new()
 	add_child(_tabs_box)
-	for entry in [["pursuits", "Pursuits"], ["items", "Items"], ["monsters", "Enemies"], ["dungeons", "Expeditions"], ["pets", "Companions"], ["history", "Unlock history"]]:
+	for entry in [["pursuits", "Pursuits"], ["items", "Items"], ["missing", "Missing items"], ["monsters", "Enemies"], ["dungeons", "Expeditions"], ["pets", "Companions"], ["history", "Unlock history"]]:
 		var b := UIStyle.mini_button(str(entry[1]))
 		var key: String = str(entry[0])
 		b.pressed.connect(func():
@@ -39,11 +39,13 @@ func _ready() -> void:
 	EventBus.dungeon_discovered.connect(func(_i): _rebuild())
 	EventBus.pet_unlocked.connect(func(_i): _rebuild())
 	EventBus.state_refreshed.connect(_rebuild)
+	EventBus.goal_changed.connect(func():
+		if _tab in ["missing", "pursuits"]: _rebuild_list(0))
 	_rebuild()
 
 func detail_context() -> Dictionary:
 	return {"kind": "text", "title": "Collection log",
-		"body": "Recorded on first acquisition or first defeat. Undiscovered entries are listed as unknown so you can see how much content remains."}
+		"body": "Recorded on first acquisition or first defeat. Undiscovered enemies and expeditions are counted until found; use Missing items to find and track items."}
 
 func _rebuild() -> void:
 	if Widgets.defer_offscreen_rebuild(self, _rebuild):
@@ -81,6 +83,9 @@ func _rebuild_list(_depth: int) -> void:
 	if _tab == "pursuits":
 		_rebuild_pursuits(query)
 		return
+	if _tab == "missing":
+		_rebuild_missing(query)
+		return
 	if _tab == "history":
 		var entries: Array = PlayerData.unlock_history.duplicate()
 		entries.reverse()
@@ -95,6 +100,15 @@ func _rebuild_list(_depth: int) -> void:
 	for key in _keys_for(_tab):
 		var discovered: bool = PlayerData.completion_log.get(_tab, {}).has(str(key))
 		entries.append({"id": str(key), "discovered": discovered})
+	if _tab in ["monsters", "dungeons"]:
+		var hidden: int = 0
+		for entry in entries:
+			if not bool(entry.discovered): hidden += 1
+		entries = entries.filter(func(entry): return bool(entry.discovered))
+		if hidden > 0 and (query == "" or "unknown undiscovered".contains(query)):
+			var category: String = "enemies" if _tab == "monsters" else "expeditions"
+			_list.add_child(UIStyle.section("%d undiscovered %s" % [hidden, category],
+				"Entries appear here as you discover them."))
 	entries.sort_custom(func(a, b): return bool(a["discovered"]) == false and bool(b["discovered"]) == true)
 	for e in entries:
 		var item_id: String = str(e["id"])
@@ -133,6 +147,42 @@ func _rebuild_list(_depth: int) -> void:
 				track.pressed.connect(func(): Goals.pin("item", iid2))
 				row.add_child(track)
 		_list.add_child(card)
+
+func _rebuild_missing(query: String) -> void:
+	var intro := UIStyle.label("Choose an undiscovered item to track its first acquisition. Sources can include drops, activities, shops, and rewards.", true, UITokens.FONT_SMALL)
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_list.add_child(intro)
+	var missing: Array = []
+	var discovered: Dictionary = PlayerData.completion_log.get("items", {})
+	for id in DataLoader.items:
+		var item_id: String = str(id)
+		var item_name: String = str(DataLoader.get_item(item_id).get("name", item_id)).to_lower()
+		if not discovered.has(item_id) and (query == "" or item_name.contains(query) or item_id.to_lower().contains(query)):
+			missing.append({"id":item_id, "sort_name":item_name})
+	missing.sort_custom(func(a, b): return str(a.sort_name) < str(b.sort_name))
+	_list.add_child(UIStyle.label("%d missing items%s" % [missing.size(), " · showing first 60; filter to narrow" if missing.size() > 60 else ""], true, UITokens.FONT_SMALL))
+	if missing.is_empty(): _list.add_child(UIStyle.label("No missing items match this filter.", true, UITokens.FONT_SMALL))
+	for item in missing.slice(0, 60):
+		var id: String = str(item.id)
+		var card := UIStyle.card(false)
+		_list.add_child(card)
+		var col := UIStyle.vbox(UITokens.SP_2)
+		card.add_child(col)
+		var title := HBoxContainer.new()
+		col.add_child(title)
+		title.add_child(Widgets.item_icon(id, 32))
+		var name := UIStyle.label(str(DataLoader.get_item(id).get("name", id)), false, UITokens.FONT_SMALL)
+		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title.add_child(name)
+		var controls := HFlowContainer.new()
+		col.add_child(controls)
+		var track := UIStyle.mini_button("Untrack discovery" if Goals.is_pinned("collection_item", id) else "Track discovery")
+		track.pressed.connect(func(): Goals.toggle("collection_item", id))
+		controls.add_child(track)
+		var sources := UIStyle.mini_button("Find sources")
+		sources.pressed.connect(func(): context_changed.emit({"kind": "goal", "goal": {"kind": "collection_item", "id": id}}))
+		controls.add_child(sources)
 
 ## Push this entry into the detail pane, in the shape that matches the current tab.
 func _explain_entry(item_id: String, label: String) -> void:
@@ -175,7 +225,7 @@ func _subtitle_for(id: String, discovered: bool) -> String:
 			return "%s · sells for %s GP" % [str(item.get("item_type", "")).capitalize(), UIStyle.fmt(float(item.get("sell_price", 0)))]
 		"monsters":
 			var m: Dictionary = DataLoader.get_monster(id)
-			return "Level %d · %d HP · %s" % [int(m.get("combat_level", 1)), int(m.get("hitpoints", 0)), str(m.get("attack_type", ""))]
+			return "Level %s · %d HP · %s" % [UIStyle.fmt_exact(float(m.get("combat_level", 1))), int(m.get("hitpoints", 0)), str(m.get("attack_type", ""))]
 		"dungeons":
 			var d: Dictionary = DataLoader.get_dungeon(id)
 			return "%d encounters" % (d.get("monsters", []) as Array).size()
@@ -193,6 +243,9 @@ func _icon_for(id: String) -> Texture2D:
 	return AssetRegistry.icon("status", "idle")
 
 func _area_for_monster(monster_id: String) -> String:
+	for index in range(RaidManager.ASTRAL_TRIALS.size()):
+		if RaidManager.astral_sequence(index).has(monster_id):
+			return str(RaidManager.ASTRAL_TRIALS[index].id)
 	for area_id in DataLoader.areas.keys():
 		if (DataLoader.areas[area_id].get("monsters", []) as Array).has(monster_id):
 			return str(area_id)
@@ -210,16 +263,23 @@ func _rebuild_pursuits(query: String) -> void:
 		var entries := HFlowContainer.new()
 		card.add_child(entries)
 		for iid in q.objectives[0].item_ids:
-			var found: bool = PlayerData.completion_log.get("items", {}).has(str(iid))
+			var item_id: String = str(iid)
+			var found: bool = PlayerData.completion_log.get("items", {}).has(item_id)
 			var row := UIStyle.hbox(UITokens.SP_2)
 			entries.add_child(row)
 			var icon := Widgets.item_icon(str(iid), 32)
 			icon.modulate.a = 1.0 if found else 0.3
 			row.add_child(icon)
 			row.add_child(UIStyle.label(("✓ " if found else "• ") + str(DataLoader.get_item(str(iid)).get("name", iid)), true, UITokens.FONT_SMALL))
-			var source := UIStyle.mini_button("Find")
-			source.pressed.connect(func(): navigated.emit({"screen": Screens.BANK, "item_id": str(iid)}))
+			var source := UIStyle.mini_button("Sources")
+			source.pressed.connect(func():
+				if found: context_changed.emit({"kind": "item", "item_id": item_id})
+				else: context_changed.emit({"kind": "goal", "goal": {"kind": "collection_item", "id": item_id}}))
 			row.add_child(source)
+			if not found:
+				var track := UIStyle.mini_button("Untrack" if Goals.is_pinned("collection_item", item_id) else "Track")
+				track.pressed.connect(func(): Goals.toggle("collection_item", item_id))
+				row.add_child(track)
 		card.add_child(Widgets.item_rewards(q.reward.items))
 		var claim := UIStyle.button("Trophy collected" if Quests.is_claimed(qid) else "Claim pursuit rewards")
 		claim.disabled = Quests.is_claimed(qid) or not bool(state.all_satisfied)

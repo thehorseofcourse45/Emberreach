@@ -11,6 +11,9 @@ extends RefCounted
 ## A null drawer means "sidebar mode" (register buttons); a drawer node means
 ## "drawer mode" (hide the drawer on press, skip registration).
 
+## These screens are opened from links inside other panels.
+const CONTEXTUAL_SCREENS: Array[String] = [Screens.COMBAT_ROADMAP, Screens.EQUIPMENT_GUIDE]
+
 ## Pinned to the top of the sidebar (and drawer), in order.
 const PINNED_SCREENS: Array[String] = [Screens.STORE, Screens.PROVISIONER, Screens.COMBAT, Screens.EQUIPMENT, Screens.BANK]
 
@@ -21,20 +24,20 @@ const PINNED_SCREENS: Array[String] = [Screens.STORE, Screens.PROVISIONER, Scree
 ## screen) and every screen in Screens.ORDER (except Skills and Prayers, reached through skill rows)
 ## belongs to exactly one; test_chapters pins that. `icon` names a skill (skill icon) or a screen.
 const CHAPTERS: Array[Dictionary] = [
-	{"id": "storage", "label": "Storage", "icon": "bank", "screens": ["bank"], "skills": []},
-	{"id": "town", "label": "Town", "icon": "store",
+	{"id": "storage", "label": "Storage", "icon": "storage", "screens": ["bank"], "skills": []},
+	{"id": "town", "label": "Town", "icon": "town",
 		"screens": ["store", "provisioner", "settlement", "farm", "action_queue"], "skills": ["caravaneering"]},
 	{"id": "combat", "label": "Combat", "icon": "combat",
-		"screens": ["combat", "expeditions", "raids", "equipment", "combat_simulator"],
+		"screens": ["combat", "combat_roadmap", "expeditions", "raids", "equipment", "equipment_guide", "combat_simulator"],
 		"skills": ["attack", "strength", "defence", "hitpoints", "ranged", "magic", "prayer", "slayer", "corruption"]},
-	{"id": "gathering", "label": "Gathering", "icon": "woodcutting", "screens": [],
+	{"id": "gathering", "label": "Gathering", "icon": "gathering", "screens": [],
 		"skills": ["woodcutting", "fishing", "mining", "farming", "thieving", "agility", "harvesting", "archaeology", "cartography", "lostfinding", "ranching"]},
-	{"id": "crafting", "label": "Crafting", "icon": "smithing", "screens": [],
+	{"id": "crafting", "label": "Crafting", "icon": "crafting", "screens": [],
 		"skills": ["firemaking", "cooking", "smithing", "fletching", "crafting", "herblore", "fermentation", "customcraft", "engineering", "inscription"]},
-	{"id": "arcane", "label": "Arcane", "icon": "runecrafting", "screens": ["prestige"],
+	{"id": "arcane", "label": "Arcane", "icon": "arcane", "screens": ["dream_realm", "prestige"],
 		"skills": ["runecrafting", "summoning", "astrology", "alt_magic", "echo_keeping", "wayfolding", "enchanting", "dreamwalking", "riftkeeping", "spellweaving"]},
-	{"id": "character", "label": "Character", "icon": "overview",
-		"screens": ["overview", "quests", "achievements", "collection", "stats", "settings"], "skills": []},
+	{"id": "character", "label": "Character", "icon": "character",
+		"screens": ["overview", "quests", "achievements", "collection", "stats", "encyclopedia", "settings"], "skills": []},
 ]
 
 ## The chapter a skill id or screen id belongs to ("" when none). Prayers counts as the prayer skill.
@@ -116,10 +119,7 @@ static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 		header.add_theme_font_size_override("font_size", UITokens.FONT_SUBHEAD)
 		header.add_theme_constant_override("icon_max_width", UITokens.ICON_MD)
 		var icon_id: String = str(ch["icon"])
-		if DataLoader.get_skill_ids().has(icon_id):
-			header.icon = AssetRegistry.skill_icon(icon_id)
-		else:
-			header.icon = AssetRegistry.icon(_icon_kind_for(icon_id), _icon_id_for(icon_id))
+		header.icon = AssetRegistry.icon("areas", "farmlands") if icon_id == Screens.COMBAT else AssetRegistry.icon("navigation", icon_id)
 		header.pressed.connect(func():
 			open_chapter(host, chapter_id)
 			if chapter_id == "storage":
@@ -129,6 +129,8 @@ static func build(host: Control, sidebar_wrap: PanelContainer) -> Dictionary:
 		body.visible = false
 		list.add_child(body)
 		for screen in ch["screens"]:
+			if screen in CONTEXTUAL_SCREENS:
+				continue
 			if chapter_id == "storage":
 				nav_buttons[str(screen)] = header
 				continue
@@ -207,7 +209,7 @@ static func populate_drawer(host: Control, drawer: PanelContainer) -> void:
 	col.add_child(HSeparator.new())
 	col.add_child(UIStyle.label("GAME", true, UITokens.FONT_MICRO))
 	for screen in Screens.ORDER:
-		if screen in [Screens.SKILLS, Screens.PRAYERS, Screens.SETTLEMENT] or screen in PINNED_SCREENS:
+		if screen in [Screens.SKILLS, Screens.PRAYERS, Screens.SETTLEMENT] or screen in PINNED_SCREENS or screen in CONTEXTUAL_SCREENS:
 			continue
 		var b := UIStyle.button(Screens.label_for(screen))
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -309,16 +311,14 @@ static func _icon_kind_for(screen: String) -> String:
 		Screens.ACTION_QUEUE, Screens.COMBAT_SIMULATOR, Screens.PRAYERS, Screens.RAIDS, Screens.SETTINGS, Screens.PRESTIGE: return "navigation"
 		Screens.COMBAT: return "areas"
 		Screens.EXPEDITIONS: return "dungeons"
-		Screens.BANK, Screens.COLLECTION: return "items"
+		Screens.BANK, Screens.FARM, Screens.STORE: return "navigation"
+		Screens.COLLECTION: return "items"
 		Screens.STATS: return "items"
 		Screens.QUESTS, Screens.PROVISIONER: return "currencies"
-		# Gold for materials is the whole point of the store, but Tasks already owns the coin
-		# icon: a second identical glyph in the sidebar would read as a duplicate, not a counter.
-		Screens.STORE: return "items"
 		Screens.EQUIPMENT: return "items"
 		Screens.ACHIEVEMENTS: return "pets"
 		Screens.SETTLEMENT: return "obstacles"
-		Screens.SKILLS, Screens.OVERVIEW, Screens.FARM: return "skills"
+		Screens.SKILLS, Screens.OVERVIEW, Screens.DREAM_REALM: return "skills"
 	return "status"
 
 static func _icon_id_for(screen: String) -> String:
@@ -327,15 +327,16 @@ static func _icon_id_for(screen: String) -> String:
 		Screens.COMBAT: return "farmlands"
 		Screens.EXPEDITIONS: return "air_god_dungeon"
 		Screens.SKILLS: return "woodcutting"
-		Screens.FARM: return "farming"
+		Screens.DREAM_REALM: return "dreamwalking"
+		Screens.FARM: return "farm"
 		Screens.OVERVIEW: return "mining"
 		Screens.QUESTS: return "gp"
-		Screens.BANK: return "normal_log"
+		Screens.BANK: return "storage"
 		Screens.COLLECTION: return "bones"
 		Screens.STATS: return "gold_bar"
 		Screens.SETTLEMENT: return "obstacle_1_0"
 		Screens.ACHIEVEMENTS: return "pyro"
 		Screens.PROVISIONER: return "slayer_coins"
-		Screens.STORE: return "iron_bar"
+		Screens.STORE: return "store"
 		Screens.EQUIPMENT: return "iron_platebody"
 	return "idle"

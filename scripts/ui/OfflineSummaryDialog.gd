@@ -24,7 +24,7 @@ func _ready() -> void:
 func show_summary(summary: Dictionary) -> void:
 	if summary.is_empty():
 		return
-	if float(summary.get("processed_seconds", 0.0)) <= 0.0 and not bool(summary.get("clock_anomaly", false)):
+	if float(summary.get("processed_seconds", 0.0)) <= 0.0 and not bool(summary.get("clock_anomaly", false)) and str(summary.get("stopped_reason", "")) == "":
 		return
 	for c in _content.get_children():
 		c.queue_free()
@@ -34,17 +34,43 @@ func show_summary(summary: Dictionary) -> void:
 	var headline: Array = [Widgets.stat_chip("status", "playtime", UIStyle.fmt_duration(processed), "Time processed", UITokens.TEXT_STRONG)]
 	var headline_row: HFlowContainer = Widgets.chip_row(headline)
 	_content.add_child(headline_row)
-	var capped: float = float(summary.get("capped_seconds", 0.0))
+	var capped: float = float(summary.get("cap_excluded_seconds", summary.get("capped_seconds", 0.0)))
 	if capped > 1.0:
 		_content.add_child(Widgets.key_value("Excluded by your cap", UIStyle.fmt_duration(capped),
 			UITokens.AMBER, "Your offline cap is %.0f hours (Settings → Offline)" % float(summary.get("cap_hours", 24.0))))
+	var inactive: float = float(summary.get("active_unprocessed_seconds", 0.0))
+	if inactive > 1.0:
+		_content.add_child(Widgets.key_value("Active time not simulated", UIStyle.fmt_duration(inactive), UITokens.AMBER,
+			"No active work ran for this portion; passive systems may still have advanced."))
 	if bool(summary.get("clock_anomaly", false)):
 		_content.add_child(UIStyle.colored_label(
 			"The system clock moved backwards. No progress was granted and the offline marker was left untouched.",
 			UITokens.AMBER, UITokens.FONT_SMALL))
+	var timeline: Array = summary.get("timeline", [])
+	if not timeline.is_empty():
+		_content.add_child(UIStyle.section("Activity timeline", "In the order events occurred"))
+		for event in timeline:
+			var row := UIStyle.label(str(event), false, UITokens.FONT_SMALL)
+			row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			_content.add_child(row)
+	var ready_tasks: Array = summary.get("ready_tasks", [])
+	var ready_milestones: Array = summary.get("ready_milestones", [])
+	if not ready_tasks.is_empty() or not ready_milestones.is_empty():
+		_content.add_child(UIStyle.section("Ready now", "Includes rewards ready before you left"))
+		_add_ready("Tasks", ready_tasks)
+		_add_ready("Milestones", ready_milestones)
+	var unlocks: Array = summary.get("level_unlocks", [])
+	if not unlocks.is_empty():
+		_content.add_child(UIStyle.section("New level unlocks", "Other requirements may still apply"))
+		for unlock in unlocks.slice(0, 5):
+			var row := UIStyle.label(str(unlock), true, UITokens.FONT_SMALL)
+			row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			_content.add_child(row)
+		if unlocks.size() > 5:
+			_content.add_child(UIStyle.label("…and %d more" % (unlocks.size() - 5), true, UITokens.FONT_MICRO))
 
 	var stopped: String = str(summary.get("stopped_reason", ""))
-	if stopped != "":
+	if stopped != "" and timeline.is_empty():
 		_content.add_child(Widgets.key_value("Progress stopped because", stopped, UITokens.AMBER))
 
 	var activity: String = str(summary.get("activity", "none"))
@@ -61,7 +87,7 @@ func show_summary(summary: Dictionary) -> void:
 		if int(combat.get("dungeons", 0)) > 0:
 			_content.add_child(Widgets.key_value("Expeditions cleared", UIStyle.fmt_exact(float(combat["dungeons"])), UITokens.GOLD))
 	elif activity == "none":
-		_content.add_child(UIStyle.colored_label("Nothing was running, so no resources were produced.",
+		_content.add_child(UIStyle.colored_label("No active activity was running; passive systems are summarized below.",
 			UITokens.TEXT_MUTED, UITokens.FONT_SMALL))
 
 	var dreaming: Dictionary = summary.get("dreamwalking", {})
@@ -124,6 +150,16 @@ func show_summary(summary: Dictionary) -> void:
 		UITokens.TEXT_DIM, UITokens.FONT_MICRO))
 	popup_centered()
 	get_ok_button().grab_focus()
+
+func _add_ready(label: String, entries: Array) -> void:
+	if entries.is_empty(): return
+	_content.add_child(Widgets.key_value(label + " ready to claim", str(entries.size()), UITokens.GOLD_BRIGHT))
+	for entry in entries.slice(0, 5):
+		var row := UIStyle.label(str(entry), true, UITokens.FONT_SMALL)
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_content.add_child(row)
+	if entries.size() > 5:
+		_content.add_child(UIStyle.label("…and %d more" % (entries.size() - 5), true, UITokens.FONT_MICRO))
 
 func _add_item_table(heading: String, table: Dictionary, _color: Color) -> void:
 	if table.is_empty():

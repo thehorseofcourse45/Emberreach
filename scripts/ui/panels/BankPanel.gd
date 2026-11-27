@@ -16,6 +16,8 @@ extends VBoxContainer
 signal navigated(route: Dictionary)
 signal context_changed(ctx: Dictionary)
 
+const PAGE_SIZE := 40
+
 const CATEGORY_LABELS: Dictionary = {
 	"all": "All", "resource": "Materials", "equipment": "Equipment", "food": "Food",
 	"potion": "Potions", "rune": "Runes", "ammo": "Ammunition", "bone": "Bones",
@@ -36,6 +38,8 @@ var _filters_box: VBoxContainer
 var _selected: String = ""
 var _category_keys: Array[String] = ["all"]
 var _built: bool = false
+var _page := 0
+var _page_bar: HBoxContainer
 
 func _ready() -> void:
 	add_theme_constant_override("separation", UITokens.SP_4)
@@ -58,27 +62,29 @@ func _build() -> void:
 	var bar := HFlowContainer.new()
 	bar.add_theme_constant_override("h_separation", UITokens.SP_4)
 	bar.add_theme_constant_override("v_separation", UITokens.SP_2)
-	_search = Widgets.search_bar("Search items…", func(_t): _rebuild_list())
+	_search = Widgets.search_bar("Search items…", func(_t): _page = 0; _rebuild_list())
 	_search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bar.add_child(_search)
 	_category = Widgets.option_menu(["All"], func(i):
-		_rebuild_list(), 0)
+		_page = 0; _rebuild_list(), 0)
 	_category.tooltip_text = "Filter by item category"
 	bar.add_child(_category)
 	_sort = Widgets.option_menu(["Name", "Quantity", "Value", "Type"], func(i):
-		_rebuild_list(), 0)
+		_page = 0; _rebuild_list(), 0)
 	_sort.tooltip_text = "Sort order"
 	bar.add_child(_sort)
 	var direction := UIStyle.mini_button("↑ Asc", "Toggle ascending / descending")
 	direction.pressed.connect(func():
 		_ascending = not _ascending
 		direction.text = "↑ Asc" if _ascending else "↓ Desc"
+		_page = 0
 		_rebuild_list())
 	bar.add_child(direction)
 	var fav_only := UIStyle.mini_button("☆ Favourites", "Show only the items you have pinned. Favouriting never protects an item from being sold.")
 	fav_only.pressed.connect(func():
 		_favorites_only = not _favorites_only
 		fav_only.text = "★ Favourites" if _favorites_only else "☆ Favourites"
+		_page = 0
 		_rebuild_list())
 	bar.add_child(fav_only)
 	add_child(bar)
@@ -122,6 +128,8 @@ func _build() -> void:
 	add_child(_overflow_box)
 	_filters_box = UIStyle.section("Auto-sell rules", "rule-based tidy-up, armed only when you write a rule")
 	add_child(_filters_box)
+	_page_bar = UIStyle.hbox(UITokens.SP_3)
+	add_child(_page_bar)
 	_list = UIStyle.vbox(UITokens.SP_2)
 	add_child(_list)
 
@@ -130,7 +138,7 @@ func _build() -> void:
 # =========================================================================
 
 func refresh() -> void:
-	if not _built:
+	if not _built or Widgets.defer_offscreen_rebuild(self, refresh):
 		return
 	_rebuild_categories()
 	_rebuild_capacity()
@@ -342,8 +350,11 @@ func _rebuild_capacity() -> void:
 		if BankManager.buy_slot(1):
 			refresh())
 	row.add_child(b)
-	var b10 := UIStyle.mini_button("Buy 10", "Buy the next ten slots at their individual prices")
-	b10.disabled = PlayerData.gp < price
+	var price_10: float = 0.0
+	for i in range(10):
+		price_10 += BankManager._slot_price_for(BankManager.purchased_slots + i)
+	var b10 := UIStyle.mini_button("Buy 10 — %s GP" % UIStyle.fmt(price_10), "Buy the next ten slots at their individual prices")
+	b10.disabled = PlayerData.gp < price_10
 	b10.pressed.connect(func():
 		if BankManager.buy_slot(10):
 			refresh())
@@ -365,7 +376,9 @@ func _rebuild_overflow() -> void:
 		UITokens.AMBER, UITokens.FONT_SMALL))
 	for item_id in BankManager.overflow.keys():
 		_overflow_box.add_child(Widgets.item_row(str(item_id), int(BankManager.overflow[item_id]),
-			"Withdraw", func(): BankManager.withdraw_overflow(str(item_id))))
+			"Withdraw", func():
+				if BankManager.withdraw_overflow(str(item_id)) <= 0:
+					EventBus.notify("No free stack slot for %s — sell something or expand storage first." % DataLoader.get_item(str(item_id)).get("name", item_id), "warn")))
 	var all := UIStyle.mini_button("Withdraw everything possible")
 	all.pressed.connect(func():
 		BankManager.withdraw_overflow("")
@@ -374,10 +387,23 @@ func _rebuild_overflow() -> void:
 
 func _rebuild_list() -> void:
 	_clear(_list)
+	_clear(_page_bar)
 	var sort_mode: int = [BankManager.SortMode.NAME, BankManager.SortMode.QUANTITY,
 		BankManager.SortMode.VALUE, BankManager.SortMode.TYPE][_sort.selected]
 	var category: String = _category_keys[clampi(_category.selected, 0, maxi(0, _category_keys.size() - 1))]
 	var rows: Array = BankManager.sorted_list(_search.text, sort_mode, _ascending, category, _favorites_only)
+	var pages: int = maxi(1, ceili(float(rows.size()) / PAGE_SIZE))
+	_page = clampi(_page, 0, pages - 1)
+	if pages > 1:
+		var previous := UIStyle.mini_button("Previous")
+		previous.disabled = _page <= 0
+		previous.pressed.connect(func(): _page -= 1; _rebuild_list())
+		_page_bar.add_child(previous)
+		_page_bar.add_child(UIStyle.label("Page %d / %d · %d matching items" % [_page + 1, pages, rows.size()], true, UITokens.FONT_SMALL))
+		var next := UIStyle.mini_button("Next")
+		next.disabled = _page >= pages - 1
+		next.pressed.connect(func(): _page += 1; _rebuild_list())
+		_page_bar.add_child(next)
 	if rows.is_empty():
 		if _favorites_only:
 			_list.add_child(Widgets.empty_state("No favourites yet",
@@ -390,7 +416,7 @@ func _rebuild_list() -> void:
 				"Adjust the search or filter, or go and gather something new.",
 				"Open Skills", func(): navigated.emit({"screen": Screens.SKILLS})))
 		return
-	for r in rows:
+	for r in rows.slice(_page * PAGE_SIZE, mini(rows.size(), (_page + 1) * PAGE_SIZE)):
 		var item_id: String = str(r["item_id"])
 		_list.add_child(_item_row(r))
 
@@ -398,6 +424,7 @@ func _item_row(r: Dictionary) -> Control:
 	var item_id: String = str(r["item_id"])
 	var item: Dictionary = r["data"]
 	var card := UIStyle.card(item_id == _selected)
+	card.set_meta("item_id", item_id)
 	var col := UIStyle.vbox(UITokens.SP_1)
 	card.add_child(col)
 	var row := HBoxContainer.new()
@@ -443,7 +470,10 @@ func _item_row(r: Dictionary) -> Control:
 	select.pressed.connect(func():
 		_selected = item_id
 		context_changed.emit({"kind": "item", "item_id": item_id})
-		_rebuild_list())
+		for visible_card in _list.get_children():
+			if visible_card.has_meta("item_id"):
+				visible_card.add_theme_stylebox_override("panel", UIStyle.surface_box("row", str(visible_card.get_meta("item_id")) == item_id))
+		_rebuild_filters())
 	actions.add_child(select)
 	# Quantity selection, so a player never has to sell everything to sell some. A MenuButton is
 	# used rather than an OptionButton so the same entry can be chosen repeatedly.

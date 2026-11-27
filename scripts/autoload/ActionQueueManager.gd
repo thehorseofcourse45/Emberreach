@@ -8,6 +8,7 @@ extends Node
 
 signal queue_changed()
 signal queue_paused(reason: String)
+signal saved_plans_changed()
 
 const STATUS_IDLE: String = "idle"
 const STATUS_READY: String = "ready"
@@ -16,6 +17,7 @@ const STATUS_COMBAT_WAITING: String = "combat_waiting"
 const STATUS_PAUSED: String = "paused"
 
 var steps: Array = []
+var saved_plans: Array = []
 var current_index: int = 0
 var enabled: bool = false
 var status: String = STATUS_IDLE
@@ -220,10 +222,17 @@ func waiting_for_combat() -> bool:
 
 func serialize() -> Dictionary:
 	return {"steps": steps.duplicate(true), "current_index": current_index, "enabled": enabled,
-		"status": status, "last_error": last_error}
+		"status": status, "last_error": last_error, "saved_plans": saved_plans.duplicate(true)}
 
 func deserialize(source: Dictionary) -> void:
 	steps.clear()
+	saved_plans.clear()
+	var raw_plans: Variant = source.get("saved_plans", [])
+	if raw_plans is Array:
+		for plan in raw_plans:
+			if plan is Dictionary and plan.get("steps", null) is Array and str(plan.get("name", "")).strip_edges() != "":
+				saved_plans.append(plan.duplicate(true))
+	saved_plans_changed.emit()
 	var raw_steps: Variant = source.get("steps", [])
 	if typeof(raw_steps) == TYPE_ARRAY:
 		for raw in (raw_steps as Array):

@@ -820,6 +820,14 @@ func _check_regions() -> void:
 			else:
 				placed[str(mid)] = true
 		_check_region_requirements("dungeon", id, d)
+	for index in range(RaidManager.ASTRAL_TRIALS.size()):
+		var trial: Dictionary = RaidManager.ASTRAL_TRIALS[index]
+		for mid in RaidManager.astral_sequence(index):
+			var enemy := str(mid)
+			if not DataLoader.monsters.has(enemy):
+				_err("missing_reference", "astral trial '%s' lists unknown monster '%s'" % [trial.get("id", ""), enemy])
+			else:
+				placed[enemy] = true
 	for mid in DataLoader.monsters.keys():
 		if not placed.has(str(mid)):
 			_warn("orphan_monster", "monster '%s' appears in no area or dungeon, so it can never be fought" % mid)
@@ -1203,8 +1211,8 @@ func _check_objective(label: String, obj: Variant) -> void:
 	var o: Dictionary = obj
 	var kind: String = str(o.get("kind", ""))
 	var known: Array[String] = ["have_item", "gain_item", "skill_level", "combat_level", "mastery_level", "kill_monster",
-		"defeat_boss", "complete_dungeon", "craft_item", "do_actions", "reach_region",
-		"buy_upgrade", "build_structure", "gp_total", "unlock_pet", "discover_items", "discover_set", "chart_hexes"]
+		"defeat_boss", "complete_dungeon", "complete_trial", "craft_item", "do_actions", "reach_region",
+		"buy_upgrade", "build_structure", "gp_total", "unlock_pet", "discover_items", "discover_set", "chart_hexes", "caravan_delivery"]
 	if not known.has(kind):
 		_err("invalid_objective", "%s objective kind '%s' is unknown" % [label, kind])
 		return
@@ -1221,6 +1229,13 @@ func _check_objective(label: String, obj: Variant) -> void:
 		_err("missing_reference", "%s objective references unknown monster '%s'" % [label, str(o["monster_id"])])
 	if o.has("dungeon_id") and not DataLoader.dungeons.has(str(o["dungeon_id"])):
 		_err("missing_reference", "%s objective references unknown dungeon '%s'" % [label, str(o["dungeon_id"])])
+	if o.has("trial_id"):
+		var known_trial: bool = false
+		for trial in RaidManager.ASTRAL_TRIALS:
+			if str(trial.get("id", "")) == str(o["trial_id"]):
+				known_trial = true
+		if not known_trial:
+			_err("missing_reference", "%s objective references unknown astral trial '%s'" % [label, str(o["trial_id"])])
 	if o.has("action_id") and str(o.get("skill_id", "")) != "":
 		if DataLoader.get_action(str(o["skill_id"]), str(o["action_id"])).is_empty():
 			_err("missing_reference", "%s objective references unknown action '%s:%s'" % [label, str(o["skill_id"]), str(o["action_id"])])
@@ -1344,6 +1359,9 @@ func _check_acquisition_coverage() -> void:
 		if typeof(offer) == TYPE_DICTIONARY:
 			for item_id in ((offer as Dictionary).get("items", {}) as Dictionary).keys():
 				sources[str(item_id)] = true
+	sources["lucid_fragment"] = true
+	for dream_region in DreamwalkingManager.realm.regions():
+		sources[str(dream_region.item)] = true
 	for route in DataLoader.new_skill_systems.get("caravan_routes", []):
 		for item_id in route.get("specialty", {}): sources[str(item_id)] = true
 	# Farming: a harvested crop is defined by the SEED item's product_item.
@@ -1412,6 +1430,9 @@ func _check_acquisition_coverage() -> void:
 				sources[str((artefact as Dictionary).get("item_id", ""))] = true
 	# Raids award their alternate weapon pool.
 	for item_id in (DataLoader.raid_shop.get("alt_items", []) as Array):
+		sources[str(item_id)] = true
+	# Older saved gauntlet reward choices can still grant the retired catalog.
+	for item_id in (DataLoader.raid_shop.get("legacy_alt_items", []) as Array):
 		sources[str(item_id)] = true
 	# Quest and achievement rewards are real acquisition paths.
 	for quest_id in Quests.all_quest_ids():

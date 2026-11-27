@@ -13,6 +13,14 @@ var _steps_box: VBoxContainer
 var _status_box: VBoxContainer
 var _add_box: VBoxContainer
 var _queue: VBoxContainer
+var _plan_box: VBoxContainer
+var _plan_goal: Dictionary = {}
+var _plan_choices: Dictionary = {}
+var _plan: Dictionary = {}
+var _saved_box: VBoxContainer
+var _saved_name: LineEdit
+var _saved_edit: Dictionary = {}
+var _saved_index: int = -1
 
 var _skill_picker: OptionButton
 var _action_picker: OptionButton
@@ -37,10 +45,16 @@ func _ready() -> void:
 	EventBus.state_refreshed.connect(refresh)
 	ActionQueueManager.queue_changed.connect(refresh)
 	ActionQueueManager.queue_paused.connect(func(reason: String): _on_paused(reason))
+	ActionQueueManager.saved_plans_changed.connect(func():
+		_saved_index = -1; _saved_edit.clear(); _render_saved())
 	refresh()
 
 func focus_route(route: Dictionary) -> void:
 	if str(route.get("screen", "")) == Screens.ACTION_QUEUE:
+		if route.get("plan_goal", {}) is Dictionary and not (route.get("plan_goal", {}) as Dictionary).is_empty():
+			_plan_goal = (route["plan_goal"] as Dictionary).duplicate(true)
+			_plan_choices.clear()
+			_recalculate_plan()
 		refresh()
 
 func detail_context() -> Dictionary:
@@ -66,6 +80,11 @@ func _build() -> void:
 		true, UITokens.FONT_SMALL)
 	blurb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	intro_col.add_child(blurb)
+	_plan_box = UIStyle.vbox(UITokens.SP_3)
+	add_child(_plan_box)
+	_saved_box = UIStyle.vbox(UITokens.SP_3)
+	add_child(_saved_box)
+	_render_saved()
 
 	_add_box = UIStyle.vbox(UITokens.SP_4)
 	add_child(_add_box)
@@ -81,6 +100,281 @@ func _build() -> void:
 
 	_queue = UIStyle.vbox(UITokens.SP_6)
 	add_child(_queue)
+
+func _render_saved() -> void:
+	UIPanelClear(_saved_box)
+	var box := UIStyle.section("Saved queue plans", "Save the whole current queue, including completed steps. Item targets are total storage quantities, not additional amounts.")
+	_saved_box.add_child(box)
+	var save_row := HFlowContainer.new()
+	box.add_child(save_row)
+	_saved_name = LineEdit.new()
+	_saved_name.placeholder_text = "Plan name"
+	_saved_name.max_length = 48
+	_saved_name.custom_minimum_size.x = 150
+	save_row.add_child(_saved_name)
+	var save_current := UIStyle.button("Save current queue")
+	save_current.pressed.connect(func():
+		var name := _saved_name.text.strip_edges()
+		if name == "" or ActionQueueManager.steps.is_empty():
+			EventBus.notify("Enter a name and add queue steps first.", "warn")
+			return
+		for plan in ActionQueueManager.saved_plans:
+			if str(plan.name).to_lower() == name.to_lower():
+				EventBus.notify("A plan already has that name.", "warn")
+				return
+		ActionQueueManager.saved_plans.append({"name": name, "steps": ActionQueueManager.steps.duplicate(true)})
+		_persist_saved()
+		EventBus.notify("Saved queue plan \"%s\"." % name, "success")
+		_render_saved())
+	save_row.add_child(save_current)
+	for i in range(ActionQueueManager.saved_plans.size()):
+		var index: int = i
+		var plan: Dictionary = ActionQueueManager.saved_plans[index]
+		var row := HFlowContainer.new()
+		box.add_child(row)
+		row.add_child(UIStyle.label("%s · %d steps" % [str(plan.name), (plan.steps as Array).size()], true, UITokens.FONT_SMALL))
+		var review := UIStyle.mini_button("Review / edit")
+		review.pressed.connect(func():
+			_saved_index = index
+			_saved_edit = plan.duplicate(true)
+			_render_saved())
+		row.add_child(review)
+	if _saved_index < 0 or _saved_edit.is_empty(): return
+	var editor := UIStyle.section("Review saved plan", "Changes stay in this preview until you save them. Appending does not start the queue; a running queue can reach appended steps.")
+	box.add_child(editor)
+	var name_edit := LineEdit.new()
+	name_edit.max_length = 48
+	name_edit.text = str(_saved_edit.name)
+	name_edit.text_changed.connect(func(value): _saved_edit.name = value)
+	editor.add_child(name_edit)
+	var draft: Array = _saved_edit.steps
+	var invalid := false
+	for i in range(draft.size()):
+		var index: int = i
+		if not draft[index] is Dictionary:
+			invalid = true
+			var bad := UIStyle.mini_button("Remove malformed step")
+			bad.pressed.connect(func(): draft.remove_at(index); _render_saved())
+			editor.add_child(bad)
+			continue
+		var step: Dictionary = draft[index]
+		var valid: bool = _valid_saved_step(step)
+		if not valid: invalid = true
+		var row := UIStyle.vbox(UITokens.SP_2)
+		editor.add_child(row)
+		var label := UIStyle.label("%d. %s" % [index + 1, ActionQueueManager.step_label(step) if valid else "Unavailable step: " + str(step.get("action_id", step.get("kind", "unknown")))], true, UITokens.FONT_SMALL)
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_child(label)
+		if valid and str(step.get("kind", "")) == "skill":
+			var gate: Dictionary = SkillManager.check_action(str(step.skill_id), str(step.action_id))
+			if not bool(gate.get("ok", false)):
+				var warning := UIStyle.colored_label("Currently unavailable: " + str(gate.get("detail", "check requirements")), UITokens.AMBER, UITokens.FONT_SMALL)
+				warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				row.add_child(warning)
+		var controls := HFlowContainer.new()
+		row.add_child(controls)
+		if str(step.get("kind", "")) == "skill":
+			controls.add_child(UIStyle.label("Stop at (0 = all)", true, UITokens.FONT_SMALL))
+			var target := SpinBox.new()
+			target.min_value = 0
+			target.max_value = 1000000
+			target.value = int(step.get("target_quantity", 0))
+			target.value_changed.connect(func(value): step.target_quantity = int(value))
+			controls.add_child(target)
+		var up := UIStyle.mini_button("Up")
+		up.disabled = index == 0
+		up.pressed.connect(func(): draft[index] = draft[index - 1]; draft[index - 1] = step; _render_saved())
+		controls.add_child(up)
+		var down := UIStyle.mini_button("Down")
+		down.disabled = index == draft.size() - 1
+		down.pressed.connect(func(): draft[index] = draft[index + 1]; draft[index + 1] = step; _render_saved())
+		controls.add_child(down)
+		var remove := UIStyle.mini_button("Remove")
+		remove.pressed.connect(func(): draft.remove_at(index); _render_saved())
+		controls.add_child(remove)
+	var buttons := HFlowContainer.new()
+	editor.add_child(buttons)
+	var save_edits := UIStyle.button("Save edits")
+	save_edits.pressed.connect(func():
+		var name := str(_saved_edit.name).strip_edges()
+		if name == "" or draft.is_empty():
+			EventBus.notify("Enter a name and keep at least one step.", "warn"); return
+		for i in range(ActionQueueManager.saved_plans.size()):
+			if i != _saved_index and str(ActionQueueManager.saved_plans[i].name).to_lower() == name.to_lower():
+				EventBus.notify("A plan already has that name.", "warn"); return
+		_saved_edit.name = name
+		ActionQueueManager.saved_plans[_saved_index] = _saved_edit.duplicate(true)
+		_persist_saved(); _render_saved())
+	buttons.add_child(save_edits)
+	var append := UIStyle.primary_button("Add reviewed steps")
+	append.disabled = invalid or draft.is_empty()
+	append.pressed.connect(func(): _append_saved(draft))
+	buttons.add_child(append)
+	var close := UIStyle.button("Close review")
+	close.pressed.connect(func(): _saved_index = -1; _saved_edit.clear(); _render_saved())
+	buttons.add_child(close)
+	var delete := UIStyle.button("Delete plan")
+	delete.pressed.connect(func():
+		if delete.text != "Confirm delete":
+			delete.text = "Confirm delete"; return
+		ActionQueueManager.saved_plans.remove_at(_saved_index)
+		_saved_index = -1; _saved_edit.clear(); _persist_saved(); _render_saved())
+	buttons.add_child(delete)
+
+func _persist_saved() -> void:
+	if not SaveManager.save_game():
+		EventBus.notify("Could not save the plan to disk; it remains in memory.", "warn")
+
+func _valid_saved_step(step: Variant) -> bool:
+	if not step is Dictionary: return false
+	if str(step.get("kind", "")) == "skill":
+		return not DataLoader.get_action(str(step.get("skill_id", "")), str(step.get("action_id", ""))).is_empty() and DataLoader.items.has(str(step.get("target_item_id", "")))
+	if str(step.get("kind", "")) == "combat":
+		var ctx: Variant = step.get("context", {})
+		return ctx is Dictionary and ctx.get("monsters", null) is Array and ActionQueueManager._valid_combat_context(ctx)
+	return false
+
+func _append_saved(draft: Array) -> void:
+	for step in draft:
+		if not _valid_saved_step(step):
+			EventBus.notify("A step is unavailable; the queue was not changed.", "warn"); return
+	var added: Array[String] = []
+	for step in draft:
+		var created: Dictionary = {}
+		if str(step.kind) == "skill":
+			created = ActionQueueManager.add_skill_step(str(step.skill_id), str(step.action_id), str(step.target_item_id), int(step.target_quantity))
+		else:
+			created = ActionQueueManager.add_combat_step(step.context, str(step.get("attack_style", "")), str(step.get("melee_style", "")))
+		if created.is_empty():
+			for id in added: ActionQueueManager.remove_step(id)
+			EventBus.notify("The plan could not be added; the queue was left unchanged.", "warn"); return
+		added.append(str(created.id))
+	_saved_index = -1
+	_saved_edit.clear()
+	_render_saved()
+	EventBus.notify("Added %d reviewed steps to the queue." % added.size(), "success")
+
+func _recalculate_plan() -> void:
+	_plan = preload("res://scripts/core/GoalQueuePlanner.gd").build(_plan_goal, _plan_choices)
+	_render_plan()
+
+func _render_plan() -> void:
+	UIPanelClear(_plan_box)
+	if _plan_goal.is_empty(): return
+	var box := UIStyle.section("Review queue plan", "Targets count storage and overflow, not equipped items. Clear overflow and keep storage space free. Editing or reordering steps does not recalculate inputs. Changing quantity or source rebuilds the draft.")
+	_plan_box.add_child(box)
+	if ActionQueueManager.enabled:
+		box.add_child(UIStyle.colored_label("The queue is running: appended steps will run when reached.", UITokens.AMBER, UITokens.FONT_SMALL))
+	if _plan.has("target"):
+		var target_row := HFlowContainer.new()
+		box.add_child(target_row)
+		target_row.add_child(UIStyle.label("Desired total: " + str(DataLoader.get_item(str(_plan.target_item)).get("name", _plan.target_item)), true, UITokens.FONT_SMALL))
+		var target_quantity := SpinBox.new()
+		target_quantity.min_value = 1
+		target_quantity.max_value = 1000000
+		target_quantity.value = int(_plan.target)
+		target_quantity.value_changed.connect(func(value):
+			_plan_goal["target_quantity"] = int(value)
+			_recalculate_plan())
+		target_row.add_child(target_quantity)
+	for warning in _plan.get("warnings", []):
+		var text := UIStyle.colored_label(str(warning), UITokens.AMBER, UITokens.FONT_SMALL)
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(text)
+	for problem in _plan.get("errors", []):
+		var text := UIStyle.colored_label(str(problem), UITokens.RED, UITokens.FONT_SMALL)
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(text)
+	var steps: Array = _plan.get("steps", [])
+	if steps.is_empty() and (_plan.get("errors", []) as Array).is_empty():
+		box.add_child(UIStyle.label("The target is already held.", true, UITokens.FONT_SMALL))
+	for i in range(steps.size()):
+		var index: int = i
+		var step: Dictionary = steps[index]
+		var row := UIStyle.vbox(UITokens.SP_2)
+		box.add_child(row)
+		var item_id: String = str(step.item_id)
+		var item_name: String = str(DataLoader.get_item(item_id).get("name", item_id))
+		row.add_child(UIStyle.label("%d. %s · target %s" % [index + 1, DataLoader.get_action(str(step.skill_id), str(step.action_id)).get("name", step.action_id), item_name], false, UITokens.FONT_SMALL))
+		var options: Array = (_plan.get("choices", {}) as Dictionary).get(item_id, [])
+		var fixed_recipe: bool = str(_plan_goal.get("kind", "")) == "recipe" and str(step.skill_id) + ":" + str(step.action_id) == str(_plan_goal.get("id", ""))
+		if options.size() > 1 and not fixed_recipe:
+			var picker := OptionButton.new()
+			picker.clip_text = true
+			picker.fit_to_longest_item = false
+			for j in range(options.size()):
+				var option: Dictionary = options[j]
+				picker.add_item("%s · %s%s" % [DataLoader.get_skill(str(option.skill_id)).get("name", option.skill_id), option.action.get("name", option.action_id), " (random)" if bool(option.get("byproduct", false)) else ""])
+				if str(option.skill_id) == str(step.skill_id) and str(option.action_id) == str(step.action_id): picker.select(j)
+			picker.item_selected.connect(func(selected):
+				var option: Dictionary = options[selected]
+				_plan_choices[item_id] = str(option.skill_id) + ":" + str(option.action_id)
+				_recalculate_plan())
+			row.add_child(picker)
+		var other_sources: Array = []
+		for source in Goals.sources_for_item(item_id):
+			var route: Dictionary = source.get("route", {})
+			if not route.is_empty() and str(route.get("screen", "")) not in ["skill", "skills"]:
+				other_sources.append(source)
+		if not other_sources.is_empty():
+			var source_names: Array[String] = []
+			for source in other_sources.slice(0, 2): source_names.append(str(source.label))
+			var other := UIStyle.label("Other sources: " + ", ".join(source_names) + ". Obtain these separately; the plan queues skill actions only.", true, UITokens.FONT_MICRO)
+			other.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			row.add_child(other)
+			var inspect := UIStyle.mini_button("View item sources")
+			inspect.pressed.connect(func(): context_changed.emit({"kind": "item", "item_id": item_id}))
+			row.add_child(inspect)
+		var controls := HFlowContainer.new()
+		controls.add_theme_constant_override("h_separation", UITokens.SP_2)
+		controls.add_theme_constant_override("v_separation", UITokens.SP_2)
+		row.add_child(controls)
+		controls.add_child(UIStyle.label("Stop at", true, UITokens.FONT_SMALL))
+		var quantity := SpinBox.new()
+		quantity.min_value = 1
+		quantity.max_value = 1000000
+		quantity.value = int(step.target)
+		quantity.value_changed.connect(func(value): step.target = int(value))
+		controls.add_child(quantity)
+		var up := UIStyle.mini_button("Up")
+		up.disabled = index == 0
+		up.pressed.connect(func():
+			steps[index] = steps[index - 1]
+			steps[index - 1] = step
+			_render_plan())
+		controls.add_child(up)
+		var down := UIStyle.mini_button("Down")
+		down.disabled = index == steps.size() - 1
+		down.pressed.connect(func():
+			steps[index] = steps[index + 1]
+			steps[index + 1] = step
+			_render_plan())
+		controls.add_child(down)
+		var remove := UIStyle.mini_button("Remove")
+		remove.pressed.connect(func(): steps.remove_at(index); _render_plan())
+		controls.add_child(remove)
+	var buttons := HFlowContainer.new()
+	box.add_child(buttons)
+	var add := UIStyle.primary_button("Add reviewed steps", "Append this draft to the existing queue without starting it")
+	add.disabled = steps.is_empty() or not (_plan.get("errors", []) as Array).is_empty()
+	add.pressed.connect(func(): _append_plan())
+	buttons.add_child(add)
+	var cancel := UIStyle.button("Discard preview")
+	cancel.pressed.connect(func(): _plan_goal.clear(); _render_plan())
+	buttons.add_child(cancel)
+
+func _append_plan() -> void:
+	var added: Array[String] = []
+	for step in _plan.get("steps", []):
+		var created: Dictionary = ActionQueueManager.add_skill_step(str(step.skill_id), str(step.action_id), str(step.item_id), int(step.target))
+		if created.is_empty():
+			for id in added: ActionQueueManager.remove_step(id)
+			EventBus.notify("The plan could not be added; the queue was left unchanged.", "warn")
+			return
+		added.append(str(created.id))
+	_plan_goal.clear()
+	_render_plan()
+	EventBus.notify("Added %d reviewed steps to the queue." % added.size(), "success")
 
 func _build_add_controls() -> void:
 	UIPanelClear(_add_box)
@@ -255,6 +549,9 @@ func _refresh_steps() -> void:
 		return
 	for i in range(steps.size()):
 		_steps_box.add_child(_step_row(i, steps[i]))
+	var note := UIStyle.label("Stop conditions use owned stock; offline quantity targets can overshoot by up to one 30-second slice. Material exhaustion and one-shot research still stop immediately.", true, UITokens.FONT_MICRO)
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_steps_box.add_child(note)
 
 func _step_row(index: int, step: Dictionary) -> Control:
 	var is_current: bool = index == ActionQueueManager.current_index and ActionQueueManager.enabled
@@ -285,10 +582,13 @@ func _step_row(index: int, step: Dictionary) -> Control:
 		var sid: String = str(step.get("skill_id", ""))
 		var aid: String = str(step.get("action_id", ""))
 		var action: Dictionary = DataLoader.get_action(sid, aid)
-		text.add_child(UIStyle.label("Inputs: " + Goals._input_summary(action.get("input_items", {})) + " · output: " + str(action.get("output_items", {})), true, UITokens.FONT_MICRO))
+		var inputs: String = Goals._input_summary(action.get("input_items", {}))
+		var recipe := UIStyle.label("Inputs: %s · makes: %s" % [inputs if inputs != "" else "none",
+			Goals._input_summary(action.get("output_items", {}))], true, UITokens.FONT_MICRO)
+		recipe.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		text.add_child(recipe)
 		var check: Dictionary = SkillManager.check_action(sid, aid)
 		if not bool(check.ok): text.add_child(UIStyle.colored_label("Current blocker: " + str(check.detail), UITokens.AMBER, UITokens.FONT_MICRO))
-		text.add_child(UIStyle.label("Stop condition uses owned stock; offline quantity targets can overshoot by up to one 30-second slice. Material exhaustion and one-shot research still stop immediately.", true, UITokens.FONT_MICRO))
 	if is_current:
 		row.add_child(Widgets.badge("Current", UITokens.GOLD_BRIGHT))
 	var step_id: String = str(step.get("id", ""))

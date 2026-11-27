@@ -199,6 +199,8 @@ static func consumed_item_ids() -> Dictionary:
 	for offer in (DataLoader.new_skill_systems.get("bazaar", []) as Array):
 		if typeof(offer) == TYPE_DICTIONARY and int((offer as Dictionary).get("cost", 0)) > 0:
 			_mark_used(used, "dream_essence", "bazaar:%s" % str((offer as Dictionary).get("id", "")))
+	_mark_used(used, "dream_essence", "dream_realm")
+	_mark_used(used, "lucid_fragment", "dream_relics")
 	# The settlement trader is paid from the township store, not from Storage: its cost keys are
 	# resource ids (`data/trader.json`, `TownshipManager.ALL_RESOURCES`). Reading them as items
 	# invented demand for "goods", which then had demand, no route and no existence. Only an offer
@@ -346,6 +348,9 @@ static func demand_rows() -> Array:
 		if typeof(offer) == TYPE_DICTIONARY:
 			for item_id in ((offer as Dictionary).get("items", {}) as Dictionary).keys():
 				_add_source(sources, item_id, "bazaar")
+	_add_source(sources, "lucid_fragment", "dream_realm")
+	for dream_region in DreamwalkingManager.realm.regions():
+		_add_source(sources, dream_region.item, "dream_realm")
 	for quest_id in Quests.all_quest_ids():
 		var quest_reward: Dictionary = Quests.get_quest(quest_id).get("reward", {})
 		for field in ["items", "unlock_items"]:

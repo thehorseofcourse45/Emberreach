@@ -873,5 +873,179 @@
     "reward": {
       "gp": 5000000
     }
+  },
+  "rot_kiln_shift": {
+    "id": "rot_kiln_shift",
+    "name": "Kiln Shift",
+    "chapter": 1,
+    "difficulty": "normal",
+    "description": "Coal in, bars out, and no one asking where the coal came from.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 150,
+        "label": "Deliver 150 Coal",
+        "item_id": "coal"
+      },
+      {
+        "kind": "craft_item",
+        "required": 60,
+        "label": "Smelt 60 Iron Bars",
+        "item_id": "iron_bar"
+      }
+    ],
+    "reward": {
+      "gp": 1800,
+      "xp": {
+        "mining": 500,
+        "smithing": 700
+      },
+      "items": {
+        "coal": 50
+      }
+    }
+  },
+  "rot_web_clearing": {
+    "id": "rot_web_clearing",
+    "name": "Web Clearing",
+    "chapter": 1,
+    "difficulty": "normal",
+    "description": "The old forest keeps re-webbing the road faster than the watch can cut it.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 50,
+        "label": "Defeat 50 Spiders",
+        "monster_id": "spider",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1500,
+      "xp": {
+        "ranged": 700,
+        "hitpoints": 300
+      },
+      "items": {
+        "lobster": 20
+      }
+    }
+  },
+  "rot_herb_round": {
+    "id": "rot_herb_round",
+    "name": "The Herb Round",
+    "chapter": 1,
+    "difficulty": "hard",
+    "description": "Garum does not pick itself, and the infirmary does not accept excuses.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 120,
+        "label": "Gather 120 Garum Herbs",
+        "item_id": "garum_herb"
+      },
+      {
+        "kind": "craft_item",
+        "required": 20,
+        "label": "Brew 20 damage-reduction potions",
+        "item_id": "potion_dr_2"
+      }
+    ],
+    "reward": {
+      "gp": 3000,
+      "xp": {
+        "herblore": 1200
+      },
+      "items": {
+        "garum_herb": 50
+      }
+    }
+  },
+  "rot_plate_order": {
+    "id": "rot_plate_order",
+    "name": "Plate Order",
+    "chapter": 1,
+    "difficulty": "hard",
+    "description": "A standing order for plate, one piece at a time.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "required": 20,
+        "label": "Forge 20 Bronze Platebodies",
+        "item_id": "bronze_platebody"
+      }
+    ],
+    "reward": {
+      "gp": 2600,
+      "xp": {
+        "smithing": 1500
+      },
+      "items": {
+        "bronze_bar": 40
+      }
+    }
+  },
+  "rot_feather_tithe": {
+    "id": "rot_feather_tithe",
+    "name": "Feather Tithe",
+    "chapter": 1,
+    "difficulty": "easy",
+    "description": "Feathers, shafts and a steady hand: the watch wants arrows again.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 200,
+        "label": "Collect 200 Feathers",
+        "item_id": "feather"
+      },
+      {
+        "kind": "craft_item",
+        "required": 300,
+        "label": "Fletch 300 Bronze Arrows",
+        "item_id": "bronze_arrow"
+      }
+    ],
+    "reward": {
+      "gp": 1200,
+      "xp": {
+        "fletching": 600,
+        "ranged": 300
+      },
+      "items": {
+        "bronze_arrow": 100
+      }
+    }
+  },
+  "rot_crypt_clearing": {
+    "id": "rot_crypt_clearing",
+    "name": "Crypt Clearing",
+    "chapter": 1,
+    "difficulty": "normal",
+    "description": "The barrows are restless again, which is the only thing they are ever anything.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear Barrow of Names",
+        "dungeon_id": "undead_graveyard",
+        "route": {
+          "screen": "combat",
+          "area_id": "undead_graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2200,
+      "xp": {
+        "prayer": 600,
+        "hitpoints": 600
+      },
+      "items": {
+        "big_bones": 20
+      }
+    }
   }
 }
