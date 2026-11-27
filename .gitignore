@@ -81,3 +81,6 @@ ART_REQUESTS.md
 
 # UI review screenshots
 /_look*/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

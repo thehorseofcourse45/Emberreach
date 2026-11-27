@@ -18,6 +18,9 @@ func _ready() -> void:
 func _test() -> void:
 	GameManager.start_new_game("standard")
 	verify(RaidManager.start_raid("normal"), "start raid")
+	RaidManager.trail_mode = false
+	RaidManager.wave = 0
+	RaidManager._start_wave()
 	verify(RaidManager.run_stage == "combat" and RaidManager.wave == 1, "wave starts in combat")
 	verify(not RaidManager.current_encounter.is_empty(), "encounter description exists")
 	var panel := preload("res://scripts/ui/panels/RaidPanel.gd").new()

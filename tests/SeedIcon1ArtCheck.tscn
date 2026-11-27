@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/tests/SeedIcon1ArtCheck.gd" id="1"]
+[node name="SeedIcon1ArtCheck" type="Node"]
+script = ExtResource("1")

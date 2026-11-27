@@ -11,6 +11,7 @@ const OVERVIEW := "overview"
 const SKILLS := "skills"
 const COMBAT := "combat"
 const EXPEDITIONS := "expeditions"
+const COMBAT_ROADMAP := "combat_roadmap"
 const BANK := "bank"
 const ACTION_QUEUE := "action_queue"
 const COMBAT_SIMULATOR := "combat_simulator"
@@ -26,6 +27,7 @@ const PROVISIONER := "provisioner"
 ## they are two screens: one page cannot hold thirty-one stock lines and a wall of upgrades well.
 const STORE := "store"
 const EQUIPMENT := "equipment"
+const EQUIPMENT_GUIDE := "equipment_guide"
 const SETTINGS := "settings"
 const RECOVERY := "recovery"
 ## Prayer and raid both had complete backends with no entry point; they sit with the combat
@@ -38,17 +40,20 @@ const FARM := "farm"
 ## Ascendancy: the reset layer. It is the only screen that can delete a run, so it sits with
 ## Settings and Recovery at the bottom rather than up in the progress screens.
 const PRESTIGE := "prestige"
+const ENCYCLOPEDIA := "encyclopedia"
+const DREAM_REALM := "dream_realm"
 
 ## Storage leads: the bank is the screen a player returns to between everything else, so it is the
 ## first thing under the brand rather than the fourth.
-const ORDER: Array[String] = [BANK, OVERVIEW, SKILLS, COMBAT, PRAYERS, EQUIPMENT, EXPEDITIONS, RAIDS, FARM,
+const ORDER: Array[String] = [BANK, OVERVIEW, SKILLS, COMBAT, COMBAT_ROADMAP, PRAYERS, EQUIPMENT, EQUIPMENT_GUIDE, EXPEDITIONS, RAIDS, FARM,
 	QUESTS, ACHIEVEMENTS, COLLECTION, STATS, SETTLEMENT, PROVISIONER, STORE, ACTION_QUEUE,
-	COMBAT_SIMULATOR, PRESTIGE, SETTINGS]
+	COMBAT_SIMULATOR, PRESTIGE, DREAM_REALM, ENCYCLOPEDIA, SETTINGS]
 
 const LABELS: Dictionary = {
 	OVERVIEW: "Overview",
 	SKILLS: "Skills",
 	COMBAT: "Combat",
+	COMBAT_ROADMAP: "Combat Roadmap",
 	EXPEDITIONS: "Expeditions",
 	BANK: "Storage",
 	ACTION_QUEUE: "Action Queue",
@@ -61,18 +66,22 @@ const LABELS: Dictionary = {
 	PROVISIONER: "Provisioner",
 	STORE: "General Store",
 	EQUIPMENT: "Equipment",
+	EQUIPMENT_GUIDE: "Equipment Guide",
 	SETTINGS: "Settings",
 	RECOVERY: "Recovery",
 	PRAYERS: "Prayers",
-	RAIDS: "Raid",
+	RAIDS: "Astral Trial Chamber",
 	FARM: "Farm",
 	PRESTIGE: "Ascendancy",
+	ENCYCLOPEDIA: "Encyclopedia & Tutorial",
+	DREAM_REALM: "The Dream Realm",
 }
 
 const ICONS: Dictionary = {
 	OVERVIEW: "skills",
 	SKILLS: "skills",
 	COMBAT: "areas",
+	COMBAT_ROADMAP: "navigation",
 	EXPEDITIONS: "dungeons",
 	BANK: "items",
 	ACTION_QUEUE: "navigation",
@@ -85,11 +94,14 @@ const ICONS: Dictionary = {
 	PROVISIONER: "currencies",
 	STORE: "items",
 	EQUIPMENT: "items",
+	EQUIPMENT_GUIDE: "items",
 	SETTINGS: "navigation",
 	PRAYERS: "navigation",
 	RAIDS: "navigation",
 	FARM: "skills",
 	PRESTIGE: "navigation",
+	ENCYCLOPEDIA: "navigation",
+	DREAM_REALM: "skills",
 }
 
 static var _shell: Node = null

@@ -36,6 +36,7 @@ func empty_summary() -> Dictionary:
 	return {
 		"elapsed_seconds": 0.0,
 		"capped_seconds": 0.0,
+		"cap_excluded_seconds": 0.0, "active_unprocessed_seconds": 0.0,
 		"cap_hours": DEFAULT_CAP_HOURS,
 		"processed_seconds": 0.0,
 		"clock_anomaly": false,
@@ -47,6 +48,7 @@ func empty_summary() -> Dictionary:
 		"rare_drops": {}, "pets": [],
 		"farming_advanced": 0, "township_ticks": 0,
 		"stopped_reason": "",
+		"timeline": [], "ready_tasks": [], "ready_milestones": [], "level_unlocks": [],
 		"notes": [],
 	}
 
@@ -90,6 +92,7 @@ func run_on_load() -> Dictionary:
 	var elapsed: float = minf(raw_delta, cap_seconds)
 	summary["elapsed_seconds"] = elapsed
 	summary["capped_seconds"] = maxf(0.0, raw_delta - elapsed)
+	summary["cap_excluded_seconds"] = summary["capped_seconds"]
 	if elapsed < MIN_ELAPSED_SECONDS:
 		_advance_marker(now)
 		_last_summary = summary
@@ -207,6 +210,7 @@ func _run_active(seconds: float, summary: Dictionary) -> Dictionary:
 			if not bool(PlayerData.settings.get("offline_combat_enabled", true)):
 				summary["activity"] = "combat"
 				summary["stopped_reason"] = "Offline combat is disabled in settings"
+				summary["timeline"].append("Combat stopped: offline combat is disabled in settings")
 				return {"seconds": total, "stopped": true, "exhausted": false}
 			var res: Dictionary = CombatManager.simulate_elapsed(left)
 			ActionQueueManager.after_simulation_slice()
@@ -218,25 +222,56 @@ func _run_active(seconds: float, summary: Dictionary) -> Dictionary:
 				# A fight that ends leaves the queue in its explicit waiting state; the
 				# player's Continue/Skip decides what follows, offline as well as online.
 				summary["stopped_reason"] = str(res["reason"])
+				summary["timeline"].append("Combat stopped: " + str(res["reason"]))
 				return {"seconds": total, "stopped": true, "exhausted": false}
 		elif SkillManager.running:
+			var skill_id: String = SkillManager.active_skill
+			var action_id: String = SkillManager.active_action_id
+			var step_index: int = ActionQueueManager.current_index
+			var step: Dictionary = ActionQueueManager.current_step()
+			var queued: bool = ActionQueueManager.enabled and str(step.get("kind", "")) == "skill" and str(step.get("skill_id", "")) == skill_id and str(step.get("action_id", "")) == action_id
 			var res2: Dictionary = SkillManager.simulate_elapsed(left)
 			ActionQueueManager.after_simulation_slice()
 			summary["activity"] = "skill"
-			summary["skill"] = SkillManager.active_skill
-			summary["action"] = SkillManager.active_action_id
+			summary["skill"] = skill_id
+			summary["action"] = action_id
 			var took2: float = float(res2["seconds_processed"])
 			total += took2
 			left -= took2
 			summary["actions"] = int(summary.get("actions", 0)) + int(res2["actions"])
 			if bool(res2["stopped"]):
-				if ActionQueueManager.resolve_transition_now() and SkillManager.running:
+				var continued: bool = ActionQueueManager.resolve_transition_now()
+				var timeline: Array = summary["timeline"]
+				var action_name: String = str(DataLoader.get_action(skill_id, action_id).get("name", action_id))
+				var reason: String = str(res2["stop_reason"])
+				if queued and ActionQueueManager.current_index > step_index:
+					for i in range(step_index, ActionQueueManager.current_index):
+						var finished: Dictionary = ActionQueueManager.steps[i]
+						var finished_name: String = str(DataLoader.get_action(str(finished.get("skill_id", "")), str(finished.get("action_id", ""))).get("name", finished.get("action_id", "")))
+						timeline.append("Queue step finished: %s%s" % [finished_name, " · " + reason if i == step_index and reason != "" else " · target already met"])
+				else:
+					timeline.append("Stopped: %s · %s" % [action_name, reason])
+				if not ActionQueueManager.enabled and ActionQueueManager.last_error != "":
+					var blocked: Dictionary = ActionQueueManager.current_step()
+					var blocked_name: String = str(DataLoader.get_action(str(blocked.get("skill_id", "")), str(blocked.get("action_id", ""))).get("name", blocked.get("action_id", "")))
+					timeline.append("Queue paused%s: %s" % [" before " + blocked_name if blocked_name != "" else "", ActionQueueManager.last_error])
+				elif ActionQueueManager.waiting_for_combat():
+					timeline.append("Queue waiting at the next combat step when offline catch-up ended")
+				if continued and SkillManager.running:
 					continue   # the next queued step inherits the rest of this window
-				summary["stopped_reason"] = str(res2["stop_reason"])
+				summary["stopped_reason"] = ActionQueueManager.last_error if queued and not ActionQueueManager.enabled and ActionQueueManager.last_error != "" else reason
 				return {"seconds": total, "stopped": true, "exhausted": false}
 		else:
 			summary["activity"] = "none"
-			summary["stopped_reason"] = "Nothing was running"
+			if SkillManager.stop_reason == SkillManager.StopReason.MISSING_MATERIALS and SkillManager.active_action_id != "":
+				summary["stopped_reason"] = SkillManager.stop_reason_text()
+				summary["timeline"].append("Stopped before catch-up: " + SkillManager.stop_reason_text())
+			else:
+				summary["stopped_reason"] = "Nothing was running"
+			if ActionQueueManager.status == ActionQueueManager.STATUS_PAUSED and ActionQueueManager.last_error != "":
+				summary["timeline"].append("Queue was paused: " + ActionQueueManager.last_error)
+			elif ActionQueueManager.waiting_for_combat():
+				summary["timeline"].append("Queue waiting at a combat step during offline catch-up")
 			return {"seconds": seconds, "stopped": true, "exhausted": true}
 	return {"seconds": total, "stopped": false, "exhausted": false}
 
@@ -264,6 +299,7 @@ func _finish() -> void:
 	var summary: Dictionary = _job["summary"]
 	var processed: float = minf(float(_job["processed"]), float(_job["target_seconds"]))
 	summary["processed_seconds"] = processed
+	summary["active_unprocessed_seconds"] = maxf(0.0, float(_job["target_seconds"]) - processed)
 	summary["capped_seconds"] = maxf(0.0, float(summary.get("capped_seconds", 0.0))
 		+ (float(_job["target_seconds"]) - processed))
 	if processed < float(_job["target_seconds"]) and str(summary.get("stopped_reason", "")) == "":
@@ -283,6 +319,13 @@ func _finish() -> void:
 	# Deltas read from real state — no estimated or invented numbers.
 	summary["xp_gained"] = _diff_xp(_job["xp_before"])
 	summary["levels_gained"] = _diff_levels(_job["levels_before"])
+	for skill_id in summary["levels_gained"]:
+		var old_level: int = int((_job["levels_before"] as Dictionary).get(skill_id, 1))
+		var new_level: int = PlayerData.get_level(str(skill_id))
+		for action in DataLoader.get_skill(str(skill_id)).get("actions", []):
+			var required: int = int(action.get("level_required", 1))
+			if required > old_level and required <= new_level:
+				summary["level_unlocks"].append("%s · %s (level %d)" % [DataLoader.get_skill(str(skill_id)).get("name", skill_id), action.get("name", action.get("id", "")), required])
 	var events: Dictionary = SimulationMode.take_events()
 	summary["items_consumed"] = _int_table(events.get(SimulationMode.BUCKET_ITEMS_CONSUMED, {}))
 	summary["items_gained"] = _int_table(events.get(SimulationMode.BUCKET_ITEMS_PRODUCED, {}))
@@ -301,6 +344,14 @@ func _finish() -> void:
 			newly.append(PlayerData.unlocked_pets[i])
 		summary["pets"] = newly
 	SimulationMode.end()
+	ProgressTracker.evaluate_now()
+	var featured: Array[String] = Quests.featured_rotating_ids()
+	for quest_id in Quests.visible_ids():
+		if (not Quests.is_rotating(quest_id) or featured.has(quest_id)) and Quests.is_complete(quest_id):
+			summary["ready_tasks"].append(str(Quests.get_quest(quest_id).get("name", quest_id)))
+	for achievement_id in Achievements.all_ids():
+		if Achievements.is_ready(achievement_id):
+			summary["ready_milestones"].append(str(Achievements.get_record(achievement_id).get("name", achievement_id)))
 	PlayerData.bump_total("offline_seconds_processed", float(summary["processed_seconds"]))
 	_advance_marker(float(_job["now"]))
 	# Persist immediately: this is the write that makes the catch-up exactly-once.

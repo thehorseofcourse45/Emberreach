@@ -9,7 +9,7 @@ extends Node
 ##
 ## Offline safety (documented policy):
 ##   * Combat continues offline only if the player enabled it in settings.
-##   * A defeat permanently ends the offline session (settings.offline_combat_stops_on_defeat).
+##   * A defeat always ends the offline session (stop_combat("defeat")).
 ##     Endless automatic deaths are therefore impossible.
 ##   * Offline stepping is bounded by a step budget; running out reports the time actually
 ##     processed rather than silently truncating rewards.
@@ -86,6 +86,9 @@ var _dmg_window_time: float = 0.0
 var session_damage_dealt: float = 0.0
 var session_damage_taken: float = 0.0
 var session_gp_earned: float = 0.0
+## Presentation tallies for the current or most recent run, separate from save-state combat.
+var _run: Dictionary = {}
+var run_revision: int = 0
 var _fight_clock: float = 0.0
 var _fight_damage_start: float = 0.0
 var _fight_dps_clock_start: float = 0.0
@@ -132,6 +135,9 @@ func _sig_combat_started(ctx: Dictionary) -> void:
 func _sig_combat_ended(reason: String, completed: Dictionary = {}) -> void:
 	var payload: Dictionary = (context if completed.is_empty() else completed).duplicate(true)
 	payload["reason"] = reason
+	if not _run.is_empty():
+		_run["reason"] = reason
+		run_revision += 1
 	# Gameplay transitions must run during silent catch-up too.
 	RaidManager._on_combat_ended(payload)
 	if not SimulationMode.is_silent():
@@ -213,6 +219,10 @@ func _sig_strategy_changed(strategy_name: String) -> void:
 ##       attack_style, melee_style, shard_item}
 func is_expedition(dungeon_id: String) -> bool:
 	var dungeon: Dictionary = DataLoader.get_dungeon(dungeon_id)
+	if dungeon.has("expedition"):
+		return bool(dungeon.expedition)
+	if bool(dungeon.get("regular_dungeon", false)):
+		return false
 	var levels: Array = dungeon.get("level_range", [])
 	return levels.size() > 0 and int(levels[0]) >= EXPEDITION_COMBAT_LEVEL
 
@@ -264,8 +274,8 @@ func start_combat(ctx: Dictionary) -> bool:
 				EventBus.notify("Expedition locked: %s" % reason, "warn")
 				return false
 		var authored: Dictionary = DataLoader.get_dungeon(dungeon_id)
-		if bool(authored.get("stronghold", false)) and (ctx.get("monsters", []) != authored.get("monsters", []) or bool(ctx.get("endless", false))):
-			EventBus.notify("Strongholds must run their complete authored stage sequence.", "warn")
+		if (bool(authored.get("stronghold", false)) or bool(authored.get("raid", false))) and (ctx.get("monsters", []) != authored.get("monsters", []) or bool(ctx.get("endless", false))):
+			EventBus.notify("This challenge must run its complete authored encounter sequence.", "warn")
 			return false
 		var gate: String = dungeon_lock_reason(dungeon_id)
 		if gate != "":
@@ -283,6 +293,7 @@ func start_combat(ctx: Dictionary) -> bool:
 		for item_id in dungeon.get("entry_items", {}):
 			BankManager.remove_item(str(item_id), int(dungeon.entry_items[item_id]))
 	context = ctx.duplicate(true)
+	_begin_run()
 	DungeonModifierManager.begin_attempt(context)
 	if bool(DataLoader.get_dungeon(str(context.get("id", ""))).get("endless_floors", false)):
 		context["floor"] = 1
@@ -327,6 +338,30 @@ func stop_combat(reason: String = "") -> void:
 		_sig_combat_ended("retreat" if reason == "" else reason, completed)
 		if not SimulationMode.is_silent():
 			EventBus.activity_changed.emit()
+
+func run_readout() -> Dictionary:
+	return _run.duplicate(true)
+
+
+func _begin_run() -> void:
+	_run = {"encounter": str(context.get("id", "")), "reason": "", "kills": 0, "xp": 0.0, "food": 0, "loot": {}}
+	run_revision += 1
+
+
+func _tally_run(key: String, amount: float) -> void:
+	if _run.is_empty() or _run.reason != "" or amount <= 0.0:
+		return
+	_run[key] += amount
+	run_revision += 1
+
+
+func _grant_run_item(item_id: String, quantity: int) -> void:
+	if not _run.is_empty() and _run.reason == "" and quantity > 0:
+		var loot: Dictionary = _run.loot
+		loot[item_id] = int(loot.get(item_id, 0)) + quantity
+		run_revision += 1
+	BankManager.add_item_guaranteed(item_id, quantity)
+
 
 func _monster_sequence() -> Array:
 	return context.get("monsters", [])
@@ -880,7 +915,9 @@ func _fire_due_phases() -> void:
 		_sig_monster_phase(current_monster_id, str(phase.get("name", "")))
 
 func _add_combat_skill_xp(skill_id: String, amount: float) -> void:
+	var before: float = PlayerData.get_xp(skill_id)
 	PlayerData.add_xp(skill_id, amount * ModifierManager.get_skill_xp_multiplier(skill_id))
+	_tally_run("xp", PlayerData.get_xp(skill_id) - before)
 
 func _grant_combat_xp(damage: int) -> void:
 	_add_combat_skill_xp("hitpoints", CombatFormulas.hitpoints_xp(float(damage)))
@@ -937,6 +974,7 @@ func _on_monster_death() -> void:
 	SlayerManager._on_kill(current_monster_id)
 	_sig_monster_killed(current_monster_id)
 	kills_this_session += 1
+	_tally_run("kills", 1)
 	PlayerData.discover_monster(current_monster_id)
 	ProgressTracker.record_kill(current_monster_id)
 	SimulationMode.bump(SimulationMode.BUCKET_KILLS, current_monster_id, 1.0)
@@ -981,7 +1019,7 @@ func _grant_loot(m: Dictionary, loot_only: bool = false) -> void:
 		if item_id == "":
 			continue
 		# Loot uses the guaranteed path: a rare drop must never be lost to a full bank.
-		BankManager.add_item_guaranteed(item_id, qty)
+		_grant_run_item(item_id, qty)
 		SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, item_id, float(qty))
 		if float(drop.get("chance", 1.0)) <= SimulationMode.RARE_DROP_CHANCE_THRESHOLD:
 			SimulationMode.bump(SimulationMode.BUCKET_RARE_DROPS, item_id, float(qty))
@@ -994,10 +1032,10 @@ func _grant_loot(m: Dictionary, loot_only: bool = false) -> void:
 		_grant_loot(m, true)
 	var bone: String = str(m.get("bone_type", ""))
 	if bone != "":
-		BankManager.add_item_guaranteed(bone, 1)
+		_grant_run_item(bone, 1)
 	var shard: String = str(context.get("shard_item", ""))
 	if shard != "":
-		BankManager.add_item_guaranteed(shard, 1)
+		_grant_run_item(shard, 1)
 	PetManager.roll_for_combat()
 
 ## Damage taken outside combat (a failed skill action). Never kills below 1 HP.
@@ -1080,8 +1118,17 @@ func _complete_combat() -> void:
 		var dungeon_id: String = str(context.get("id", ""))
 		var d: Dictionary = DataLoader.get_dungeon(dungeon_id)
 		var first_clear: bool = not (PlayerData.completion_log.get("dungeons", {}) as Dictionary).has(dungeon_id)
+		var prior_mastery: int = PlayerData.dungeon_mastery_clears(dungeon_id) if PlayerData.dungeon_mastery_eligible(dungeon_id) else -1
 		PlayerData.discover_dungeon(dungeon_id)
 		ProgressTracker.record_dungeon_clear(dungeon_id)
+		# Legacy saves may know a first clear without a counter; count this new clear in addition.
+		if prior_mastery >= 0:
+			PlayerData.stats["dungeons_cleared"][dungeon_id] = maxi(int(PlayerData.get_stat("dungeons_cleared", dungeon_id)), prior_mastery + 1)
+			var mastery_reward: Dictionary = PlayerData.dungeon_mastery_repeat_reward(dungeon_id)
+			for item_id in mastery_reward:
+				var quantity: int = int(mastery_reward[item_id])
+				_grant_run_item(str(item_id), quantity)
+				SimulationMode.bump(SimulationMode.BUCKET_ITEMS_PRODUCED, str(item_id), float(quantity))
 		SimulationMode.bump(SimulationMode.BUCKET_DUNGEONS, dungeon_id, 1.0)
 		_grant_reward(d.get("completion_reward", {}), DungeonModifierManager.reward_multiplier())
 		if first_clear:
@@ -1105,7 +1152,7 @@ func _grant_reward(reward: Dictionary, reward_multiplier: float = 1.0) -> void:
 	if reward.has("gp"):
 		PlayerData.add_gp(float(reward["gp"]) * reward_multiplier)
 	for item_id in (reward.get("items", {}) as Dictionary).keys():
-		BankManager.add_item_guaranteed(str(item_id), int(reward["items"][item_id]))
+		_grant_run_item(str(item_id), int(reward["items"][item_id]))
 
 func _is_player_stunned() -> bool:
 	for e in player_effects:
@@ -1219,6 +1266,8 @@ func consume_food(food_id: String, efficiency: float = 100.0, source: String = "
 	if heal <= 0.0 or not BankManager.remove_item(food_id, 1):
 		return ""
 	player_hp = minf(player_hp + heal, _compute_max_hp())
+	if state != State.IDLE:
+		_tally_run("food", 1)
 	if not SimulationMode.is_silent():
 		EventBus.notification.emit("%s: %s (+%d HP)" % [source,
 			str(DataLoader.get_item(food_id).get("name", food_id)), int(heal)], "info")
@@ -1367,6 +1416,11 @@ func deserialize(d: Dictionary) -> void:
 		player_hp = maxf(1.0, _compute_max_hp())
 	if player_hp <= 0.0:
 		player_hp = _compute_max_hp()
+	if state == State.IDLE:
+		_run.clear()
+		run_revision += 1
+	else:
+		_begin_run()
 	EventBus.activity_changed.emit()
 
 # =========================================================================

@@ -60,6 +60,7 @@ func _ready() -> void:
 	EventBus.skill_level_up.connect(_on_level_up)
 	EventBus.mastery_level_up.connect(_on_mastery)
 	EventBus.goal_changed.connect(refresh)
+	EventBus.item_discovered.connect(func(_id): Widgets.rebuild_once_per_frame(refresh))
 	EventBus.state_refreshed.connect(refresh)
 	EventBus.quest_reward_claimed.connect(func(_q): refresh())
 	EventBus.activity_changed.connect(func(): Widgets.rebuild_once_per_frame(refresh))
@@ -374,6 +375,9 @@ func _rebuild_tutorial() -> void:
 		go.pressed.connect(func(): navigated.emit(r))
 		col.add_child(go)
 	_tutorial_box.add_child(card)
+	var help := UIStyle.mini_button("Open the first-steps guide")
+	help.pressed.connect(func(): navigated.emit({"screen": Screens.ENCYCLOPEDIA, "section": "tutorial"}))
+	_tutorial_box.add_child(help)
 
 func _shortcut(text: String, route: Dictionary) -> Button:
 	var button := UIStyle.button(text)
@@ -579,7 +583,7 @@ func _rebuild_goals() -> void:
 		if not bool(resolved.get("ok", true)):
 			title.add_theme_color_override("font_color", UITokens.AMBER)
 		head.add_child(title)
-		head.add_child(Widgets.badge(str(g.get("kind", "")), UITokens.BLUE))
+		head.add_child(Widgets.badge("Collection" if str(g.get("kind", "")) == "collection_item" else str(g.get("kind", "")), UITokens.BLUE))
 		var open := UIStyle.mini_button("Explain")
 		open.pressed.connect(func(): context_changed.emit({"kind": "goal", "goal": g}))
 		head.add_child(open)
@@ -702,7 +706,8 @@ func _rebuild_unlocks() -> void:
 		found = true
 		_add_unlock("Structure affordable",
 			str(b.get("name", building_id)),
-			"Ready to build in Emberreach", {"screen": Screens.SETTLEMENT}, UITokens.TEAL)
+			"Ready to build in %s" % TownshipManager.LOCATIONS[TownshipManager.location_of(b)].name,
+			{"screen": Screens.SETTLEMENT, "building_id": building_id}, UITokens.TEAL)
 	# Overflow items waiting.
 	if BankManager.has_overflow():
 		found = true

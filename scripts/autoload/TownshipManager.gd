@@ -10,6 +10,15 @@ extends Node
 ## closed game and an open game advance the settlement identically.
 
 const SECONDS_PER_TICK: float = 3600.0
+const DEFAULT_LOCATION := "emberreach"
+const LOCATIONS := {
+	"emberreach": {"name": "City of Emberreach", "art": "town.webp", "icon": "township_building_homes", "role": "Homes, trade and civic life"},
+	"valley": {"name": "Willowmere Valley", "art": "valley.webp", "icon": "township_building_farm", "role": "Timber, farms and arcane study"},
+	"mountain": {"name": "Greyharrow Peaks", "art": "mountain.webp", "icon": "township_building_mine", "role": "Quarrying, smelting and workshops"},
+	"pass": {"name": "Ashwatch Pass", "art": "pass.webp", "icon": "military_fortress", "role": "Training and expedition supplies"},
+	"harbor": {"name": "Cinderwake Harbor", "art": "harbor.webp", "icon": "township_building_tide_docks", "role": "Coastal trade and expedition freight"},
+	"marsh": {"name": "Lanternfen", "art": "marsh.webp", "icon": "township_building_lantern_causeway", "role": "Marsh herbs and lantern-lit pilgrim routes"},
+}
 ## Population is 4–24 in this town; each resident supplies hourly skill XP.
 const XP_PER_RESIDENT: float = 2500.0
 ## Every level of a non-housing structure also adds hourly XP, so the whole town levels the
@@ -63,7 +72,11 @@ var buildings: Dictionary = {}       # building_id -> level
 var population: int = 0
 var worship: String = ""
 var study: String = ""
-var specialization: String = ""
+var _specializations: Dictionary = {}
+## Legacy single-selection field for existing callers and older readers.
+var specialization: String:
+	get:
+		return "" if _specializations.is_empty() else str(_specializations.values()[0])
 var _tick_accumulator: float = 0.0
 
 func _ready() -> void:
@@ -88,6 +101,15 @@ func _reset_resources() -> void:
 
 func buildings_data() -> Dictionary:
 	return DataLoader.township_buildings
+
+func location_of(definition: Dictionary) -> String:
+	var id: String = str(definition.get("location", DEFAULT_LOCATION))
+	return id if LOCATIONS.has(id) else DEFAULT_LOCATION
+
+
+func specialization_at(location: String) -> String:
+	return str(_specializations.get(location, ""))
+
 
 func resource_name(res_id: String) -> String:
 	return str(RESOURCE_NAMES.get(res_id, res_id.capitalize()))
@@ -115,15 +137,17 @@ func production_per_hour(res_id: String) -> float:
 	return total * _specialization_production_multiplier(res_id)
 
 func _specialization_production_multiplier(res_id: String) -> float:
-	var spec: Dictionary = DataLoader.settlement_specializations.get(specialization, {})
-	var bonus: float = float((spec.get("production_bonus", {}) as Dictionary).get(res_id, 0.0))
+	var bonus := 0.0
+	for id in _specializations.values():
+		var spec: Dictionary = DataLoader.settlement_specializations[id]
+		bonus += float((spec.get("production_bonus", {}) as Dictionary).get(res_id, 0.0))
 	return 1.0 + bonus / 100.0
 
 func specialization_blocker(spec_id: String) -> String:
 	var spec: Dictionary = DataLoader.settlement_specializations.get(spec_id, {})
 	if spec.is_empty():
 		return "Unknown specialization"
-	if specialization == spec_id:
+	if specialization_at(location_of(spec)) == spec_id:
 		return "Already selected"
 	if PlayerData.get_level("township") < int(spec.get("requires_level", 20)):
 		return "Requires Township %d" % int(spec.get("requires_level", 20))
@@ -134,7 +158,7 @@ func specialization_blocker(spec_id: String) -> String:
 			return "Needs %s" % resource_name(str(res_id))
 	return ""
 
-## Switching paths is permitted, but always consumes the selected path's full costs.
+## Each location can adopt a specialization by paying its full cost.
 func choose_specialization(spec_id: String) -> bool:
 	var blocker: String = specialization_blocker(spec_id)
 	if blocker != "":
@@ -144,9 +168,9 @@ func choose_specialization(spec_id: String) -> bool:
 	for res_id in (spec.get("store_cost", {}) as Dictionary):
 		resources[res_id] = float(resources.get(res_id, 0.0)) - float(spec.store_cost[res_id])
 	PlayerData.spend_gp(float(spec.get("gp_cost", 0)))
-	specialization = spec_id
+	_specializations[location_of(spec)] = spec_id
 	_reregister_modifiers()
-	EventBus.notify("Settlement specializes as %s." % spec.get("name", spec_id), "success")
+	EventBus.notify("%s adopted %s." % [LOCATIONS[location_of(spec)].name, spec.get("name", spec_id)], "success")
 	EventBus.state_refreshed.emit()
 	return true
 
@@ -291,10 +315,14 @@ func _reregister_modifiers() -> void:
 
 func _apply_specialization() -> void:
 	ModifierManager.unregister("township:specialization")
-	var spec: Dictionary = DataLoader.settlement_specializations.get(specialization, {})
-	if not spec.is_empty() and not (spec.get("modifiers", {}) as Dictionary).is_empty():
-		ModifierManager.register("township:specialization", spec.modifiers, CATEGORY,
-			"Specialization: " + str(spec.get("name", specialization)))
+	for location in LOCATIONS:
+		var source := "township:specialization:" + str(location)
+		ModifierManager.unregister(source)
+		var id := specialization_at(location)
+		var spec: Dictionary = DataLoader.settlement_specializations.get(id, {})
+		if not (spec.get("modifiers", {}) as Dictionary).is_empty():
+			ModifierManager.register(source, spec.modifiers, CATEGORY,
+				"%s: %s" % [LOCATIONS[location].name, spec.get("name", id)])
 
 # =========================================================================
 #  Offline
@@ -444,6 +472,7 @@ func serialize() -> Dictionary:
 		"worship": worship,
 		"study": study,
 		"specialization": specialization,
+		"specializations": _specializations.duplicate(),
 		"tick_accumulator": _tick_accumulator,
 	}
 
@@ -469,9 +498,24 @@ func deserialize(d: Dictionary) -> void:
 	study = str(d.get("study", ""))
 	if not study_options().has(study):
 		study = ""
-	var saved_spec: String = str(d.get("specialization", ""))
-	specialization = saved_spec if DataLoader.settlement_specializations.has(saved_spec) else ""
+	_restore_specializations(d)
 	_reregister_modifiers()   # also applies the patron
+
+
+func _restore_specializations(data: Dictionary) -> void:
+	_specializations.clear()
+	var saved: Variant = data.get("specializations")
+	if saved is Dictionary:
+		for location in saved:
+			var id := str(saved[location])
+			var spec: Dictionary = DataLoader.settlement_specializations.get(id, {})
+			if not spec.is_empty() and location_of(spec) == location:
+				_specializations[location] = id
+		return
+	var legacy_id := str(data.get("specialization", ""))
+	var legacy: Dictionary = DataLoader.settlement_specializations.get(legacy_id, {})
+	if not legacy.is_empty():
+		_specializations[location_of(legacy)] = legacy_id
 
 func build_preview(building_id: String) -> Dictionary:
 	var cost: Dictionary = scaled_cost(building_id)

@@ -24,7 +24,7 @@ func run() -> void:
 	GameManager.start_new_game("standard")
 	check(DataLoader.crafting_quality.size() == 4, "Four crafted-quality tiers loaded")
 	check(DataLoader.crafting_affixes.size() == 4, "Four crafting affixes loaded")
-	check(DataLoader.settlement_specializations.size() == 4, "Four settlement paths loaded")
+	check(DataLoader.settlement_specializations.size() == TownshipManager.LOCATIONS.size(), "Every settlement location has a specialization")
 	var base: Dictionary = DataLoader.get_item("bronze_platebody")
 	var fine: Dictionary = DataLoader.get_item("bronze_platebody__quality_fine")
 	var legendary: Dictionary = DataLoader.get_item("bronze_platebody__quality_legendary")

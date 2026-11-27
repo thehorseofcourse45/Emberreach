@@ -112,6 +112,7 @@ static func default_stats() -> Dictionary:
     return {
         "items_gained": {},          # item_id -> lifetime quantity obtained
         "items_crafted": {},         # item_id -> lifetime quantity produced by artisan actions
+        "caravan_deliveries": {},    # item_id -> quantity carried on completed trips
         "items_sold": {},            # item_id -> lifetime quantity sold
         "monsters_killed": {},       # monster_id -> lifetime kills
         "raid_waves_cleared": {},
@@ -121,6 +122,8 @@ static func default_stats() -> Dictionary:
         "endless_floors": {},
         "endless_best": {},
         "dungeons_cleared": {},      # dungeon_id -> lifetime clears
+        "dungeon_mastery_claimed": {}, # dungeon_id -> milestone bitmask
+        "raid_marks_spent": {},      # raid_id -> marks exchanged for rewards
         "actions": {},               # "skill:action" -> lifetime completions
         "region_visits": {},         # area/dungeon id -> visited flag
         "gp_earned": 0.0,
@@ -153,6 +156,94 @@ func get_stat(bucket: String, key: String = "", default: float = 0.0) -> float:
     if typeof(table) != TYPE_DICTIONARY:
         return default
     return float((table as Dictionary).get(key, default))
+
+## Dungeon mastery applies to finite regular dungeons. Existing clear counters and the legacy
+## first-clear log are authoritative; rewards are claimed independently and saved as a bitmask.
+const DUNGEON_MASTERY_THRESHOLDS: Array[int] = [1, 5, 10, 25]
+const DUNGEON_MASTERY_AMOUNTS: Array[int] = [1, 3, 6, 12]
+
+func dungeon_mastery_eligible(id: String) -> bool:
+    var d: Dictionary = DataLoader.get_dungeon(id)
+    return not d.is_empty() and not bool(d.get("raid", false)) and not bool(d.get("stronghold", false)) and not bool(d.get("endless_floors", false)) and not CombatManager.is_expedition(id)
+
+func dungeon_mastery_clears(id: String) -> int:
+    if not dungeon_mastery_eligible(id): return 0
+    return maxi(maxi(0, int(get_stat("dungeons_cleared", id))), 1 if completion_log.get("dungeons", {}).has(id) else 0)
+
+func dungeon_mastery_repeat_reward(id: String) -> Dictionary:
+    if not dungeon_mastery_eligible(id): return {}
+    var levels: Array = DataLoader.get_dungeon(id).get("level_range", [])
+    var peak: int = int(levels.back()) if not levels.is_empty() else 0
+    var quantity: int = 3 if peak >= 500000 else (2 if peak >= 100000 else (1 if peak >= 5000 else 0))
+    return {"enchant_catalyst": quantity} if quantity > 0 else {}
+
+func dungeon_mastery_reward(id: String, index: int) -> Dictionary:
+    if not dungeon_mastery_eligible(id) or index < 0 or index >= DUNGEON_MASTERY_THRESHOLDS.size(): return {}
+    var repeat: Dictionary = dungeon_mastery_repeat_reward(id)
+    var levels: Array = DataLoader.get_dungeon(id).get("level_range", [])
+    var peak: int = int(levels.back()) if not levels.is_empty() else 0
+    var item: String = "enchant_catalyst" if not repeat.is_empty() else ("gold_bar" if peak >= 100 else "silver_bar")
+    var multiplier: int = int(repeat.get("enchant_catalyst", 1))
+    return {"item_id": item, "quantity": DUNGEON_MASTERY_AMOUNTS[index] * multiplier}
+
+func dungeon_mastery_claimed(id: String, index: int) -> bool:
+    if index < 0 or index >= DUNGEON_MASTERY_THRESHOLDS.size(): return false
+    return (int(get_stat("dungeon_mastery_claimed", id)) & (1 << index)) != 0
+
+func claim_dungeon_mastery(id: String, index: int) -> bool:
+    var reward: Dictionary = dungeon_mastery_reward(id, index)
+    if reward.is_empty() or dungeon_mastery_claimed(id, index) or dungeon_mastery_clears(id) < DUNGEON_MASTERY_THRESHOLDS[index]: return false
+    var mask: int = int(get_stat("dungeon_mastery_claimed", id))
+    stats["dungeon_mastery_claimed"][id] = mask | (1 << index)
+    if BankManager.add_item_guaranteed(str(reward.item_id), int(reward.quantity)) != int(reward.quantity):
+        stats["dungeon_mastery_claimed"][id] = mask
+        return false
+    ProgressTracker.mark_dirty()
+    if SaveManager.save_on_major_event: SaveManager.save_game(true)
+    return true
+
+## Mastery is derived from recorded clears so existing saves receive their earned marks.
+func raid_clear_count(raid_id: String) -> int:
+    if not bool(DataLoader.get_dungeon(raid_id).get("raid", false)):
+        return 0
+    var recorded: int = maxi(0, int(get_stat("dungeons_cleared", raid_id)))
+    return maxi(recorded, 1 if completion_log.get("dungeons", {}).has(raid_id) else 0)
+
+func raid_marks(raid_id: String) -> int:
+    var clears := raid_clear_count(raid_id)
+    var earned := clears
+    for milestone in [[1, 1], [5, 2], [10, 3], [25, 5]]:
+        if clears >= int(milestone[0]): earned += int(milestone[1])
+    return maxi(0, earned - maxi(0, int(get_stat("raid_marks_spent", raid_id))))
+
+func raid_exchange_items(raid_id: String) -> Array:
+    var raid: Dictionary = DataLoader.get_dungeon(raid_id)
+    var monsters: Array = raid.get("monsters", [])
+    if not bool(raid.get("raid", false)) or monsters.is_empty(): return []
+    var result: Array = []
+    var boss: Dictionary = DataLoader.get_monster(str(monsters.back()))
+    for drop in boss.get("loot_table", []):
+        var id: String = str(drop.get("item_id", ""))
+        var item: Dictionary = DataLoader.get_item(id)
+        var chance: float = float(drop.get("chance", 1.0))
+        if not bool(item.get("is_boss_drop", false)) or chance <= 0.0 or chance >= 1.0: continue
+        var cost: int = 8 if chance >= 0.2 else (12 if chance >= 0.12 else 16)
+        result.append({"item_id": id, "cost": cost})
+    return result
+
+func exchange_raid_reward(raid_id: String, item_id: String) -> bool:
+    for choice in raid_exchange_items(raid_id):
+        if str(choice.item_id) != item_id: continue
+        var cost: int = int(choice.cost)
+        if raid_marks(raid_id) < cost or BankManager.get_total_owned(item_id) > 0 or EquipmentManager.is_equipped(item_id): return false
+        bump_stat("raid_marks_spent", raid_id, cost)
+        if BankManager.add_item_guaranteed(item_id, 1) != 1:
+            bump_stat("raid_marks_spent", raid_id, -cost)
+            return false
+        ProgressTracker.mark_dirty()
+        if SaveManager.save_on_major_event: SaveManager.save_game(true)
+        return true
+    return false
 
 ## Wipe every piece of PROGRESS to its starting value. Preferences (settings) are deliberately
 ## preserved, because they describe how the player wants the game to behave, not what they

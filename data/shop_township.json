@@ -2,6 +2,7 @@
   "_comment": "Emberreach settlement structures. Each entry: cost (level 1), cost_growth (multiplier per further level), production (per level per hour), max_level, unlocks (what system it opens), description and effect_note. All costs are paid from the settlement store, which fills from the structures themselves — the settlement is a self-contained economy that feeds the main game's bottlenecks.",
   "township_building_lumber": {
     "id": "township_building_lumber",
+    "location": "valley",
     "name": "Lumber Yard",
     "type": "township_building",
     "description": "Sawpits and drying racks. The yard is what lets the settlement pay its own timber bills without taking you off the frontier.",
@@ -18,6 +19,7 @@
   },
   "township_building_farm": {
     "id": "township_building_farm",
+    "location": "valley",
     "name": "Terrace Farm",
     "type": "township_building",
     "description": "Ash-heavy soil terraced into strips. Not good land, but it is land.",
@@ -34,6 +36,7 @@
   },
   "township_building_homes": {
     "id": "township_building_homes",
+    "location": "emberreach",
     "name": "Homes",
     "type": "township_building",
     "description": "Roofs, walls and a hearth. The settlement exists because people agreed to sleep here.",
@@ -50,6 +53,7 @@
   },
   "township_building_mine": {
     "id": "township_building_mine",
+    "location": "mountain",
     "name": "Quarry Adit",
     "type": "township_building",
     "description": "A short adit into the ridge, shored with whatever the lumber yard could spare.",
@@ -68,6 +72,7 @@
   },
   "township_building_smelter": {
     "id": "township_building_smelter",
+    "location": "mountain",
     "name": "Smelter",
     "type": "township_building",
     "description": "A stone kiln that runs on settlement labour rather than your own attention.",
@@ -84,6 +89,7 @@
   },
   "township_building_workshop": {
     "id": "township_building_workshop",
+    "location": "mountain",
     "name": "Workshop",
     "type": "township_building",
     "description": "Benches, tools and a first honest attempt at quality control.",
@@ -104,6 +110,7 @@
   },
   "township_building_apothecary": {
     "id": "township_building_apothecary",
+    "location": "valley",
     "name": "Apothecary",
     "type": "township_building",
     "description": "Drying racks, a still and a locked cabinet. The marsh supplies the rest.",
@@ -125,6 +132,7 @@
   },
   "township_building_training_grounds": {
     "id": "township_building_training_grounds",
+    "location": "pass",
     "name": "Training Grounds",
     "type": "township_building",
     "description": "A staked yard, practice arms and a board of everything that has gone wrong so far.",
@@ -146,6 +154,7 @@
   },
   "township_building_storehouse": {
     "id": "township_building_storehouse",
+    "location": "emberreach",
     "name": "Storehouse",
     "type": "township_building",
     "description": "Dry, shelved and guarded. The frontier's real bottleneck is almost always space.",
@@ -166,6 +175,7 @@
   },
   "township_building_lodge": {
     "id": "township_building_lodge",
+    "location": "pass",
     "name": "Expedition Lodge",
     "type": "township_building",
     "description": "Maps on the wall, packs on the floor. Everything a party needs before it leaves.",
@@ -187,6 +197,7 @@
   },
   "township_building_temple": {
     "id": "township_building_temple",
+    "location": "emberreach",
     "name": "Shrine",
     "type": "township_building",
     "description": "The old rite, kept honestly. Every name accounted for, every debt settled.",
@@ -207,6 +218,7 @@
   },
   "township_building_school": {
     "id": "township_building_school",
+    "location": "emberreach",
     "name": "Schoolhouse",
     "type": "township_building",
     "description": "Slate boards and a bell. Residents who know a trade teach it to anyone who will sit still.",
@@ -225,6 +237,7 @@
   },
   "township_building_observatory": {
     "id": "township_building_observatory",
+    "location": "valley",
     "name": "Starreading Terrace",
     "type": "township_building",
     "description": "A flat plinth above the ash line, levelled for instruments the settlement cannot yet build.",
@@ -241,8 +254,91 @@
     "unlocks": "Starreading dust income",
     "effect_note": "The trader sifts astral dust into Starreading dust, removing that grind bottleneck"
   },
+  "township_building_tide_docks": {
+    "id": "township_building_tide_docks",
+    "location": "harbor",
+    "name": "Tide Docks",
+    "type": "township_building",
+    "description": "Cargo boats tie up alongside the salt-stained quay to unload supplies for inland traders.",
+    "requires": {
+      "township": 18
+    },
+    "cost": {
+      "wood": 120,
+      "stone": 65
+    },
+    "cost_growth": 1.8,
+    "production": {
+      "goods": 3
+    },
+    "max_level": 3,
+    "unlocks": ""
+  },
+  "township_building_cargo_yard": {
+    "id": "township_building_cargo_yard",
+    "location": "harbor",
+    "name": "Cargo Yard",
+    "type": "township_building",
+    "description": "Crates are sorted under the crane so expeditions can load up before the tide turns.",
+    "requires": {
+      "township": 26
+    },
+    "cost": {
+      "wood": 90,
+      "metal": 60,
+      "goods": 30
+    },
+    "cost_growth": 1.8,
+    "production": {
+      "supplies": 3
+    },
+    "max_level": 3,
+    "unlocks": ""
+  },
+  "township_building_reed_gardens": {
+    "id": "township_building_reed_gardens",
+    "location": "marsh",
+    "name": "Reed Gardens",
+    "type": "township_building",
+    "description": "Herbalists raise beds above the flood line and dry their harvest on cedar racks.",
+    "requires": {
+      "township": 16
+    },
+    "cost": {
+      "wood": 75,
+      "food": 45
+    },
+    "cost_growth": 1.8,
+    "production": {
+      "reagents": 3
+    },
+    "max_level": 3,
+    "unlocks": ""
+  },
+  "township_building_lantern_causeway": {
+    "id": "township_building_lantern_causeway",
+    "location": "marsh",
+    "name": "Lantern Causeway",
+    "type": "township_building",
+    "description": "Pilgrims tend lanterns along the boardwalk and leave offerings at the shrine beyond the reeds.",
+    "requires": {
+      "township": 24
+    },
+    "cost": {
+      "wood": 85,
+      "stone": 90,
+      "reagents": 25
+    },
+    "cost_growth": 1.8,
+    "production": {
+      "faith": 2
+    },
+    "max_level": 3,
+    "unlocks": ""
+  },
   "wonder_astral_observatory": {
     "id": "wonder_astral_observatory",
+    "location": "valley",
     "name": "Astral Observatory",
     "type": "township_building",
     "is_wonder": true,
@@ -281,6 +377,7 @@
   },
   "wonder_skyport": {
     "id": "wonder_skyport",
+    "location": "pass",
     "name": "Frontier Skyport",
     "type": "township_building",
     "is_wonder": true,
@@ -319,6 +416,7 @@
   },
   "wonder_masterwork_forge": {
     "id": "wonder_masterwork_forge",
+    "location": "mountain",
     "name": "Masterwork Forge",
     "type": "township_building",
     "is_wonder": true,
@@ -357,6 +455,7 @@
   },
   "wonder_archive_echoes": {
     "id": "wonder_archive_echoes",
+    "location": "emberreach",
     "name": "Archive of Echoes",
     "type": "township_building",
     "is_wonder": true,

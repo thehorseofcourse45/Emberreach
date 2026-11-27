@@ -40,7 +40,7 @@ func run() -> void:
 	for id in DataLoader.dungeons:
 		if bool(DataLoader.dungeons[id].get("stronghold",false)): ids.append(id)
 	ids.sort_custom(func(a,b): return int(DataLoader.dungeons[a].level_range[0]) < int(DataLoader.dungeons[b].level_range[0]))
-	ok(ids.size() in [1,5], "five strongholds, or first vertical slice")
+	ok(ids.size() == 23, "twenty-three strongholds")
 	for id in ids:
 		var d: Dictionary = DataLoader.get_dungeon(str(id))
 		ok(d.monsters.size()==3 and d.stages.size()==3, "three unique boss stages")

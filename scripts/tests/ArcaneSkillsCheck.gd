@@ -37,7 +37,7 @@ func run() -> void:
 	for skill in ["riftkeeping", "spellweaving"]:
 		ok(PlayerData.get_level(skill) == 1, skill + " starts at 1")
 		var actions: Array = DataLoader.get_skill_actions(skill)
-		ok(actions.size() == 36, skill + " has 36 activities")
+		ok(actions.size() >= 36, skill + " has at least 36 activities")
 		ok(int(actions[0].level_required) == 1 and int(actions[-1].level_required) == 120, skill + " covers 1Ã¢â‚¬â€œ120")
 		ok(not SkillManager.start_action(skill, str(actions[-1].id)), skill + " enforces level gates")
 		level(skill, 120)

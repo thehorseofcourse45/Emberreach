@@ -679,6 +679,21 @@ func _spells() -> void:
 		PlayerData.settings["spellweaving_pattern"] = ids[index]
 		SaveManager.save_game()
 		EventBus.state_refreshed.emit())
+	var learned_count := 0
+	var unlearned: Array = []
+	for action in DataLoader.get_skill_actions("spellweaving"):
+		if ArcaneSkills.learned(action):
+			learned_count += 1
+		else:
+			unlearned.append(action)
+	box.add_child(Widgets.key_value("Patterns learned", "%d / %d" % [learned_count, learned_count + unlearned.size()]))
+	if not unlearned.is_empty():
+		box.add_child(UIStyle.label("Next patterns: select their weaving activities above and complete them once to learn them.", true, UITokens.FONT_SMALL))
+		for i in range(mini(3, unlearned.size())):
+			var next: Dictionary = unlearned[i]
+			var level := int(next.get("level_required", 1))
+			var state := "Ready to weave" if PlayerData.get_level("spellweaving") >= level else "Spellweaving %d required" % level
+			box.add_child(Widgets.key_value(str(next.name).trim_prefix("Weave "), "%s · Sorcery %d to cast" % [state, level]))
 	var tuning := _choice(box, ArcaneSkills.TUNINGS, ["Balanced casting", "Focused · stronger, accurate, slower", "Rapid · faster, weaker, less accurate", "Frugal · fewer extra runes, weaker, slower"])
 	tuning.select(maxi(0, ArcaneSkills.TUNINGS.find(str(PlayerData.settings.get("spellweaving_tuning", "balanced")))))
 	tuning.item_selected.connect(func(index: int):

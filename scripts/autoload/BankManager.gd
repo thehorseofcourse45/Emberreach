@@ -128,7 +128,7 @@ func add_item(item_id: String, quantity: int) -> int:
 		return stored
 	if not items.has(item_id):
 		items[item_id] = 0
-		PlayerData.discover_item(item_id)
+	PlayerData.discover_item(item_id)
 	items[item_id] = maxi(0, int(items[item_id]) + quantity)
 	EventBus.item_obtained.emit(item_id, quantity)
 	ProgressTracker.record_item_gained(item_id, quantity)

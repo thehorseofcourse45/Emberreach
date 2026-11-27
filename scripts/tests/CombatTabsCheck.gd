@@ -42,7 +42,7 @@ func _ready() -> void:
 	add_child(expedition)
 	for place in expedition._places: ok(CombatManager.is_expedition(str(place.id)),"Expeditions preserved")
 	expedition._show_strongholds(true)
-	ok(expedition._places.size()==5,"Strongholds preserved")
+	ok(expedition._places.size()==13,"Strongholds preserved")
 	expedition.free()
 	print("Combat tabs: ",checks," checks; ",failures," failures")
 	get_tree().quit(0 if failures==0 else 1)

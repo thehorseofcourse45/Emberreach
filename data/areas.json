@@ -7,14 +7,18 @@
     "type": "area",
     "level_range": [
       1,
-      47
+      4
     ],
     "monsters": [
       "chicken",
       "cow",
       "golbin"
     ],
-    "flavour": "Reclaimed farmland on Emberreach's doorstep. Windfalls and long grass hide the settlement's first real threats."
+    "flavour": "Reclaimed farmland on Emberreach's doorstep. Windfalls and long grass hide the settlement's first real threats.",
+    "player_reference_level_range": [
+      1,
+      47
+    ]
   },
   "golbin_village": {
     "id": "golbin_village",
@@ -22,14 +26,18 @@
     "name": "Cinderkin Warrens",
     "type": "area",
     "level_range": [
-      2,
-      7
+      4,
+      6
     ],
     "monsters": [
       "golbin",
       "cinderkin_scout"
     ],
-    "flavour": "Tunnels of packed ash and scrap iron, dug by the Cinderkin who took this valley while it burned."
+    "flavour": "Tunnels of packed ash and scrap iron, dug by the Cinderkin who took this valley while it burned.",
+    "player_reference_level_range": [
+      2,
+      7
+    ]
   },
   "graveyard": {
     "id": "graveyard",
@@ -37,15 +45,19 @@
     "name": "Ashen Barrows",
     "type": "area",
     "level_range": [
-      7,
-      46
+      5,
+      35
     ],
     "monsters": [
       "zombie_hand",
       "skeleton",
       "barrow_wraith"
     ],
-    "flavour": "Stone cairns sink into grey soil. The names cut into them have been worn smooth by the ashfall."
+    "flavour": "Stone cairns sink into grey soil. The names cut into them have been worn smooth by the ashfall.",
+    "player_reference_level_range": [
+      7,
+      46
+    ]
   },
   "sandy_shores": {
     "id": "sandy_shores",
@@ -54,14 +66,18 @@
     "type": "area",
     "level_range": [
       2,
-      34
+      28
     ],
     "monsters": [
       "cow",
       "golbin",
       "drowned_wayfarer"
     ],
-    "flavour": "The tide comes in over a drowned road. Whatever walked it still does."
+    "flavour": "The tide comes in over a drowned road. Whatever walked it still does.",
+    "player_reference_level_range": [
+      2,
+      34
+    ]
   },
   "wet_forest": {
     "id": "wet_forest",
@@ -69,14 +85,18 @@
     "name": "Reedwrack Marsh",
     "type": "area",
     "level_range": [
-      20,
-      35
+      15,
+      23
     ],
     "monsters": [
       "spider",
       "bandit"
     ],
-    "flavour": "Flooded woodland, thigh-deep and loud at night. Lost shrines keep their foundations here."
+    "flavour": "Flooded woodland, thigh-deep and loud at night. Lost shrines keep their foundations here.",
+    "player_reference_level_range": [
+      20,
+      35
+    ]
   },
   "bandit_hideout": {
     "id": "bandit_hideout",
@@ -85,13 +105,17 @@
     "type": "area",
     "level_range": [
       23,
-      44
+      37
     ],
     "monsters": [
       "bandit",
       "rook_marksman"
     ],
-    "flavour": "A terraced camp under a broken viaduct, held by the Sable Rooks who tax the only road inland."
+    "flavour": "A terraced camp under a broken viaduct, held by the Sable Rooks who tax the only road inland.",
+    "player_reference_level_range": [
+      23,
+      44
+    ]
   },
   "icy_hills": {
     "id": "icy_hills",
@@ -99,8 +123,8 @@
     "name": "Frostbound Reach",
     "type": "area",
     "level_range": [
-      27,
-      75
+      42,
+      70
     ],
     "monsters": [
       "moss_giant",
@@ -111,7 +135,11 @@
       "player_accuracy_percent": -5.0,
       "label": "Driving ice: −5 accuracy"
     },
-    "flavour": "Wind-scoured ridges above the treeline. An observatory of black glass sits at the summit."
+    "flavour": "Wind-scoured ridges above the treeline. An observatory of black glass sits at the summit.",
+    "player_reference_level_range": [
+      27,
+      75
+    ]
   },
   "greyharrow_quarry": {
     "id": "greyharrow_quarry",
@@ -119,8 +147,8 @@
     "name": "Greyharrow Quarry",
     "type": "area",
     "level_range": [
-      43,
-      60
+      45,
+      58
     ],
     "monsters": [
       "greyharrow_husk",
@@ -132,7 +160,11 @@
       "player_accuracy_percent": -5.0,
       "label": "Dust drift: −5 accuracy"
     },
-    "flavour": "A cut into the ridge that never closed. The stone it emptied still moves after dark."
+    "flavour": "A cut into the ridge that never closed. The stone it emptied still moves after dark.",
+    "player_reference_level_range": [
+      43,
+      60
+    ]
   },
   "saltmarch_basin": {
     "id": "saltmarch_basin",
@@ -140,8 +172,8 @@
     "name": "Saltmarch Basin",
     "type": "area",
     "level_range": [
-      58,
-      88
+      66,
+      76
     ],
     "monsters": [
       "brine_troll",
@@ -151,7 +183,11 @@
       "player_evasion_percent": -10.0,
       "label": "Slick brine: −10% evasion"
     },
-    "flavour": "The sea filled this basin once and never came back for it. Whatever settled in the water learned to keep it."
+    "flavour": "The sea filled this basin once and never came back for it. Whatever settled in the water learned to keep it.",
+    "player_reference_level_range": [
+      58,
+      88
+    ]
   },
   "castle_of_kings": {
     "id": "castle_of_kings",
@@ -159,8 +195,8 @@
     "name": "Sunderhold Keep",
     "type": "area",
     "level_range": [
-      12,
-      104
+      60,
+      102
     ],
     "monsters": [
       "guard",
@@ -171,7 +207,11 @@
     "requires": {
       "slayer": 1
     },
-    "flavour": "The frontier's old seat of power, split down the middle by something that came out of the ground."
+    "flavour": "The frontier's old seat of power, split down the middle by something that came out of the ground.",
+    "player_reference_level_range": [
+      12,
+      104
+    ]
   },
   "dragon_valley": {
     "id": "dragon_valley",
@@ -179,8 +219,8 @@
     "name": "Ashwyrm Hollow",
     "type": "area",
     "level_range": [
-      79,
-      120
+      96,
+      115
     ],
     "monsters": [
       "green_dragon",
@@ -194,7 +234,11 @@
       "enemy_damage_percent": 10.0,
       "label": "Wyrmfire air: enemies hit +10% harder"
     },
-    "flavour": "A caldera of warm grey slopes where the old wyrms nest in the cooling rock."
+    "flavour": "A caldera of warm grey slopes where the old wyrms nest in the cooling rock.",
+    "player_reference_level_range": [
+      79,
+      120
+    ]
   },
   "sundered_reaches": {
     "id": "sundered_reaches",
@@ -202,8 +246,8 @@
     "name": "The Sundered Reaches",
     "type": "area",
     "level_range": [
-      105,
-      145
+      110,
+      302
     ],
     "monsters": [
       "air_elemental",
@@ -220,7 +264,11 @@
       "label": "Wild elements: enemies +10% damage, −3 accuracy"
     },
     "flavour": "Where the four god-shrines leak, the land never settled on one element. The wisps they shed wander free.",
-    "pacified_by": "threat_sundered_reaches_victory"
+    "pacified_by": "threat_sundered_reaches_victory",
+    "player_reference_level_range": [
+      105,
+      145
+    ]
   },
   "drowned_reach": {
     "id": "drowned_reach",
@@ -228,8 +276,8 @@
     "name": "The Drowned Reach",
     "type": "area",
     "level_range": [
-      145,
-      190
+      735,
+      5040
     ],
     "monsters": [
       "drowned_sailor",
@@ -245,7 +293,11 @@
       "label": "Storm surf: enemies +10% damage, −10% evasion"
     },
     "flavour": "The old causeway runs on under the sea. At low tide you can walk it, and the crew that drowned there walks it with you.",
-    "pacified_by": "threat_drowned_reach_victory"
+    "pacified_by": "threat_drowned_reach_victory",
+    "player_reference_level_range": [
+      145,
+      190
+    ]
   },
   "heralds_march": {
     "id": "heralds_march",
@@ -253,8 +305,8 @@
     "name": "The Herald's March",
     "type": "area",
     "level_range": [
-      190,
-      230
+      9730,
+      24292
     ],
     "monsters": [
       "cinder_colossus",
@@ -270,7 +322,11 @@
       "label": "Ash wind: enemies +15% damage, −3 accuracy"
     },
     "flavour": "The road to the Herald's throne, kept by the things that serve it. Nobody built it. It was burned flat.",
-    "pacified_by": "threat_heralds_march_victory"
+    "pacified_by": "threat_heralds_march_victory",
+    "player_reference_level_range": [
+      190,
+      230
+    ]
   },
   "spider_slayer_area": {
     "id": "spider_slayer_area",
@@ -278,8 +334,8 @@
     "name": "Broodweb Fen",
     "type": "slayer_area",
     "level_range": [
-      20,
-      40
+      15,
+      34
     ],
     "monsters": [
       "spider",
@@ -292,7 +348,11 @@
       "player_evasion_percent": -25.0,
       "label": "Strung reeds: −25% evasion"
     },
-    "flavour": "Immigration order territory. Every reed is strung. Something is farming the fen."
+    "flavour": "Immigration order territory. Every reed is strung. Something is farming the fen.",
+    "player_reference_level_range": [
+      20,
+      40
+    ]
   },
   "ashen_bastion": {
     "id": "ashen_bastion",
@@ -300,8 +360,8 @@
     "name": "Ashen Bastion",
     "type": "area",
     "level_range": [
-      205,
-      245
+      37545,
+      43549
     ],
     "monsters": [
       "bastion_sentinel",
@@ -315,7 +375,11 @@
       "player_accuracy_percent": -4.0,
       "label": "Cinder haze: enemies +15% damage, −4 accuracy"
     },
-    "flavour": "A fort the Herald's march walked around. Someone is still on the wall."
+    "flavour": "A fort the Herald's march walked around. Someone is still on the wall.",
+    "player_reference_level_range": [
+      205,
+      245
+    ]
   },
   "abyssal_depths": {
     "id": "abyssal_depths",
@@ -323,8 +387,8 @@
     "name": "The Umbral Deep",
     "type": "area",
     "level_range": [
-      230,
-      280
+      30438,
+      69562
     ],
     "monsters": [
       "abyssal_imp",
@@ -339,7 +403,11 @@
       "player_accuracy_percent": -5.0,
       "label": "Lightless deep: enemies +15% damage, −5 accuracy"
     },
-    "flavour": "The dark under the frontier. It is not empty, and it is not patient."
+    "flavour": "The dark under the frontier. It is not empty, and it is not patient.",
+    "player_reference_level_range": [
+      230,
+      280
+    ]
   },
   "gloamreach_marsh": {
     "id": "gloamreach_marsh",
@@ -347,8 +415,8 @@
     "name": "Gloamreach Marsh",
     "type": "area",
     "level_range": [
-      245,
-      295
+      69562,
+      102442
     ],
     "monsters": [
       "umbral_stalker",
@@ -363,7 +431,11 @@
       "player_accuracy_percent": -7.0,
       "label": "Gloam fog: enemies +20% damage, −7 accuracy"
     },
-    "flavour": "The fog here has opinions about who leaves."
+    "flavour": "The fog here has opinions about who leaves.",
+    "player_reference_level_range": [
+      245,
+      295
+    ]
   },
   "abyssal_rift": {
     "id": "abyssal_rift",
@@ -371,8 +443,8 @@
     "name": "Riftmouth",
     "type": "area",
     "level_range": [
-      250,
-      320
+      50163,
+      132962
     ],
     "monsters": [
       "abyssal_fiend",
@@ -388,7 +460,11 @@
       "player_accuracy_percent": -10.0,
       "label": "Breathing rift: enemies +25% damage, −10 accuracy"
     },
-    "flavour": "A wound in the rock that breathes. The most dangerous place anyone has mapped."
+    "flavour": "A wound in the rock that breathes. The most dangerous place anyone has mapped.",
+    "player_reference_level_range": [
+      250,
+      320
+    ]
   },
   "silence_verge": {
     "id": "silence_verge",
@@ -396,8 +472,8 @@
     "name": "The Silence Verge",
     "type": "area",
     "level_range": [
-      300,
-      335
+      144342,
+      211068
     ],
     "monsters": [
       "silent_pilgrim",
@@ -412,7 +488,11 @@
       "player_accuracy_percent": -10.0,
       "label": "Hushed air: enemies +25% damage, −10 accuracy"
     },
-    "flavour": "Where the Herald's road runs out of sound."
+    "flavour": "Where the Herald's road runs out of sound.",
+    "player_reference_level_range": [
+      300,
+      335
+    ]
   },
   "hollow_expanse": {
     "id": "hollow_expanse",
@@ -420,8 +500,8 @@
     "name": "The Hollow Expanse",
     "type": "area",
     "level_range": [
-      335,
-      370
+      211068,
+      284554
     ],
     "monsters": [
       "echoless_cantor",
@@ -436,7 +516,11 @@
       "player_accuracy_percent": -12.0,
       "label": "Hollow static: enemies +30% damage, −12 accuracy"
     },
-    "flavour": "Past the Verge there is no distance left, only the Silence."
+    "flavour": "Past the Verge there is no distance left, only the Silence.",
+    "player_reference_level_range": [
+      335,
+      370
+    ]
   },
   "reedbank_meadows": {
     "id": "reedbank_meadows",
@@ -452,7 +536,11 @@
       "reedbank_slinger",
       "lantern_moth"
     ],
-    "flavour": "A quiet riverside pasture. Practice against livestock before facing the raiders at the reed banks."
+    "flavour": "A quiet riverside pasture. Practice against livestock before facing the raiders at the reed banks.",
+    "player_reference_level_range": [
+      1,
+      4
+    ]
   },
   "ashwood_trails": {
     "id": "ashwood_trails",
@@ -468,7 +556,11 @@
       "ashwood_spitter",
       "embercap_shaman"
     ],
-    "flavour": "Ash-covered paths where scouts and spiders compete for the abandoned woodland."
+    "flavour": "Ash-covered paths where scouts and spiders compete for the abandoned woodland.",
+    "player_reference_level_range": [
+      8,
+      18
+    ]
   },
   "barrow_moor": {
     "id": "barrow_moor",
@@ -484,7 +576,11 @@
       "moor_bonearcher",
       "mourning_lantern"
     ],
-    "flavour": "Flooded burial mounds provide bones and runes, but the restless dead punish poor preparation."
+    "flavour": "Flooded burial mounds provide bones and runes, but the restless dead punish poor preparation.",
+    "player_reference_level_range": [
+      12,
+      28
+    ]
   },
   "rookwood_crossing": {
     "id": "rookwood_crossing",
@@ -500,7 +596,11 @@
       "rookwood_crossbowman",
       "thornhex_trickster"
     ],
-    "flavour": "An overgrown trade crossing contested by roadside brigands and venomous hunters."
+    "flavour": "An overgrown trade crossing contested by roadside brigands and venomous hunters.",
+    "player_reference_level_range": [
+      23,
+      37
+    ]
   },
   "shale_ravine": {
     "id": "shale_ravine",
@@ -516,7 +616,11 @@
       "flintback_skitterer",
       "shale_crystal_wisp"
     ],
-    "flavour": "A sheltered quarry approach with stone and bone drops, suited to training before Greyharrow Deep."
+    "flavour": "A sheltered quarry approach with stone and bone drops, suited to training before Greyharrow Deep.",
+    "player_reference_level_range": [
+      42,
+      54
+    ]
   },
   "tidebreak_cliffs": {
     "id": "tidebreak_cliffs",
@@ -532,6 +636,120 @@
       "cliffside_harpooner",
       "brineglass_sorcerer"
     ],
-    "flavour": "Salt spray climbs the volcanic coast. Trolls, witches and wyrm seers guard its upper ledges."
+    "flavour": "Salt spray climbs the volcanic coast. Trolls, witches and wyrm seers guard its upper ledges.",
+    "player_reference_level_range": [
+      66,
+      96
+    ]
+  },
+  "shardwind_rise": {
+    "id": "shardwind_rise",
+    "hex": "terrain_-7_-2",
+    "name": "Shardwind Rise",
+    "type": "area",
+    "level_range": [
+      302,
+      363
+    ],
+    "player_reference_level_range": [
+      140,
+      142
+    ],
+    "monsters": [
+      "fire_elemental",
+      "shardwind_stalker"
+    ],
+    "requires": {
+      "slayer": 72
+    },
+    "flavour": "The wind drives splinters of crystal across a broken ridge above the Reaches."
+  },
+  "glasswake_bluffs": {
+    "id": "glasswake_bluffs",
+    "hex": "terrain_-7_-3",
+    "name": "Glasswake Bluffs",
+    "type": "area",
+    "level_range": [
+      363,
+      435
+    ],
+    "player_reference_level_range": [
+      142,
+      144
+    ],
+    "monsters": [
+      "shardwind_stalker",
+      "glasswake_sentinel"
+    ],
+    "requires": {
+      "slayer": 74
+    },
+    "flavour": "Living shards gather along the glass-bright cliffs where the surf reaches the old stone."
+  },
+  "mistbreaker_coast": {
+    "id": "mistbreaker_coast",
+    "hex": "terrain_-6_-3",
+    "name": "Mistbreaker Coast",
+    "type": "area",
+    "level_range": [
+      435,
+      520
+    ],
+    "player_reference_level_range": [
+      144,
+      146
+    ],
+    "monsters": [
+      "glasswake_sentinel",
+      "mistbreaker_hunter"
+    ],
+    "requires": {
+      "slayer": 76
+    },
+    "flavour": "Hunters lost in the fog patrol the gap between the cliffs and the ancient road."
+  },
+  "tideworn_causeway": {
+    "id": "tideworn_causeway",
+    "hex": "terrain_-5_-2",
+    "name": "Tideworn Causeway",
+    "type": "area",
+    "level_range": [
+      520,
+      620
+    ],
+    "player_reference_level_range": [
+      146,
+      148
+    ],
+    "monsters": [
+      "mistbreaker_hunter",
+      "tideworn_reaver"
+    ],
+    "requires": {
+      "slayer": 78
+    },
+    "flavour": "A road of drowned stone rises briefly above the tide, followed by its restless crew."
+  },
+  "wreckward_shoals": {
+    "id": "wreckward_shoals",
+    "hex": "terrain_-5_-3",
+    "name": "Wreckward Shoals",
+    "type": "area",
+    "level_range": [
+      620,
+      676
+    ],
+    "player_reference_level_range": [
+      148,
+      149
+    ],
+    "monsters": [
+      "tideworn_reaver",
+      "wreckward_oracle"
+    ],
+    "requires": {
+      "slayer": 80
+    },
+    "flavour": "Coral and wreckage mark the last shoals before the Drowned Reach."
   }
 }

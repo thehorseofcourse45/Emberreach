@@ -5,6 +5,7 @@ var share: float = 0.0
 var next_essence_bonus: float = 0.0
 var essence_fraction: float = 0.0
 var events: Array = []
+var realm = preload("res://scripts/core/DreamRealm.gd").new()
 var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
@@ -145,7 +146,7 @@ func buy(id: String) -> bool:
 	return false
 
 func serialize() -> Dictionary:
-	return {"dreamscape": dreamscape, "share": share, "next_essence_bonus": next_essence_bonus, "essence_fraction": essence_fraction, "events": events.duplicate(true)}
+	return {"dreamscape": dreamscape, "share": share, "next_essence_bonus": next_essence_bonus, "essence_fraction": essence_fraction, "events": events.duplicate(true), "realm": realm.serialize()}
 
 func deserialize(data: Dictionary) -> void:
 	dreamscape = str(data.get("dreamscape", "meadow"))
@@ -157,6 +158,7 @@ func deserialize(data: Dictionary) -> void:
 	next_essence_bonus = clampf(float(data.get("next_essence_bonus", 0.0)), 0.0, draught_cap)
 	essence_fraction = clampf(float(data.get("essence_fraction", 0.0)), 0.0, 0.999999)
 	events = data.get("events", []).duplicate(true).slice(0, 10) if typeof(data.get("events", [])) == TYPE_ARRAY else []
+	realm.deserialize(data.get("realm", {}) if data.get("realm", {}) is Dictionary else {})
 
 func preview(offline_seconds: float) -> Dictionary:
 	var def: Dictionary = dream(dreamscape)

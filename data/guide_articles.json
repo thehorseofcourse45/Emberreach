@@ -1,0 +1,495 @@
+[
+  {
+    "id": "first_hour",
+    "title": "Your first hour",
+    "group": "Getting started",
+    "summary": "A practical path from your first logs to your first fight.",
+    "sections": [
+      [
+        "Gather your first materials",
+        "Open Timbercraft, select Emberpine Tree, and press Start. The activity repeats until you stop it or choose another activity. Your logs go to Storage, and the tutorial tracks ten actions."
+      ],
+      [
+        "Make a weapon",
+        "In Delving, gather Copper Ore and Tin Ore. Open Forgecraft and smelt one of each into a Bronze Bar. Make at least two bars, then select Verdigris Scimitar and press Start. Open Storage or Equipment to equip it."
+      ],
+      [
+        "Prepare for a fight",
+        "Catch and cook fish for food. Open Equipment to check your weapon and food, then visit Combat and choose Hearthfall Fields. Start with its early enemies and watch your health. Retreat if the fight is going badly."
+      ],
+      [
+        "What next?",
+        "Visit Tasks to claim completed objectives. The Overview shows your next tutorial objective; this guide remains available whenever you want to revisit it."
+      ]
+    ],
+    "route": {
+      "screen": "overview"
+    },
+    "route_label": "Open Overview"
+  },
+  {
+    "id": "activities",
+    "title": "Skills and activities",
+    "group": "Getting started",
+    "summary": "Select an activity, understand its requirements, and start or stop it.",
+    "sections": [
+      [
+        "How training works",
+        "Choose a skill from the sidebar and select an unlocked activity. Its details show the required level, materials, rewards and estimated rates. Press Start to use the activity slot; it repeats until stopped or a limit is reached."
+      ],
+      [
+        "Supplies and quantities",
+        "Crafting consumes the listed materials. Quantity controls can stop after a target number or use the maximum your current supplies allow. If a requirement is missing, select its source or inspect the material to find where it comes from."
+      ],
+      [
+        "Levels and mastery",
+        "Skill XP raises your skill level and unlocks activities. Activity mastery and the skill's mastery pool are separate sources of progress and bonuses. Open Mastery & bonuses on the skill page for details."
+      ],
+      [
+        "Passive systems",
+        "Some skills have their own panels or timers, such as Cultivation, Husbandry, Engineering, Dreamwalking and Caravaneering. Read their individual descriptions and controls rather than assuming they work like a repeating recipe."
+      ]
+    ],
+    "route": {
+      "screen": "skills",
+      "skill_id": "woodcutting"
+    },
+    "route_label": "Open Timbercraft"
+  },
+  {
+    "id": "materials",
+    "title": "Storage, items and equipment",
+    "group": "Getting started",
+    "summary": "Find materials, understand item details, and equip your gear.",
+    "sections": [
+      [
+        "Storage",
+        "Storage holds gathered resources, crafted items, food and loot. Select an item to inspect it, manage it, or find known sources. Watch available storage space before a long session."
+      ],
+      [
+        "Equipment",
+        "Use Equipment or a suitable item's controls to put on gear. Equipment requirements and bonuses are shown in its details. Choose equipment that supports your combat style and improve it as you progress."
+      ],
+      [
+        "Finding an ingredient",
+        "Open an item or recipe's details and look for source information. Track a goal if you want to keep the item or recipe in view. A source can have several routes, including gathering, crafting, monster drops or rewards."
+      ],
+      [
+        "Food",
+        "Cooked food restores health. Manual eating and auto-eat consume food from Storage; assigned food slots restrict which food is chosen. Check your supply before combat."
+      ]
+    ],
+    "route": {
+      "screen": "bank"
+    },
+    "route_label": "Open Storage"
+  },
+  {
+    "id": "combat",
+    "title": "Combat basics",
+    "group": "Combat",
+    "summary": "Prepare a loadout, choose a fight, and learn when to retreat.",
+    "sections": [
+      [
+        "Before entering",
+        "Equip a weapon and armour, stock food, and check the enemy's health, attack style, maximum hit and possible drops. Use the Combat Simulator as an estimate, not a guarantee."
+      ],
+      [
+        "During combat",
+        "Combat runs automatically after you start. Watch your health and remaining food; eat or retreat when necessary. Auto-eat requires an appropriate upgrade or setting. A defeat ends the current fight and can have penalties."
+      ],
+      [
+        "Styles and skills",
+        "Bladework and Might support melee; Marksmanship supports ranged; Sorcery uses magic. Warding and Vitality help you survive. Devotion rites consume points when used. Check your gear and consumables for style requirements."
+      ],
+      [
+        "Enemy levels",
+        "Enemy levels have their own scale and can be much higher than player skill levels. Use enemy stats, mechanics and your gear to judge difficulty rather than comparing those numbers directly."
+      ]
+    ],
+    "route": {
+      "screen": "combat"
+    },
+    "route_label": "Open Combat"
+  },
+  {
+    "id": "combat_content",
+    "title": "Regions, dungeons and expeditions",
+    "group": "Combat",
+    "summary": "Understand the different places you can fight and what a clear requires.",
+    "sections": [
+      [
+        "Regions",
+        "A region is a place to fight its listed enemies for experience and drops. Select a region to see its encounters and requirements."
+      ],
+      [
+        "Dungeons and expeditions",
+        "These present a sequence of encounters and a clear reward. Inspect the list, unlock requirements and rewards before starting; some runs lock your equipment while underway."
+      ],
+      [
+        "Strongholds and raids",
+        "Find Strongholds and Raids in Expeditions. They are demanding encounter sequences; raids are particularly long. Review the enemies, first-clear rewards and repeat rewards, and bring enough supplies for the entire run."
+      ],
+      [
+        "Astral Trial Chamber",
+        "The chamber has its own encounters and Trial Marks. Check each trial's requirements and encounter sequence, then use its outfitter and armory to spend marks on upgrades and equipment."
+      ]
+    ],
+    "route": {
+      "screen": "expeditions"
+    },
+    "route_label": "Open Expeditions"
+  },
+  {
+    "id": "raid_rewards",
+    "title": "Raid rewards and mastery",
+    "group": "Combat",
+    "summary": "See first-clear rewards, repeat drops and progress toward raid rewards.",
+    "sections": [
+      [
+        "Before a run",
+        "Choose the Raids tab in Expeditions. The selected raid shows its encounters, requirements and rewards. A first-clear reward is awarded for the first clear; repeatable loot comes from the listed drops and clear rewards."
+      ],
+      [
+        "Mastery and protection",
+        "Raid mastery records progress for individual raids. Drop protection tracks eligible unlucky clears toward the corresponding reward; inspect the raid's reward and mastery information for the current progress and rules."
+      ],
+      [
+        "Preparing for longer fights",
+        "Review the full encounter sequence and bring sufficient food and other consumables. Equipment restrictions and requirements are shown on the raid page."
+      ]
+    ],
+    "route": {
+      "screen": "expeditions"
+    },
+    "route_label": "Open Raids"
+  },
+  {
+    "id": "goals",
+    "title": "Goals and finding sources",
+    "group": "Planning",
+    "summary": "Track an item or recipe and find ways to obtain its ingredients.",
+    "sections": [
+      [
+        "Track a goal",
+        "Use Track goal on a recipe or item details to keep an objective in view. Collection entries can also lead you toward missing items or drops."
+      ],
+      [
+        "Read the sources",
+        "Item details list known ways to obtain an item. A crafting material may have several gathering, crafting, combat or shop sources. Some sources are random, have requirements, or require other ingredients."
+      ],
+      [
+        "Use the route",
+        "Choose a source or related activity to jump to the relevant screen. Check whether it is unlocked and whether you have enough supplies before starting."
+      ]
+    ],
+    "route": {
+      "screen": "collection"
+    },
+    "route_label": "Open Collection"
+  },
+  {
+    "id": "queue",
+    "title": "Action queue and plans",
+    "group": "Planning",
+    "summary": "Schedule activities and review a suggested crafting sequence before adding it.",
+    "sections": [
+      [
+        "Build a queue",
+        "Open Action Queue, choose a skill and activity, and add a step with its stopping target. Review the order and targets before starting. Queue steps still use the normal activity slot and requirements."
+      ],
+      [
+        "Preview a goal",
+        "From an item or recipe's details, choose Preview queue plan. The proposed ingredients and actions are a starting point: inspect and edit the steps and source choices before appending them."
+      ],
+      [
+        "Random yields and stops",
+        "A planned amount may not be guaranteed when a source has random yields. A step can pause when it lacks materials or cannot start. Read the pause reason, resolve the issue and resume."
+      ],
+      [
+        "Saved plans",
+        "Save a useful queue plan for reuse. Review its targets and requirements when loading it, since your supplies and unlocks can change."
+      ]
+    ],
+    "route": {
+      "screen": "action_queue"
+    },
+    "route_label": "Open Action Queue"
+  },
+  {
+    "id": "offline",
+    "title": "Offline progress and welcome back",
+    "group": "Planning",
+    "summary": "Prepare supplies, check offline settings and understand what happened while away.",
+    "sections": [
+      [
+        "Before leaving",
+        "Choose the activity or queue you want to run, check its supplies and stopping target, and review the offline settings. The game uses the available offline simulation and its limits."
+      ],
+      [
+        "Combat while away",
+        "Offline combat must be enabled in Settings. Food and other supplies can be consumed, and defeat ends the offline combat session. Test a fight and bring reserves before leaving it unattended."
+      ],
+      [
+        "When you return",
+        "The welcome-back report summarizes simulated progress, completed queue steps, stops or missing resources, and rewards or unlocks ready to claim. Use its information to decide what to restock or claim."
+      ]
+    ],
+    "route": {
+      "screen": "settings"
+    },
+    "route_label": "Open Settings"
+  },
+  {
+    "id": "tasks",
+    "title": "Tasks, milestones and restoration",
+    "group": "Progression",
+    "summary": "Find objectives, claim rewards and restore campaign locations.",
+    "sections": [
+      [
+        "Tasks",
+        "Open Tasks to see objectives and requirements. Meeting a task's conditions and claiming its rewards are separate actions; check the task screen for rewards ready to claim."
+      ],
+      [
+        "Milestones",
+        "Milestones record larger accomplishments and offer their own rewards. Review the Achievements screen when you reach a new threshold."
+      ],
+      [
+        "Restoration campaigns",
+        "Campaign stages ask for themed objectives and materials. Inspect the campaign map to see completed, active and locked stages, their requirements and rewards. Complete and claim a stage to move forward."
+      ]
+    ],
+    "route": {
+      "screen": "quests"
+    },
+    "route_label": "Open Tasks"
+  },
+  {
+    "id": "collection",
+    "title": "Collection and missing drops",
+    "group": "Progression",
+    "summary": "Track discoveries and find where missing entries come from.",
+    "sections": [
+      [
+        "Browse the collection",
+        "The Collection screen groups discoveries such as items, enemies and locations. An undiscovered entry may show limited information until found."
+      ],
+      [
+        "Find a missing item",
+        "Use the entry's tracking or source controls to follow a missing item and inspect known sources. Drops can be random, so a listed source does not promise an item on the next kill."
+      ],
+      [
+        "Use the encyclopedia",
+        "The reference library is a broader catalogue. Search for an entry, then open its details or location to inspect current requirements, stats and sources."
+      ]
+    ],
+    "route": {
+      "screen": "collection"
+    },
+    "route_label": "Open Collection"
+  },
+  {
+    "id": "economy",
+    "title": "Gold, shops and upgrades",
+    "group": "Progression",
+    "summary": "Know where to spend gold and how upgrades differ from stock.",
+    "sections": [
+      [
+        "Earning gold",
+        "Activities, combat and rewards can provide gold or items to sell. Check an item before selling it: it may also be useful for recipes, equipment or objectives."
+      ],
+      [
+        "Provisioner",
+        "The Provisioner offers upgrades and unlocks. Read the cost, prerequisites and effect before buying; some improvements support combat, storage or skilling."
+      ],
+      [
+        "General Store",
+        "The General Store sells available stock. Check prices and availability before buying supplies, and compare them with gathering or crafting the same item."
+      ]
+    ],
+    "route": {
+      "screen": "provisioner"
+    },
+    "route_label": "Open Provisioner"
+  },
+  {
+    "id": "farming",
+    "title": "Cultivation and settlement",
+    "group": "Passive systems",
+    "summary": "Grow crops and manage settlement production alongside your adventures.",
+    "sections": [
+      [
+        "Cultivation",
+        "Open the farm, choose a plot, plant an appropriate seed and return to harvest when it is ready. Check the plot and growing options for requirements and bonuses."
+      ],
+      [
+        "Settlement",
+        "Construct buildings and manage resources in the Settlement screen. Read building costs, production and requirements before spending resources; different buildings support different goals."
+      ],
+      [
+        "Keep checking in",
+        "Passive systems have their own timers and collection controls. The screen for each system shows its present status and what it needs next."
+      ]
+    ],
+    "route": {
+      "screen": "farm"
+    },
+    "route_label": "Open Farm"
+  },
+  {
+    "id": "ranch",
+    "title": "Husbandry and Engineering",
+    "group": "Passive systems",
+    "summary": "Manage animal pens and devices that work over time.",
+    "sections": [
+      [
+        "Husbandry",
+        "Open the Husbandry skill and manage pens, animals and their needs. Collect the produce shown by the pen; animals can also provide other materials and breeding opportunities."
+      ],
+      [
+        "Engineering",
+        "Engineering devices turn fuel and materials into output over time. Check a device's recipe, inputs and available storage; install and maintain the devices you want to run."
+      ],
+      [
+        "Planning",
+        "These systems have their own controls and requirements. Inspect the relevant skill screen for current timers, capacity and costs."
+      ]
+    ],
+    "route": {
+      "screen": "skills",
+      "skill_id": "ranching"
+    },
+    "route_label": "Open Husbandry"
+  },
+  {
+    "id": "caravans",
+    "title": "Caravaneering",
+    "group": "Passive systems",
+    "summary": "Outfit a caravan, select a route and collect its rewards.",
+    "sections": [
+      [
+        "Prepare",
+        "Open Caravaneering to inspect available routes, wagons and guards. Requirements, duration, costs and risks vary by route."
+      ],
+      [
+        "Travel and rewards",
+        "Send a prepared caravan on a route and use its journey map to inspect stops and dangers. Return to collect its results and review any losses or rewards."
+      ],
+      [
+        "Explore further",
+        "Higher Caravaneering levels unlock additional options. The reference library also lists routes, wagons and guards."
+      ]
+    ],
+    "route": {
+      "screen": "skills",
+      "skill_id": "caravaneering"
+    },
+    "route_label": "Open Caravaneering"
+  },
+  {
+    "id": "combat_preparations",
+    "title": "Preparing for Bosses",
+    "group": "Combat",
+    "summary": "Craft supplies for longer boss fights.",
+    "sections": [
+      [
+        "Siege Supper",
+        "Cooking 118 combines Aurora Seafood Feasts, Ranch Cheese and Blood Ginger into food that heals 800 HP."
+      ],
+      [
+        "Combat preparations",
+        "Warden's Draught (Herblore 112) improves damage reduction and food healing. Hunter's Sigil (Inscription 110) improves accuracy and maximum hit. Siege Charge (Engineering 115) favors maximum hit. Activate these from the bank; each lasts 300 player attacks and occupies the potion slot."
+      ],
+      [
+        "Plan ahead",
+        "Only one potion or preparation can be active at once. Reactivate a preparation from the bank when its charges run out. Use the recipe and item source views to find ingredients."
+      ],
+      [
+        "Equipment upgrades",
+        "Smithing can temper Throneguard Platelegs; Fletching can reinforce a Dawnbloom Longbow; Runecrafting can attune a Dawn Wand; and Crafting can set a Herald's Sigil. Each recipe consumes the original item and dungeon-earned Enchantment Catalysts. Quality and affixes are rolled anew; they do not carry over from the original."
+      ],
+      [
+        "Endgame Enchanting",
+        "At Enchanting 115, clear Emberrift Cavern for the Steadfast and Spellward armor enchantments, or Crown of Embers for the Siegebreaker weapon enchantment. Enchanting uses essence, rune essence, diamonds and catalysts. Unequip the item first."
+      ]
+    ],
+    "route": {
+      "screen": "skills",
+      "skill_id": "cooking"
+    },
+    "route_label": "Open Cooking"
+  },
+  {
+    "id": "dream",
+    "title": "Dreamwalking and the Dream Realm",
+    "group": "Arcane",
+    "summary": "Use offline dreams and explore the Dream Realm's choices.",
+    "sections": [
+      [
+        "Dreamwalking",
+        "Open Dreamwalking to choose how offline time is allocated to a dream. Return to collect Dream Essence and inspect dream events and the Dream Bazaar."
+      ],
+      [
+        "Enter the Dream Realm",
+        "The Dream Realm is a connected activity reached from the Arcane section. Check a region's level requirement and entry cost, then make choices during the journey."
+      ],
+      [
+        "Clarity and fragments",
+        "Choices can carry risk. Losing all clarity forfeits unbanked fragments; returning safely banks them. Completed regions and Lucid Fragments open up their listed relic rewards. Beyond the Throne of Dawn, your first choice changes the story and return bonus. Rare discoveries grant five extra fragments only if you return safely."
+      ]
+    ],
+    "route": {
+      "screen": "dream_realm"
+    },
+    "route_label": "Open Dream Realm"
+  },
+  {
+    "id": "arcane",
+    "title": "Runes, rifts and spell patterns",
+    "group": "Arcane",
+    "summary": "Connect Glyphcraft, Runescribing, Riftkeeping and Spellweaving.",
+    "sections": [
+      [
+        "Runes and spells",
+        "Glyphcraft makes runes, while Sorcery and Runescribing use runes for their respective magic. Read each spell's ingredients and effect before starting."
+      ],
+      [
+        "Riftkeeping",
+        "Riftkeeping extracts aether from unstable rifts. Its screen offers extraction approaches with different tradeoffs; inspect the displayed risk and rewards before selecting one."
+      ],
+      [
+        "Spellweaving and Attunement",
+        "Spellweaving uses aether and runes to create patterns that can change Sorcery attacks when equipped. Attunement uses essence to enchant individual equipment; unwanted equipment can be disenchanted for essence."
+      ]
+    ],
+    "route": {
+      "screen": "skills",
+      "skill_id": "riftkeeping"
+    },
+    "route_label": "Open Riftkeeping"
+  },
+  {
+    "id": "reference",
+    "title": "How to use the reference library",
+    "group": "Using this guide",
+    "summary": "Search real game data and follow entries to their details.",
+    "sections": [
+      [
+        "Find a subject",
+        "Open Reference and choose a category such as Skills, Activities, Items, Monsters or Regions. Search by name or ID. Results are paged so large lists remain manageable."
+      ],
+      [
+        "Read and act",
+        "Entries use the game's data. Select Details to inspect sources, requirements and other information, or use an Open button to jump to a skill or system."
+      ],
+      [
+        "Need an explanation?",
+        "The Guides section explains the major systems and offers a page for each skill. Try searching a topic such as food, mastery, raids or offline progress there."
+      ]
+    ],
+    "route": {
+      "screen": "encyclopedia"
+    },
+    "route_label": "Open encyclopedia"
+  }
+]

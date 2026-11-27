@@ -265,13 +265,17 @@ func _show_screen(screen: String, route: Dictionary) -> void:
 	var chapter: String = SidebarNav.chapter_of(route_skill if screen == Screens.SKILLS else screen)
 	if chapter != "":
 		SidebarNav.open_chapter(self, chapter)
+	# The sidebar count is unread markers, not a lifetime tally: opening the screen consumes it.
+	# Without this, a milestone unlocked while elsewhere left its "(1)" on the nav forever, whether
+	# or not the reward was collected.
+	_clear_badge(screen)
 	_refresh_nav()
 	var detail_route: Dictionary = route.duplicate()
 	detail_route["screen"] = screen
 	_detail.set_context(panel, detail_route)
 	# A route that names a thing (an item, a task, a region) opens its details; plain navigation
 	# closes the card unless the player pinned it.
-	if route.has("item_id") or route.has("quest_id") or route.has("area_id"):
+	if route.has("item_id") or route.has("quest_id") or (route.has("area_id") and screen not in [Screens.COMBAT, Screens.EXPEDITIONS]):
 		open_detail()
 	elif not _detail.pinned:
 		close_detail()
@@ -344,6 +348,7 @@ const PANEL_SCRIPTS: Dictionary = {
 	Screens.OVERVIEW: "OverviewPanel",
 	Screens.SKILLS: "SkillsPanel",
 	Screens.COMBAT: "CombatPanel",
+	Screens.COMBAT_ROADMAP: "CombatRoadmapPanel",
 	Screens.EXPEDITIONS: "CombatPanel",
 	Screens.BANK: "BankPanel",
 	Screens.ACTION_QUEUE: "ActionQueuePanel",
@@ -356,11 +361,14 @@ const PANEL_SCRIPTS: Dictionary = {
 	Screens.PROVISIONER: "ProvisionerPanel",
 	Screens.STORE: "GeneralStorePanel",
 	Screens.EQUIPMENT: "EquipmentPanel",
+	Screens.EQUIPMENT_GUIDE: "EquipmentGuidePanel",
 	Screens.SETTINGS: "SettingsPanel",
 	Screens.PRAYERS: "PrayerPanel",
 	Screens.RAIDS: "RaidPanel",
 	Screens.FARM: "FarmPanel",
 	Screens.PRESTIGE: "PrestigePanel",
+	Screens.ENCYCLOPEDIA: "EncyclopediaPanel",
+	Screens.DREAM_REALM: "DreamRealmPanel",
 	# Not a sidebar tab (it takes over only when a save cannot load), but listed so the smoke
 	# check and the layout tests cover it like every other screen.
 	Screens.RECOVERY: "RecoveryPanel",
@@ -443,9 +451,9 @@ func _bump_badge(screen: String) -> void:
 	_refresh_nav()
 
 func _clear_badge(screen: String) -> void:
-	if _unlock_badges.has(screen):
-		_unlock_badges.erase(screen)
-		_refresh_nav()
+	# No refresh here: _show_screen clears and then relabels in one pass, so the selection accent
+	# is not re-tweened twice per navigation.
+	_unlock_badges.erase(screen)
 
 func _refresh_all() -> void:
 	for screen in _panels.keys():

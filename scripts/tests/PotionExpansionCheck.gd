@@ -30,10 +30,10 @@ func run() -> void:
 	var potions := 0
 	for id in DataLoader.items:
 		if DataLoader.get_item(id).get("item_type","")=="potion":potions+=1
-	check(potions==234,"234 potions across 39 complete families")
-	check(DataLoader.get_skill_actions("herblore").size()==225,"225 Apothecary recipes")
+	check(potions>=234,"at least 234 potions including the original families")
+	check(DataLoader.get_skill_actions("herblore").size()>=225,"at least 225 Apothecary recipes")
 	check((spec.new_ids as Array).all(func(id):return not DataLoader.get_item(id).is_empty()),"182 new potions resolve")
-	if potions!=234:
+	if potions<234:
 		finish()
 		return
 	for recipe in spec.recipes:

@@ -23,9 +23,9 @@ func _ready() -> void:
 	for id in DataLoader.dungeons:
 		var d: Dictionary=DataLoader.get_dungeon(str(id))
 		if not bool(d.get("stronghold",false)): continue
-		check_icon(AssetRegistry.icon("dungeons",str(id)),str(id))
+		check_icon(AssetRegistry.icon("dungeons",str(id)),str(id),64)
 		for mid in d.monsters: check_icon(AssetRegistry.monster_sprite(str(mid)),str(mid),96)
-		for gear in d.rewards_first_clear.items: check_icon(AssetRegistry.item_icon(str(gear)),str(gear))
+		for gear in d.rewards_first_clear.items: check_icon(AssetRegistry.item_icon(str(gear)),str(gear),64 if str(gear) in ["stormbreak_sigil", "obsidian_crown_shield", "moonfall_mantle", "thornstar_cuirass", "dawnspire_aegis"] else 32)
 	var panel=preload("res://scripts/ui/panels/CombatPanel.gd").new()
 	panel.expeditions_only=true
 	add_child(panel)

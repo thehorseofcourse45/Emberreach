@@ -18,7 +18,7 @@ func _ready() -> void:
 	PlayerData.settings.auto_eat_tier=3
 	call_deferred("run")
 func run() -> void:
-	var ids: Array = ["ironveil_bastion","frostglass_citadel","blightroot_hold","sunken_dominion","eclipse_throne"]
+	var ids: Array = ["ashward_fortress","nightfen_citadel","riftmaw_keep","hushspire_hold","starforge_gatehouse","ironveil_bastion","frostglass_citadel","blightroot_hold","sunken_dominion","eclipse_throne","starfall_bastion","eventide_rampart","worldheart_citadel"]
 	for id in ids:
 		var d: Dictionary=DataLoader.get_dungeon(id)
 		for item in d.entry_items: BankManager.add_item_guaranteed(str(item),int(d.entry_items[item]))

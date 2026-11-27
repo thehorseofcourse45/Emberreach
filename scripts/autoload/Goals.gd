@@ -3,6 +3,7 @@ extends Node
 ##
 ## A goal is a small tuple: {kind, id}. Supported kinds:
 ##   "item"     — own N of an item
+##   "collection_item" — discover an item once, even if it is later spent
 ##   "recipe"   — perform a skill action/recipe (id = "skill:action")
 ##   "skill"    — reach a skill level (extra: level)
 ##   "quest"    — complete a quest (id = quest id)
@@ -80,6 +81,8 @@ func resolve(goal: Dictionary) -> Dictionary:
 	match kind:
 		"item":
 			return _resolve_item(id, int(goal.get("level", 0)))
+		"collection_item":
+			return _resolve_collection_item(id)
 		"recipe":
 			return _resolve_recipe(id)
 		"skill":
@@ -99,6 +102,22 @@ func resolve_all() -> Array:
 	return out
 
 # ---------------- item goals ----------------
+
+func _resolve_collection_item(item_id: String) -> Dictionary:
+	var item: Dictionary = DataLoader.get_item(item_id)
+	if item.is_empty():
+		return {"ok": false, "problem": "Unknown item '%s'" % item_id, "kind": "collection_item", "id": item_id}
+	var found: bool = (PlayerData.completion_log.get("items", {}) as Dictionary).has(item_id)
+	var name: String = str(item.get("name", item_id))
+	return {"ok": true, "kind": "collection_item", "id": item_id, "label": "Discover " + name,
+		"description": "Find this item once to record it in your collection. It stays discovered if you use or sell it.",
+		"icon_kind": "items", "progress_current": 1 if found else 0, "progress_required": 1,
+		"progress": 1.0 if found else 0.0, "complete": found,
+		"requirements": [{"label": "Discover " + name, "current": 1 if found else 0, "required": 1,
+			"satisfied": found, "hint": "Recorded on first acquisition"}],
+		"missing": [] if found else [{"item_id": item_id, "name": name, "need": 1, "have": 0}],
+		"sources": [] if found else sources_for_item(item_id),
+		"routes": [] if found else routes_for_item(item_id)}
 
 func _resolve_item(item_id: String, target: int) -> Dictionary:
 	var item: Dictionary = DataLoader.get_item(item_id)
@@ -297,7 +316,7 @@ func _resolve_building(building_id: String) -> Dictionary:
 		"description": str(b.get("description", "")),
 		"icon_kind": "concepts",
 		"requirements": requirements, "missing": missing, "sources": [],
-		"routes": [{"screen": "settlement", "label": "Open the settlement"}],
+		"routes": [{"screen": "settlement", "building_id": building_id, "label": "Open building location"}],
 		"progress_current": owned, "progress_required": max_level,
 		"progress": clampf(float(owned) / float(maxi(max_level, 1)), 0.0, 1.0),
 		"complete": owned >= max_level,
@@ -507,6 +526,11 @@ func sources_for_item(item_id: String) -> Array:
 	for offer in DataLoader.new_skill_systems.get("bazaar", []):
 		if offer.get("items", {}).has(item_id): out.append({"kind": "shop", "label": str(offer.name), "detail": "%d Dream Essence in the Dream Bazaar" % int(offer.cost), "level_required": 1, "unlocked": BankManager.get_count("dream_essence") >= int(offer.cost), "route": {"screen": "skills", "skill_id": "dreamwalking"}})
 	if item_id == "dream_essence": out.append({"kind": "passive", "label": "Dreamwalking", "detail": "Allocate offline time to a dreamscape, then collect Essence on your return.", "level_required": 1, "unlocked": true, "route": {"screen": "skills", "skill_id": "dreamwalking"}})
+	if item_id == "lucid_fragment":
+		out.append({"kind":"reward", "label":"The Dream Realm", "detail":"Return safely from a dream journey to bank Lucid Fragments.", "level_required":60, "unlocked":PlayerData.get_level("dreamwalking") >= 60, "route":{"screen":"dream_realm"}})
+	for dream_region in DreamwalkingManager.realm.regions():
+		if str(dream_region.item) == item_id:
+			out.append({"kind":"shop", "label":"Dream relics · %s" % dream_region.name, "detail":"Complete the region and exchange %d Lucid Fragments." % int(dream_region.price), "level_required":int(dream_region.level), "unlocked":DreamwalkingManager.realm.completed.has(str(dream_region.id)), "route":{"screen":"dream_realm", "region_id":str(dream_region.id)}})
 	# Trade routes hand back their specialty goods when a caravan returns.
 	for route in DataLoader.new_skill_systems.get("caravan_routes", []):
 		if (route.get("specialty", {}) as Dictionary).has(item_id):
@@ -599,7 +623,7 @@ func sources_for_item(item_id: String) -> Array:
 				continue
 			out.append({
 				"kind": "drop", "label": str(m.get("name", monster_id)),
-				"detail": "Drops at %.2f%% · combat level %d" % [float(drop.get("chance", 0.0)) * 100.0, int(m.get("combat_level", 1))],
+				"detail": "Drops at %.2f%% · combat level %s" % [float(drop.get("chance", 0.0)) * 100.0, UIStyle.fmt_exact(float(m.get("combat_level", 1)))],
 				"level_required": int(m.get("combat_level", 1)),
 				"unlocked": true,
 				"route": _route_for_monster(monster_id),
@@ -616,6 +640,12 @@ func sources_for_item(item_id: String) -> Array:
 			out.append({"kind": "reward", "label": str(d.get("name", dungeon_id)),
 				"detail": ("Reward per floor; extra shards every tenth floor" if bool(d.get("endless_floors", false)) else "Dungeon clear reward") if is_reward else "Granted by every kill inside",
 				"level_required": 0, "unlocked": true,
+				"route": {"screen": "combat", "area_id": dungeon_id}})
+		var mastery: Dictionary = PlayerData.dungeon_mastery_repeat_reward(str(dungeon_id)) if item_id == "enchant_catalyst" else {}
+		if mastery.has(item_id):
+			out.push_front({"kind": "dungeon_mastery", "label": str(d.get("name", dungeon_id)) + " mastery",
+				"detail": "%d guaranteed per clear; milestone rewards can be claimed separately" % int(mastery[item_id]),
+				"level_required": 0, "unlocked": CombatManager.dungeon_lock_reason(str(dungeon_id)) == "",
 				"route": {"screen": "combat", "area_id": dungeon_id}})
 	# 5. Shop and mastery stall stock.
 	for shop_id in DataLoader.shop.keys():
@@ -710,9 +740,14 @@ func sources_for_item(item_id: String) -> Array:
 			"unlocked": ArchaeologyManager.tokens >= token_cost,
 			"route": {"screen": "skills", "skill_id": "archaeology"}})
 	if (DataLoader.raid_shop.get("alt_items", []) as Array).has(item_id):
-		out.append({"kind": "reward", "label": "Raid reward pool",
-			"detail": "Chosen after a completed raid", "level_required": 0, "unlocked": true,
+		var lock: String = RaidManager.shop_lock_reason(item_id)
+		out.append({"kind": "reward", "label": "Astral Armory",
+			"detail": "Exchange Trial Marks at the armory." if lock == "" else lock, "level_required": 0, "unlocked": lock == "",
 			"route": {"screen": "raids"}})
+	if (DataLoader.raid_shop.get("legacy_alt_items", []) as Array).has(item_id):
+		out.append({"kind": "reward", "label": "Legacy Gauntlet reward",
+			"detail": "Available only as a pending reward in an older Gauntlet run.", "level_required": 0,
+			"unlocked": RaidManager.active and RaidManager.pending_choices.has(item_id), "route": {"screen": "raids"}})
 	# 10. The failure output of an action: burnt food is what Cookery hands over when it goes wrong.
 	for skill_id in DataLoader.get_skill_ids():
 		for action in DataLoader.get_skill_actions(str(skill_id)):
@@ -740,6 +775,9 @@ func _diversify(entries: Array, limit: int) -> Array:
 			buckets[kind] = []
 			order.append(kind)
 		(buckets[kind] as Array).append(entry)
+	if order.has("quest") and order.find("quest") >= limit:
+		order.erase("quest")
+		order.insert(maxi(0, limit - 1), "quest")
 	var out: Array = []
 	var round_index: int = 0
 	while out.size() < limit:
@@ -769,6 +807,9 @@ func routes_for_item(item_id: String) -> Array:
 	return routes
 
 func _route_for_monster(monster_id: String) -> Dictionary:
+	for index in range(RaidManager.ASTRAL_TRIALS.size()):
+		if RaidManager.astral_sequence(index).has(monster_id):
+			return {"screen":"raids", "trial_id":str(RaidManager.ASTRAL_TRIALS[index].id)}
 	for area_id in DataLoader.areas.keys():
 		if (DataLoader.areas[area_id].get("monsters", []) as Array).has(monster_id):
 			return {"screen": "combat", "area_id": area_id}
@@ -831,7 +872,7 @@ func suggestions(limit: int = 5) -> Array:
 	var area: Dictionary = _next_unvisited_area()
 	if not area.is_empty():
 		out.append({
-			"reason": "Combat level %d enemies have not been scouted" % int(area.get("combat_level", 0)),
+			"reason": "Combat level %s enemies have not been scouted" % UIStyle.fmt_exact(float(area.get("combat_level", 0))),
 			"label": "Scout %s" % area["name"],
 			"route": {"screen": "combat", "area_id": area["id"]},
 			"icon_kind": "areas", "icon_id": area["id"],
@@ -953,7 +994,7 @@ func _next_unvisited_area() -> Dictionary:
 		if visits.has(area_id):
 			continue
 		var a: Dictionary = DataLoader.areas[area_id]
-		var levels: Array = a.get("level_range", [0, 0])
+		var levels: Array = a.get("player_reference_level_range", a.get("level_range", [0, 0]))
 		var lo: int = int(levels[0]) if levels.size() > 0 else 0
 		if PlayerData.get_combat_level() >= lo:
 			var first: String = str((a.get("monsters", []) as Array)[0]) if not (a.get("monsters", []) as Array).is_empty() else ""

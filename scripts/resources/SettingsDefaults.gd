@@ -15,7 +15,6 @@ const DEFAULTS: Dictionary = {
 	"auto_equip_upgrades": false,
 	## Offline behaviour.
 	"offline_combat_enabled": true,     ## may combat continue while away?
-	"offline_combat_stops_on_defeat": true,  ## conservative default: a defeat ends offline combat
 	"offline_thieving_enabled": false,
 	"offline_cap_hours": 24.0,          ## configurable offline cap
 	"offline_auto_repeat": true,

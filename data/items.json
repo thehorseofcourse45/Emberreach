@@ -1746,7 +1746,8 @@
       "ranged_strength": 28
     },
     "sell_price": 21,
-    "is_stackable": true
+    "is_stackable": true,
+    "bottleneck_reason": "Top-tier arrow: every tier-8 bow spends it by design, and active_ammo falls back to lower arrows the bow accepts, so one Fletching recipe feeding many bows is intended"
   },
   "normal_shortbow": {
     "id": "normal_shortbow",
@@ -5380,7 +5381,8 @@
       "global_mastery_xp_percent": 15,
       "global_gp_percent": 25,
       "global_double_loot_percent": 5
-    }
+    },
+    "icon_id": "cape_of_completion"
   },
   "shard_air": {
     "id": "shard_air",
@@ -5928,7 +5930,7 @@
   },
   "raid_pet_egg": {
     "id": "raid_pet_egg",
-    "name": "Raid Pet Egg",
+    "name": "Trail Pet Egg",
     "item_type": "consumable",
     "sell_price": 0,
     "is_stackable": false,
@@ -7236,7 +7238,8 @@
     "name": "Griffin Plume",
     "item_type": "resource",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "icon_id": "ranch_plume"
   },
   "ranch_wyvern": {
     "id": "ranch_wyvern",
@@ -7296,7 +7299,8 @@
     "item_type": "consumable",
     "sell_price": 10,
     "is_stackable": true,
-    "description": "+25% crop survival and +10% harvest yield; apply to an empty plot."
+    "description": "+25% crop survival and +10% harvest yield; apply to an empty plot.",
+    "icon_id": "ranch_manure"
   },
   "ranch_meat": {
     "id": "ranch_meat",
@@ -7318,14 +7322,16 @@
     "name": "Golden Hen Stock",
     "item_type": "consumable",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "icon_id": "golden_hen_stock"
   },
   "mooncalf_stock": {
     "id": "mooncalf_stock",
     "name": "Mooncalf Stock",
     "item_type": "consumable",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "icon_id": "mooncalf_stock"
   },
   "scribe_paper": {
     "id": "scribe_paper",
@@ -8033,7 +8039,8 @@
     "item_type": "resource",
     "sell_price": 10,
     "is_stackable": true,
-    "description": "A dungeon boss catalyst for high-tier enchantments."
+    "description": "A dungeon boss catalyst for high-tier enchantments.",
+    "icon_id": "enchant_catalyst"
   },
   "dream_essence": {
     "id": "dream_essence",
@@ -8061,7 +8068,8 @@
       "ranching_interval_percent": 25,
       "ranching_happiness_floor": 50
     },
-    "description": "The mastery cape of Ranching."
+    "description": "The mastery cape of Ranching.",
+    "icon_id": "ranching_skillcape"
   },
   "potion_ranching": {
     "id": "potion_ranching",
@@ -8095,7 +8103,8 @@
       "inscription_duration_percent": 50,
       "inscription_glyph_slots": 1
     },
-    "description": "The mastery cape of Inscription."
+    "description": "The mastery cape of Inscription.",
+    "icon_id": "inscription_skillcape"
   },
   "potion_inscription": {
     "id": "potion_inscription",
@@ -8129,7 +8138,8 @@
       "engineering_device_slots": 1,
       "engineering_fuel_reduction_percent": 25
     },
-    "description": "The mastery cape of Engineering."
+    "description": "The mastery cape of Engineering.",
+    "icon_id": "engineering_skillcape"
   },
   "potion_engineering": {
     "id": "potion_engineering",
@@ -8163,7 +8173,8 @@
       "enchanting_slots": 1,
       "enchanting_catalyst_reduction_percent": 25
     },
-    "description": "The mastery cape of Enchanting."
+    "description": "The mastery cape of Enchanting.",
+    "icon_id": "enchanting_skillcape"
   },
   "potion_enchanting": {
     "id": "potion_enchanting",
@@ -8197,7 +8208,8 @@
       "dreamwalking_depth_percent": 50,
       "dreamwalking_essence_percent": 25
     },
-    "description": "The mastery cape of Dreamwalking."
+    "description": "The mastery cape of Dreamwalking.",
+    "icon_id": "dreamwalking_skillcape"
   },
   "potion_dreamwalking": {
     "id": "potion_dreamwalking",
@@ -8218,28 +8230,32 @@
     "name": "Border Collie Tablet",
     "item_type": "tablet",
     "sell_price": 2,
-    "is_stackable": true
+    "is_stackable": true,
+    "icon_id": "border_collie_tablet"
   },
   "border_collie_mark": {
     "id": "border_collie_mark",
     "name": "Border Collie Mark",
     "item_type": "consumable",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "icon_id": "border_collie_mark"
   },
   "sandman_tablet": {
     "id": "sandman_tablet",
     "name": "Sandman Tablet",
     "item_type": "tablet",
     "sell_price": 2,
-    "is_stackable": true
+    "is_stackable": true,
+    "icon_id": "sandman_tablet"
   },
   "sandman_mark": {
     "id": "sandman_mark",
     "name": "Sandman Mark",
     "item_type": "consumable",
     "sell_price": 10,
-    "is_stackable": true
+    "is_stackable": true,
+    "icon_id": "sandman_mark"
   },
   "topaz_ring": {
     "id": "topaz_ring",
@@ -8340,7 +8356,7 @@
       "global_mastery_xp_percent": 3
     },
     "level_requirements": {},
-    "icon_id": "sapphire_ring",
+    "icon_id": "sapphire_ring_of_focus",
     "description": "Water magic bound into sapphire keeps the mind on the task."
   },
   "emerald_ring_of_study": {
@@ -8354,7 +8370,7 @@
       "global_skill_xp_percent": 2
     },
     "level_requirements": {},
-    "icon_id": "emerald_ring",
+    "icon_id": "emerald_ring_of_study",
     "description": "Nature magic bound into emerald quickens every skill."
   },
   "topaz_ring_of_the_hawk": {
@@ -8369,7 +8385,7 @@
       "ranged_max_hit_percent": 3
     },
     "level_requirements": {},
-    "icon_id": "topaz_ring",
+    "icon_id": "topaz_ring_of_the_hawk",
     "description": "A hawk's eye bound into topaz, for archers."
   },
   "ruby_ring_of_fury": {
@@ -8384,7 +8400,7 @@
       "melee_max_hit_percent": 4
     },
     "level_requirements": {},
-    "icon_id": "ruby_ring",
+    "icon_id": "ruby_ring_of_fury",
     "description": "Fire bound into ruby, for those who fight up close."
   },
   "diamond_ring_of_warding": {
@@ -8399,7 +8415,7 @@
       "magic_max_hit_percent": 4
     },
     "level_requirements": {},
-    "icon_id": "diamond_ring",
+    "icon_id": "diamond_ring_of_warding",
     "description": "A permanent ward bound into diamond."
   },
   "riven_signet": {
@@ -9421,7 +9437,7 @@
     "item_type": "resource",
     "is_stackable": true,
     "sell_price": 0,
-    "icon_id": "enchant_catalyst",
+    "icon_id": "masterwork_seal",
     "description": "Earned once per activity by completing its mastery-120 challenge. Used to construct settlement wonders."
   },
   "astral_pendant": {
@@ -9451,7 +9467,7 @@
       "hitpoints": 115
     },
     "description": "Awarded for the first clear of Astral Sanctum.",
-    "icon_id": "heralds_sigil",
+    "icon_id": "astral_pendant",
     "is_boss_drop": true
   },
   "tempest_cloak": {
@@ -9475,7 +9491,7 @@
       "hitpoints": 115
     },
     "description": "Awarded for the first clear of Storm Citadel.",
-    "icon_id": "blighted_cloak",
+    "icon_id": "tempest_cloak",
     "is_boss_drop": true
   },
   "embercrown_blade": {
@@ -9493,7 +9509,7 @@
     "level_requirements": {
       "hitpoints": 120
     },
-    "icon_id": "herald_godsword",
+    "icon_id": "embercrown_blade",
     "is_boss_drop": true,
     "description": "Awarded for the first clear of Crown of Embers.",
     "passive_modifiers": {
@@ -9507,7 +9523,7 @@
     "item_type": "food",
     "is_stackable": true,
     "sell_price": 0,
-    "icon_id": "shark",
+    "icon_id": "legendary_crownfin",
     "description": "Claimed from Angling activity mastery challenges.",
     "heal_amount": 650
   },
@@ -9517,7 +9533,7 @@
     "item_type": "food",
     "is_stackable": true,
     "sell_price": 0,
-    "icon_id": "shark",
+    "icon_id": "masterwork_feast",
     "description": "Claimed from Cookery activity mastery challenges.",
     "heal_amount": 600
   },
@@ -9527,7 +9543,7 @@
     "item_type": "resource",
     "is_stackable": true,
     "sell_price": 0,
-    "icon_id": "enchant_catalyst",
+    "icon_id": "masterwork_relic",
     "description": "Claimed from Excavation activity mastery challenges."
   },
   "masterwork_gyro": {
@@ -9536,7 +9552,7 @@
     "item_type": "resource",
     "is_stackable": true,
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "masterwork_gyro",
     "description": "Claimed from Engineering activity mastery challenges."
   },
   "masterwork_ingot": {
@@ -9545,7 +9561,7 @@
     "item_type": "resource",
     "is_stackable": true,
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "masterwork_ingot",
     "description": "Claimed from Forgecraft activity mastery challenges."
   },
   "sundered_sigil": {
@@ -9553,7 +9569,7 @@
     "name": "Sundered Sigil",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "sundered_sigil",
     "description": "Earned from this regional threat; used in legendary crafting."
   },
   "tidal_sigil": {
@@ -9561,7 +9577,7 @@
     "name": "Tidal Sigil",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "dream_essence",
+    "icon_id": "tidal_sigil",
     "description": "Earned from this regional threat; used in legendary crafting."
   },
   "march_sigil": {
@@ -9569,7 +9585,7 @@
     "name": "March Sigil",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_essence",
+    "icon_id": "march_sigil",
     "description": "Earned from this regional threat; used in legendary crafting."
   },
   "stormglass_cargo": {
@@ -9577,7 +9593,7 @@
     "name": "Stormglass Cargo",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "stormglass_cargo",
     "description": "Dangerous caravan cargo used for legendary equipment. Cargo damage reduces the haul."
   },
   "nightveil_silk": {
@@ -9585,7 +9601,7 @@
     "name": "Nightveil Silk",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "ranch_wool",
+    "icon_id": "nightveil_silk",
     "description": "Dangerous caravan cargo used for legendary equipment. Cargo damage reduces the haul."
   },
   "worldheart_ore": {
@@ -9593,7 +9609,7 @@
     "name": "Worldheart Ore",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_ore",
+    "icon_id": "worldheart_ore",
     "description": "Dangerous caravan cargo used for legendary equipment. Cargo damage reduces the haul."
   },
   "choir_core": {
@@ -9601,7 +9617,7 @@
     "name": "Choir Core",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "dream_essence",
+    "icon_id": "choir_core",
     "description": "Dream boss core used to bind legendary equipment."
   },
   "astral_core": {
@@ -9609,7 +9625,7 @@
     "name": "Astral Core",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "dream_essence",
+    "icon_id": "astral_core",
     "description": "Dream boss core used to bind legendary equipment."
   },
   "sovereign_core": {
@@ -9617,7 +9633,7 @@
     "name": "Sovereign Core",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "dream_essence",
+    "icon_id": "sovereign_core",
     "description": "Dream boss core used to bind legendary equipment."
   },
   "ash_depth_shard": {
@@ -9625,7 +9641,7 @@
     "name": "Ash Depth Shard",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "summoning_shard_gold",
+    "icon_id": "ash_depth_shard",
     "description": "Awarded for every completed floor. Legendary crafting consumes these shards."
   },
   "tide_depth_shard": {
@@ -9633,7 +9649,7 @@
     "name": "Tide Depth Shard",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "summoning_shard_gold",
+    "icon_id": "tide_depth_shard",
     "description": "Awarded for every completed floor. Legendary crafting consumes these shards."
   },
   "star_depth_shard": {
@@ -9641,7 +9657,7 @@
     "name": "Star Depth Shard",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "summoning_shard_gold",
+    "icon_id": "star_depth_shard",
     "description": "Awarded for every completed floor. Legendary crafting consumes these shards."
   },
   "sunforged_frame": {
@@ -9649,7 +9665,7 @@
     "name": "Sunforged Frame",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "sunforged_frame",
     "description": "Forgecraft component for a legendary weapon."
   },
   "sunforged_focus": {
@@ -9657,7 +9673,7 @@
     "name": "Sunforged Focus",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "enchant_catalyst",
+    "icon_id": "sunforged_focus",
     "description": "Attuned component for a legendary weapon."
   },
   "sunforged_weapon": {
@@ -9677,7 +9693,7 @@
       "strength": 120,
       "attack": 120
     },
-    "icon_id": "herald_godsword",
+    "icon_id": "sunforged_weapon",
     "is_boss_drop": false,
     "description": "Legendary masterwork. Forge a frame, bind a focus, then assemble with seals and endless-dungeon shards.",
     "passive_modifiers": {
@@ -9690,7 +9706,7 @@
     "name": "Nightweaver Frame",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "nightweaver_frame",
     "description": "Forgecraft component for a legendary weapon."
   },
   "nightweaver_focus": {
@@ -9698,7 +9714,7 @@
     "name": "Nightweaver Focus",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "enchant_catalyst",
+    "icon_id": "nightweaver_focus",
     "description": "Attuned component for a legendary weapon."
   },
   "nightweaver_weapon": {
@@ -9723,14 +9739,14 @@
     "attack_cost_items": {
       "herald_arrow": 1
     },
-    "icon_id": "echobound_bow"
+    "icon_id": "nightweaver_weapon"
   },
   "starbound_frame": {
     "id": "starbound_frame",
     "name": "Starbound Frame",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "starbound_frame",
     "description": "Forgecraft component for a legendary weapon."
   },
   "starbound_focus": {
@@ -9738,7 +9754,7 @@
     "name": "Starbound Focus",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "enchant_catalyst",
+    "icon_id": "starbound_focus",
     "description": "Attuned component for a legendary weapon."
   },
   "starbound_weapon": {
@@ -9761,7 +9777,7 @@
       "dawn_rune": 1
     },
     "description": "Legendary masterwork. Forge a frame, bind a focus, then assemble with seals and endless-dungeon shards.",
-    "icon_id": "dawn_wand",
+    "icon_id": "starbound_weapon",
     "is_boss_drop": false
   },
   "trophy_gemkeeper": {
@@ -9769,7 +9785,7 @@
     "name": "Gemkeeper Trophy",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "diamond_ring",
+    "icon_id": "trophy_gemkeeper",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   },
@@ -9778,7 +9794,7 @@
     "name": "Threatbreaker Trophy",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_bulwark",
+    "icon_id": "trophy_threatbreaker",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   },
@@ -9787,7 +9803,7 @@
     "name": "Dreamhunter Trophy",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "dream_essence",
+    "icon_id": "trophy_dreamhunter",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   },
@@ -9796,7 +9812,7 @@
     "name": "Far Traveller Trophy",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "clockwork_gear",
+    "icon_id": "trophy_far_traveller",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   },
@@ -9805,7 +9821,7 @@
     "name": "Master Artisan Trophy",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "herald_bar",
+    "icon_id": "trophy_master_artisan",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   },
@@ -9814,7 +9830,7 @@
     "name": "Legendary Explorer Trophy",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "heralds_sigil",
+    "icon_id": "trophy_legendary_explorer",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   },
@@ -9825,7 +9841,7 @@
     "is_stackable": false,
     "name": "Sunforged Aegis",
     "equipment_slot": 1,
-    "icon_id": "throneguard_cuirass",
+    "icon_id": "sunforged_aegis",
     "equipment_stats": {
       "melee_defence": 58,
       "ranged_defence": 52,
@@ -9851,7 +9867,7 @@
     "is_stackable": false,
     "name": "Nightweaver Mantle",
     "equipment_slot": 1,
-    "icon_id": "blighted_cloak",
+    "icon_id": "nightweaver_mantle",
     "equipment_stats": {
       "ranged_defence": 60,
       "melee_defence": 46,
@@ -9878,7 +9894,7 @@
     "is_stackable": false,
     "name": "Starbound Vestments",
     "equipment_slot": 1,
-    "icon_id": "archmage_robe",
+    "icon_id": "starbound_vestments",
     "equipment_stats": {
       "magic_defence": 60,
       "melee_defence": 46,
@@ -9905,7 +9921,7 @@
     "is_stackable": false,
     "name": "Worldheart Signet",
     "equipment_slot": 7,
-    "icon_id": "charmed_gold_ring",
+    "icon_id": "worldheart_signet",
     "equipment_stats": {
       "damage_reduction": 2
     },
@@ -9927,7 +9943,7 @@
     "is_stackable": false,
     "name": "Sovereign's Locket",
     "equipment_slot": 6,
-    "icon_id": "artisan_amulet",
+    "icon_id": "sovereign_locket",
     "equipment_stats": {
       "damage_reduction": 3
     },
@@ -9949,7 +9965,7 @@
     "is_stackable": false,
     "name": "Archivist's Crown",
     "equipment_slot": 0,
-    "icon_id": "air_god_helmet",
+    "icon_id": "archivist_crown",
     "is_boss_drop": true,
     "equipment_stats": {
       "melee_defence": 42,
@@ -9976,7 +9992,7 @@
     "is_stackable": false,
     "name": "Completionist Cape",
     "equipment_slot": 5,
-    "icon_id": "caravaneering_skillcape",
+    "icon_id": "completionist_cape",
     "equipment_stats": {},
     "passive_modifiers": {
       "global_skill_xp_percent": 5,
@@ -9993,7 +10009,7 @@
     "is_stackable": false,
     "name": "Superior Completionist Cape",
     "equipment_slot": 5,
-    "icon_id": "caravaneering_skillcape",
+    "icon_id": "completionist_cape_superior",
     "equipment_stats": {},
     "passive_modifiers": {
       "global_skill_xp_percent": 10,
@@ -10009,7 +10025,7 @@
     "name": "Masterwork Codex",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "enchant_catalyst",
+    "icon_id": "masterwork_codex",
     "description": "Final specialist material for the Archive of Echoes. Awarded by a Scribing mastery challenge."
   },
   "trophy_archivist": {
@@ -10017,7 +10033,7 @@
     "name": "Archivist Trophy",
     "item_type": "resource",
     "sell_price": 0,
-    "icon_id": "diamond_ring",
+    "icon_id": "trophy_archivist",
     "description": "Permanent collection keepsake. View your pursuit in Collection → Pursuits.",
     "terminal_reason": "Permanent collection keepsake; the pursuit card records its completion. Intentionally not spent or sold."
   },
@@ -10544,7 +10560,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 3,
-    "icon_id": "copper_mint",
+    "icon_id": "copper_mint_seed",
     "grow_seconds": 3660,
     "base_survival": 0.6,
     "product_item": "copper_mint",
@@ -10649,7 +10665,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 6,
-    "icon_id": "honeycap",
+    "icon_id": "honeycap_seed",
     "grow_seconds": 4200,
     "base_survival": 0.6,
     "product_item": "honeycap",
@@ -10755,7 +10771,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 9,
-    "icon_id": "frost_pea",
+    "icon_id": "frost_pea_seed",
     "grow_seconds": 2700,
     "base_survival": 0.6,
     "product_item": "frost_pea",
@@ -10860,7 +10876,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 12,
-    "icon_id": "sun_saffron",
+    "icon_id": "sun_saffron_seed",
     "grow_seconds": 18000,
     "base_survival": 0.6,
     "product_item": "sun_saffron",
@@ -10965,7 +10981,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 15,
-    "icon_id": "sageberry",
+    "icon_id": "sageberry_seed",
     "grow_seconds": 6000,
     "base_survival": 0.6,
     "product_item": "sageberry",
@@ -11071,7 +11087,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 18,
-    "icon_id": "glass_lily",
+    "icon_id": "glass_lily_seed",
     "grow_seconds": 21600,
     "base_survival": 0.6,
     "product_item": "glass_lily",
@@ -11169,7 +11185,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 21,
-    "icon_id": "blood_ginger",
+    "icon_id": "blood_ginger_seed",
     "grow_seconds": 4800,
     "base_survival": 0.6,
     "product_item": "blood_ginger",
@@ -11274,7 +11290,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 24,
-    "icon_id": "moon_lotus",
+    "icon_id": "moon_lotus_seed",
     "grow_seconds": 7800,
     "base_survival": 0.6,
     "product_item": "moon_lotus",
@@ -11379,7 +11395,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 27,
-    "icon_id": "storm_lavender",
+    "icon_id": "storm_lavender_seed",
     "grow_seconds": 6000,
     "base_survival": 0.6,
     "product_item": "storm_lavender",
@@ -11484,7 +11500,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 30,
-    "icon_id": "night_pepper",
+    "icon_id": "night_pepper_seed",
     "grow_seconds": 36000,
     "base_survival": 0.6,
     "product_item": "night_pepper",
@@ -11589,7 +11605,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 33,
-    "icon_id": "astral_fennel",
+    "icon_id": "astral_fennel_seed",
     "grow_seconds": 10500,
     "base_survival": 0.6,
     "product_item": "astral_fennel",
@@ -11694,7 +11710,7 @@
     "item_type": "seed",
     "is_stackable": true,
     "sell_price": 36,
-    "icon_id": "dawn_orchid",
+    "icon_id": "dawn_orchid_seed",
     "grow_seconds": 11400,
     "base_survival": 0.6,
     "product_item": "dawn_orchid",
@@ -11820,7 +11836,7 @@
     "is_stackable": true,
     "sell_price": 20,
     "description": "Rare Duck bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_duck"
+    "icon_id": "rare_ranch_duck"
   },
   "rare_ranch_goat": {
     "id": "rare_ranch_goat",
@@ -11829,7 +11845,7 @@
     "is_stackable": true,
     "sell_price": 60,
     "description": "Rare Goat bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_goat"
+    "icon_id": "rare_ranch_goat"
   },
   "rare_ranch_alpaca": {
     "id": "rare_ranch_alpaca",
@@ -11838,7 +11854,7 @@
     "is_stackable": true,
     "sell_price": 100,
     "description": "Rare Alpaca bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_alpaca"
+    "icon_id": "rare_ranch_alpaca"
   },
   "rare_ranch_sheep": {
     "id": "rare_ranch_sheep",
@@ -11847,7 +11863,7 @@
     "sell_price": 20,
     "is_stackable": true,
     "description": "Rare Sheep bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_sheep"
+    "icon_id": "rare_ranch_sheep"
   },
   "rare_ranch_bristleback": {
     "id": "rare_ranch_bristleback",
@@ -11856,7 +11872,7 @@
     "is_stackable": true,
     "sell_price": 140,
     "description": "Rare Bristleback bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_bristleback"
+    "icon_id": "rare_ranch_bristleback"
   },
   "rare_ranch_silkwyrm": {
     "id": "rare_ranch_silkwyrm",
@@ -11865,7 +11881,7 @@
     "is_stackable": true,
     "sell_price": 180,
     "description": "Rare Silkwyrm bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_silkwyrm"
+    "icon_id": "rare_ranch_silkwyrm"
   },
   "rare_ranch_boar": {
     "id": "rare_ranch_boar",
@@ -11874,7 +11890,7 @@
     "sell_price": 20,
     "is_stackable": true,
     "description": "Rare Boar bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_boar"
+    "icon_id": "rare_ranch_boar"
   },
   "rare_ranch_sun_peacock": {
     "id": "rare_ranch_sun_peacock",
@@ -11883,7 +11899,7 @@
     "is_stackable": true,
     "sell_price": 220,
     "description": "Rare Sun Peacock bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_sun_peacock"
+    "icon_id": "rare_ranch_sun_peacock"
   },
   "rare_ranch_moonstag": {
     "id": "rare_ranch_moonstag",
@@ -11892,7 +11908,7 @@
     "sell_price": 20,
     "is_stackable": true,
     "description": "Rare Moonstag bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_moonstag"
+    "icon_id": "rare_ranch_moonstag"
   },
   "rare_ranch_crystal_tortoise": {
     "id": "rare_ranch_crystal_tortoise",
@@ -11901,7 +11917,7 @@
     "is_stackable": true,
     "sell_price": 260,
     "description": "Rare Crystal Tortoise bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_crystal_tortoise"
+    "icon_id": "rare_ranch_crystal_tortoise"
   },
   "rare_ranch_ember_salamander": {
     "id": "rare_ranch_ember_salamander",
@@ -11910,7 +11926,7 @@
     "is_stackable": true,
     "sell_price": 300,
     "description": "Rare Ember Salamander bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_ember_salamander"
+    "icon_id": "rare_ranch_ember_salamander"
   },
   "rare_ranch_griffin": {
     "id": "rare_ranch_griffin",
@@ -11919,7 +11935,7 @@
     "sell_price": 20,
     "is_stackable": true,
     "description": "Rare Griffin bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_griffin"
+    "icon_id": "rare_ranch_griffin"
   },
   "rare_ranch_cloud_roc": {
     "id": "rare_ranch_cloud_roc",
@@ -11928,7 +11944,7 @@
     "is_stackable": true,
     "sell_price": 340,
     "description": "Rare Cloud Roc bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_cloud_roc"
+    "icon_id": "rare_ranch_cloud_roc"
   },
   "rare_ranch_wyvern": {
     "id": "rare_ranch_wyvern",
@@ -11937,7 +11953,7 @@
     "sell_price": 20,
     "is_stackable": true,
     "description": "Rare Wyvern bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_wyvern"
+    "icon_id": "rare_ranch_wyvern"
   },
   "rare_ranch_dusk_kirin": {
     "id": "rare_ranch_dusk_kirin",
@@ -11946,7 +11962,7 @@
     "is_stackable": true,
     "sell_price": 380,
     "description": "Rare Dusk Kirin bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_dusk_kirin"
+    "icon_id": "rare_ranch_dusk_kirin"
   },
   "rare_ranch_phoenix": {
     "id": "rare_ranch_phoenix",
@@ -11955,7 +11971,7 @@
     "is_stackable": true,
     "sell_price": 420,
     "description": "Rare Phoenix bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_phoenix"
+    "icon_id": "rare_ranch_phoenix"
   },
   "rare_ranch_dragon": {
     "id": "rare_ranch_dragon",
@@ -11964,7 +11980,7 @@
     "sell_price": 20,
     "is_stackable": true,
     "description": "Rare Dragon bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_dragon"
+    "icon_id": "rare_ranch_dragon"
   },
   "rare_ranch_celestial_dragon": {
     "id": "rare_ranch_celestial_dragon",
@@ -11973,7 +11989,7 @@
     "sell_price": 20,
     "is_stackable": true,
     "description": "Rare Celestial Dragon bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_celestial_dragon"
+    "icon_id": "rare_ranch_celestial_dragon"
   },
   "rare_ranch_aurora_drake": {
     "id": "rare_ranch_aurora_drake",
@@ -11982,7 +11998,7 @@
     "is_stackable": true,
     "sell_price": 460,
     "description": "Rare Aurora Drake bred from a happy matching pair. Stock in a separate pen for twice the produce.",
-    "icon_id": "ranch_aurora_drake"
+    "icon_id": "rare_ranch_aurora_drake"
   },
   "metallic_essence": {
     "id": "metallic_essence",
@@ -14518,5 +14534,2838 @@
     },
     "potion_family": "potion_artisan",
     "potion_tier": 6
+  },
+  "starfall_aegis": {
+    "id": "starfall_aegis",
+    "name": "Starfall Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 76,
+      "ranged_defence": 76,
+      "magic_defence": 76,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 5,
+      "damage_to_monsters_percent": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "A unique first-clear reward from the final frontier expedition.",
+    "icon_id": "starfall_aegis"
+  },
+  "worldheart_crown": {
+    "id": "worldheart_crown",
+    "name": "Worldheart Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 82,
+      "ranged_defence": 82,
+      "magic_defence": 82,
+      "damage_reduction": 5,
+      "magic_attack": 32,
+      "ranged_attack": 32
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 8,
+      "damage_to_monsters_percent": 5
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "A unique first-clear reward from the final frontier expedition.",
+    "icon_id": "worldheart_crown"
+  },
+  "riftbound_sigil": {
+    "id": "riftbound_sigil",
+    "name": "Riftbound Sigil",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 2,
+      "slash": 32,
+      "stab": 32,
+      "block": 32,
+      "melee_strength": 24,
+      "ranged_attack": 32,
+      "ranged_strength": 24,
+      "magic_attack": 32,
+      "magic_damage_percent": 13
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 7,
+      "damage_to_monsters_percent": 4
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "A unique first-clear reward from the final frontier expedition.",
+    "icon_id": "riftbound_sigil"
+  },
+  "horizon_blade": {
+    "id": "horizon_blade",
+    "name": "Horizon Blade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 112,
+      "melee_strength": 154,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "horizon_blade",
+    "is_boss_drop": true,
+    "description": "A unique first-clear reward from the final frontier expedition.",
+    "passive_modifiers": {
+      "melee_accuracy_percent": 14,
+      "damage_to_monsters_percent": 6
+    },
+    "legendary": true
+  },
+  "ashward_aegis": {
+    "id": "ashward_aegis",
+    "name": "Ashward Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 44,
+      "ranged_defence": 44,
+      "magic_defence": 44,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 95
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 2,
+      "damage_to_monsters_percent": 2
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on the first clear of Ashward Fortress.",
+    "icon_id": "ashward_aegis"
+  },
+  "nightfen_mantle": {
+    "id": "nightfen_mantle",
+    "name": "Nightfen Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 48,
+      "ranged_defence": 48,
+      "magic_defence": 48,
+      "damage_reduction": 2,
+      "stun_resistance": 20,
+      "burn_resistance": 12
+    },
+    "level_requirements": {
+      "hitpoints": 100
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 3,
+      "damage_to_monsters_percent": 2
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on the first clear of Nightfen Citadel.",
+    "icon_id": "nightfen_mantle"
+  },
+  "riftmaw_sigil": {
+    "id": "riftmaw_sigil",
+    "name": "Riftmaw Sigil",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "melee_defence": 55,
+      "ranged_defence": 55,
+      "magic_defence": 55,
+      "damage_reduction": 2,
+      "slash": 25,
+      "stab": 25,
+      "block": 25,
+      "melee_strength": 18,
+      "ranged_attack": 25,
+      "ranged_strength": 18,
+      "magic_attack": 25,
+      "magic_damage_percent": 10
+    },
+    "level_requirements": {
+      "hitpoints": 105
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 5,
+      "damage_to_monsters_percent": 2
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on the first clear of Riftmaw Keep.",
+    "icon_id": "riftmaw_sigil"
+  },
+  "hushspire_crown": {
+    "id": "hushspire_crown",
+    "name": "Hushspire Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 60,
+      "ranged_defence": 60,
+      "magic_defence": 60,
+      "damage_reduction": 3,
+      "magic_attack": 24,
+      "ranged_attack": 24
+    },
+    "level_requirements": {
+      "hitpoints": 110
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 6,
+      "damage_to_monsters_percent": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on the first clear of Hushspire Hold.",
+    "icon_id": "hushspire_crown"
+  },
+  "starforge_blade": {
+    "id": "starforge_blade",
+    "name": "Starforge Blade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 63,
+      "melee_strength": 86,
+      "melee_defence": 11
+    },
+    "level_requirements": {
+      "hitpoints": 115
+    },
+    "icon_id": "starforge_blade",
+    "is_boss_drop": true,
+    "description": "Guaranteed on the first clear of Starforge Gatehouse.",
+    "passive_modifiers": {
+      "melee_accuracy_percent": 11,
+      "damage_to_monsters_percent": 4
+    },
+    "legendary": true
+  },
+  "eventide_ward": {
+    "id": "eventide_ward",
+    "name": "Eventide Ward",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 5,
+      "damage_to_monsters_percent": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Guaranteed on the first clear of Eventide Rampart.",
+    "icon_id": "eventide_ward"
+  },
+  "crucible_blade": {
+    "id": "crucible_blade",
+    "name": "Crucible Blade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 129,
+      "melee_strength": 178,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "crucible_blade",
+    "is_boss_drop": true,
+    "description": "First-clear reward from The Infernal Crucible.",
+    "passive_modifiers": {
+      "melee_max_hit_percent": 10,
+      "life_steal_percent": 4
+    },
+    "legendary": true
+  },
+  "crucible_aegis": {
+    "id": "crucible_aegis",
+    "name": "Crucible Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 76,
+      "ranged_defence": 76,
+      "magic_defence": 76,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "burn_resistance_percent": 20,
+      "food_healing_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Infernal Crucible.",
+    "icon_id": "crucible_aegis"
+  },
+  "leviathan_spear": {
+    "id": "leviathan_spear",
+    "name": "Leviathan Spear",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 137,
+      "melee_strength": 189,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "leviathan_spear",
+    "is_boss_drop": true,
+    "description": "First-clear reward from Leviathan Cathedral.",
+    "passive_modifiers": {
+      "melee_accuracy_percent": 12,
+      "crit_chance_percent": 5
+    },
+    "legendary": true
+  },
+  "leviathan_crown": {
+    "id": "leviathan_crown",
+    "name": "Leviathan Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 82,
+      "ranged_defence": 82,
+      "magic_defence": 82,
+      "damage_reduction": 5,
+      "magic_attack": 32,
+      "ranged_attack": 32
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "stun_resistance_percent": 20,
+      "global_accuracy_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Leviathan Cathedral.",
+    "icon_id": "leviathan_crown"
+  },
+  "verdant_staff": {
+    "id": "verdant_staff",
+    "name": "Verdant Staff",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 170,
+    "equipment_stats": {
+      "magic_attack": 335,
+      "magic_damage_percent": 87
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "attack_cost_items": {
+      "umbral_rune": 1
+    },
+    "special_attack": "cloudburst_magic_ray",
+    "icon_id": "verdant_staff",
+    "description": "First-clear reward from Verdant Oblivion.",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "magic_max_hit_percent": 10,
+      "rune_preservation_percent": 12
+    }
+  },
+  "verdant_sigil": {
+    "id": "verdant_sigil",
+    "name": "Verdant Sigil",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 27,
+      "slash": 27,
+      "block": 27,
+      "ranged_attack": 27,
+      "magic_attack": 27,
+      "melee_strength": 19,
+      "ranged_strength": 19,
+      "magic_damage_percent": 10,
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20
+    },
+    "passive_modifiers": {
+      "poison_resistance_percent": 25,
+      "hitpoints_regen_flat": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "description": "Rare final boss drop from Verdant Oblivion.",
+    "icon_id": "verdant_sigil",
+    "legendary": true,
+    "is_boss_drop": true
+  },
+  "eclipse_longbow": {
+    "id": "eclipse_longbow",
+    "name": "Eclipse Longbow",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.4,
+    "equipment_stats": {
+      "ranged_attack": 460,
+      "ranged_strength": 309
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    },
+    "special_attack": "ocean_song",
+    "icon_id": "eclipse_longbow",
+    "description": "First-clear reward from Citadel of the Eclipse.",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "ranged_max_hit_percent": 10,
+      "ammo_preservation_percent": 12
+    }
+  },
+  "eclipse_cloak": {
+    "id": "eclipse_cloak",
+    "name": "Eclipse Cloak",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "description": "Rare final boss drop from Citadel of the Eclipse.",
+    "icon_id": "eclipse_cloak",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "ranged_evasion_percent": 12,
+      "magic_evasion_percent": 12
+    }
+  },
+  "star_throne_blade": {
+    "id": "star_throne_blade",
+    "name": "Star Throne Blade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 162,
+      "melee_strength": 223,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "star_throne_blade",
+    "is_boss_drop": true,
+    "description": "First-clear reward from Throne Beyond the Stars.",
+    "passive_modifiers": {
+      "combat_max_hit_percent": 12,
+      "crit_chance_percent": 7
+    },
+    "legendary": true
+  },
+  "star_throne_ring": {
+    "id": "star_throne_ring",
+    "name": "Star Throne Ring",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "prayer_cost_reduction_percent": 12
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "star_throne_ring",
+    "description": "Rare final boss drop from Throne Beyond the Stars.",
+    "legendary": true,
+    "is_boss_drop": true
+  },
+  "caldera_axe": {
+    "id": "caldera_axe",
+    "name": "Caldera Axe",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 155,
+      "melee_strength": 214,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "caldera_axe",
+    "is_boss_drop": true,
+    "description": "First-clear reward from Clockwork Caldera.",
+    "passive_modifiers": {
+      "melee_max_hit_percent": 13,
+      "burn_resistance_percent": 15
+    },
+    "legendary": true
+  },
+  "caldera_gauntlets": {
+    "id": "caldera_gauntlets",
+    "name": "Caldera Gauntlets",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 12,
+      "ranged_defence": 12,
+      "magic_defence": 12,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "description": "Rare final boss drop from Clockwork Caldera.",
+    "icon_id": "caldera_gauntlets",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "food_healing_percent": 12,
+      "burn_resistance_percent": 20
+    }
+  },
+  "abyssal_trident": {
+    "id": "abyssal_trident",
+    "name": "Abyssal Trident",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 164,
+      "melee_strength": 225,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "abyssal_trident",
+    "is_boss_drop": true,
+    "description": "First-clear reward from The Abyssal Crown.",
+    "passive_modifiers": {
+      "melee_accuracy_percent": 15,
+      "crit_chance_percent": 8
+    },
+    "legendary": true
+  },
+  "abyssal_coral_shield": {
+    "id": "abyssal_coral_shield",
+    "name": "Abyssal Coral Shield",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 76,
+      "ranged_defence": 76,
+      "magic_defence": 76,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "stun_resistance_percent": 15
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Abyssal Crown.",
+    "icon_id": "abyssal_coral_shield"
+  },
+  "gravebound_scythe": {
+    "id": "gravebound_scythe",
+    "name": "Gravebound Scythe",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 165,
+      "melee_strength": 228,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "gravebound_scythe",
+    "is_boss_drop": true,
+    "description": "First-clear reward from Gravebound Dominion.",
+    "passive_modifiers": {
+      "melee_max_hit_percent": 12,
+      "life_steal_percent": 7
+    },
+    "legendary": true
+  },
+  "gravebound_crown": {
+    "id": "gravebound_crown",
+    "name": "Gravebound Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 82,
+      "ranged_defence": 82,
+      "magic_defence": 82,
+      "damage_reduction": 5,
+      "magic_attack": 32,
+      "ranged_attack": 32
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 10,
+      "poison_resistance_percent": 20
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Gravebound Dominion.",
+    "icon_id": "gravebound_crown"
+  },
+  "dreamglass_staff": {
+    "id": "dreamglass_staff",
+    "name": "Dreamglass Staff",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 208,
+    "equipment_stats": {
+      "magic_attack": 410,
+      "magic_damage_percent": 107
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "attack_cost_items": {
+      "umbral_rune": 1
+    },
+    "special_attack": "cloudburst_magic_ray",
+    "icon_id": "dreamglass_staff",
+    "description": "First-clear reward from Dreamglass Labyrinth.",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "magic_max_hit_percent": 13,
+      "rune_preservation_percent": 16
+    }
+  },
+  "dreamglass_amulet": {
+    "id": "dreamglass_amulet",
+    "name": "Dreamglass Amulet",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 27,
+      "slash": 27,
+      "block": 27,
+      "ranged_attack": 27,
+      "magic_attack": 27,
+      "melee_strength": 19,
+      "ranged_strength": 19,
+      "magic_damage_percent": 10,
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 12,
+      "hitpoints_regen_flat": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "description": "Rare final boss drop from Dreamglass Labyrinth.",
+    "icon_id": "dreamglass_amulet",
+    "legendary": true,
+    "is_boss_drop": true
+  },
+  "solar_apex_blade": {
+    "id": "solar_apex_blade",
+    "name": "Solar Apex Blade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 190,
+      "melee_strength": 261,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "solar_apex_blade",
+    "is_boss_drop": true,
+    "description": "First-clear reward from The Solar Apex.",
+    "passive_modifiers": {
+      "combat_max_hit_percent": 15,
+      "crit_chance_percent": 9
+    },
+    "legendary": true
+  },
+  "solar_apex_ring": {
+    "id": "solar_apex_ring",
+    "name": "Solar Apex Ring",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "prayer_cost_reduction_percent": 15
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "solar_apex_ring",
+    "description": "Rare final boss drop from The Solar Apex.",
+    "legendary": true,
+    "is_boss_drop": true
+  },
+  "lucid_fragment": {
+    "id": "lucid_fragment",
+    "name": "Lucid Fragment",
+    "item_type": "currency",
+    "sell_price": 0,
+    "is_stackable": true,
+    "description": "Earned by returning safely from the Dream Realm; exchanged for dream relics.",
+    "icon_id": "lucid_fragment"
+  },
+  "lantern_dream_amulet": {
+    "id": "lantern_dream_amulet",
+    "name": "Lantern Dream Amulet",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "magic_attack": 12,
+      "magic_damage_percent": 4
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 4,
+      "dreamwalking_essence_percent": 15
+    },
+    "level_requirements": {
+      "dreamwalking": 60
+    },
+    "description": "A relic exchanged for Lucid Fragments in the Dream Realm.",
+    "icon_id": "lantern_dream_amulet"
+  },
+  "mirror_dream_mantle": {
+    "id": "mirror_dream_mantle",
+    "name": "Mirror Dream Mantle",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 1,
+      "ranged_defence": 1,
+      "magic_defence": 1
+    },
+    "level_requirements": {
+      "dreamwalking": 75
+    },
+    "description": "A relic exchanged for Lucid Fragments in the Dream Realm.",
+    "icon_id": "mirror_dream_mantle",
+    "passive_modifiers": {
+      "global_mastery_xp_percent": 5,
+      "magic_evasion_percent": 8
+    }
+  },
+  "reverie_mirror_shield": {
+    "id": "reverie_mirror_shield",
+    "name": "Reverie Mirror Shield",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 45,
+      "ranged_defence": 45,
+      "magic_defence": 55,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "dreamwalking": 90
+    },
+    "passive_modifiers": {
+      "stun_resistance_percent": 15,
+      "magic_evasion_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "description": "A relic exchanged for Lucid Fragments in the Dream Realm.",
+    "icon_id": "reverie_mirror_shield"
+  },
+  "nightmare_dream_crown": {
+    "id": "nightmare_dream_crown",
+    "name": "Nightmare Dream Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 40,
+      "ranged_defence": 40,
+      "magic_defence": 55,
+      "damage_reduction": 3,
+      "magic_attack": 25
+    },
+    "level_requirements": {
+      "dreamwalking": 105
+    },
+    "passive_modifiers": {
+      "dreamwalking_depth_percent": 10,
+      "magic_max_hit_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "description": "A relic exchanged for Lucid Fragments in the Dream Realm.",
+    "icon_id": "nightmare_dream_crown"
+  },
+  "dawn_dream_ring": {
+    "id": "dawn_dream_ring",
+    "name": "Dawn Dream Ring",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "magic_max_hit_percent": 8,
+      "rune_preservation_percent": 12
+    },
+    "level_requirements": {
+      "dreamwalking": 115
+    },
+    "icon_id": "dawn_dream_ring",
+    "description": "A relic exchanged for Lucid Fragments in the Dream Realm."
+  },
+  "raid_reward_cinderbound_grips": {
+    "id": "raid_reward_cinderbound_grips",
+    "name": "Cinderbound Grips",
+    "item_type": "equipment",
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "melee_accuracy_percent": 9,
+      "burn_resistance_percent": 25
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Infernal Crucible.",
+    "icon_id": "raid_reward_cinderbound_grips"
+  },
+  "raid_reward_warlords_pyrecape": {
+    "id": "raid_reward_warlords_pyrecape",
+    "name": "Warlord's Pyrecape",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "melee_max_hit_percent": 9,
+      "life_steal_percent": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Infernal Crucible.",
+    "icon_id": "raid_reward_warlords_pyrecape"
+  },
+  "raid_reward_oracle_tide_charm": {
+    "id": "raid_reward_oracle_tide_charm",
+    "name": "Oracle's Tide Charm",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 20,
+      "slash": 20,
+      "block": 20,
+      "ranged_attack": 20,
+      "magic_attack": 20
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 8,
+      "stun_resistance_percent": 15
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Leviathan Cathedral.",
+    "icon_id": "raid_reward_oracle_tide_charm"
+  },
+  "raid_reward_leviathan_ward": {
+    "id": "raid_reward_leviathan_ward",
+    "name": "Leviathan Ward",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "food_healing_percent": 10
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Leviathan Cathedral.",
+    "icon_id": "raid_reward_leviathan_ward"
+  },
+  "raid_reward_titan_bloom_mantle": {
+    "id": "raid_reward_titan_bloom_mantle",
+    "name": "Titanbloom Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "magic_max_hit_percent": 8,
+      "poison_resistance_percent": 25
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Verdant Oblivion.",
+    "icon_id": "raid_reward_titan_bloom_mantle"
+  },
+  "raid_reward_thornheart_charm": {
+    "id": "raid_reward_thornheart_charm",
+    "name": "Thornheart Charm",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 20,
+      "slash": 20,
+      "block": 20,
+      "ranged_attack": 20,
+      "magic_attack": 20
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "hitpoints_regen_flat": 4,
+      "rune_preservation_percent": 10
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Verdant Oblivion.",
+    "icon_id": "raid_reward_thornheart_charm"
+  },
+  "raid_reward_arbiter_diadem": {
+    "id": "raid_reward_arbiter_diadem",
+    "name": "Arbiter's Diadem",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 10,
+      "magic_evasion_percent": 10
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Citadel of the Eclipse.",
+    "icon_id": "raid_reward_arbiter_diadem"
+  },
+  "raid_reward_twilight_bulwark": {
+    "id": "raid_reward_twilight_bulwark",
+    "name": "Twilight Bulwark",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "ranged_evasion_percent": 12
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Citadel of the Eclipse.",
+    "icon_id": "raid_reward_twilight_bulwark"
+  },
+  "raid_reward_throne_starlight_pendant": {
+    "id": "raid_reward_throne_starlight_pendant",
+    "name": "Throne Starlight Pendant",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 20,
+      "slash": 20,
+      "block": 20,
+      "ranged_attack": 20,
+      "magic_attack": 20
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "combat_max_hit_percent": 8,
+      "prayer_cost_reduction_percent": 10
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Throne Beyond the Stars.",
+    "icon_id": "raid_reward_throne_starlight_pendant"
+  },
+  "raid_reward_throne_vestments": {
+    "id": "raid_reward_throne_vestments",
+    "name": "Throne Vestments",
+    "item_type": "equipment",
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 100,
+      "ranged_defence": 100,
+      "magic_defence": 100,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 10,
+      "damage_reduction_percent": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Throne Beyond the Stars.",
+    "icon_id": "raid_reward_throne_vestments"
+  },
+  "raid_reward_caldera_furnace_helm": {
+    "id": "raid_reward_caldera_furnace_helm",
+    "name": "Caldera Furnace Helm",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "melee_max_hit_percent": 9,
+      "burn_resistance_percent": 25
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Clockwork Caldera.",
+    "icon_id": "raid_reward_caldera_furnace_helm"
+  },
+  "raid_reward_clockwork_furnace_plate": {
+    "id": "raid_reward_clockwork_furnace_plate",
+    "name": "Clockwork Furnace Plate",
+    "item_type": "equipment",
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 100,
+      "ranged_defence": 100,
+      "magic_defence": 100,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "food_healing_percent": 12,
+      "stun_resistance_percent": 15
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Clockwork Caldera.",
+    "icon_id": "raid_reward_clockwork_furnace_plate"
+  },
+  "raid_reward_empress_tide_pendant": {
+    "id": "raid_reward_empress_tide_pendant",
+    "name": "Empress Tide Pendant",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 20,
+      "slash": 20,
+      "block": 20,
+      "ranged_attack": 20,
+      "magic_attack": 20
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "melee_accuracy_percent": 12,
+      "stun_resistance_percent": 20
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Abyssal Crown.",
+    "icon_id": "raid_reward_empress_tide_pendant"
+  },
+  "raid_reward_abyssal_tide_mantle": {
+    "id": "raid_reward_abyssal_tide_mantle",
+    "name": "Abyssal Tide Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "hitpoints_regen_flat": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Abyssal Crown.",
+    "icon_id": "raid_reward_abyssal_tide_mantle"
+  },
+  "raid_reward_grave_king_mantle": {
+    "id": "raid_reward_grave_king_mantle",
+    "name": "Grave King's Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "life_steal_percent": 5,
+      "poison_resistance_percent": 20
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Gravebound Dominion.",
+    "icon_id": "raid_reward_grave_king_mantle"
+  },
+  "raid_reward_grave_king_signet": {
+    "id": "raid_reward_grave_king_signet",
+    "name": "Grave King's Signet",
+    "item_type": "equipment",
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "melee_max_hit_percent": 9,
+      "hitpoints_regen_flat": 4
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Gravebound Dominion.",
+    "icon_id": "raid_reward_grave_king_signet"
+  },
+  "raid_reward_weavers_mirror_ward": {
+    "id": "raid_reward_weavers_mirror_ward",
+    "name": "Weaver's Mirror Ward",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "magic_evasion_percent": 12,
+      "rune_preservation_percent": 12
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Dreamglass Labyrinth.",
+    "icon_id": "raid_reward_weavers_mirror_ward"
+  },
+  "raid_reward_labyrinth_dream_mantle": {
+    "id": "raid_reward_labyrinth_dream_mantle",
+    "name": "Labyrinth Dream Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35,
+      "damage_reduction": 3
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 12,
+      "magic_max_hit_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from Dreamglass Labyrinth.",
+    "icon_id": "raid_reward_labyrinth_dream_mantle"
+  },
+  "raid_reward_phoenix_sun_crown": {
+    "id": "raid_reward_phoenix_sun_crown",
+    "name": "Phoenix Sun Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "combat_max_hit_percent": 10,
+      "burn_resistance_percent": 25
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Solar Apex.",
+    "icon_id": "raid_reward_phoenix_sun_crown"
+  },
+  "raid_reward_apex_ascendant_aegis": {
+    "id": "raid_reward_apex_ascendant_aegis",
+    "name": "Apex Ascendant Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "prayer_cost_reduction_percent": 12
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Rare final boss drop from The Solar Apex.",
+    "icon_id": "raid_reward_apex_ascendant_aegis"
+  },
+  "astral_vanguard_blade": {
+    "id": "astral_vanguard_blade",
+    "name": "Astral Vanguard Blade",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "slash": 145,
+      "melee_strength": 195
+    },
+    "passive_modifiers": {
+      "melee_accuracy_percent": 10,
+      "melee_max_hit_percent": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "attack": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 12000,
+    "unlock_trial": "astral_vestibule",
+    "description": "A starlit blade forged for the chamber's vanguard.",
+    "icon_id": "astral_vanguard_blade",
+    "attack_speed": 3.0
+  },
+  "cometfall_longbow": {
+    "id": "cometfall_longbow",
+    "name": "Cometfall Longbow",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "ranged_attack": 190,
+      "ranged_strength": 155
+    },
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 10,
+      "ranged_max_hit_percent": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "ranged": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 18000,
+    "unlock_trial": "comet_forge",
+    "description": "A celestial bow that channels the speed of a falling star.",
+    "icon_id": "cometfall_longbow",
+    "attack_speed": 3.2,
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    }
+  },
+  "eclipse_oracle_staff": {
+    "id": "eclipse_oracle_staff",
+    "name": "Eclipse Oracle Staff",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "magic_attack": 220,
+      "magic_damage_percent": 55
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 10,
+      "magic_max_hit_percent": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "magic": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 23000,
+    "unlock_trial": "eclipse_oratory",
+    "description": "A crescent staff that focuses the power of an eclipse.",
+    "icon_id": "eclipse_oracle_staff",
+    "attack_speed": 3.0,
+    "spell_max_hit": 115,
+    "attack_cost_items": {
+      "umbral_rune": 1
+    }
+  },
+  "starward_aegis": {
+    "id": "starward_aegis",
+    "name": "Starward Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 65,
+      "ranged_defence": 65,
+      "magic_defence": 65,
+      "damage_reduction": 5
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "global_accuracy_percent": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "defence": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 30000,
+    "unlock_trial": "constellation_throne",
+    "description": "A constellation-forged shield that steadies the bearer.",
+    "icon_id": "starward_aegis"
+  },
+  "constellation_signet": {
+    "id": "constellation_signet",
+    "name": "Constellation Signet",
+    "item_type": "equipment",
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "global_accuracy_percent": 8,
+      "combat_max_hit_percent": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 36000,
+    "unlock_trial": "constellation_throne",
+    "description": "A golden signet bearing a map of the living stars.",
+    "icon_id": "constellation_signet"
+  },
+  "horizon_mantle": {
+    "id": "horizon_mantle",
+    "name": "Horizon Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 35,
+      "ranged_defence": 35,
+      "magic_defence": 35,
+      "damage_reduction": 3
+    },
+    "passive_modifiers": {
+      "combat_max_hit_percent": 8,
+      "damage_to_monsters_percent": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 50000,
+    "unlock_trial": "horizon_nexus",
+    "description": "A mantle woven from the last light beyond the horizon.",
+    "icon_id": "horizon_mantle"
+  },
+  "stormbreak_sigil": {
+    "id": "stormbreak_sigil",
+    "name": "Stormbreak Sigil",
+    "item_type": "equipment",
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "melee_defence": 67,
+      "ranged_defence": 67,
+      "magic_defence": 67,
+      "damage_reduction": 2,
+      "slash": 30,
+      "stab": 30,
+      "block": 30,
+      "melee_strength": 22,
+      "ranged_attack": 30,
+      "ranged_strength": 22,
+      "magic_attack": 30,
+      "magic_damage_percent": 12
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 6,
+      "stun_resistance_percent": 15
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Stormbreak Redoubt.",
+    "icon_id": "stormbreak_sigil"
+  },
+  "obsidian_crown_shield": {
+    "id": "obsidian_crown_shield",
+    "name": "Obsidian Crown Shield",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 58,
+      "ranged_defence": 58,
+      "magic_defence": 58,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "burn_resistance_percent": 20
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Obsidian Crown.",
+    "icon_id": "obsidian_crown_shield"
+  },
+  "moonfall_mantle": {
+    "id": "moonfall_mantle",
+    "name": "Moonfall Mantle",
+    "item_type": "equipment",
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 61,
+      "ranged_defence": 61,
+      "magic_defence": 61,
+      "damage_reduction": 3,
+      "stun_resistance": 25,
+      "burn_resistance": 15
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 8,
+      "rune_preservation_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Moonfall Bastion.",
+    "icon_id": "moonfall_mantle"
+  },
+  "thornstar_cuirass": {
+    "id": "thornstar_cuirass",
+    "name": "Thornstar Cuirass",
+    "item_type": "equipment",
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 64,
+      "ranged_defence": 64,
+      "magic_defence": 64,
+      "damage_reduction": 6,
+      "poison_resistance": 25
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "poison_resistance_percent": 20,
+      "hitpoints_regen_flat": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Thornstar Citadel.",
+    "icon_id": "thornstar_cuirass"
+  },
+  "dawnspire_aegis": {
+    "id": "dawnspire_aegis",
+    "name": "Dawnspire Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 76,
+      "ranged_defence": 76,
+      "magic_defence": 76,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "prayer_cost_reduction_percent": 10
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Dawnspire Fortress.",
+    "icon_id": "dawnspire_aegis"
+  },
+  "fallen_star_greatblade": {
+    "id": "fallen_star_greatblade",
+    "name": "Fallen Star Greatblade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 162,
+      "melee_strength": 223,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "fallen_star_greatblade",
+    "is_boss_drop": true,
+    "description": "Earned in Furnace of Fallen Stars.",
+    "passive_modifiers": {
+      "melee_max_hit_percent": 10,
+      "burn_resistance_percent": 20
+    },
+    "legendary": true
+  },
+  "fallen_star_relic": {
+    "id": "fallen_star_relic",
+    "name": "Fallen Star Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "melee_max_hit_percent": 9,
+      "burn_resistance_percent": 20
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Furnace of Fallen Stars.",
+    "icon_id": "fallen_star_relic"
+  },
+  "raid_reward_fallen_star_guard": {
+    "id": "raid_reward_fallen_star_guard",
+    "name": "Fallen Star Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "burn_resistance_percent": 15
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Furnace of Fallen Stars.",
+    "icon_id": "raid_reward_fallen_star_guard"
+  },
+  "raid_reward_fallen_star_signet": {
+    "id": "raid_reward_fallen_star_signet",
+    "name": "Fallen Star Signet",
+    "item_type": "equipment",
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "crit_chance_percent": 5,
+      "melee_accuracy_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Furnace of Fallen Stars.",
+    "icon_id": "raid_reward_fallen_star_signet"
+  },
+  "abyssal_tide_trident": {
+    "id": "abyssal_tide_trident",
+    "name": "Abyssal Tide Trident",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 164,
+      "melee_strength": 225,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "abyssal_tide_trident",
+    "is_boss_drop": true,
+    "description": "Earned in Maw of the Abyssal Tide.",
+    "passive_modifiers": {
+      "melee_accuracy_percent": 12,
+      "life_steal_percent": 3
+    },
+    "legendary": true
+  },
+  "abyssal_tide_relic": {
+    "id": "abyssal_tide_relic",
+    "name": "Abyssal Tide Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "hitpoints_regen_flat": 3
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Maw of the Abyssal Tide.",
+    "icon_id": "abyssal_tide_relic"
+  },
+  "raid_reward_abyssal_tide_guard": {
+    "id": "raid_reward_abyssal_tide_guard",
+    "name": "Abyssal Tide Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "food_healing_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Maw of the Abyssal Tide.",
+    "icon_id": "raid_reward_abyssal_tide_guard"
+  },
+  "raid_reward_abyssal_tide_signet": {
+    "id": "raid_reward_abyssal_tide_signet",
+    "name": "Abyssal Tide Signet",
+    "item_type": "equipment",
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "life_steal_percent": 3,
+      "global_accuracy_percent": 7
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Maw of the Abyssal Tide.",
+    "icon_id": "raid_reward_abyssal_tide_signet"
+  },
+  "last_moon_staff": {
+    "id": "last_moon_staff",
+    "name": "Last Moon Staff",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.0,
+    "spell_max_hit": 208,
+    "equipment_stats": {
+      "magic_attack": 410,
+      "magic_damage_percent": 107
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "attack_cost_items": {
+      "umbral_rune": 1
+    },
+    "special_attack": "cloudburst_magic_ray",
+    "icon_id": "last_moon_staff",
+    "description": "Earned in Archive of the Last Moon.",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "magic_max_hit_percent": 10,
+      "rune_preservation_percent": 10
+    }
+  },
+  "last_moon_relic": {
+    "id": "last_moon_relic",
+    "name": "Last Moon Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 12,
+      "magic_max_hit_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Archive of the Last Moon.",
+    "icon_id": "last_moon_relic"
+  },
+  "raid_reward_last_moon_guard": {
+    "id": "raid_reward_last_moon_guard",
+    "name": "Last Moon Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "rune_preservation_percent": 10
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Archive of the Last Moon.",
+    "icon_id": "raid_reward_last_moon_guard"
+  },
+  "raid_reward_last_moon_signet": {
+    "id": "raid_reward_last_moon_signet",
+    "name": "Last Moon Signet",
+    "item_type": "equipment",
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "magic_max_hit_percent": 8,
+      "rune_preservation_percent": 12
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Archive of the Last Moon.",
+    "icon_id": "raid_reward_last_moon_signet"
+  },
+  "voidborne_longbow": {
+    "id": "voidborne_longbow",
+    "name": "Voidborne Longbow",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.4,
+    "equipment_stats": {
+      "ranged_attack": 460,
+      "ranged_strength": 309
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    },
+    "special_attack": "ocean_song",
+    "icon_id": "voidborne_longbow",
+    "description": "Earned in The Voidborne Nexus.",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "ranged_max_hit_percent": 10,
+      "ammo_preservation_percent": 12
+    }
+  },
+  "voidborne_relic": {
+    "id": "voidborne_relic",
+    "name": "Voidborne Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 10,
+      "crit_chance_percent": 5
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in The Voidborne Nexus.",
+    "icon_id": "voidborne_relic"
+  },
+  "raid_reward_voidborne_guard": {
+    "id": "raid_reward_voidborne_guard",
+    "name": "Voidborne Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "stun_resistance_percent": 20
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in The Voidborne Nexus.",
+    "icon_id": "raid_reward_voidborne_guard"
+  },
+  "raid_reward_voidborne_signet": {
+    "id": "raid_reward_voidborne_signet",
+    "name": "Voidborne Signet",
+    "item_type": "equipment",
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 10,
+      "ranged_max_hit_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in The Voidborne Nexus.",
+    "icon_id": "raid_reward_voidborne_signet"
+  },
+  "eternal_dawn_blade": {
+    "id": "eternal_dawn_blade",
+    "name": "Eternal Dawn Blade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 190,
+      "melee_strength": 261,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "eternal_dawn_blade",
+    "is_boss_drop": true,
+    "description": "Earned in Sanctum of Eternal Dawn.",
+    "passive_modifiers": {
+      "combat_max_hit_percent": 14,
+      "crit_chance_percent": 7
+    },
+    "legendary": true
+  },
+  "eternal_dawn_relic": {
+    "id": "eternal_dawn_relic",
+    "name": "Eternal Dawn Crown",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 80,
+      "ranged_defence": 80,
+      "magic_defence": 80,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "combat_max_hit_percent": 10,
+      "burn_resistance_percent": 25
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Sanctum of Eternal Dawn.",
+    "icon_id": "eternal_dawn_relic"
+  },
+  "raid_reward_eternal_dawn_guard": {
+    "id": "raid_reward_eternal_dawn_guard",
+    "name": "Eternal Dawn Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 70,
+      "ranged_defence": 70,
+      "magic_defence": 70,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "prayer_cost_reduction_percent": 12
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Sanctum of Eternal Dawn.",
+    "icon_id": "raid_reward_eternal_dawn_guard"
+  },
+  "raid_reward_eternal_dawn_signet": {
+    "id": "raid_reward_eternal_dawn_signet",
+    "name": "Eternal Dawn Signet",
+    "item_type": "equipment",
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "combat_max_hit_percent": 8,
+      "crit_chance_percent": 6
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "Earned in Sanctum of Eternal Dawn.",
+    "icon_id": "raid_reward_eternal_dawn_signet"
+  },
+  "observatory_blade": {
+    "id": "observatory_blade",
+    "name": "Observatory Starblade",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "slash": 159.5,
+      "melee_strength": 214.5
+    },
+    "passive_modifiers": {
+      "melee_accuracy_percent": 10,
+      "melee_max_hit_percent": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "attack": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 65000,
+    "unlock_trial": "celestial_observatory",
+    "description": "An astral relic earned in the Celestial Observatory.",
+    "icon_id": "observatory_blade",
+    "attack_speed": 3.0
+  },
+  "observatory_helm": {
+    "id": "observatory_helm",
+    "name": "Observatory Helm",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 85,
+      "ranged_defence": 85,
+      "magic_defence": 85,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "defence": 120
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 12,
+      "magic_max_hit_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "An astral relic earned in the Celestial Observatory.",
+    "icon_id": "observatory_helm",
+    "raid_cost": 45000,
+    "unlock_trial": "celestial_observatory",
+    "is_raid_item": true
+  },
+  "nebula_bow": {
+    "id": "nebula_bow",
+    "name": "Nebula Longbow",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "ranged_attack": 209.0,
+      "ranged_strength": 170.5
+    },
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 10,
+      "ranged_max_hit_percent": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "ranged": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 75000,
+    "unlock_trial": "nebula_garden",
+    "description": "An astral relic earned in the Nebula Garden.",
+    "icon_id": "nebula_bow",
+    "attack_speed": 3.2,
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    }
+  },
+  "nebula_cuirass": {
+    "id": "nebula_cuirass",
+    "name": "Nebula Cuirass",
+    "item_type": "equipment",
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 95,
+      "ranged_defence": 95,
+      "magic_defence": 95,
+      "damage_reduction": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "defence": 120
+    },
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 10,
+      "ranged_max_hit_percent": 8
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "An astral relic earned in the Nebula Garden.",
+    "icon_id": "nebula_cuirass",
+    "raid_cost": 55000,
+    "unlock_trial": "nebula_garden",
+    "is_raid_item": true
+  },
+  "aurora_staff": {
+    "id": "aurora_staff",
+    "name": "Aurora Scepter",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "magic_attack": 242.0,
+      "magic_damage_percent": 60.5
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 10,
+      "magic_max_hit_percent": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "magic": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 85000,
+    "unlock_trial": "aurora_bastion",
+    "description": "An astral relic earned in the Aurora Bastion.",
+    "icon_id": "aurora_staff",
+    "attack_speed": 3.0,
+    "spell_max_hit": 115,
+    "attack_cost_items": {
+      "umbral_rune": 1
+    }
+  },
+  "aurora_gauntlets": {
+    "id": "aurora_gauntlets",
+    "name": "Aurora Gauntlets",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 4,
+    "equipment_stats": {
+      "melee_defence": 60,
+      "ranged_defence": 60,
+      "magic_defence": 60,
+      "damage_reduction": 4
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "defence": 120
+    },
+    "description": "An astral relic earned in the Aurora Bastion.",
+    "icon_id": "aurora_gauntlets",
+    "legendary": true,
+    "is_boss_drop": true,
+    "passive_modifiers": {
+      "food_healing_percent": 15,
+      "global_accuracy_percent": 8
+    },
+    "raid_cost": 60000,
+    "unlock_trial": "aurora_bastion",
+    "is_raid_item": true,
+    "is_stackable": false
+  },
+  "voidstar_aegis": {
+    "id": "voidstar_aegis",
+    "name": "Voidstar Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 71.5,
+      "ranged_defence": 71.5,
+      "magic_defence": 71.5,
+      "damage_reduction": 5.5
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 4,
+      "global_accuracy_percent": 5
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "defence": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 85000,
+    "unlock_trial": "voidstar_vault",
+    "description": "An astral relic earned in the Voidstar Vault.",
+    "icon_id": "voidstar_aegis"
+  },
+  "voidstar_greaves": {
+    "id": "voidstar_greaves",
+    "name": "Voidstar Greaves",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "melee_defence": 85,
+      "ranged_defence": 85,
+      "magic_defence": 85,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "defence": 120
+    },
+    "icon_id": "voidstar_greaves",
+    "raid_cost": 65000,
+    "unlock_trial": "voidstar_vault",
+    "is_raid_item": true,
+    "legendary": true,
+    "is_stackable": false,
+    "description": "An astral relic earned in the Voidstar Vault.",
+    "passive_modifiers": {
+      "damage_reduction_percent": 3,
+      "combat_max_hit_percent": 6
+    }
+  },
+  "eternity_greatblade": {
+    "id": "eternity_greatblade",
+    "name": "Eternity Starblade",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "slash": 180,
+      "melee_strength": 240
+    },
+    "passive_modifiers": {
+      "melee_accuracy_percent": 15,
+      "melee_max_hit_percent": 12
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "attack": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "is_raid_item": true,
+    "raid_cost": 125000,
+    "unlock_trial": "eternity_crown",
+    "description": "An astral relic earned in the Eternity Crown.",
+    "icon_id": "eternity_greatblade",
+    "attack_speed": 3.0
+  },
+  "eternity_crown_helm": {
+    "id": "eternity_crown_helm",
+    "name": "Crown of Eternity",
+    "item_type": "equipment",
+    "equipment_slot": 0,
+    "equipment_stats": {
+      "melee_defence": 100,
+      "ranged_defence": 100,
+      "magic_defence": 100,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "defence": 120
+    },
+    "passive_modifiers": {
+      "global_accuracy_percent": 10,
+      "combat_max_hit_percent": 9
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "An astral relic earned in the Eternity Crown.",
+    "icon_id": "eternity_crown_helm",
+    "raid_cost": 95000,
+    "unlock_trial": "eternity_crown",
+    "is_raid_item": true
+  },
+  "glassfire_aegis": {
+    "id": "glassfire_aegis",
+    "name": "Glassfire Aegis",
+    "item_type": "equipment",
+    "equipment_slot": 9,
+    "equipment_stats": {
+      "melee_defence": 76,
+      "ranged_defence": 76,
+      "magic_defence": 76,
+      "damage_reduction": 6
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 5,
+      "burn_resistance_percent": 20
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "First-clear reward from Emberglass Bastion.",
+    "icon_id": "glassfire_aegis"
+  },
+  "zenith_stormbow": {
+    "id": "zenith_stormbow",
+    "name": "Zenith Stormbow",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "ranged_attack": 220,
+      "ranged_strength": 175
+    },
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 14,
+      "ranged_max_hit_percent": 10
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "ranged": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "description": "First-clear reward from Tempest Zenith Keep.",
+    "icon_id": "zenith_stormbow",
+    "attack_speed": 3.2,
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    },
+    "is_boss_drop": true
+  },
+  "voidglass_cuirass": {
+    "id": "voidglass_cuirass",
+    "name": "Voidglass Cuirass",
+    "item_type": "equipment",
+    "equipment_slot": 1,
+    "equipment_stats": {
+      "melee_defence": 88,
+      "ranged_defence": 88,
+      "magic_defence": 88,
+      "damage_reduction": 7
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "passive_modifiers": {
+      "damage_reduction_percent": 3,
+      "combat_max_hit_percent": 6
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "is_boss_drop": true,
+    "legendary": true,
+    "description": "First-clear reward from Voidglass Monolith.",
+    "icon_id": "voidglass_cuirass"
+  },
+  "concord_scepter": {
+    "id": "concord_scepter",
+    "name": "Concord Scepter",
+    "item_type": "equipment",
+    "equipment_slot": 8,
+    "equipment_stats": {
+      "magic_attack": 250,
+      "magic_damage_percent": 62
+    },
+    "passive_modifiers": {
+      "magic_accuracy_percent": 14,
+      "magic_max_hit_percent": 10
+    },
+    "level_requirements": {
+      "hitpoints": 120,
+      "magic": 120
+    },
+    "sell_price": 0,
+    "is_stackable": false,
+    "legendary": true,
+    "description": "First-clear reward from Astral Concord.",
+    "icon_id": "concord_scepter",
+    "attack_speed": 3.0,
+    "spell_max_hit": 115,
+    "attack_cost_items": {
+      "umbral_rune": 1
+    },
+    "is_boss_drop": true
+  },
+  "horizon_eternal_blade": {
+    "id": "horizon_eternal_blade",
+    "name": "Horizon Eternal Blade",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.2,
+    "equipment_stats": {
+      "slash": 190,
+      "melee_strength": 261,
+      "melee_defence": 16
+    },
+    "level_requirements": {
+      "hitpoints": 120
+    },
+    "icon_id": "horizon_eternal_blade",
+    "is_boss_drop": true,
+    "description": "First-clear reward from Eternal Horizon Citadel.",
+    "passive_modifiers": {
+      "combat_max_hit_percent": 15,
+      "crit_chance_percent": 7,
+      "melee_accuracy_percent": 10
+    },
+    "legendary": true,
+    "is_stackable": false
+  },
+  "orchard_memory_charm": {
+    "id": "orchard_memory_charm",
+    "name": "Orchard Memory Charm",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "magic_attack": 12,
+      "magic_damage_percent": 4
+    },
+    "passive_modifiers": {
+      "global_skill_xp_percent": 5,
+      "dreamwalking_essence_percent": 20
+    },
+    "level_requirements": {
+      "dreamwalking": 116
+    },
+    "description": "A relic earned beyond the Throne of Dawn in the Dream Realm.",
+    "icon_id": "orchard_memory_charm"
+  },
+  "nameless_tide_band": {
+    "id": "nameless_tide_band",
+    "name": "Nameless Tide Band",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 7,
+    "equipment_stats": {},
+    "passive_modifiers": {
+      "magic_max_hit_percent": 10,
+      "rune_preservation_percent": 15
+    },
+    "level_requirements": {
+      "dreamwalking": 118
+    },
+    "icon_id": "nameless_tide_band",
+    "description": "A relic earned beyond the Throne of Dawn in the Dream Realm."
+  },
+  "horizon_weavers_mantle": {
+    "id": "horizon_weavers_mantle",
+    "name": "Horizon Weaver's Mantle",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 5,
+    "equipment_stats": {
+      "melee_defence": 1,
+      "ranged_defence": 1,
+      "magic_defence": 1
+    },
+    "level_requirements": {
+      "dreamwalking": 120
+    },
+    "description": "A relic earned beyond the Throne of Dawn in the Dream Realm.",
+    "icon_id": "horizon_weavers_mantle",
+    "passive_modifiers": {
+      "global_mastery_xp_percent": 7,
+      "dreamwalking_depth_percent": 15
+    }
+  },
+  "siege_supper": {
+    "name": "Siege Supper",
+    "item_type": "food",
+    "heal_amount": 800,
+    "icon_id": "siege_supper",
+    "description": "A hearty meal for long boss fights. Heals 800 HP.",
+    "id": "siege_supper",
+    "is_stackable": true,
+    "sell_price": 0
+  },
+  "wardens_draught": {
+    "name": "Warden's Draught",
+    "item_type": "potion",
+    "charges": 300,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "damage_reduction_percent": 5,
+      "food_healing_percent": 15
+    },
+    "icon_id": "wardens_draught",
+    "description": "For 300 player attacks: +5% damage reduction and +15% food healing. Uses the active potion slot.",
+    "id": "wardens_draught",
+    "is_stackable": true,
+    "sell_price": 0
+  },
+  "hunters_sigil": {
+    "name": "Hunter's Sigil",
+    "item_type": "potion",
+    "charges": 300,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_accuracy_percent": 18,
+      "combat_max_hit_percent": 6
+    },
+    "icon_id": "hunters_sigil",
+    "description": "Activate from the bank as a potion. For 300 player attacks: +18% accuracy and +6% maximum hit with all styles. Uses the active potion slot.",
+    "id": "hunters_sigil",
+    "is_stackable": true,
+    "sell_price": 0
+  },
+  "siege_charge": {
+    "name": "Siege Charge",
+    "item_type": "potion",
+    "charges": 300,
+    "charge_scope": "combat",
+    "potion_effect": {
+      "global_accuracy_percent": 6,
+      "combat_max_hit_percent": 12
+    },
+    "icon_id": "siege_charge",
+    "description": "Activate from the bank as a potion. For 300 player attacks: +6% accuracy and +12% maximum hit with all styles. Uses the active potion slot.",
+    "id": "siege_charge",
+    "is_stackable": true,
+    "sell_price": 0
+  },
+  "siegebound_platelegs": {
+    "id": "siegebound_platelegs",
+    "name": "Siegebound Platelegs",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 2,
+    "equipment_stats": {
+      "melee_defence": 42,
+      "ranged_defence": 42,
+      "magic_defence": 42,
+      "damage_reduction": 5
+    },
+    "level_requirements": {
+      "defence": 118
+    },
+    "description": "A boss-ready upgrade made from Throneguard Platelegs.",
+    "icon_id": "siegebound_platelegs",
+    "passive_modifiers": {
+      "food_healing_percent": 4
+    }
+  },
+  "dawnbloom_siege_bow": {
+    "id": "dawnbloom_siege_bow",
+    "name": "Dawnbloom Siege Bow",
+    "item_type": "equipment",
+    "is_stackable": false,
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 3.6,
+    "equipment_stats": {
+      "ranged_attack": 130,
+      "ranged_strength": 86
+    },
+    "level_requirements": {
+      "ranged": 118
+    },
+    "ammo_tier_max": 8,
+    "attack_cost_items": {
+      "herald_arrow": 1
+    },
+    "icon_id": "dawnbloom_siege_bow",
+    "description": "A boss-ready upgrade made from Dawnbloom Longbow.",
+    "passive_modifiers": {
+      "ranged_accuracy_percent": 5
+    }
+  },
+  "attuned_dawn_wand": {
+    "id": "attuned_dawn_wand",
+    "name": "Attuned Dawn Wand",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 8,
+    "attack_speed": 2.6,
+    "spell_max_hit": 98,
+    "equipment_stats": {
+      "magic_attack": 230,
+      "magic_damage_percent": 55
+    },
+    "level_requirements": {
+      "magic": 120
+    },
+    "attack_cost_items": {
+      "dawn_rune": 1
+    },
+    "description": "A boss-ready upgrade made from Dawn Wand.",
+    "icon_id": "attuned_dawn_wand",
+    "passive_modifiers": {
+      "rune_preservation_percent": 5
+    }
+  },
+  "siege_sigil": {
+    "id": "siege_sigil",
+    "name": "Siege Sigil",
+    "item_type": "equipment",
+    "sell_price": 0,
+    "equipment_slot": 6,
+    "equipment_stats": {
+      "stab": 27,
+      "slash": 27,
+      "block": 27,
+      "ranged_attack": 27,
+      "magic_attack": 27,
+      "melee_strength": 19,
+      "ranged_strength": 19,
+      "magic_damage_percent": 10,
+      "melee_defence": 20,
+      "ranged_defence": 20,
+      "magic_defence": 20
+    },
+    "passive_modifiers": {
+      "damage_to_monsters_percent": 4,
+      "global_accuracy_percent": 4
+    },
+    "level_requirements": {
+      "hitpoints": 105
+    },
+    "description": "A boss-ready upgrade made from Herald's Sigil.",
+    "icon_id": "siege_sigil"
+  },
+  "woven_briar_hex_pattern": {
+    "id": "woven_briar_hex_pattern",
+    "name": "Briar Hex Pattern",
+    "item_type": "resource",
+    "sell_price": 130,
+    "description": "Weave once to permanently learn Briar Hex. Equip a magic weapon and select it in Spellweaving.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; extra copies train mastery and can be sold."
+  },
+  "woven_frostglass_prism_pattern": {
+    "id": "woven_frostglass_prism_pattern",
+    "name": "Frostglass Prism Pattern",
+    "item_type": "resource",
+    "sell_price": 300,
+    "description": "Weave once to permanently learn Frostglass Prism. Equip a magic weapon and select it in Spellweaving.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; extra copies train mastery and can be sold."
+  },
+  "woven_thunderbrand_pattern": {
+    "id": "woven_thunderbrand_pattern",
+    "name": "Thunderbrand Pattern",
+    "item_type": "resource",
+    "sell_price": 480,
+    "description": "Weave once to permanently learn Thunderbrand. Equip a magic weapon and select it in Spellweaving.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; extra copies train mastery and can be sold."
+  },
+  "woven_astral_cinder_pattern": {
+    "id": "woven_astral_cinder_pattern",
+    "name": "Astral Cinder Pattern",
+    "item_type": "resource",
+    "sell_price": 620,
+    "description": "Weave once to permanently learn Astral Cinder. Equip a magic weapon and select it in Spellweaving.",
+    "terminal_reason": "Crafting teaches this permanent spell pattern; extra copies train mastery and can be sold."
   }
 }

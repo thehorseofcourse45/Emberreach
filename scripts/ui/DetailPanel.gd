@@ -17,6 +17,8 @@ signal navigated(route: Dictionary)
 ## The card's own close button.
 signal close_requested
 
+const BossMechanicText = preload("res://scripts/ui/BossMechanicText.gd")
+
 ## While pinned, the card stays open across navigation and outside clicks.
 var pinned: bool = false
 
@@ -114,10 +116,12 @@ func show_goal(goal: Dictionary) -> void:
 		_subtitle.text = str(resolved.get("problem", "That goal could not be resolved."))
 		return
 	_title.text = str(resolved.get("label", "Goal"))
-	_subtitle.text = "%s goal  ·  %s" % [str(resolved.get("kind", "")).capitalize(),
+	_subtitle.text = "%s goal  ·  %s" % ["Collection" if str(resolved.get("kind", "")) == "collection_item" else str(resolved.get("kind", "")).capitalize(),
 		"complete" if bool(resolved.get("complete", false)) else "in progress"]
 	_pin_button.visible = true
 	_pin_button.text = "Untrack" if Goals.is_pinned(str(goal["kind"]), str(goal["id"])) else "Track this goal"
+	if str(goal.get("kind", "")) in ["item", "recipe"]:
+		_add_queue_preview(goal)
 
 	if str(resolved.get("description", "")) != "":
 		var desc := UIStyle.label(str(resolved["description"]), true, UITokens.FONT_SMALL)
@@ -241,6 +245,7 @@ func show_item(item_id: String) -> void:
 	_subtitle.text = "%s · %s" % [str(rarity["label"]), str(item.get("item_type", "item")).capitalize()]
 	_pin_button.visible = true
 	_pin_button.text = "Untrack" if Goals.is_pinned("item", item_id) else "Track this goal"
+	_add_queue_preview({"kind": "item", "id": item_id, "level": 1})
 
 	var held: int = BankManager.get_count(item_id)
 	# The face and the flavour text share a row; the numbers go underneath it at full width. Beside a
@@ -345,6 +350,7 @@ func show_recipe(skill_id: String, action_id: String) -> void:
 	_subtitle.text = "%s · recipe" % DataLoader.get_skill(skill_id).get("name", skill_id)
 	_pin_button.visible = true
 	_pin_button.text = "Untrack" if Goals.is_pinned("recipe", "%s:%s" % [skill_id, action_id]) else "Track this goal"
+	_add_queue_preview({"kind": "recipe", "id": "%s:%s" % [skill_id, action_id]})
 
 	var check: Dictionary = SkillManager.check_action(skill_id, action_id)
 	var status_color: Color = UITokens.GREEN if bool(check["ok"]) else UITokens.AMBER
@@ -418,13 +424,25 @@ func show_region(area_id: String) -> void:
 		return
 	var is_dungeon: bool = DataLoader.dungeons.has(area_id)
 	var row: Dictionary = DataLoader.get_dungeon(area_id) if is_dungeon else DataLoader.areas.get(area_id, {})
+	var trial_index := -1
+	if row.is_empty():
+		for i in range(RaidManager.ASTRAL_TRIALS.size()):
+			var trial: Dictionary = RaidManager.ASTRAL_TRIALS[i]
+			if str(trial.id) == area_id:
+				trial_index = i
+				var sequence := RaidManager.astral_sequence(i)
+				var maximum := int(DataLoader.get_monster(str(trial.enemy)).get("combat_level", 0))
+				var minimum := maximum
+				for mid in sequence: minimum = mini(minimum, int(DataLoader.get_monster(str(mid)).get("combat_level", minimum)))
+				row = {"name":trial.name, "monsters":sequence, "level_range":[minimum, maximum]}
+				break
 	if row.is_empty():
 		return
 	_current_kind = "region"
 	_current_payload = area_id
 	_clear()
 	_title.text = str(row.get("name", area_id))
-	_subtitle.text = "Expedition" if is_dungeon else "Region"
+	_subtitle.text = "Astral trial" if trial_index >= 0 else ("Expedition" if is_dungeon else "Region")
 	_pin_button.visible = false
 	if str(row.get("flavour", "")) != "":
 		var f := UIStyle.label(str(row["flavour"]), true, UITokens.FONT_SMALL)
@@ -432,9 +450,16 @@ func show_region(area_id: String) -> void:
 		_body.add_child(f)
 	var levels: Array = row.get("level_range", [])
 	if levels.size() == 2:
-		_body.add_child(Widgets.key_value("Enemy level range", "%d – %d" % [int(levels[0]), int(levels[1])]))
+		_body.add_child(Widgets.key_value("Enemy level range", "%s – %s" % [UIStyle.fmt_exact(float(levels[0])), UIStyle.fmt_exact(float(levels[1]))]))
 	_body.add_child(UIStyle.section("Encounters"))
-	for monster_id in row.get("monsters", []):
+	var encounters: Array = []
+	for mid in row.get("monsters", []):
+		if trial_index >= 0 and not encounters.is_empty() and str(encounters.back().id) == str(mid):
+			encounters.back().count += 1
+		else:
+			encounters.append({"id":str(mid), "count":1})
+	for encounter in encounters:
+		var monster_id := str(encounter.id)
 		var m: Dictionary = DataLoader.get_monster(str(monster_id))
 		if m.is_empty():
 			continue
@@ -452,11 +477,24 @@ func show_region(area_id: String) -> void:
 			sprite.tooltip_text = "%s — not yet defeated" % str(m.get("name", monster_id))
 		head.add_child(sprite)
 		var col := UIStyle.vbox(UITokens.SP_1)
-		col.add_child(UIStyle.label("%s  (Lv %d)" % [str(m.get("name", monster_id)), int(m.get("combat_level", 1))], false, UITokens.FONT_SMALL))
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var prefix := "%d × " % int(encounter.count) if int(encounter.count) > 1 else ""
+		var name_label := UIStyle.label("%s%s  (Lv %s)" % [prefix, str(m.get("name", monster_id)), UIStyle.fmt_exact(float(m.get("combat_level", 1)))], false, UITokens.FONT_SMALL)
+		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		col.add_child(name_label)
 		col.add_child(UIStyle.label("%d HP · %s · max hit %d" % [int(m.get("hitpoints", 0)),
 			str(m.get("attack_type", "melee")), int(m.get("max_hit", 0))], true, UITokens.FONT_MICRO))
 		head.add_child(col)
 		_body.add_child(head)
+		if bool(m.get("is_boss", false)):
+			var mechanics: Array[String] = BossMechanicText.describe(m)
+			if not mechanics.is_empty():
+				var heading := UIStyle.colored_label("Boss mechanics", UITokens.GOLD, UITokens.FONT_SMALL)
+				_body.add_child(heading)
+				for mechanic in mechanics:
+					var note := UIStyle.label("• " + mechanic, true, UITokens.FONT_MICRO)
+					note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+					_body.add_child(note)
 		if str(m.get("flavour", "")) != "":
 			var fl := UIStyle.label("    " + str(m["flavour"]), true, UITokens.FONT_MICRO)
 			fl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -490,13 +528,33 @@ func show_region(area_id: String) -> void:
 				_body.add_child(Widgets.requirement_row(
 					"Clear %s" % str(DataLoader.get_dungeon(prev).get("name", prev)),
 					1.0 if cleared else 0.0, 1.0, cleared, "Open Expeditions to attempt it"))
+		var endless: bool = bool(row.get("endless_floors", false))
+		var repeat: Dictionary = row.get("floor_reward" if endless else "completion_reward", {})
+		if not repeat.is_empty():
+			_body.add_child(UIStyle.section("Base reward per floor" if endless else "Base reward per clear"))
+			var reward_text := UIStyle.label(_describe_reward(repeat), true, UITokens.FONT_SMALL)
+			reward_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			_body.add_child(reward_text)
+			if endless:
+				var milestone := UIStyle.label("Every tenth floor pays six times the floor reward.", true, UITokens.FONT_MICRO)
+				milestone.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				_body.add_child(milestone)
 		var reward: Dictionary = row.get("rewards_first_clear", {})
 		if not reward.is_empty():
 			_body.add_child(UIStyle.section("First-clear reward"))
 			_body.add_child(UIStyle.label(_describe_reward(reward), false, UITokens.FONT_SMALL))
+	if trial_index >= 0:
+		var trial: Dictionary = RaidManager.ASTRAL_TRIALS[trial_index]
+		_body.add_child(UIStyle.section("Trial reward"))
+		_body.add_child(UIStyle.label("%s Trial Marks per clear" % UIStyle.fmt(float(trial.marks)), false, UITokens.FONT_SMALL))
+		var reason := RaidManager.astral_lock_reason(trial_index)
+		if reason != "":
+			var locked := UIStyle.colored_label("Locked — %s" % reason, UITokens.AMBER, UITokens.FONT_SMALL)
+			locked.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			_body.add_child(locked)
 	var expedition: bool = is_dungeon and CombatManager.is_expedition(area_id)
-	var go := UIStyle.button("Open in Expeditions" if expedition else "Open in Combat")
-	go.pressed.connect(func(): navigated.emit({"screen": Screens.EXPEDITIONS if expedition else Screens.COMBAT, "area_id": area_id}))
+	var go := UIStyle.button("Open trial" if trial_index >= 0 else ("Open in Expeditions" if expedition else "Open in Combat"))
+	go.pressed.connect(func(): navigated.emit({"screen": Screens.RAIDS if trial_index >= 0 else (Screens.EXPEDITIONS if expedition else Screens.COMBAT), "area_id": area_id}))
 	_body.add_child(go)
 
 ## A source is two stacked, wrapping lines rather than a key/value row: these names are the longest
@@ -574,7 +632,7 @@ const SCREEN_HELP: Dictionary = {
 	Screens.ACHIEVEMENTS: {"title": "Milestones",
 		"body": "Long-term recognition with deliberately modest rewards. Progress is measured from your lifetime record."},
 	Screens.COLLECTION: {"title": "Collection",
-		"body": "Everything you have discovered: items, enemies and expeditions. Undiscovered entries stay visible but unnamed."},
+		"body": "Everything you have discovered: items, enemies and expeditions. Undiscovered enemies and expeditions are counted until found."},
 	Screens.SETTLEMENT: {"title": "Settlement",
 		"body": "Emberreach produces resources on the hour, whether you are watching or not. Structures unlock systems as well as percentages."},
 	Screens.PROVISIONER: {"title": "Provisioner",
@@ -590,6 +648,11 @@ const SCREEN_HELP: Dictionary = {
 # =========================================================================
 #  Helpers
 # =========================================================================
+
+func _add_queue_preview(goal: Dictionary) -> void:
+	var button := UIStyle.button("Preview queue plan", "Review a suggested sequence before adding it to the action queue")
+	button.pressed.connect(func(): navigated.emit({"screen": Screens.ACTION_QUEUE, "plan_goal": goal.duplicate(true)}))
+	_body.add_child(button)
 
 func _clear() -> void:
 	for c in _body.get_children():

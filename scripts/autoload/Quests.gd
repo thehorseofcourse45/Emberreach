@@ -32,6 +32,7 @@ var _quests: Dictionary = {}          # quest_id -> definition
 var _order: Array[String] = []
 var _accepted: Dictionary = {}        # quest_id -> true
 var _claimed: Dictionary = {}         # quest_id -> true
+var _legacy_campaign_objectives: Dictionary = {}
 var _rotating: Dictionary = {}          # rotating task id -> true
 var _rotating_order: Array[String] = []
 ## Verification hook: pins the rotation window so screenshots and checks stay stable.
@@ -129,6 +130,22 @@ func visible_ids() -> Array[String]:
 ## Rotation: the featured selection steps to a new set every six hours.
 func is_rotating(quest_id: String) -> bool:
 	return _rotating.has(quest_id)
+
+## Which Tasks sub-tab a task belongs to. Rotating tasks and the boards tagged in data report
+## their own id; everything else falls back to its difficulty tier. Boards are exclusive, so a
+## tagged task is not also listed under its difficulty.
+func tab_of(quest_id: String) -> String:
+	if _rotating.has(quest_id):
+		return "rotating"
+	var q: Dictionary = get_quest(quest_id)
+	return str(q.get("tab", str(q.get("difficulty", ""))))
+
+## Display name for an Astral Trial Chamber trial, used by objectives and their labels.
+func trial_name(trial_id: String) -> String:
+	for trial in RaidManager.ASTRAL_TRIALS:
+		if str(trial.get("id", "")) == trial_id:
+			return str(trial.get("name", trial_id))
+	return trial_id
 
 ## The full rotation pool, in file order (stable: the featured pick depends on it).
 func rotating_pool_ids() -> Array[String]:
@@ -259,8 +276,9 @@ func progress(quest_id: String) -> Dictionary:
 	var out: Dictionary = {"objectives": [], "satisfied": 0, "total": 0, "all_satisfied": false}
 	if q.is_empty():
 		return out
-	for i in range((q.get("objectives", []) as Array).size()):
-		var obj: Dictionary = q["objectives"][i]
+	var objectives: Array = objectives_for(quest_id)
+	for i in range(objectives.size()):
+		var obj: Dictionary = objectives[i]
 		var row: Dictionary = describe_objective(obj)
 		row["index"] = i
 		# A repeated rotating task counts only what happened since its last claim.
@@ -275,6 +293,15 @@ func progress(quest_id: String) -> Dictionary:
 		out["total"] += 1
 	out["all_satisfied"] = out["total"] > 0 and out["satisfied"] == out["total"]
 	return out
+
+func objectives_for(quest_id: String) -> Array:
+	var q: Dictionary = get_quest(quest_id)
+	if _legacy_campaign_objectives.has(quest_id):
+		return q.get("legacy_objectives", [])
+	return q.get("objectives", [])
+
+func uses_legacy_campaign_objectives(quest_id: String) -> bool:
+	return _legacy_campaign_objectives.has(quest_id) and not is_claimed(quest_id)
 
 ## Evaluate one objective against authoritative state. Pure: no side effects.
 func describe_objective(obj: Dictionary) -> Dictionary:
@@ -318,6 +345,10 @@ func describe_objective(obj: Dictionary) -> Dictionary:
 			current = PlayerData.get_stat("items_crafted", str(obj.get("item_id", "")))
 			lifetime = true
 			hint = "Items you produced yourself"
+		"caravan_delivery":
+			current = PlayerData.get_stat("caravan_deliveries", str(obj.get("item_id", "")))
+			lifetime = true
+			hint = "Cargo on completed caravan trips; earlier trips are not recorded"
 		"do_actions":
 			current = PlayerData.get_stat("actions", "%s:%s" % [str(obj.get("skill_id", "")), str(obj.get("action_id", ""))])
 			lifetime = true
@@ -353,8 +384,15 @@ func describe_objective(obj: Dictionary) -> Dictionary:
 			current = float(CartographyManager.discovered.size())
 			lifetime = true
 			hint = "Regions charted on the frontier map"
+		"complete_trial":
+			current = float(RaidManager.astral_completions.get(str(obj.get("trial_id", "")), 0))
+			lifetime = true
+			hint = "Wins recorded in the Astral Trial Chamber"
 		_:
 			hint = "Unsupported objective kind '%s'" % kind
+	var route: Dictionary = obj.get("route", {}).duplicate()
+	if kind == "build_structure" and route.get("screen", "") == "settlement":
+		route["building_id"] = str(obj.get("building_id", ""))
 	return {
 		"kind": kind,
 		"label": str(obj.get("label", _default_label(obj, kind))),
@@ -364,7 +402,7 @@ func describe_objective(obj: Dictionary) -> Dictionary:
 		"satisfied": current >= required,
 		"percent": clampf(0.0 if required <= 0.0 else current / required, 0.0, 1.0),
 		"hint": hint,
-		"route": obj.get("route", {}),
+		"route": route,
 		"consumes": kind == "have_item",
 	}
 
@@ -378,6 +416,8 @@ func _default_label(obj: Dictionary, kind: String) -> String:
 			return "Defeat %s ×%d" % [DataLoader.get_monster(str(obj.get("monster_id", ""))).get("name", "?"), int(obj.get("required", 1))]
 		"complete_dungeon":
 			return "Clear %s" % DataLoader.get_dungeon(str(obj.get("dungeon_id", ""))).get("name", "?")
+		"complete_trial":
+			return "Clear the %s trial" % trial_name(str(obj.get("trial_id", "")))
 		"gp_total":
 			return "Earn %s GP" % Goals._fmt(float(obj.get("required", 0)))
 	return kind.capitalize()
@@ -416,6 +456,7 @@ func claim(quest_id: String) -> bool:
 	else:
 		_claimed[quest_id] = true
 		_accepted[quest_id] = true
+		_legacy_campaign_objectives.erase(quest_id)
 		grant_reward(get_quest(quest_id).get("reward", {}))
 	EventBus.quest_completed.emit(quest_id)
 	EventBus.quest_reward_claimed.emit(quest_id)
@@ -531,7 +572,8 @@ func describe_reward(reward: Dictionary) -> String:
 func serialize() -> Dictionary:
 	return {"accepted": _accepted.duplicate(), "claimed": _claimed.duplicate(),
 		"rotating_claims": _rotating_claims.duplicate(), "baselines": _baselines.duplicate(true),
-		"streak": _streak, "streak_day": _streak_day}
+		"streak": _streak, "streak_day": _streak_day, "campaign_objectives_v2": true,
+		"legacy_campaign_objectives": _legacy_campaign_objectives.duplicate()}
 
 func deserialize(d: Dictionary) -> void:
 	var accepted: Variant = d.get("accepted", {})
@@ -546,6 +588,23 @@ func deserialize(d: Dictionary) -> void:
 	for id in _claimed.keys():
 		if not _quests.has(id):
 			_claimed.erase(id)
+	_legacy_campaign_objectives = {}
+	var legacy: Variant = d.get("legacy_campaign_objectives", {})
+	if legacy is Dictionary:
+		for id in legacy:
+			if _quests.has(id) and _quests[id].has("legacy_objectives") and not is_claimed(id):
+				_legacy_campaign_objectives[id] = true
+	if not d.is_empty() and not bool(d.get("campaign_objectives_v2", false)):
+		for id in _order:
+			var q: Dictionary = get_quest(id)
+			if not q.has("legacy_objectives") or is_claimed(id): continue
+			if is_accepted(id):
+				_legacy_campaign_objectives[id] = true
+				continue
+			for objective in q.legacy_objectives:
+				if float(describe_objective(objective).get("current", 0.0)) > 0.0:
+					_legacy_campaign_objectives[id] = true
+					break
 	_rotating_claims = {}
 	_baselines = {}
 	var rc: Variant = d.get("rotating_claims", {})

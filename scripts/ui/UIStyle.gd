@@ -460,7 +460,7 @@ static func spacer() -> Control:
 
 static func icon_texture(kind: String, id: String) -> TextureRect:
 	var tex_rect := TextureRect.new()
-	tex_rect.texture = AssetRegistry.icon(kind, id)
+	tex_rect.texture = AssetRegistry.item_icon(id) if kind == "items" else AssetRegistry.icon(kind, id)
 	tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tex_rect.custom_minimum_size = Vector2(UITokens.ICON_LG, UITokens.ICON_LG)
 	tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

@@ -13910,5 +13910,4414 @@
     "reward": {
       "gp": 200
     }
+  },
+  "hearthfall_restore_1": {
+    "id": "hearthfall_restore_1",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "name": "Hearthfall Restoration I: Repair the Fields",
+    "description": "The field fences are broken and Cinderkin scouts raid the farms. Forge replacement metal and drive back the raiders.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "bronze_bar",
+        "required": 10,
+        "label": "Smelt 10 Bronze Bars",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_bronze_bar"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "golbin",
+        "required": 10,
+        "label": "Defeat 10 Cinderkin",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1500,
+      "items": {
+        "shrimp": 20
+      }
+    }
+  },
+  "hearthfall_restore_2": {
+    "id": "hearthfall_restore_2",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "name": "Hearthfall Restoration II: Reopen the Road",
+    "description": "With the fields secure, send iron ore by caravan to reopen trade. Cargo lost to bandits does not count.",
+    "prerequisites": [
+      "hearthfall_restore_1"
+    ],
+    "objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "iron_ore",
+        "required": 10,
+        "label": "Deliver 10 Iron Ore by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000,
+      "xp": {
+        "caravaneering": 300
+      }
+    }
+  },
+  "hearthfall_restore_3": {
+    "id": "hearthfall_restore_3",
+    "chapter": 1,
+    "difficulty": "easy",
+    "region": "farmlands",
+    "name": "Hearthfall Restoration III: The Plucked Roost",
+    "description": "The road is open, but the raiders have a leader. Clear the Plucked Roost to give Hearthfall a lasting reprieve.",
+    "prerequisites": [
+      "hearthfall_restore_2"
+    ],
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "chicken_coop",
+        "required": 1,
+        "label": "Clear the Plucked Roost",
+        "route": {
+          "screen": "combat",
+          "area_id": "chicken_coop"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "items": {
+        "iron_bar": 10
+      }
+    }
+  },
+  "barrows_restore_1": {
+    "id": "barrows_restore_1",
+    "name": "Ashen Barrows Restoration 1: Restore the Cairns",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "graveyard",
+    "description": "Forge iron for the cairns and drive the restless dead away from the burial paths.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "iron_bar",
+        "required": 10,
+        "label": "Smelt 10 Iron Bars",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "skeleton",
+        "required": 15,
+        "label": "Defeat 15 Skeletons",
+        "route": {
+          "screen": "combat",
+          "area_id": "graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000,
+      "items": {
+        "iron_ore": 20
+      }
+    }
+  },
+  "barrows_restore_2": {
+    "id": "barrows_restore_2",
+    "name": "Ashen Barrows Restoration 2: Supply the Barrows",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "graveyard",
+    "description": "Send Ironbark Logs by caravan to supply the workers repairing the burial road. Cargo lost to bandits does not count.",
+    "objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "oak_log",
+        "required": 20,
+        "label": "Deliver 20 Ironbark Logs by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 6000,
+      "xp": {
+        "caravaneering": 500
+      }
+    },
+    "prerequisites": [
+      "barrows_restore_1"
+    ]
+  },
+  "barrows_restore_3": {
+    "id": "barrows_restore_3",
+    "name": "Ashen Barrows Restoration 3: Quiet the Barrow",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "graveyard",
+    "description": "Enter the Barrow of Names and defeat the threat at its heart.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "undead_graveyard",
+        "required": 1,
+        "label": "Clear the Barrow of Names",
+        "route": {
+          "screen": "combat",
+          "area_id": "undead_graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 10000,
+      "items": {
+        "iron_bar": 20
+      }
+    },
+    "prerequisites": [
+      "barrows_restore_2"
+    ]
+  },
+  "reedwrack_restore_1": {
+    "id": "reedwrack_restore_1",
+    "name": "Reedwrack Marsh Restoration 1: Clear the Paths",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "wet_forest",
+    "description": "Gather Ironbark timber and drive spiders away from the paths through the marsh.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "oak_tree",
+        "required": 30,
+        "label": "Fell 30 Ironbark Trees",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "oak_tree"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "spider",
+        "required": 15,
+        "label": "Defeat 15 spiders",
+        "route": {
+          "screen": "combat",
+          "area_id": "wet_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 6000,
+      "items": {
+        "trout": 20
+      }
+    }
+  },
+  "reedwrack_restore_2": {
+    "id": "reedwrack_restore_2",
+    "name": "Reedwrack Marsh Restoration 2: Feed the Marsh",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "wet_forest",
+    "description": "Send Speckled Trout by caravan to supply the marsh settlements. Cargo lost to bandits does not count.",
+    "objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "trout",
+        "required": 20,
+        "label": "Deliver 20 Speckled Trout by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9000,
+      "xp": {
+        "caravaneering": 750
+      }
+    },
+    "prerequisites": [
+      "reedwrack_restore_1"
+    ]
+  },
+  "reedwrack_restore_3": {
+    "id": "reedwrack_restore_3",
+    "name": "Reedwrack Marsh Restoration 3: Break the Brood",
+    "chapter": 3,
+    "difficulty": "hard",
+    "region": "wet_forest",
+    "description": "Clear Broodweb Warren to stop the spiders from overrunning the newly opened paths.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "spider_forest",
+        "required": 1,
+        "label": "Clear Broodweb Warren",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 15000,
+      "items": {
+        "steel_bar": 20
+      }
+    },
+    "prerequisites": [
+      "reedwrack_restore_2"
+    ]
+  },
+  "ashwood_restore_1": {
+    "id": "ashwood_restore_1",
+    "name": "Ashwood Trails Restoration 1: Signs in the Ash",
+    "chapter": 2,
+    "difficulty": "easy",
+    "region": "ashwood_trails",
+    "description": "Track the sootfangs and investigate the trail before committing workers.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "sootfang_fox",
+        "required": 8,
+        "label": "Defeat 8 Sootfang Foxes",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashwood_trails"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "follow_footprints",
+        "required": 8,
+        "label": "Follow footprints 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "follow_footprints"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Ashwood Trails Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Ashwood Trails is threatened. Patrol Ashwood Trails and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "sootfang_fox",
+        "required": 15,
+        "label": "Defeat 15 Sootfang Fox",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashwood_trails"
+        }
+      }
+    ]
+  },
+  "ashwood_restore_2": {
+    "id": "ashwood_restore_2",
+    "name": "Ashwood Trails Restoration 2: Copperleaf Firebreak",
+    "chapter": 2,
+    "difficulty": "easy",
+    "region": "ashwood_trails",
+    "description": "Cut a firebreak through the copperleaf and burn cleared wood safely.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "copperleaf_tree",
+        "required": 16,
+        "label": "Cut 16 Copperleaf Trees",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "copperleaf_tree"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "firemaking",
+        "action_id": "burn_copperleaf_log",
+        "required": 10,
+        "label": "Burn 10 Copperleaf Logs",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_copperleaf_log"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "ashwood_restore_1"
+    ],
+    "legacy_name": "Ashwood Trails Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Ashwood Trails.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "copperleaf_tree",
+        "required": 30,
+        "label": "Complete Copperleaf Tree 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "copperleaf_tree"
+        }
+      }
+    ]
+  },
+  "ashwood_restore_3": {
+    "id": "ashwood_restore_3",
+    "name": "Ashwood Trails Restoration 3: A Cure for the Canopy",
+    "chapter": 2,
+    "difficulty": "easy",
+    "region": "ashwood_trails",
+    "description": "Ashwood spitters poison the trail. Drive them off and prepare supplies for the crew.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "ashwood_spitter",
+        "required": 8,
+        "label": "Defeat 8 Ashwood Spitters",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashwood_trails"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "herblore",
+        "action_id": "brew_nestkeeper_elixir",
+        "required": 4,
+        "label": "Brew Nestkeeper Elixirs 4 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "herblore",
+          "action_id": "brew_nestkeeper_elixir"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "ashwood_restore_2"
+    ],
+    "legacy_name": "Ashwood Trails Restoration 3: Move the Supplies",
+    "legacy_description": "Send Ironbark Log on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "oak_log",
+        "required": 20,
+        "label": "Deliver 20 Ironbark Log by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "ashwood_restore_4": {
+    "id": "ashwood_restore_4",
+    "name": "Ashwood Trails Restoration 4: The Nest Beneath the Boughs",
+    "chapter": 2,
+    "difficulty": "easy",
+    "region": "ashwood_trails",
+    "description": "The broodmother is spreading through the roots; clear her nest.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "ashwood_nest",
+        "required": 1,
+        "label": "Clear Ashwood Nest",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "ashwood_nest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "ashwood_restore_3"
+    ],
+    "legacy_name": "Ashwood Trails Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Ashwood Nest is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "ashwood_nest",
+        "required": 1,
+        "label": "Clear Ashwood Nest",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashwood_nest"
+        }
+      }
+    ]
+  },
+  "ashwood_restore_5": {
+    "id": "ashwood_restore_5",
+    "name": "Ashwood Trails Restoration 5: The Shaman’s Last Ember",
+    "chapter": 2,
+    "difficulty": "easy",
+    "region": "ashwood_trails",
+    "description": "Disperse the embercap shamans and prepare the trail for a permanent watch.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "embercap_shaman",
+        "required": 10,
+        "label": "Defeat 10 Embercap Shamans",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashwood_trails"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "fletching",
+        "action_id": "arrow_shaft",
+        "required": 12,
+        "label": "Make arrow shafts 12 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fletching",
+          "action_id": "arrow_shaft"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "ashwood_restore_4"
+    ],
+    "legacy_name": "Ashwood Trails Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Ashwood Trails.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "bronze_bar",
+        "required": 20,
+        "label": "Smelt 20 Bronze Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_bronze_bar"
+        }
+      }
+    ]
+  },
+  "dunecross_restore_1": {
+    "id": "dunecross_restore_1",
+    "name": "Dune Crossing Restoration 1: Read the Sunken Crossing",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "sandy_shores",
+    "description": "Find the drowned wayfarers and survey the shoreline route.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "drowned_wayfarer",
+        "required": 8,
+        "label": "Defeat 8 Drowned Wayfarers",
+        "route": {
+          "screen": "combat",
+          "area_id": "sandy_shores"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "cartography",
+        "action_id": "survey",
+        "required": 8,
+        "label": "Survey 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cartography",
+          "action_id": "survey"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Dune Crossing Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Dune Crossing is threatened. Patrol Sunken Strand and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "drowned_wayfarer",
+        "required": 15,
+        "label": "Defeat 15 Drowned Wayfarer",
+        "route": {
+          "screen": "combat",
+          "area_id": "sandy_shores"
+        }
+      }
+    ]
+  },
+  "dunecross_restore_2": {
+    "id": "dunecross_restore_2",
+    "name": "Dune Crossing Restoration 2: Water for the Crossing",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "sandy_shores",
+    "description": "Catch fish and prepare provisions for the dry road.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "fishing",
+        "action_id": "herring",
+        "required": 12,
+        "label": "Catch Herring 12 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fishing",
+          "action_id": "herring"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "cooking",
+        "action_id": "cook_herring",
+        "required": 8,
+        "label": "Cook Herring 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_herring"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "dunecross_restore_1"
+    ],
+    "legacy_name": "Dune Crossing Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Dune Crossing.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "iron_ore",
+        "required": 30,
+        "label": "Complete Iron Ore 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "iron_ore"
+        }
+      }
+    ]
+  },
+  "dunecross_restore_3": {
+    "id": "dunecross_restore_3",
+    "name": "Dune Crossing Restoration 3: The Ferryman’s Missing Cargo",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "sandy_shores",
+    "description": "Question the ferryman and search the drowned causeway for the lost shipment.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "question_ferryman",
+        "required": 6,
+        "label": "Question the ferryman 6 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "question_ferryman"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "drowned_causeway",
+        "required": 1,
+        "label": "Clear the Drowned Causeway",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "drowned_causeway"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "dunecross_restore_2"
+    ],
+    "legacy_name": "Dune Crossing Restoration 3: Move the Supplies",
+    "legacy_description": "Send Iron Ore on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "iron_ore",
+        "required": 20,
+        "label": "Deliver 20 Iron Ore by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "dunecross_restore_4": {
+    "id": "dunecross_restore_4",
+    "name": "Dune Crossing Restoration 4: Glass Under the Sand",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "sandy_shores",
+    "description": "Search the glassmaker ruins for traces of the route’s old beacons.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "archaeology",
+        "action_id": "glassmaker_ruins",
+        "required": 10,
+        "label": "Investigate the Glassmaker Ruins 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "archaeology",
+          "action_id": "glassmaker_ruins"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "dunecross_restore_3"
+    ],
+    "legacy_name": "Dune Crossing Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Saltglass Catacombs is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "saltglass_catacombs",
+        "required": 1,
+        "label": "Clear Saltglass Catacombs",
+        "route": {
+          "screen": "combat",
+          "area_id": "saltglass_catacombs"
+        }
+      }
+    ]
+  },
+  "dunecross_restore_5": {
+    "id": "dunecross_restore_5",
+    "name": "Dune Crossing Restoration 5: Raise the Crossing Beacon",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "sandy_shores",
+    "description": "Gather fuel and light the repaired beacon to mark the safe crossing.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "amber_acacia_tree",
+        "required": 12,
+        "label": "Cut 12 Amber Acacias",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "amber_acacia_tree"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "firemaking",
+        "action_id": "burn_amber_acacia_log",
+        "required": 8,
+        "label": "Burn 8 Amber Acacia Logs",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_amber_acacia_log"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "dunecross_restore_4"
+    ],
+    "legacy_name": "Dune Crossing Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Dune Crossing.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "iron_bar",
+        "required": 20,
+        "label": "Smelt 20 Iron Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      }
+    ]
+  },
+  "ashenkeep_restore_1": {
+    "id": "ashenkeep_restore_1",
+    "name": "Ashen Bastion Restoration 1: Blind the Ramparts",
+    "chapter": 2,
+    "difficulty": "nightmare",
+    "region": "ashen_bastion",
+    "description": "Silence the archers who keep watch over the approach.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "cinder_archer",
+        "required": 10,
+        "label": "Defeat 10 Cinder Archers",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashen_bastion"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Ashen Bastion Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Ashen Bastion is threatened. Patrol Ashen Bastion and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "bastion_sentinel",
+        "required": 15,
+        "label": "Defeat 15 Bastion Sentinel",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashen_bastion"
+        }
+      }
+    ]
+  },
+  "ashenkeep_restore_2": {
+    "id": "ashenkeep_restore_2",
+    "name": "Ashen Bastion Restoration 2: Fuel the Old Furnace",
+    "chapter": 2,
+    "difficulty": "nightmare",
+    "region": "ashen_bastion",
+    "description": "Mine fuel and work the forge to bring the bastion furnace back to life.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "coal",
+        "required": 15,
+        "label": "Mine Coal 15 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "coal"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "smithing",
+        "action_id": "smelt_steel_bar",
+        "required": 8,
+        "label": "Smelt Steel 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_steel_bar"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "ashenkeep_restore_1"
+    ],
+    "legacy_name": "Ashen Bastion Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Ashen Bastion.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "coal",
+        "required": 30,
+        "label": "Complete Coal Ore 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "coal"
+        }
+      }
+    ]
+  },
+  "ashenkeep_restore_3": {
+    "id": "ashenkeep_restore_3",
+    "name": "Ashen Bastion Restoration 3: Orders in the Ash",
+    "chapter": 2,
+    "difficulty": "nightmare",
+    "region": "ashen_bastion",
+    "description": "Inspect the supply records and make clean copies of the old garrison orders.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "inspect_cargo_records",
+        "required": 6,
+        "label": "Inspect Cargo Records 6 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "inspect_cargo_records"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "inscription",
+        "action_id": "make_paper",
+        "required": 8,
+        "label": "Make paper 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "inscription",
+          "action_id": "make_paper"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "ashenkeep_restore_2"
+    ],
+    "legacy_name": "Ashen Bastion Restoration 3: Move the Supplies",
+    "legacy_description": "Send Coal Ore on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "coal",
+        "required": 20,
+        "label": "Deliver 20 Coal Ore by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "ashenkeep_restore_4": {
+    "id": "ashenkeep_restore_4",
+    "name": "Ashen Bastion Restoration 4: The Warden’s Gate",
+    "chapter": 2,
+    "difficulty": "nightmare",
+    "region": "ashen_bastion",
+    "description": "Enter the keep and remove the warden controlling its gates.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "ashen_bastion_keep",
+        "required": 1,
+        "label": "Clear the Ashen Keep",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "ashen_bastion_keep"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "ashenkeep_restore_3"
+    ],
+    "legacy_name": "Ashen Bastion Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at The Ashen Keep is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "ashen_bastion_keep",
+        "required": 1,
+        "label": "Clear The Ashen Keep",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashen_bastion_keep"
+        }
+      }
+    ]
+  },
+  "ashenkeep_restore_5": {
+    "id": "ashenkeep_restore_5",
+    "name": "Ashen Bastion Restoration 5: An Ember Oath",
+    "chapter": 2,
+    "difficulty": "nightmare",
+    "region": "ashen_bastion",
+    "description": "Relight the watch fires and prepare the sentries’ arms.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "firemaking",
+        "action_id": "burn_oak_log",
+        "required": 10,
+        "label": "Burn Oak Logs 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_oak_log"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "fletching",
+        "action_id": "fletch_iron_arrow",
+        "required": 10,
+        "label": "Fletch Iron Arrows 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fletching",
+          "action_id": "fletch_iron_arrow"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "ashenkeep_restore_4"
+    ],
+    "legacy_name": "Ashen Bastion Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Ashen Bastion.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "steel_bar",
+        "required": 20,
+        "label": "Smelt 20 Steel Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_steel_bar"
+        }
+      }
+    ]
+  },
+  "sunderhold_restore_1": {
+    "id": "sunderhold_restore_1",
+    "name": "Sunderhold Keep Restoration 1: The Broken Armoury",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "castle_of_kings",
+    "description": "Make armour for the defenders before challenging the occupying guard.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "smithing",
+        "action_id": "smith_iron_shield",
+        "required": 3,
+        "label": "Forge 3 Iron Shields",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_iron_shield"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "guard",
+        "required": 8,
+        "label": "Defeat 8 Guards",
+        "route": {
+          "screen": "combat",
+          "area_id": "castle_of_kings"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Sunderhold Keep Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Sunderhold Keep is threatened. Patrol Sunderhold Keep and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "sunderhold_centurion",
+        "required": 15,
+        "label": "Defeat 15 Sunderhold Centurion",
+        "route": {
+          "screen": "combat",
+          "area_id": "castle_of_kings"
+        }
+      }
+    ]
+  },
+  "sunderhold_restore_2": {
+    "id": "sunderhold_restore_2",
+    "name": "Sunderhold Keep Restoration 2: The Ballista Line",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "castle_of_kings",
+    "description": "Clear the ballistarii and prepare a replacement supply of bolts and shafts.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "sunderhold_ballistarius",
+        "required": 8,
+        "label": "Defeat 8 Sunderhold Ballistarii",
+        "route": {
+          "screen": "combat",
+          "area_id": "castle_of_kings"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "fletching",
+        "action_id": "arrow_shaft",
+        "required": 15,
+        "label": "Make arrow shafts 15 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fletching",
+          "action_id": "arrow_shaft"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "sunderhold_restore_1"
+    ],
+    "legacy_name": "Sunderhold Keep Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Sunderhold Keep.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "iron_ore",
+        "required": 30,
+        "label": "Complete Iron Ore 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "iron_ore"
+        }
+      }
+    ]
+  },
+  "sunderhold_restore_3": {
+    "id": "sunderhold_restore_3",
+    "name": "Sunderhold Keep Restoration 3: The King’s Missing Seal",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "castle_of_kings",
+    "description": "Investigate the counterfeit seal and recover the court’s paper trail.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "investigate_the_counterfeit_seal",
+        "required": 5,
+        "label": "Investigate the Counterfeit Seal 5 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "investigate_the_counterfeit_seal"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "thieving",
+        "action_id": "knight",
+        "required": 6,
+        "label": "Search Knights 6 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "thieving",
+          "action_id": "knight"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "sunderhold_restore_2"
+    ],
+    "legacy_name": "Sunderhold Keep Restoration 3: Move the Supplies",
+    "legacy_description": "Send Iron Bar on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "iron_bar",
+        "required": 20,
+        "label": "Deliver 20 Iron Bar by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "sunderhold_restore_4": {
+    "id": "sunderhold_restore_4",
+    "name": "Sunderhold Keep Restoration 4: Beneath the Keep",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "castle_of_kings",
+    "description": "Clear the undercroft so the defenders can reach the foundations.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "sunderhold_undercroft",
+        "required": 1,
+        "label": "Clear Sunderhold Undercroft",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "sunderhold_undercroft"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "sunderhold_restore_3"
+    ],
+    "legacy_name": "Sunderhold Keep Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Sunderhold Undercroft is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "sunderhold_undercroft",
+        "required": 1,
+        "label": "Clear Sunderhold Undercroft",
+        "route": {
+          "screen": "combat",
+          "area_id": "sunderhold_undercroft"
+        }
+      }
+    ]
+  },
+  "sunderhold_restore_5": {
+    "id": "sunderhold_restore_5",
+    "name": "Sunderhold Keep Restoration 5: Restore the Garrison",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "castle_of_kings",
+    "description": "Disarm the centurions and equip the restored garrison.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "sunderhold_centurion",
+        "required": 10,
+        "label": "Defeat 10 Sunderhold Centurions",
+        "route": {
+          "screen": "combat",
+          "area_id": "castle_of_kings"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "smithing",
+        "action_id": "smith_steel_helmet",
+        "required": 3,
+        "label": "Forge 3 Steel Helmets",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_steel_helmet"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "sunderhold_restore_4"
+    ],
+    "legacy_name": "Sunderhold Keep Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Sunderhold Keep.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "steel_bar",
+        "required": 20,
+        "label": "Smelt 20 Steel Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_steel_bar"
+        }
+      }
+    ]
+  },
+  "frostbound_restore_1": {
+    "id": "frostbound_restore_1",
+    "name": "Frostbound Reach Restoration 1: Tracks in the Snow",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "icy_hills",
+    "description": "Follow the wolf tracks and clear the first route through the hills.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "follow_footprints",
+        "required": 10,
+        "label": "Follow footprints 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "follow_footprints"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "frostfang_wolf",
+        "required": 8,
+        "label": "Defeat 8 Frostfang Wolves",
+        "route": {
+          "screen": "combat",
+          "area_id": "icy_hills"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Frostbound Reach Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Frostbound Reach is threatened. Patrol Frostbound Reach and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "frostfang_wolf",
+        "required": 15,
+        "label": "Defeat 15 Frostfang Wolf",
+        "route": {
+          "screen": "combat",
+          "area_id": "icy_hills"
+        }
+      }
+    ]
+  },
+  "frostbound_restore_2": {
+    "id": "frostbound_restore_2",
+    "name": "Frostbound Reach Restoration 2: A Warm Camp",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "icy_hills",
+    "description": "Gather willow for a sheltered fire and prepare soup for the watch.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "willow_tree",
+        "required": 12,
+        "label": "Cut 12 Willow Trees",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "willow_tree"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "cooking",
+        "action_id": "cook_frost_pea_soup",
+        "required": 5,
+        "label": "Cook 5 Frost Pea Soups",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_frost_pea_soup"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "frostbound_restore_1"
+    ],
+    "legacy_name": "Frostbound Reach Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Frostbound Reach.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "willow_tree",
+        "required": 30,
+        "label": "Complete Silverleaf Tree 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "willow_tree"
+        }
+      }
+    ]
+  },
+  "frostbound_restore_3": {
+    "id": "frostbound_restore_3",
+    "name": "Frostbound Reach Restoration 3: The Forgotten Crossing",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "icy_hills",
+    "description": "Reconnect the lantern causeway so the old watch can bring supplies across the snow.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "wayfolding",
+        "action_id": "fold_lantern_causeway",
+        "required": 8,
+        "label": "Fold the Lantern Causeway 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "wayfolding",
+          "action_id": "fold_lantern_causeway"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "frostbound_restore_2"
+    ],
+    "legacy_name": "Frostbound Reach Restoration 3: Move the Supplies",
+    "legacy_description": "Send Silverleaf Log on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "willow_log",
+        "required": 20,
+        "label": "Deliver 20 Silverleaf Log by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "frostbound_restore_4": {
+    "id": "frostbound_restore_4",
+    "name": "Frostbound Reach Restoration 4: Den of the Frostfang",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "icy_hills",
+    "description": "Clear the den before the winter packs return.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "frostfang_den",
+        "required": 1,
+        "label": "Clear Frostfang Den",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "frostfang_den"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "frostbound_restore_3"
+    ],
+    "legacy_name": "Frostbound Reach Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Frostfang Den is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "frostfang_den",
+        "required": 1,
+        "label": "Clear Frostfang Den",
+        "route": {
+          "screen": "combat",
+          "area_id": "frostfang_den"
+        }
+      }
+    ]
+  },
+  "frostbound_restore_5": {
+    "id": "frostbound_restore_5",
+    "name": "Frostbound Reach Restoration 5: The Lantern Pass",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "icy_hills",
+    "description": "Keep the mountain fire lit and fletch bows for the patrol.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "firemaking",
+        "action_id": "burn_willow_log",
+        "required": 10,
+        "label": "Burn 10 Willow Logs",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_willow_log"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "fletching",
+        "action_id": "fletch_willow_shortbow",
+        "required": 3,
+        "label": "Fletch 3 Willow Shortbows",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fletching",
+          "action_id": "fletch_willow_shortbow"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "frostbound_restore_4"
+    ],
+    "legacy_name": "Frostbound Reach Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Frostbound Reach.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "iron_bar",
+        "required": 20,
+        "label": "Smelt 20 Iron Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      }
+    ]
+  },
+  "tidebreak_restore_1": {
+    "id": "tidebreak_restore_1",
+    "name": "Tidebreak Cliffs Restoration 1: Watch the Tides",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "tidebreak_cliffs",
+    "description": "Catch fish for the cliff watch and map a route along the water.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "fishing",
+        "action_id": "trout",
+        "required": 12,
+        "label": "Catch Trout 12 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fishing",
+          "action_id": "trout"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "cartography",
+        "action_id": "survey",
+        "required": 8,
+        "label": "Survey 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cartography",
+          "action_id": "survey"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Tidebreak Cliffs Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Tidebreak Cliffs is threatened. Patrol Tidebreak Cliffs and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "saltclaw_brute",
+        "required": 15,
+        "label": "Defeat 15 Saltclaw Brute",
+        "route": {
+          "screen": "combat",
+          "area_id": "tidebreak_cliffs"
+        }
+      }
+    ]
+  },
+  "tidebreak_restore_2": {
+    "id": "tidebreak_restore_2",
+    "name": "Tidebreak Cliffs Restoration 2: The Harpooners’ Ledge",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "tidebreak_cliffs",
+    "description": "Drive the harpooners off the cliff path and prepare food for the climb.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "cliffside_harpooner",
+        "required": 8,
+        "label": "Defeat 8 Cliffside Harpooners",
+        "route": {
+          "screen": "combat",
+          "area_id": "tidebreak_cliffs"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "cooking",
+        "action_id": "cook_trout",
+        "required": 8,
+        "label": "Cook Trout 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_trout"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "tidebreak_restore_1"
+    ],
+    "legacy_name": "Tidebreak Cliffs Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Tidebreak Cliffs.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "cooking",
+        "action_id": "cook_trout",
+        "required": 30,
+        "label": "Complete Speckled Trout 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_trout"
+        }
+      }
+    ]
+  },
+  "tidebreak_restore_3": {
+    "id": "tidebreak_restore_3",
+    "name": "Tidebreak Cliffs Restoration 3: Glass from the Graves",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "tidebreak_cliffs",
+    "description": "Search the saltmarsh burial grounds for the old lighthouse records.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "archaeology",
+        "action_id": "saltmarsh_burial",
+        "required": 10,
+        "label": "Investigate Saltmarsh Burial 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "archaeology",
+          "action_id": "saltmarsh_burial"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "inscription",
+        "action_id": "make_paper",
+        "required": 8,
+        "label": "Make paper 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "inscription",
+          "action_id": "make_paper"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "tidebreak_restore_2"
+    ],
+    "legacy_name": "Tidebreak Cliffs Restoration 3: Move the Supplies",
+    "legacy_description": "Send Speckled Trout on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "trout",
+        "required": 20,
+        "label": "Deliver 20 Speckled Trout by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "tidebreak_restore_4": {
+    "id": "tidebreak_restore_4",
+    "name": "Tidebreak Cliffs Restoration 4: The Saltglass Oracle",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "tidebreak_cliffs",
+    "description": "Find the oracle beneath the cliffs and clear the catacombs.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "saltglass_catacombs",
+        "required": 1,
+        "label": "Clear Saltglass Catacombs",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "saltglass_catacombs"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "tidebreak_restore_3"
+    ],
+    "legacy_name": "Tidebreak Cliffs Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Saltglass Catacombs is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "saltglass_catacombs",
+        "required": 1,
+        "label": "Clear Saltglass Catacombs",
+        "route": {
+          "screen": "combat",
+          "area_id": "saltglass_catacombs"
+        }
+      }
+    ]
+  },
+  "tidebreak_restore_5": {
+    "id": "tidebreak_restore_5",
+    "name": "Tidebreak Cliffs Restoration 5: Relight the Lighthouse",
+    "chapter": 2,
+    "difficulty": "expert",
+    "region": "tidebreak_cliffs",
+    "description": "Disperse the sorcerers and fuel a beacon visible from the sea.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "brineglass_sorcerer",
+        "required": 8,
+        "label": "Defeat 8 Brineglass Sorcerers",
+        "route": {
+          "screen": "combat",
+          "area_id": "tidebreak_cliffs"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "firemaking",
+        "action_id": "burn_willow_log",
+        "required": 10,
+        "label": "Burn 10 Willow Logs",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_willow_log"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "tidebreak_restore_4"
+    ],
+    "legacy_name": "Tidebreak Cliffs Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Tidebreak Cliffs.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "steel_bar",
+        "required": 20,
+        "label": "Smelt 20 Steel Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_steel_bar"
+        }
+      }
+    ]
+  },
+  "greyharrow_restore_1": {
+    "id": "greyharrow_restore_1",
+    "name": "Greyharrow Quarry Restoration 1: Paymaster’s Ledger",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "greyharrow_quarry",
+    "description": "Recover the quarry payroll and investigate the missing accounts.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "thieving",
+        "action_id": "quarry_paymaster",
+        "required": 8,
+        "label": "Search the Quarry Paymaster 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "thieving",
+          "action_id": "quarry_paymaster"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "investigate_the_miller_ledger",
+        "required": 5,
+        "label": "Investigate the Miller Ledger 5 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "investigate_the_miller_ledger"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Greyharrow Quarry Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Greyharrow Quarry is threatened. Patrol Greyharrow Quarry and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "greyharrow_husk",
+        "required": 15,
+        "label": "Defeat 15 Greyharrow Husk",
+        "route": {
+          "screen": "combat",
+          "area_id": "greyharrow_quarry"
+        }
+      }
+    ]
+  },
+  "greyharrow_restore_2": {
+    "id": "greyharrow_restore_2",
+    "name": "Greyharrow Quarry Restoration 2: Survey the Seams",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "greyharrow_quarry",
+    "description": "Map a safe line through the workings and mine the exposed ore.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "wayfolding",
+        "action_id": "survey_route",
+        "required": 10,
+        "label": "Survey a route 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "wayfolding",
+          "action_id": "survey_route"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "iron_ore",
+        "required": 15,
+        "label": "Mine Iron Ore 15 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "iron_ore"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "greyharrow_restore_1"
+    ],
+    "legacy_name": "Greyharrow Quarry Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Greyharrow Quarry.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "iron_ore",
+        "required": 30,
+        "label": "Complete Iron Ore 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "iron_ore"
+        }
+      }
+    ]
+  },
+  "greyharrow_restore_3": {
+    "id": "greyharrow_restore_3",
+    "name": "Greyharrow Quarry Restoration 3: Clear the Shale Stalkers",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "greyharrow_quarry",
+    "description": "The quarry crews cannot return while stalkers prowl the stone faces.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "shale_stalker",
+        "required": 10,
+        "label": "Defeat 10 Shale Stalkers",
+        "route": {
+          "screen": "combat",
+          "area_id": "greyharrow_quarry"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "quarry_echo",
+        "required": 6,
+        "label": "Defeat 6 Quarry Echoes",
+        "route": {
+          "screen": "combat",
+          "area_id": "greyharrow_quarry"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "greyharrow_restore_2"
+    ],
+    "legacy_name": "Greyharrow Quarry Restoration 3: Move the Supplies",
+    "legacy_description": "Send Iron Ore on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "iron_ore",
+        "required": 20,
+        "label": "Deliver 20 Iron Ore by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "greyharrow_restore_4": {
+    "id": "greyharrow_restore_4",
+    "name": "Greyharrow Quarry Restoration 4: The Deep Workings",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "greyharrow_quarry",
+    "description": "Enter Greyharrow Deep and stop the slag golem.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "greyharrow_deep",
+        "required": 1,
+        "label": "Clear Greyharrow Deep",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "greyharrow_deep"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "greyharrow_restore_3"
+    ],
+    "legacy_name": "Greyharrow Quarry Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Greyharrow Deep is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "greyharrow_deep",
+        "required": 1,
+        "label": "Clear Greyharrow Deep",
+        "route": {
+          "screen": "combat",
+          "area_id": "greyharrow_deep"
+        }
+      }
+    ]
+  },
+  "greyharrow_restore_5": {
+    "id": "greyharrow_restore_5",
+    "name": "Greyharrow Quarry Restoration 5: The Quarry Lift",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "greyharrow_quarry",
+    "description": "Forge replacement parts and establish a route for the lift.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "engineering",
+        "action_id": "forge_clockwork_gear",
+        "required": 5,
+        "label": "Forge Clockwork Gears 5 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "engineering",
+          "action_id": "forge_clockwork_gear"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "wayfolding",
+        "action_id": "fold_quarry_lift",
+        "required": 3,
+        "label": "Fold the Quarry Lift 3 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "wayfolding",
+          "action_id": "fold_quarry_lift"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "greyharrow_restore_4"
+    ],
+    "legacy_name": "Greyharrow Quarry Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Greyharrow Quarry.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "iron_bar",
+        "required": 20,
+        "label": "Smelt 20 Iron Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      }
+    ]
+  },
+  "cinderforge_restore_1": {
+    "id": "cinderforge_restore_1",
+    "name": "Cinderkin Forge Restoration 1: Scout the Warrens",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "golbin_village",
+    "description": "Push back the scouts and locate the forge’s supply line.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "cinderkin_scout",
+        "required": 10,
+        "label": "Defeat 10 Cinderkin Scouts",
+        "route": {
+          "screen": "combat",
+          "area_id": "golbin_village"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "follow_footprints",
+        "required": 8,
+        "label": "Follow footprints 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "follow_footprints"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Cinderkin Forge Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Cinderkin Forge is threatened. Patrol Cinderkin Warrens and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "cinderkin_scout",
+        "required": 15,
+        "label": "Defeat 15 Cinderkin Scout",
+        "route": {
+          "screen": "combat",
+          "area_id": "golbin_village"
+        }
+      }
+    ]
+  },
+  "cinderforge_restore_2": {
+    "id": "cinderforge_restore_2",
+    "name": "Cinderkin Forge Restoration 2: Copper for the Crucible",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "golbin_village",
+    "description": "Mine the metals needed to restart the old crucible.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "copper_ore",
+        "required": 15,
+        "label": "Mine Copper Ore 15 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "copper_ore"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "tin_ore",
+        "required": 10,
+        "label": "Mine Tin Ore 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "tin_ore"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "cinderforge_restore_1"
+    ],
+    "legacy_name": "Cinderkin Forge Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Cinderkin Forge.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "mining",
+        "action_id": "copper_ore",
+        "required": 30,
+        "label": "Complete Copper Ore 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "mining",
+          "action_id": "copper_ore"
+        }
+      }
+    ]
+  },
+  "cinderforge_restore_3": {
+    "id": "cinderforge_restore_3",
+    "name": "Cinderkin Forge Restoration 3: Kindle the Furnace",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "golbin_village",
+    "description": "Feed the furnace and smelt a first batch of metal.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "firemaking",
+        "action_id": "burn_normal_log",
+        "required": 10,
+        "label": "Burn 10 Logs",
+        "route": {
+          "screen": "skill",
+          "skill_id": "firemaking",
+          "action_id": "burn_normal_log"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "smithing",
+        "action_id": "smelt_bronze_bar",
+        "required": 10,
+        "label": "Smelt Bronze 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_bronze_bar"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "cinderforge_restore_2"
+    ],
+    "legacy_name": "Cinderkin Forge Restoration 3: Move the Supplies",
+    "legacy_description": "Send Coal Ore on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "coal",
+        "required": 20,
+        "label": "Deliver 20 Coal Ore by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "cinderforge_restore_4": {
+    "id": "cinderforge_restore_4",
+    "name": "Cinderkin Forge Restoration 4: Retake the Forge",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "golbin_village",
+    "description": "Clear the Cinderkin Forge and its defenders.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "cinderkin_forge",
+        "required": 1,
+        "label": "Clear Cinderkin Forge",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "cinderkin_forge"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "cinderforge_restore_3"
+    ],
+    "legacy_name": "Cinderkin Forge Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Cinderkin Forge is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "cinderkin_forge",
+        "required": 1,
+        "label": "Clear Cinderkin Forge",
+        "route": {
+          "screen": "combat",
+          "area_id": "cinderkin_forge"
+        }
+      }
+    ]
+  },
+  "cinderforge_restore_5": {
+    "id": "cinderforge_restore_5",
+    "name": "Cinderkin Forge Restoration 5: A Forge for the Settlement",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "golbin_village",
+    "description": "Make tools for the new watch and prepare their arrows.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "smithing",
+        "action_id": "smith_bronze_shield",
+        "required": 3,
+        "label": "Forge 3 Bronze Shields",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smith_bronze_shield"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "fletching",
+        "action_id": "fletch_bronze_arrow",
+        "required": 10,
+        "label": "Fletch Bronze Arrows 10 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fletching",
+          "action_id": "fletch_bronze_arrow"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "cinderforge_restore_4"
+    ],
+    "legacy_name": "Cinderkin Forge Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Cinderkin Forge.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "bronze_bar",
+        "required": 20,
+        "label": "Smelt 20 Bronze Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_bronze_bar"
+        }
+      }
+    ]
+  },
+  "rookwood_restore_1": {
+    "id": "rookwood_restore_1",
+    "name": "Rookwood Crossing Restoration 1: The Missing Courier",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "rookwood_crossing",
+    "description": "Investigate the vanished courier and recover the crossing’s route records.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "investigate_the_vanished_courier",
+        "required": 5,
+        "label": "Investigate the Vanished Courier 5 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "investigate_the_vanished_courier"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "lostfinding",
+        "action_id": "inspect_cargo_records",
+        "required": 6,
+        "label": "Inspect Cargo Records 6 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "lostfinding",
+          "action_id": "inspect_cargo_records"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 1000
+    },
+    "legacy_name": "Rookwood Crossing Restoration 1: Secure the Approaches",
+    "legacy_description": "The approach to Rookwood Crossing is threatened. Patrol Rookwood Crossing and clear the way for the restoration crews.",
+    "legacy_objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "tollway_cutthroat",
+        "required": 15,
+        "label": "Defeat 15 Tollway Cutthroat",
+        "route": {
+          "screen": "combat",
+          "area_id": "rookwood_crossing"
+        }
+      }
+    ]
+  },
+  "rookwood_restore_2": {
+    "id": "rookwood_restore_2",
+    "name": "Rookwood Crossing Restoration 2: Break the Toll Line",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "rookwood_crossing",
+    "description": "Drive off the cutthroats and their crossbowmen.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "tollway_cutthroat",
+        "required": 8,
+        "label": "Defeat 8 Tollway Cutthroats",
+        "route": {
+          "screen": "combat",
+          "area_id": "rookwood_crossing"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "monster_id": "rookwood_crossbowman",
+        "required": 8,
+        "label": "Defeat 8 Rookwood Crossbowmen",
+        "route": {
+          "screen": "combat",
+          "area_id": "rookwood_crossing"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000
+    },
+    "prerequisites": [
+      "rookwood_restore_1"
+    ],
+    "legacy_name": "Rookwood Crossing Restoration 2: Gather for the Work",
+    "legacy_description": "Prepare supplies for the work around Rookwood Crossing.",
+    "legacy_objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "oak_tree",
+        "required": 30,
+        "label": "Complete Ironbark Tree 30 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "oak_tree"
+        }
+      }
+    ]
+  },
+  "rookwood_restore_3": {
+    "id": "rookwood_restore_3",
+    "name": "Rookwood Crossing Restoration 3: Rebuild the Watch",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "rookwood_crossing",
+    "description": "Cut oak for a watch post and make bows for its patrol.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "oak_tree",
+        "required": 15,
+        "label": "Cut 15 Oak Trees",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "oak_tree"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "fletching",
+        "action_id": "fletch_oak_shortbow",
+        "required": 3,
+        "label": "Fletch 3 Oak Shortbows",
+        "route": {
+          "screen": "skill",
+          "skill_id": "fletching",
+          "action_id": "fletch_oak_shortbow"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 3000
+    },
+    "prerequisites": [
+      "rookwood_restore_2"
+    ],
+    "legacy_name": "Rookwood Crossing Restoration 3: Move the Supplies",
+    "legacy_description": "Send Ironbark Log on completed caravan trips. Cargo lost to bandits does not count; any route is eligible.",
+    "legacy_objectives": [
+      {
+        "kind": "caravan_delivery",
+        "item_id": "oak_log",
+        "required": 20,
+        "label": "Deliver 20 Ironbark Log by caravan",
+        "route": {
+          "screen": "skill",
+          "skill_id": "caravaneering"
+        }
+      }
+    ]
+  },
+  "rookwood_restore_4": {
+    "id": "rookwood_restore_4",
+    "name": "Rookwood Crossing Restoration 4: The Captain’s Tower",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "rookwood_crossing",
+    "description": "Clear Rookwatch Tower and its captain.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "rookwatch_tower",
+        "required": 1,
+        "label": "Clear Rookwatch Tower",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "rookwatch_tower"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "prerequisites": [
+      "rookwood_restore_3"
+    ],
+    "legacy_name": "Rookwood Crossing Restoration 4: Confront the Threat",
+    "legacy_description": "The work can only hold if the threat at Rookwatch Tower is defeated.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "rookwatch_tower",
+        "required": 1,
+        "label": "Clear Rookwatch Tower",
+        "route": {
+          "screen": "combat",
+          "area_id": "rookwatch_tower"
+        }
+      }
+    ]
+  },
+  "rookwood_restore_5": {
+    "id": "rookwood_restore_5",
+    "name": "Rookwood Crossing Restoration 5: A Road Without Toll",
+    "chapter": 2,
+    "difficulty": "hard",
+    "region": "rookwood_crossing",
+    "description": "Recover the marauders’ stolen records and map a safe route for travellers.",
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "thieving",
+        "action_id": "marauder",
+        "required": 8,
+        "label": "Search Marauders 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "thieving",
+          "action_id": "marauder"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "wayfolding",
+        "action_id": "survey_footpath",
+        "required": 8,
+        "label": "Survey the Footpath 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "wayfolding",
+          "action_id": "survey_footpath"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "prerequisites": [
+      "rookwood_restore_4"
+    ],
+    "legacy_name": "Rookwood Crossing Restoration 5: Finish the Repairs",
+    "legacy_description": "Forge metal for the final repairs around Rookwood Crossing.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "iron_bar",
+        "required": 20,
+        "label": "Smelt 20 Iron Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      }
+    ]
+  },
+  "hearthfall_restore_4": {
+    "id": "hearthfall_restore_4",
+    "name": "Hearthfall Fields Restoration 4: A Harvest Worth Guarding",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "Feed the field workers and make a lasting shelter for the rebuilt farms.",
+    "prerequisites": [
+      "hearthfall_restore_3"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "cooking",
+        "action_id": "cook_hearthroot_mash",
+        "required": 8,
+        "label": "Cook 8 Hearthroot Mash",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_hearthroot_mash"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "woodcutting",
+        "action_id": "copperleaf_tree",
+        "required": 12,
+        "label": "Cut 12 Copperleaf Trees",
+        "route": {
+          "screen": "skill",
+          "skill_id": "woodcutting",
+          "action_id": "copperleaf_tree"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "legacy_name": "Hearthfall Fields Restoration 4: Rebuild the Defences",
+    "legacy_description": "Continue the work beyond the first restoration of Hearthfall Fields.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "bronze_bar",
+        "required": 20,
+        "label": "Smelt 20 Bronze Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_bronze_bar"
+        }
+      }
+    ]
+  },
+  "hearthfall_restore_5": {
+    "id": "hearthfall_restore_5",
+    "name": "Hearthfall Fields Restoration 5: The Strawbound Warden",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "farmlands",
+    "description": "Find the source of the attacks beneath the fields and put the scarecrow cellar to rest.",
+    "prerequisites": [
+      "hearthfall_restore_4"
+    ],
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "scarecrow_cellar",
+        "required": 1,
+        "label": "Clear the Scarecrow Cellar",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "scarecrow_cellar"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "legacy_name": "Hearthfall Fields Restoration 5: Secure the Frontier",
+    "legacy_description": "Continue the work beyond the first restoration of Hearthfall Fields.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "scarecrow_cellar",
+        "required": 1,
+        "label": "Clear Scarecrow Cellar",
+        "route": {
+          "screen": "combat",
+          "area_id": "scarecrow_cellar"
+        }
+      }
+    ]
+  },
+  "barrows_restore_4": {
+    "id": "barrows_restore_4",
+    "name": "Ashen Barrows Restoration 4: Names in the Soil",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "graveyard",
+    "description": "Recover the history of the cairns and make a record of their dead.",
+    "prerequisites": [
+      "barrows_restore_3"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "archaeology",
+        "action_id": "barrow",
+        "required": 8,
+        "label": "Investigate the Barrow 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "archaeology",
+          "action_id": "barrow"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "inscription",
+        "action_id": "make_paper",
+        "required": 8,
+        "label": "Make 8 sheets of paper",
+        "route": {
+          "screen": "skill",
+          "skill_id": "inscription",
+          "action_id": "make_paper"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "legacy_name": "Ashen Barrows Restoration 4: Rebuild the Defences",
+    "legacy_description": "Continue the work beyond the first restoration of Ashen Barrows.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "iron_bar",
+        "required": 20,
+        "label": "Smelt 20 Iron Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_iron_bar"
+        }
+      }
+    ]
+  },
+  "barrows_restore_5": {
+    "id": "barrows_restore_5",
+    "name": "Ashen Barrows Restoration 5: Silence the Chapel Bell",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "graveyard",
+    "description": "The chapel bell wakes the dead; silence its keeper and the sentinels outside.",
+    "prerequisites": [
+      "barrows_restore_4"
+    ],
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "grave_sentinel",
+        "required": 8,
+        "label": "Defeat 8 Grave Sentinels",
+        "route": {
+          "screen": "combat",
+          "area_id": "barrow_moor"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "barrow_chapel",
+        "required": 1,
+        "label": "Clear the Barrow Chapel",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "barrow_chapel"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "legacy_name": "Ashen Barrows Restoration 5: Secure the Frontier",
+    "legacy_description": "Continue the work beyond the first restoration of Ashen Barrows.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "barrow_chapel",
+        "required": 1,
+        "label": "Clear Barrow Chapel",
+        "route": {
+          "screen": "combat",
+          "area_id": "barrow_chapel"
+        }
+      }
+    ]
+  },
+  "reedwrack_restore_4": {
+    "id": "reedwrack_restore_4",
+    "name": "Reedwrack Marsh Restoration 4: A Crossing Through Reeds",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "wet_forest",
+    "description": "Prepare the marsh crossing and cook a hot meal for the path crew.",
+    "prerequisites": [
+      "reedwrack_restore_3"
+    ],
+    "objectives": [
+      {
+        "kind": "do_actions",
+        "skill_id": "wayfolding",
+        "action_id": "survey_marshway",
+        "required": 8,
+        "label": "Survey the Marshway 8 times",
+        "route": {
+          "screen": "skill",
+          "skill_id": "wayfolding",
+          "action_id": "survey_marshway"
+        }
+      },
+      {
+        "kind": "do_actions",
+        "skill_id": "cooking",
+        "action_id": "cook_marsh_chowder",
+        "required": 5,
+        "label": "Cook 5 Marsh Chowders",
+        "route": {
+          "screen": "skill",
+          "skill_id": "cooking",
+          "action_id": "cook_marsh_chowder"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 4000
+    },
+    "legacy_name": "Reedwrack Marsh Restoration 4: Rebuild the Defences",
+    "legacy_description": "Continue the work beyond the first restoration of Reedwrack Marsh.",
+    "legacy_objectives": [
+      {
+        "kind": "craft_item",
+        "item_id": "steel_bar",
+        "required": 20,
+        "label": "Smelt 20 Steel Bar",
+        "route": {
+          "screen": "skill",
+          "skill_id": "smithing",
+          "action_id": "smelt_steel_bar"
+        }
+      }
+    ]
+  },
+  "reedwrack_restore_5": {
+    "id": "reedwrack_restore_5",
+    "name": "Reedwrack Marsh Restoration 5: Break the Toll on the Viaduct",
+    "chapter": 2,
+    "difficulty": "normal",
+    "region": "wet_forest",
+    "description": "The reopened route still belongs to the bandits. Clear the viaduct and drive their lookouts away.",
+    "prerequisites": [
+      "reedwrack_restore_4"
+    ],
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "monster_id": "rook_marksman",
+        "required": 8,
+        "label": "Defeat 8 Rook Marksmen",
+        "route": {
+          "screen": "combat",
+          "area_id": "bandit_hideout"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "rook_viaduct",
+        "required": 1,
+        "label": "Clear Rook’s Viaduct",
+        "route": {
+          "screen": "expeditions",
+          "area_id": "rook_viaduct"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 5000
+    },
+    "legacy_name": "Reedwrack Marsh Restoration 5: Secure the Frontier",
+    "legacy_description": "Continue the work beyond the first restoration of Reedwrack Marsh.",
+    "legacy_objectives": [
+      {
+        "kind": "complete_dungeon",
+        "dungeon_id": "rook_viaduct",
+        "required": 1,
+        "label": "Clear Rook's Viaduct",
+        "route": {
+          "screen": "combat",
+          "area_id": "rook_viaduct"
+        }
+      }
+    ]
+  },
+  "easy_timber_and_string": {
+    "id": "easy_timber_and_string",
+    "name": "Timber and String",
+    "chapter": 1,
+    "difficulty": "easy",
+    "description": "The watch wants arrows, and the fletcher wants logs. Both of those are your problem now.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 40,
+        "label": "Fell 40 Emberpine Logs",
+        "item_id": "normal_log"
+      },
+      {
+        "kind": "craft_item",
+        "required": 50,
+        "label": "Fletch 50 Bronze Arrows",
+        "item_id": "bronze_arrow"
+      }
+    ],
+    "reward": {
+      "gp": 400,
+      "xp": {
+        "woodcutting": 150,
+        "fletching": 250
+      },
+      "items": {
+        "bronze_arrow": 50
+      }
+    }
+  },
+  "easy_pantry_shift": {
+    "id": "easy_pantry_shift",
+    "name": "Pantry Shift",
+    "chapter": 1,
+    "difficulty": "easy",
+    "description": "Salt, smoke and a hot pan: the kitchen will not stock itself.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 30,
+        "label": "Catch 30 Raw Marsh Shrimp",
+        "item_id": "raw_shrimp"
+      },
+      {
+        "kind": "craft_item",
+        "required": 25,
+        "label": "Cook 25 Marsh Shrimp",
+        "item_id": "shrimp"
+      }
+    ],
+    "reward": {
+      "gp": 350,
+      "xp": {
+        "fishing": 200,
+        "cooking": 200
+      },
+      "items": {
+        "shrimp": 20
+      }
+    }
+  },
+  "easy_first_copper": {
+    "id": "easy_first_copper",
+    "name": "First Copper",
+    "chapter": 1,
+    "difficulty": "easy",
+    "description": "The smith will not accept 'the seam looked deep' as a delivery note.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 40,
+        "label": "Bring up 40 Copper Ore",
+        "item_id": "copper_ore"
+      },
+      {
+        "kind": "craft_item",
+        "required": 15,
+        "label": "Smelt 15 Bronze Bars",
+        "item_id": "bronze_bar"
+      }
+    ],
+    "reward": {
+      "gp": 450,
+      "xp": {
+        "mining": 200,
+        "smithing": 200
+      },
+      "items": {
+        "copper_ore": 25
+      }
+    }
+  },
+  "easy_scrub_fowl": {
+    "id": "easy_scrub_fowl",
+    "name": "Scrub Fowl Cull",
+    "chapter": 1,
+    "difficulty": "easy",
+    "description": "The birds have taken over the fallow fields again. So have the strays.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 25,
+        "label": "Defeat 25 Scrub Fowl",
+        "monster_id": "chicken",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 15,
+        "label": "Defeat 15 Longhorn Steers",
+        "monster_id": "cow",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 400,
+      "xp": {
+        "hitpoints": 200,
+        "strength": 200
+      }
+    }
+  },
+  "easy_roadside_golbins": {
+    "id": "easy_roadside_golbins",
+    "name": "Roadside Golbins",
+    "chapter": 1,
+    "difficulty": "easy",
+    "description": "The road out of Hearthfall Fields is a toll road now, and the toll is your supplies.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Golbins",
+        "monster_id": "golbin",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      },
+      {
+        "kind": "reach_region",
+        "required": 1,
+        "label": "Fight on the Hearthfall Fields front",
+        "area_id": "farmlands",
+        "route": {
+          "screen": "combat",
+          "area_id": "farmlands"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 500,
+      "xp": {
+        "attack": 250,
+        "defence": 150
+      }
+    }
+  },
+  "normal_iron_ledger": {
+    "id": "normal_iron_ledger",
+    "name": "The Iron Ledger",
+    "chapter": 2,
+    "difficulty": "normal",
+    "description": "Every blade the settlement owns was bought with ore somebody carried uphill.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 150,
+        "label": "Bring up 150 Iron Ore",
+        "item_id": "iron_ore"
+      },
+      {
+        "kind": "craft_item",
+        "required": 60,
+        "label": "Smelt 60 Iron Bars",
+        "item_id": "iron_bar"
+      }
+    ],
+    "reward": {
+      "gp": 1600,
+      "xp": {
+        "mining": 700,
+        "smithing": 700
+      },
+      "items": {
+        "iron_bar": 25
+      }
+    }
+  },
+  "normal_coal_run": {
+    "id": "normal_coal_run",
+    "name": "Coal Run",
+    "chapter": 2,
+    "difficulty": "normal",
+    "description": "The forge burns hotter than the woods can keep up with.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 200,
+        "label": "Deliver 200 Coal",
+        "item_id": "coal"
+      },
+      {
+        "kind": "craft_item",
+        "required": 40,
+        "label": "Forge 40 Steel Bars",
+        "item_id": "steel_bar"
+      }
+    ],
+    "reward": {
+      "gp": 2200,
+      "xp": {
+        "mining": 600,
+        "smithing": 900
+      },
+      "items": {
+        "coal": 50
+      }
+    }
+  },
+  "normal_spider_silk": {
+    "id": "normal_spider_silk",
+    "name": "Silk and Venom",
+    "chapter": 2,
+    "difficulty": "normal",
+    "description": "The webbing in the old forest is thick enough to walk on. That is not a compliment.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear Broodweb Warren",
+        "dungeon_id": "spider_forest",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 60,
+        "label": "Defeat 60 Spiders",
+        "monster_id": "spider",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2000,
+      "xp": {
+        "ranged": 900,
+        "hitpoints": 600
+      },
+      "items": {
+        "lobster": 25
+      }
+    }
+  },
+  "normal_bone_tithe": {
+    "id": "normal_bone_tithe",
+    "name": "The Bone Tithe",
+    "chapter": 2,
+    "difficulty": "normal",
+    "description": "Prayer is cheap. Prayer that answers back is not.",
+    "objectives": [
+      {
+        "kind": "gain_item",
+        "required": 300,
+        "label": "Collect 300 Bones",
+        "item_id": "bones"
+      },
+      {
+        "kind": "skill_level",
+        "required": 35,
+        "label": "Reach Devotion 35",
+        "skill_id": "prayer"
+      }
+    ],
+    "reward": {
+      "gp": 1800,
+      "xp": {
+        "prayer": 800,
+        "hitpoints": 400
+      },
+      "items": {
+        "bones": 100
+      }
+    }
+  },
+  "normal_market_day": {
+    "id": "normal_market_day",
+    "name": "Market Day",
+    "chapter": 2,
+    "difficulty": "normal",
+    "description": "A settlement that cannot stock its own stalls is a camp with better walls.",
+    "objectives": [
+      {
+        "kind": "gp_total",
+        "required": 250000,
+        "label": "Earn 250,000 GP in total"
+      },
+      {
+        "kind": "gain_item",
+        "required": 100,
+        "label": "Stock 100 Cooked Lobster",
+        "item_id": "lobster"
+      }
+    ],
+    "reward": {
+      "gp": 5000,
+      "xp": {
+        "cooking": 900
+      },
+      "items": {
+        "lobster": 50
+      }
+    }
+  },
+  "hard_steel_quota": {
+    "id": "hard_steel_quota",
+    "name": "The Steel Quota",
+    "chapter": 3,
+    "difficulty": "hard",
+    "description": "The armoury has stopped asking for steel and started demanding it.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "required": 80,
+        "label": "Forge 80 Steel Bars",
+        "item_id": "steel_bar"
+      },
+      {
+        "kind": "skill_level",
+        "required": 60,
+        "label": "Reach Forgecraft 60",
+        "skill_id": "smithing"
+      }
+    ],
+    "reward": {
+      "gp": 7000,
+      "xp": {
+        "smithing": 2200
+      },
+      "items": {
+        "steel_bar": 50
+      }
+    }
+  },
+  "hard_bastion_siege": {
+    "id": "hard_bastion_siege",
+    "name": "Bastion Siege",
+    "chapter": 3,
+    "difficulty": "hard",
+    "description": "Something holds the Ashen Bastion against every scout sent to look at it.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Ashen Keep",
+        "dungeon_id": "ashen_bastion_keep",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashen_bastion_keep"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 10,
+        "label": "Defeat the Bastion Warden x10",
+        "monster_id": "bastion_warden",
+        "route": {
+          "screen": "combat",
+          "area_id": "ashen_bastion_keep"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9000,
+      "xp": {
+        "hitpoints": 2000,
+        "attack": 1500
+      },
+      "items": {
+        "lobster": 50
+      }
+    }
+  },
+  "hard_sunderhold_armoury": {
+    "id": "hard_sunderhold_armoury",
+    "name": "The Sunderhold Armoury",
+    "chapter": 3,
+    "difficulty": "hard",
+    "description": "Sunderhold kept its best steel below the keep. So did whatever took the keep.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear Sunderhold Undercroft",
+        "dungeon_id": "sunderhold_undercroft",
+        "route": {
+          "screen": "combat",
+          "area_id": "sunderhold_undercroft"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat 5 Sunderhold Centurions",
+        "monster_id": "sunderhold_centurion",
+        "route": {
+          "screen": "combat",
+          "area_id": "sunderhold_undercroft"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 11000,
+      "xp": {
+        "defence": 1800,
+        "hitpoints": 1800
+      },
+      "items": {
+        "steel_bar": 25
+      }
+    }
+  },
+  "hard_cartographers_round": {
+    "id": "hard_cartographers_round",
+    "name": "The Cartographer's Round",
+    "chapter": 3,
+    "difficulty": "hard",
+    "description": "A map nobody has walked is a rumour with ink on it.",
+    "objectives": [
+      {
+        "kind": "chart_hexes",
+        "required": 40,
+        "label": "Chart 40 frontier regions"
+      },
+      {
+        "kind": "discover_items",
+        "required": 250,
+        "label": "Discover 250 distinct items"
+      }
+    ],
+    "reward": {
+      "gp": 12000,
+      "xp": {
+        "cartography": 2000
+      },
+      "items": {
+        "potion_dr_2": 5
+      }
+    }
+  },
+  "hard_herbal_medicine": {
+    "id": "hard_herbal_medicine",
+    "name": "Herbal Medicine",
+    "chapter": 3,
+    "difficulty": "hard",
+    "description": "The infirmary has run out of everything that stops bleeding.",
+    "objectives": [
+      {
+        "kind": "craft_item",
+        "required": 20,
+        "label": "Brew 20 damage-reduction potions",
+        "item_id": "potion_dr_3"
+      },
+      {
+        "kind": "skill_level",
+        "required": 55,
+        "label": "Reach Apothecary 55",
+        "skill_id": "herblore"
+      }
+    ],
+    "reward": {
+      "gp": 10000,
+      "xp": {
+        "herblore": 2500
+      },
+      "items": {
+        "garum_herb": 50
+      }
+    }
+  },
+  "expert_cinderkin_forge": {
+    "id": "expert_cinderkin_forge",
+    "name": "The Cinderkin Forge",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "The Cinderkin still hammer at the old forge. Whatever they are making, stop it.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 3,
+        "label": "Clear Cinderkin Forge",
+        "dungeon_id": "cinderkin_forge",
+        "route": {
+          "screen": "combat",
+          "area_id": "cinderkin_forge"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat 5 Cinder Colossi",
+        "monster_id": "cinder_colossus",
+        "route": {
+          "screen": "combat",
+          "area_id": "cinderkin_forge"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 30000,
+      "xp": {
+        "smithing": 4000,
+        "hitpoints": 4000
+      },
+      "items": {
+        "steel_bar": 100
+      }
+    }
+  },
+  "expert_hushspire": {
+    "id": "expert_hushspire",
+    "name": "Hushspire",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "Hushspire Hold is quiet in a way that scouts do not come back from.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Hushspire Hold",
+        "dungeon_id": "hushspire_hold",
+        "route": {
+          "screen": "combat",
+          "area_id": "hushspire_hold"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat the Hushspire Warden x5",
+        "monster_id": "hushspire_warden",
+        "route": {
+          "screen": "combat",
+          "area_id": "hushspire_hold"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 40,
+        "label": "Defeat 40 Hush Stalkers",
+        "monster_id": "hush_stalker",
+        "route": {
+          "screen": "combat",
+          "area_id": "hushspire_hold"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 34000,
+      "xp": {
+        "attack": 4000,
+        "hitpoints": 4000
+      },
+      "items": {
+        "potion_dr_3": 10
+      }
+    }
+  },
+  "expert_dream_cycle": {
+    "id": "expert_dream_cycle",
+    "name": "The Dream Cycle",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "The dream does not end at the choir. It goes deeper, and then it goes under.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Sunken Choir",
+        "dungeon_id": "dream_choir",
+        "route": {
+          "screen": "combat",
+          "area_id": "dream_choir"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Astral Devourer",
+        "dungeon_id": "dream_tide",
+        "route": {
+          "screen": "combat",
+          "area_id": "dream_tide"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Sleeping Sovereign",
+        "dungeon_id": "dream_sovereign",
+        "route": {
+          "screen": "combat",
+          "area_id": "dream_sovereign"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 45000,
+      "xp": {
+        "hitpoints": 6000,
+        "magic": 4000
+      },
+      "items": {
+        "potion_dr_3": 10
+      }
+    }
+  },
+  "expert_threat_triad": {
+    "id": "expert_threat_triad",
+    "name": "Three Threats",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "Three fronts, three commanders, one long season of holding the line.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Sundered Tyrant · Lair",
+        "dungeon_id": "threat_sundered_reaches",
+        "route": {
+          "screen": "combat",
+          "area_id": "threat_sundered_reaches"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Drowned Leviathan · Lair",
+        "dungeon_id": "threat_drowned_reach",
+        "route": {
+          "screen": "combat",
+          "area_id": "threat_drowned_reach"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Warlord of the March · Lair",
+        "dungeon_id": "threat_heralds_march",
+        "route": {
+          "screen": "combat",
+          "area_id": "threat_heralds_march"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 50000,
+      "xp": {
+        "defence": 5000,
+        "hitpoints": 5000
+      },
+      "items": {
+        "lobster": 100
+      }
+    }
+  },
+  "expert_greyharrow_sweep": {
+    "id": "expert_greyharrow_sweep",
+    "name": "Greyharrow Sweep",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "The quarry husks keep rising. Keep putting them down.",
+    "objectives": [
+      {
+        "kind": "kill_monster",
+        "required": 100,
+        "label": "Defeat 100 Greyharrow Husks",
+        "monster_id": "greyharrow_husk",
+        "route": {
+          "screen": "combat",
+          "area_id": "greyharrow_deep"
+        }
+      },
+      {
+        "kind": "combat_level",
+        "required": 100,
+        "label": "Reach combat level 100"
+      }
+    ],
+    "reward": {
+      "gp": 40000,
+      "xp": {
+        "strength": 6000,
+        "hitpoints": 4000
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "nightmare_abyssal_crown": {
+    "id": "nightmare_abyssal_crown",
+    "name": "The Abyssal Crown",
+    "chapter": 5,
+    "difficulty": "nightmare",
+    "description": "Something under the tide wears a crown. Take it off.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Abyssal Crown",
+        "dungeon_id": "abyssal_crown",
+        "route": {
+          "screen": "combat",
+          "area_id": "abyssal_crown"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat the Abyssal Empress x5",
+        "monster_id": "abyssal_empress",
+        "route": {
+          "screen": "combat",
+          "area_id": "abyssal_crown"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 150000,
+      "xp": {
+        "hitpoints": 15000,
+        "magic": 10000
+      },
+      "items": {
+        "shark": 100
+      }
+    }
+  },
+  "nightmare_starfall": {
+    "id": "nightmare_starfall",
+    "name": "Starfall",
+    "chapter": 5,
+    "difficulty": "nightmare",
+    "description": "The bastion fell out of the sky and kept its garrison.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Starfall Bastion",
+        "dungeon_id": "starfall_bastion",
+        "route": {
+          "screen": "combat",
+          "area_id": "starfall_bastion"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 25,
+        "label": "Defeat 25 Starfall Vanguards",
+        "monster_id": "starfall_vanguard",
+        "route": {
+          "screen": "combat",
+          "area_id": "starfall_bastion"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 180000,
+      "xp": {
+        "attack": 15000,
+        "hitpoints": 15000
+      },
+      "items": {
+        "potion_dr_3": 20
+      }
+    }
+  },
+  "nightmare_moonfall": {
+    "id": "nightmare_moonfall",
+    "name": "Moonfall",
+    "chapter": 5,
+    "difficulty": "nightmare",
+    "description": "Moonfall Bastion keeps its own calendar, and it does not include you.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 2,
+        "label": "Clear Moonfall Bastion",
+        "dungeon_id": "moonfall_bastion",
+        "route": {
+          "screen": "combat",
+          "area_id": "moonfall_bastion"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat the Moonfall Matriarch x5",
+        "monster_id": "moonfall_matriarch",
+        "route": {
+          "screen": "combat",
+          "area_id": "moonfall_bastion"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 200000,
+      "xp": {
+        "ranged": 15000,
+        "hitpoints": 15000
+      },
+      "items": {
+        "shark": 100
+      }
+    }
+  },
+  "nightmare_obsidian": {
+    "id": "nightmare_obsidian",
+    "name": "Obsidian Crown",
+    "chapter": 5,
+    "difficulty": "nightmare",
+    "description": "The obsidian crown was never a place to visit. It was a place to end.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Obsidian Crown",
+        "dungeon_id": "obsidian_crown",
+        "route": {
+          "screen": "combat",
+          "area_id": "obsidian_crown"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 3,
+        "label": "Defeat 3 Obsidian Colossi",
+        "monster_id": "obsidian_colossus",
+        "route": {
+          "screen": "combat",
+          "area_id": "obsidian_crown"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 220000,
+      "xp": {
+        "strength": 18000,
+        "hitpoints": 16000
+      },
+      "items": {
+        "shark": 100
+      }
+    }
+  },
+  "nightmare_eternal_bastion": {
+    "id": "nightmare_eternal_bastion",
+    "name": "The Eternal Bastion",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "The last citadel has stood since before the frontier had a name. Break it anyway.",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Eternal Horizon Citadel",
+        "dungeon_id": "eternal_horizon_citadel",
+        "route": {
+          "screen": "combat",
+          "area_id": "eternal_horizon_citadel"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 10,
+        "label": "Defeat 10 Eternal Dawn Seraphs",
+        "monster_id": "eternal_dawn_seraph",
+        "route": {
+          "screen": "combat",
+          "area_id": "eternal_horizon_citadel"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 400000,
+      "xp": {
+        "hitpoints": 40000,
+        "defence": 20000
+      },
+      "items": {
+        "potion_dr_3": 30
+      }
+    }
+  },
+  "exp_roost_and_barrow": {
+    "id": "exp_roost_and_barrow",
+    "name": "The Roost and the Barrow",
+    "chapter": 2,
+    "difficulty": "easy",
+    "description": "Two first lessons in expedition work: a coop that fights back, and a graveyard that will not stay down.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Plucked Roost",
+        "dungeon_id": "chicken_coop",
+        "route": {
+          "screen": "combat",
+          "area_id": "chicken_coop"
+        }
+      },
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Barrow of Names",
+        "dungeon_id": "undead_graveyard",
+        "route": {
+          "screen": "combat",
+          "area_id": "undead_graveyard"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 900,
+      "xp": {
+        "hitpoints": 500,
+        "prayer": 300
+      },
+      "items": {
+        "big_bones": 10
+      }
+    }
+  },
+  "exp_spider_hunt": {
+    "id": "exp_spider_hunt",
+    "name": "The Webwood Hunt",
+    "chapter": 2,
+    "difficulty": "normal",
+    "description": "Three runs through the old forest, and enough spiders to make the point stick.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 3,
+        "label": "Clear Broodweb Warren",
+        "dungeon_id": "spider_forest",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 25,
+        "label": "Defeat 25 Broodweb Hunters",
+        "monster_id": "broodweb_hunter",
+        "route": {
+          "screen": "combat",
+          "area_id": "spider_forest"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 2600,
+      "xp": {
+        "ranged": 1200,
+        "hitpoints": 800
+      },
+      "items": {
+        "lobster": 25
+      }
+    }
+  },
+  "exp_sunderhold": {
+    "id": "exp_sunderhold",
+    "name": "Below Sunderhold",
+    "chapter": 3,
+    "difficulty": "hard",
+    "description": "Every expedition into the Sunderhold undercroft should come back with fewer centurions than it found.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Sunderhold Undercroft",
+        "dungeon_id": "sunderhold_undercroft",
+        "route": {
+          "screen": "combat",
+          "area_id": "sunderhold_undercroft"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat 5 Sunderhold Centurions",
+        "monster_id": "sunderhold_centurion",
+        "route": {
+          "screen": "combat",
+          "area_id": "sunderhold_undercroft"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 8000,
+      "xp": {
+        "defence": 1500,
+        "hitpoints": 1500
+      },
+      "items": {
+        "steel_bar": 25
+      }
+    }
+  },
+  "exp_frostbound": {
+    "id": "exp_frostbound",
+    "name": "The Frostbound Sinkhole",
+    "chapter": 3,
+    "difficulty": "hard",
+    "description": "The regent beneath the ice has held that sinkhole for a very long time. It is time to stop.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Frostbound Sinkhole",
+        "dungeon_id": "frostbound_sinkhole",
+        "route": {
+          "screen": "combat",
+          "area_id": "frostbound_sinkhole"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 3,
+        "label": "Defeat the Glacial Regent x3",
+        "monster_id": "the_glacial_regent",
+        "route": {
+          "screen": "combat",
+          "area_id": "frostbound_sinkhole"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 9000,
+      "xp": {
+        "magic": 1800,
+        "hitpoints": 1500
+      },
+      "items": {
+        "shark": 25
+      }
+    }
+  },
+  "exp_ironveil": {
+    "id": "exp_ironveil",
+    "name": "Ironveil Bastion",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "Ironveil was built to be held. Prove that it can be taken.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Ironveil Bastion",
+        "dungeon_id": "ironveil_bastion",
+        "route": {
+          "screen": "combat",
+          "area_id": "ironveil_bastion"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 60,
+        "label": "Defeat 60 Bastion Sentinels",
+        "monster_id": "bastion_sentinel",
+        "route": {
+          "screen": "combat",
+          "area_id": "ironveil_bastion"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 28000,
+      "xp": {
+        "attack": 4000,
+        "hitpoints": 3000
+      },
+      "items": {
+        "lobster": 75
+      }
+    }
+  },
+  "exp_crown_of_embers": {
+    "id": "exp_crown_of_embers",
+    "name": "The Crown of Embers",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "Three crowns sit in the ember reaches. This is the first of them.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Crown of Embers",
+        "dungeon_id": "crown_of_embers",
+        "route": {
+          "screen": "combat",
+          "area_id": "crown_of_embers"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 3,
+        "label": "Defeat the Crown of Embers boss x3",
+        "monster_id": "crown_of_embers_boss",
+        "route": {
+          "screen": "combat",
+          "area_id": "crown_of_embers"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 32000,
+      "xp": {
+        "strength": 4500,
+        "hitpoints": 3500
+      },
+      "items": {
+        "potion_dr_3": 10
+      }
+    }
+  },
+  "exp_final_horizon": {
+    "id": "exp_final_horizon",
+    "name": "The Final Horizon",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "The last expedition the frontier has. Beat it, and the Astral Trial Chamber opens.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear The Final Horizon",
+        "dungeon_id": "final_horizon",
+        "route": {
+          "screen": "combat",
+          "area_id": "final_horizon"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 400000,
+      "xp": {
+        "hitpoints": 30000,
+        "attack": 15000
+      },
+      "items": {
+        "shark": 150
+      }
+    }
+  },
+  "exp_eternal_citadel": {
+    "id": "exp_eternal_citadel",
+    "name": "The Eternal Horizon",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "The citadel past the horizon does not expect visitors. Disappoint it.",
+    "tab": "expeditions",
+    "objectives": [
+      {
+        "kind": "complete_dungeon",
+        "required": 1,
+        "label": "Clear Eternal Horizon Citadel",
+        "dungeon_id": "eternal_horizon_citadel",
+        "route": {
+          "screen": "combat",
+          "area_id": "eternal_horizon_citadel"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 5,
+        "label": "Defeat 5 Horizon Sovereigns",
+        "monster_id": "horizon_sovereign",
+        "route": {
+          "screen": "combat",
+          "area_id": "eternal_horizon_citadel"
+        }
+      }
+    ],
+    "reward": {
+      "gp": 600000,
+      "xp": {
+        "hitpoints": 50000,
+        "defence": 25000
+      },
+      "items": {
+        "potion_dr_3": 40
+      }
+    }
+  },
+  "astral_vestibule_trial": {
+    "id": "astral_vestibule_trial",
+    "name": "The Astral Vestibule",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "The chamber gates open onto a vestibule that has never been empty. Clear the trial and thin its garrison.",
+    "prerequisites": [
+      "exp_final_horizon"
+    ],
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Astral Vestibule trial",
+        "trial_id": "astral_vestibule",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Vestibule Orbiter",
+        "monster_id": "vestibule_orbiter"
+      }
+    ],
+    "reward": {
+      "gp": 35000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 25
+      }
+    }
+  },
+  "astral_comet_forge_trial": {
+    "id": "astral_comet_forge_trial",
+    "name": "The Comet Forge",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "A forge that was hammering long before anyone arrived to hear it. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Comet Forge trial",
+        "trial_id": "comet_forge",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Comet Anvilguard",
+        "monster_id": "comet_anvilguard"
+      }
+    ],
+    "reward": {
+      "gp": 35000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 25
+      }
+    }
+  },
+  "astral_oratory_trial": {
+    "id": "astral_oratory_trial",
+    "name": "The Eclipse Oratory",
+    "chapter": 4,
+    "difficulty": "expert",
+    "description": "The oratory sings something that is not quite a prayer. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Eclipse Oratory trial",
+        "trial_id": "eclipse_oratory",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Eclipse Hymnist",
+        "monster_id": "eclipse_hymnist"
+      }
+    ],
+    "reward": {
+      "gp": 35000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 25
+      }
+    }
+  },
+  "astral_constellation_trial": {
+    "id": "astral_constellation_trial",
+    "name": "The Constellation Throne",
+    "chapter": 5,
+    "difficulty": "expert",
+    "description": "A throne of fixed stars, and a regent who never learned to sit still. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Constellation Throne trial",
+        "trial_id": "constellation_throne",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Constellation Lancer",
+        "monster_id": "constellation_lancer"
+      }
+    ],
+    "reward": {
+      "gp": 35000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 25
+      }
+    }
+  },
+  "astral_nexus_trial": {
+    "id": "astral_nexus_trial",
+    "name": "The Horizon Nexus",
+    "chapter": 5,
+    "difficulty": "nightmare",
+    "description": "The nexus is where the chamber keeps its idea of an ending. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Horizon Nexus trial",
+        "trial_id": "horizon_nexus",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Nexus Seraph",
+        "monster_id": "nexus_seraph"
+      }
+    ],
+    "reward": {
+      "gp": 60000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "astral_observatory_trial": {
+    "id": "astral_observatory_trial",
+    "name": "The Celestial Observatory",
+    "chapter": 5,
+    "difficulty": "nightmare",
+    "description": "The observatory watches back. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Celestial Observatory trial",
+        "trial_id": "celestial_observatory",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Observatory Starseer",
+        "monster_id": "observatory_starseer"
+      }
+    ],
+    "reward": {
+      "gp": 60000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "astral_nebula_trial": {
+    "id": "astral_nebula_trial",
+    "name": "The Nebula Garden",
+    "chapter": 5,
+    "difficulty": "nightmare",
+    "description": "A garden grown in vacuum by something with more patience than you have. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Nebula Garden trial",
+        "trial_id": "nebula_garden",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Nebula Thornkeeper",
+        "monster_id": "nebula_thornkeeper"
+      }
+    ],
+    "reward": {
+      "gp": 60000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "astral_aurora_trial": {
+    "id": "astral_aurora_trial",
+    "name": "The Aurora Bastion",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "The aurora bastion is a wall of light with a garrison behind it. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Aurora Bastion trial",
+        "trial_id": "aurora_bastion",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Aurora Lancer",
+        "monster_id": "aurora_lancer"
+      }
+    ],
+    "reward": {
+      "gp": 60000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "astral_voidstar_trial": {
+    "id": "astral_voidstar_trial",
+    "name": "The Voidstar Vault",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "The vault keeps the chamber's oldest mistake under lock and star. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Voidstar Vault trial",
+        "trial_id": "voidstar_vault",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Voidstar Herald",
+        "monster_id": "voidstar_herald"
+      }
+    ],
+    "reward": {
+      "gp": 60000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 50
+      }
+    }
+  },
+  "astral_eternity_trial": {
+    "id": "astral_eternity_trial",
+    "name": "The Eternity Crown",
+    "chapter": 15,
+    "difficulty": "nightmare",
+    "description": "The last trial does not end so much as refuse to begin again. Clear the trial and thin its garrison.",
+    "tab": "astral",
+    "objectives": [
+      {
+        "kind": "complete_trial",
+        "required": 1,
+        "label": "Clear the Eternity Crown trial",
+        "trial_id": "eternity_crown",
+        "route": {
+          "screen": "raids"
+        }
+      },
+      {
+        "kind": "kill_monster",
+        "required": 20,
+        "label": "Defeat 20 Eternity Justiciar",
+        "monster_id": "eternity_justiciar"
+      }
+    ],
+    "reward": {
+      "gp": 60000,
+      "xp": {
+        "hitpoints": 6000,
+        "attack": 3000
+      },
+      "items": {
+        "shark": 50
+      }
+    }
   }
 }

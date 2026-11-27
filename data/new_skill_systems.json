@@ -914,6 +914,45 @@
         "damage_reduction_percent": 5
       },
       "essence": "warding"
+    },
+    {
+      "id": "siegebreaker",
+      "name": "Siegebreaker",
+      "scope": "weapon",
+      "level": 115,
+      "tier": 6,
+      "mods": {
+        "combat_max_hit_percent": 6,
+        "global_accuracy_percent": 8
+      },
+      "essence": "martial",
+      "dungeon": "crown_of_embers"
+    },
+    {
+      "id": "steadfast",
+      "name": "Steadfast",
+      "scope": "armor",
+      "level": 115,
+      "tier": 6,
+      "mods": {
+        "damage_reduction_percent": 2,
+        "food_healing_percent": 8
+      },
+      "essence": "warding",
+      "dungeon": "emberrift_cavern"
+    },
+    {
+      "id": "spellward",
+      "name": "Spellward",
+      "scope": "armor",
+      "level": 115,
+      "tier": 6,
+      "mods": {
+        "damage_reduction_percent": 3,
+        "magic_evasion_percent": 10
+      },
+      "essence": "warding",
+      "dungeon": "emberrift_cavern"
     }
   ],
   "dreams": [
